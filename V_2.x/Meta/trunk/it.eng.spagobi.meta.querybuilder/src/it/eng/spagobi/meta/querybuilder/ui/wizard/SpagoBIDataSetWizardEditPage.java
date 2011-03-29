@@ -60,6 +60,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
         //this.queryBuilderUI = new QueryBuilder();
+
 	}
 	
 	public SpagoBIDataSetWizardEditPage( String pageName, QueryBuilder queryBuilderUI )

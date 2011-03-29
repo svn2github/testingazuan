@@ -48,6 +48,7 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 	
 	@Override
 	public boolean performFinish() {
+		logger.debug("SpagoBIDataSetWizard performFinish");
 		return (getPages()[getPageCount()-1].isPageComplete());
 	}
 

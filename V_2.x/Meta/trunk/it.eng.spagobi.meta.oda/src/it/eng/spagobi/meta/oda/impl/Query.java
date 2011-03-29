@@ -43,6 +43,8 @@ import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.SortSpec;
 import org.eclipse.datatools.connectivity.oda.spec.QuerySpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation class of IQuery for an ODA runtime driver.
@@ -56,7 +58,8 @@ import org.eclipse.datatools.connectivity.oda.spec.QuerySpecification;
  * @authors  Andrea Gioia (andrea.gioia@eng.it)
  */
 public class Query implements IQuery {
-	
+	private static Logger logger = LoggerFactory.getLogger(Query.class);
+
 	private int m_maxRows;
 	IDataSource datasource;
     private it.eng.qbe.query.Query query;
@@ -64,14 +67,16 @@ public class Query implements IQuery {
 	
     public Query(IDataSource datasource) {
     	this.datasource = datasource;
+		logger.debug("ODA Query created, datasource is [{}]",this.datasource);
     }
     
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
 	public void prepare(String queryText) throws OdaException {
+		logger.debug("ODA Query prepare");
 		query = new it.eng.qbe.query.Query();
-		
+		logger.debug("Datasource is [{}]",datasource);
 		IModelStructure dataMartModel = datasource.getModelStructure();
 		List<IModelEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
 		if(entities.size() > 0) {

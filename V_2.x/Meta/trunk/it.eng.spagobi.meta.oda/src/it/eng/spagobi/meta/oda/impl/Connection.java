@@ -29,6 +29,8 @@ import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDataSetMetaData;
 import org.eclipse.datatools.connectivity.oda.IQuery;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ibm.icu.util.ULocale;
 
@@ -41,7 +43,8 @@ public class Connection implements IConnection
 {
 	IDataSource datasource = null;
 	private boolean m_isOpen = false;
-    
+	private static Logger logger = LoggerFactory.getLogger(Connection.class);
+
    
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
@@ -110,6 +113,7 @@ public class Connection implements IConnection
 	{
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
+		logger.debug("Connection, create new Query");
 		return new Query(datasource);
 	}
 

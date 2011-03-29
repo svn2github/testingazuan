@@ -38,6 +38,7 @@ import org.eclipse.datatools.connectivity.oda.design.ResultSetDefinition;
 import org.eclipse.datatools.connectivity.oda.design.ui.designsession.DesignSessionUtil;
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizardPage;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.slf4j.Logger;
@@ -87,7 +88,11 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 
 	}
 	
-	
+	//updates the result set page before click the next button
+	public IWizardPage getNextPage(){
+		getQueryBuilder().refreshQueryResultPage();//update the result table
+		return super.getNextPage();
+	} 
 	
 	
 	public QueryBuilder getQueryBuilder() {

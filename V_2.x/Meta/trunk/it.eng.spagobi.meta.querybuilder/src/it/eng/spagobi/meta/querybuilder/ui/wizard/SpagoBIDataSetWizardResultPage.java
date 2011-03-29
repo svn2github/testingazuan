@@ -58,12 +58,6 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
 		setControl( createPageControl( parent ) );
 	}
 	
-	//updates the result set page before click the next button
-	public boolean canFlipToNextPage(){
-		getQueryBuilder().refreshQueryResultPage();//update the result table
-		return super.canFlipToNextPage();
-	} 
-	
 	public QueryBuilder getQueryBuilder() {
 		return getSpagoBIWizard().getQueryBuilder();
 	}

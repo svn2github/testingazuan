@@ -54,10 +54,12 @@ import org.slf4j.LoggerFactory;
  */
 public class SpagoBIModelEditor extends MultiEditor {
 	
-	private CLabel innerEditorTitle[];
-	private SashForm sashForm;
-	private IEditorPart innerEditors[];
-	private Control innerViewForm[] = new Control[2];
+	private SashForm splitContainer;
+	private IEditorPart[] innerEditors;
+	private Control[] innerEditorWrapperContainers;
+	private CLabel[] innerEditorTitle;
+	
+	
 	private boolean firstEditor = true;
 	private Label closeLbl;
 	private Image iconCollapse, iconExpand;
@@ -68,64 +70,52 @@ public class SpagoBIModelEditor extends MultiEditor {
 	
 	
 	@Override
-	public void doSave(IProgressMonitor progressMonitor) {
+	public void createPartControl(Composite parentContainer) {
+		
 		logger.trace("IN");
-		super.doSave(progressMonitor);
-		logger.trace("OUT");
-	}
-	
-	@Override
-	public void createPartControl(Composite parent) {
-		parent = new Composite(parent, SWT.BORDER);
-		parent.setLayout(new FillLayout());
-		sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		
 		innerEditors = getInnerEditors();
 		
+		Composite mainContainer = new Composite(parentContainer, SWT.BORDER);
+		mainContainer.setLayout(new FillLayout());
+		splitContainer = new SashForm(mainContainer, SWT.HORIZONTAL);
+		
+		innerEditorWrapperContainers =  new Control[ innerEditors.length ];
+		                      
 		for (int i = 0; i < innerEditors.length; i++) {
-			final IEditorPart e = innerEditors[i];
-			ViewForm viewForm = new ViewForm(sashForm, SWT.NONE);
-			viewForm.marginWidth = 0;
-			viewForm.marginHeight = 0;
-
-			//added store viewform references
-			innerViewForm[i] = viewForm;
-			
-			createInnerEditorTitle(i, viewForm);
-						
-			Composite content = createInnerPartControl(viewForm,e);
-					
-			viewForm.setContent(content);
-			updateInnerEditorTitle(e, innerEditorTitle[i]);
-			
-			final int index = i;
-			e.addPropertyListener(new IPropertyListener() {
-				public void propertyChanged(Object source, int property) {
-					if (property == IEditorPart.PROP_DIRTY || property == IWorkbenchPart.PROP_TITLE)
-						if (source instanceof IEditorPart)
-							updateInnerEditorTitle((IEditorPart) source, innerEditorTitle[index]);
-				}
-			});
+			createInnerEditorContainer(i, splitContainer);
 		}
-		sashForm.setWeights(new int[]{80,20});
+		splitContainer.setWeights(new int[]{80,20});
 	}
 	
-	
-
-	/**
-	 * Draw the gradient for the specified editor.
-	 */
-	protected void drawGradient(IEditorPart innerEditor, Gradient g) {
-		CLabel label = innerEditorTitle[getIndex(innerEditor)];
-		if((label == null) || label.isDisposed())
-			return;
-			
-		label.setForeground(g.fgColor);
-		label.setBackground(g.bgColors, g.bgPercents);
+	protected void createInnerEditorContainer(int innerEditorIndex, Composite parentContainer) {
+		ViewForm innerEditorWrapperContainer;
+		Composite innerEditorContainer;
+		IEditorPart innerEditor;
+		
+		innerEditor = innerEditors[innerEditorIndex];		
+		innerEditorWrapperContainer = new ViewForm(parentContainer, SWT.NONE);
+		innerEditorWrapperContainers[innerEditorIndex] = innerEditorWrapperContainer;
+		
+		innerEditorWrapperContainer.marginWidth = 0;
+		innerEditorWrapperContainer.marginHeight = 0;
+		createInnerEditorTitle(innerEditorIndex, innerEditorWrapperContainer);
+		
+		innerEditorContainer = createInnerPartControl(innerEditorWrapperContainer, innerEditor);
+		innerEditorWrapperContainer.setContent(innerEditorContainer);
+		
+		updateInnerEditorTitle(innerEditor, innerEditorTitle[innerEditorIndex]);
+		
+		final int index = innerEditorIndex;
+		innerEditor.addPropertyListener(new IPropertyListener() {
+			public void propertyChanged(Object source, int property) {
+				if (property == IEditorPart.PROP_DIRTY || property == IWorkbenchPart.PROP_TITLE)
+					if (source instanceof IEditorPart)
+						updateInnerEditorTitle((IEditorPart) source, innerEditorTitle[index]);
+			}
+		});
 	}
-	/*
-	 * Create the label for each inner editor. 
-	 */
+	
 	protected void createInnerEditorTitle(int index, ViewForm parent) {
 		CLabel titleLabel = new CLabel(parent, SWT.SHADOW_NONE);
 		//hookFocus(titleLabel);
@@ -153,12 +143,12 @@ public class SpagoBIModelEditor extends MultiEditor {
 		        }
 
 		        public void mouseDown(MouseEvent e) {
-		            if(sashForm.getMaximizedControl() == innerViewForm[0]){
-				           sashForm.setMaximizedControl(null);	
+		            if(splitContainer.getMaximizedControl() == innerEditorWrapperContainers[0]){
+				           splitContainer.setMaximizedControl(null);	
 				           closeLbl.setImage(iconExpand);
 			            }
 			            else {
-				           sashForm.setMaximizedControl(innerViewForm[0]);
+				           splitContainer.setMaximizedControl(innerEditorWrapperContainers[0]);
 				           closeLbl.setImage(iconCollapse);
 			            }		        	
 		        }
@@ -174,6 +164,47 @@ public class SpagoBIModelEditor extends MultiEditor {
 			innerEditorTitle = new CLabel[getInnerEditors().length];
 		innerEditorTitle[index] = titleLabel;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public void doSave(IProgressMonitor progressMonitor) {
+		logger.trace("IN");
+		super.doSave(progressMonitor);
+		logger.trace("OUT");
+	}
+	
+	
+	
+	
+
+	/**
+	 * Draw the gradient for the specified editor.
+	 */
+	protected void drawGradient(IEditorPart innerEditor, Gradient g) {
+		CLabel label = innerEditorTitle[getIndex(innerEditor)];
+		if((label == null) || label.isDisposed())
+			return;
+			
+		label.setForeground(g.fgColor);
+		label.setBackground(g.bgColors, g.bgPercents);
+	}
+	
+	
 	/*
 	 * Update the tab for an editor.  This is typically called
 	 * by a site when the tab title changes.
@@ -201,6 +232,11 @@ public class SpagoBIModelEditor extends MultiEditor {
 		return -1;
 	}
 
+	
+	
+	
+	
+	
 	/*
 	private PropertySheetPage propertySheetPage;
 	public IPropertySheetPage getPropertySheetPage() {

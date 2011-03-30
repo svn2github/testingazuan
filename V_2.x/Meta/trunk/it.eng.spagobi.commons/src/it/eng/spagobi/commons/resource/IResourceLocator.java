@@ -55,8 +55,12 @@ public interface IResourceLocator {
 	   */
 	  Object getProperty(String key);
 	  
+	  Object getProperty(String key, Object defaultValue);
+	  
 	  String getPropertyAsString(String key);
+	  String getPropertyAsString(String key, String defaultValue);
 	  Integer getPropertyAsInteger(String key);
+	  Integer getPropertyAsInteger(String key, Integer defaultValue);
 	  
 	  /**
 	   * Returns the string resource associated with the key, translated to the current locale.

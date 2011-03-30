@@ -171,17 +171,34 @@ public class DefaultResourceLocator implements IResourceLocator {
 
 	@Override
 	public Object getProperty(String key) {
-		return settings.getProperty(key);
+		return getProperty(key, null);
+	}
+	
+	public Object getProperty(String key, Object defaultValue) {
+		Object propertyValue;
+		
+		propertyValue = settings.getProperty(key);
+		propertyValue = propertyValue != null? propertyValue: defaultValue;
+		
+		return propertyValue;
 	}
 	
 	public String getPropertyAsString(String key) {
-		return (String)settings.getProperty(key);
+		return getPropertyAsString(key, null);
+	}
+	
+	public String getPropertyAsString(String key, String defaultValue) {
+		return (String)settings.getProperty(key, defaultValue);
 	}
 	
 	public Integer getPropertyAsInteger(String key) {
+		return getPropertyAsInteger(key, null);
+	}
+			
+	public Integer getPropertyAsInteger(String key, Integer defaultValue) {
 		Integer propertyValue;
 		
-		propertyValue = null;
+		propertyValue = defaultValue;
 		
 		String str = getPropertyAsString(key);
 		if(str != null) {

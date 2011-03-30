@@ -41,6 +41,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -49,6 +52,8 @@ public class PhysicalModelInitializer {
 	
 	IPropertiesInitializer propertiesInitializer;
 	Model rootModel;
+	private static Logger logger = LoggerFactory.getLogger(PhysicalModelInitializer.class);
+
 	
 	static public PhysicalModelFactory FACTORY = PhysicalModelFactory.eINSTANCE;
 	
@@ -58,7 +63,9 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize PhysicalModel with table filter
-	public PhysicalModel initialize(String modelName, Connection conn, String defaultCatalog, String defaultSchema, List<String> selectedTables){
+	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionUrl, 
+									String connectionUsername, String connectionPassword, String connectionDatabaseName,
+									String defaultCatalog, String defaultSchema, List<String> selectedTables){
 		PhysicalModel model;
 		DatabaseMetaData dbMeta;
 		
@@ -85,6 +92,17 @@ public class PhysicalModelInitializer {
 			
 			getPropertiesInitializer().addProperties(model);
 			
+			//Setting Connection properties values
+			model.getPropertyType("connection.name").setDefaultValue(connectionName);
+			logger.debug("PhysicalModel Property: Connection name is [{}]",model.getPropertyType("connection.name").getDefaultValue());
+			model.getPropertyType("connection.url").setDefaultValue(connectionUrl);
+			logger.debug("PhysicalModel Property: Connection url is [{}]",model.getPropertyType("connection.url").getDefaultValue());
+			model.getPropertyType("connection.username").setDefaultValue(connectionUsername);
+			logger.debug("PhysicalModel Property: Connection username is [{}]",model.getPropertyType("connection.username").getDefaultValue());
+			model.getPropertyType("connection.password").setDefaultValue(connectionPassword);
+			logger.debug("PhysicalModel Property: Connection password is [{}]",model.getPropertyType("connection.password").getDefaultValue());
+			model.getPropertyType("connection.databasename").setDefaultValue(connectionDatabaseName);
+			logger.debug("PhysicalModel Property: Connection databasename is [{}]",model.getPropertyType("connection.databasename").getDefaultValue());
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize physical model", t);
 		}
@@ -94,8 +112,9 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize Physical Model with ALL original Database Tables
-	public PhysicalModel initialize(String modelName, Connection conn, String defaultCatalog, String defaultSchema) {
-		return initialize(modelName,conn,defaultCatalog,defaultSchema, null );
+	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionUrl, 
+			String connectionUsername, String connectionPassword, String connectionDatabaseName, String defaultCatalog, String defaultSchema) {
+		return initialize(modelName,conn, connectionName, connectionUrl, connectionUsername, connectionPassword, connectionDatabaseName, defaultCatalog,defaultSchema, null );
 		
 		/*
 		PhysicalModel model;

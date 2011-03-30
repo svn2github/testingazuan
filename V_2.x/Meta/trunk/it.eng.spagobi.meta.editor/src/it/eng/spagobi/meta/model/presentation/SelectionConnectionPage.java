@@ -285,6 +285,23 @@ public class SelectionConnectionPage extends WizardPage {
 		return dseBridge.connect( getConnectionName() );
 	}
 	
+	//must be invoked after getConnection
+	public String getConnectionUrl(){
+		return dseBridge.getConnectionUrl();
+	}
+	//must be invoked after getConnection
+	public String getConnectionUsername(){
+		return dseBridge.getConnectionUsername();
+	}
+	//must be invoked after getConnection
+	public String getConnectionPassword(){
+		return dseBridge.getConnectionPassword();
+	}
+	//must be invoked after getConnection
+	public String getConnectionDatabaseName(){
+		return dseBridge.getConnectionDatabaseName();
+	}
+	
 	//Set next page data
 	public IWizardPage getNextPage() {
     	IWizardPage nextPage = super.getNextPage();

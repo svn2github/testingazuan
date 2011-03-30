@@ -220,15 +220,28 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 				spagobiModel = ModelFactory.eINSTANCE.createModel();
 				spagobiModel.setName(newModelWizardFileCreationPage.getModelName());
 				
+				String connectionName = selectionConnectionPage.getConnectionName();
+				logger.debug("Connection name is [{}]",connectionName);
+				String connectionUrl = selectionConnectionPage.getConnectionUrl();
+				logger.debug("Connection URL is [{}]",connectionUrl);
+				String connectionUsername = selectionConnectionPage.getConnectionUsername();
+				logger.debug("Connection username is [{}]",connectionUsername);
+				String connectionPassword = selectionConnectionPage.getConnectionPassword();
+				logger.debug("Connection password is [{}]",connectionPassword);
+				String connectionDatabaseName = selectionConnectionPage.getConnectionDatabaseName();
+				logger.debug("Connection databaseName is [{}]",connectionDatabaseName);
+
 				
 				PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
 		    	physicalModelInitializer.setRootModel(spagobiModel);
 		    	
 		    	if (selectionConnectionPage.getCatalogName() != null){
 		    		catalogName = selectionConnectionPage.getCatalogName();
+					logger.debug("Connection catalog name is [{}]",catalogName);
 		    	}
 		    	if (selectionConnectionPage.getSchemaName() != null){
 		    		schemaName = selectionConnectionPage.getSchemaName();
+					logger.debug("Connection schema name is [{}]",schemaName);
 		    	}
 		    	
 		    	//Getting table to import inside physical table
@@ -242,7 +255,12 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		    	if (selectedPhysicalTable.isEmpty()){
 			    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
 							newModelWizardFileCreationPage.getModelName(), 
-							selectionConnectionPage.getConnection(), 
+							selectionConnectionPage.getConnection(),
+							connectionName, 
+							connectionUrl,
+							connectionUsername,
+							connectionPassword,
+							connectionDatabaseName,
 							catalogName, 
 							schemaName
 					));		    		
@@ -251,7 +269,12 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 		    		//with table filtering
 			    	spagobiModel.getPhysicalModels().add( physicalModelInitializer.initialize(
 							newModelWizardFileCreationPage.getModelName(), 
-							selectionConnectionPage.getConnection(), 
+							selectionConnectionPage.getConnection(),
+							connectionName,
+							connectionUrl,
+							connectionUsername,
+							connectionPassword,
+							connectionDatabaseName,
 							catalogName, 
 							schemaName,
 							selectedPhysicalTable

@@ -54,7 +54,7 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		this(domain, null);
 	}
 	
-	//This command can't be undo
+	//This command can't be undone
 	@Override
 	public boolean canUndo() {
 		return false;

@@ -10,6 +10,7 @@ package it.eng.spagobi.meta.model.presentation;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import java.sql.Connection;
+import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
@@ -22,13 +23,22 @@ import org.eclipse.datatools.modelbase.sql.schema.Schema;
 import org.eclipse.datatools.modelbase.sql.tables.Column;
 import org.eclipse.datatools.modelbase.sql.tables.Table;
 import org.eclipse.emf.common.util.EList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DSEBridge {
 	
 	String defaultCatalog, defaultSchema,modelName; 
 	PhysicalModel model;
 	java.sql.Connection connection;
-	
+	private static Logger logger = LoggerFactory.getLogger(DSEBridge.class);
+	private String connectionUrl;
+	private String connectionUsername;
+	private String connectionPassword;
+	private String connectionDatabaseName;
+
+
+
 	public DSEBridge() {}
 	
 	public IConnectionProfile[] getConnectionProfiles() {
@@ -50,6 +60,17 @@ public class DSEBridge {
 	public Connection connect(IConnectionProfile connectionProfile) {
 		Connection jdbcCon = null;
 		IStatus status = connectionProfile.connect();
+		
+		Properties prop = connectionProfile.getBaseProperties();
+		connectionUrl = prop.getProperty("org.eclipse.datatools.connectivity.db.URL");
+		logger.debug("Connection Url is [{}]",connectionUrl);
+		connectionUsername = prop.getProperty("org.eclipse.datatools.connectivity.db.username");
+		logger.debug("Connection Username is [{}]",connectionUsername);
+		connectionPassword = prop.getProperty("org.eclipse.datatools.connectivity.db.password");
+		logger.debug("Connection password is [{}]",connectionPassword);
+		connectionDatabaseName = prop.getProperty("org.eclipse.datatools.connectivity.db.databaseName");
+		logger.debug("Connection Database name is [{}]",connectionDatabaseName);
+
 		if (status.getCode()== IStatus.OK) 
 		{
 		     IManagedConnection managedConnection = ((IConnectionProfile)connectionProfile).getManagedConnection ("java.sql.Connection");
@@ -271,5 +292,33 @@ public class DSEBridge {
 	{
 		EList<Column> columns = tab.getColumns();
 		return columns;
+	}
+	
+	/**
+	 * @return the connectionUrl
+	 */
+	public String getConnectionUrl() {
+		return connectionUrl;
+	}
+
+	/**
+	 * @return the connectionUsername
+	 */
+	public String getConnectionUsername() {
+		return connectionUsername;
+	}
+
+	/**
+	 * @return the connectionPassword
+	 */
+	public String getConnectionPassword() {
+		return connectionPassword;
+	}
+	
+	/**
+	 * @return the connectionDatabaseName
+	 */
+	public String getConnectionDatabaseName() {
+		return connectionDatabaseName;
 	}
 }

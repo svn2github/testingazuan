@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 
+import it.eng.spagobi.meta.compiler.DataMartGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.io.BufferedWriter;
@@ -73,6 +76,47 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 	}
 	
 	protected void prepareMapping() {
+		BusinessModel businessModel;
+		businessModel = (BusinessModel)parameter.getOwner();
+		String directory = (String)parameter.getValue();
+
+		//Call JPA Mapping generator
+		JpaMappingGenerator generator = new JpaMappingGenerator();
+		try {
+			generator.generate(businessModel, directory);
+		} catch (Exception e) {
+			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
+			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+		}
+		
+		//Get Package Name
+		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
+			
+		//Call Java Compiler
+		DataMartGenerator datamartGenerator = new DataMartGenerator(
+				directory,
+				directory+"/build/",
+				null,
+				directory+"/dist/",
+				packageName.replace(".", "/")
+				);		
+		
+		boolean result = datamartGenerator.compile();
+		if (result){
+			// compile OK
+			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
+			
+			//Generate Jar from compiled code
+			datamartGenerator.jar();
+			this.executed = true;
+			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+		}else{
+			// compile error
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+			this.executed = false; 
+			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
+		}
+		
 		
 	}
 	
@@ -121,7 +165,7 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 		}
 	}
 	
-	//This command can't be undo
+	//This command can't be undone
 	@Override
 	public boolean canUndo() {
 		return false;

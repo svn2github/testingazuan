@@ -122,8 +122,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 		}
 		
 		public void handleEvent(Event event) {
-			queryBuilder.getQuery().setWhereClauseStructure(null);
-			queryBuilder.getQuery().getWhereFields().clear();
+			queryBuilder.getQuery().clearWhereFields();
 			if(tableViewerWhere!=null){
 				tableViewerWhere.refresh();
 			}

@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 
+import java.util.List;
+
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -41,8 +44,14 @@ import org.slf4j.LoggerFactory;
 public class QueryEditGroup extends Composite {
 	
 
+	private SelectFieldTable selectField;
+	private WhereFieldTable whereField;
+	private HavingFieldTable havingField;
+	
 	private static Logger logger = LoggerFactory.getLogger(QueryEditGroup.class);
 
+	
+	
 	/*
 	 * Create UI for query edit tables (Select, Where, Having)
 	 */	
@@ -55,13 +64,33 @@ public class QueryEditGroup extends Composite {
 		grpQueryEditor.setText("Query Editor");
 		grpQueryEditor.setLayout(new GridLayout(1, false));
 		
-		SelectFieldTable selectField = new SelectFieldTable(grpQueryEditor, queryBuilder);
-		WhereFieldTable whereField = new WhereFieldTable(grpQueryEditor, queryBuilder);
+		selectField = new SelectFieldTable(grpQueryEditor, queryBuilder);
+		whereField = new WhereFieldTable(grpQueryEditor, queryBuilder);
 		TableViewer tableViewerWhere = whereField.getViewer();
-		HavingFieldTable havingField = new HavingFieldTable(grpQueryEditor, queryBuilder);
+		havingField = new HavingFieldTable(grpQueryEditor, queryBuilder);
 		TableViewer tableViewerHaving = havingField.getViewer();
 		selectField.createEditSelectColumns(tableViewerWhere, tableViewerHaving);
 
+	}
+	
+	public void refreshSelectTable(List selectFields){
+		selectField.getViewer().setInput(selectFields);
+		selectField.getViewer().refresh();
+	}
+	
+	public void refresh(Query query){
+		if(selectField!=null){
+			selectField.getViewer().setInput(query.getSelectFields(true));
+			selectField.getViewer().refresh();
+		}
+		if(havingField!=null){
+			havingField.getViewer().setInput(query.getHavingFields());
+			havingField.getViewer().refresh();
+		}
+		if(whereField!=null){
+			whereField.getViewer().setInput(query.getWhereFields());
+			whereField.getViewer().refresh();
+		}
 	}
 
 

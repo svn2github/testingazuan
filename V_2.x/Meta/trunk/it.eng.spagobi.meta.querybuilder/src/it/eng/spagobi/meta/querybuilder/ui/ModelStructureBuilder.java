@@ -137,7 +137,7 @@ public class ModelStructureBuilder {
 		connection.setName( "FoodMart" );
 		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "mysql" );
+		connection.setPassword( "paola" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;

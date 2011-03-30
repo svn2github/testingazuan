@@ -24,11 +24,15 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -43,19 +47,22 @@ import org.slf4j.LoggerFactory;
 public class ModelTreeViewer extends TreeViewer {
 
 	private static Logger logger = LoggerFactory.getLogger(ModelTreeViewer.class);
+	private QueryBuilder queryBuilder;
 	
 	/**
 	 * Initialize the tree
 	 * @param parent
 	 */
-	public ModelTreeViewer(Composite parent, IDataSource dataSource, IModelStructure modelView){
+	public ModelTreeViewer(Composite parent, IDataSource dataSource, IModelStructure modelView, QueryBuilder queryBuilder){
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		this.queryBuilder = queryBuilder;
 		logger.debug("IN: initializing the datamartTree");
 		List<IModelEntity> roots = getModelViewRootEntities(dataSource, modelView);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(dataSource)));
 		setInput(roots);
 		logger.debug("OUT: datamartTree initialized");
+		addDoubleClickListener(new DoubleClickListener());
 	}
 	
 	/**
@@ -69,13 +76,26 @@ public class ModelTreeViewer extends TreeViewer {
 		// TODO GENERICO PER PIU DATAMART
 		List<IModelEntity> modelViewEntities = modelView.getRootEntities(modelNamesIter.next());	
 		List<IModelEntity> modelViewFilteredEntities = new ArrayList<IModelEntity>();
-		
+	
 		modelViewFilteredEntities = modelViewEntities;
-//		for(int i=0; i<modelViewEntities.size(); i++){
-//			modelViewFilteredEntities.add(new ViewModelEntity (modelViewEntities.get(i), dataSource, modelView.getQbeTreeFilter()));
-//		}
-//		logger.debug("IN: Datamart structure roots loaded");
+
 		return modelViewFilteredEntities;
+	}
+	
+	/**
+	 * This class is a listener for the double action in the tree entities
+	 * 
+	 * @author Alberto Ghedin (alberto.ghedin@eng.it)
+	 *
+	 */
+	private class DoubleClickListener implements IDoubleClickListener{
+		public void doubleClick(DoubleClickEvent event) {
+			//if the user click 2 times over a node..
+			//the node is added in the select table
+			Object selectedElement = ((TreeSelection)event.getSelection()).getFirstElement();
+			queryBuilder.addSelectFields(selectedElement);
+			queryBuilder.refreshSelectFields();
+		}
 	}
 
 		

@@ -22,7 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
+import java.util.List;
+
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.query.ExpressionNode;
@@ -47,6 +50,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -61,20 +66,20 @@ public class QueryBuilder {
 	protected IDataSource dataSource;
 	private int whereFilterCount=1;
 	private int havingFilterCount=1;
-	ResultTableViewer tableViewer = null;
-
+	private ResultTableViewer tableViewer = null;
+	private QueryEditGroup compositeFilters = null;
+	
+	private static Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
+	
 	public QueryBuilder(){
 		this.dataSource = ModelStructureBuilder.buildDataSource();
 		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
 		this.query = new Query();
-
 	}
 
 	public IDataSource getDataSource() {
 		return dataSource;
 	}
-
-
 
 	public Query getQuery() {
 		return query;
@@ -132,13 +137,12 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
-		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, dataSource, modelView);
+		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, dataSource, modelView, this);
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
 	}
 
 	public QueryEditGroup createEditGroup(Composite composite){
-		QueryEditGroup compositeFilters;
 		compositeFilters = new QueryEditGroup(composite, this);
 		return compositeFilters;
 	}
@@ -184,6 +188,16 @@ public class QueryBuilder {
 		if(tableViewer!=null){
 			tableViewer.updateTable();
 		}
+	}
+	
+	public void refreshQueryEditGroup(){
+		if(compositeFilters!=null){
+			compositeFilters.refresh(query);
+		}
+	}
+	
+	public void refreshSelectFields(){
+		compositeFilters.refreshSelectTable(query.getSelectFields(true));
 	}
 
 	public Query addWhereField(IModelField dataMartField){
@@ -235,6 +249,25 @@ public class QueryBuilder {
 		havingFilterCount++;
 		return query;
 
+	}
+	
+	public Query addSelectFields(Object selectionData){
+		logger.debug("SelectionData: "+selectionData.getClass().getName());
+		if (selectionData instanceof IModelEntity){
+   			System.out.println("DataMartEntity");
+   			IModelEntity dataMartEntity = (IModelEntity)selectionData;
+			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
+			for (IModelField dataMartField : dataMartFields){
+				addField(dataMartField);
+			}        	
+        } else if(selectionData instanceof IModelField){
+        	addField((IModelField)selectionData);
+        }
+		return query;
+	}
+	
+	public void addField(IModelField dataMartField) {
+		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
 	}
 
 }

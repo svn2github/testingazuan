@@ -38,6 +38,7 @@ import it.eng.spagobi.meta.querybuilder.edit.VisibleColumnEditingSupport;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -53,8 +54,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,29 +85,43 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		super(container, SWT.NONE);
 		this.queryBuilder = queryBuilder;
 		
-		setLayout(new GridLayout(1, false));
+		setLayout(new GridLayout(2, false));
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Label selectFieldLabel = new Label(this, SWT.NONE);
 		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		selectFieldLabel.setText("Select Fields");
 		
+		Composite buttons = new Composite(this, SWT.NONE);
+		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		buttons.setLayout(new GridLayout(2, false));
+		Button cleanButton = new Button(buttons, SWT.PUSH);
+		cleanButton.setLayoutData(new GridData(GridData.END  , GridData.FILL  , false, false, 1, 1));
+		cleanButton.setText("Clean");
+		Button cleanAllButton = new Button(buttons, SWT.PUSH);
+		cleanAllButton.setLayoutData(new GridData(GridData.END  , GridData.FILL  , false, false, 1, 1));
+		cleanAllButton.setText("Clean All");
+		
+		
 		viewer  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		viewer.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
 		Table table = viewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		//createEditSelectColumns(this, viewer);
 		
 		viewer.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
-		viewer.setInput(query.getSelectFields(false));		
+		viewer.setInput(query.getSelectFields(false));	
+		
+		cleanButton.addListener(SWT.Selection, new SelectClearListener());
+		cleanAllButton.addListener(SWT.Selection, new SelectClearAllListener());
 		
 		//Drop support
 		Transfer[] transferTypes = new Transfer[]{ LocalSelectionTransfer.getTransfer()  };
-		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(this));
+		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(this, queryBuilder));		
 		
 		//Delete via Keyboard
 		//TODO: modify the removeSelectField
@@ -295,15 +313,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		return viewer;
 	}
 	
-	public void addField(IModelField dataMartField) {
-		Query query;
-		
-		query = queryBuilder.getQuery();
-		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
-		
-		viewer.setInput(query.getSelectFields(false));
-		viewer.refresh();
-	}
+
 	
 	public class SelectTableKeyAdapter extends KeyAdapter {
 		QueryBuilder queryBuilder;
@@ -341,7 +351,26 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 	}
 	
 	
+	private class SelectClearListener implements Listener{
+		
+		public void handleEvent(Event event) {
+			queryBuilder.getQuery().clearSelectedFields();
+			if(viewer!=null){
+				viewer.setInput(new ArrayList<Object>());
+				viewer.refresh();
+			}
+		}
+	}
 	
+	private class SelectClearAllListener implements Listener{
+		
+		public void handleEvent(Event event) {
+			queryBuilder.getQuery().clearSelectedFields();
+			queryBuilder.getQuery().clearWhereFields();
+			queryBuilder.getQuery().clearHavingFields();
+			queryBuilder.refreshQueryEditGroup();
+		}
+	}
 	
 	
 }

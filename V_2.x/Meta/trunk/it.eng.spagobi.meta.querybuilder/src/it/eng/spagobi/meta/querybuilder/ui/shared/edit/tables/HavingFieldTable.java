@@ -122,7 +122,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 		}
 		
 		public void handleEvent(Event event) {
-			queryBuilder.getQuery().getHavingFields().clear();
+			queryBuilder.getQuery().clearHavingFields();
 			if(tableViewerHaving!=null){
 				tableViewerHaving.refresh();
 			}

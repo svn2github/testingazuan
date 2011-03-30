@@ -21,11 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.dnd;
 
-import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.IModelField;
-import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.SelectFieldTable;
 
-import java.util.List;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.SelectFieldTable;
 
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -41,11 +39,13 @@ import org.slf4j.LoggerFactory;
 public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 	
 	private SelectFieldTable selectTable;
+	private QueryBuilder queryBuilder;
 	
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilderDropSelectListener.class);
 	
-	public QueryBuilderDropSelectListener(SelectFieldTable selectFieldTable) {
+	public QueryBuilderDropSelectListener(SelectFieldTable selectFieldTable, QueryBuilder queryBuilder) {
 		super(selectFieldTable.getViewer());
+		this.queryBuilder = queryBuilder;
 		this.selectTable = selectFieldTable;
 
 	}
@@ -58,19 +58,10 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 		TreeSelection selection = (TreeSelection)data;
 		Object selectionData = selection.getFirstElement();
 
-		System.out.println("SelectionData: "+selectionData.getClass().getName());
-		if (selectionData instanceof IModelEntity){
-   			System.out.println("DataMartEntity");
-   			IModelEntity dataMartEntity = (IModelEntity)selectionData;
-			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
-			for (IModelField dataMartField : dataMartFields){
-				selectTable.addField(dataMartField);
-			}        	
-        } else if(selectionData instanceof IModelField){
-        	selectTable.addField((IModelField)selectionData);
-        }
-        
-			
+		logger.debug("SelectionData: "+selectionData.getClass().getName());
+
+		queryBuilder.addSelectFields(selectionData);
+		queryBuilder.refreshSelectFields();
 		return true;
 	}
 

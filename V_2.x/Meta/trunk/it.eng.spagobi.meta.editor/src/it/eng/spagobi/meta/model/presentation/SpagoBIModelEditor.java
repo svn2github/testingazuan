@@ -56,12 +56,13 @@ public class SpagoBIModelEditor extends MultiEditor {
 	
 	private CLabel innerEditorTitle[];
 	private SashForm sashForm;
-	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
 	private IEditorPart innerEditors[];
 	private Control innerViewForm[] = new Control[2];
 	private boolean firstEditor = true;
 	private Label closeLbl;
 	private Image iconCollapse, iconExpand;
+	
+	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
 	
@@ -107,10 +108,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 			});
 		}
 		sashForm.setWeights(new int[]{80,20});
-
-		
-		
-
 	}
 	
 	

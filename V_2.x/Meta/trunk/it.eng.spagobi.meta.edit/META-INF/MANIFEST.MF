@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.edit
 Bundle-SymbolicName: it.eng.spagobi.meta.edit;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ libs/json.jar
 Bundle-Activator: it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin$Implementation
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

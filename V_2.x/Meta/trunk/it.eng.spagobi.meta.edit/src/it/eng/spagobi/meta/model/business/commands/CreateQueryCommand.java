@@ -135,6 +135,7 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 				FileWriter fstream = new FileWriter(queryFile);
 				out = new BufferedWriter(fstream);
 				businessModel = (BusinessModel)parameter.getOwner();
+				
 				//out.write("// Target business model: " + businessModel.getName());
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -92,6 +92,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		selectFieldLabel.setText("Select Fields");
 		
+		//clear buttons
 		Composite buttons = new Composite(this, SWT.NONE);
 		selectFieldLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		buttons.setLayout(new GridLayout(2, false));
@@ -102,7 +103,6 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		cleanAllButton.setLayoutData(new GridData(GridData.END  , GridData.FILL  , false, false, 1, 1));
 		cleanAllButton.setText("Clean All");
 		
-		
 		viewer  = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		viewer.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
@@ -110,7 +110,6 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		//createEditSelectColumns(this, viewer);
 		
 		viewer.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();
@@ -350,9 +349,17 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		}
 	}
 	
-	
+	/**
+	 * Listener for the clear button
+	 * @author Alberto Ghedin (alberto.ghedin@eng.it)
+	 *
+	 */
 	private class SelectClearListener implements Listener{
 		
+		/**
+		 * remove the selected fields from the query
+		 * and update the table
+		 */
 		public void handleEvent(Event event) {
 			queryBuilder.getQuery().clearSelectedFields();
 			if(viewer!=null){
@@ -362,8 +369,17 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		}
 	}
 	
+	/**
+	 * Listener for the clear all button
+	 * @author Alberto Ghedin (alberto.ghedin@eng.it)
+	 *
+	 */
 	private class SelectClearAllListener implements Listener{
 		
+		/**
+		 * remove all the fields (select, where)
+		 * and update the table
+		 */
 		public void handleEvent(Event event) {
 			queryBuilder.getQuery().clearSelectedFields();
 			queryBuilder.getQuery().clearWhereFields();

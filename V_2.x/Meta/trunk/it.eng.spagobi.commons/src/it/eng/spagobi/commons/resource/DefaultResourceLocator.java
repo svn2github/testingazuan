@@ -173,6 +173,27 @@ public class DefaultResourceLocator implements IResourceLocator {
 	public Object getProperty(String key) {
 		return settings.getProperty(key);
 	}
+	
+	public String getPropertyAsString(String key) {
+		return (String)settings.getProperty(key);
+	}
+	
+	public Integer getPropertyAsInteger(String key) {
+		Integer propertyValue;
+		
+		propertyValue = null;
+		
+		String str = getPropertyAsString(key);
+		if(str != null) {
+			try {
+				propertyValue = Integer.parseInt(str);
+			} catch (Throwable t) {
+				logger.warn("Impossible to convert the value [" + propertyValue + "] of property  [" + key + "] to int", t);
+			}
+		}
+		
+		return propertyValue;
+	}
 
 	@Override
 	public String getString(String key) {

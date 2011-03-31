@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.physical.presentation;
+package it.eng.spagobi.meta.editor.physical.wizards;
 
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
@@ -72,7 +72,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
  * <!-- end-user-doc -->
  * @generated
  */
-public class PhysicalModelModelWizard extends Wizard implements INewWizard {
+public class PhysicalModelWizard extends Wizard implements INewWizard {
 	/**
 	 * The supported extensions for created files.
 	 * <!-- begin-user-doc -->

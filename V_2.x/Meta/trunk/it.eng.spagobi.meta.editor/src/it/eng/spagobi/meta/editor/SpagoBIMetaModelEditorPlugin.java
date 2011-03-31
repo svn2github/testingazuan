@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
+ * @deprecated
  */
 public final class SpagoBIMetaModelEditorPlugin extends EMFPlugin {
 	/**

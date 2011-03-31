@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.physical.presentation;
+package it.eng.spagobi.meta.editor.physical;
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
@@ -47,7 +47,7 @@ import org.eclipse.ui.PartInitException;
  * <!-- end-user-doc -->
  * @generated
  */
-public class PhysicalModelActionBarContributor
+public class PhysicalModelEditorWorkbenchContributor
 	extends EditingDomainActionBarContributor
 	implements ISelectionChangedListener {
 	/**
@@ -150,7 +150,7 @@ public class PhysicalModelActionBarContributor
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalModelActionBarContributor() {
+	public PhysicalModelEditorWorkbenchContributor() {
 		super(ADDITIONS_LAST_STYLE);
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();

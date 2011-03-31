@@ -57,9 +57,9 @@
             id="org.eclipse.emf.ecore.Wizard.category.ID"
             name="%_UI_Wizard_category"/>
       <wizard
-            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizardID"
+            id="it.eng.spagobi.meta.editor.physical.wizards.PhysicalModelWizard"
             name="%_UI_PhysicalModelModelWizard_label"
-            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelModelWizard"
+            class="it.eng.spagobi.meta.editor.physical.wizards.PhysicalModelWizard"
             category="org.eclipse.emf.ecore.Wizard.category.ID"
             icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif">
          <description>%_UI_PhysicalModelModelWizard_description</description>
@@ -69,12 +69,12 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID"
+            id="it.eng.spagobi.meta.editor.physical.PhysicalModelEditor"
             name="%_UI_PhysicalModelEditor_label"
             icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif"
             extensions="physicalmodel"
-            class="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor"
-            contributorClass="it.eng.spagobi.meta.model.physical.presentation.PhysicalModelActionBarContributor">
+            class="it.eng.spagobi.meta.editor.physical.PhysicalModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.physical.PhysicalModelEditorWorkbenchContributor">
       </editor>
    </extension>
    

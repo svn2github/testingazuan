@@ -29,7 +29,7 @@ import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
-import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
+import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;

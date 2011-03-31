@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.physical.presentation;
+package it.eng.spagobi.meta.editor.physical;
 
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
@@ -142,7 +142,7 @@ public class PhysicalModelEditor
 	
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	
-	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID";
+	public static final String EDITOR_ID = PhysicalModelEditor.class.getName();
 
 	private static Logger logger = LoggerFactory.getLogger(PhysicalModelEditor.class);
 	

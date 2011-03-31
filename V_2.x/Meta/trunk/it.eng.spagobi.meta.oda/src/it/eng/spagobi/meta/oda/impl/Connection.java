@@ -55,26 +55,32 @@ public class Connection implements IConnection
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException {
-		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
 		
-		String modelName = connProperties.getProperty("datamart_name");
-		List<String> modelNames = new ArrayList<String>();
-		modelNames.add( modelName );
+		logger.debug("Opening connection");
+		datasource = (IDataSource)connProperties.get("data_source");
+		if(datasource==null){
+			logger.debug("The datasource is null.. Initializing the data source");
+			Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
+			
+			String modelName = connProperties.getProperty("datamart_name");
+			List<String> modelNames = new ArrayList<String>();
+			modelNames.add( modelName );
+		
+			DBConnection connection = new DBConnection();
+			connection.setName( modelName );
+			connection.setDialect( connProperties.getProperty("database_dialect") );			
+			connection.setJndiName( null );			
+			connection.setDriverClass( connProperties.getProperty("database_driver") );			
+			connection.setPassword( connProperties.getProperty("database_password") );
+			connection.setUrl( connProperties.getProperty("database_url") );
+			connection.setUsername( connProperties.getProperty("database_user") );	
 	
-		DBConnection connection = new DBConnection();
-		connection.setName( modelName );
-		connection.setDialect( connProperties.getProperty("database_dialect") );			
-		connection.setJndiName( null );			
-		connection.setDriverClass( connProperties.getProperty("database_driver") );			
-		connection.setPassword( connProperties.getProperty("database_password") );
-		connection.setUrl( connProperties.getProperty("database_url") );
-		connection.setUsername( connProperties.getProperty("database_user") );	
-
-		dataSourceProperties.put("connection", connection);
-		dataSourceProperties.put("dblinkMap", new HashMap());
-		datasource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
-
-		
+			dataSourceProperties.put("connection", connection);
+			dataSourceProperties.put("dblinkMap", new HashMap());
+			datasource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
+			logger.debug("Data source initialized");
+		}
+		logger.debug("Connection opened");
 		m_isOpen = true;        
  	}
 

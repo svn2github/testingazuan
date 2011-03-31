@@ -18,13 +18,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.meta.oda.impl;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
@@ -35,7 +32,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.List;
 
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.IQuery;
@@ -64,14 +60,15 @@ public class Query implements IQuery {
 	private int m_maxRows;
 	private String queryString;
 	IDataSource datasource;
-    private it.eng.qbe.query.Query query;
-    IDataStore datsStore;
+	private it.eng.qbe.query.Query query;
+	IDataStore datsStore;
 
 	public Query(IDataSource datasource) {
-    	this.datasource = datasource;
+		this.datasource = datasource;
+		m_maxRows = 101;
 		logger.debug("ODA Query created, datasource is [{}]",this.datasource);
-    }
-    
+	}
+
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
@@ -80,50 +77,54 @@ public class Query implements IQuery {
 		logger.debug("ODA Query prepare");
 		this.queryString = queryText;
 		if(queryText!=null){
-		m_maxRows = 25;
-		query = new it.eng.qbe.query.Query();
-		logger.debug("Datasource is [{}]",datasource);
-
-		try {
-			query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText, datasource) ;
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+			query = new it.eng.qbe.query.Query();
+			logger.debug("Datasource is [{}]",datasource);
 			
-		
-		IStatement statement = datasource.createStatement(query);
-		statement.setMaxResults(this.m_maxRows);
-		IDataSet datsSet = QbeDatasetFactory.createDataSet(statement);
-		
-		try {
-			datsSet.loadData();
-			datsStore = datsSet.getDataStore() ;
-		} catch (Throwable e) {
-			e.printStackTrace();
+			try {
+				logger.debug("Deserializing the query with text: [{}] ....",queryText);
+				query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText, datasource) ;
+				logger.debug("Deserialized query!");
+			} catch (Exception e) {
+				logger.error("Error deserializing the query with text: [{}]",queryText);
+				new OdaException("Error deserializing the query with text: [{}]",queryText);
+			}
+
+			IStatement statement = datasource.createStatement(query);
+			statement.setMaxResults(this.m_maxRows);
+			IDataSet datsSet = QbeDatasetFactory.createDataSet(statement);
+
+			try {
+				logger.debug("Executing query ");
+				datsSet.loadData(0,m_maxRows,m_maxRows);
+				datsStore = datsSet.getDataStore() ;
+				logger.debug("Query executed");
+			} catch (Throwable e) {
+				logger.error("Error executing the query with text: [{}]",queryText);
+				new OdaException("Error executing the query with text: [{}]",queryText);
+			}
 		}
 	}
-	}
-	
+
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setAppContext(java.lang.Object)
 	 */
 	public void setAppContext( Object context ) throws OdaException
 	{
-	    // do nothing; assumes no support for pass-through context
+		// do nothing; assumes no support for pass-through context
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#close()
 	 */
 	public void close() throws OdaException {
-        query = null;
+		query = null;
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#getMetaData()
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException {
-        
+
 		return datsStore!=null? new ResultSetMetaData(datsStore.getMetaData()): null;
 	}
 
@@ -148,7 +149,7 @@ public class Query implements IQuery {
 	 */
 	public void setMaxRows( int max ) throws OdaException
 	{
-	    m_maxRows = max;
+		m_maxRows = max;
 	}
 
 	/*
@@ -164,7 +165,7 @@ public class Query implements IQuery {
 	 */
 	public void clearInParameters() throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -173,7 +174,7 @@ public class Query implements IQuery {
 	 */
 	public void setInt( String parameterName, int value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -182,7 +183,7 @@ public class Query implements IQuery {
 	 */
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -191,7 +192,7 @@ public class Query implements IQuery {
 	 */
 	public void setDouble( String parameterName, double value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -200,7 +201,7 @@ public class Query implements IQuery {
 	 */
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -209,7 +210,7 @@ public class Query implements IQuery {
 	 */
 	public void setBigDecimal( String parameterName, BigDecimal value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -218,7 +219,7 @@ public class Query implements IQuery {
 	 */
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -227,7 +228,7 @@ public class Query implements IQuery {
 	 */
 	public void setString( String parameterName, String value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -236,7 +237,7 @@ public class Query implements IQuery {
 	 */
 	public void setString( int parameterId, String value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -245,7 +246,7 @@ public class Query implements IQuery {
 	 */
 	public void setDate( String parameterName, Date value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -254,7 +255,7 @@ public class Query implements IQuery {
 	 */
 	public void setDate( int parameterId, Date value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -263,7 +264,7 @@ public class Query implements IQuery {
 	 */
 	public void setTime( String parameterName, Time value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -272,7 +273,7 @@ public class Query implements IQuery {
 	 */
 	public void setTime( int parameterId, Time value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
@@ -281,7 +282,7 @@ public class Query implements IQuery {
 	 */
 	public void setTimestamp( String parameterName, Timestamp value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 	}
 
@@ -290,73 +291,73 @@ public class Query implements IQuery {
 	 */
 	public void setTimestamp( int parameterId, Timestamp value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to input parameter
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setBoolean(java.lang.String, boolean)
-     */
-    public void setBoolean( String parameterName, boolean value )
-            throws OdaException
-    {
-        // TODO Auto-generated method stub
-        // only applies to named input parameter
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setBoolean(java.lang.String, boolean)
+	 */
+	public void setBoolean( String parameterName, boolean value )
+	throws OdaException
+	{
+		// TODO Auto-generated method stub
+		// only applies to named input parameter
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setBoolean(int, boolean)
-     */
-    public void setBoolean( int parameterId, boolean value )
-            throws OdaException
-    {
-        // TODO Auto-generated method stub       
-        // only applies to input parameter
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setBoolean(int, boolean)
+	 */
+	public void setBoolean( int parameterId, boolean value )
+	throws OdaException
+	{
+		// TODO Auto-generated method stub       
+		// only applies to input parameter
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setObject(java.lang.String, java.lang.Object)
-     */
-    public void setObject( String parameterName, Object value )
-            throws OdaException
-    {
-        // TODO Auto-generated method stub
-        // only applies to named input parameter
-    }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setObject(int, java.lang.Object)
-     */
-    public void setObject( int parameterId, Object value ) throws OdaException
-    {
-        // TODO Auto-generated method stub
-        // only applies to input parameter
-    }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setNull(java.lang.String)
-     */
-    public void setNull( String parameterName ) throws OdaException
-    {
-        // TODO Auto-generated method stub
-        // only applies to named input parameter
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setObject(java.lang.String, java.lang.Object)
+	 */
+	public void setObject( String parameterName, Object value )
+	throws OdaException
+	{
+		// TODO Auto-generated method stub
+		// only applies to named input parameter
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setNull(int)
-     */
-    public void setNull( int parameterId ) throws OdaException
-    {
-        // TODO Auto-generated method stub
-        // only applies to input parameter
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setObject(int, java.lang.Object)
+	 */
+	public void setObject( int parameterId, Object value ) throws OdaException
+	{
+		// TODO Auto-generated method stub
+		// only applies to input parameter
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setNull(java.lang.String)
+	 */
+	public void setNull( String parameterName ) throws OdaException
+	{
+		// TODO Auto-generated method stub
+		// only applies to named input parameter
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setNull(int)
+	 */
+	public void setNull( int parameterId ) throws OdaException
+	{
+		// TODO Auto-generated method stub
+		// only applies to input parameter
+	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#findInParameter(java.lang.String)
 	 */
 	public int findInParameter( String parameterName ) throws OdaException
 	{
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		// only applies to named input parameter
 		return 0;
 	}
@@ -366,10 +367,10 @@ public class Query implements IQuery {
 	 */
 	public IParameterMetaData getParameterMetaData() throws OdaException
 	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this prepared query.
-         */
+		/* TODO Auto-generated method stub
+		 * Replace with implementation to return an instance 
+		 * based on this prepared query.
+		 */
 		return new ParameterMetaData();
 	}
 
@@ -379,7 +380,7 @@ public class Query implements IQuery {
 	public void setSortSpec( SortSpec sortBy ) throws OdaException
 	{
 		// only applies to sorting, assumes not supported
-        throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();
 	}
 
 	/*
@@ -391,39 +392,39 @@ public class Query implements IQuery {
 		return null;
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#setSpecification(org.eclipse.datatools.connectivity.oda.spec.QuerySpecification)
-     */
-    public void setSpecification( QuerySpecification querySpec )
-            throws OdaException, UnsupportedOperationException
-    {
-        // assumes no support
-        throw new UnsupportedOperationException();
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setSpecification(org.eclipse.datatools.connectivity.oda.spec.QuerySpecification)
+	 */
+	public void setSpecification( QuerySpecification querySpec )
+	throws OdaException, UnsupportedOperationException
+	{
+		// assumes no support
+		throw new UnsupportedOperationException();
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#getSpecification()
-     */
-    public QuerySpecification getSpecification()
-    {
-        // assumes no support
-        return null;
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#getSpecification()
+	 */
+	public QuerySpecification getSpecification()
+	{
+		// assumes no support
+		return null;
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#getEffectiveQueryText()
-     */
-    public String getEffectiveQueryText() {
-        return this.queryString;
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#getEffectiveQueryText()
+	 */
+	public String getEffectiveQueryText() {
+		return this.queryString;
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.datatools.connectivity.oda.IQuery#cancel()
-     */
-    public void cancel() throws OdaException, UnsupportedOperationException
-    {
-        // assumes unable to cancel while executing a query
-        throw new UnsupportedOperationException();
-    }
-    
+	/* (non-Javadoc)
+	 * @see org.eclipse.datatools.connectivity.oda.IQuery#cancel()
+	 */
+	public void cancel() throws OdaException, UnsupportedOperationException
+	{
+		// assumes unable to cancel while executing a query
+		throw new UnsupportedOperationException();
+	}
+
 }

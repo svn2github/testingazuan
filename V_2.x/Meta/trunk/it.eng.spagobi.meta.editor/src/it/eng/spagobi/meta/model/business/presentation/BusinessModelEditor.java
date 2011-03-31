@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.presentation;
 
-
-import it.eng.spagobi.commons.resource.DefaultResourceLocator;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
@@ -760,8 +758,6 @@ public class BusinessModelEditor
 
 	/**
 	 * Shows a dialog that asks if conflicting changes should be discarded.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	protected boolean handleDirtyConflict() {

@@ -31,6 +31,10 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
 import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -74,7 +78,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 	public static final int RIGHT = 1;
 	
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
-	private static final Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
+	private static final Logger logger = LoggerFactory.getLogger(SpagoBIModelEditor.class);
 	
 	
 	@Override
@@ -98,7 +102,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 			} else {
 				throw new SpagoBIPluginException("Multi editor [" + SpagoBIModelEditor.class.getName() + "] cannot contain an inner editor of type [" + innerEditors[i].getClass().getName() + "]");
 			}
-			logger.debug("Inner editor at index [" + i + "] is equal to [" + innerEditors[0].getClass().getName() + "]");
+			logger.debug("Inner editor at index [" + i + "] is equal to [" + innerEditors[i].getClass().getName() + "]");
 		}
 		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + PhysicalModelEditor.class.getName() + " inner editors]", physicalModelEditor);
 		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + BusinessModelEditor.class.getName() + " inner editors]", businessModelEditor);
@@ -126,6 +130,16 @@ public class SpagoBIModelEditor extends MultiEditor {
 			RL.getPropertyAsInteger("model.presentation.lefteditor.width", 80),
 			RL.getPropertyAsInteger("model.presentation.righteditor.width", 20)
 		});
+		
+		/*
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener(){
+			public void resourceChanged(IResourceChangeEvent event) {
+				logger.debug("resourceChanged");
+				logger.debug("Change type is equal to REMOVE [{}]", event.getDelta().getKind() == IResourceDelta.REMOVED);
+				
+			}
+		}, IResourceChangeEvent.POST_CHANGE);
+		*/
 	}
 	
 	protected void createInnerEditorContainer(int innerEditorIndex, Composite parentContainer) {

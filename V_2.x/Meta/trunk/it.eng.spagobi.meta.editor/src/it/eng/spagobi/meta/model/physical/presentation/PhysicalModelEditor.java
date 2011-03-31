@@ -9,6 +9,7 @@ package it.eng.spagobi.meta.model.physical.presentation;
 
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.dnd.PhysicalObjectDragListener;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
@@ -123,6 +124,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -137,6 +140,8 @@ public class PhysicalModelEditor
 	
 	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID";
 
+	private static Logger logger = LoggerFactory.getLogger(PhysicalModelEditor.class);
+	
 
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
@@ -427,6 +432,7 @@ public class PhysicalModelEditor
 	protected IResourceChangeListener resourceChangeListener =
 		new IResourceChangeListener() {
 			public void resourceChanged(IResourceChangeEvent event) {
+				logger.debug("resourceChanged");
 				IResourceDelta delta = event.getDelta();
 				try {
 					class ResourceDeltaVisitor implements IResourceDeltaVisitor {

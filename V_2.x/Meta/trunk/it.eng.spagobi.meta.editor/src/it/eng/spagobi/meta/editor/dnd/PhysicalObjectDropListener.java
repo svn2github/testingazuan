@@ -1,7 +1,7 @@
 /*
  * DropSourceListener for the TreeViewer inside the GraphicEditorView
  */
-package it.eng.spagobi.meta.model.dnd;
+package it.eng.spagobi.meta.editor.dnd;
 
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessTableWizard;
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddPhysicalTableWizard;

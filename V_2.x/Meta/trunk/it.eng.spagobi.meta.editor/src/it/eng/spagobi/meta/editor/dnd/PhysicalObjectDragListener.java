@@ -1,7 +1,7 @@
 /*
  * DragSourceListener for the PhysicalModelEditor
  */
-package it.eng.spagobi.meta.model.dnd;
+package it.eng.spagobi.meta.editor.dnd;
 
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;

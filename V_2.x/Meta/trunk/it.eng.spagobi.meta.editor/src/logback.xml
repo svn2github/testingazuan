@@ -35,7 +35,7 @@
     <appender-ref ref="CONSOLE"/>
   </root>
   
-  <logger name="it.eng.spagobi" additivity="false" level="TRACE">
+  <logger name="it.eng.spagobi.meta.editor" additivity="false" level="TRACE">
     <appender-ref ref="FILE"/>
     <appender-ref ref="CONSOLE"/>
   </logger>

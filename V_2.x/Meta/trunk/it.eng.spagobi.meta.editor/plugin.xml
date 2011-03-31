@@ -37,13 +37,13 @@
    
     <extension point="org.eclipse.ui.editors">
       <editor
-            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapterID"
+            id="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapter"
             name="%_UI_ModelEditorAdapter_label"
             icon="icons/full/obj16/SpagoBIModelFile.gif"
             extensions="sbimodel"
-            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapter"
-            contributorClass="it.eng.spagobi.meta.model.presentation.ModelActionBarContributor"
-            launcher="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorAdapterLauncher">
+            class="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapter"
+            contributorClass="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorWorkbenchContributor"
+            launcher="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapterLauncher">
       </editor>
    </extension>
    

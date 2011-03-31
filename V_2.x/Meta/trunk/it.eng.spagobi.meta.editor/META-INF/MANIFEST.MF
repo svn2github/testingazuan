@@ -4,12 +4,11 @@ Bundle-Name: it.eng.spagobi.meta.editor
 Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
-Bundle-Activator: it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin$Implementation
+Bundle-Activator: it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin$Implementation
 Bundle-Vendor: it.eng
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: it.eng.spagobi.meta.model.editor,
- it.eng.spagobi.meta.model.physical.presentation,
+Export-Package: it.eng.spagobi.meta.model.physical.presentation,
  it.eng.spagobi.meta.model.presentation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;visibility:=reexport,

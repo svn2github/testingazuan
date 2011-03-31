@@ -7,7 +7,7 @@
 package it.eng.spagobi.meta.model.physical.presentation;
 
 
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;

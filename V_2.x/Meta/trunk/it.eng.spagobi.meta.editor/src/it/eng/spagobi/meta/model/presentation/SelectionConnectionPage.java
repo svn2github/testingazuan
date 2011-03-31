@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;

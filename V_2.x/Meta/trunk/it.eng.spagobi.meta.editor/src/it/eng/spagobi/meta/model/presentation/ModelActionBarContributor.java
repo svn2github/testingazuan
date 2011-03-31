@@ -6,7 +6,7 @@
  */
 package it.eng.spagobi.meta.model.presentation;
 
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;

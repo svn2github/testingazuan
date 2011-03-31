@@ -90,9 +90,8 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	
 	@Override
 	public void createPageCustomControl(Composite parent) {
-		getSpagoBIWizard().initQueryBuilder(getInitializationDesign());
-		setControl( createPageControl( parent ) );
 		initializeControl();
+		setControl( createPageControl( parent ) );
 		getQueryBuilder().refreshQueryEditGroup();
 	}
 	
@@ -124,34 +123,9 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	 */
 	private void initializeControl( )
 	{
-		Query query;
-		queryText = null;
-        /* 
-         * To optionally restore the designer state of the previous design session, use
-         *      getInitializationDesignerState(); 
-         */
-
-        // Restores the last saved data set design
-        DataSetDesign dataSetDesign = getInitializationDesign();
-        if( dataSetDesign == null )
-            return; // nothing to initialize
-      
-        queryText = dataSetDesign.getQueryText();
-
-        if( queryText == null )
-            return; // nothing to initialize
-
-		try {
-			query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText,getQueryBuilder().getDataSource()) ;
-			getQueryBuilder().setQuery(query);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-        
 		
-        
-        // initialize control
-       // TODO inizialization goes here
+		queryText =  getInitializationDesign().getQueryText();
+		getSpagoBIWizard().initQueryBuilder(getInitializationDesign());
         validateData();
         setMessage( DEFAULT_MESSAGE );
 

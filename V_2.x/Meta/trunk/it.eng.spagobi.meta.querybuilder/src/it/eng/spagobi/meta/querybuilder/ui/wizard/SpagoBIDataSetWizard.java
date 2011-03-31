@@ -28,6 +28,8 @@ import java.util.Map;
 
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -68,22 +70,33 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 	
 	/**
 	 * Initializes the query builder: it take the data store properties and create a new data source
+	 * It look also if exist alreay a query
 	 * @param dataSetDesign the wizard page
 	 */
 	protected void initQueryBuilder(DataSetDesign dataSetDesign ){
+		Query query;
+        String queryText;
+        Properties properties;
+        Map<String, Object> dataSourceProperties;
+        String modelName;
+        List<String> modelNames;
+        DBConnection connection;
+        IDataSource dataSource;
+        
 		if(queryBuilder==null){
 		    if( dataSetDesign == null ){
 		    	queryBuilder = new QueryBuilder(); // nothing to initialize
 		    }else{
-			    Properties properties =  dataSetDesign.getDataSourceDesign().getPublicProperties();
+		    	//create the IDataSource
+			    properties =  dataSetDesign.getDataSourceDesign().getPublicProperties();
 			    
-			    Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
+			    dataSourceProperties = new HashMap<String, Object>();
 			    
-				String modelName = properties.getProperty("datamart_name");
-				List<String> modelNames = new ArrayList<String>();
+				modelName = properties.getProperty("datamart_name");
+				modelNames = new ArrayList<String>();
 				modelNames.add( modelName );
 			
-				DBConnection connection = new DBConnection();
+				connection = new DBConnection();
 				connection.setName( modelName );
 				connection.setDialect( properties.getProperty("database_dialect") );			
 				connection.setJndiName( null );			
@@ -94,8 +107,21 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 
 				dataSourceProperties.put("connection", connection);
 				dataSourceProperties.put("dblinkMap", new HashMap());
-				IDataSource dataSource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
+				dataSource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
 				queryBuilder = new QueryBuilder(dataSource);
+				
+				//Looks if a query exists..
+				//if so.. deserializes and add it in the query builder
+				queryText = dataSetDesign.getQueryText();
+
+		        if( queryText != null ){
+					try {
+						query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText,getQueryBuilder().getDataSource()) ;
+						queryBuilder.setQuery(query);
+					} catch (Exception e) {
+						logger.error("Error deserializing query");
+					}
+		        }
 		    }
 		}
 	}

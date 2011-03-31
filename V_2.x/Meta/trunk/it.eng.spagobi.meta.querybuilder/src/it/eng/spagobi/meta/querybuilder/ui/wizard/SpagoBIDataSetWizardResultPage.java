@@ -42,7 +42,6 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
-     //   this.queryBuilderUI = new QueryBuilder();
 	}
 	
 	public SpagoBIDataSetWizardResultPage( String pageName, String title,

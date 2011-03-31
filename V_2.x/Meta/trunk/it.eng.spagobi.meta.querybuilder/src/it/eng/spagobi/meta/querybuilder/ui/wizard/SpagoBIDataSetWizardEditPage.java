@@ -90,6 +90,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	
 	@Override
 	public void createPageCustomControl(Composite parent) {
+		getSpagoBIWizard().initQueryBuilder(getInitializationDesign());
 		setControl( createPageControl( parent ) );
 		initializeControl();
 		getQueryBuilder().refreshQueryEditGroup();
@@ -100,7 +101,6 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 		getQueryBuilder().refreshQueryResultPage();//update the result table
 		return super.getNextPage();
 	} 
-	
 	
 	public QueryBuilder getQueryBuilder() {
 		return getSpagoBIWizard().getQueryBuilder();
@@ -270,10 +270,12 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
             
             // obtain and open a live connection
             customConn = customDriver.getConnection( null );
-            java.util.Properties connProps = 
-                DesignSessionUtil.getEffectiveDataSourceProperties( 
-                         getInitializationDesign().getDataSourceDesign() );
+            java.util.Properties connProps =  DesignSessionUtil.getEffectiveDataSourceProperties( getInitializationDesign().getDataSourceDesign() );
+            //ad the datasource at the properties..
+            connProps.put("data_source", getQueryBuilder().getDataSource());
             customConn.open( connProps );
+            
+            
 
             // update the data set design with the 
             // query's current runtime metadata

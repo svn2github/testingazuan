@@ -60,27 +60,27 @@ public class DataStoreReader {
 		Object propertyRawValue;
 		Map<String,Object> metadata = new HashMap<String,Object>();
 		List<Map<String,Object>> headers = new ArrayList<Map<String,Object>>();
-						
-		propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-			
-		resultNumber = ((Integer)propertyRawValue).intValue();
-		for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
-			IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+		if(dataStore!=null){			
+			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
 				
-			propertyRawValue = fieldMetaData.getProperty("visible");
-			if(propertyRawValue != null 
-					&& (propertyRawValue instanceof Boolean) 
-					&& ((Boolean)propertyRawValue).booleanValue() == false) {
-				continue;
-			}
-
-			String fieldHeader = fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName();
-			metadata = new HashMap<String,Object>();
-			metadata.put("title", fieldHeader);
-			metadata.put("type", dataStore.getMetaData().getFieldType(i));
-			headers.add(metadata);
-		}
+			resultNumber = ((Integer)propertyRawValue).intValue();
+			for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+				IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+					
+				propertyRawValue = fieldMetaData.getProperty("visible");
+				if(propertyRawValue != null 
+						&& (propertyRawValue instanceof Boolean) 
+						&& ((Boolean)propertyRawValue).booleanValue() == false) {
+					continue;
+				}
 	
+				String fieldHeader = fieldMetaData.getAlias() != null? fieldMetaData.getAlias(): fieldMetaData.getName();
+				metadata = new HashMap<String,Object>();
+				metadata.put("title", fieldHeader);
+				metadata.put("type", dataStore.getMetaData().getFieldType(i));
+				headers.add(metadata);
+			}
+		}
 		return headers;
 	}
 	
@@ -92,18 +92,20 @@ public class DataStoreReader {
 	 */
 	public static int getVisibleColumns(IDataStore dataStore) throws RuntimeException {
 		int visibleColumns =0;
-		Object propertyRawValue;
-
-		for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
-			IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
-				
-			propertyRawValue = fieldMetaData.getProperty("visible");
-			if(propertyRawValue != null && (propertyRawValue instanceof Boolean) 
-					&& ((Boolean)propertyRawValue).booleanValue() == false) {
-				continue;
+		if(dataStore!=null){	
+			Object propertyRawValue;
+	
+			for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+				IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+					
+				propertyRawValue = fieldMetaData.getProperty("visible");
+				if(propertyRawValue != null && (propertyRawValue instanceof Boolean) 
+						&& ((Boolean)propertyRawValue).booleanValue() == false) {
+					continue;
+				}
+	
+				visibleColumns++;
 			}
-
-			visibleColumns++;
 		}
 		return visibleColumns;
 	}
@@ -131,47 +133,49 @@ public class DataStoreReader {
 		IRecord record;
 		Object propertyRawValue;
 		int rowcount=0,columncount;
-		propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
-
-		String[][] result = new String[new Long(dataStore.getRecordsCount()).intValue()][visibleColumns];
-		String[] resultRecord = new String[visibleColumns];
-
-		Iterator records = dataStore.iterator();
-		while(records.hasNext()) {
-			record = (IRecord)records.next();
-			resultRecord = new String[dataStore.getMetaData().getFieldCount()];
-
-			columncount=0;
-			for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
-
-				IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
-
-				propertyRawValue = fieldMetaData.getProperty("visible");
-				if(propertyRawValue != null && (propertyRawValue instanceof Boolean) && ((Boolean)propertyRawValue).booleanValue() == false) {
-					continue;
-				}
-
-				field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
-
-				String fieldValue = "";
-				if(field.getValue() != null && field.getValue() != "") {
-					if(Timestamp.class.isAssignableFrom(fieldMetaData.getType())) {
-						fieldValue =  TIMESTAMP_FORMATTER.format(  field.getValue() );
-					} else if (Date.class.isAssignableFrom(fieldMetaData.getType())) {
-						fieldValue =  DATE_FORMATTER.format(  field.getValue() );
-					} else {
-						fieldValue =  field.getValue().toString();
+		String[][] result = new String[0][0];
+		
+		if(dataStore!=null){	
+		
+			propertyRawValue = dataStore.getMetaData().getProperty("resultNumber");
+			result = new String[new Long(dataStore.getRecordsCount()).intValue()][visibleColumns];
+			String[] resultRecord = new String[visibleColumns];
+	
+			Iterator records = dataStore.iterator();
+			while(records.hasNext()) {
+				record = (IRecord)records.next();
+				resultRecord = new String[dataStore.getMetaData().getFieldCount()];
+	
+				columncount=0;
+				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+	
+					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+	
+					propertyRawValue = fieldMetaData.getProperty("visible");
+					if(propertyRawValue != null && (propertyRawValue instanceof Boolean) && ((Boolean)propertyRawValue).booleanValue() == false) {
+						continue;
 					}
+	
+					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
+	
+					String fieldValue = "";
+					if(field.getValue() != null && field.getValue() != "") {
+						if(Timestamp.class.isAssignableFrom(fieldMetaData.getType())) {
+							fieldValue =  TIMESTAMP_FORMATTER.format(  field.getValue() );
+						} else if (Date.class.isAssignableFrom(fieldMetaData.getType())) {
+							fieldValue =  DATE_FORMATTER.format(  field.getValue() );
+						} else {
+							fieldValue =  field.getValue().toString();
+						}
+					}
+	
+					resultRecord[columncount]=(fieldValue);
+					columncount++;
 				}
-
-				resultRecord[columncount]=(fieldValue);
-				columncount++;
+				result[rowcount]=(resultRecord);
+				rowcount++;
 			}
-			result[rowcount]=(resultRecord);
-			rowcount++;
 		}
-
-
 
 		return result;
 	}

@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.editor.contributor;
+package it.eng.spagobi.meta.editor.business;
 
 import it.eng.spagobi.meta.model.business.presentation.menu.BusinessModelMenuBarContributor;
 import it.eng.spagobi.meta.model.business.presentation.menu.BusinessModelPopupMenuContributor;
@@ -39,7 +39,7 @@ import org.eclipse.ui.IEditorPart;
  * <!-- end-user-doc -->
  * @generated
  */
-public class BusinessModelActionBarContributor
+public class BusinessModelEditorWorkbenchContributor
 	extends EditingDomainActionBarContributor
 	implements ISelectionChangedListener {
 	
@@ -63,7 +63,7 @@ public class BusinessModelActionBarContributor
 	/**
 	 * This creates an instance of the contributor.
 	 */
-	public BusinessModelActionBarContributor() {
+	public BusinessModelEditorWorkbenchContributor() {
 		super(ADDITIONS_LAST_STYLE);
 	}
 

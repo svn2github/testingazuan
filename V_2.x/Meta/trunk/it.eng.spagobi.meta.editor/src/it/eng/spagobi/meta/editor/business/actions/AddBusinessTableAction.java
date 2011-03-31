@@ -19,13 +19,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.actions;
+package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
-import it.eng.spagobi.meta.model.business.wizards.GenerateJPAMappingWizard;
+import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.wizards.AddBusinessTableWizard;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -33,18 +34,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
- * @author cortella
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
-
-	/**
-	 * @param commandClass
-	 * @param workbenchPart
-	 * @param selection
-	 */
-	public GenerateJPAMappingAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(GenerateJPAMappingCommand.class, workbenchPart, selection);
+public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
+	PhysicalTable physicalTable; //used for drag&drop
+	public AddBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection, PhysicalTable physicalTable) {
+		super(AddBusinessTableCommand.class, workbenchPart, selection);
+		this.physicalTable = physicalTable;
 	}
 	
 	/**
@@ -54,7 +51,7 @@ public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
 	public void run() {
 		try {
 			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
-			GenerateJPAMappingWizard wizard = new GenerateJPAMappingWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
+			AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain, (AbstractSpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();
@@ -63,4 +60,5 @@ public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
 			t.printStackTrace();
 		}
 	}
+	
 }

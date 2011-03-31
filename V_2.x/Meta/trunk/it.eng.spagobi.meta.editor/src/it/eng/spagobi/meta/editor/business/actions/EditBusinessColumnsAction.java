@@ -19,14 +19,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.actions;
+package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.wizards.AddBusinessTableWizard;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
+import it.eng.spagobi.meta.model.business.wizards.EditBusinessColumnsWizard;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -37,28 +35,24 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
-	PhysicalTable physicalTable; //used for drag&drop
-	public AddBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection, PhysicalTable physicalTable) {
-		super(AddBusinessTableCommand.class, workbenchPart, selection);
-		this.physicalTable = physicalTable;
+public class EditBusinessColumnsAction extends AbstractSpagoBIModelAction {
+	
+	public EditBusinessColumnsAction(IWorkbenchPart workbenchPart, ISelection selection) {
+		super(EditBusinessColumnsCommand.class, workbenchPart, selection);
 	}
+	
+	
 	
 	/**
 	 * This executes the command.
 	 */
 	@Override
 	public void run() {
-		try {
-			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
-			AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain, (AbstractSpagoBIModelCommand)command );
-	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-			dialog.create();
-	    	dialog.open();
-	    	
-		} catch(Throwable t) {
-			t.printStackTrace();
-		}
+		BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
+		EditBusinessColumnsWizard wizard = new EditBusinessColumnsWizard( businessColumnSet, editingDomain, (AbstractSpagoBIModelCommand)command );
+    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
+		dialog.create();
+    	dialog.open();
 	}
 	
 }

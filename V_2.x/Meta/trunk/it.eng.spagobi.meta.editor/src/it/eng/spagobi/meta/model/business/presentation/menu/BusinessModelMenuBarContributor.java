@@ -23,8 +23,8 @@ package it.eng.spagobi.meta.model.business.presentation.menu;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.model.business.actions.RefreshViewerAction;
-import it.eng.spagobi.meta.model.business.actions.ShowPropertiesViewAction;
+import it.eng.spagobi.meta.editor.business.actions.RefreshViewerAction;
+import it.eng.spagobi.meta.editor.business.actions.ShowPropertiesViewAction;
 import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
 
 import java.util.Collection;

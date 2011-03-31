@@ -19,44 +19,44 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.actions;
+package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
-import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class RefreshViewerAction extends Action {
+public class ShowPropertiesViewAction extends Action {
 	
 	IEditorPart activeEditorPart;
 
 
-	public RefreshViewerAction() {
-		super( SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_RefreshViewer_menu_item") );
+	public ShowPropertiesViewAction() {
+		super( SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_ShowPropertiesView_menu_item") );
 	}
 
 	public void setActiveEditorPart(IEditorPart activeEditorPart) {
 		this.activeEditorPart = activeEditorPart;
 	}
-	
-	@Override
-	public boolean isEnabled() {
-		return activeEditorPart instanceof IViewerProvider;
-	}
 
 	@Override
+	public boolean isEnabled() {
+		return activeEditorPart != null;
+	}
+
+	
+	@Override
 	public void run() {
-		if (activeEditorPart instanceof IViewerProvider) {
-			Viewer viewer = ((IViewerProvider)activeEditorPart).getViewer();
-			if (viewer != null) {
-				viewer.refresh();
-			}
+		try {
+			activeEditorPart.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+		}
+		catch (PartInitException exception) {
+			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
 		}
 	}
 }

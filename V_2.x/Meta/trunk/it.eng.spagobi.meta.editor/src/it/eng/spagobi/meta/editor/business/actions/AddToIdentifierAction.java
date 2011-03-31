@@ -19,34 +19,24 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.actions;
+package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.CreateQueryCommand;
-import it.eng.spagobi.meta.model.business.wizards.CreateQueryWizard;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.model.business.commands.AddToIdentifierCommand;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
- * @author cortella
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CreateQueryAction extends AbstractSpagoBIModelAction {
-
-	/**
-	 * @param commandClass
-	 * @param workbenchPart
-	 * @param selection
-	 */
-	public CreateQueryAction(IWorkbenchPart workbenchPart,
-			ISelection selection) {
-		super(CreateQueryCommand.class, workbenchPart, selection);
+public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	
+	AbstractSpagoBIModelCommand performFinishCommand; 
+	public AddToIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
+		super(AddToIdentifierCommand.class, workbenchPart, selection);
+		this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
 	}
 	
 	/**
@@ -55,15 +45,19 @@ public class CreateQueryAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		try {
-			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
-			CreateQueryWizard wizard = new CreateQueryWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
-	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-			dialog.create();
-	    	dialog.open();
-	    	
+			/*
+			no wizard here because we do not need some extra input. we can execute command directly
+	    	*/
+			
+			// this guard is for extra security, but should not be necessary
+		    if (editingDomain != null && performFinishCommand != null) {
+		    	// use up the command
+		    	editingDomain.getCommandStack().execute(performFinishCommand);
+		    }
+
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}
 	}
-
+	
 }

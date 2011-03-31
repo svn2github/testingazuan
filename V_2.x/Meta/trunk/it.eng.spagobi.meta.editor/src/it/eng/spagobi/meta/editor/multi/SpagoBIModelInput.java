@@ -19,10 +19,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi;
 
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.business.BusinessModelInput;
 import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
+import it.eng.spagobi.meta.editor.physical.PhysicalModelInput;
 import it.eng.spagobi.meta.model.Model;
 
 import java.io.File;

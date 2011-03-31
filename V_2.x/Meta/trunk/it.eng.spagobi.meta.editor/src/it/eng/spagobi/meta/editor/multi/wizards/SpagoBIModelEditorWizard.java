@@ -4,10 +4,13 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi.wizards;
 
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
+import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
+import it.eng.spagobi.meta.editor.multi.SpagoBIModelInput;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -64,9 +67,9 @@ import org.slf4j.LoggerFactory;
  * <!-- end-user-doc -->
  * @generated
  */
-public class SpagoBIModelWizard  extends Wizard implements INewWizard {
+public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 		
-	private static Logger logger = LoggerFactory.getLogger(SpagoBIModelWizard.class);
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIModelEditorWizard.class);
 	
 	/**
 	 * The supported extensions for created files.

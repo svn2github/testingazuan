@@ -3,7 +3,7 @@
  * in the Data Source Explorer View of the Eclipse Data Tools Project
  */
 
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi;
 
 
 

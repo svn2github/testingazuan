@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi.wizards;
 
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;

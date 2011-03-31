@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi;
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
@@ -55,7 +55,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 	/**
 	 * @param pageName
 	 */
-	protected BusinessTableSelectionPage(String pageName) {
+	public BusinessTableSelectionPage(String pageName) {
 		super(pageName);
 		setTitle("Select Tables");
 		setMessage("Select the tables to import in your Business Model");

@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi;
 
 
 
@@ -73,7 +73,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private Label expandCollapseButton;
 	private Image iconCollapse, iconExpand;
 	
-	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
+	public static final String EDITOR_ID = SpagoBIModelEditor.class.getName();
 	public static final int LEFT = 0;
 	public static final int RIGHT = 1;
 	

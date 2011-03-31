@@ -15,9 +15,9 @@
             id="org.eclipse.emf.ecore.Wizard.category.ID"
             name="%_UI_Wizard_category"/>
       <wizard
-            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelWizard"
+            id="it.eng.spagobi.meta.editor.multi.wizards.SpagoBIModelEditorWizard"
             name="%_UI_ModelModelWizard_label"
-            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelWizard"
+            class="it.eng.spagobi.meta.editor.multi.wizards.SpagoBIModelEditorWizard"
             category="org.eclipse.emf.ecore.Wizard.category.ID"
             icon="icons/full/obj16/SpagoBIModelFile.gif">
          <description>%_UI_ModelModelWizard_description</description>
@@ -27,11 +27,11 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID"
+            id="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor"
             name="%_UI_ModelEditor_label"
             icon="icons/full/obj16/SpagoBIModelFile.gif"
-            class="it.eng.spagobi.meta.model.presentation.SpagoBIModelEditor"
-            contributorClass="it.eng.spagobi.meta.model.presentation.ModelActionBarContributor">
+            class="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorWorkbenchContributor">
       </editor>
    </extension>
    

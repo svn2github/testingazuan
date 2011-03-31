@@ -10,15 +10,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 
 
 public class CPLabelProvider extends LabelProvider {
-
-	public CPLabelProvider() {
-		
-	}
-
 	public String getText(Object element){
 		return ((IConnectionProfile)element).getName();
 	}
-	
-
-
 }

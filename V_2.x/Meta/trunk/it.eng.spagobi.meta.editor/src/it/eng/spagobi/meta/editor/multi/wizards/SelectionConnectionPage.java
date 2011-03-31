@@ -19,11 +19,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi.wizards;
 
 
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.editor.multi.DSEBridge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -39,6 +40,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -155,7 +157,11 @@ public class SelectionConnectionPage extends WizardPage {
 			}
 		});
 		listViewer.setContentProvider(new ArrayContentProvider());
-		listViewer.setLabelProvider(new CPLabelProvider());
+		listViewer.setLabelProvider(new LabelProvider() {
+			public String getText(Object element){
+				return ((IConnectionProfile)element).getName();
+			}
+		});
 		listViewer.setInput(profiles);
 		Group grpCatalogAndSchema = new Group(container, SWT.NONE);
 		grpCatalogAndSchema.setText("Catalog and Schema");

@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.presentation;
+package it.eng.spagobi.meta.editor.multi;
 
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
@@ -46,7 +46,7 @@ import org.eclipse.ui.PartInitException;
  * <!-- end-user-doc -->
  * @generated
  */
-public class ModelActionBarContributor
+public class SpagoBIModelEditorWorkbenchContributor
 	extends EditingDomainActionBarContributor
 	implements ISelectionChangedListener {
 	/**
@@ -149,7 +149,7 @@ public class ModelActionBarContributor
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ModelActionBarContributor() {
+	public SpagoBIModelEditorWorkbenchContributor() {
 		super(ADDITIONS_LAST_STYLE);
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();

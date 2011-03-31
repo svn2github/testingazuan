@@ -17,7 +17,6 @@ import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProvid
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.presentation.PhysicalModelInput;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
 
 import java.io.IOException;

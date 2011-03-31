@@ -7,6 +7,8 @@
 package it.eng.spagobi.meta.model.physical.presentation;
 
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDragListener;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
@@ -137,6 +139,8 @@ import org.slf4j.LoggerFactory;
 public class PhysicalModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	
 	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID";
 
@@ -640,8 +644,8 @@ public class PhysicalModelEditor
 		return
 			MessageDialog.openQuestion
 				(getSite().getShell(),
-				 getString("_UI_FileConflict_label"),
-				 getString("_WARN_FileConflict"));
+				 RL.getString("business.editor.dialog.fileconflict.label"),
+				 RL.getString("business.editor.dialog.fileconflict.message"));
 	}
 
 	/**
@@ -972,7 +976,7 @@ public class PhysicalModelEditor
 					(Diagnostic.ERROR,
 					 "it.eng.spagobi.meta.editor",
 					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
 					 new Object [] { exception == null ? (Object)resource : exception });
 			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
 			return basicDiagnostic;
@@ -983,7 +987,7 @@ public class PhysicalModelEditor
 					(Diagnostic.ERROR,
 					 "it.eng.spagobi.meta.editor",
 					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
 					 new Object[] { exception });
 		}
 		else {
@@ -1044,7 +1048,7 @@ public class PhysicalModelEditor
 
 				createContextMenuFor(selectionViewer);
 				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_SelectionPage_label"));
+				setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));
 			}
 			/*
 			// Create a page for the parent tree view.
@@ -1275,7 +1279,7 @@ public class PhysicalModelEditor
 	 */
 	protected void showTabs() {
 		if (getPageCount() > 1) {
-			setPageText(0, getString("_UI_SelectionPage_label"));
+			setPageText(0, RL.getString("business.editor.selectionpage.label"));
 			if (getContainer() instanceof CTabFolder) {
 				((CTabFolder)getContainer()).setTabHeight(SWT.DEFAULT);
 				Point point = getContainer().getSize();
@@ -1708,16 +1712,16 @@ public class PhysicalModelEditor
 				Collection<?> collection = ((IStructuredSelection)selection).toList();
 				switch (collection.size()) {
 					case 0: {
-						statusLineManager.setMessage(getString("_UI_NoObjectSelected"));
+						statusLineManager.setMessage(RL.getString("business.editor.status.noobjectselected"));
 						break;
 					}
 					case 1: {
 						String text = new AdapterFactoryItemDelegator(adapterFactory).getText(collection.iterator().next());
-						statusLineManager.setMessage(getString("_UI_SingleObjectSelected", text));
+						statusLineManager.setMessage(RL.getString("business.editor.status.singleobjectselected", new Object[]{text}));
 						break;
 					}
 					default: {
-						statusLineManager.setMessage(getString("_UI_MultiObjectSelected", Integer.toString(collection.size())));
+						statusLineManager.setMessage(RL.getString("business.editor.status.multiobjectselected", new Object[]{Integer.toString(collection.size())} ));
 						break;
 					}
 				}
@@ -1728,26 +1732,8 @@ public class PhysicalModelEditor
 		}
 	}
 
-	/**
-	 * This looks up a string in the plugin's plugin.properties file.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private static String getString(String key) {
-		return SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key);
-	}
-
-	/**
-	 * This looks up a string in plugin.properties, making a substitution.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private static String getString(String key, Object s1) {
-		return SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key, new Object [] { s1 });
-	}
-
+	
+	
 	/**
 	 * This implements {@link org.eclipse.jface.action.IMenuListener} to help fill the context menus with contributions from the Edit menu.
 	 * <!-- begin-user-doc -->

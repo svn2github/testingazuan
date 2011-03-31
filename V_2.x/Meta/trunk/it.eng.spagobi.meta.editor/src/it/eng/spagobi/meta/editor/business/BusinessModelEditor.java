@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
@@ -155,6 +157,8 @@ import org.slf4j.LoggerFactory;
 public class BusinessModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	
 	public static final String EDITOR_ID = BusinessModelEditor.class.getName();
 	
@@ -681,7 +685,7 @@ public class BusinessModelEditor
 
 		createContextMenuFor(selectionViewer);
 		int pageIndex = addPage(viewerPane.getControl());
-		setPageText(pageIndex, getString("_UI_SelectionPage_label"));
+		setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));
 	}
 
 	
@@ -765,8 +769,8 @@ public class BusinessModelEditor
 		return
 			MessageDialog.openQuestion
 				(getSite().getShell(),
-				 getString("_UI_FileConflict_label"),
-				 getString("_WARN_FileConflict"));
+				 RL.getString("business.editor.dialog.fileconflict.label"),
+				 RL.getString("business.editor.dialog.fileconflict.message"));
 	}
 
 	
@@ -932,7 +936,7 @@ public class BusinessModelEditor
 					(Diagnostic.ERROR,
 					 "it.eng.spagobi.meta.editor",
 					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
 					 new Object [] { exception == null ? (Object)resource : exception });
 			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
 			return basicDiagnostic;
@@ -943,7 +947,7 @@ public class BusinessModelEditor
 					(Diagnostic.ERROR,
 					 "it.eng.spagobi.meta.editor",
 					 0,
-					 getString("_UI_CreateModelError_message", resource.getURI()),
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
 					 new Object[] { exception });
 		}
 		else {
@@ -980,7 +984,7 @@ public class BusinessModelEditor
 	 */
 	protected void showTabs() {
 		if (getPageCount() > 1) {
-			setPageText(0, getString("_UI_SelectionPage_label"));
+			setPageText(0, RL.getString("business.editor.selectionpage.label"));
 			if (getContainer() instanceof CTabFolder) {
 				((CTabFolder)getContainer()).setTabHeight(SWT.DEFAULT);
 				Point point = getContainer().getSize();
@@ -1239,9 +1243,7 @@ public class BusinessModelEditor
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		}
 		catch (Exception exception) {
-			// Something went wrong that shouldn't.
-			//
-			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+			logger.error("An eror occurred while saving model", exception);
 		}
 		updateProblemIndication = true;
 		updateProblemIndication();
@@ -1416,16 +1418,17 @@ public class BusinessModelEditor
 				Collection<?> collection = ((IStructuredSelection)selection).toList();
 				switch (collection.size()) {
 					case 0: {
-						statusLineManager.setMessage(getString("_UI_NoObjectSelected"));
+						
+						statusLineManager.setMessage(RL.getString("business.editor.status.noobjectselected"));
 						break;
 					}
 					case 1: {
 						String text = new AdapterFactoryItemDelegator(adapterFactory).getText(collection.iterator().next());
-						statusLineManager.setMessage(getString("_UI_SingleObjectSelected", text));
+						statusLineManager.setMessage(RL.getString("business.editor.status.singleobjectselected", new Object[]{text}));
 						break;
 					}
 					default: {
-						statusLineManager.setMessage(getString("_UI_MultiObjectSelected", Integer.toString(collection.size())));
+						statusLineManager.setMessage(RL.getString("business.editor.status.multiobjectselected", new Object[]{Integer.toString(collection.size())} ));
 						break;
 					}
 				}
@@ -1436,25 +1439,8 @@ public class BusinessModelEditor
 		}
 	}
 
-	/**
-	 * This looks up a string in the plugin's plugin.properties file.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private static String getString(String key) {
-		return SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key);
-	}
 
-	/**
-	 * This looks up a string in plugin.properties, making a substitution.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private static String getString(String key, Object s1) {
-		return SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key, new Object [] { s1 });
-	}
+	
 
 	/**
 	 * This implements {@link org.eclipse.jface.action.IMenuListener} to help fill the context menus with contributions from the Edit menu.

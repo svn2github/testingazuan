@@ -76,6 +76,12 @@ public class QueryBuilder {
 		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
 		this.query = new Query();
 	}
+	
+	public QueryBuilder(IDataSource dataSource){
+		this.dataSource = dataSource;
+		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
+		this.query = new Query();
+	}
 
 	public IDataSource getDataSource() {
 		return dataSource;
@@ -207,11 +213,10 @@ public class QueryBuilder {
 
 	public Query addWhereField(String uniqueName, String fieldName){
 
-		String[] nullStringArray = new String[0];
 		String[] values = new String[1];
 		values[0] = uniqueName;
 
-		Operand leftOperand = new Operand(values,fieldName, AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray,nullStringArray);
+		Operand leftOperand = new Operand(values,fieldName, AbstractStatement.OPERAND_TYPE_FIELD, values,values);
 		query.addWhereField("Filter"+whereFilterCount, "Filter"+whereFilterCount, true, leftOperand, "NONE", null, "AND");
 		ExpressionNode node = query.getWhereClauseStructure();
 		if(node==null){
@@ -237,12 +242,10 @@ public class QueryBuilder {
 
 	public Query addHavingField(String uniqueName, String fieldName,IAggregationFunction aggregation){
 
-		String[] nullStringArray = new String[0];
-
 		String[] values = new String[1];
 		values[0] = uniqueName;
 
-		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_FIELD, nullStringArray, nullStringArray,aggregation);
+		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_FIELD, values, values,aggregation);
 		query = getQuery();
 		query.addHavingField("Having"+havingFilterCount, "Having"+havingFilterCount, false, leftOperand, null, null, "AND");
 

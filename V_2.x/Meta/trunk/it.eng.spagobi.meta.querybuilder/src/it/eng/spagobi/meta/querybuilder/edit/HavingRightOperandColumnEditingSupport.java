@@ -69,7 +69,8 @@ public class HavingRightOperandColumnEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {	
 		String stringValue = (String)value;
-		Operand rightOperand = new Operand(new String[0], stringValue,AbstractStatement.OPERAND_TYPE_STATIC,new String[0], getValues(stringValue), AggregationFunctions.NONE_FUNCTION);
+		String[] values = getValues(stringValue);
+		Operand rightOperand = new Operand(values, stringValue,AbstractStatement.OPERAND_TYPE_STATIC,values, getValues(stringValue), AggregationFunctions.NONE_FUNCTION);
 		((HavingField) element).setRightOperand(rightOperand);
 		viewer.refresh();
 	}

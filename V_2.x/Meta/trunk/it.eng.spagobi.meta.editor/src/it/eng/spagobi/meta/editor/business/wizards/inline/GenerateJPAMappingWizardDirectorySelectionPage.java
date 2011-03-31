@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.wizards;
+package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 
@@ -42,16 +42,16 @@ import org.eclipse.swt.widgets.Text;
  * @author cortella
  *
  */
-public class CreateQueryWizardDirectorySelectionPage extends WizardPage {
+public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 
 	Text textDirectory;
 	/**
 	 * @param pageName
 	 */
-	protected CreateQueryWizardDirectorySelectionPage(String pageName) {
+	protected GenerateJPAMappingWizardDirectorySelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Create Query");
-		setDescription("Please select the directory where to put SpagoBI Query file.");
+		setTitle("Generate JPA Mapping");
+		setDescription("Please select the directory where to put JPA Mapping source code.");
 		ImageDescriptor image =	ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));	
 	    if (image!=null) setImageDescriptor(image);	
 	    

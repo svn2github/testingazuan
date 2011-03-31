@@ -23,9 +23,9 @@ package it.eng.spagobi.meta.editor.business;
 
 
 import it.eng.spagobi.commons.resource.DefaultResourceLocator;
+import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.business.presentation.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.model.dnd.BusinessModelDropTargetListener;

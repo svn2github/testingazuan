@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.model.business.wizards;
+package it.eng.spagobi.meta.editor.business.wizards;
 
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 

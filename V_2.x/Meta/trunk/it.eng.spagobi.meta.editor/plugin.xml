@@ -87,9 +87,9 @@
             id="org.eclipse.emf.ecore.Wizard.category.ID"
             name="%_UI_Wizard_category"/>
       <wizard
-            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelWizardID"
+            id="it.eng.spagobi.meta.editor.business.wizards.BusinessModelWizard"
             name="%_UI_BusinessModelModelWizard_label"
-            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelWizard"
+            class="it.eng.spagobi.meta.editor.business.wizards.BusinessModelWizard"
             category="org.eclipse.emf.ecore.Wizard.category.ID"
             icon="icons/full/obj16/SpagoBIBusinessModelFile.gif">
          <description>%_UI_BusinessModelModelWizard_description</description>

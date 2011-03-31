@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
+import it.eng.spagobi.meta.editor.business.wizards.inline.GenerateJPAMappingWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
-import it.eng.spagobi.meta.model.business.wizards.GenerateJPAMappingWizard;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import org.eclipse.jface.viewers.ISelection;

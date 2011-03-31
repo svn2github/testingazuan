@@ -19,8 +19,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.wizards;
+package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
@@ -34,7 +35,7 @@ import org.eclipse.jface.wizard.IWizardPage;
  * @author cortella
  *
  */
-public class CreateQueryWizard extends AbstractSpagoBIModelWizard {
+public class GenerateJPAMappingWizard extends AbstractSpagoBIModelWizard {
 	
 	BusinessModel businessModel;
 	
@@ -42,23 +43,23 @@ public class CreateQueryWizard extends AbstractSpagoBIModelWizard {
 	 * @param editingDomain
 	 * @param command
 	 */
-	public CreateQueryWizard(BusinessModel businessModel, EditingDomain editingDomain,
+	public GenerateJPAMappingWizard(BusinessModel businessModel, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command) {
 		super(editingDomain, command);
-		this.setWindowTitle("Create Query");
+		this.setWindowTitle("Generate JPA Mapping");
 		this.setHelpAvailable(false);	
 		this.businessModel = businessModel;
 	}
 
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new CreateQueryWizardDirectorySelectionPage("Directory Selection");
+		IWizardPage pageOne = new GenerateJPAMappingWizardDirectorySelectionPage("Directory Selection");
 		addPage( pageOne );
 	}
 	
 	@Override
 	public CommandParameter getCommandInputParameter() {
-		CreateQueryWizardDirectorySelectionPage wizardPage = (CreateQueryWizardDirectorySelectionPage)this.getStartingPage();
+		GenerateJPAMappingWizardDirectorySelectionPage wizardPage = (GenerateJPAMappingWizardDirectorySelectionPage)this.getStartingPage();
 		String directory = wizardPage.getSelectedDirectory();
 		
 		return new CommandParameter(businessModel, null, directory, new ArrayList<Object>());

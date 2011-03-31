@@ -19,20 +19,15 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.wizards;
+package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
-
-import java.util.ArrayList;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -47,26 +42,21 @@ import org.eclipse.swt.widgets.Listener;
  * @author cortella
  *
  */
-public class AddPhysicalTableSelectionPage extends WizardPage {
-	
+public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
+
 	private List tableList;
 	private BusinessColumnSet owner;
 	private String tableSelected;
-	private AddBusinessViewInnerJoinPage pageThreeRef;
-	private boolean isBusinessView;
-	private String selectedPhysicalTableName;
 	/**
 	 * @param pageName
 	 */
-	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView, String selectedPhysicalTableName) {
+	protected RemovePhysicalTableWizardSelectionPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
-		setTitle("Add Physical Table");
-		setDescription("Please select the physical table to add to your Business Table.");
+		setTitle("Remove Physical Table");
+		setDescription("Please select the physical table to remove from your Business Table.");
 		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
 	    if (image!=null) setImageDescriptor(image);	
-	    this.owner = owner;
-	    this.isBusinessView = isBusinessView;
-	    this.selectedPhysicalTableName = selectedPhysicalTableName;
+	    owner = businessColumnSet;
 	}
 
 	@Override
@@ -85,21 +75,8 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
  		
  		populateTableList();
  		addListener();
- 		//check if the physical table to add is predefined
- 		if (selectedPhysicalTableName != null){
- 			String[] items = tableList.getItems();
- 			for (int i=0; i<items.length; i++){
- 				if (items[i].equals(selectedPhysicalTableName)){
- 					tableList.select(i);
- 					break;
- 				}
- 			}
- 			tableSelected = selectedPhysicalTableName;
- 		}
  		checkPageComplete();
-
 	}
-	
 	private void createTableGroup(Composite composite, int style){
 		//Physical Table List
 		Group tableGroup = new Group(composite, style);
@@ -138,53 +115,23 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
-		PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
-		
-		//get already present Physical Table to exclude
-		java.util.List<PhysicalTable> excludedPhysicalTables = new ArrayList<PhysicalTable>();
-		if (owner instanceof BusinessTable){
-			//get the only Physical Table of Business Table
-			excludedPhysicalTables.add(((BusinessTable)owner).getPhysicalTable());
-		} else if (owner instanceof BusinessView){
-			//get the Physical Tables of the Business View
-			excludedPhysicalTables.addAll(((BusinessView)owner).getPhysicalTables());
-		}
-			
-		int numTables = physicalModel.getTables().size();
-		String tabName;
-		for (int i = 0; i < numTables; i++){
-			if (! excludedPhysicalTables.contains(physicalModel.getTables().get(i)) ){
-				tabName = physicalModel.getTables().get(i).getName();
-				tableList.add(tabName);		
+		if (owner instanceof BusinessView){
+			java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+			for (PhysicalTable physicalTable : physicalTables){
+				tableList.add(physicalTable.getName());
 			}
 		}
 	}
+	
 	//check if the right conditions to go forward occurred
 	public void checkPageComplete(){
 		if(tableSelected != null){
 			setPageComplete(true);
-			//disable selection if PhysicalTable Name is predefined
-			if (selectedPhysicalTableName != null){
-				tableList.setEnabled(false);
-			}
-			else {
-				//do this populate only when table is select from the UI
-				PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
-				PhysicalTable physicalTable = physicalModel.getTable(tableSelected);
-				pageThreeRef.populateDestinationPhysicalTableGroup(physicalTable);
-			}
 		}
 		else{			
 			setPageComplete(false);
 		}		
 	}
-	
-	public IWizardPage getNextPage() {
-		//If is a BusinessView go to the page to select the physical table to join
-		if (isBusinessView) { return super.getNextPage(); }
-		//If is a BusinessTable go directly to the join relationship selection page
-		return getWizard().getPage("Select join relationship");
-    }
 	
 	/**
 	 * @param tableSelected the tableSelected to set
@@ -199,18 +146,4 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	public String getTableSelected() {
 		return tableSelected;
 	}
-
-	/**
-	 * @param pageTwoRef the pageTwoRef to set
-	 */
-	public void setPageThreeRef(AddBusinessViewInnerJoinPage pageThreeRef) {
-		this.pageThreeRef = pageThreeRef;
-	}
-
-	/**
-	 * @return the pageTwoRef
-	 */
-	public AddBusinessViewInnerJoinPage getPageThreeRef() {
-		return pageThreeRef;
-	}	
 }

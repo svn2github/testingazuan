@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package it.eng.spagobi.meta.model.business.presentation;
+package it.eng.spagobi.meta.editor.business.wizards;
 
 
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
@@ -72,7 +72,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
  * <!-- end-user-doc -->
  * @generated
  */
-public class BusinessModelModelWizard extends Wizard implements INewWizard {
+public class BusinessModelWizard extends Wizard implements INewWizard {
 	/**
 	 * The supported extensions for created files.
 	 * <!-- begin-user-doc -->

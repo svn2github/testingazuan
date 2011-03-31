@@ -19,30 +19,31 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.presentation;
+package it.eng.spagobi.meta.editor.business.properties;
 
-import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.emf.edit.ui.provider.PropertySource;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
  * @author cortella
  *
  */
-public class CustomizedAdapterFactoryContentProvider extends
-		AdapterFactoryContentProvider {
+public class CustomizedPropertySource extends PropertySource {
 
 	/**
-	 * @param adapterFactory
+	 * @param object
+	 * @param itemPropertySource
 	 */
-	public CustomizedAdapterFactoryContentProvider(AdapterFactory adapterFactory) {
-		super(adapterFactory);
+	public CustomizedPropertySource(Object object,
+			IItemPropertySource itemPropertySource) {
+		super(object, itemPropertySource);
 	}
 	
-	protected IPropertySource createPropertySource(Object object,
-			 IItemPropertySource itemPropertySource) {
-			            return new CustomizedPropertySource(object, itemPropertySource);
+	protected IPropertyDescriptor createPropertyDescriptor(
+			IItemPropertyDescriptor itemPropertyDescriptor) {
+			      return new CustomizedPropertyDescriptor(object, itemPropertyDescriptor);
 			}
 
 }

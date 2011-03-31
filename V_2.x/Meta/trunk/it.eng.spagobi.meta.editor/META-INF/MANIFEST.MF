@@ -8,8 +8,7 @@ Bundle-Activator: it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin$
 Bundle-Vendor: it.eng
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: it.eng.spagobi.meta.model.business.presentation,
- it.eng.spagobi.meta.model.editor,
+Export-Package: it.eng.spagobi.meta.model.editor,
  it.eng.spagobi.meta.model.physical.presentation,
  it.eng.spagobi.meta.model.presentation
 Require-Bundle: org.eclipse.core.runtime,

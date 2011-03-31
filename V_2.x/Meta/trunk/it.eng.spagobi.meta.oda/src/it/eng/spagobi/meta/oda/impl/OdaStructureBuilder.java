@@ -50,8 +50,30 @@ import org.slf4j.LoggerFactory;
 public class OdaStructureBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(OdaStructureBuilder.class);
-	private static final String jarPath = "resources//JPA//";
-	private static final String boundleName = "it.eng.spagobi.meta.querybuilder";
+
+	
+	/**
+	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
+	 * @param modelNames the name of the models
+	 * @param dataSourceProperties the data source properties
+	 * @param path path to the of the jar files
+	 * @return The IDataSource
+	 */
+	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties, String path) {
+		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
+		File modelJarFile = null;
+		List<File> modelJarFiles = new ArrayList<File>();
+		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
+		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
+		
+		for(int i = 0; i < modelNames.size(); i++) {
+			modelJarFile = new File(path+modelNames.get(i)+File.separator+"datamart.jar");
+			modelJarFiles.add(modelJarFile);
+			compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(i), modelJarFile));
+		}
+		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
+		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
+	}
 	
 	/**
 	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
@@ -60,28 +82,20 @@ public class OdaStructureBuilder {
 	 * @return The IDataSource
 	 */
 	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
-		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
+		String jarPath = "resources//JPA//";
+		String boundleName = "it.eng.spagobi.meta.querybuilder";
 		Bundle generatorBundle = Platform.getBundle(boundleName);
 		String path = null; 
-		File modelJarFile = null;
-		List<File> modelJarFiles = new ArrayList<File>();
-		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
-		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
-		
-		for(int i = 0; i < modelNames.size(); i++) {
-			try {
-				IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(jarPath+modelNames.get(i))).getPath());
-				path = ipath.toString();
-			} catch (IOException e) {
-				logger.error("Error loading the datamart file",e);
-				throw new SpagoBIServiceException("Error loading the datamart file",e);
-			}
-			modelJarFile = new File(path+"datamart.jar");
-			modelJarFiles.add(modelJarFile);
-			compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(i), modelJarFile));
+		logger.debug("IN:Getting the path to the models..");
+		try {
+			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(jarPath)).getPath());
+			path = ipath.toString();
+		} catch (IOException e) {
+			logger.error("Error loading the datamart file",e);
+			throw new SpagoBIServiceException("Error loading the datamart file",e);
 		}
-		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
-		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
+		logger.debug("OUT: Path loaded..");
+		return getDataSource(modelNames, dataSourceProperties, path);
 	}
 	
 	/**

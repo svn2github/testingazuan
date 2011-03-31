@@ -19,12 +19,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.presentation;
+package it.eng.spagobi.meta.model.business.editor;
 
-
-import it.eng.spagobi.commons.resource.DefaultResourceLocator;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.business.presentation.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.model.dnd.BusinessModelDropTargetListener;
@@ -142,6 +141,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,12 +152,16 @@ import org.slf4j.LoggerFactory;
  * <!-- end-user-doc -->
  * @generated
  */
-public class CopyOfBusinessModelEditor
+public class BusinessModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
 	
-	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID";
+	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.business.editor.BusinessModelEditor";
 	
+	
+	// =============================
+	// IEditingDomainProvider
+	// =============================
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
 	 * <!-- begin-user-doc -->
@@ -166,6 +170,31 @@ public class CopyOfBusinessModelEditor
 	 */
 	protected AdapterFactoryEditingDomain editingDomain;
 
+	
+	/**
+	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
+	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}
+	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public EditingDomain getEditingDomain() {
+		return editingDomain;
+	}
+
+	protected BusinessModelResourceChangeListener resourceChangeListener;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This is the one adapter factory used for providing views of the model.
 	 * <!-- begin-user-doc -->
@@ -297,6 +326,14 @@ public class CopyOfBusinessModelEditor
 	 */
 	protected ISelection editorSelection = StructuredSelection.EMPTY;
 
+	public ISelection getEditorSelection() {
+		return editorSelection;
+	}
+
+	public void setEditorSelection(ISelection editorSelection) {
+		this.editorSelection = editorSelection;
+	}
+
 	/**
 	 * The MarkerHelper is responsible for creating workspace resource markers presented
 	 * in Eclipse's Problems View.
@@ -317,19 +354,19 @@ public class CopyOfBusinessModelEditor
 			public void partActivated(IWorkbenchPart p) {
 				if (p instanceof ContentOutline) {
 					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
-						getActionBarContributor().setActiveEditor(CopyOfBusinessModelEditor.this);
+						getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
 
 						setCurrentViewer(contentOutlineViewer);
 					}
 				}
 				else if (p instanceof PropertySheet) {
 					if (((PropertySheet)p).getCurrentPage() == propertySheetPage) {
-						getActionBarContributor().setActiveEditor(CopyOfBusinessModelEditor.this);
-						handleActivate();
+						getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
+						resourceChangeListener.handleActivate();
 					}
 				}
-				else if (p == CopyOfBusinessModelEditor.this) {
-					handleActivate();
+				else if (p == BusinessModelEditor.this) {
+					resourceChangeListener.handleActivate();
 				}
 			}
 			public void partBroughtToTop(IWorkbenchPart p) {
@@ -346,29 +383,7 @@ public class CopyOfBusinessModelEditor
 			}
 		};
 
-	/**
-	 * Resources that have been removed since last activation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Collection<Resource> removedResources = new ArrayList<Resource>();
-
-	/**
-	 * Resources that have been changed since last activation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Collection<Resource> changedResources = new ArrayList<Resource>();
-
-	/**
-	 * Resources that have been saved.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Collection<Resource> savedResources = new ArrayList<Resource>();
+	
 
 	/**
 	 * Map to store the diagnostic associated with a resource.
@@ -378,6 +393,15 @@ public class CopyOfBusinessModelEditor
 	 */
 	protected Map<Resource, Diagnostic> resourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
 
+	public Map<Resource, Diagnostic> getResourceToDiagnosticMap() {
+		return resourceToDiagnosticMap;
+	}
+
+	public void setResourceToDiagnosticMap(
+			Map<Resource, Diagnostic> resourceToDiagnosticMap) {
+		this.resourceToDiagnosticMap = resourceToDiagnosticMap;
+	}
+
 	/**
 	 * Controls whether the problem indication should be updated.
 	 * <!-- begin-user-doc -->
@@ -385,6 +409,17 @@ public class CopyOfBusinessModelEditor
 	 * @generated
 	 */
 	protected boolean updateProblemIndication = true;
+
+	public boolean isUpdateProblemIndication() {
+		return updateProblemIndication;
+	}
+
+
+
+
+	public void setUpdateProblemIndication(boolean updateProblemIndication) {
+		this.updateProblemIndication = updateProblemIndication;
+	}
 
 	/**
 	 * Adapter used to update the problem indication when resources are demanded loaded.
@@ -438,257 +473,20 @@ public class CopyOfBusinessModelEditor
 			}
 		};
 
-	/**
-	 * This listens for workspace changes.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected IResourceChangeListener resourceChangeListener =
-		new IResourceChangeListener() {
-			public void resourceChanged(IResourceChangeEvent event) {
-				IResourceDelta delta = event.getDelta();
-				try {
-					class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-						protected ResourceSet resourceSet = editingDomain.getResourceSet();
-						protected Collection<Resource> changedResources = new ArrayList<Resource>();
-						protected Collection<Resource> removedResources = new ArrayList<Resource>();
-
-						public boolean visit(IResourceDelta delta) {
-							if (delta.getResource().getType() == IResource.FILE) {
-								if (delta.getKind() == IResourceDelta.REMOVED ||
-								    delta.getKind() == IResourceDelta.CHANGED && delta.getFlags() != IResourceDelta.MARKERS) {
-									Resource resource = resourceSet.getResource(URI.createPlatformResourceURI(delta.getFullPath().toString(), true), false);
-									if (resource != null) {
-										if (delta.getKind() == IResourceDelta.REMOVED) {
-											removedResources.add(resource);
-										}
-										else if (!savedResources.remove(resource)) {
-											changedResources.add(resource);
-										}
-									}
-								}
-							}
-
-							return true;
-						}
-
-						public Collection<Resource> getChangedResources() {
-							return changedResources;
-						}
-
-						public Collection<Resource> getRemovedResources() {
-							return removedResources;
-						}
-					}
-
-					final ResourceDeltaVisitor visitor = new ResourceDeltaVisitor();
-					delta.accept(visitor);
-
-					if (!visitor.getRemovedResources().isEmpty()) {
-						getSite().getShell().getDisplay().asyncExec
-							(new Runnable() {
-								 public void run() {
-									 removedResources.addAll(visitor.getRemovedResources());
-									 if (!isDirty()) {
-										 getSite().getPage().closeEditor(CopyOfBusinessModelEditor.this, false);
-									 }
-								 }
-							 });
-					}
-
-					if (!visitor.getChangedResources().isEmpty()) {
-						getSite().getShell().getDisplay().asyncExec
-							(new Runnable() {
-								 public void run() {
-									 changedResources.addAll(visitor.getChangedResources());
-									 if (getSite().getPage().getActiveEditor() == CopyOfBusinessModelEditor.this) {
-										 handleActivate();
-									 }
-								 }
-							 });
-					}
-				}
-				catch (CoreException exception) {
-					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
-				}
-			}
-		};
+	
+	
 
 		
 		
-	private static Logger logger = LoggerFactory.getLogger(CopyOfBusinessModelEditor.class);
+	private static Logger logger = LoggerFactory.getLogger(BusinessModelEditor.class);
 	
 	
+	// =================================================================================================
 	
-	
-	
-	/**
-	 * This is called during startup.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void init(IEditorSite site, IEditorInput editorInput) {
-		setSite(site);
-		setInputWithNotify(editorInput);
-		setPartName(editorInput.getName());
-		site.setSelectionProvider(this);
-		site.getPage().addPartListener(partListener);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
-	}
-		
-	/**
-	 * Handles activation of the editor or it's associated views.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void handleActivate() {
-		// Recompute the read only state.
-		//
-		if (editingDomain.getResourceToReadOnlyMap() != null) {
-		  editingDomain.getResourceToReadOnlyMap().clear();
-
-		  // Refresh any actions that may become enabled or disabled.
-		  //
-		  setSelection(getSelection());
-		}
-
-		if (!removedResources.isEmpty()) {
-			if (handleDirtyConflict()) {
-				getSite().getPage().closeEditor(CopyOfBusinessModelEditor.this, false);
-			}
-			else {
-				removedResources.clear();
-				changedResources.clear();
-				savedResources.clear();
-			}
-		}
-		else if (!changedResources.isEmpty()) {
-			changedResources.removeAll(savedResources);
-			handleChangedResources();
-			changedResources.clear();
-			savedResources.clear();
-		}
-	}
-
-	/**
-	 * Handles what to do with changed resources on activation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void handleChangedResources() {
-		if (!changedResources.isEmpty() && (!isDirty() || handleDirtyConflict())) {
-			if (isDirty()) {
-				changedResources.addAll(editingDomain.getResourceSet().getResources());
-			}
-			editingDomain.getCommandStack().flush();
-
-			updateProblemIndication = false;
-			for (Resource resource : changedResources) {
-				if (resource.isLoaded()) {
-					resource.unload();
-					try {
-						resource.load(Collections.EMPTY_MAP);
-					}
-					catch (IOException exception) {
-						if (!resourceToDiagnosticMap.containsKey(resource)) {
-							resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
-						}
-					}
-				}
-			}
-
-			if (AdapterFactoryEditingDomain.isStale(editorSelection)) {
-				setSelection(StructuredSelection.EMPTY);
-			}
-
-			updateProblemIndication = true;
-			updateProblemIndication();
-		}
-	}
-  
-	/**
-	 * Updates the problems indication with the information described in the specified diagnostic.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void updateProblemIndication() {
-		if (updateProblemIndication) {
-			BasicDiagnostic diagnostic =
-				new BasicDiagnostic
-					(Diagnostic.OK,
-					 "it.eng.spagobi.meta.editor",
-					 0,
-					 null,
-					 new Object [] { editingDomain.getResourceSet() });
-			for (Diagnostic childDiagnostic : resourceToDiagnosticMap.values()) {
-				if (childDiagnostic.getSeverity() != Diagnostic.OK) {
-					diagnostic.add(childDiagnostic);
-				}
-			}
-
-			int lastEditorPage = getPageCount() - 1;
-			if (lastEditorPage >= 0 && getEditor(lastEditorPage) instanceof ProblemEditorPart) {
-				((ProblemEditorPart)getEditor(lastEditorPage)).setDiagnostic(diagnostic);
-				if (diagnostic.getSeverity() != Diagnostic.OK) {
-					setActivePage(lastEditorPage);
-				}
-			}
-			else if (diagnostic.getSeverity() != Diagnostic.OK) {
-				ProblemEditorPart problemEditorPart = new ProblemEditorPart();
-				problemEditorPart.setDiagnostic(diagnostic);
-				problemEditorPart.setMarkerHelper(markerHelper);
-				try {
-					addPage(++lastEditorPage, problemEditorPart, getEditorInput());
-					setPageText(lastEditorPage, problemEditorPart.getPartName());
-					setActivePage(lastEditorPage);
-					showTabs();
-				}
-				catch (PartInitException exception) {
-					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
-				}
-			}
-
-			if (markerHelper.hasMarkers(editingDomain.getResourceSet())) {
-				markerHelper.deleteMarkers(editingDomain.getResourceSet());
-				if (diagnostic.getSeverity() != Diagnostic.OK) {
-					try {
-						markerHelper.createMarkers(diagnostic);
-					}
-					catch (CoreException exception) {
-						SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Shows a dialog that asks if conflicting changes should be discarded.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected boolean handleDirtyConflict() {
-		return
-			MessageDialog.openQuestion
-				(getSite().getShell(),
-				 getString("_UI_FileConflict_label"),
-				 getString("_WARN_FileConflict"));
-	}
-
 	/**
 	 * This creates a model editor.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
-	public CopyOfBusinessModelEditor() {
+	public BusinessModelEditor() {
 		super();
 		initializeEditingDomain();
 	}
@@ -757,6 +555,222 @@ public class CopyOfBusinessModelEditor
 	}
 
 	/**
+	 * This is called during startup.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void init(IEditorSite site, IEditorInput editorInput) {
+		setSite(site);
+		setInputWithNotify(editorInput);
+		setPartName(editorInput.getName());
+		site.setSelectionProvider(this);
+		site.getPage().addPartListener(partListener);
+		Assert.assertNotNull("Editing domain cannot be null");
+		resourceChangeListener = new BusinessModelResourceChangeListener(editingDomain, this);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+	}
+	
+	/**
+	 * This is the method used by the framework to install your own controls.
+	 */
+	@Override
+	public void createPages() {
+		// Creates the model from the editor input
+		//
+		createModel();
+
+		// Only creates the pages if there is something that can be edited
+		//
+		if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
+			// Create a page for the selection tree view.
+			//
+			createSelectionTreeView();
+
+			getSite().getShell().getDisplay().asyncExec
+				(new Runnable() {
+					 public void run() {
+						 setActivePage(0);
+					 }
+				 });
+		}
+
+		// Ensures that this editor will only display the page's tab
+		// area if there are more than one page
+		//
+		getContainer().addControlListener
+			(new ControlAdapter() {
+				boolean guard = false;
+				@Override
+				public void controlResized(ControlEvent event) {
+					if (!guard) {
+						guard = true;
+						hideTabs();
+						guard = false;
+					}
+				}
+			 });
+
+		getSite().getShell().getDisplay().asyncExec
+			(new Runnable() {
+				 public void run() {
+					 updateProblemIndication();
+				 }
+			 });
+	}
+		
+	/**
+	 * This is the method called to load a resource into the editing domain's 
+	 * resource set based on the editor's input.
+	 */
+	public void createModel() {
+		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
+		Exception exception = null;
+		Resource resource = null;
+		try {
+			// Load the resource through the editing domain.
+			//
+			resource = editingDomain.getResourceSet().getResource(resourceURI, true);
+		} catch (Exception e) {
+			exception = e;
+			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
+		}
+
+		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
+		if (diagnostic.getSeverity() != Diagnostic.OK) {
+			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
+		}
+		
+		editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
+	}
+	
+	public void createSelectionTreeView() {
+		ViewerPane viewerPane =
+			new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
+				@Override
+				public Viewer createViewer(Composite composite) {
+					Tree tree = new Tree(composite, SWT.MULTI);
+					TreeViewer newTreeViewer = new TreeViewer(tree);
+					return newTreeViewer;
+				}
+				@Override
+				public void requestActivation() {
+					super.requestActivation();
+					setCurrentViewerPane(this);
+				}
+			};
+		viewerPane.createControl(getContainer());
+
+		selectionViewer = (TreeViewer)viewerPane.getViewer();
+		selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+		selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+		
+	
+		
+		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
+		
+		//selectionViewer.setInput(editingDomain.getResourceSet());
+		selectionViewer.setInput(rootObject);
+		//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+		//selectionViewer.setSelection(new StructuredSelection(ro), true);
+		viewerPane.setTitle(editingDomain.getResourceSet());
+
+		new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
+
+		createContextMenuFor(selectionViewer);
+		int pageIndex = addPage(viewerPane.getControl());
+		setPageText(pageIndex, getString("_UI_SelectionPage_label"));
+	}
+
+	
+	// =================================================================================================
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/**
+	 * Updates the problems indication with the information described in the specified diagnostic.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void updateProblemIndication() {
+		if (updateProblemIndication) {
+			BasicDiagnostic diagnostic =
+				new BasicDiagnostic
+					(Diagnostic.OK,
+					 "it.eng.spagobi.meta.editor",
+					 0,
+					 null,
+					 new Object [] { editingDomain.getResourceSet() });
+			for (Diagnostic childDiagnostic : resourceToDiagnosticMap.values()) {
+				if (childDiagnostic.getSeverity() != Diagnostic.OK) {
+					diagnostic.add(childDiagnostic);
+				}
+			}
+
+			int lastEditorPage = getPageCount() - 1;
+			if (lastEditorPage >= 0 && getEditor(lastEditorPage) instanceof ProblemEditorPart) {
+				((ProblemEditorPart)getEditor(lastEditorPage)).setDiagnostic(diagnostic);
+				if (diagnostic.getSeverity() != Diagnostic.OK) {
+					setActivePage(lastEditorPage);
+				}
+			}
+			else if (diagnostic.getSeverity() != Diagnostic.OK) {
+				ProblemEditorPart problemEditorPart = new ProblemEditorPart();
+				problemEditorPart.setDiagnostic(diagnostic);
+				problemEditorPart.setMarkerHelper(markerHelper);
+				try {
+					addPage(++lastEditorPage, problemEditorPart, getEditorInput());
+					setPageText(lastEditorPage, problemEditorPart.getPartName());
+					setActivePage(lastEditorPage);
+					showTabs();
+				}
+				catch (PartInitException exception) {
+					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+				}
+			}
+
+			if (markerHelper.hasMarkers(editingDomain.getResourceSet())) {
+				markerHelper.deleteMarkers(editingDomain.getResourceSet());
+				if (diagnostic.getSeverity() != Diagnostic.OK) {
+					try {
+						markerHelper.createMarkers(diagnostic);
+					}
+					catch (CoreException exception) {
+						SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Shows a dialog that asks if conflicting changes should be discarded.
+	 * @generated
+	 */
+	protected boolean handleDirtyConflict() {
+		return
+			MessageDialog.openQuestion
+				(getSite().getShell(),
+				 getString("_UI_FileConflict_label"),
+				 getString("_WARN_FileConflict"));
+	}
+
+	
+	/**
 	 * This is here for the listener to be able to call it.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -792,76 +806,9 @@ public class CopyOfBusinessModelEditor
 		}
 	}
 
-	/**
-	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
-	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}
-	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EditingDomain getEditingDomain() {
-		return editingDomain;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public class ReverseAdapterFactoryContentProvider extends AdapterFactoryContentProvider {
-		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		public ReverseAdapterFactoryContentProvider(AdapterFactory adapterFactory) {
-			super(adapterFactory);
-		}
-
-		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		@Override
-		public Object [] getElements(Object object) {
-			Object parent = super.getParent(object);
-			return (parent == null ? Collections.EMPTY_SET : Collections.singleton(parent)).toArray();
-		}
-
-		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		@Override
-		public Object [] getChildren(Object object) {
-			Object parent = super.getParent(object);
-			return (parent == null ? Collections.EMPTY_SET : Collections.singleton(parent)).toArray();
-		}
-
-		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		@Override
-		public boolean hasChildren(Object object) {
-			Object parent = super.getParent(object);
-			return parent != null;
-		}
-
-		/**
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		@Override
-		public Object getParent(Object object) {
-			return null;
-		}
-	}
+	
+	
+	
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -969,33 +916,7 @@ public class CopyOfBusinessModelEditor
 		
 	}
 
-	/**
-	 * This is the method called to load a resource into the editing domain's resource set based on the editor's input.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 */
-	public void createModel() {
-		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
-		Exception exception = null;
-		Resource resource = null;
-		try {
-			// Load the resource through the editing domain.
-			//
-			resource = editingDomain.getResourceSet().getResource(resourceURI, true);
-		}
-		catch (Exception e) {
-			exception = e;
-			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
-		}
-
-		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
-		if (diagnostic.getSeverity() != Diagnostic.OK) {
-			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
-		}
-		editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
-	}
+	
 
 	/**
 	 * Returns a diagnostic describing the errors and warnings listed in the resource
@@ -1030,261 +951,7 @@ public class CopyOfBusinessModelEditor
 		}
 	}
 
-	/**
-	 * This is the method used by the framework to install your own controls.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 */
-	@Override
-	public void createPages() {
-		// Creates the model from the editor input
-		//
-		createModel();
-
-		// Only creates the other pages if there is something that can be edited
-		//
-		if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
-			// Create a page for the selection tree view.
-			//
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), CopyOfBusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							Tree tree = new Tree(composite, SWT.MULTI);
-							TreeViewer newTreeViewer = new TreeViewer(tree);
-							return newTreeViewer;
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-
-				selectionViewer = (TreeViewer)viewerPane.getViewer();
-				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-				
-			
-				
-				URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
-				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
-				
-				//selectionViewer.setInput(editingDomain.getResourceSet());
-				selectionViewer.setInput(rootObject);
-				//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
-				//selectionViewer.setSelection(new StructuredSelection(ro), true);
-				viewerPane.setTitle(editingDomain.getResourceSet());
-
-				new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
-
-				createContextMenuFor(selectionViewer);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_SelectionPage_label"));
-			}
-
-			// Create a page for the parent tree view.
-			//
-			/*
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							Tree tree = new Tree(composite, SWT.MULTI);
-							TreeViewer newTreeViewer = new TreeViewer(tree);
-							return newTreeViewer;
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-
-				parentViewer = (TreeViewer)viewerPane.getViewer();
-				parentViewer.setAutoExpandLevel(30);
-				parentViewer.setContentProvider(new ReverseAdapterFactoryContentProvider(adapterFactory));
-				parentViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-
-				createContextMenuFor(parentViewer);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_ParentPage_label"));
-			}
-
-			// This is the page for the list viewer
-			//
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							return new ListViewer(composite);
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-				listViewer = (ListViewer)viewerPane.getViewer();
-				listViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-				listViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-
-				createContextMenuFor(listViewer);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_ListPage_label"));
-			}
-
-			// This is the page for the tree viewer
-			//
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							return new TreeViewer(composite);
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-				treeViewer = (TreeViewer)viewerPane.getViewer();
-				treeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-				treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-
-				new AdapterFactoryTreeEditor(treeViewer.getTree(), adapterFactory);
-
-				createContextMenuFor(treeViewer);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_TreePage_label"));
-			}
-
-			// This is the page for the table viewer.
-			//
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							return new TableViewer(composite);
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-				tableViewer = (TableViewer)viewerPane.getViewer();
-
-				Table table = tableViewer.getTable();
-				TableLayout layout = new TableLayout();
-				table.setLayout(layout);
-				table.setHeaderVisible(true);
-				table.setLinesVisible(true);
-
-				TableColumn objectColumn = new TableColumn(table, SWT.NONE);
-				layout.addColumnData(new ColumnWeightData(3, 100, true));
-				objectColumn.setText(getString("_UI_ObjectColumn_label"));
-				objectColumn.setResizable(true);
-
-				TableColumn selfColumn = new TableColumn(table, SWT.NONE);
-				layout.addColumnData(new ColumnWeightData(2, 100, true));
-				selfColumn.setText(getString("_UI_SelfColumn_label"));
-				selfColumn.setResizable(true);
-
-				tableViewer.setColumnProperties(new String [] {"a", "b"});
-				tableViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-				tableViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-
-				createContextMenuFor(tableViewer);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_TablePage_label"));
-			}
-
-			// This is the page for the table tree viewer.
-			//
-			{
-				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
-						@Override
-						public Viewer createViewer(Composite composite) {
-							return new TreeViewer(composite);
-						}
-						@Override
-						public void requestActivation() {
-							super.requestActivation();
-							setCurrentViewerPane(this);
-						}
-					};
-				viewerPane.createControl(getContainer());
-
-				treeViewerWithColumns = (TreeViewer)viewerPane.getViewer();
-
-				Tree tree = treeViewerWithColumns.getTree();
-				tree.setLayoutData(new FillLayout());
-				tree.setHeaderVisible(true);
-				tree.setLinesVisible(true);
-
-				TreeColumn objectColumn = new TreeColumn(tree, SWT.NONE);
-				objectColumn.setText(getString("_UI_ObjectColumn_label"));
-				objectColumn.setResizable(true);
-				objectColumn.setWidth(250);
-
-				TreeColumn selfColumn = new TreeColumn(tree, SWT.NONE);
-				selfColumn.setText(getString("_UI_SelfColumn_label"));
-				selfColumn.setResizable(true);
-				selfColumn.setWidth(200);
-
-				treeViewerWithColumns.setColumnProperties(new String [] {"a", "b"});
-				treeViewerWithColumns.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-				treeViewerWithColumns.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-
-				createContextMenuFor(treeViewerWithColumns);
-				int pageIndex = addPage(viewerPane.getControl());
-				setPageText(pageIndex, getString("_UI_TreeWithColumnsPage_label"));
-			}
-			*/
-			getSite().getShell().getDisplay().asyncExec
-				(new Runnable() {
-					 public void run() {
-						 setActivePage(0);
-					 }
-				 });
-		}
-
-		// Ensures that this editor will only display the page's tab
-		// area if there are more than one page
-		//
-		getContainer().addControlListener
-			(new ControlAdapter() {
-				boolean guard = false;
-				@Override
-				public void controlResized(ControlEvent event) {
-					if (!guard) {
-						guard = true;
-						hideTabs();
-						guard = false;
-					}
-				}
-			 });
-
-		getSite().getShell().getDisplay().asyncExec
-			(new Runnable() {
-				 public void run() {
-					 updateProblemIndication();
-				 }
-			 });
-	}
+	
 
 	/**
 	 * If there is just one page in the multi-page editor part,
@@ -1436,8 +1103,8 @@ public class CopyOfBusinessModelEditor
 				new ExtendedPropertySheetPage(editingDomain) {
 					@Override
 					public void setSelectionToViewer(List<?> selection) {
-						CopyOfBusinessModelEditor.this.setSelectionToViewer(selection);
-						CopyOfBusinessModelEditor.this.setFocus();
+						BusinessModelEditor.this.setSelectionToViewer(selection);
+						BusinessModelEditor.this.setFocus();
 					}
 
 					@Override
@@ -1547,7 +1214,7 @@ public class CopyOfBusinessModelEditor
 								logger.debug("Save command executed on resource");
 								if (resource.getTimeStamp() != timeStamp) {
 									logger.debug("Resource modifications has been saved on file");
-									savedResources.add(resource);
+									resourceChangeListener.getSavedResources().add(resource);
 								}
 							}
 							catch (Exception exception) {

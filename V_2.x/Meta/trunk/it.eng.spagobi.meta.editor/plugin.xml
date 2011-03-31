@@ -99,12 +99,12 @@
 
    <extension point="org.eclipse.ui.editors">
       <editor
-            id="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID"
+            id="it.eng.spagobi.meta.model.business.editor.BusinessModelEditor"
             name="%_UI_BusinessModelEditor_label"
             icon="icons/full/obj16/SpagoBIBusinessModelFile.gif"
             extensions="sbibusinessmodel"
-            class="it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor"
-            contributorClass="it.eng.spagobi.meta.model.business.presentation.BusinessModelActionBarContributor">
+            class="it.eng.spagobi.meta.model.business.editor.BusinessModelEditor"
+            contributorClass="it.eng.spagobi.meta.model.business.editor.contributor.BusinessModelActionBarContributor">
       </editor>
    </extension>
 

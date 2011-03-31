@@ -23,11 +23,15 @@ package it.eng.spagobi.meta.model.presentation;
 
 
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.model.business.presentation.BusinessModelEditor;
+import it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -44,6 +48,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.MultiEditor;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,31 +66,66 @@ public class SpagoBIModelEditor extends MultiEditor {
 	
 	
 	private boolean firstEditor = true;
-	private Label closeLbl;
+	private Label expandCollapseButton;
 	private Image iconCollapse, iconExpand;
 	
-	public static final String PLUGIN_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
+	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.presentation.SpagoBIModelEditorID";
+	public static final int LEFT = 0;
+	public static final int RIGHT = 1;
 	
-	private static Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	private static final Logger logger = LoggerFactory.getLogger(SpagoBIMetaEditorPlugin.class);
 	
 	
 	@Override
 	public void createPartControl(Composite parentContainer) {
 		
+		PhysicalModelEditor physicalModelEditor;
+		BusinessModelEditor businessModelEditor;
+		
 		logger.trace("IN");
 		
 		innerEditors = getInnerEditors();
+		Assert.assertTrue("Multi editor [" + SpagoBIModelEditor.class.getName() + "] cannot be composed by [" + innerEditors.length + " inner editors]", innerEditors.length == 2);
+		
+		physicalModelEditor = null;
+		businessModelEditor = null;
+		for (int i = 0; i < innerEditors.length; i++) {
+			if(innerEditors[i] instanceof PhysicalModelEditor) {
+				physicalModelEditor = (PhysicalModelEditor)innerEditors[i];
+			} else if(innerEditors[i] instanceof BusinessModelEditor) {
+				businessModelEditor = (BusinessModelEditor)innerEditors[i];
+			} else {
+				throw new SpagoBIPluginException("Multi editor [" + SpagoBIModelEditor.class.getName() + "] cannot contain an inner editor of type [" + innerEditors[i].getClass().getName() + "]");
+			}
+			logger.debug("Inner editor at index [" + i + "] is equal to [" + innerEditors[0].getClass().getName() + "]");
+		}
+		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + PhysicalModelEditor.class.getName() + " inner editors]", physicalModelEditor);
+		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + BusinessModelEditor.class.getName() + " inner editors]", businessModelEditor);
+		
+		if(RL.getPropertyAsString("model.presentation.lefteditor.width", "business").equalsIgnoreCase("business")) {
+			innerEditors[LEFT] = businessModelEditor;
+			innerEditors[RIGHT] = physicalModelEditor;
+		} else {
+			innerEditors[LEFT] = physicalModelEditor;
+			innerEditors[RIGHT] = businessModelEditor;
+		}
+		
+		innerEditorWrapperContainers =  new Control[ innerEditors.length ];
+		innerEditorTitle = new CLabel[ innerEditors.length ];
 		
 		Composite mainContainer = new Composite(parentContainer, SWT.BORDER);
 		mainContainer.setLayout(new FillLayout());
 		splitContainer = new SashForm(mainContainer, SWT.HORIZONTAL);
-		
-		innerEditorWrapperContainers =  new Control[ innerEditors.length ];
-		                      
+                   
 		for (int i = 0; i < innerEditors.length; i++) {
 			createInnerEditorContainer(i, splitContainer);
 		}
-		splitContainer.setWeights(new int[]{80,20});
+		
+		splitContainer.setWeights(new int[]{
+			RL.getPropertyAsInteger("model.presentation.lefteditor.width", 80),
+			RL.getPropertyAsInteger("model.presentation.righteditor.width", 20)
+		});
 	}
 	
 	protected void createInnerEditorContainer(int innerEditorIndex, Composite parentContainer) {
@@ -104,80 +144,76 @@ public class SpagoBIModelEditor extends MultiEditor {
 		innerEditorContainer = createInnerPartControl(innerEditorWrapperContainer, innerEditor);
 		innerEditorWrapperContainer.setContent(innerEditorContainer);
 		
-		updateInnerEditorTitle(innerEditor, innerEditorTitle[innerEditorIndex]);
+		refreshInnerEditorTitle(innerEditor, innerEditorTitle[innerEditorIndex]);
 		
 		final int index = innerEditorIndex;
 		innerEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int property) {
 				if (property == IEditorPart.PROP_DIRTY || property == IWorkbenchPart.PROP_TITLE)
 					if (source instanceof IEditorPart)
-						updateInnerEditorTitle((IEditorPart) source, innerEditorTitle[index]);
+						refreshInnerEditorTitle((IEditorPart) source, innerEditorTitle[index]);
 			}
 		});
 	}
 	
-	protected void createInnerEditorTitle(int index, ViewForm parent) {
-		CLabel titleLabel = new CLabel(parent, SWT.SHADOW_NONE);
+	protected void createInnerEditorTitle(int index, ViewForm innerEditorWrapperContainer) {
+		CLabel titleLabel;
+		
+		titleLabel = new CLabel(innerEditorWrapperContainer, SWT.SHADOW_NONE);
 		//hookFocus(titleLabel);
 		titleLabel.setAlignment(SWT.LEFT);
 		titleLabel.setBackground(null, null);
-		parent.setTopLeft(titleLabel);
+		innerEditorWrapperContainer.setTopLeft(titleLabel);
 		
-		
-		ImageDescriptor imageDescriptorExpand = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("expand"));
-		iconExpand = imageDescriptorExpand.createImage();
-		
-		ImageDescriptor imageDescriptorCollapse = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("collapse"));
-		iconCollapse = imageDescriptorCollapse.createImage();
-		
-		
+		iconExpand = ImageDescriptor.createFromURL( (URL)RL.getImage("model.presentation.button.expand") ).createImage(); 	
+		iconCollapse = ImageDescriptor.createFromURL( (URL)RL.getImage("model.presentation.button.collapse") ).createImage(); 
+
 		//create image and listener to hide physical model editor
 		if (firstEditor == true) {
-			closeLbl = new Label(parent, SWT.NONE);
-			closeLbl.setImage(iconExpand);
-			parent.setTopRight(closeLbl);
+			expandCollapseButton = new Label(innerEditorWrapperContainer, SWT.NONE);
+			expandCollapseButton.setImage(iconExpand);
+			innerEditorWrapperContainer.setTopRight(expandCollapseButton);
 			
-			closeLbl.addMouseListener(new MouseListener() {
-		        public void mouseDoubleClick(MouseEvent e) {
-
-		        }
+			expandCollapseButton.addMouseListener(new MouseListener() {
+		        public void mouseDoubleClick(MouseEvent e) { }
 
 		        public void mouseDown(MouseEvent e) {
-		            if(splitContainer.getMaximizedControl() == innerEditorWrapperContainers[0]){
-				           splitContainer.setMaximizedControl(null);	
-				           closeLbl.setImage(iconExpand);
-			            }
-			            else {
-				           splitContainer.setMaximizedControl(innerEditorWrapperContainers[0]);
-				           closeLbl.setImage(iconCollapse);
-			            }		        	
+		        	if(splitContainer.getMaximizedControl() == innerEditorWrapperContainers[0]){
+		        		splitContainer.setMaximizedControl(null);	
+				        expandCollapseButton.setImage(iconExpand);
+			        } else {
+				        splitContainer.setMaximizedControl(innerEditorWrapperContainers[0]);
+				        expandCollapseButton.setImage(iconCollapse);
+			        }		        	
 		        }
 
-		        public void mouseUp(MouseEvent e) {
-		        }
+		        public void mouseUp(MouseEvent e) { }
 		    });
 			
 			firstEditor = false;
 		}
 
-		if (innerEditorTitle == null)
-			innerEditorTitle = new CLabel[getInnerEditors().length];
 		innerEditorTitle[index] = titleLabel;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void refreshInnerEditorTitle(IEditorPart editor, CLabel label) {
+		
+		if((label == null) || label.isDisposed()) return;
+		
+		String title = editor.getTitle();
+		if (editor.isDirty()) {
+			title = "*" + title; //$NON-NLS-1$
+		}
+		label.setText(title);
+		
+		Image image = editor.getTitleImage();
+		if (image != null && !image.equals(label.getImage())) {
+			label.setImage(image);
+		}
+		
+		label.setToolTipText(editor.getTitleToolTip());
+	}
+
 	
 	
 	
@@ -187,41 +223,21 @@ public class SpagoBIModelEditor extends MultiEditor {
 		super.doSave(progressMonitor);
 		logger.trace("OUT");
 	}
-	
-	
-	
-	
 
-	/**
-	 * Draw the gradient for the specified editor.
-	 */
+	
+	
+	
+	
 	protected void drawGradient(IEditorPart innerEditor, Gradient g) {
 		CLabel label = innerEditorTitle[getIndex(innerEditor)];
-		if((label == null) || label.isDisposed())
-			return;
+		if((label == null) || label.isDisposed()) return;
 			
 		label.setForeground(g.fgColor);
 		label.setBackground(g.bgColors, g.bgPercents);
 	}
 	
 	
-	/*
-	 * Update the tab for an editor.  This is typically called
-	 * by a site when the tab title changes.
-	 */
-	public void updateInnerEditorTitle(IEditorPart editor, CLabel label) {
-		if((label == null) || label.isDisposed())
-			return;
-		String title = editor.getTitle();
-		if (editor.isDirty())
-			title = "*" + title; //$NON-NLS-1$
-		label.setText(title);
-		Image image = editor.getTitleImage();
-		if (image != null)
-			if (!image.equals(label.getImage()))
-				label.setImage(image);
-		label.setToolTipText(editor.getTitleToolTip());
-	}
+	
 	
 	protected int getIndex(IEditorPart editor) {
 		IEditorPart innerEditors[] = getInnerEditors();
@@ -232,11 +248,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 		return -1;
 	}
 
-	
-	
-	
-	
-	
 	/*
 	private PropertySheetPage propertySheetPage;
 	public IPropertySheetPage getPropertySheetPage() {

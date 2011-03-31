@@ -43,8 +43,8 @@ public class SpagoBIModelInput extends MultiEditorInput {
 		
 		super(
 			new String[]{
-				BusinessModelEditor.PLUGIN_ID,
-				PhysicalModelEditor.PLUGIN_ID
+				BusinessModelEditor.EDITOR_ID,
+				PhysicalModelEditor.EDITOR_ID
 			},
 			new IEditorInput[]{
 				new BusinessModelInput(modelFile, spagobiModel.getBusinessModels().get(0)),

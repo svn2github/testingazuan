@@ -385,7 +385,7 @@ public class SpagoBIModelWizard  extends Wizard implements INewWizard {
 				
 				
 				page.openEditor( 
-						new SpagoBIModelInput(modelFile, spagobiModel) , SpagoBIModelEditor.PLUGIN_ID					     
+						new SpagoBIModelInput(modelFile, spagobiModel) , SpagoBIModelEditor.EDITOR_ID					     
 				);
 			}
 			catch (PartInitException exception) {

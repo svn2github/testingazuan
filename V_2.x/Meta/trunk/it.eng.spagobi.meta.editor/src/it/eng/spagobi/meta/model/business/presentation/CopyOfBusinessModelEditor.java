@@ -1,20 +1,37 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
- */
-package it.eng.spagobi.meta.model.physical.presentation;
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
+package it.eng.spagobi.meta.model.business.presentation;
 
 
+import it.eng.spagobi.commons.resource.DefaultResourceLocator;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.dnd.PhysicalObjectDragListener;
+import it.eng.spagobi.meta.model.dnd.BusinessModelDragSourceListener;
+import it.eng.spagobi.meta.model.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.model.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.presentation.PhysicalModelInput;
+import it.eng.spagobi.meta.model.presentation.BusinessModelInput;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
 
 import java.io.IOException;
@@ -82,6 +99,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -97,6 +115,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
@@ -123,21 +142,22 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
- * This is an example of a PhysicalModel model editor.
+ * This is an example of a BusinessModel model editor.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class PhysicalModelEditor
+public class CopyOfBusinessModelEditor
 	extends MultiPageEditorPart
 	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
 	
-	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.physical.presentation.PhysicalModelEditorID";
-
-
+	public static final String EDITOR_ID = "it.eng.spagobi.meta.model.business.presentation.BusinessModelEditorID";
+	
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
 	 * <!-- begin-user-doc -->
@@ -297,18 +317,18 @@ public class PhysicalModelEditor
 			public void partActivated(IWorkbenchPart p) {
 				if (p instanceof ContentOutline) {
 					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
-						getActionBarContributor().setActiveEditor(PhysicalModelEditor.this);
+						getActionBarContributor().setActiveEditor(CopyOfBusinessModelEditor.this);
 
 						setCurrentViewer(contentOutlineViewer);
 					}
 				}
 				else if (p instanceof PropertySheet) {
 					if (((PropertySheet)p).getCurrentPage() == propertySheetPage) {
-						getActionBarContributor().setActiveEditor(PhysicalModelEditor.this);
+						getActionBarContributor().setActiveEditor(CopyOfBusinessModelEditor.this);
 						handleActivate();
 					}
 				}
-				else if (p == PhysicalModelEditor.this) {
+				else if (p == CopyOfBusinessModelEditor.this) {
 					handleActivate();
 				}
 			}
@@ -471,7 +491,7 @@ public class PhysicalModelEditor
 								 public void run() {
 									 removedResources.addAll(visitor.getRemovedResources());
 									 if (!isDirty()) {
-										 getSite().getPage().closeEditor(PhysicalModelEditor.this, false);
+										 getSite().getPage().closeEditor(CopyOfBusinessModelEditor.this, false);
 									 }
 								 }
 							 });
@@ -482,7 +502,7 @@ public class PhysicalModelEditor
 							(new Runnable() {
 								 public void run() {
 									 changedResources.addAll(visitor.getChangedResources());
-									 if (getSite().getPage().getActiveEditor() == PhysicalModelEditor.this) {
+									 if (getSite().getPage().getActiveEditor() == CopyOfBusinessModelEditor.this) {
 										 handleActivate();
 									 }
 								 }
@@ -495,6 +515,30 @@ public class PhysicalModelEditor
 			}
 		};
 
+		
+		
+	private static Logger logger = LoggerFactory.getLogger(CopyOfBusinessModelEditor.class);
+	
+	
+	
+	
+	
+	/**
+	 * This is called during startup.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void init(IEditorSite site, IEditorInput editorInput) {
+		setSite(site);
+		setInputWithNotify(editorInput);
+		setPartName(editorInput.getName());
+		site.setSelectionProvider(this);
+		site.getPage().addPartListener(partListener);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+	}
+		
 	/**
 	 * Handles activation of the editor or it's associated views.
 	 * <!-- begin-user-doc -->
@@ -514,7 +558,7 @@ public class PhysicalModelEditor
 
 		if (!removedResources.isEmpty()) {
 			if (handleDirtyConflict()) {
-				getSite().getPage().closeEditor(PhysicalModelEditor.this, false);
+				getSite().getPage().closeEditor(CopyOfBusinessModelEditor.this, false);
 			}
 			else {
 				removedResources.clear();
@@ -644,7 +688,7 @@ public class PhysicalModelEditor
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PhysicalModelEditor() {
+	public CopyOfBusinessModelEditor() {
 		super();
 		initializeEditingDomain();
 	}
@@ -656,6 +700,7 @@ public class PhysicalModelEditor
 	 * 
 	 */
 	protected void initializeEditingDomain() {
+		
 		// Create an adapter factory that yields item providers.
 		//
 		adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
@@ -669,15 +714,8 @@ public class PhysicalModelEditor
 		adapterFactory.addAdapterFactory(new AnalyticalModelItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 
-		//MOD by M.C
-		//using TransactionalEditingDomain shared between two editor 
-		
-		// Create a transactional editing domain
-	    //
-	    //TransactionalEditingDomain domain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
-	    //domain.setID("it.eng.spagobi.meta.model.editor.EditingDomain");
-	    //adding editing domain to Registry
-	    //TransactionalEditingDomain.Registry.INSTANCE.add("it.eng.spagobi.meta.model.editor.EditingDomain", domain);
+		//TransactionalEditingDomain domain = TransactionalEditingDomain.Registry.INSTANCE.getEditingDomain(
+	    //    "it.eng.spagobi.meta.model.editor.EditingDomain");
 		
 		// Create the command stack that will notify this editor as commands are executed.
 		//
@@ -686,7 +724,7 @@ public class PhysicalModelEditor
 		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with focus.
 		//
 		commandStack.addCommandStackListener
-	    //domain.getCommandStack().addCommandStackListener
+		// domain.getCommandStack().addCommandStackListener
 			(new CommandStackListener() {
 				 public void commandStackChanged(final EventObject event) {
 					 getContainer().getDisplay().asyncExec
@@ -711,8 +749,10 @@ public class PhysicalModelEditor
 		// Create the editing domain with a special command stack.
 		//
 		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, new HashMap<Resource, Boolean>());
-	    //editingDomain = (AdapterFactoryEditingDomain) domain;
-	   
+		
+		
+		//using shared TransactionalEditingDomain
+		//editingDomain = (AdapterFactoryEditingDomain) domain;
 
 	}
 
@@ -916,11 +956,17 @@ public class PhysicalModelEditor
 		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
 		*/
 		
-		//set drag source
-		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[]{TextTransfer.getInstance()};
-		DragSourceListener dragSourceListener = new PhysicalObjectDragListener(viewer);
-		viewer.addDragSupport(operations, transferTypes, dragSourceListener);
+		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
+
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
+		//set drop target
+		DropTargetListener dropTargetListener = new BusinessModelDropTargetListener(viewer, rootObject,editingDomain);
+		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, dropTargetListener);
+		//set dragSource (drag in the same tree)
+		DragSourceListener dragSourceListener = new BusinessModelDragSourceListener(viewer, rootObject);
+		viewer.addDragSupport(DND.DROP_MOVE,  new Transfer[] {LocalSelectionTransfer.getTransfer()}, dragSourceListener);
+		
 	}
 
 	/**
@@ -931,8 +977,7 @@ public class PhysicalModelEditor
 	 */
 	public void createModel() {
 		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		URI resourceURI = ((PhysicalModelInput)getEditorInput()).getResourceFileURI();
-		
+		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
 		Exception exception = null;
 		Resource resource = null;
 		try {
@@ -1004,7 +1049,7 @@ public class PhysicalModelEditor
 			//
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), CopyOfBusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							Tree tree = new Tree(composite, SWT.MULTI);
@@ -1021,17 +1066,17 @@ public class PhysicalModelEditor
 
 				selectionViewer = (TreeViewer)viewerPane.getViewer();
 				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 				
-				URI rootObjectURI = ((PhysicalModelInput)getEditorInput()).getRootObjectURI();
+			
+				
+				URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
 				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 				
 				//selectionViewer.setInput(editingDomain.getResourceSet());
 				selectionViewer.setInput(rootObject);
-				
-				//selectionViewer.setInput(editingDomain.getResourceSet());
 				//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+				//selectionViewer.setSelection(new StructuredSelection(ro), true);
 				viewerPane.setTitle(editingDomain.getResourceSet());
 
 				new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
@@ -1040,12 +1085,13 @@ public class PhysicalModelEditor
 				int pageIndex = addPage(viewerPane.getControl());
 				setPageText(pageIndex, getString("_UI_SelectionPage_label"));
 			}
-			/*
+
 			// Create a page for the parent tree view.
 			//
+			/*
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							Tree tree = new Tree(composite, SWT.MULTI);
@@ -1070,12 +1116,11 @@ public class PhysicalModelEditor
 				setPageText(pageIndex, getString("_UI_ParentPage_label"));
 			}
 
-			
 			// This is the page for the list viewer
 			//
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							return new ListViewer(composite);
@@ -1100,7 +1145,7 @@ public class PhysicalModelEditor
 			//
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							return new TreeViewer(composite);
@@ -1127,7 +1172,7 @@ public class PhysicalModelEditor
 			//
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							return new TableViewer(composite);
@@ -1170,7 +1215,7 @@ public class PhysicalModelEditor
 			//
 			{
 				ViewerPane viewerPane =
-					new ViewerPane(getSite().getPage(), PhysicalModelEditor.this) {
+					new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
 						@Override
 						public Viewer createViewer(Composite composite) {
 							return new TreeViewer(composite);
@@ -1209,7 +1254,6 @@ public class PhysicalModelEditor
 				setPageText(pageIndex, getString("_UI_TreeWithColumnsPage_label"));
 			}
 			*/
-
 			getSite().getShell().getDisplay().asyncExec
 				(new Runnable() {
 					 public void run() {
@@ -1384,7 +1428,7 @@ public class PhysicalModelEditor
 	 * This accesses a cached version of the property sheet.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	public IPropertySheetPage getPropertySheetPage() {
 		if (propertySheetPage == null) {
@@ -1392,8 +1436,8 @@ public class PhysicalModelEditor
 				new ExtendedPropertySheetPage(editingDomain) {
 					@Override
 					public void setSelectionToViewer(List<?> selection) {
-						PhysicalModelEditor.this.setSelectionToViewer(selection);
-						PhysicalModelEditor.this.setFocus();
+						CopyOfBusinessModelEditor.this.setSelectionToViewer(selection);
+						CopyOfBusinessModelEditor.this.setFocus();
 					}
 
 					@Override
@@ -1402,7 +1446,8 @@ public class PhysicalModelEditor
 						getActionBarContributor().shareGlobalActions(this, actionBars);
 					}
 				};
-			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 
 		return propertySheetPage;
@@ -1447,6 +1492,17 @@ public class PhysicalModelEditor
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * This is for implementing {@link IEditorPart} and simply tests the command stack.
 	 * <!-- begin-user-doc -->
@@ -1466,8 +1522,7 @@ public class PhysicalModelEditor
 	 */
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
-		// Save only resources that have actually changed.
-		//
+		logger.trace("IN");
 		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();
 		//saveOptions.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
 
@@ -1483,15 +1538,20 @@ public class PhysicalModelEditor
 					//
 					boolean first = true;
 					for (Resource resource : editingDomain.getResourceSet().getResources()) {
+						logger.debug("Resource: " + resource.getURI());
 						if ((first || !resource.getContents().isEmpty() || isPersisted(resource)) && !editingDomain.isReadOnly(resource)) {
+							logger.debug("Resource can be saved");
 							try {
 								long timeStamp = resource.getTimeStamp();
 								resource.save(saveOptions);
+								logger.debug("Save command executed on resource");
 								if (resource.getTimeStamp() != timeStamp) {
+									logger.debug("Resource modifications has been saved on file");
 									savedResources.add(resource);
 								}
 							}
 							catch (Exception exception) {
+								logger.debug("Impossible to save resource " + resource.getURI());
 								resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
 							}
 							first = false;
@@ -1518,6 +1578,8 @@ public class PhysicalModelEditor
 		}
 		updateProblemIndication = true;
 		updateProblemIndication();
+		
+		logger.trace("OUT");
 	}
 
 	/**
@@ -1611,22 +1673,7 @@ public class PhysicalModelEditor
 		}
 	}
 
-	/**
-	 * This is called during startup.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void init(IEditorSite site, IEditorInput editorInput) {
-		setSite(site);
-		setInputWithNotify(editorInput);
-		setPartName(editorInput.getName());
-		site.setSelectionProvider(this);
-		site.getPage().addPartListener(partListener);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
-	}
-
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1817,5 +1864,19 @@ public class PhysicalModelEditor
 	 */
 	protected boolean showOutlineView() {
 		return true;
+	}
+	
+	/**
+	 * @param selectionViewer the selectionViewer to set
+	 */
+	public void setSelectionViewer(TreeViewer selectionViewer) {
+		this.selectionViewer = selectionViewer;
+	}
+
+	/**
+	 * @return the selectionViewer
+	 */
+	public TreeViewer getSelectionViewer() {
+		return selectionViewer;
 	}
 }

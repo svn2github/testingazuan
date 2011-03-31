@@ -123,7 +123,7 @@ public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try {
 			logger.debug("Open editor on medel [{}]", editorInput.getName());
-			page.openEditor( editorInput , SpagoBIModelEditor.PLUGIN_ID );
+			page.openEditor( editorInput , SpagoBIModelEditor.EDITOR_ID);
 		} catch (PartInitException exception) {
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
 		}

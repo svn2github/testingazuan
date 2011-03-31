@@ -21,8 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
+import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;
@@ -50,27 +55,26 @@ public class Connection implements IConnection
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException {
-//		
-//		String datamartName = connProperties.getProperty("datamart_name");
-//		File qbeDataMartDir = new File(connProperties.getProperty("resource_folder"));
-//		
-//		QbeCoreSettings.getInstance().setQbeDataMartDir(qbeDataMartDir);
-//		
-//		List<String> dataMartNames = new ArrayList<String>();
-//		dataMartNames.add( datamartName );
-//		
-//		DBConnection connection = new DBConnection();
-//		connection.setName( datamartName );
-//		connection.setDialect( connProperties.getProperty("database_dialect") );			
-//		connection.setJndiName( null );			
-//		connection.setDriverClass( connProperties.getProperty("database_driver") );			
-//		connection.setPassword( connProperties.getProperty("database_password") );
-//		connection.setUrl( connProperties.getProperty("database_url") );
-//		connection.setUsername( connProperties.getProperty("database_user") );	
-//		
-//		datasource = DataSourceFactory.buildDataSource(datamartName, datamartName, dataMartNames, null, connection);
-//		datasource.setDataMartModelAccessModality(new DataMartModelAccessModality());
-	    
+		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
+		
+		String modelName = connProperties.getProperty("datamart_name");
+		List<String> modelNames = new ArrayList<String>();
+		modelNames.add( modelName );
+	
+		DBConnection connection = new DBConnection();
+		connection.setName( modelName );
+		connection.setDialect( connProperties.getProperty("database_dialect") );			
+		connection.setJndiName( null );			
+		connection.setDriverClass( connProperties.getProperty("database_driver") );			
+		connection.setPassword( connProperties.getProperty("database_password") );
+		connection.setUrl( connProperties.getProperty("database_url") );
+		connection.setUsername( connProperties.getProperty("database_user") );	
+
+		dataSourceProperties.put("connection", connection);
+		dataSourceProperties.put("dblinkMap", new HashMap());
+		datasource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
+
+		
 		m_isOpen = true;        
  	}
 

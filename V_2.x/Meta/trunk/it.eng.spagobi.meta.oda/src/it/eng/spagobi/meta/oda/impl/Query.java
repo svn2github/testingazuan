@@ -25,6 +25,7 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
@@ -61,11 +62,12 @@ public class Query implements IQuery {
 	private static Logger logger = LoggerFactory.getLogger(Query.class);
 
 	private int m_maxRows;
+	private String queryString;
 	IDataSource datasource;
     private it.eng.qbe.query.Query query;
     IDataStore datsStore;
-	
-    public Query(IDataSource datasource) {
+
+	public Query(IDataSource datasource) {
     	this.datasource = datasource;
 		logger.debug("ODA Query created, datasource is [{}]",this.datasource);
     }
@@ -74,20 +76,20 @@ public class Query implements IQuery {
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
 	public void prepare(String queryText) throws OdaException {
+		logger.debug("Open query "+ queryText);
 		logger.debug("ODA Query prepare");
+		this.queryString = queryText;
+		if(queryText!=null){
+		m_maxRows = 25;
 		query = new it.eng.qbe.query.Query();
 		logger.debug("Datasource is [{}]",datasource);
-		IModelStructure dataMartModel = datasource.getModelStructure();
-		List<IModelEntity> entities = dataMartModel.getRootEntities( datasource.getName() );
-		if(entities.size() > 0) {
-			IModelEntity entity = entities.get(0);
-			List<IModelField> fields = entity.getAllFields();
-			for(int i = 0; i < fields.size(); i++) {
-				IModelField field = fields.get(i);
 
-				query.addSelectFiled(field.getUniqueName(), null, field.getName(), true, true, false, null, null);			
-			}
+		try {
+			query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText, datasource) ;
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+			
 		
 		IStatement statement = datasource.createStatement(query);
 		statement.setMaxResults(this.m_maxRows);
@@ -99,6 +101,7 @@ public class Query implements IQuery {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+	}
 	}
 	
 	/*
@@ -411,7 +414,7 @@ public class Query implements IQuery {
      * @see org.eclipse.datatools.connectivity.oda.IQuery#getEffectiveQueryText()
      */
     public String getEffectiveQueryText() {
-        return null;
+        return this.queryString;
     }
 
     /* (non-Javadoc)

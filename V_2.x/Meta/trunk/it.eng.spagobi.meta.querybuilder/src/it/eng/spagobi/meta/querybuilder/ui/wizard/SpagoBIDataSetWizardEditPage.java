@@ -92,6 +92,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	public void createPageCustomControl(Composite parent) {
 		setControl( createPageControl( parent ) );
 		initializeControl();
+		getQueryBuilder().refreshQueryEditGroup();
 	}
 	
 	//updates the result set page before click the next button
@@ -114,7 +115,6 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent ) {
     	Composite composite = getQueryBuilder().createEditComponents(parent);
-		getQueryBuilder().refreshQueryEditGroup();
         setPageComplete( true );
         return composite;
     }

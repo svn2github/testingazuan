@@ -75,6 +75,8 @@ public class OdaStructureBuilder {
 		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
 	}
 	
+
+	
 	/**
 	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
 	 * @param modelNames the name of the models
@@ -96,6 +98,28 @@ public class OdaStructureBuilder {
 		}
 		logger.debug("OUT: Path loaded..");
 		return getDataSource(modelNames, dataSourceProperties, path);
+	}
+	
+	/**
+	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
+	 * @param modelNames the name of the models
+	 * @param dataSourceProperties the data source properties
+	 * @param path path to the of the jar files
+	 * @return The IDataSource
+	 */
+	public static IDataSource getDataSourceSingleModel(List<String> modelNames, Map<String, Object> dataSourceProperties, String path) {
+		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
+		File modelJarFile = null;
+		List<File> modelJarFiles = new ArrayList<File>();
+		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
+		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
+
+		modelJarFile = new File(path+File.separator+"datamart.jar");
+		modelJarFiles.add(modelJarFile);
+		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(0), modelJarFile));
+
+		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
+		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
 	}
 	
 	/**

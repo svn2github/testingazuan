@@ -57,7 +57,7 @@ public class ModelTreeViewer extends TreeViewer {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		this.queryBuilder = queryBuilder;
 		logger.debug("IN: initializing the datamartTree");
-		List<IModelEntity> roots = getModelViewRootEntities(dataSource, modelView);
+		List<IModelEntity> roots = getModelViewRootEntities(modelView);
 		setContentProvider(new ViewContentProvider(roots));
 		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(dataSource)));
 		setInput(roots);
@@ -70,7 +70,7 @@ public class ModelTreeViewer extends TreeViewer {
 	 * @param modelView
 	 * @return
 	 */
-	private List<IModelEntity> getModelViewRootEntities(IDataSource dataSource, IModelStructure modelView){
+	private List<IModelEntity> getModelViewRootEntities(IModelStructure modelView){
 		logger.debug("IN: Getting the datamart structure roots");
 		Iterator<String> modelNamesIter = modelView.getModelNames().iterator();
 		// TODO GENERICO PER PIU DATAMART

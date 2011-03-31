@@ -21,6 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
+import java.util.Locale;
+
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.SerializerFactory;
+import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;
@@ -41,6 +46,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +57,15 @@ import org.slf4j.LoggerFactory;
 public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 
     private static String DEFAULT_MESSAGE = "Define the query text for the data set";
-    
     private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetWizardEditPage.class);
-	
+    private String queryText;
     
 	public SpagoBIDataSetWizardEditPage( String pageName )
 	{
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
+        
         //this.queryBuilderUI = new QueryBuilder();
 
 	}
@@ -69,6 +75,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
         super( pageName );
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
+        
         //this.queryBuilderUI = queryBuilderUI;
 	}
 	
@@ -83,9 +90,8 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	
 	@Override
 	public void createPageCustomControl(Composite parent) {
-		setControl( createPageControl( parent ) );	
+		setControl( createPageControl( parent ) );
 		initializeControl();
-
 	}
 	
 	//updates the result set page before click the next button
@@ -108,6 +114,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      */
     private Control createPageControl( Composite parent ) {
     	Composite composite = getQueryBuilder().createEditComponents(parent);
+		getQueryBuilder().refreshQueryEditGroup();
         setPageComplete( true );
         return composite;
     }
@@ -117,6 +124,8 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	 */
 	private void initializeControl( )
 	{
+		Query query;
+		queryText = null;
         /* 
          * To optionally restore the designer state of the previous design session, use
          *      getInitializationDesignerState(); 
@@ -126,11 +135,21 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
         DataSetDesign dataSetDesign = getInitializationDesign();
         if( dataSetDesign == null )
             return; // nothing to initialize
+      
+        queryText = dataSetDesign.getQueryText();
 
-        String queryText = dataSetDesign.getQueryText();
         if( queryText == null )
             return; // nothing to initialize
 
+		try {
+			query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText,getQueryBuilder().getDataSource()) ;
+			getQueryBuilder().setQuery(query);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+        
+		
+        
         // initialize control
        // TODO inizialization goes here
         validateData();
@@ -147,9 +166,24 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      * Obtains the user-defined query text of this data set from page control.
      * @return query text
      */
-    private String getQueryText( )
-    {
-        return "";// TODO returns json serialized query;
+    private String getQueryText( )  {
+    	String serializedQuery = null;
+    
+    	if(queryText != null){
+    	
+			try {
+				Query query = getQueryBuilder().getQuery();
+				query.setId("1232");
+				query.setDescription("asd");
+				query.setDistinctClauseEnabled(false);
+				JSONObject queryJSON =  (JSONObject)SerializerFactory.getSerializer("application/json").serialize(query, getQueryBuilder().getDataSource(), Locale.ENGLISH);
+				logger.debug(queryJSON.toString());	
+				serializedQuery = queryJSON.toString();
+			} catch (SerializationException e) {
+				throw new RuntimeException("Impossible to save query", e);
+			}
+    	}
+        return serializedQuery;
     }
 
 	/*

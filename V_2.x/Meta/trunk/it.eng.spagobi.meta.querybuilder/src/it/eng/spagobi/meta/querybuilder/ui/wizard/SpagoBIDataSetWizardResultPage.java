@@ -73,8 +73,9 @@ public class SpagoBIDataSetWizardResultPage extends DataSetWizardPage {
     {
       
       Composite composite = getQueryBuilder().createResultsComponents(parent);
-        setPageComplete( true );
-        return composite;
+      getQueryBuilder().refreshQueryResultPage();
+      setPageComplete( true );
+      return composite;
     }
     
 

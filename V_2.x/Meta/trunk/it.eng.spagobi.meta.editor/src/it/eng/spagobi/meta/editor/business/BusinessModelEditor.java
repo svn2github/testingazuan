@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.editor.business;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
+import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
@@ -121,6 +122,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -154,14 +156,11 @@ public class BusinessModelEditor
 	public static final String EDITOR_ID = BusinessModelEditor.class.getName();
 	
 	
-	// =============================
+	// ================================================================================
 	// IEditingDomainProvider
-	// =============================
+	// ================================================================================
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected AdapterFactoryEditingDomain editingDomain;
 
@@ -170,121 +169,78 @@ public class BusinessModelEditor
 	 * This returns the editing domain as required by the {@link IEditingDomainProvider} interface.
 	 * This is important for implementing the static methods of {@link AdapterFactoryEditingDomain}
 	 * and for supporting {@link org.eclipse.emf.edit.ui.action.CommandAction}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 */
 	public EditingDomain getEditingDomain() {
 		return editingDomain;
 	}
 
 	protected BusinessModelResourceChangeListener resourceChangeListener;
+		
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	// ================================================================================
+	// Model views: only one for the moment (i.e. tree)
+	// ================================================================================
 	
 	/**
 	 * This is the one adapter factory used for providing views of the model.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected ComposedAdapterFactory adapterFactory;
 
 	/**
+	 * This is the viewer that shadows the selection in the content outline.
+	 * The parent relation must be correctly defined for this to work.
+	 */
+	protected TreeViewer modelTreeViewer;
+
+	/**
+	 * This keeps track of the active viewer pane, in the book.
+	 */
+	protected ViewerPane currentViewerPane;
+
+	/**
+	 * This keeps track of the active content viewer, which may be either one of the viewers 
+	 * in the pages or the content outline viewer.
+	 */
+	protected Viewer currentViewer;
+	
+	// ================================================================================
+	
+	
+	
+	// ================================================================================
+	// Outline
+	// ================================================================================
+	/**
 	 * This is the content outline page.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected IContentOutlinePage contentOutlinePage;
 
 	/**
 	 * This is a kludge...
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected IStatusLineManager contentOutlineStatusLineManager;
 
 	/**
 	 * This is the content outline page's viewer.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected TreeViewer contentOutlineViewer;
-
+	
+	// ================================================================================
+	
+	
 	/**
 	 * This is the property sheet page.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected PropertySheetPage propertySheetPage;
 
 	/**
-	 * This is the viewer that shadows the selection in the content outline.
-	 * The parent relation must be correctly defined for this to work.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TreeViewer selectionViewer;
-
-	/**
-	 * This inverts the roll of parent and child in the content provider and show parents as a tree.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TreeViewer parentViewer;
-
-	/**
-	 * This shows how a tree view works.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TreeViewer treeViewer;
-
-
-	/**
-	 * This keeps track of the active viewer pane, in the book.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ViewerPane currentViewerPane;
-
-	/**
-	 * This keeps track of the active content viewer, which may be either one of the viewers in the pages or the content outline viewer.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Viewer currentViewer;
-
-	/**
 	 * This listens to which ever viewer is active.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected ISelectionChangedListener selectionChangedListener;
 
 	/**
-	 * This keeps track of all the {@link org.eclipse.jface.viewers.ISelectionChangedListener}s that are listening to this editor.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
+	 * This keeps track of all the {@link org.eclipse.jface.viewers.ISelectionChangedListener}s 
+	 * that are listening to this editor.
 	 */
 	protected Collection<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
@@ -307,59 +263,51 @@ public class BusinessModelEditor
 	/**
 	 * The MarkerHelper is responsible for creating workspace resource markers presented
 	 * in Eclipse's Problems View.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected MarkerHelper markerHelper = new EditUIMarkerHelper();
 
 	/**
 	 * This listens for when the outline becomes active
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
-	protected IPartListener partListener =
-		new IPartListener() {
-			public void partActivated(IWorkbenchPart p) {
-				if (p instanceof ContentOutline) {
-					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
-						getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
-
-						setCurrentViewer(contentOutlineViewer);
-					}
+	protected IPartListener partListener = new BusinessModelPartListener(); 
+	
+	protected class BusinessModelPartListener extends DiagnosticPartListener {
+		
+		BusinessModelPartListener() {
+			super(logger);
+		}
+	
+		public void partActivated(IWorkbenchPart p) {
+			logger.trace("IN");
+			
+			logger.debug("Activated part [{}]", p.getClass().getName());
+			if (p instanceof ContentOutline) {
+				logger.debug("Activated [{}]", ContentOutline.class.getName());
+				if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
+					logger.debug("Activated the content outline of this editor");
+					getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
+					setCurrentViewer(contentOutlineViewer);
 				}
-				else if (p instanceof PropertySheet) {
-					if (((PropertySheet)p).getCurrentPage() == propertySheetPage) {
-						getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
-						resourceChangeListener.handleActivate();
-					}
-				}
-				else if (p == BusinessModelEditor.this) {
+			} else if (p instanceof PropertySheet) {
+				logger.debug("Activated [{}]", PropertySheet.class.getName());
+				if (((PropertySheet)p).getCurrentPage() == propertySheetPage) {
+					logger.debug("Activated the property sheet  of this editor");
+					getActionBarContributor().setActiveEditor(BusinessModelEditor.this);
 					resourceChangeListener.handleActivate();
 				}
+			} else if (p == BusinessModelEditor.this) {
+				logger.debug("Activated [{}]", BusinessModelEditor.class.getName());
+				resourceChangeListener.handleActivate();
 			}
-			public void partBroughtToTop(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partClosed(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partDeactivated(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partOpened(IWorkbenchPart p) {
-				// Ignore.
-			}
-		};
+			
+			logger.trace("OUT");
+		}
+	};
 
 	
 
 	/**
 	 * Map to store the diagnostic associated with a resource.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected Map<Resource, Diagnostic> resourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
 
@@ -367,16 +315,12 @@ public class BusinessModelEditor
 		return resourceToDiagnosticMap;
 	}
 
-	public void setResourceToDiagnosticMap(
-			Map<Resource, Diagnostic> resourceToDiagnosticMap) {
+	public void setResourceToDiagnosticMap(Map<Resource, Diagnostic> resourceToDiagnosticMap) {
 		this.resourceToDiagnosticMap = resourceToDiagnosticMap;
 	}
 
 	/**
 	 * Controls whether the problem indication should be updated.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected boolean updateProblemIndication = true;
 
@@ -384,64 +328,11 @@ public class BusinessModelEditor
 		return updateProblemIndication;
 	}
 
-
-
-
 	public void setUpdateProblemIndication(boolean updateProblemIndication) {
 		this.updateProblemIndication = updateProblemIndication;
 	}
 
-	/**
-	 * Adapter used to update the problem indication when resources are demanded loaded.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected EContentAdapter problemIndicationAdapter = 
-		new EContentAdapter() {
-			@Override
-			public void notifyChanged(Notification notification) {
-				if (notification.getNotifier() instanceof Resource) {
-					switch (notification.getFeatureID(Resource.class)) {
-						case Resource.RESOURCE__IS_LOADED:
-						case Resource.RESOURCE__ERRORS:
-						case Resource.RESOURCE__WARNINGS: {
-							Resource resource = (Resource)notification.getNotifier();
-							Diagnostic diagnostic = analyzeResourceProblems(resource, null);
-							if (diagnostic.getSeverity() != Diagnostic.OK) {
-								resourceToDiagnosticMap.put(resource, diagnostic);
-							}
-							else {
-								resourceToDiagnosticMap.remove(resource);
-							}
-
-							if (updateProblemIndication) {
-								getSite().getShell().getDisplay().asyncExec
-									(new Runnable() {
-										 public void run() {
-											 updateProblemIndication();
-										 }
-									 });
-							}
-							break;
-						}
-					}
-				}
-				else {
-					super.notifyChanged(notification);
-				}
-			}
-
-			@Override
-			protected void setTarget(Resource target) {
-				basicSetTarget(target);
-			}
-
-			@Override
-			protected void unsetTarget(Resource target) {
-				basicUnsetTarget(target);
-			}
-		};
+	
 
 	
 	
@@ -458,19 +349,32 @@ public class BusinessModelEditor
 	 */
 	public BusinessModelEditor() {
 		super();
+		initializeAdapterFactory();
 		initializeEditingDomain();
 	}
 
 	/**
 	 * This sets up the editing domain for the model editor.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
 	 */
 	protected void initializeEditingDomain() {
+		BasicCommandStack commandStack;
+		Map<Resource, Boolean> resourceToReadOnlyMap;
 		
-		// Create an adapter factory that yields item providers.
-		//
+		logger.trace("IN");
+		
+		commandStack = new BasicCommandStack();
+		commandStack.addCommandStackListener(new BusinessModelEditorCommandStackListener());
+		resourceToReadOnlyMap = new HashMap<Resource, Boolean>();
+
+		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, resourceToReadOnlyMap);
+	
+		logger.trace("OUT");
+	}
+	
+	/**
+	 * Create an adapter factory that yields item providers.
+	 */
+	protected void initializeAdapterFactory() {
 		adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
 
 		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory());
@@ -481,47 +385,33 @@ public class BusinessModelEditor
 		adapterFactory.addAdapterFactory(new BehaviouralModelItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new AnalyticalModelItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
+	}
 
-		//TransactionalEditingDomain domain = TransactionalEditingDomain.Registry.INSTANCE.getEditingDomain(
-	    //    "it.eng.spagobi.meta.model.editor.EditingDomain");
-		
-		// Create the command stack that will notify this editor as commands are executed.
-		//
-		BasicCommandStack commandStack = new BasicCommandStack();
+	/**
+	 * 
+	 *  a listener to set the most recent command's affected objects to be the selection 
+	 *  of the viewer with focus.
+	 *
+	 */
+	class BusinessModelEditorCommandStackListener implements CommandStackListener {
+		 public void commandStackChanged(final EventObject event) {
+			 getContainer().getDisplay().asyncExec
+				 (new Runnable() {
+					  public void run() {
+						  firePropertyChange(IEditorPart.PROP_DIRTY);
 
-		// Add a listener to set the most recent command's affected objects to be the selection of the viewer with focus.
-		//
-		commandStack.addCommandStackListener
-		// domain.getCommandStack().addCommandStackListener
-			(new CommandStackListener() {
-				 public void commandStackChanged(final EventObject event) {
-					 getContainer().getDisplay().asyncExec
-						 (new Runnable() {
-							  public void run() {
-								  firePropertyChange(IEditorPart.PROP_DIRTY);
-
-								  // Try to select the affected objects.
-								  //
-								  Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
-								  if (mostRecentCommand != null) {
-									  setSelectionToViewer(mostRecentCommand.getAffectedObjects());
-								  }
-								  if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed()) {
-									  propertySheetPage.refresh();
-								  }
-							  }
-						  });
-				 }
-			 });
-
-		// Create the editing domain with a special command stack.
-		//
-		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, new HashMap<Resource, Boolean>());
-		
-		
-		//using shared TransactionalEditingDomain
-		//editingDomain = (AdapterFactoryEditingDomain) domain;
-
+						  // Try to select the affected objects.
+						  //
+						  Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
+						  if (mostRecentCommand != null) {
+							  setSelectionToViewer(mostRecentCommand.getAffectedObjects());
+						  }
+						  if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed()) {
+							  propertySheetPage.refresh();
+						  }
+					  }
+				  });
+		 }
 	}
 
 	/**
@@ -595,7 +485,7 @@ public class BusinessModelEditor
 	 * resource set based on the editor's input.
 	 */
 	public void createModel() {
-		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
+		URI resourceURI = ((BusinessModelEditorInput)getEditorInput()).getResourceFileURI();
 		Exception exception = null;
 		Resource resource = null;
 		try {
@@ -612,8 +502,63 @@ public class BusinessModelEditor
 			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
 		}
 		
-		editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
+		editingDomain.getResourceSet().eAdapters().add(new BusinessModelEContentAdapter(resourceToDiagnosticMap));
 	}
+	
+	/**
+	 * Adapter used to update the problem indication when resources are demanded loaded.
+	 */
+	protected class BusinessModelEContentAdapter extends EContentAdapter {
+		
+		Map<Resource, Diagnostic> resourceToDiagnosticMap;
+		
+		public BusinessModelEContentAdapter(Map<Resource, Diagnostic> resourceToDiagnosticMap) {
+			this.resourceToDiagnosticMap = resourceToDiagnosticMap;
+		}
+		
+		@Override
+		public void notifyChanged(Notification notification) {
+			if (notification.getNotifier() instanceof Resource) {
+				switch (notification.getFeatureID(Resource.class)) {
+					case Resource.RESOURCE__IS_LOADED:
+					case Resource.RESOURCE__ERRORS:
+					case Resource.RESOURCE__WARNINGS: {
+						Resource resource = (Resource)notification.getNotifier();
+						Diagnostic diagnostic = analyzeResourceProblems(resource, null);
+						if (diagnostic.getSeverity() != Diagnostic.OK) {
+							resourceToDiagnosticMap.put(resource, diagnostic);
+						}
+						else {
+							resourceToDiagnosticMap.remove(resource);
+						}
+
+						if (updateProblemIndication) {
+							getSite().getShell().getDisplay().asyncExec
+								(new Runnable() {
+									 public void run() {
+										 updateProblemIndication();
+									 }
+								 });
+						}
+						break;
+					}
+				}
+			}
+			else {
+				super.notifyChanged(notification);
+			}
+		}
+
+		@Override
+		protected void setTarget(Resource target) {
+			basicSetTarget(target);
+		}
+
+			@Override
+		protected void unsetTarget(Resource target) {
+			basicUnsetTarget(target);
+		}
+	};
 	
 	public void createSelectionTreeView() {
 		ViewerPane viewerPane =
@@ -632,24 +577,24 @@ public class BusinessModelEditor
 			};
 		viewerPane.createControl(getContainer());
 
-		selectionViewer = (TreeViewer)viewerPane.getViewer();
-		selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-		selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+		modelTreeViewer = (TreeViewer)viewerPane.getViewer();
+		modelTreeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+		modelTreeViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 		
 	
 		
-		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 		
 		//selectionViewer.setInput(editingDomain.getResourceSet());
-		selectionViewer.setInput(rootObject);
+		modelTreeViewer.setInput(rootObject);
 		//selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
 		//selectionViewer.setSelection(new StructuredSelection(ro), true);
 		viewerPane.setTitle(editingDomain.getResourceSet());
 
-		new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
+		new AdapterFactoryTreeEditor(modelTreeViewer.getTree(), adapterFactory);
 
-		createContextMenuFor(selectionViewer);
+		createContextMenuFor(modelTreeViewer);
 		int pageIndex = addPage(viewerPane.getControl());
 		setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));
 	}
@@ -780,11 +725,6 @@ public class BusinessModelEditor
 	
 	
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public void setCurrentViewerPane(ViewerPane viewerPane) {
 		if (currentViewerPane != viewerPane) {
 			if (currentViewerPane != null) {
@@ -796,11 +736,8 @@ public class BusinessModelEditor
 	}
 
 	/**
-	 * This makes sure that one content viewer, either for the current page or the outline view, if it has focus,
-	 * is the current one.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
+	 * This makes sure that one content viewer, either for the current page or the outline view,
+	 * if it has focus, is the current one.
 	 */
 	public void setCurrentViewer(Viewer viewer) {
 		// If it is changing...
@@ -866,14 +803,7 @@ public class BusinessModelEditor
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(contextMenu, new UnwrappingSelectionProvider(viewer));
 
-		/*
-		int dndOperations = DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK;
-		Transfer[] transfers = new Transfer[] { LocalTransfer.getInstance() };
-		viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
-		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
-		*/
-		
-		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
@@ -1106,7 +1036,7 @@ public class BusinessModelEditor
 
 				// If it's the selection viewer, then we want it to select the same selection as this selection.
 				//
-				if (currentViewerPane.getViewer() == selectionViewer) {
+				if (currentViewerPane.getViewer() == modelTreeViewer) {
 					ArrayList<Object> selectionList = new ArrayList<Object>();
 					selectionList.add(selectedElement);
 					while (selectedElements.hasNext()) {
@@ -1115,7 +1045,7 @@ public class BusinessModelEditor
 
 					// Set the selection to the widget.
 					//
-					selectionViewer.setSelection(new StructuredSelection(selectionList));
+					modelTreeViewer.setSelection(new StructuredSelection(selectionList));
 				}
 				else {
 					// Set the input to the widget.
@@ -1455,7 +1385,6 @@ public class BusinessModelEditor
 		updateProblemIndication = false;
 
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
-
 		getSite().getPage().removePartListener(partListener);
 
 		adapterFactory.dispose();
@@ -1489,13 +1418,13 @@ public class BusinessModelEditor
 	 * @param selectionViewer the selectionViewer to set
 	 */
 	public void setSelectionViewer(TreeViewer selectionViewer) {
-		this.selectionViewer = selectionViewer;
+		this.modelTreeViewer = selectionViewer;
 	}
 
 	/**
 	 * @return the selectionViewer
 	 */
 	public TreeViewer getSelectionViewer() {
-		return selectionViewer;
+		return modelTreeViewer;
 	}
 }

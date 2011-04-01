@@ -11,6 +11,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDragListener;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
@@ -301,8 +302,9 @@ public class PhysicalModelEditor
 	 * @generated
 	 */
 	protected IPartListener partListener =
-		new IPartListener() {
+		new DiagnosticPartListener(logger) {
 			public void partActivated(IWorkbenchPart p) {
+				logger.debug("Activated part [{}]", p.getClass().getName());
 				if (p instanceof ContentOutline) {
 					if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
 						getActionBarContributor().setActiveEditor(PhysicalModelEditor.this);
@@ -319,18 +321,6 @@ public class PhysicalModelEditor
 				else if (p == PhysicalModelEditor.this) {
 					handleActivate();
 				}
-			}
-			public void partBroughtToTop(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partClosed(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partDeactivated(IWorkbenchPart p) {
-				// Ignore.
-			}
-			public void partOpened(IWorkbenchPart p) {
-				// Ignore.
 			}
 		};
 
@@ -940,7 +930,7 @@ public class PhysicalModelEditor
 	 */
 	public void createModel() {
 		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		URI resourceURI = ((PhysicalModelInput)getEditorInput()).getResourceFileURI();
+		URI resourceURI = ((PhysicalModelEditorInput)getEditorInput()).getResourceFileURI();
 		
 		Exception exception = null;
 		Resource resource = null;
@@ -1033,7 +1023,7 @@ public class PhysicalModelEditor
 
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 				
-				URI rootObjectURI = ((PhysicalModelInput)getEditorInput()).getRootObjectURI();
+				URI rootObjectURI = ((PhysicalModelEditorInput)getEditorInput()).getRootObjectURI();
 				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 				
 				//selectionViewer.setInput(editingDomain.getResourceSet());

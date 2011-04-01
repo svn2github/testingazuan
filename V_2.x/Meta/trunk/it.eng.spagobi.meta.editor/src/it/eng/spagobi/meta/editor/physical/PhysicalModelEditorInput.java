@@ -19,10 +19,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.editor.business;
+package it.eng.spagobi.meta.editor.physical;
 
 import it.eng.spagobi.meta.editor.commons.AbstractSpagoBIModelPartInput;
-import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import java.io.File;
 
@@ -30,14 +30,14 @@ import java.io.File;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class BusinessModelInput extends AbstractSpagoBIModelPartInput {
-
-	public BusinessModelInput(File resourceFile, BusinessModel rootObject) {
+public class PhysicalModelEditorInput extends AbstractSpagoBIModelPartInput{
+	
+	public PhysicalModelEditorInput(File resourceFile, PhysicalModel rootObject) {
 		super(resourceFile, rootObject);
 	}
 	
 	@Override
 	public String getName() {
-		return "Business model: " + super.getName();
+		return "Physical model: " + super.getName();
 	}
 }

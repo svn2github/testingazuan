@@ -77,7 +77,7 @@ public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 			TreeIterator<EObject> it = resource.getAllContents();
 			if(it.hasNext()) {
 				spagobiModel = (Model)it.next();
-				SpagoBIModelInput editorInput = new SpagoBIModelInput(modelFile, spagobiModel);
+				SpagoBIModelEditorInput editorInput = new SpagoBIModelEditorInput(modelFile, spagobiModel);
 				openSpagoBIModelEditor(editorInput);
 			}
 		} catch (Throwable t) {
@@ -119,7 +119,7 @@ public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 		return resource;
 	}
 	
-	protected void openSpagoBIModelEditor(SpagoBIModelInput editorInput) {
+	protected void openSpagoBIModelEditor(SpagoBIModelEditorInput editorInput) {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try {
 			logger.debug("Open editor on medel [{}]", editorInput.getName());

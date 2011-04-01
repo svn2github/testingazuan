@@ -22,9 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.multi;
 
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
-import it.eng.spagobi.meta.editor.business.BusinessModelInput;
+import it.eng.spagobi.meta.editor.business.BusinessModelEditorInput;
 import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
-import it.eng.spagobi.meta.editor.physical.PhysicalModelInput;
+import it.eng.spagobi.meta.editor.physical.PhysicalModelEditorInput;
 import it.eng.spagobi.meta.model.Model;
 
 import java.io.File;
@@ -36,12 +36,12 @@ import org.eclipse.ui.part.MultiEditorInput;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class SpagoBIModelInput extends MultiEditorInput {
+public class SpagoBIModelEditorInput extends MultiEditorInput {
 	
 	String modelName;
 	String modelDescription;
 
-	public SpagoBIModelInput(File modelFile, Model spagobiModel) {
+	public SpagoBIModelEditorInput(File modelFile, Model spagobiModel) {
 		
 		super(
 			new String[]{
@@ -49,8 +49,8 @@ public class SpagoBIModelInput extends MultiEditorInput {
 				PhysicalModelEditor.EDITOR_ID
 			},
 			new IEditorInput[]{
-				new BusinessModelInput(modelFile, spagobiModel.getBusinessModels().get(0)),
-				new PhysicalModelInput(modelFile, spagobiModel.getPhysicalModels().get(0)), 
+				new BusinessModelEditorInput(modelFile, spagobiModel.getBusinessModels().get(0)),
+				new PhysicalModelEditorInput(modelFile, spagobiModel.getPhysicalModels().get(0)), 
 			}
 		);
 		

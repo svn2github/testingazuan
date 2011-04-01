@@ -29,6 +29,7 @@ import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -47,10 +48,15 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.internal.EditorSite;
+import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.MultiEditor;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -67,7 +73,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private IEditorPart[] innerEditors;
 	private Control[] innerEditorWrapperContainers;
 	private CLabel[] innerEditorTitle;
-	
 	
 	private boolean firstEditor = true;
 	private Label expandCollapseButton;
@@ -140,6 +145,8 @@ public class SpagoBIModelEditor extends MultiEditor {
 			}
 		}, IResourceChangeEvent.POST_CHANGE);
 		*/
+		
+		getSite().getPage().addPartListener(new DiagnosticPartListener(logger));
 	}
 	
 	protected void createInnerEditorContainer(int innerEditorIndex, Composite parentContainer) {
@@ -158,6 +165,24 @@ public class SpagoBIModelEditor extends MultiEditor {
 		innerEditorContainer = createInnerPartControl(innerEditorWrapperContainer, innerEditor);
 		innerEditorWrapperContainer.setContent(innerEditorContainer);
 		
+		class InnerEditorListener implements Listener {
+			IEditorPart editor;
+			InnerEditorListener(IEditorPart editor) {
+				this.editor = editor;
+			}
+			public void handleEvent(Event event) {
+			     if (event.type == SWT.Activate) {
+			    	 logger.debug("Activating editor [{}]", editor);
+			    	 logger.debug("Active editor PRE [{}]", getActiveEditor().getClass().getName());
+			    	 activateEditor(editor);
+			    	 logger.debug("Active editor POST [{}]", getActiveEditor().getClass().getName());
+			     }
+			}
+		}
+		
+		innerEditorWrapperContainer.addListener(SWT.Activate, new InnerEditorListener(innerEditor));
+
+		
 		refreshInnerEditorTitle(innerEditor, innerEditorTitle[innerEditorIndex]);
 		
 		final int index = innerEditorIndex;
@@ -174,7 +199,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 		CLabel titleLabel;
 		
 		titleLabel = new CLabel(innerEditorWrapperContainer, SWT.SHADOW_NONE);
-		//hookFocus(titleLabel);
 		titleLabel.setAlignment(SWT.LEFT);
 		titleLabel.setBackground(null, null);
 		innerEditorWrapperContainer.setTopLeft(titleLabel);
@@ -233,13 +257,11 @@ public class SpagoBIModelEditor extends MultiEditor {
 	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
-		logger.trace("IN");
+		logger.debug("IN");
 		super.doSave(progressMonitor);
-		logger.trace("OUT");
+		logger.debug("OUT");
 	}
 
-	
-	
 	
 	
 	protected void drawGradient(IEditorPart innerEditor, Gradient g) {
@@ -261,30 +283,5 @@ public class SpagoBIModelEditor extends MultiEditor {
 		}
 		return -1;
 	}
-
-	/*
-	private PropertySheetPage propertySheetPage;
-	public IPropertySheetPage getPropertySheetPage() {
-		
-		AdapterFactoryEditingDomain editingDomain = (AdapterFactoryEditingDomain) ((BusinessModelEditor)innerEditors[1]).getEditingDomain();
-		ComposedAdapterFactory adapterFactory = (ComposedAdapterFactory) ((BusinessModelEditor)innerEditors[1]).getAdapterFactory();
-		if (propertySheetPage == null) {
-			propertySheetPage =
-				new ExtendedPropertySheetPage(editingDomain) {
-					@Override
-					public void setSelectionToViewer(List<?> selection) {
-						((BusinessModelEditor)innerEditors[1]).setSelectionToViewer(selection);
-						((BusinessModelEditor)innerEditors[1]).setFocus();
-					}
-
-				
-					
-				};
-			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
-		}
-
-		return propertySheetPage;
-	}
-	 */
 
 }

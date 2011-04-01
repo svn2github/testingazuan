@@ -956,7 +956,7 @@ public class CopyOfBusinessModelEditor
 		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
 		*/
 		
-		URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+		URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
@@ -977,7 +977,7 @@ public class CopyOfBusinessModelEditor
 	 */
 	public void createModel() {
 		//URI resourceURI = EditUIUtil.getURI(getEditorInput());
-		URI resourceURI = ((BusinessModelInput)getEditorInput()).getResourceFileURI();
+		URI resourceURI = ((BusinessModelEditorInput)getEditorInput()).getResourceFileURI();
 		Exception exception = null;
 		Resource resource = null;
 		try {
@@ -1070,7 +1070,7 @@ public class CopyOfBusinessModelEditor
 				
 			
 				
-				URI rootObjectURI = ((BusinessModelInput)getEditorInput()).getRootObjectURI();
+				URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 				
 				//selectionViewer.setInput(editingDomain.getResourceSet());

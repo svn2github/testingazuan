@@ -11,7 +11,7 @@ import it.eng.spagobi.commons.SpagoBIModelLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
-import it.eng.spagobi.meta.editor.multi.SpagoBIModelInput;
+import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorInput;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -392,7 +392,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 				
 				
 				page.openEditor( 
-						new SpagoBIModelInput(modelFile, spagobiModel) , SpagoBIModelEditor.EDITOR_ID					     
+						new SpagoBIModelEditorInput(modelFile, spagobiModel) , SpagoBIModelEditor.EDITOR_ID					     
 				);
 			}
 			catch (PartInitException exception) {

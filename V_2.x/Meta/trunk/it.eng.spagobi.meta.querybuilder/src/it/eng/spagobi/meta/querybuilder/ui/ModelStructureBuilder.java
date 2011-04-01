@@ -39,6 +39,7 @@ import it.eng.qbe.model.structure.filter.QbeTreeOrderFieldFilter;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -137,7 +139,7 @@ public class ModelStructureBuilder {
 		connection.setName( "FoodMart" );
 		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
 		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( "paola" );
+		connection.setPassword( "root" );
 		connection.setUrl( "jdbc:mysql://localhost:3306/foodmart");
 		connection.setUsername( "root" );	
 		return connection;
@@ -151,19 +153,34 @@ public class ModelStructureBuilder {
 	 */
 	private static String getDriverName(File jarFile){
 		logger.debug("IN: Check the driver name. Looking if "+jarFile+" is a jpa jar file..");
-		ZipFile zipFile;
+		ZipInputStream zis;
 		ZipEntry zipEntry;
 		String dialectName;
+		boolean isJpa = false;
 			
 		try {
-			zipFile = new ZipFile(jarFile);
+			FileInputStream fis = new FileInputStream(jarFile);
+			zis = new ZipInputStream(fis);
+			while((zipEntry=zis.getNextEntry())!=null){
+				logger.debug("Zip Entry is [{}]",zipEntry.getName());
+				if(zipEntry.getName().equals("META-INF\\persistence.xml") ){
+					isJpa = true;
+					break;
+				}
+				zis.closeEntry();
+			}
+			zis.close();
+			if(isJpa){
+				dialectName = "jpa";
+			} else{
+				dialectName = "hibernate";
+			}
 		} catch (Throwable t) {
 			logger.error("Impossible to read jar file [" + jarFile + "]",t);
 			throw new DAOException("Impossible to read jar file [" + jarFile + "]");
 		} 
-		
-		zipEntry = zipFile.getEntry("META-INF/persistence.xml");
-		dialectName = (zipEntry!=null)? "jpa": "hibernate";
+
+
 		logger.debug("OUT: "+jarFile+" has the dialect: "+dialectName);
 		return dialectName;
 	}

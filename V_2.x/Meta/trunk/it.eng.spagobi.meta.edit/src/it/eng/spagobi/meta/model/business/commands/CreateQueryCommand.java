@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 
+import it.eng.spagobi.commons.SpagoBIModelLocator;
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
@@ -43,6 +45,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,73 +74,86 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {		
-		prepareMapping();
+		//prepareMapping();
 		initQueryFileContents();
 		openQueryEditor();		
 	}
 	
-	protected void prepareMapping() {
-		BusinessModel businessModel;
-		businessModel = (BusinessModel)parameter.getOwner();
-		String directory = (String)parameter.getValue();
-
-		//Call JPA Mapping generator
-		JpaMappingGenerator generator = new JpaMappingGenerator();
-		try {
-			generator.generate(businessModel, directory);
-		} catch (Exception e) {
-			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
-			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
-		}
-		
-		//Get Package Name
-		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
-			
-		//Call Java Compiler
-		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				directory,
-				directory+"/build/",
-				null,
-				directory+"/dist/",
-				packageName.replace(".", "/")
-				);		
-		
-		boolean result = datamartGenerator.compile();
-		if (result){
-			// compile OK
-			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
-			
-			//Generate Jar from compiled code
-			datamartGenerator.jar();
-			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
-		}else{
-			// compile error
-			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-			this.executed = false; 
-			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
-		}
-		
-		
-	}
+//	protected void prepareMapping() {
+//		BusinessModel businessModel;
+//		businessModel = (BusinessModel)parameter.getOwner();
+//		String directory = (String)parameter.getValue();
+//
+//		//Call JPA Mapping generator
+//		JpaMappingGenerator generator = new JpaMappingGenerator();
+//		try {
+//			generator.generate(businessModel, directory);
+//		} catch (Exception e) {
+//			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
+//			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+//		}
+//		
+//		//Get Package Name
+//		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
+//			
+//		//Call Java Compiler
+//		DataMartGenerator datamartGenerator = new DataMartGenerator(
+//				directory,
+//				directory+"/build/",
+//				null,
+//				directory+"/dist/",
+//				packageName.replace(".", "/")
+//				);		
+//		
+//		boolean result = datamartGenerator.compile();
+//		if (result){
+//			// compile OK
+//			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
+//			
+//			//Generate Jar from compiled code
+//			datamartGenerator.jar();
+//			this.executed = true;
+//			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+//		}else{
+//			// compile error
+//			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+//			this.executed = false; 
+//			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
+//		}
+//		
+//		
+//	}
 	
 	protected void initQueryFileContents() {
 		String directory;
 		BusinessModel businessModel;
 		Writer out;
 		
-		directory = (String)parameter.getValue();		
+		directory = (String)parameter.getValue();	
+		logger.debug("Query directory is [{}]", directory);
 		queryFile = new File(directory,"query.metaquery");
+		String modelPath = SpagoBIModelLocator.INSTANCE.getModelPath();
+		logger.debug("Model path is [{}]",modelPath);
 		
 		if(!queryFile.exists()){
 			out = null;
+			JSONObject o;
+			String queryContent ;
+			try {
+				o = new JSONObject(); 
+				JSONObject queryMeta = new JSONObject(); 
+				o.put("queryMeta", queryMeta);
+				queryMeta.put("modelPath",modelPath);
+				queryContent = o.toString(3);
+			} catch (JSONException e) {
+				throw new SpagoBIPluginException("Impossibile to create JSON Metadata ",e);
+			}
 			try {
 				queryFile.createNewFile();
 				FileWriter fstream = new FileWriter(queryFile);
 				out = new BufferedWriter(fstream);
 				businessModel = (BusinessModel)parameter.getOwner();
-				
-				//out.write("// Target business model: " + businessModel.getName());
+				out.write(queryContent);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {

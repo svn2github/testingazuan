@@ -1,9 +1,18 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
 
+import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.meta.compiler.DataMartGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.io.BufferedInputStream;
@@ -12,17 +21,25 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -48,6 +65,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	private QueryBuilder queryBuilder;
 	private SpagoBIDataSetEditPage queryEditPage;
 	private SpagoBIDataSetResultPage queryResultPage;
+	private JSONObject o;
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
 	
@@ -55,7 +73,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		queryBuilder = new QueryBuilder();
+		//queryBuilder = new QueryBuilder();
 	}
 	
 	/**
@@ -81,11 +99,28 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				reader.close();
 				
 				String queryString = stringBuffer.toString();
-				if(queryString.trim().equals("")) {
+			    o = new JSONObject(queryString);
+
+				JSONObject queryMeta = o.optJSONObject("queryMeta");
+				String modelPath = queryMeta.optString("modelPath");
+				logger.debug("Model path is [{}]",modelPath );
+				  
+				//create JPA Mapping
+				prepareMapping(modelPath);
+				
+				//create Data Source
+				IDataSource dataSource = createDataSource(modelPath);
+				
+				//create QueryBuilder
+				queryBuilder = new QueryBuilder(dataSource);
+				
+			    JSONObject queryJSON = o.optJSONObject("query");
+			    if(queryJSON == null) {
 					logger.debug("No previously saved query to load");
 				} else {
-					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryString, queryBuilder.getDataSource()) );
+					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
 				}
+
 			} 
 			else if(editorInput instanceof FileStoreEditorInput) {
 				FileStoreEditorInput fileStoreEditorInput = (FileStoreEditorInput)editorInput;
@@ -102,8 +137,27 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				reader.close();
 				
 				String queryString = stringBuffer.toString();
-				if(queryString.trim().equals("")) {
+			    o = new JSONObject(queryString);
+
+				JSONObject queryMeta = o.optJSONObject("queryMeta");
+				String modelPath = queryMeta.optString("modelPath");
+				logger.debug("Model path is [{}]",modelPath );
+			  
+				//create JPA Mapping
+				prepareMapping(modelPath);
+				
+				//create Data Source
+				IDataSource dataSource = createDataSource(modelPath);
+				
+				//create QueryBuilder
+				queryBuilder = new QueryBuilder(dataSource);
+				
+			    JSONObject queryJSON = o.optJSONObject("query");
+			    
+			    if(queryJSON == null) {
 					logger.debug("No previously saved query to load");
+				} else {
+					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
 				}
 			}
 			else {
@@ -115,6 +169,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		} finally {
 			logger.trace("OUT");
 		}
+
+
 	}
 	
 
@@ -182,7 +238,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			throw new RuntimeException("Impossible to save query", e);
 		}
 		
-		
+	
 		File file = new File(fileEditorInput.getURI());
 		BufferedWriter out = null;
 		ByteArrayInputStream in = null;
@@ -190,7 +246,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 //			FileWriter fstream = new FileWriter(file);
 //			out = new BufferedWriter(fstream);
 //			out.write(queryJSON.toString(3));
-			in = new ByteArrayInputStream(queryJSON.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
+			o.put("query", queryJSON);
+			in = new ByteArrayInputStream(o.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
 			fileEditorInput.getFile().setContents(in, true, true, monitor);
 			
 		} catch (Exception e) {
@@ -245,6 +302,120 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			queryResultPage.refresh();
 		}
 	}
+	
+	protected void prepareMapping(String modelPath) {
+		logger.debug("Creating JPA Mapping of [{}]",modelPath);
+		String modelDirectory = new File(modelPath).getParent();
+		XMIResourceImpl resource = new XMIResourceImpl();
+		File source = new File(modelPath);
+		try {
+			resource.load( new FileInputStream(source), new HashMap<Object,Object>());
+		} catch (FileNotFoundException e) {
+			throw new SpagoBIPluginException("JPA Mapping: File not found",e);
+		} catch (IOException e) {
+			throw new SpagoBIPluginException("JPA Mapping: IO Error",e);
+		}
+		Model root = (Model) resource.getContents().get(0);
+		logger.debug("Model root is [{}] ",root );
+
+		BusinessModel businessModel;
+		businessModel = root.getBusinessModels().get(0);
+		logger.debug("Business Model name is [{}] ",businessModel.getName() );
+
+		//Call JPA Mapping generator
+		JpaMappingGenerator generator = new JpaMappingGenerator();
+		try {
+			generator.generate(businessModel, modelDirectory);
+		} catch (Exception e) {
+			logger.error("An error occurred while executing command [{}]:", SpagoBIDataSetEditor.class.getName(), e);
+			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+		}
+		
+		//Get Package Name
+		String packageName = businessModel.getProperties().get("structural.package").getValue();
+			
+		//Call Java Compiler
+		DataMartGenerator datamartGenerator = new DataMartGenerator(
+				modelDirectory,
+				modelDirectory+"/build/",
+				null,
+				modelDirectory+"/dist/",
+				packageName.replace(".", "/")
+				);		
+		
+		boolean result = datamartGenerator.compile();
+		if (result){
+			// compile OK
+			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
+			
+			//Generate Jar from compiled code
+			datamartGenerator.jar();
+			logger.debug("Command [{}] executed succesfully", SpagoBIDataSetEditor.class.getName());
+		}else{
+			// compile error
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");		
+			logger.debug("Command [{}] not executed succesfully", SpagoBIDataSetEditor.class.getName());
+		}
+	}	
+	
+	public IDataSource createDataSource(String modelPath){
+		logger.debug("Creating datasource of [{}]",modelPath);
+		XMIResourceImpl resource = new XMIResourceImpl();
+		File source = new File(modelPath);
+		try {
+			resource.load( new FileInputStream(source), new HashMap<Object,Object>());
+		} catch (FileNotFoundException e) {
+			throw new SpagoBIPluginException("JPA Mapping: File not found",e);
+		} catch (IOException e) {
+			throw new SpagoBIPluginException("JPA Mapping: IO Error",e);
+		}
+		Model root = (Model) resource.getContents().get(0);
+		
+		BusinessModel businessModel;
+		businessModel = root.getBusinessModels().get(0);
+		
+		PhysicalModel physicalModel = businessModel.getPhysicalModel();
+		String connectionUrl = physicalModel.getProperties().get("connection.url").getValue();
+		String connectionUsername = physicalModel.getProperties().get("connection.username").getValue();
+		String connectionPassword = physicalModel.getProperties().get("connection.password").getValue();
+		logger.debug("Datasource connection url is [{}]",connectionUrl);
+		logger.debug("Datasource connection username is [{}]",connectionUsername);
+		logger.debug("Datasource connection password is [{}]",connectionPassword);
+
+		Map<String,Object> dataSourceProperties = new HashMap<String,Object>();
+		String modelName =  businessModel.getName();
+		logger.debug("Datasource model name is [{}]",modelName);
+		
+		//Create Connection
+		DBConnection connection = new DBConnection();			
+		connection.setName( businessModel.getName());
+		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
+		connection.setDriverClass( "com.mysql.jdbc.Driver");			
+		connection.setPassword( connectionPassword );
+		connection.setUrl( connectionUrl);
+		connection.setUsername( connectionUsername );
+		
+		dataSourceProperties.put("connection", connection);
+		
+		String modelDirectory = new File(modelPath).getParent();
+		List modelList = new ArrayList();
+		
+		modelList.add(modelName);
+		return OdaStructureBuilder.getDataSourceSingleModel(modelList, dataSourceProperties,modelDirectory+File.separatorChar+"dist"+File.separatorChar);
+	}
+	
+	/**
+	 * Show an information dialog box.
+	 */
+	public void showInformation(final String title, final String message) {
+	  Display.getDefault().asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+	      MessageDialog.openInformation(null, title, message);
+	    }
+	  });
+	}	
+	
 	
 	/**
 	 * Closes all project files on project close.

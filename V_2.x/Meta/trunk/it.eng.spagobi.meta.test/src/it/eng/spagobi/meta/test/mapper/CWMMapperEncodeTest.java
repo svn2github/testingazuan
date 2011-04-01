@@ -51,7 +51,12 @@ public class CWMMapperEncodeTest {
 		modelInitializer.setRootModel(rootModel);		
 		physicalModel = modelInitializer.initialize( 
         		"physicalModelDemo", 
-        		TestConnectionFactory.createConnection(dbType),  
+        		TestConnectionFactory.createConnection(dbType),
+        		"Test Connection",
+        		TestConnectionFactory.MYSQL_URL,
+        		TestConnectionFactory.MYSQL_USER,
+        		TestConnectionFactory.MYSQL_PWD,
+        		"DB Name",
         		TestConnectionFactory.getDefaultCatalogue(dbType), 
         		TestConnectionFactory.getDefaultSchema(dbType));
         

@@ -17,7 +17,9 @@ Require-Bundle: org.eclipse.core.runtime,
  ch.qos.logback.core;bundle-version="0.9.19",
  org.slf4j.api;bundle-version="1.5.11",
  org.junit;bundle-version="3.8.2",
- it.eng.spagobi.commons;bundle-version="1.0.0"
+ it.eng.spagobi.commons;bundle-version="1.0.0",
+ it.eng.spagobi.meta.model;bundle-version="1.0.0",
+ it.eng.spagobi.meta.generator;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.spagobi.meta.querybuilder.ui,

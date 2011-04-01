@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.editor.multi.wizards;
 
 
+import it.eng.spagobi.commons.SpagoBIModelLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
@@ -210,7 +211,10 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 			final File modelFile = newModelWizardFileCreationPage.getModelFile() ;		
 			
 			logger.debug(modelFile.getAbsolutePath().toString());
+			String modelPath = modelFile.getAbsolutePath().toString();
 			
+			SpagoBIModelLocator.INSTANCE.setModelPath(modelPath);
+			logger.debug("SpagoBIModelLocator model path is [{}]", SpagoBIModelLocator.INSTANCE.getModelPath());
 			final URI fileURI = URI.createFileURI(modelFile.getAbsolutePath().toString());
 			
 			

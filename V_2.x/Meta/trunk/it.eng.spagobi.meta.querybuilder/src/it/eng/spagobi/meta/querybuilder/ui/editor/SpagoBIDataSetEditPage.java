@@ -27,12 +27,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public class SpagoBIDataSetEditPage extends Composite {
+
+	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditPage.class);
 
 	public SpagoBIDataSetEditPage(Composite container, QueryBuilder builder) {
 		super(container, SWT.NONE);
@@ -42,9 +46,11 @@ public class SpagoBIDataSetEditPage extends Composite {
 		setLayout(new GridLayout(2, false));
 		
 		//Create Business Model Tree 
+		logger.debug("Business Model Tree creation");
 		builder.createEditBusinessModelTree(this);
 		
 		//Create Query Filters
+		logger.debug("Business Model Query Tables (Select,Where,Having) creation");
 		builder.createEditGroup(this);
 	}
 	

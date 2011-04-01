@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.Model;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
 
@@ -40,7 +41,8 @@ public class SpagoBIModelEditorInput extends MultiEditorInput {
 	
 	String modelName;
 	String modelDescription;
-
+	
+	
 	public SpagoBIModelEditorInput(File modelFile, Model spagobiModel) {
 		
 		super(

@@ -27,13 +27,16 @@ import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryCo
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,6 +57,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
@@ -66,6 +70,7 @@ import org.eclipse.emf.common.ui.editor.ProblemEditorPart;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EValidator;
@@ -1101,29 +1106,48 @@ public class BusinessModelEditor
 				//
 				@Override
 				public void execute(IProgressMonitor monitor) {
-					// Save the resources to the file system.
-					//
-					boolean first = true;
-					for (Resource resource : editingDomain.getResourceSet().getResources()) {
-						logger.debug("Resource: " + resource.getURI());
-						if ((first || !resource.getContents().isEmpty() || isPersisted(resource)) && !editingDomain.isReadOnly(resource)) {
-							logger.debug("Resource can be saved");
-							try {
-								long timeStamp = resource.getTimeStamp();
-								resource.save(saveOptions);
-								logger.debug("Save command executed on resource");
-								if (resource.getTimeStamp() != timeStamp) {
-									logger.debug("Resource modifications has been saved on file");
-									resourceChangeListener.getSavedResources().add(resource);
-								}
-							}
-							catch (Exception exception) {
-								logger.debug("Impossible to save resource " + resource.getURI());
-								resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
-							}
-							first = false;
-						}
+					BusinessModelEditorInput businessModelEditorInput = (BusinessModelEditorInput)getEditorInput();
+					Resource resource = editingDomain.getResourceSet().getResources().get(0);
+					logger.debug("Resource: " + resource.getURI());
+					URI resourceURI = businessModelEditorInput.getResourceFileURI();
+					logger.debug("Outputfile: " + resource.getURI());
+					TreeIterator<EObject> it = resource.getAllContents();
+					Model spagobiModel = null;
+					if(it.hasNext()) {
+						spagobiModel = (Model)it.next();
 					}
+					
+					if(spagobiModel != null) {
+					logger.debug("Model: " + spagobiModel.getName());
+	
+					EmfXmiSerializer serializer = new EmfXmiSerializer();
+					serializer.serialize(spagobiModel, new File(resourceURI.toFileString()));
+		
+					logger.debug("doSave");
+					} else {
+						logger.debug("not saved");
+					}
+//					boolean first = true;
+//					for (Resource resource : editingDomain.getResourceSet().getResources()) {
+//						logger.debug("Resource: " + resource.getURI());
+//						if ((first || !resource.getContents().isEmpty() || isPersisted(resource)) && !editingDomain.isReadOnly(resource)) {
+//							logger.debug("Resource can be saved");
+//							try {
+//								long timeStamp = resource.getTimeStamp();
+//								resource.save(saveOptions);
+//								logger.debug("Save command executed on resource");
+//								if (resource.getTimeStamp() != timeStamp) {
+//									logger.debug("Resource modifications has been saved on file");
+//									resourceChangeListener.getSavedResources().add(resource);
+//								}
+//							}
+//							catch (Exception exception) {
+//								logger.debug("Impossible to save resource " + resource.getURI());
+//								resourceToDiagnosticMap.put(resource, analyzeResourceProblems(resource, exception));
+//							}
+//							first = false;
+//						}
+//					}
 				}
 			};
 

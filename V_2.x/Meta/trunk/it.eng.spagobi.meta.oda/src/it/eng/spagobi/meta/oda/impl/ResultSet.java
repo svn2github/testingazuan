@@ -57,6 +57,11 @@ public class ResultSet implements IResultSet
     	this.dataStore = dataStore;
     }
     
+    public ResultSet(IDataStore dataStore, int m_maxRows) {
+    	this.m_maxRows = m_maxRows;
+    	this.dataStore = dataStore;
+    }
+    
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getMetaData()
 	 */

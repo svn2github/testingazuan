@@ -21,20 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.wizard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
-import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
+import it.eng.qbe.serializer.SerializationException;
+import it.eng.spagobi.meta.oda.impl.Connection;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
+import org.eclipse.datatools.connectivity.oda.IConnection;
+import org.eclipse.datatools.connectivity.oda.IDriver;
+import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.design.DataSetDesign;
-import org.eclipse.datatools.connectivity.oda.design.Properties;
+import org.eclipse.datatools.connectivity.oda.design.ui.designsession.DesignSessionUtil;
 import org.eclipse.datatools.connectivity.oda.design.ui.wizards.DataSetWizard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +52,6 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 		logger.trace("IN");
 		this.setWindowTitle("Create a new SpagoBI Data Set");
 		this.setHelpAvailable(false);
-	//	queryBuilder = new QueryBuilder();
 		logger.trace("OUT");
 	}
 	
@@ -75,54 +72,39 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 	 */
 	protected void initQueryBuilder(DataSetDesign dataSetDesign ){
 		Query query;
-        String queryText;
-        Properties properties;
-        Map<String, Object> dataSourceProperties;
-        String modelName;
-        List<String> modelNames;
-        DBConnection connection;
-        IDataSource dataSource;
-        
-		if(queryBuilder==null){
-		    if( dataSetDesign == null ){
-		    	queryBuilder = new QueryBuilder(); // nothing to initialize
-		    }else{
-		    	//create the IDataSource
-			    properties =  dataSetDesign.getDataSourceDesign().getPublicProperties();
-			    
-			    dataSourceProperties = new HashMap<String, Object>();
-			    
-				modelName = properties.getProperty("datamart_name");
-				modelNames = new ArrayList<String>();
-				modelNames.add( modelName );
-			
-				connection = new DBConnection();
-				connection.setName( modelName );
-				connection.setDialect( properties.getProperty("database_dialect") );			
-				connection.setJndiName( null );			
-				connection.setDriverClass( properties.getProperty("database_driver") );			
-				connection.setPassword( properties.getProperty("database_password") );
-				connection.setUrl( properties.getProperty("database_url") );
-				connection.setUsername( properties.getProperty("database_user") );	
+		String queryText;
+		Connection connection = null;
+		if(dataSetDesign!=null){
+			try {
+				IDriver customDriver = new it.eng.spagobi.meta.oda.impl.Driver();
+				connection = (Connection)customDriver.getConnection( null );
+				java.util.Properties connProps =  DesignSessionUtil.getEffectiveDataSourceProperties( dataSetDesign.getDataSourceDesign() );
+				connection.open( connProps );
 
-				dataSourceProperties.put("connection", connection);
-				dataSourceProperties.put("dblinkMap", new HashMap());
-				dataSource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
-				queryBuilder = new QueryBuilder(dataSource);
-				
-				//Looks if a query exists..
-				//if so.. deserializes and add it in the query builder
-				queryText = dataSetDesign.getQueryText();
+				if(queryBuilder==null){
+					queryBuilder = new QueryBuilder(connection.getDatasource());
 
-		        if( queryText != null ){
-					try {
+					//Looks if a query exists..
+					//if so.. deserializes and add it in the query builder
+					queryText = dataSetDesign.getQueryText();
+
+					if( queryText != null && !queryText.equals("")){
 						query =  SerializerFactory.getDeserializer("application/json").deserializeQuery(queryText,getQueryBuilder().getDataSource()) ;
 						queryBuilder.setQuery(query);
-					} catch (Exception e) {
-						logger.error("Error deserializing query");
 					}
-		        }
-		    }
+				}
+				connection.close();
+
+			} catch( OdaException e ) {
+				logger.error("Error getting the connection");
+				throw new SpagoBIRuntimeException("Error getting the connection",e);
+			}catch( SerializationException e ) {
+				logger.error("Error deserializing query");
+				throw new SpagoBIRuntimeException("Error deserializing query",e);
+			}
+		}else{
+			queryBuilder = new QueryBuilder();
 		}
-	}
+	}	
+	
 }

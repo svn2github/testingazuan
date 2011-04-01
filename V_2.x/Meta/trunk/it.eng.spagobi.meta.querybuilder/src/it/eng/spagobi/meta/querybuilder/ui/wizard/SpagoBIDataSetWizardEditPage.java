@@ -27,6 +27,7 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDriver;
@@ -125,9 +126,10 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	{
 		
 		queryText =  getInitializationDesign().getQueryText();
-		getSpagoBIWizard().initQueryBuilder(getInitializationDesign());
+ 		getSpagoBIWizard().initQueryBuilder(getInitializationDesign());
         validateData();
         setMessage( DEFAULT_MESSAGE );
+
 
         /*
          * To optionally honor the request for an editable or
@@ -273,38 +275,27 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
      * Updates the given dataSetDesign with the queryText and its derived metadata
      * obtained from the ODA runtime connection.
      */
-    private void updateDesign( DataSetDesign dataSetDesign,
-                               IConnection conn, String queryText )
-        throws OdaException
+    private void updateDesign( DataSetDesign dataSetDesign, IConnection conn, String queryText ) throws OdaException
     {
         IQuery query = conn.newQuery( null );
         query.prepare( queryText );
         
-        // TODO a runtime driver might require a query to first execute before
-        // its metadata is available
-//      query.setMaxRows( 1 );
-//      query.executeQuery();
         
-        try
-        {
+        
+        try {
             IResultSetMetaData md = query.getMetaData();
             updateResultSetDesign( md, dataSetDesign );
-        }
-        catch( OdaException e )
-        {
+        } catch( OdaException e ) {
             // no result set definition available, reset previous derived metadata
             dataSetDesign.setResultSets( null );
             e.printStackTrace();
         }
         
         // proceed to get parameter design definition
-        try
-        {
+        try {
             IParameterMetaData paramMd = query.getParameterMetaData();
             updateParameterDesign( paramMd, dataSetDesign );
-        }
-        catch( OdaException ex )
-        {
+        } catch( OdaException ex ) {
             // no parameter definition available, reset previous derived metadata
             dataSetDesign.setParameters( null );
             ex.printStackTrace();
@@ -375,17 +366,14 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
     /**
      * Attempts to close given ODA connection.
      */
-    private void closeConnection( IConnection conn )
-    {
-        try
-        {
-            if( conn != null && conn.isOpen() )
-                conn.close();
-        }
-        catch ( OdaException e )
-        {
-            // ignore
-            e.printStackTrace();
-        }
+    private void closeConnection( IConnection conn ){
+    	try {
+        	if( conn != null && conn.isOpen() )
+        		conn.close();
+		} catch (OdaException e){
+            logger.error("Error closing the connection [{}]",conn);
+        	throw new SpagoBIRuntimeException("Error closing the connection", e);
+		}
+
     }
 }

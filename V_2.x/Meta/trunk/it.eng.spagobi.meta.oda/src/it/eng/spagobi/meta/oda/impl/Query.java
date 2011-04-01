@@ -97,6 +97,10 @@ public class Query implements IQuery {
 				logger.debug("Executing query ");
 				datsSet.loadData(0,m_maxRows,m_maxRows);
 				datsStore = datsSet.getDataStore() ;
+				long rows = datsSet.getDataStore().getRecordsCount();
+				if(m_maxRows>rows){
+					m_maxRows=new Long(rows).intValue()-1;
+				}
 				logger.debug("Query executed");
 			} catch (Throwable e) {
 				logger.error("Error executing the query with text: [{}]",queryText);
@@ -133,7 +137,7 @@ public class Query implements IQuery {
 	 */
 	public IResultSet executeQuery() throws OdaException {
 
-		return new ResultSet( datsStore );
+		return new ResultSet( datsStore , m_maxRows);
 	}
 
 	/*
@@ -142,6 +146,7 @@ public class Query implements IQuery {
 	public void setProperty( String name, String value ) throws OdaException
 	{
 		// do nothing; assumes no data set query property
+		logger.debug("Query.setProperty([{}],[{}]) STUB setting properties",name, value);
 	}
 
 	/*
@@ -149,7 +154,7 @@ public class Query implements IQuery {
 	 */
 	public void setMaxRows( int max ) throws OdaException
 	{
-		m_maxRows = max;
+		m_maxRows = m_maxRows;
 	}
 
 	/*
@@ -167,6 +172,7 @@ public class Query implements IQuery {
 	{
 		// TODO Auto-generated method stub
 		// only applies to input parameter
+		logger.debug("Query.clearInParameters STUB");
 	}
 
 	/*
@@ -175,6 +181,7 @@ public class Query implements IQuery {
 	public void setInt( String parameterName, int value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setInt([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -184,6 +191,7 @@ public class Query implements IQuery {
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setInt([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -193,6 +201,7 @@ public class Query implements IQuery {
 	public void setDouble( String parameterName, double value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setDouble([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -202,6 +211,7 @@ public class Query implements IQuery {
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setDouble([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -211,6 +221,7 @@ public class Query implements IQuery {
 	public void setBigDecimal( String parameterName, BigDecimal value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setBigDecimal([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -220,6 +231,7 @@ public class Query implements IQuery {
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setBigDecimal([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -229,6 +241,7 @@ public class Query implements IQuery {
 	public void setString( String parameterName, String value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setString([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -238,6 +251,7 @@ public class Query implements IQuery {
 	public void setString( int parameterId, String value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setString([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -247,6 +261,7 @@ public class Query implements IQuery {
 	public void setDate( String parameterName, Date value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setDate([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -256,6 +271,7 @@ public class Query implements IQuery {
 	public void setDate( int parameterId, Date value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setDate([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -265,6 +281,7 @@ public class Query implements IQuery {
 	public void setTime( String parameterName, Time value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setTime([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -274,6 +291,7 @@ public class Query implements IQuery {
 	public void setTime( int parameterId, Time value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setTime([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -283,6 +301,7 @@ public class Query implements IQuery {
 	public void setTimestamp( String parameterName, Timestamp value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setTimestamp([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -292,6 +311,7 @@ public class Query implements IQuery {
 	public void setTimestamp( int parameterId, Timestamp value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setTimestamp([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -302,6 +322,7 @@ public class Query implements IQuery {
 	throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setBoolean([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -311,7 +332,8 @@ public class Query implements IQuery {
 	public void setBoolean( int parameterId, boolean value )
 	throws OdaException
 	{
-		// TODO Auto-generated method stub       
+		// TODO Auto-generated method stub
+		logger.debug("setBoolean([{}],[{}]) STUB setting properties",parameterId, value);  
 		// only applies to input parameter
 	}
 
@@ -322,6 +344,7 @@ public class Query implements IQuery {
 	throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setObject([{}],[{}]) STUB setting properties",parameterName, value);
 		// only applies to named input parameter
 	}
 
@@ -331,6 +354,7 @@ public class Query implements IQuery {
 	public void setObject( int parameterId, Object value ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setObject([{}],[{}]) STUB setting properties",parameterId, value);
 		// only applies to input parameter
 	}
 
@@ -340,6 +364,7 @@ public class Query implements IQuery {
 	public void setNull( String parameterName ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setNull([{}],[{}]) STUB setting properties",parameterName);
 		// only applies to named input parameter
 	}
 
@@ -349,6 +374,7 @@ public class Query implements IQuery {
 	public void setNull( int parameterId ) throws OdaException
 	{
 		// TODO Auto-generated method stub
+		logger.debug("setNull([{}]) STUB setting properties",parameterId);
 		// only applies to input parameter
 	}
 

@@ -158,5 +158,10 @@ public class Connection implements IConnection
     {
         // do nothing; assumes no locale support
     }
+
+	public IDataSource getDatasource() {
+		return datasource;
+	}
+    
     
 }

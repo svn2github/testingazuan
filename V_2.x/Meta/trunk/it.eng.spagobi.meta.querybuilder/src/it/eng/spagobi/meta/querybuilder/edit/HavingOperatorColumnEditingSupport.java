@@ -76,7 +76,8 @@ public class HavingOperatorColumnEditingSupport extends EditingSupport {
 	@Override
 	protected Object getValue(Object element) {
 		HavingField havingClause = (HavingField) element;
-		if (havingClause.getOperator().equals("NONE")) {
+		
+		if (havingClause.getOperator()==null || havingClause.getOperator().equals("NONE")) {
 			return 0;
 		} else if (havingClause.getOperator().equals("EQUALS TO")){
 			return 1;

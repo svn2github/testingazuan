@@ -247,7 +247,7 @@ public class QueryBuilder {
 
 		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_FIELD, values, values,aggregation);
 		query = getQuery();
-		query.addHavingField("Having"+havingFilterCount, "Having"+havingFilterCount, false, leftOperand, null, null, "AND");
+		query.addHavingField("Having"+havingFilterCount, "Having"+havingFilterCount, false, leftOperand, "NONE", null, "AND");
 
 		havingFilterCount++;
 		return query;

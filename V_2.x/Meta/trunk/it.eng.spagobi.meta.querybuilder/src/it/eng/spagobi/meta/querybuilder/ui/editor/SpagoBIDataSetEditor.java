@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -36,6 +37,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -48,6 +50,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,6 +218,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		Query query;
 		JSONObject queryJSON;
 		FileEditorInput fileEditorInput;
+		String modelPath;
 		
 		logger.trace("IN");
 		
@@ -222,10 +226,40 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		
 		fileEditorInput = null;
 		if (getEditorInput() instanceof FileEditorInput) {
-			fileEditorInput = (FileEditorInput)getEditorInput();
-			query.setId(fileEditorInput.getURI().toString());
-			query.setDescription(fileEditorInput.getURI().toString());
-			query.setDistinctClauseEnabled(false);
+			try {
+				//Read the file to get the Model Path value
+				fileEditorInput = (FileEditorInput)getEditorInput();
+				InputStream inputStream = null;
+
+				inputStream = fileEditorInput.getFile().getContents();
+
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+				String line = null;
+				StringBuffer stringBuffer  = new StringBuffer();
+				while((line = reader.readLine())!= null) {
+					stringBuffer.append(line);
+				}
+				reader.close();
+
+				String queryString = stringBuffer.toString();
+				o = new JSONObject(queryString);
+
+				JSONObject queryMeta = o.optJSONObject("queryMeta");
+				modelPath = queryMeta.optString("modelPath");
+				//******
+
+				fileEditorInput = (FileEditorInput)getEditorInput();
+				query.setId(fileEditorInput.getURI().toString());
+				query.setDescription(fileEditorInput.getURI().toString());
+				query.setDistinctClauseEnabled(false);
+			} catch(CoreException e){
+				throw new RuntimeException("Impossible to save query, CoreException", e);
+			} catch (IOException e) {		
+				throw new RuntimeException("Impossible to save query, IOException", e);
+			} catch (JSONException e) {
+				throw new RuntimeException("Impossible to save query, JSONException", e);
+			}
+
 		} else {
 			throw new RuntimeException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + getEditorInput().getClass().getName() + "]");
 		}
@@ -247,6 +281,12 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 //			out = new BufferedWriter(fstream);
 //			out.write(queryJSON.toString(3));
 			o.put("query", queryJSON);
+		
+			//Write model path inside query file
+			JSONObject queryMeta = new JSONObject(); 
+			o.put("queryMeta", queryMeta);
+			queryMeta.put("modelPath",modelPath);
+			
 			in = new ByteArrayInputStream(o.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
 			fileEditorInput.getFile().setContents(in, true, true, monitor);
 			

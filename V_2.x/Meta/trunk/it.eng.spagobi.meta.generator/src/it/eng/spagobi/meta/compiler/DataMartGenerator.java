@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class DataMartGenerator {
 
 	private String srcDir=null;
-	private String binDir=null;
+	private File binDir;
 	private String outDir=null;
 	private String libDir=null;
 	private String srcPackage=null;
@@ -66,21 +66,31 @@ public class DataMartGenerator {
 	/**
 	 * Costructor
 	 * @param srcDir Source directory
-	 * @param binDir Class Files directory
+	 * @param binDir Class files directory
 	 * @param libDir Libraries directory
 	 * @param outDir Directory where you can find the JAR
 	 * @param srcPackage the package of the source code
 	 */
 	public DataMartGenerator(String srcDir,String binDir,String libDir,String outDir,String srcPackage){
 		this.srcDir=srcDir;
-		this.binDir=binDir;
-	    this.libDir = null;
+		logger.debug("src dir set to [{}]", this.srcDir);
+		
+		this.binDir= new File(binDir);
+		logger.debug("bin dir set to [{}]", this.binDir);
+	    
+		this.libDir = null;
+		logger.debug("lib dir set to [{}]", this.libDir);
+		
 		this.outDir=outDir;
+		logger.debug("out dir set to [{}]", this.outDir);
+		
 		this.srcPackage=srcPackage;
-		setCP();
+		logger.debug("srcpkg dir set to [{}]", this.srcPackage);
+		
+		setClasspath();
 	}
 	
-	private void setCP(){
+	private void setClasspath(){
 	    File plugin = new File("plugins");
 	    
 	    this.libDir = plugin.getAbsolutePath()+"\\";
@@ -97,13 +107,21 @@ public class DataMartGenerator {
 	 * @return boolean : true if the compiler has worked well.
 	 */
 	public boolean compile(){
-
+		boolean result;
+		
+		logger.trace("IN");
+		
 		String command=srcDir+" -classpath " +classPath+ " -d "+binDir+" -source 1.5";
 		logger.info("command="+command);
+		
 		PrintWriter error=new PrintWriter(System.err);
 		PrintWriter out=new PrintWriter(System.out);
-		boolean result=org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
-		logger.info("Compile Result= " +result);
+		result = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
+		
+		logger.info("Mapping files compiled succesfully: [{}]", result);
+		
+		logger.trace("OUT");
+		
 		return result;
 	}
 	
@@ -111,52 +129,79 @@ public class DataMartGenerator {
 	 * This method Creates the DataMart
 	 */
 	public void jar(){
-		try{
-			File jarDir = new File(outDir);
-			jarDir.mkdir();
-			File jar=new File (outDir,getDataMartFileName());
-			if (jar.exists()) jar.delete();
-			FileOutputStream fStream=new FileOutputStream(jar);
-			java.util.zip.ZipOutputStream oStream=new java.util.zip.ZipOutputStream(fStream);
-
-			compressFolder(binDir,oStream);
-			
-			oStream.flush();
-			oStream.close();
 		
-		}catch(Exception e)
-		{
+		logger.trace("IN");
+		
+		try{
+			File jarFileDir = new File(outDir);
+			jarFileDir.mkdir();
+			File jarFile = new File (outDir,getDataMartFileName());
+			logger.debug("Mapping jar file will be saved in [{}]", jarFile);
+			
+			if (jarFile.exists()) {
+				logger.warn("A mapping jar file alredy exists. It will be overwritten");
+				jarFile.delete();
+			}
+			
+			FileOutputStream fileOutputStream = new FileOutputStream(jarFile);
+			java.util.zip.ZipOutputStream zipOutputStream = new java.util.zip.ZipOutputStream(fileOutputStream);
+
+			compressFolder(binDir, zipOutputStream);
+			
+			zipOutputStream.flush();
+			zipOutputStream.close();
+			
+			logger.info("Mapping jar created succesfully: [{}]", true);
+		
+		} catch(Exception e) {
 			logger.error("Error...during JAR creation",e);
+		} finally {
+			logger.trace("OUT");
 		}
+		
 		
 	}
 	
-	private void compressFolder(String pathFolder, ZipOutputStream out)  {
+	private void compressFolder(File folder, ZipOutputStream out)  {
 
-		File folder = new File(pathFolder);
-		String[] entries = folder.list();
+		
+		String[] entries;
 		byte[] buffer = new byte[4096];
 		int bytes_read;
 		FileInputStream in = null;
+		
+		logger.trace("IN");
+		
 		try {
+			entries = folder.list();
+
 			for (int i = 0; i < entries.length; i++) {
-				File f = new File(folder, entries[i]);
-				if (f.isDirectory()) {
-					compressFolder(pathFolder + "/" + f.getName(), out);
+				File fileToCompress = new File(folder, entries[i]);
+				logger.debug("Compress file [{}]", fileToCompress);
+				if (fileToCompress.isDirectory()) {
+					compressFolder(fileToCompress, out);
 				} else {
-					in = new FileInputStream(f);
-					String completeFileName = pathFolder + "/" + f.getName();
-					String relativeFileName = f.getName();
-					if (completeFileName.lastIndexOf(outDir) != -1) {
-						int index = completeFileName.lastIndexOf(outDir);
-						int len = outDir.length();
-						relativeFileName = completeFileName.substring(index + len + 1);
+					in = new FileInputStream(fileToCompress);
+					String fileToCompressAbsolutePath = fileToCompress.getAbsolutePath();
+					logger.debug(fileToCompressAbsolutePath);
+					String binDirAbsolutePath = binDir.getAbsolutePath();
+					logger.debug(binDirAbsolutePath);
+					
+					String relativeFileName = fileToCompress.getName();
+					if (fileToCompressAbsolutePath.lastIndexOf(binDirAbsolutePath) != -1) {
+						int index = fileToCompressAbsolutePath.lastIndexOf(binDirAbsolutePath);
+						int len = binDirAbsolutePath.length();
+						relativeFileName = fileToCompressAbsolutePath.substring(index + len + 1);
 					}
-					ZipEntry entry = new ZipEntry(srcPackage+"/"+relativeFileName);
+					logger.debug(relativeFileName);
+					
+					ZipEntry entry = new ZipEntry(relativeFileName);
 					out.putNextEntry(entry);
-					while ((bytes_read = in.read(buffer)) != -1)
+					while ((bytes_read = in.read(buffer)) != -1) {
 						out.write(buffer, 0, bytes_read);
+					}
 					in.close();
+					logger.debug("File compressed into [{}]", entry);
 				}
 			}
 		} catch (Exception e) {
@@ -169,7 +214,7 @@ public class DataMartGenerator {
 			} catch (Exception e) {
 				logger.error("Error...during closing File",e);
 			}
-		
+			logger.trace("OUT");
 		}
 	}
 	

@@ -67,6 +67,7 @@ public class JpaMappingGenerator implements IGenerator {
 	private File tableTemplate;
 	private File viewTemplate;
 	private File keyTemplate;	
+	private File persistenceUnitTemplate;
 	private File baseOutputDir;
 
 	public JpaMappingGenerator() {
@@ -85,6 +86,7 @@ public class JpaMappingGenerator implements IGenerator {
 			tableTemplate = new File(templateDir, "sbi_table.vm");
 			viewTemplate = new File(templateDir, "sbi_view.vm");
 			keyTemplate = new File(templateDir, "sbi_pk.vm");
+			persistenceUnitTemplate  = new File(templateDir, "sbi_persistence_unit.vm");
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -121,19 +123,22 @@ public class JpaMappingGenerator implements IGenerator {
 		
 		Iterator<BusinessColumnSet> tables = model.getTables().iterator();
 		while (tables.hasNext()) {
-			generateJpaMapping( tables.next()) ;
+			generateColumnSetMapping( tables.next()) ;
 		}	
+		
+		generatePersistenceUnitMapping(model);
+		
 	}
 	
-	public void generateJpaMapping(BusinessColumnSet columnSet) throws Exception {
+	public void generateColumnSetMapping(BusinessColumnSet columnSet) throws Exception {
 		if (columnSet instanceof BusinessTable) {
-			generateJpaMappingForBusinessTable( (BusinessTable)columnSet );
+			generateBusinessTableMapping( (BusinessTable)columnSet );
 		} else if (columnSet instanceof BusinessView) {
-			generateJpaMappingForBusinessView( (BusinessView)columnSet );
+			generateBusinessViewMapping( (BusinessView)columnSet );
 		}
 	}
 	
-	public void generateJpaMappingForBusinessTable(BusinessTable table) throws Exception {
+	public void generateBusinessTableMapping(BusinessTable table) throws Exception {
 		logger.info("Creating mapping for business class [{}]", table.getName());
 		
 		JpaTable jpaTable = new JpaTable(table);
@@ -144,7 +149,7 @@ public class JpaMappingGenerator implements IGenerator {
 		}
 	}
 	
-	public void generateJpaMappingForBusinessView(BusinessView view) throws Exception {
+	public void generateBusinessViewMapping(BusinessView view) throws Exception {
 		logger.info("Creating mapping for business view [{}]", view.getName());
 		
 		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
@@ -157,6 +162,12 @@ public class JpaMappingGenerator implements IGenerator {
 		}
 		JpaView jpaView = new JpaView(view);
 		createViewFile(viewTemplate, jpaView);
+	}
+	
+	public void generatePersistenceUnitMapping(BusinessModel model) throws Exception {
+		logger.info("Creating persistence unit for model [{}]", model.getName());
+		
+		createMappingFile(persistenceUnitTemplate);
 	}
 
 	/**
@@ -203,6 +214,30 @@ public class JpaMappingGenerator implements IGenerator {
 		outputDir.mkdirs();
 		
 		File outputFile = new File(outputDir, jpaView.getBusinessView().getName()+".json");
+		
+        createFile(templateFile, outputFile, context);
+
+	}
+	
+	/**
+	 * This method create a single java class file
+	 * @param templateFile
+	 * @param businessTable
+	 * @param jpaView
+	 */
+	private void createMappingFile(File templateFile){
+
+		VelocityContext context;
+		
+		logger.debug("IN. createFile. templateFile="+templateFile);
+		
+	    context = new VelocityContext();
+        // context.put("jpaView", jpaView ); //$NON-NLS-1$
+        
+        File outputDir = new File( new File(baseOutputDir, "build"), "META" );
+		outputDir.mkdirs();
+		
+		File outputFile = new File(outputDir, "persistence.xml");
 		
         createFile(templateFile, outputFile, context);
 

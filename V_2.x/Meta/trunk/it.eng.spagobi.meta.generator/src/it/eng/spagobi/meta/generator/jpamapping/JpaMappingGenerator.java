@@ -247,7 +247,7 @@ public class JpaMappingGenerator implements IGenerator {
         context.put("jpaTables", jpaTables ); //$NON-NLS-1$
         context.put("modelName", model.getName());
         
-        File outputDir = new File( new File(baseOutputDir, "build"), "META" );
+        File outputDir = new File( new File(baseOutputDir, "build"), "META-INF" );
 		outputDir.mkdirs();
 		
 		File outputFile = new File(outputDir, "persistence.xml");

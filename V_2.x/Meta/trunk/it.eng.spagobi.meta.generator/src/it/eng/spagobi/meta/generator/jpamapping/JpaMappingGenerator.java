@@ -35,6 +35,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class JpaMappingGenerator implements IGenerator {
 	public void generatePersistenceUnitMapping(BusinessModel model) throws Exception {
 		logger.info("Creating persistence unit for model [{}]", model.getName());
 		
-		createMappingFile(persistenceUnitTemplate);
+		createMappingFile(persistenceUnitTemplate, model);
 	}
 
 	/**
@@ -225,14 +226,25 @@ public class JpaMappingGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaView
 	 */
-	private void createMappingFile(File templateFile){
+	private void createMappingFile(File templateFile, BusinessModel model){
 
 		VelocityContext context;
 		
 		logger.debug("IN. createFile. templateFile="+templateFile);
 		
+		List<JpaTable> jpaTables = new ArrayList<JpaTable>();
+		Iterator<BusinessColumnSet> tables = model.getTables().iterator();
+		while (tables.hasNext()) {
+			BusinessColumnSet columnSet = tables.next();
+			if (columnSet instanceof BusinessTable) {
+				BusinessTable table = (BusinessTable)columnSet;
+				JpaTable jpaTable = new JpaTable(table);
+				jpaTables.add(jpaTable);
+			}
+		}	
+		
 	    context = new VelocityContext();
-        // context.put("jpaView", jpaView ); //$NON-NLS-1$
+        context.put("jpaTables", jpaTables ); //$NON-NLS-1$
         
         File outputDir = new File( new File(baseOutputDir, "build"), "META" );
 		outputDir.mkdirs();

@@ -7,14 +7,9 @@
 		<!-- provider>org.eclipse.persistence.jpa.PersistenceProvider</provider-->
 		<!-- provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider-->
 
-		<class>it.eng.spagobi.meta.Customer</class>
-		<class>it.eng.spagobi.meta.Product</class>
-		<class>it.eng.spagobi.meta.ProductClass</class>
-		<class>it.eng.spagobi.meta.Promotion</class>
-		<class>it.eng.spagobi.meta.Region</class>	
-		<class>it.eng.spagobi.meta.Store</class>
-		<class>it.eng.spagobi.meta.TimeByDay</class>
-		<class>it.eng.spagobi.meta.SalesFact1998PK</class>
-		<class>it.eng.spagobi.meta.SalesFact1998</class>
+#foreach ($jpaTable in $jpaTables)
+		<class>$jpaTable.qualifiedClassName</class>
+#end
+		
 	</persistence-unit>
 </persistence>

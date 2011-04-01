@@ -384,6 +384,10 @@ public class JpaTable {
 		return name;
 	}
 	
+	public String getQualifiedClassName() {
+		return getPackage() + "."  + getClassName();
+	}
+	
 
 	/**
 	 * TODO .. da implementare

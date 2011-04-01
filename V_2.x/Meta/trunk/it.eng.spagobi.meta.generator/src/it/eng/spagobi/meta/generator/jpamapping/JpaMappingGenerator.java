@@ -245,6 +245,7 @@ public class JpaMappingGenerator implements IGenerator {
 		
 	    context = new VelocityContext();
         context.put("jpaTables", jpaTables ); //$NON-NLS-1$
+        context.put("modelName", model.getName());
         
         File outputDir = new File( new File(baseOutputDir, "build"), "META" );
 		outputDir.mkdirs();

@@ -24,7 +24,9 @@ package it.eng.spagobi.commons.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Config;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.metadata.SbiConfig;
+import it.eng.spagobi.commons.metadata.SbiDomains;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,7 +41,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
 
-public class ConfigDAO extends AbstractHibernateDAO implements IConfigDAO {
+public class ConfigDAO extends AbstractTestHibernateDAO implements IConfigDAO {
 
     static private Logger logger = Logger.getLogger(ConfigDAO.class);
     
@@ -139,7 +141,7 @@ public class ConfigDAO extends AbstractHibernateDAO implements IConfigDAO {
 	 * 
 	 * @see it.eng.spagobi.common.bo.dao.ISbiConfigDAO#loadConfigParametersById(string)
 	 */
-    public Config loadConfigParametersByLabel(String label) throws Exception{
+    public Config loadConfigParametersByLabel(String label)  throws Exception{
     	logger.debug("IN");
     	Config toReturn = null;
 		Session tmpSession = null;
@@ -197,4 +199,93 @@ public class ConfigDAO extends AbstractHibernateDAO implements IConfigDAO {
 		return toReturn;
     }
     
+	public SbiConfig fromConfig(Config Config){
+		SbiConfig hibConfig = new SbiConfig();
+		hibConfig.setValueCheck(Config.getValueCheck());
+		hibConfig.setId(Config.getId());
+		hibConfig.setName(Config.getName());
+		hibConfig.setLabel(Config.getLabel());
+		hibConfig.setDescription(Config.getDescription());
+		return hibConfig;
+	}
+	
+	/**
+	 * Save domain by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return void
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 */
+	public void saveConfig(Config config)throws EMFUserError{
+		Domain toSave = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+		
+					
+			SbiDomains hibDomain = (SbiDomains) aSession.save(this.fromConfig(config));
+		
+			toSave = new Domain();
+			aSession.save(toSave);
+			tx.commit();
+		
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+	}
+
+	/**
+	 * Update domain by id.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return void
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 */
+	public void updateDomain(Config config, Integer id) throws EMFUserError{
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			aSession.update(this.fromConfig(config));
+		
+			tx.commit();
+		
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+
+	}
+
 }

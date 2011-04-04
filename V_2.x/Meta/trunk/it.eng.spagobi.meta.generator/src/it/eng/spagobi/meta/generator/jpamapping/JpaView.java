@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.meta.generator.utils.StringUtil;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;

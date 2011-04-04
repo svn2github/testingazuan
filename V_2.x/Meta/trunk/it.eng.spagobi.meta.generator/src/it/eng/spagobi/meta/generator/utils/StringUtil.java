@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.generator.jpamapping;
+package it.eng.spagobi.meta.generator.utils;
 
 import java.beans.Introspector;
 

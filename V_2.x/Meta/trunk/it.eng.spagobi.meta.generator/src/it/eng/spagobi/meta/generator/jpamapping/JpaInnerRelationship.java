@@ -1,5 +1,6 @@
 package it.eng.spagobi.meta.generator.jpamapping;
 
+import it.eng.spagobi.meta.generator.utils.StringUtil;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;

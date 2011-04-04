@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping;
 
 
 
+import it.eng.spagobi.meta.generator.utils.StringUtil;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;

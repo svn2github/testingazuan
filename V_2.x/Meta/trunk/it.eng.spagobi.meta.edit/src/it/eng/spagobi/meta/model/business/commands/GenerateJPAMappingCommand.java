@@ -25,7 +25,8 @@ package it.eng.spagobi.meta.model.business.commands;
 import java.io.File;
 
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
@@ -70,14 +71,25 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		String directory = (String)parameter.getValue();
 
 		//Call JPA Mapping generator
-		JpaMappingGenerator generator = new JpaMappingGenerator();
+		executed = true;
+		JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
+		generator.setLibDir(new File("plugins"));
 		try {
 			generator.generate(businessModel, directory);
 		} catch (Exception e) {
 			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+			executed = false;
 		}
 		
+		if(executed) {
+			showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
+			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+		} else {
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
+		}
+		/*
 		//Get Package Name
 		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
 			
@@ -96,13 +108,14 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 			//Generate Jar from compiled code
 			datamartGenerator.jar();
 			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+			
 		}else{
 			// compile error
 			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
 			this.executed = false; 
 			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
 		}
+		*/
 
 	}
 	

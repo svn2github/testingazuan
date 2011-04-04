@@ -25,7 +25,7 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.commons.SpagoBIModelLocator;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 

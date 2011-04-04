@@ -26,6 +26,7 @@ import it.eng.spagobi.commons.SpagoBIModelLocator;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.io.BufferedWriter;
@@ -144,8 +145,12 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 		IPath location= Path.fromOSString(queryPath); 
 		IFile ifile= workspace.getRoot().getFileForLocation(location);
 
+		
+		businessModel = (BusinessModel)parameter.getOwner();
+		
 		queryFile = new File(queryPath);
-		String modelPath = SpagoBIModelLocator.INSTANCE.getModelPath();
+		ModelProperty property = businessModel.getProperties().get("structural.file");
+		String modelPath = property != null? property.getValue(): "???";
 		logger.debug("Model path is [{}]",modelPath);
 		
 		if(queryFile.exists()){
@@ -165,7 +170,7 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 				//queryFile.createNewFile();
 				FileWriter fstream = new FileWriter(queryFile);
 				out = new BufferedWriter(fstream);
-				businessModel = (BusinessModel)parameter.getOwner();
+				//businessModel = (BusinessModel)parameter.getOwner();
 				out.write(queryContent);
 			} catch (IOException e) {
 				e.printStackTrace();

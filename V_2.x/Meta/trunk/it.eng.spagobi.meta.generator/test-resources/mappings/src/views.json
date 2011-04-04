@@ -8,6 +8,24 @@
 		name: ProdottoEsteso
 		, tables: [
 		{
+			name: ProdottoEstesoProductClass
+			, package: it.eng.spagobi.meta
+			, columns: [
+			{
+				name: productClassId
+			},
+			{
+				name: productCategory
+			},
+			{
+				name: productDepartment
+			},
+			{
+				name: productFamily
+			},
+			]
+		},
+		{
 			name: ProdottoEstesoProduct
 			, package: it.eng.spagobi.meta
 			, columns: [
@@ -52,26 +70,19 @@
 			},
 			]
 		},
-		{
-			name: ProdottoEstesoProductClass
-			, package: it.eng.spagobi.meta
-			, columns: [
-			{
-				name: productClassId
-			},
-			{
-				name: productCategory
-			},
-			{
-				name: productDepartment
-			},
-			{
-				name: productFamily
-			},
-			]
-		},
 		]
-		, joins: []
+		, joins: [
+		{
+			sourceTable: ProdottoEstesoProduct
+			, sourceColumns: [
+				productClassId,
+			]
+			, destinationTable: ProdottoEstesoProduct
+			, destinationColumns: [
+				productClassId,
+			]
+		}
+		]
 	}
 	]
 }

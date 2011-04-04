@@ -60,7 +60,7 @@ public class JpaTable extends AbstractJpaTable {
 		return businessTable.getColumns();
 	}
 	
-	List<BusinessRelationship> getBusinessRelationships() {
+	public List<BusinessRelationship> getBusinessRelationships() {
 		return businessTable.getRelationships();
 	}
 	

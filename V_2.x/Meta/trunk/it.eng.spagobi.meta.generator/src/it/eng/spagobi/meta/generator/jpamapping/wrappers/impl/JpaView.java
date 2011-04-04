@@ -56,7 +56,44 @@ public class JpaView implements IJpaView {
 		this.businessView = businessView;
 	}
 
-
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getPackage()
+	 */
+	@Override
+	public String getPackage() {
+		logger.debug("IN");
+		String result=null;
+		ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
+        //check if property is setted, else get default value
+        if (property.getValue() != null){
+        	result= property.getValue();
+        }
+        else {
+        	result= property.getPropertyType().getDefaultValue();
+        }
+        logger.debug("OUT: "+result);  
+        return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getClassName()
+	 */
+	@Override
+	public String getClassName() {
+		String name;
+		
+		name = null;
+		try {
+			name = StringUtils.tableNameToVarName(businessView.getName());
+			name = StringUtils.initUpper(name);
+		} catch (Throwable t) {
+			logger.error("Impossible to get class name", t);
+			name = "pippo";
+		}
+		return name;
+	}
+	
+	
 	protected BusinessModel getModel(){
 		return businessView.getModel();
 	}
@@ -101,50 +138,20 @@ public class JpaView implements IJpaView {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getJoinRelationships()
 	 */
 	@Override
-	public List<AbstractJpaRelationship> getJoinRelationships() {
-		List<AbstractJpaRelationship> innerJoinRelationship;
-		
-		innerJoinRelationship = null;
-		
-		return innerJoinRelationship;
-	}
+	public List<JpaViewInnerJoinRelatioship> getJoinRelationships() {
+		List<JpaViewInnerJoinRelatioship> jpaViewInnerJoinRelatioships;
+		List<BusinessViewInnerJoinRelationship> joinRelationships;
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getPackage()
-	 */
-	@Override
-	public String getPackage() {
-		logger.debug("IN");
-		String result=null;
-		ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
-        //check if property is setted, else get default value
-        if (property.getValue() != null){
-        	result= property.getValue();
-        }
-        else {
-        	result= property.getPropertyType().getDefaultValue();
-        }
-        logger.debug("OUT: "+result);  
-        return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getClassName()
-	 */
-	@Override
-	public String getClassName() {
-		String name;
-		
-		name = null;
-		try {
-			name = StringUtils.tableNameToVarName(businessView.getName());
-			name = StringUtils.initUpper(name);
-		} catch (Throwable t) {
-			logger.error("Impossible to get class name", t);
-			name = "pippo";
+		jpaViewInnerJoinRelatioships = new ArrayList<JpaViewInnerJoinRelatioship>();
+		joinRelationships = businessView.getJoinRelationships();
+		for(BusinessViewInnerJoinRelationship joinRealtionship: joinRelationships) {
+			JpaViewInnerJoinRelatioship jpaViewInnerJoinRelatioship = new JpaViewInnerJoinRelatioship(businessView, joinRealtionship);
+			jpaViewInnerJoinRelatioships.add( jpaViewInnerJoinRelatioship );
 		}
-		return name;
+	
+		return jpaViewInnerJoinRelatioships;
 	}
+	
 	
 	
 }

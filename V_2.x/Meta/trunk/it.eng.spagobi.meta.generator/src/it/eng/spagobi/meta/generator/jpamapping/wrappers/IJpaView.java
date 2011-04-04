@@ -1,7 +1,8 @@
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaRelationship;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerJoinRelatioship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface IJpaView {
 
 	List<IJpaColumn> getColumns(JpaViewInnerTable table);
 
-	List<AbstractJpaRelationship> getJoinRelationships();
+	List<JpaViewInnerJoinRelatioship> getJoinRelationships();
 
 }

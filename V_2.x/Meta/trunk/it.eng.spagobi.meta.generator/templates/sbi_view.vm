@@ -25,7 +25,24 @@
 		},
 #end
 		]
-		, joins: []
+		, joins: [
+#foreach ($joinRelationship in $jpaView.joinRelationships)
+		{
+			sourceTable: ${joinRelationship.sourceTable.className}
+			, sourceColumns: [
+#foreach ($sourceColumn in $joinRelationship.sourceColumns)
+				${sourceColumn.propertyName},
+#end
+			]
+			, destinationTable: ${joinRelationship.sourceTable.className}
+			, destinationColumns: [
+#foreach ($destinationColumn in $joinRelationship.destinationColumns)
+				${destinationColumn.propertyName},
+#end
+			]
+		}
+#end
+		]
 	}
 ###################################################################################
 #####                           VIEWS

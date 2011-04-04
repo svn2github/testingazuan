@@ -77,7 +77,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		return businessView.getColumns();
 	}
 	
-	List<BusinessRelationship> getBusinessRelationships() {
+	public List<BusinessRelationship> getBusinessRelationships() {
 		return businessView.getRelationships();
 	}
 	
@@ -124,7 +124,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 * 
 	 * @return the business column that wrap the physical column if it belong to the view. null otherwise
 	 */
-	private BusinessColumn findColumnInBusinessView(PhysicalColumn physicalColumn){
+	protected BusinessColumn findColumnInBusinessView(PhysicalColumn physicalColumn){
 		
 		for (BusinessColumn businessColumn : businessView.getColumns()) {
 			if (physicalColumn.getName().equals(businessColumn.getPhysicalColumn().getName())){

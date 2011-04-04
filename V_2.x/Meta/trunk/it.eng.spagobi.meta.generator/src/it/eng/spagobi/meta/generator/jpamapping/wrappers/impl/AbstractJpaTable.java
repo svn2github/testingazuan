@@ -121,7 +121,7 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	
 	abstract List<BusinessColumn> getBusinessColumns();
 	
-	abstract List<BusinessRelationship> getBusinessRelationships();
+	public abstract List<BusinessRelationship> getBusinessRelationships();
 	
 	abstract protected BusinessModel getModel();
 	/**

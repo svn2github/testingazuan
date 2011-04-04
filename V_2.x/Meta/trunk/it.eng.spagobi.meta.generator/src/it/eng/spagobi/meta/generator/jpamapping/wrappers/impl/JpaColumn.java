@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaColumn implements IJpaColumn {
 	BusinessColumn businessColumn;
-	AbstractJpaTable jpaTable;
+	IJpaTable jpaTable;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
 	
@@ -77,7 +78,7 @@ public class JpaColumn implements IJpaColumn {
 		List<BusinessRelationship> relationships;
 		
 		isColumnInRelationship = false;
-		relationships =jpaTable.getBusinessRelationships();
+		relationships = jpaTable.getBusinessRelationships();
 		
 		logger.trace("The OBJECT "+jpaTable.getClassName()+" has "+relationships.size()+" Relationship");
 		for(BusinessRelationship relationship : relationships) {
@@ -206,13 +207,13 @@ public class JpaColumn implements IJpaColumn {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getJpaTable()
 	 */
 	@Override
-	public AbstractJpaTable getJpaTable() {
+	public IJpaTable getJpaTable() {
 		return jpaTable;
 	}
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#setJpaTable(it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable)
 	 */
-	public void setJpaTable(AbstractJpaTable jpaTable) {
+	public void setJpaTable(IJpaTable jpaTable) {
 		this.jpaTable = jpaTable;
 	}
 	/* (non-Javadoc)
@@ -274,5 +275,7 @@ public class JpaColumn implements IJpaColumn {
 	@Override
 	public String getPropertyNameSetter() {
 		return "set"+StringUtils.initUpper(getPropertyName());
-	}	
+	}
+
+	
 }

@@ -11,13 +11,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JpaInnerRelationship extends AbstractJpaRelationship {
+/**
+ * 
+ * @deprecated until futher testing
+ * 
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
+ */
+public class JpaViewRelationship extends AbstractJpaRelationship {
 
 	BusinessViewInnerJoinRelationship businessInnerRelationship;
 	
-	private static Logger logger = LoggerFactory.getLogger(JpaInnerRelationship.class);
+	private static Logger logger = LoggerFactory.getLogger(JpaViewRelationship.class);
 	
-	public JpaInnerRelationship(JpaViewInnerTable jpaInnerTable, BusinessViewInnerJoinRelationship businessInnerRelationship) {
+	public JpaViewRelationship(JpaViewInnerTable jpaInnerTable, BusinessViewInnerJoinRelationship businessInnerRelationship) {
 		this.jpaTable = jpaInnerTable;
 		this.businessInnerRelationship = businessInnerRelationship;
 		

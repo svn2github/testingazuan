@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -66,7 +67,9 @@ public class Zipper {
 			}
 			
 			FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-			java.util.zip.ZipOutputStream zipOutputStream = new java.util.zip.ZipOutputStream(fileOutputStream);
+			JarOutputStream zipOutputStream = new JarOutputStream(fileOutputStream);
+			//zipOutputStream.setMethod(ZipOutputStream.STORED);
+			
 
 			compressFolder(targetDir, targetDir, zipOutputStream);
 			

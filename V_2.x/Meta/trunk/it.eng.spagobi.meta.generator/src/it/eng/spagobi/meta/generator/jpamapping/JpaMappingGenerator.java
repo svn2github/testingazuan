@@ -54,25 +54,50 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
 public class JpaMappingGenerator implements IGenerator {
-	
-	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
-	
-	private static Logger logger = LoggerFactory.getLogger(JpaMappingGenerator.class);
 
 	/**
 	 *   The Velocity template directory
 	 */
 	private File templateDir;
-	private File tableTemplate;
-	private File viewTemplate;
-	private File keyTemplate;	
-	private File persistenceUnitTemplate;
-	private File baseOutputDir;
 	
+	/**
+	 * The velocity template used to map business table to java class
+	 */
+	private File tableTemplate;
+	
+	/**
+	 * The velocity template used to map business view to json mapping file
+	 */
+	private File viewTemplate;
+	
+	/**
+	 * The velocity template used to map business table's composed key to a java class
+	 */
+	private File keyTemplate;	
+	
+	/**
+	 * The velocity template used to generate the persistence.xml file
+	 */
+	private File persistenceUnitTemplate;
+	
+	/**
+	 * The output dir as passed to the method generate (this class is not thread safe!) 
+	 */
+	protected File baseOutputDir;
+	
+	/**
+	 * All views found during generation process are appended to this list waiting for post processing phase
+	 */
 	private List<JpaView> jpaViews;
+	
+	
+	
+	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
+	
+	private static Logger logger = LoggerFactory.getLogger(JpaMappingGenerator.class);
+	
 
 	public JpaMappingGenerator() {
 		String templatesDirRelativePath;

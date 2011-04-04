@@ -21,11 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 
 import it.eng.spagobi.meta.generator.utils.Compiler;
+import it.eng.spagobi.meta.generator.utils.StringUtil;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -65,13 +71,13 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 				"org.eclipse.persistence.core_2.1.2.jar",
 				"javax.persistence_2.0.1.jar"
 		});
-		
+			
 		jarGenerator = new JpaMappingJarGenerator();
 		jarGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
 		jarGenerator.setLibs(new String[]{
 				"org.eclipse.persistence.core_2.1.2.jar",
 				"javax.persistence_2.0.1.jar"
-		});
+		});		
 	}
 
 	protected void tearDown() throws Exception {
@@ -88,21 +94,34 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		 assertNotNull("Impossible to load [" + TEST_MODEL_FILE + "]", model);
 	}
 	
-	public void testCodeGenerate() {
+	public void _testCodeGenerate() {
 		codeGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
+	
+		assertNotNull("src dir cannot be null", codeGenerator.getSrcDir());
 	}
 	
-	public void testClassesGenerator() {
+	public void _testClassesGenerator() {
 		classesGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
-		//assertTrue("Impossible to compile mapping files", compiler.compile());
+	
+		assertNotNull("src dir cannot be null", classesGenerator.getSrcDir());
+		assertNotNull("bin dir cannot be null", classesGenerator.getBinDir());
+		assertNotNull("lib dir cannot be null", classesGenerator.getLibDir());
 	}
 	
-	public void testJarGenerator() {
+	public void testJarGenerator() throws Exception {
 		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
-//		try {
-//			compiler.jar();
-//		} catch(Throwable t) {
-//			fail("Impossible to generate the jar file");
-//		}
+		assertNotNull("src dir cannot be null", jarGenerator.getSrcDir());
+		assertNotNull("bin dir cannot be null", jarGenerator.getBinDir());
+		assertNotNull("lib dir cannot be null", jarGenerator.getLibDir());
+		assertNotNull("dist dir cannot be null", jarGenerator.getDistDir());
+		assertNotNull("jar file cannot be null", jarGenerator.getJarFile());
+		
+		File viewFile = new File(jarGenerator.getSrcDir(), "views.json");
+		assertTrue("Impossible to find view.json file in [" + jarGenerator.getSrcDir() + "]", viewFile.exists());
+		
+		String viewFileContent = StringUtil.getStringFromFile(viewFile);
+		JSONObject viewJSON = new JSONObject( viewFileContent );
+
 	}
+	
 }

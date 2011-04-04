@@ -1,6 +1,11 @@
 package it.eng.spagobi.meta.generator.utils;
 
 import java.beans.Introspector;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,5 +183,16 @@ public class StringUtil
 		vowel |= c == 'y';
 		return vowel;
 	}	
+	
+	public static String getStringFromFile(File file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		StringBuffer buffer = new StringBuffer();
+		while((line = reader.readLine()) != null) {
+			buffer.append(line + "\n");
+		}
+		
+		return buffer.toString();
+	}
 }
 

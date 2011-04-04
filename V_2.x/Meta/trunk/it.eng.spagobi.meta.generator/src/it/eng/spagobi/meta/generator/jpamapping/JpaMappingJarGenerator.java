@@ -58,7 +58,7 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			jarFileName = (jarFileName == null)? DEFAULT_JAR_FILE_NAME : jarFileName;
 			
 			Zipper zipper = new Zipper();
-			zipper.compressToJar(getBinDir(), new File(distDir, jarFileName));
+			zipper.compressToJar(getBinDir(), getJarFile());
 
 		} catch(Throwable t) {
 			logger.error("An error occur while generating JPA jar", t);
@@ -80,6 +80,10 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 
 	public void setDistDir(File distDir) {
 		this.distDir = distDir;
+	}
+	
+	public File getJarFile() {
+		return new File(distDir, jarFileName);
 	}
 
 	public String getJarFileName() {

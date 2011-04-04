@@ -72,7 +72,7 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 			super.generate(o, outputDir);
 			
 			binDir = (binDir == null)? new File(outputDir, DEFAULT_BIN_DIR): binDir;
-			logger.debug("src dir is equal to [{}]", srcDir);
+			logger.debug("src dir is equal to [{}]", getSrcDir());
 			libDir = (libDir == null)? new File(outputDir, DEFAULT_LIB_DIR): libDir;
 			logger.debug("lib dir is equal to [{}]", libDir);
 			

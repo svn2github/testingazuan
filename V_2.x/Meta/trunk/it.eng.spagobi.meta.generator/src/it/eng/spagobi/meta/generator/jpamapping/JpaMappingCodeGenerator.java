@@ -91,7 +91,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 */
 	protected File baseOutputDir;
 	
-	protected File srcDir;
+	private File srcDir;
 	
 	/**
 	 * All views found during generation process are appended to this list waiting for post processing phase

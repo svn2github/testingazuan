@@ -8,24 +8,6 @@
 		name: ProdottoEsteso
 		, tables: [
 		{
-			name: ProdottoEstesoProductClass
-			, package: it.eng.spagobi.meta
-			, columns: [
-			{
-				name: productClassId
-			},
-			{
-				name: productCategory
-			},
-			{
-				name: productDepartment
-			},
-			{
-				name: productFamily
-			},
-			]
-		},
-		{
 			name: ProdottoEstesoProduct
 			, package: it.eng.spagobi.meta
 			, columns: [
@@ -67,6 +49,24 @@
 			},
 			{
 				name: shelfDepth
+			},
+			]
+		},
+		{
+			name: ProdottoEstesoProductClass
+			, package: it.eng.spagobi.meta
+			, columns: [
+			{
+				name: productClassId
+			},
+			{
+				name: productCategory
+			},
+			{
+				name: productDepartment
+			},
+			{
+				name: productFamily
 			},
 			]
 		},

@@ -25,7 +25,7 @@ import java.io.File;
 
 import org.junit.Assert;
 
-import it.eng.spagobi.meta.generator.utils.DataMartGenerator;
+import it.eng.spagobi.meta.generator.utils.Compiler;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -46,7 +46,7 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	JpaMappingClassesGenerator classesGenerator;
 	JpaMappingJarGenerator jarGenerator;
 	
-	DataMartGenerator compiler;
+	Compiler compiler;
 	
 	
 	
@@ -61,31 +61,14 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		
 		classesGenerator = new JpaMappingClassesGenerator();
 		classesGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
-		classesGenerator.setLibraryLink(new String[]{
+		classesGenerator.setLibs(new String[]{
 				"org.eclipse.persistence.core_2.1.2.jar",
 				"javax.persistence_2.0.1.jar"
 		});
 		
 		jarGenerator = new JpaMappingJarGenerator();
 		jarGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
-		jarGenerator.setLibraryLink(new String[]{
-				"org.eclipse.persistence.core_2.1.2.jar",
-				"javax.persistence_2.0.1.jar"
-		});
-		
-		setUpCompiler();
-	}
-	
-	protected void setUpCompiler() {
-		File baseDir = new File(TEST_FOLDER, "mappings");
-		String packageName = model.getBusinessModels().get(0).getProperties().get("structural.package").getValue();
-		
-		compiler = new DataMartGenerator(
-				baseDir, 
-				packageName.replace(".", "/")
-		);
-		compiler.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
-		compiler.setLibraryLink(new String[]{
+		jarGenerator.setLibs(new String[]{
 				"org.eclipse.persistence.core_2.1.2.jar",
 				"javax.persistence_2.0.1.jar"
 		});

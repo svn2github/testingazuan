@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
-import it.eng.spagobi.meta.generator.utils.DataMartGenerator;
+import it.eng.spagobi.meta.generator.utils.Compiler;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
@@ -44,8 +44,12 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 	//List<File> libs;
 	
 	private File libDir;
+	private File binDir;
 	
-	private String[] libraryLink = {
+	public static final String DEFAULT_BIN_DIR = "build";
+	public static final String DEFAULT_LIB_DIR = "libs";
+
+	private String[] libs = {
 		"org.eclipse.persistence.core_2.1.1.v20100817-r8050.jar",
 	  	"javax.persistence_2.0.1.v201006031150.jar"
 	};
@@ -56,13 +60,7 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 		//libs = new ArrayList<File>();
 	}
 	
-	public void setLibDir(File libDir) {
-		this.libDir = libDir;
-	}
-
-	public void setLibraryLink(String[] libraryLink) {
-		this.libraryLink = libraryLink;
-	}
+	
 
 	@Override
 	public void generate(ModelObject o, String outputDir)  {
@@ -73,30 +71,28 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 			
 			super.generate(o, outputDir);
 			
+			binDir = (binDir == null)? new File(outputDir, DEFAULT_BIN_DIR): binDir;
+			logger.debug("src dir is equal to [{}]", srcDir);
+			libDir = (libDir == null)? new File(outputDir, DEFAULT_LIB_DIR): libDir;
+			logger.debug("lib dir is equal to [{}]", libDir);
+			
 			model = (BusinessModel)o;
 			
 			//Get Package Name
 			String packageName = model.getProperties().get(JpaProperties.MODEL_PACKAGE).getValue();
 				
 			//Call Java Compiler
-			DataMartGenerator datamartGenerator = new DataMartGenerator(
-					baseOutputDir,
-					packageName.replace(".", "/")
+			Compiler compiler;
+			
+			
+			compiler = new Compiler(
+					getSrcDir(), binDir, libDir, packageName.replace(".", "/")
 			);
-			datamartGenerator.setLibDir(new File("plugins"));
-			
-			
-			datamartGenerator = new DataMartGenerator(
-					baseOutputDir, 
-					packageName.replace(".", "/")
-			);
-			
-			datamartGenerator.setLibDir(libDir);
-			datamartGenerator.setLibraryLink(libraryLink);
+			compiler.addLibs(libs);
 			
 			
 			
-			boolean compiled = datamartGenerator.compile();
+			boolean compiled = compiler.compile();
 			
 			if(!compiled) {
 				throw new GenerationException("Impossible to compile mapping code");
@@ -108,5 +104,30 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 		} finally {		
 			logger.trace("OUT");
 		}
+	}
+	
+	// =======================================================================
+	// ACCESSOR METHODS
+	// =======================================================================
+	
+	public File getBinDir() {
+		return binDir;
+	}
+
+	public void setBinDir(File binDir) {
+		this.binDir = binDir;
+	}
+
+	
+	public void setLibDir(File libDir) {
+		this.libDir = libDir;
+	}
+
+	public File getLibDir() {
+		return libDir;
+	}
+
+	public void setLibs(String[] libs) {
+		this.libs = libs;
 	}
 }

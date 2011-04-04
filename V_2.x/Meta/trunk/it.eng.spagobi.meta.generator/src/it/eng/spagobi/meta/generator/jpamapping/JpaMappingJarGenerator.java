@@ -23,7 +23,8 @@ package it.eng.spagobi.meta.generator.jpamapping;
 
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
-import it.eng.spagobi.meta.generator.utils.DataMartGenerator;
+import it.eng.spagobi.meta.generator.utils.Compiler;
+import it.eng.spagobi.meta.generator.utils.Zipper;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
@@ -38,6 +39,12 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 	
+	private File distDir;
+	private String jarFileName;
+	
+	public static final String DEFAULT_DIST_DIR = "dist";
+	public static final String DEFAULT_JAR_FILE_NAME = "datamart.jar";
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingJarGenerator.class);
 	
 	@Override
@@ -45,29 +52,41 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 		logger.trace("IN");
 		
 		try {
-			BusinessModel model;
-			
 			super.generate(o, outputDir);
 			
-			model = (BusinessModel)o;
+			distDir = (distDir == null)? new File(baseOutputDir, DEFAULT_DIST_DIR): distDir;
+			jarFileName = (jarFileName == null)? DEFAULT_JAR_FILE_NAME : jarFileName;
 			
-			//Get Package Name
-			String packageName = model.getProperties().get(JpaProperties.MODEL_PACKAGE).getValue();
-				
-			//Call Java Compiler
-			DataMartGenerator datamartGenerator = new DataMartGenerator(
-					baseOutputDir,
-					packageName.replace(".", "/")
-			);
-			datamartGenerator.setLibDir(new File("plugins"));
-			
-			datamartGenerator.jar();
-	
+			Zipper zipper = new Zipper();
+			zipper.compressToJar(getBinDir(), new File(distDir, jarFileName));
+
 		} catch(Throwable t) {
 			logger.error("An error occur while generating JPA jar", t);
 			throw new GenerationException("An error occur while generating JPA jar", t);
 		} finally {		
 			logger.trace("OUT");
 		}
+	}
+
+	
+	
+	// =======================================================================
+	// ACCESSOR METHODS
+	// =======================================================================
+	
+	public File getDistDir() {
+		return distDir;
+	}
+
+	public void setDistDir(File distDir) {
+		this.distDir = distDir;
+	}
+
+	public String getJarFileName() {
+		return jarFileName;
+	}
+
+	public void setJarFileName(String jarFileName) {
+		this.jarFileName = jarFileName;
 	}
 }

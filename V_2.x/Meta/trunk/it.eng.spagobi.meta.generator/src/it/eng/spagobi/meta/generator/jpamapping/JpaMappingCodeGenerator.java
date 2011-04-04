@@ -82,10 +82,16 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 */
 	private File persistenceUnitTemplate;
 	
+	
+	
+	public static final String DEFAULT_SRC_DIR = "src";
+	
 	/**
-	 * The output dir as passed to the method generate (this class is not thread safe!) 
+	 * The base output dir as passed to the method generate (this class is not thread safe!) 
 	 */
 	protected File baseOutputDir;
+	
+	protected File srcDir;
 	
 	/**
 	 * All views found during generation process are appended to this list waiting for post processing phase
@@ -148,6 +154,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			try {
 				baseOutputDir = new File(outputDir);
 				logger.debug("Output dir is equal to [{}]", baseOutputDir);
+				
+				srcDir = (srcDir == null)? new File(baseOutputDir, DEFAULT_SRC_DIR): srcDir;
+				logger.debug("src dir is equal to [{}]", srcDir);
+				
 				generateJpaMapping(model);
 			} catch (Exception e) {
 				logger.error("An error occur while generating JPA mapping", e);
@@ -366,5 +376,15 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	public void setTemplateDir(File templateDir) {
 		this.templateDir = templateDir;
 	}
+
+	public File getSrcDir() {
+		return srcDir;
+	}
+
+	public void setSrcDir(File srcDir) {
+		this.srcDir = srcDir;
+	}
+	
+	
 
 }

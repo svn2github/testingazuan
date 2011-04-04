@@ -376,12 +376,10 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			
 		//Call Java Compiler
 		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				modelDirectory,
-				modelDirectory+"/build/",
-				null,
-				modelDirectory+"/dist/",
+				new File(modelDirectory),
 				packageName.replace(".", "/")
-				);		
+				);	
+		datamartGenerator.setLibDir(new File("plugins"));
 		
 		boolean result = datamartGenerator.compile();
 		if (result){

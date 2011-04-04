@@ -112,7 +112,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + PhysicalModelEditor.class.getName() + " inner editors]", physicalModelEditor);
 		Assert.assertNotNull("Multi editor [" + SpagoBIModelEditor.class.getName() + "] must contain an inner editor of type [" + BusinessModelEditor.class.getName() + " inner editors]", businessModelEditor);
 		
-		if(RL.getPropertyAsString("model.presentation.lefteditor.width", "business").equalsIgnoreCase("business")) {
+		if(RL.getPropertyAsString("model.presentation.lefteditor.type", "business").equalsIgnoreCase("business")) {
 			innerEditors[LEFT] = businessModelEditor;
 			innerEditors[RIGHT] = physicalModelEditor;
 		} else {

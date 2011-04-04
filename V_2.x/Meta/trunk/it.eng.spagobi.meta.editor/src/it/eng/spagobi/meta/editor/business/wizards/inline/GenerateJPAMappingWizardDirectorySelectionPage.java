@@ -72,6 +72,7 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	    GridData gd_textDirectory = new GridData(GridData.FILL_HORIZONTAL);
 	    gd_textDirectory.horizontalSpan = 4;
 	    textDirectory.setLayoutData(gd_textDirectory);
+	    textDirectory.setText("D:\\Programmi\\eclipse\\helios-eclipse-3.6.0\\runtime-EclipseApplication\\TestOda\\mappings");
 
 	    // Browse button to select directory
 	    Button buttonBrowse = new Button(container, SWT.PUSH);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+  <!-- ===============================================================================  -->
+  <!-- APPENDERS  																		-->
+  <!-- ===============================================================================  -->
+    
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%c.%M:%L - %m%n</pattern>
+    </encoder>
+  </appender>
+  
+  <!-- ===============================================================================  -->
+  <!-- LOGGERS  																		-->
+  <!-- ===============================================================================  -->
+  
+  <root level="ERROR">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+  
+  <logger name="it.eng.spagobi" additivity="false" level="DEBUG">
+    <appender-ref ref="FILE"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  
+  <!-- ===============================================================================  -->
+  <!-- HOOK with console  																		-->
+  <!-- ===============================================================================  -->
+  <!--
+  <consolePlugin />
+  -->
+  
+  
+</configuration>

@@ -1,0 +1,77 @@
+{
+	meta: {
+		
+	},
+	
+	views: [
+	{
+		name: ProdottoEsteso
+		, tables: [
+		{
+			name: ProdottoEstesoProductClass
+			, package: it.eng.spagobi.meta
+			, columns: [
+			{
+				name: productClassId
+			},
+			{
+				name: productCategory
+			},
+			{
+				name: productDepartment
+			},
+			{
+				name: productFamily
+			},
+			]
+		},
+		{
+			name: ProdottoEstesoProduct
+			, package: it.eng.spagobi.meta
+			, columns: [
+			{
+				name: productClassId
+			},
+			{
+				name: productId
+			},
+			{
+				name: brandName
+			},
+			{
+				name: productName
+			},
+			{
+				name: grossWeight
+			},
+			{
+				name: netWeight
+			},
+			{
+				name: recyclablePackage
+			},
+			{
+				name: lowFat
+			},
+			{
+				name: unitsPerCase
+			},
+			{
+				name: casesPerPallet
+			},
+			{
+				name: shelfWidth
+			},
+			{
+				name: shelfHeight
+			},
+			{
+				name: shelfDepth
+			},
+			]
+		},
+		]
+		, joins: []
+	}
+	]
+}

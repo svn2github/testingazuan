@@ -26,6 +26,7 @@ import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -65,23 +66,46 @@ public class DefaultResourceLocator implements IResourceLocator {
 	
 	@Override
 	public URL getBaseURL() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public File getFile(String fileRelativePath) {
-		Bundle bundle = Platform.getBundle(pluginId);
-		//IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("templates")).getPath());
-		URL fileURL = bundle.getEntry(fileRelativePath);
-		if(fileURL == null) {
-			throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
+	public URL getFileURL(String fileRelativePath) {
+		
+		URL fileURL;
+		Bundle bundle;
+		
+		fileURL = null;
+		
+		bundle = Platform.getBundle(pluginId);
+		if(bundle !=  null) {		
+			fileURL = bundle.getEntry(fileRelativePath);
+			if(fileURL == null) {
+				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
+			}
+			
+			try {
+				fileURL = FileLocator.toFileURL(fileURL);
+			} catch (IOException e) {
+				throw new SpagoBIPluginException("Impossible to resolve URL [" + fileRelativePath + "] to a valid local URL");
+			}
+		} else {
+			File file = new File(fileRelativePath);
+			try {
+				fileURL =  file.toURL();
+			} catch (MalformedURLException e) {
+				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL", e);
+			}
 		}
-		try {
-			fileURL = FileLocator.toFileURL(fileURL);
-		} catch (IOException e) {
-			throw new SpagoBIPluginException("Impossible to resolve URL [" + fileRelativePath + "] to a valid local URL");
-		}
+		
+		
 		logger.debug("file [" + fileRelativePath + "] URL is equal to [" + fileURL + "]");
+		
+		return fileURL;
+	}
+	
+	public File getFile(String fileRelativePath) {
+		
+		URL fileURL = getFileURL( fileRelativePath );
 		
 		URI fileURI = null;
 		try {
@@ -93,37 +117,17 @@ public class DefaultResourceLocator implements IResourceLocator {
 		
 		File file = null;
 		try {
-		file = new File( fileURI );
+			file = new File( fileURI );
 		} catch (Throwable t) {
 			throw new SpagoBIPluginException("Impossible to creta a file object from URI [" + fileURI + "]");
 		}
-		
-//		InputStream fileStream = null;
-//		try {
-//			fileURL.openStream();
-//		} catch (IOException e) {
-//			throw new SpagoBIPluginException("An I/O exception occurs while opening file [" + file + "]", e);
-//		} finally {
-//			if(fileStream != null) {
-//				try {
-//					fileStream.close();
-//				} catch (IOException e) {
-//					throw new SpagoBIPluginException("An I/O exception occurs while closing file [" + file + "]", e);
-//				}
-//			}
-//		}
 		
 		return file;
 	}
 
 	@Override
 	public Object getImage(String key) {
-		URL imageURL;
-		
-		Bundle bundle = Platform.getBundle(pluginId); 
-		imageURL = bundle.getResource(getImagePath(key));
-		
-		return imageURL;
+		return getFileURL(getImagePath(key));
 	}
 	
 	private String getImagePath(String imageKey) {
@@ -141,9 +145,11 @@ public class DefaultResourceLocator implements IResourceLocator {
 	
 	private Properties loadProperties(String propertiesFile) {
 		Properties properties = new Properties();
+		URL resourceFileURL;
 		
-		Bundle bundle = Platform.getBundle(pluginId); 
-		URL resourceFileURL = bundle.getResource( CONF_ROOT_FOOLDER + "/" + propertiesFile );
+		
+		resourceFileURL = getFileURL( CONF_ROOT_FOOLDER + "/" + propertiesFile );
+		
 		if(resourceFileURL != null) {
 			try {
 				properties.load( resourceFileURL.openStream() );

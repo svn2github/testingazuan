@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.generator.jpamapping.wrappers;
+package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessView;

@@ -21,17 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
-import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -39,152 +36,85 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * This class wrap a business table and provide all the utility methods used by the template engine
+ * in order to generate the java class mapping
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
-public class JpaTable {
+public class JpaTable extends AbstractJpaTable {
+	
+	BusinessTable businessTable;
+	
+	
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
+
+	public JpaTable(BusinessTable businessTable) {
+		super(businessTable.getPhysicalTable());
+		this.businessTable = businessTable;
+		initColumnTypesMap();
+	}
 	
-	private BusinessTable businessTable=null;
+	List<BusinessColumn> getBusinessColumns() {
+		return businessTable.getColumns();
+	}
 	
-	
-	// cache
-	List<JpaColumn> jpaColumns = null;
-	protected HashMap<String, String> columnTypesMap =  null;
-	
-	protected JpaTable() {
+	List<BusinessRelationship> getBusinessRelationships() {
+		return businessTable.getRelationships();
 	}
 	
 	protected BusinessModel getModel(){
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return null;
-		}
 		return businessTable.getModel();
 	}
-	public JpaTable(BusinessTable businessTable) {
-		setBusinessTable(businessTable);
-	}
-	
+
 	public BusinessTable getBusinessTable() {
 		return businessTable;
 	}
 
-	public void setBusinessTable(BusinessTable businessTable) {
-		this.businessTable = businessTable;
-	}
-	
 	public PhysicalTable getPhysicalTable() {
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return null;
-		}
 		return businessTable.getPhysicalTable();
 	}
+	
 	/**
 	 * Returns the <code>JpaColumn</code> objects to be generated for this
 	 * table.
 	 */
-	protected List<JpaColumn> getColumns() {
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return null;
-		}
+	public List<JpaColumn> getColumns() {
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<JpaColumn>();
 			for (BusinessColumn c : businessTable.getColumns()) {
 				JpaColumn jpaColumn = new JpaColumn(c);
 				jpaColumn.setJpaTable(this);
 				jpaColumns.add(jpaColumn);
-				logger.debug("Add Column:"+jpaColumn.getColumnName());
-
+				logger.debug("Business table [{}] contains column [{}]", businessTable.getName(), c.getName());
+			        
 			}
 		}
 		return jpaColumns;
 	}
 
-	/**
-	 * return the Package name 
-	 * @return
-	 */
-	public String getPackage() {
-		logger.debug("IN");
-		String result=null;
-		ModelProperty property =  getModel().getProperties().get(JpaProperties.MODEL_PACKAGE);
-        //check if property is setted, else get default value
-        if (property.getValue() != null){
-        	result= property.getValue();
-        }
-        else {
-        	result= property.getPropertyType().getDefaultValue();
-        }
-        logger.debug("OUT: "+result);  
-        return result;
-	}
+	
+	
 	
 	/**
-	 * Return all the import statements ( the properties type )
-	 * @return
-	 */
-	public String getImportStatements(){
-		logger.debug("IN");
-		buildColumnTypesMap();
-		Collection<String> packages = columnTypesMap.keySet();
-		StringBuilder ret = new StringBuilder();
-		for ( String s : packages ) {
-			ret.append( "import " + s + ";\n"); //$NON-NLS-1$
-		}
-
-		List<JpaRelationship> relationship = getRelationships();
-		for ( JpaRelationship role :  relationship ) {
-			if ( role.getCardinality().equals( JpaRelationship.ONE_TO_MANY )
-					|| role.getCardinality().equals( JpaRelationship.MANY_TO_MANY ) ) {
-				ret.append( "import " + role.getCollectionType() + ";\n"); //$NON-NLS-1$
-				break;
-			}
-		}
-		logger.debug("OUT: "+ret.toString());
-		return ret.toString();
-	}
-	
-	/**
-	 * Returns true if the table has a Primary KEY
+	 * @return true if the table has a primary key
 	 */
 	public boolean hasPrimaryKey() {
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return false;
-		}
 		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 0 : false;
 	}
 	
 	
 	/**
-	 * Returns true if there is more than 1 column in the table identifier
+	 * @return true if there is more than 1 column in the table identifier
 	 */
 	public boolean hasCompositeKey() {	
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return false;
-		}
 		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 1 : false;
 	}
 	
-	/**
-	 * Returns the composite key Java class name (not qualified).
-	 */
-	public String getCompositeKeyClassName() {
-		String name = null;
-		//String name = customized(COMPOSITE_KEY_CLASS_NAME);
-		if (name == null) {
-			name = getClassName() + "PK"; //$NON-NLS-1$
-		}
-		return name;
-	}
+	
 	
 	/**
-	 * Return only the PK column
-	 * @return
+	 * @return the primary columns
 	 */
 	public List<JpaColumn> getPrimaryKeyColumns(){
 		List<JpaColumn> result = new ArrayList<JpaColumn>();
@@ -195,205 +125,116 @@ public class JpaTable {
 			
 			if (column.isIdentifier())	{
 				result.add(column);
-				logger.debug("add PrimaryKeyColumns:"+column.getColumnName());
 			}
 		}
 		return result;		
 	}
 	/**
-	 * TODO .... da implementare
-	 * Returns the composite key property name.
+	 * @return the composite key property name
+	 * 
+	 *  * TODO .... da implementare
 	 */
 	public String getCompositeKeyPropertyName() {
 		return "compId"; //$NON-NLS-1$
 	}
 
 	/**
-	 * Return the name of the metod GETTER
-	 * @return
+	 * @return the name of the metod GETTER
 	 */
 	public String getCompositeKeyPropertyNameGetter() {
 		return "get"+StringUtil.initUpper(getCompositeKeyPropertyName());
 
 	}
 	/**
-	 * Return the name of the metod SETTER
-	 * @return
+	 * @return the name of the metod SETTER
 	 */
 	public String getCompositeKeyPropertyNameSetter() {
 		return "set"+StringUtil.initUpper(getCompositeKeyPropertyName());
 	}	
 	
 	/**
-	 * 
-	 * @return
+	 * @return the boolean expression that verify if two primary key are equal
 	 */
 	public String getPrimaryKeyEqualsClause(){
-		List<JpaColumn> columns=getPrimaryKeyColumns();
-		String result=null;
+		String equalsClause;
+		List<JpaColumn> columns;
+		
+		equalsClause = null;
+		columns = getPrimaryKeyColumns();
 		for (int i = 0, n = columns.size(); i < n; ++i) {
 			JpaColumn column = columns.get(i);
-			if (result==null) result="( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
-			else result=result+" \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+			if (equalsClause == null) equalsClause = "( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+			else equalsClause += " \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
 		}
-		if (result==null) return "";
-		else return result+";";	
+		
+		if (equalsClause==null) return "";
+		else return equalsClause+";";	
 		
 	}
 	
 	/**
 	 * 
-	 * @return
+	 * @return the expresion that compute the hash code for a given primary key
 	 */
 	public String getPrimaryKeyHashCodeClause(){
-		List<JpaColumn> columns=getPrimaryKeyColumns();
-		String result=null;
-		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
-			if (result==null)  result=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
-			else result=result+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
-		}
-		if (result==null) return "";
-		return result;		
-	}
-	/**
-	 * Returns the <code>JpaColumn</code> objects for the the columns that
-	 * are not part of any association.
-	 * 
-	 * @param genOnly
-	 *            Whether to include only the columns marked for generation.
-	 * 
-	 * @param includePk
-	 *            Whether to include the primary kley column(s).
-	 * 
-	 * @param includeInherited
-	 *            Whether to include the columns associated with Java properties
-	 *            that exist in the super class (if any).
-	 */
-	public List<JpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
-		List<JpaColumn> result = new ArrayList<JpaColumn>();
-		List<JpaColumn> columns = getColumns();
-	
-		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
-			
-			if (column.isIdentifier()) {
-				if (!includePk || hasCompositeKey()) {
-					continue;
-				} else {
-					result.add(0, column);
-					continue;
-				}
-			} else if (column.isColumnInRelationship()) {
-				continue;
-			}
-			result.add(column);
-		}
-		return result;
-	}
-
-	public List<JpaColumn> getSimpleColumns() {
-		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
-	}
-	
-	/**
-	 * Return the <code>JpaRelationship</code> that contains this table
-	 * @return
-	 */
-	public List<JpaRelationship> getRelationships() {
-		logger.debug("IN");
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return null;
-		}
-		List<JpaRelationship> jpaRelationships;
-		JpaRelationship jpaRelationship=null;
+		String hashcodeClause;
+		List<JpaColumn> columns;
 		
-		jpaRelationships = new ArrayList<JpaRelationship>();
-		logger.info("Number of relationschip of OBJECT "+businessTable.getName()+" : "+businessTable.getRelationships().size());
-		for(BusinessRelationship relationshp : businessTable.getRelationships()) {
-			jpaRelationship = new JpaRelationship(this, relationshp);
-			logger.info("The RELATIONSHIP IS : "+relationshp.getName());
-			if (jpaRelationship.getBusinessRelationship()==null || 
-					jpaRelationship.getBusinessRelationship().getSourceTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any source Table");
-				continue;
-			}
-			if (jpaRelationship.getBusinessRelationship()==null || 
-					jpaRelationship.getBusinessRelationship().getDestinationTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any destination Table");
-				continue;
-			}				
-			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(businessTable)){
-				// many-to-one
-				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
-			}else if (jpaRelationship.getBusinessRelationship().getDestinationTable().equals(businessTable)){
-				// one-to-many
-				jpaRelationship.setCardinality(JpaRelationship.ONE_TO_MANY);				
-			}
-			if (jpaRelationship!=null) {
-				jpaRelationship.setBidirectional(true);
-				jpaRelationships.add(jpaRelationship);
-			}			
+		hashcodeClause = null;
+		columns = getPrimaryKeyColumns();
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			JpaColumn column = columns.get(i);
+			if (hashcodeClause==null)  hashcodeClause=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
+			else hashcodeClause=hashcodeClause+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
 		}
-		logger.debug("OUT");		
+		
+		if (hashcodeClause==null) return "";
+		return hashcodeClause;		
+	}
+	
+
+	
+	/**
+	 * @return the <code>JpaRelationship</code> that contains this table
+	 */
+	public List<AbstractJpaRelationship> getRelationships() {
+		List<AbstractJpaRelationship> jpaRelationships;
+		JpaRelationship jpaRelationship;
+		
+		logger.trace("IN");
+	
+		jpaRelationships = new ArrayList<AbstractJpaRelationship>();
+		logger.debug("Business table [{}] have  [{}] relationships", businessTable.getName(), businessTable.getRelationships().size());
+        
+		for(BusinessRelationship relationship : businessTable.getRelationships()) {
+			logger.debug("Business table [{}] contains relationship  [{}] ", businessTable.getName(), relationship.getName());
+	        
+			jpaRelationship = new JpaRelationship(this, relationship);		
+			jpaRelationships.add(jpaRelationship);	
+		}
+		
+		logger.trace("OUT");		
 		return jpaRelationships;		
 	}
 	
 	
 	
 	/**
-	 * build the hasmap that contains the properties type of this "Business Table"
-	 * @return
-	 */
-	protected void buildColumnTypesMap() {
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-		}
-		if (columnTypesMap == null) {
-			columnTypesMap = new HashMap<String, String>();
-			for (BusinessColumn column : businessTable.getColumns()) {
-				ModelProperty property = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
-				String modelType = property.getValue();
-				String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
-				if ( /*
-					 * !col.isPartOfCompositePrimaryKey() && !col.isForeignKey()
-					 * &&
-					 */!javaType.startsWith("java.lang")
-						&& javaType.indexOf('.') > 0) {
-					String simpleJavaType = javaType.substring(javaType
-							.lastIndexOf('.') + 1);
-					columnTypesMap.put(javaType, simpleJavaType);
-				}
-			}
-		}
-	}
-	
-	
-	/**
-	 * Returns the generated Java class name (not qualified).
+	 * @returns the generated java class name (not qualified).
 	 */
 	public String getClassName() {
-		if (businessTable==null) {
-			logger.error("BUSINESS TABLE IS NULL.");
-			return "";
-		}
 		String name;
 		name = StringUtil.tableNameToVarName(businessTable.getPhysicalTable().getName());
 		name = StringUtil.initUpper(name);
 		return name;
 	}
 	
+	/**
+	 * @returns the generated java class name (qualified).
+	 */
 	public String getQualifiedClassName() {
 		return getPackage() + "."  + getClassName();
 	}
 	
 
-	/**
-	 * TODO .. da implementare
-	 * @return
-	 */
-	public String getDefaultFetch(){
-		return "lazy";
-	}
 }

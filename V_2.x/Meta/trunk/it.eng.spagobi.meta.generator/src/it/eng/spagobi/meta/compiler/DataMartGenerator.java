@@ -28,78 +28,96 @@ import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Angelo Bernabei (angelo.bernabei@eng.it)
  * This class is used by SpagoBI Meta to compile generated java class and to create JAR file.
+ * 
+ * @authors 
+ * Angelo Bernabei (angelo.bernabei@eng.it)
+ * Andrea Gioia (andrea.gioia@eng.it)
+ * 
  */
 public class DataMartGenerator {
 
-	private String srcDir=null;
+	private File srcDir;
 	private File binDir;
-	private String outDir=null;
-	private String libDir=null;
-	private String srcPackage=null;
-	private String dataMartFileName="datamart.jar";
-	private String classPath="";
+	private File outDir;
+	private File libDir;
+	
+	private String srcPackage;
+	private String mappingFileName;
+	private String classPath;
 
-	private static Logger logger = LoggerFactory.getLogger(DataMartGenerator.class);
 	/**
 	 * necessary libraries to compile Java Classes
 	 */
 	private String[] libraryLink={"org.eclipse.persistence.core_2.1.1.v20100817-r8050.jar",
-								  "javax.persistence_2.0.1.v201006031150.jar"};
+							  	  "javax.persistence_2.0.1.v201006031150.jar"};
 	
-
 	
-	public String getDataMartFileName() {
-		return dataMartFileName;
-	}
-
-	public void setDataMartFileName(String dataMartFileName) {
-		this.dataMartFileName = dataMartFileName;
-	}
+	public static final String DEFAULT_SRC_DIR = "src";
+	public static final String DEFAULT_BIN_DIR = "build";
+	public static final String DEFAULT_OUT_DIR = "dist";
+	public static final String DEFAULT_LIB_DIR = "libs";
+	
+	public static final String DEFAULT_MAPPING_FILE = "datamart.jar";
+	
+	private static Logger logger = LoggerFactory.getLogger(DataMartGenerator.class);
+	
 	
 	/**
 	 * Costructor
+	 * 
 	 * @param srcDir Source directory
 	 * @param binDir Class files directory
 	 * @param libDir Libraries directory
 	 * @param outDir Directory where you can find the JAR
 	 * @param srcPackage the package of the source code
 	 */
-	public DataMartGenerator(String srcDir,String binDir,String libDir,String outDir,String srcPackage){
+	public DataMartGenerator(File srcDir, File binDir, File libDir, File outDir, String srcPackage){
 		this.srcDir=srcDir;
 		logger.debug("src dir set to [{}]", this.srcDir);
 		
-		this.binDir= new File(binDir);
+		this.binDir= binDir;
 		logger.debug("bin dir set to [{}]", this.binDir);
 	    
-		this.libDir = null;
+		this.libDir = libDir;
 		logger.debug("lib dir set to [{}]", this.libDir);
 		
-		this.outDir=outDir;
+		this.outDir = outDir;
 		logger.debug("out dir set to [{}]", this.outDir);
 		
-		this.srcPackage=srcPackage;
+		this.srcPackage = srcPackage;
 		logger.debug("srcpkg dir set to [{}]", this.srcPackage);
 		
-		setClasspath();
+		mappingFileName = DEFAULT_MAPPING_FILE;
 	}
 	
-	private void setClasspath(){
-	    File plugin = new File("plugins");
-	    
-	    this.libDir = plugin.getAbsolutePath()+"\\";
-		
-		classPath=".";
-		for (int i=0;i<libraryLink.length;i++){
-			classPath=classPath+";"+libDir+libraryLink[i];
+	public DataMartGenerator(File rootDir, String srcPackage) {
+		this(new File(rootDir, DEFAULT_SRC_DIR),
+			 new File(rootDir, DEFAULT_BIN_DIR),
+			 new File(rootDir, DEFAULT_LIB_DIR),
+			 new File(rootDir, DEFAULT_OUT_DIR),
+			 srcPackage);
+	}
+	
+	private void initClasspath(){
+		if(libraryLink != null && libraryLink.length > 0) {
+			Assert.assertTrue("Impossible to locate lib dir [" + libDir + "]", libDir.exists() && libDir.isDirectory());
 		}
-		logger.info("classPath="+classPath);
+		
+		classPath = ".";
+		for (int i = 0; i < libraryLink.length; i++){
+			File libFile = new File(libDir, libraryLink[i]);
+			//Assert.assertTrue("Impossible to locate lib [" + libFile + "]", libFile.exists() && libFile.isFile());
+			classPath = classPath + ";" + libFile;
+		}
+		
+		logger.debug("Classpath is equal to [{}]", classPath);
 	}
 	
 	/**
@@ -111,8 +129,10 @@ public class DataMartGenerator {
 		
 		logger.trace("IN");
 		
-		String command=srcDir+" -classpath " +classPath+ " -d "+binDir+" -source 1.5";
-		logger.info("command="+command);
+		initClasspath();
+		
+		String command=srcDir + " -classpath " + classPath + " -d " + binDir + " -source 1.5";
+		logger.info("Compile command is equal to [{}]", command);
 		
 		PrintWriter error=new PrintWriter(System.err);
 		PrintWriter out=new PrintWriter(System.out);
@@ -133,9 +153,9 @@ public class DataMartGenerator {
 		logger.trace("IN");
 		
 		try{
-			File jarFileDir = new File(outDir);
+			File jarFileDir =outDir;
 			jarFileDir.mkdir();
-			File jarFile = new File (outDir,getDataMartFileName());
+			File jarFile = new File (outDir, getMappingFileName());
 			logger.debug("Mapping jar file will be saved in [{}]", jarFile);
 			
 			if (jarFile.exists()) {
@@ -217,6 +237,61 @@ public class DataMartGenerator {
 			logger.trace("OUT");
 		}
 	}
-	
 
+	
+	
+	// ==========================================================================================
+	// ACCESSOR METHODS
+	// ==========================================================================================
+	
+	public File getSrcDir() {
+		return srcDir;
+	}
+
+	public void setSrcDir(File srcDir) {
+		this.srcDir = srcDir;
+	}
+
+	public File getBinDir() {
+		return binDir;
+	}
+
+	public void setBinDir(File binDir) {
+		this.binDir = binDir;
+	}
+
+	public File getOutDir() {
+		return outDir;
+	}
+
+	public void setOutDir(File outDir) {
+		this.outDir = outDir;
+	}
+
+	public File getLibDir() {
+		return libDir;
+	}
+
+	public void setLibDir(File libDir) {
+		this.libDir = libDir.getAbsoluteFile();
+	}
+
+	public String getMappingFileName() {
+		return mappingFileName;
+	}
+
+	public void setMappingFileName(String mappingFileName) {
+		this.mappingFileName = mappingFileName;
+	}
+
+	public String[] getLibraryLink() {
+		return libraryLink;
+	}
+
+	public void setLibraryLink(String[] libraryLink) {
+		this.libraryLink = libraryLink;
+	}
+	
+	
+	
 }

@@ -1,1 +1,35 @@
-io sono la business view!
+{
+	meta: {
+		
+	},
+	
+	views: [
+#foreach ($jpaView in $jpaViews)
+###################################################################################
+#####                           VIEWS
+###################################################################################
+	{
+		name: ${jpaView.className}
+		, tables: [
+#foreach ($jpaTable in $jpaView.tables)
+		{
+			name: ${jpaTable.className}
+			, package: ${jpaView.package}
+			, columns: [
+#foreach ($jpaColumn in $jpaView.getColumns($jpaTable))
+			{
+				name: ${jpaColumn.propertyName}
+			},
+#end
+			]
+		},
+#end
+		]
+		, joins: []
+	}
+###################################################################################
+#####                           VIEWS
+###################################################################################
+#end	
+	]
+}

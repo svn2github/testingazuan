@@ -10,23 +10,31 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JpaInnerRelationship extends JpaRelationship {
+public class JpaInnerRelationship extends AbstractJpaRelationship {
 
 	BusinessViewInnerJoinRelationship businessInnerRelationship;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaInnerRelationship.class);
 	
-	public JpaInnerRelationship(JpaViewInnerTable jpaView, BusinessViewInnerJoinRelationship businessInnerRelationship) {
-		this.jpaTable = jpaView;
+	public JpaInnerRelationship(JpaViewInnerTable jpaInnerTable, BusinessViewInnerJoinRelationship businessInnerRelationship) {
+		this.jpaTable = jpaInnerTable;
 		this.businessInnerRelationship = businessInnerRelationship;
-	}
-	private boolean isSourceRole() {
-		if (jpaTable instanceof JpaViewInnerTable){
-			return businessInnerRelationship.getSourceTable().equals(((JpaViewInnerTable)jpaTable).getPhysicalTable());
-		}else if (jpaTable instanceof JpaTable){
-			return businessInnerRelationship.getSourceTable().equals(jpaTable.getBusinessTable());
+		
+		if ( isSourceRole() ){
+			this.cardinality = JpaRelationship.MANY_TO_ONE;
+		} else if ( isDestinationRole() ){
+			this.cardinality = JpaRelationship.ONE_TO_MANY;				
 		}
-		return false;
+		
+		this.bidirectional = true;
+	}
+	
+	private boolean isSourceRole() {
+		return businessInnerRelationship.getSourceTable().equals( jpaTable.getPhysicalTable() );
+	}
+	
+	private boolean isDestinationRole() {
+		return businessInnerRelationship.getDestinationTable().equals( jpaTable.getPhysicalTable() );
 	}
 
 	/**
@@ -81,17 +89,20 @@ public class JpaInnerRelationship extends JpaRelationship {
 	/**
 	 * The inner relationship can have join reference between PhisicalTable only
 	 */
-	public JpaTable getReferencedTable(){
+	public AbstractJpaTable getReferencedTable(){
 		logger.debug("IN");
+		
+		BusinessView businessView = ((JpaViewInnerTable)jpaTable).getBusinessView();
+		
 		if ( isSourceRole() ) {			
 			if (businessInnerRelationship.getDestinationTable() instanceof PhysicalTable){
-				return new JpaViewInnerTable(null,(PhysicalTable)businessInnerRelationship.getDestinationTable()); 
+				return new JpaViewInnerTable(businessView,(PhysicalTable)businessInnerRelationship.getDestinationTable()); 
 			}else {
 				logger.error("businessInnerRelationship.getDestinationTable() IS not a PhysicalTable......");
 			}
 		} else {
 			if (businessInnerRelationship.getSourceTable() instanceof PhysicalTable){
-				return new JpaViewInnerTable(null,(PhysicalTable)businessInnerRelationship.getSourceTable()); 
+				return new JpaViewInnerTable(businessView,(PhysicalTable)businessInnerRelationship.getSourceTable()); 
 			}else {
 				logger.error("businessInnerRelationship.getSourceTable() IS not a PhysicalTable......");
 			}

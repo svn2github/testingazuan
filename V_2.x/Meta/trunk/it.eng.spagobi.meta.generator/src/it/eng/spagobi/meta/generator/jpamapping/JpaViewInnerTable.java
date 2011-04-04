@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -29,12 +28,11 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
-import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,34 +40,45 @@ import org.slf4j.LoggerFactory;
  * @author Angelo Bernabei( angelo.bernabei@eng.it)
  * This class extends JpaTable in order to write java classes that depends from Business View
  */
-public class JpaViewInnerTable extends JpaTable {
+public class JpaViewInnerTable extends AbstractJpaTable {
 
+	private BusinessView businessView;
+	
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
-	private BusinessView businessView=null;
-	private PhysicalTable physicalTable=null;
-	
 
-	
 	/**
-	 * @param businessView
-	 * @param physicalTable The physical Table used to write this Java Class
+	 * @param businessView The business view that contains the physical table
+	 * @param physicalTable The physical table used to write this java class
 	 */
-	public JpaViewInnerTable(BusinessView businessView,PhysicalTable physicalTable) {
-		super();
-		setBusinessView(businessView);
-		this.physicalTable=physicalTable;
-	}
-	@Override
-	public PhysicalTable getPhysicalTable() {
-		return physicalTable;
+	public JpaViewInnerTable(BusinessView businessView, PhysicalTable physicalTable) {
+		super(physicalTable);
+		
+		Assert.assertNotNull("Parameter [businessView] cannot be null", businessView);
+		Assert.assertTrue("Parameter [physicalTable] is not contained in parameter [businessView]", businessView.getPhysicalTables().contains(physicalTable));
+		
+		logger.debug("Inner table [" + physicalTable.getName() + "] of view [" + businessView.getName() + "]");
+		
+		this.businessView = businessView;
+		this.physicalTable= physicalTable;
+		
+		initColumnTypesMap();
 	}
 	
-	@Override
+	List<BusinessColumn> getBusinessColumns() {
+		return businessView.getColumns();
+	}
+	
+	List<BusinessRelationship> getBusinessRelationships() {
+		return businessView.getRelationships();
+	}
+	
+	
+	
 	protected BusinessModel getModel(){
 		return businessView.getModel();
 	}
 
-	
 	public BusinessView getBusinessView() {
 		return businessView;
 	}
@@ -77,87 +86,71 @@ public class JpaViewInnerTable extends JpaTable {
 		this.businessView = businessView;
 	}
 	
-	
-	@Override
-	protected List<JpaColumn> getColumns() {
-		logger.debug("IN");
+	public List<JpaColumn> getColumns() {
+		
+		logger.trace("IN");
+		
 		if (jpaColumns == null) {
-			//List<PhysicalColumn> colums=phisicalTable.getColumns();
 			jpaColumns = new ArrayList<JpaColumn>();
 			
-			for (PhysicalColumn pysC : physicalTable.getColumns()){
-				BusinessColumn bc=findColumnInBV(pysC,businessView);
+			for (PhysicalColumn physicalColumn : physicalTable.getColumns()){
+				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
 				// if the colums belong to the BusinessView
-				if (bc!=null){
-						JpaColumn jpaColumn = new JpaColumn(bc);
+				if (businessColumn!=null){
+						JpaColumn jpaColumn = new JpaColumn(businessColumn);
 						jpaColumn.setJpaTable(this);
 						jpaColumns.add(jpaColumn);
 						logger.info("Add "+jpaColumn.getColumnName()+" Column to the BV "+businessView.getName());
 					}					
 				}	
 		}
-		logger.debug("OUT");
+		
+		logger.trace("OUT");
+		
 		return jpaColumns;
 	}
 	/**
-	 * Check IF the column belong to the BV
-	 * @param pysC
-	 * @param businessView
-	 * @return
+	 * Check if the physical column belong to the view
+	 * 
+	 * @param physicalColumn
+	 * 
+	 * @return the business column that wrap the physical column if it belong to the view. null otherwise
 	 */
-	private BusinessColumn findColumnInBV(PhysicalColumn pysC,BusinessView businessView){
+	private BusinessColumn findColumnInBusinessView(PhysicalColumn physicalColumn){
 		
-		for (BusinessColumn c : businessView.getColumns()) {
-			if (pysC.getName().equals(c.getPhysicalColumn().getName())){
-					return c;
+		for (BusinessColumn businessColumn : businessView.getColumns()) {
+			if (physicalColumn.getName().equals(businessColumn.getPhysicalColumn().getName())){
+					return businessColumn;
 			}					
 		}	
-		logger.warn("Return NULL, no column in BV");
 		return null;
 	}
 	
-	
-	/**
-	 * build the hasmap that contains the properties type of this "Business Table"
-	 * @return
-	 */
-	@Override
-	protected void buildColumnTypesMap() {
-		logger.debug("IN");
-		if (columnTypesMap == null) {
-			columnTypesMap = new HashMap<String, String>();
-			for (BusinessColumn column : businessView.getColumns()) {
-				ModelProperty property = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
-				String modelType = property.getValue();
-				String javaType = JDBCTypeMapper.getJavaTypeName(modelType);
-				if ( !javaType.startsWith("java.lang")
-						&& javaType.indexOf('.') > 0) {
-					String simpleJavaType = javaType.substring(javaType
-							.lastIndexOf('.') + 1);
-					columnTypesMap.put(javaType, simpleJavaType);
-				}
-			}
-		}
-		logger.debug("OUT");
-	}
-	
+		
 
 	/**
 	 * Returns true if the table has a Primary KEY
 	 */
-	@Override
+	
 	public boolean hasPrimaryKey() {		
 		return physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 0 : false;
 	}
-	@Override
+	
 	public boolean hasCompositeKey() {		
 		return physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 1 : false;
 	}
-	@Override
+	
 	public String getClassName() {
 		String name;
-		name = StringUtil.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
-		name = StringUtil.initUpper(name);
+		
+		name = null;
+		try {
+			name = StringUtil.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
+			name = StringUtil.initUpper(name);
+		} catch (Throwable t) {
+			logger.error("Impossible to get class name", t);
+			name = "pippo";
+		}
 		return name;
 	}
 	
@@ -166,44 +159,17 @@ public class JpaViewInnerTable extends JpaTable {
 	 * We have to ADD only the relationship belong to this Physical Table.
 	 * @return
 	 */
-	public List<JpaRelationship> getRelationships() {
-		logger.debug("IN");
-		List<JpaRelationship> jpaRelationships;
-		JpaRelationship jpaRelationship=null;
+	public List<AbstractJpaRelationship> getRelationships() {
 		
-		jpaRelationships = new ArrayList<JpaRelationship>();
-		logger.info("Number of relationschip of OBJECT "+physicalTable.getName()+" : "+businessView.getRelationships().size());
-		for(BusinessRelationship relationship : businessView.getRelationships()) {
-			jpaRelationship = new JpaRelationship(this, relationship);
-			logger.info("The RELATIONSHIP IS : "+relationship.getName());
-			if (jpaRelationship.getBusinessRelationship()==null || 
-					jpaRelationship.getBusinessRelationship().getSourceTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any source Table");
-				continue;
-			}
-			if (jpaRelationship.getBusinessRelationship()==null || 
-					jpaRelationship.getBusinessRelationship().getDestinationTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any destination Table");
-				continue;
-			}				
-			if (jpaRelationship.getBusinessRelationship().getSourceTable().equals(businessView)){
-				// many-to-one
-				jpaRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
-			}else if (jpaRelationship.getBusinessRelationship().getDestinationTable().equals(businessView)){
-				// one-to-many
-				jpaRelationship.setCardinality(JpaRelationship.ONE_TO_MANY);				
-			}
-			if (jpaRelationship!=null && isBelongToRelationship(physicalTable,relationship)) {
-				jpaRelationship.setBidirectional(true);
-				jpaRelationships.add(jpaRelationship);
-				logger.info("ADD the relationship : "+relationship.getName());
-			}else {
-				logger.info("Don't ADD the relationship : "+relationship.getName());
-			}
-		}
+		logger.trace("IN");
+		
+		List<AbstractJpaRelationship> jpaRelationships;
+		
+		jpaRelationships = super.getRelationships();
+		/*
 		for (BusinessViewInnerJoinRelationship innerJoin : businessView.getJoinRelationships()){
 			JpaInnerRelationship jpainnerRelationship = new JpaInnerRelationship(this, innerJoin);
-			logger.info("The INNER RELATIONSHIP IS : "+innerJoin.getName());
+			
 			if (jpainnerRelationship.getBusinessInnerRelationship()==null || 
 					jpainnerRelationship.getBusinessInnerRelationship().getSourceTable()==null){
 				logger.error("There is a problem , the relationship doesn't have any source Table");
@@ -214,21 +180,15 @@ public class JpaViewInnerTable extends JpaTable {
 				logger.error("There is a problem , the relationship doesn't have any destination Table");
 				continue;
 			}
-			if (jpainnerRelationship.getBusinessInnerRelationship().getSourceTable().equals(physicalTable)){
-				// many-to-one
-				jpainnerRelationship.setCardinality(JpaRelationship.MANY_TO_ONE);
-			}else if (jpainnerRelationship.getBusinessInnerRelationship().getDestinationTable().equals(physicalTable)){
-				// one-to-many
-				jpainnerRelationship.setCardinality(JpaRelationship.ONE_TO_MANY);				
-			}	
+			
 			if (jpainnerRelationship!=null ) {
-				jpainnerRelationship.setBidirectional(true);
 				jpaRelationships.add(jpainnerRelationship);
 				logger.info("ADD the relationship : "+innerJoin.getName());
 			}else {
 				logger.info("Don't ADD the relationship : "+innerJoin.getName());
 			}			
 		}
+		*/
 		logger.debug("OUT");		
 		return jpaRelationships;		
 	}
@@ -263,4 +223,6 @@ public class JpaViewInnerTable extends JpaTable {
 		return false;
 	}
 
+
+	
 }

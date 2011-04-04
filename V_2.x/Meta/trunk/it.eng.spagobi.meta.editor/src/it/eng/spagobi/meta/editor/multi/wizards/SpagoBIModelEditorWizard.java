@@ -16,6 +16,7 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
@@ -227,6 +228,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 				spagobiModel = ModelFactory.eINSTANCE.createModel();
 				spagobiModel.setName(newModelWizardFileCreationPage.getModelName());
 				
+				
 				String connectionName = selectionConnectionPage.getConnectionName();
 				logger.debug("Connection name is [{}]",connectionName);
 				String connectionUrl = selectionConnectionPage.getConnectionUrl();
@@ -307,12 +309,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 							newModelWizardFileCreationPage.getModelName(), 
 							spagobiModel.getPhysicalModels().get(0)
 					));
-					/*
-					spagobiModel.getBusinessModels().add(businessModelInitializer.initialize(
-							newModelWizardFileCreationPage.getModelName(), 
-							spagobiModel.getPhysicalModels().get(0)
-					));
-					*/
+				
 		    	}
 		    	else {
 		    		//with table filtering
@@ -329,7 +326,10 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 				spagobiModel = (Model)createInitialModel();
 			}
 			
-			
+			ModelProperty property = ModelFactory.eINSTANCE.createModelProperty();
+			property.setPropertyType(spagobiModel.getPropertyType("structural.file"));
+			property.setValue(modelPath);
+			spagobiModel.getBusinessModels().get(0).getProperties().put(property.getPropertyType().getId(), property);
 			
 			// Do the work within an operation.
 			//

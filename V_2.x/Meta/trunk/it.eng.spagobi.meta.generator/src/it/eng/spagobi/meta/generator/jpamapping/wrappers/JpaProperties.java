@@ -19,27 +19,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.generator.jpamapping;
-
-import java.util.List;
-
-
+package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public interface IJpaTable {
-	
-	String getPackage();
-	String getImportStatements();
-	String getClassName();
-	boolean hasPrimaryKey();	
-	boolean hasCompositeKey();
-	String getCompositeKeyClassName();
-	String getDefaultFetch();
-	List<JpaColumn> getColumns();
-	List<JpaColumn> getSimpleColumns();
-	List<JpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited);
-	List<AbstractJpaRelationship> getRelationships();
+public class JpaProperties {
+	public static final String MODEL_PACKAGE = "structural.package";
+	//public static final String COLUMN_AGGTYPE = "structural.aggtype";
+	public static final String COLUMN_DATATYPE = "structural.datatype";
 }

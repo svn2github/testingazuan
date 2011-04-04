@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.generator.jpamapping;
+package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
 import it.eng.spagobi.meta.generator.utils.StringUtil;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -66,7 +66,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		initColumnTypesMap();
 	}
 	
-	List<BusinessColumn> getBusinessColumns() {
+	public List<BusinessColumn> getBusinessColumns() {
 		return businessView.getColumns();
 	}
 	

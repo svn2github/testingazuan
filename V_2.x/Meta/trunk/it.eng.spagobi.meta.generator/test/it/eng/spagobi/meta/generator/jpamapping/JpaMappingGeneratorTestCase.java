@@ -25,7 +25,7 @@ import java.io.File;
 
 import org.junit.Assert;
 
-import it.eng.spagobi.meta.compiler.DataMartGenerator;
+import it.eng.spagobi.meta.generator.utils.DataMartGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;

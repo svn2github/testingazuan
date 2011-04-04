@@ -34,9 +34,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -132,15 +131,15 @@ public class OdaStructureBuilder {
 	 */
 	private static String getDriverName(File jarFile){
 		logger.debug("IN: Check the driver name. Looking if "+jarFile+" is a jpa jar file..");
-		ZipInputStream zis;
-		ZipEntry zipEntry;
+		JarInputStream zis;
+		JarEntry zipEntry;
 		String dialectName;
 		boolean isJpa = false;
 			
 		try {
 			FileInputStream fis = new FileInputStream(jarFile);
-			zis = new ZipInputStream(fis);
-			while((zipEntry=zis.getNextEntry())!=null){
+			zis = new JarInputStream(fis);
+			while((zipEntry=zis.getNextJarEntry())!=null){
 				logger.debug("Zip Entry is [{}]",zipEntry.getName());
 				if(zipEntry.getName().equals("META-INF\\persistence.xml") ){
 					isJpa = true;

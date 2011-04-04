@@ -24,9 +24,8 @@ package it.eng.spagobi.meta.generator.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -86,7 +85,7 @@ public class Zipper {
 
 	}
 	
-	private void compressFolder(File rootTargetDir, File targetDir, ZipOutputStream out)  {
+	private void compressFolder(File rootTargetDir, File targetDir, JarOutputStream out)  {
 
 		String[] entries;
 		byte[] buffer = new byte[4096];
@@ -119,7 +118,7 @@ public class Zipper {
 					}
 					logger.debug(relativeFileName);
 					
-					ZipEntry entry = new ZipEntry(relativeFileName);
+					JarEntry entry = new JarEntry(relativeFileName);
 					out.putNextEntry(entry);
 					while ((bytes_read = in.read(buffer)) != -1) {
 						out.write(buffer, 0, bytes_read);

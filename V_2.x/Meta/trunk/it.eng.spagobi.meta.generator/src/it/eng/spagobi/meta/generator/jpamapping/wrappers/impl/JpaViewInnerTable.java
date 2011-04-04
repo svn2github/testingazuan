@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -38,8 +40,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Angelo Bernabei( angelo.bernabei@eng.it)
- * This class extends JpaTable in order to write java classes that depends from Business View
+ * 
+ * This class wrap a physical table used within a business view and provide all the utility methods used by the template engine
+ * in order to generate the java class mapping
+ * 
+ * @authors
+ * 	Angelo Bernabei( angelo.bernabei@eng.it)
+ * 	Andrea Gioia (andrea.gioia@eng.it)
  */
 public class JpaViewInnerTable extends AbstractJpaTable {
 
@@ -87,12 +94,12 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		this.businessView = businessView;
 	}
 	
-	public List<JpaColumn> getColumns() {
+	public List<IJpaColumn> getColumns() {
 		
 		logger.trace("IN");
 		
 		if (jpaColumns == null) {
-			jpaColumns = new ArrayList<JpaColumn>();
+			jpaColumns = new ArrayList<IJpaColumn>();
 			
 			for (PhysicalColumn physicalColumn : physicalTable.getColumns()){
 				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
@@ -160,11 +167,11 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 * We have to ADD only the relationship belong to this Physical Table.
 	 * @return
 	 */
-	public List<AbstractJpaRelationship> getRelationships() {
+	public List<IJpaRelationship> getRelationships() {
 		
 		logger.trace("IN");
 		
-		List<AbstractJpaRelationship> jpaRelationships;
+		List<IJpaRelationship> jpaRelationships;
 		
 		jpaRelationships = super.getRelationships();
 		/*

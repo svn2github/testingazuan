@@ -24,6 +24,9 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -41,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JpaView {
+public class JpaView implements IJpaView {
 	private BusinessView businessView;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
@@ -58,21 +61,29 @@ public class JpaView {
 		return businessView.getModel();
 	}
 	
-	public List<JpaViewInnerTable> getTables() {
-		List<JpaViewInnerTable> innerTables;
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getTables()
+	 */
+	@Override
+	public List<IJpaTable> getTables() {
+		List<IJpaTable> innerTables;
 		List<PhysicalTable> physiscalTables;
 		
 		physiscalTables =  businessView.getPhysicalTables();
 		
-		innerTables = new ArrayList<JpaViewInnerTable>();
+		innerTables = new ArrayList<IJpaTable>();
 		for(PhysicalTable physicaltable : physiscalTables) {
 			innerTables.add( new JpaViewInnerTable(businessView, physicaltable) );
 		}
 		return innerTables;
 	}
 	
-	public List<JpaColumn> getColumns(JpaViewInnerTable table) {
-		List<JpaColumn> jpaColumns = new ArrayList<JpaColumn>();
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getColumns(it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable)
+	 */
+	@Override
+	public List<IJpaColumn> getColumns(JpaViewInnerTable table) {
+		List<IJpaColumn> jpaColumns = new ArrayList<IJpaColumn>();
 		List<BusinessColumn> businessColumns = businessView.getColumns();
 		for (BusinessColumn businessColumn :businessColumns) {
 			if(businessColumn.getPhysicalColumn().getTable()== table.getPhysicalTable()) {
@@ -86,6 +97,10 @@ public class JpaView {
 		return jpaColumns;	
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getJoinRelationships()
+	 */
+	@Override
 	public List<AbstractJpaRelationship> getJoinRelationships() {
 		List<AbstractJpaRelationship> innerJoinRelationship;
 		
@@ -94,6 +109,10 @@ public class JpaView {
 		return innerJoinRelationship;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getPackage()
+	 */
+	@Override
 	public String getPackage() {
 		logger.debug("IN");
 		String result=null;
@@ -109,6 +128,10 @@ public class JpaView {
         return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getClassName()
+	 */
+	@Override
 	public String getClassName() {
 		String name;
 		

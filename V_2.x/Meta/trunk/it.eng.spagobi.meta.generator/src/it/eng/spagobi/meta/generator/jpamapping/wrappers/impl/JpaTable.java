@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -45,9 +47,7 @@ import org.slf4j.LoggerFactory;
 public class JpaTable extends AbstractJpaTable {
 	
 	BusinessTable businessTable;
-	
-	
-	
+
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 
 	public JpaTable(BusinessTable businessTable) {
@@ -80,9 +80,9 @@ public class JpaTable extends AbstractJpaTable {
 	 * Returns the <code>JpaColumn</code> objects to be generated for this
 	 * table.
 	 */
-	public List<JpaColumn> getColumns() {
+	public List<IJpaColumn> getColumns() {
 		if (jpaColumns == null) {
-			jpaColumns = new ArrayList<JpaColumn>();
+			jpaColumns = new ArrayList<IJpaColumn>();
 			for (BusinessColumn c : businessTable.getColumns()) {
 				JpaColumn jpaColumn = new JpaColumn(c);
 				jpaColumn.setJpaTable(this);
@@ -117,12 +117,12 @@ public class JpaTable extends AbstractJpaTable {
 	/**
 	 * @return the primary columns
 	 */
-	public List<JpaColumn> getPrimaryKeyColumns(){
-		List<JpaColumn> result = new ArrayList<JpaColumn>();
-		List<JpaColumn> columns = getColumns();
+	public List<IJpaColumn> getPrimaryKeyColumns(){
+		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
+		List<IJpaColumn> columns = getColumns();
 	
 		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
+			IJpaColumn column = columns.get(i);
 			
 			if (column.isIdentifier())	{
 				result.add(column);
@@ -158,12 +158,12 @@ public class JpaTable extends AbstractJpaTable {
 	 */
 	public String getPrimaryKeyEqualsClause(){
 		String equalsClause;
-		List<JpaColumn> columns;
+		List<IJpaColumn> columns;
 		
 		equalsClause = null;
 		columns = getPrimaryKeyColumns();
 		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
+			IJpaColumn column = columns.get(i);
 			if (equalsClause == null) equalsClause = "( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
 			else equalsClause += " \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
 		}
@@ -179,12 +179,12 @@ public class JpaTable extends AbstractJpaTable {
 	 */
 	public String getPrimaryKeyHashCodeClause(){
 		String hashcodeClause;
-		List<JpaColumn> columns;
+		List<IJpaColumn> columns;
 		
 		hashcodeClause = null;
 		columns = getPrimaryKeyColumns();
 		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
+			IJpaColumn column = columns.get(i);
 			if (hashcodeClause==null)  hashcodeClause=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
 			else hashcodeClause=hashcodeClause+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
 		}
@@ -198,13 +198,13 @@ public class JpaTable extends AbstractJpaTable {
 	/**
 	 * @return the <code>JpaRelationship</code> that contains this table
 	 */
-	public List<AbstractJpaRelationship> getRelationships() {
-		List<AbstractJpaRelationship> jpaRelationships;
+	public List<IJpaRelationship> getRelationships() {
+		List<IJpaRelationship> jpaRelationships;
 		JpaRelationship jpaRelationship;
 		
 		logger.trace("IN");
 	
-		jpaRelationships = new ArrayList<AbstractJpaRelationship>();
+		jpaRelationships = new ArrayList<IJpaRelationship>();
 		logger.debug("Business table [{}] have  [{}] relationships", businessTable.getName(), businessTable.getRelationships().size());
         
 		for(BusinessRelationship relationship : businessTable.getRelationships()) {

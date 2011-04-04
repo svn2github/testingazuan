@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -39,14 +40,9 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JpaColumn {
+public class JpaColumn implements IJpaColumn {
 	BusinessColumn businessColumn;
 	AbstractJpaTable jpaTable;
-	
-	/*get/set and field scopes*/
-	public static final String PUBLIC_SCOPE = "public"; //$NON-NLS-1$
-	public static final String PROTECTED_SCOPE = "protected"; //$NON-NLS-1$
-	public static final String PRIVATE_SCOPE = "private"; //$NON-NLS-1$
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
 	
@@ -54,23 +50,27 @@ public class JpaColumn {
 		this.businessColumn = businessColumn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#isIdentifier()
+	 */
+	@Override
 	public boolean isIdentifier() {
 		return businessColumn.isIdentifier();
 	}
-	/**
-	 * if the PK is composite and we are writing PK Class Property
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#isPKReadOnly()
 	 */
+	@Override
 	public boolean isPKReadOnly() {
 		if (jpaTable.hasCompositeKey() && businessColumn.isIdentifier())
 		return true;
 		else return false;
 	}	
 	
-	/**
-	 * Return true if this Column belong to any relationship
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#isColumnInRelationship()
 	 */
+	@Override
 	public boolean isColumnInRelationship() {
 		boolean isColumnInRelationship;
 		
@@ -159,10 +159,10 @@ public class JpaColumn {
 		return isColumnInRelationship;
 	}
 	
-	/**
-	 * Returns the generated bean property name for the given column.
-	 * Does not return null.
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyName()
 	 */
+	@Override
 	public String getPropertyName() {
 		String name;
 		name = StringUtils.tableNameToVarName(businessColumn.getPhysicalColumn().getName());	
@@ -170,16 +170,20 @@ public class JpaColumn {
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getSimplePropertyType()
+	 */
+	@Override
 	public String getSimplePropertyType()  {
 		String result=null;
 		result= getPropertyType().substring( getPropertyType().lastIndexOf('.')+1 );
 		return result;
 	}
 	
-	/**
-	 * Returns the column type as JAVA Object
-	 * Does not return null.
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyType()
 	 */
+	@Override
 	public String getPropertyType()  {
 		String type;
 		
@@ -190,22 +194,31 @@ public class JpaColumn {
 		return type;
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getBusinessColumn()
+	 */
+	@Override
 	public BusinessColumn getBusinessColumn() {
 		return businessColumn;
 	}
-	public void setBusinessColumn(BusinessColumn businessColumn) {
-		this.businessColumn = businessColumn;
-	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getJpaTable()
+	 */
+	@Override
 	public AbstractJpaTable getJpaTable() {
 		return jpaTable;
 	}
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#setJpaTable(it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable)
+	 */
 	public void setJpaTable(AbstractJpaTable jpaTable) {
 		this.jpaTable = jpaTable;
 	}
-	/**
-	 * TODO ... da verificare !!  
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#isDataTypeLOB()
 	 */
+	@Override
 	public boolean isDataTypeLOB(){
 		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 		String modelType = property.getValue();
@@ -213,22 +226,34 @@ public class JpaColumn {
 		else return false;
 	}
 	
-	/**
-	 * Return the phisical column name 
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getColumnName()
 	 */
+	@Override
 	public String getColumnName(){
 		return businessColumn.getPhysicalColumn().getName();
 	}
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getColumnNameDoubleQuoted()
+	 */
+	@Override
 	public String getColumnNameDoubleQuoted(){
 		return StringUtils.doubleQuote(businessColumn.getPhysicalColumn().getName());
 	}
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#needMapTemporalType()
+	 */
+	@Override
 	public boolean needMapTemporalType(){
 		if (getPropertyType().equals("java.util.Date")
 					|| getPropertyType().equals("java.util.Calendar")) return true;
 		else return false;
 	}
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getMapTemporalType()
+	 */
+	@Override
 	public String getMapTemporalType(){
 		if (getPropertyType().equals("java.sql.Date") ) return "DATE";
 		if (getPropertyType().equals("java.tim.Date") ) return "TIME";
@@ -236,17 +261,17 @@ public class JpaColumn {
 		else return "";
 	}	
 	
-	/**
-	 * Return the name of the metod GETTER
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyNameGetter()
 	 */
+	@Override
 	public String getPropertyNameGetter() {
 		return "get"+StringUtils.initUpper(getPropertyName());
 	}
-	/**
-	 * Return the name of the metod SETTER
-	 * @return
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyNameSetter()
 	 */
+	@Override
 	public String getPropertyNameSetter() {
 		return "set"+StringUtils.initUpper(getPropertyName());
 	}	

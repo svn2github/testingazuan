@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.model.ModelProperty;
@@ -49,7 +51,7 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	PhysicalTable physicalTable;
 
 	// cache
-	List<JpaColumn> jpaColumns;
+	List<IJpaColumn> jpaColumns;
 	HashMap<String, String> columnTypesMap;
 	
 	private static Logger logger = LoggerFactory.getLogger(AbstractJpaTable.class);
@@ -89,13 +91,13 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	/**
 	 * @return the <code>JpaRelationship</code> that contains this table
 	 */
-	public List<AbstractJpaRelationship> getRelationships() {
-		List<AbstractJpaRelationship> jpaRelationships;
+	public List<IJpaRelationship> getRelationships() {
+		List<IJpaRelationship> jpaRelationships;
 		JpaRelationship jpaRelationship;
 		
 		logger.trace("IN");
 	
-		jpaRelationships = new ArrayList<AbstractJpaRelationship>();
+		jpaRelationships = new ArrayList<IJpaRelationship>();
 	
 		for(BusinessRelationship relationship : getBusinessRelationships()) {
 			jpaRelationship = new JpaRelationship(this, relationship);		
@@ -163,12 +165,12 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	 * @param includeInherited 	Whether to include the columns associated with Jjava properties
 	 *            				that exist in the super class (if any).
 	 */
-	public List<JpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
-		List<JpaColumn> result = new ArrayList<JpaColumn>();
-		List<JpaColumn> columns = getColumns();
+	public List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
+		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
+		List<IJpaColumn> columns = getColumns();
 	
 		for (int i = 0, n = columns.size(); i < n; ++i) {
-			JpaColumn column = columns.get(i);
+			IJpaColumn column = columns.get(i);
 			
 			if (column.isIdentifier()) {
 				if (!includePk || hasCompositeKey()) {
@@ -185,7 +187,7 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		return result;
 	}
 
-	public List<JpaColumn> getSimpleColumns() {
+	public List<IJpaColumn> getSimpleColumns() {
 		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
 	}
 
@@ -206,8 +208,8 @@ public abstract class AbstractJpaTable implements IJpaTable{
 			importStatement.append("import " + s + ";\n"); //$NON-NLS-1$
 		}
 
-		List<AbstractJpaRelationship> relationships = getRelationships();
-		for ( AbstractJpaRelationship relationship :  relationships ) {
+		List<IJpaRelationship> relationships = getRelationships();
+		for ( IJpaRelationship relationship :  relationships ) {
 			if ( relationship.isOneToMany() || relationship.isManyToMany() ) {
 				importStatement.append( "import " + relationship.getCollectionType() + ";\n"); //$NON-NLS-1$
 				break;

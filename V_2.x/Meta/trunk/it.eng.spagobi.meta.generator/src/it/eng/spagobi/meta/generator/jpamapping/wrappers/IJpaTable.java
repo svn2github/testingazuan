@@ -34,15 +34,75 @@ import java.util.List;
  */
 public interface IJpaTable {
 	
+	/**
+	 * 
+	 * @return the package of the java class generated from this table
+	 */
 	String getPackage();
+	
+	/**
+	 * 
+	 * @return 	the string containing all the imports needed in order to successfully compile 
+	 * 			the java class generated from this table
+	 */
 	String getImportStatements();
+	
+	/**
+	 * 
+	 * @return the name of the class generated from this table (not qualified)
+	 */
 	String getClassName();
+	
+	/**
+	 * 
+	 * @return true if the table have a primary key. false otherwise
+	 */
 	boolean hasPrimaryKey();	
+	
+	/**
+	 * 
+	 * @return true if the table have a composite primary key (a key composed by more then one column). 
+	 * 		   false otherwise
+	 */
 	boolean hasCompositeKey();
+	
+	/**
+	 * 
+	 * @return the name of the java class used to map the composite primary key (note: composite primary key
+	 * 			are mapped in a separate class and not inline in the same class of the table they belong to)
+	 */
 	String getCompositeKeyClassName();
+	
+	/**
+	 * 
+	 * @return the default fetch strategy
+	 */
 	String getDefaultFetch();
-	List<JpaColumn> getColumns();
-	List<JpaColumn> getSimpleColumns();
-	List<JpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited);
-	List<AbstractJpaRelationship> getRelationships();
+	
+	/**
+	 * 
+	 * @return all the columns contained in this business table
+	 */
+	List<IJpaColumn> getColumns();
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	List<IJpaColumn> getSimpleColumns();
+	
+	/**
+	 * 
+	 * @param genOnly
+	 * @param includePk
+	 * @param includeInherited
+	 * @return
+	 */
+	List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited);
+	
+	/**
+	 * 
+	 * @return all the relationships defined uppon this table
+	 */
+	List<IJpaRelationship> getRelationships();
 }

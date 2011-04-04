@@ -116,7 +116,10 @@ public class Zipper {
 						int len = binDirAbsolutePath.length();
 						relativeFileName = fileToCompressAbsolutePath.substring(index + len + 1);
 					}
-					logger.debug(relativeFileName);
+					
+					logger.debug("-> " + relativeFileName);
+					relativeFileName = relativeFileName.replaceAll("\\\\", "/");
+					logger.debug(">> " + relativeFileName);
 					
 					JarEntry entry = new JarEntry(relativeFileName);
 					out.putNextEntry(entry);

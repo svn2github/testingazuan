@@ -141,7 +141,7 @@ public class OdaStructureBuilder {
 			zis = new JarInputStream(fis);
 			while((zipEntry=zis.getNextJarEntry())!=null){
 				logger.debug("Zip Entry is [{}]",zipEntry.getName());
-				if(zipEntry.getName().equals("META-INF\\persistence.xml") ){
+				if(zipEntry.getName().equals("META-INF/persistence.xml") ){
 					isJpa = true;
 					break;
 				}

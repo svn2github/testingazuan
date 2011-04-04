@@ -21,9 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder;
 
+import java.io.BufferedReader;
 import java.io.File;
-
-import org.junit.Assert;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DriverManager;
@@ -31,12 +33,7 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+
 import junit.framework.TestCase;
 
 /**
@@ -49,7 +46,6 @@ public class QueryBuilderTestCase extends TestCase {
 	protected IDataSource dataSource;
 	
 	protected String modelName;
-	protected String testEntityUniqueName;
 	
 	
 	public static String CONNECTION_DIALECT = "org.hibernate.dialect.MySQLDialect";
@@ -58,7 +54,7 @@ public class QueryBuilderTestCase extends TestCase {
 	public static String CONNECTION_USER = "root";
 	public static String CONNECTION_PWD = "mysql";
 	
-	private static final String QBE_FILE = "test-resources/jpa/datamart.jar";
+	private static final String QBE_FILE = "test-resources/datamart.jar";
 	
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -71,7 +67,7 @@ public class QueryBuilderTestCase extends TestCase {
 		connection.setUsername( CONNECTION_USER );		
 		connection.setPassword( CONNECTION_PWD );
 		
-		setUpDataSource();
+		//setUpDataSource();
 	}
 
 	protected void setUpDataSource() {
@@ -83,17 +79,34 @@ public class QueryBuilderTestCase extends TestCase {
 		configuration = new FileDataSourceConfiguration(modelName, file);
 		configuration.loadDataSourceProperties().put("connection", connection);
 		dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration);
-		
-		testEntityUniqueName = "it.eng.spagobi.meta.Customer::Customer";
 	}
+	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		connection = null;
-		tearDownDataSource();
+		//tearDownDataSource();
 	}
 	
 	protected void tearDownDataSource() {
 		dataSource.close();
 		dataSource  = null;
 	}
+	
+	public void _testSmoke() {
+		 assertNotNull("Impossible to build modelStructure", dataSource.getModelStructure());
+	}
+	
+	public void testClassLoader() {
+		File file = new File(QBE_FILE);
+		ClassLoaderManager.updateCurrentClassLoader(file);
+		// così va 
+		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF\\persistence.xml");
+		// così no 
+		in = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/persistence.xml");
+		
+		assertNotNull("Impossible to find file META-INF/persistence.xml", in);
+		Reader reader = new BufferedReader(new InputStreamReader(in));
+	}
+	
+	
 }

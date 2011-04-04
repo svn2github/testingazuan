@@ -30,7 +30,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
  **/
-package it.eng.spagobi.utilities;
+package it.eng.spagobi.meta.querybuilder;
 
 
 import java.io.BufferedInputStream;
@@ -41,14 +41,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class DynamicClassLoader extends URLClassLoader {
 
-	private static transient Logger logger = Logger.getLogger(DynamicClassLoader.class);
+	private static Logger logger = LoggerFactory.getLogger(ClassLoaderManager.class);
 	
 	private ClassLoader parentCL = null;
 	private File jar;
@@ -156,14 +160,24 @@ public class DynamicClassLoader extends URLClassLoader {
      */
 	public synchronized InputStream getResourceAsStream(String resourceName)  {
 		
-		ZipFile zipFile = null;
+		JarFile zipFile = null;
 		BufferedInputStream bis = null;
 		try {
-			zipFile = new ZipFile(jar);
-			ZipEntry zipEntry = zipFile.getEntry(resourceName);
-			bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
+			zipFile = new JarFile(jar);
+			JarEntry zipEntry = zipFile.getJarEntry(resourceName);
+			InputStream in = zipFile.getInputStream(zipEntry);
+			if(in == null) {
+				logger.debug("Impossible to loacete resource " + resourceName);
+				zipEntry = zipFile.getJarEntry(resourceName.replace('/', '\\'));
+				in = zipFile.getInputStream(zipEntry);
+				if(in == null) logger.debug("Impossible to loacete resource " + resourceName.replace('/', '\\'));
+			} else {
+				logger.debug("Resouce located : " + resourceName);
+			}
+			
+			bis = new BufferedInputStream(in);
 		} catch (Exception ex) {
-			logger.warn("className: " +  resourceName + " Exception: "+ ex);
+			logger.warn("className: " +  resourceName + " Exception: ", ex);
 			return super.getResourceAsStream(resourceName);
 		} 
 

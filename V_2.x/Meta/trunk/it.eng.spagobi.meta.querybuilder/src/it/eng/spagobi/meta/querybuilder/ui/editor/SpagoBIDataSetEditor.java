@@ -8,7 +8,8 @@ import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -362,37 +363,23 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		businessModel = root.getBusinessModels().get(0);
 		logger.debug("Business Model name is [{}] ",businessModel.getName() );
 
-		//Call JPA Mapping generator
-		JpaMappingGenerator generator = new JpaMappingGenerator();
+		JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
+		generator.setLibDir(new File("plugins"));
+		boolean executed = true;
 		try {
 			generator.generate(businessModel, modelDirectory);
 		} catch (Exception e) {
-			logger.error("An error occurred while executing command [{}]:", SpagoBIDataSetEditor.class.getName(), e);
+			logger.error("An error occurred while executing generator [{}]:", JpaMappingJarGenerator.class.getName(), e);
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+			executed = false;
 		}
 		
-		//Get Package Name
-		String packageName = businessModel.getProperties().get("structural.package").getValue();
-			
-		//Call Java Compiler
-		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				new File(modelDirectory),
-				packageName.replace(".", "/")
-				);	
-		datamartGenerator.setLibDir(new File("plugins"));
-		
-		boolean result = datamartGenerator.compile();
-		if (result){
-			// compile OK
-			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
-			
-			//Generate Jar from compiled code
-			datamartGenerator.jar();
-			logger.debug("Command [{}] executed succesfully", SpagoBIDataSetEditor.class.getName());
-		}else{
-			// compile error
-			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");		
-			logger.debug("Command [{}] not executed succesfully", SpagoBIDataSetEditor.class.getName());
+		if(executed) {
+			showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
+			logger.debug("Mapping jar generated succesfully");
+		} else {
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+			logger.debug("Mapping jar not generated succesfully");
 		}
 	}	
 	

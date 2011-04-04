@@ -1,5 +1,7 @@
 package it.eng.spagobi.meta.test.generator;
 
+import java.io.File;
+
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
@@ -66,10 +68,10 @@ public class JpaMappingGeneratorTest {
 		}
 		
 		DataMartGenerator generator=new DataMartGenerator(
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/",
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/build/classes",
-				"C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/",
-				"C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/dist",
+				new File("C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/src/"),
+				new File("C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/build/classes"),
+				new File("C:/ProgramFiles/eclipse-jee-helios-SR1-win32-SpagiBIMETA/plugins/"),
+				new File("C:/progetti/spagobi2.0/workspaceSpagoBIMeta/SpagoBIReverse/dist"),
 				"it/eng/spagobi/meta"
 				);
 		

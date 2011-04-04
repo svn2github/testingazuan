@@ -3,7 +3,7 @@ package it.eng.spagobi.meta.test.generator;
 import java.io.File;
 
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -26,7 +26,7 @@ public class JpaMappingGeneratorTest {
 	BusinessModel businessModel=null;
 	BusinessModelInitializer businessModelInitializer=null;
         
-	JpaMappingGenerator gen = null;
+	JpaMappingCodeGenerator gen = null;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -55,7 +55,7 @@ public class JpaMappingGeneratorTest {
         businessModelInitializer = new BusinessModelInitializer();
         businessModel = businessModelInitializer.initialize("businessModelDemo", physicalModel);	
         
-        gen = new JpaMappingGenerator();
+        gen = new JpaMappingCodeGenerator();
 	}
 
 	@Test

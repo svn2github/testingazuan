@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands;
 
 
+import java.io.File;
+
 import it.eng.spagobi.meta.compiler.DataMartGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
@@ -81,12 +83,10 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 			
 		//Call Java Compiler
 		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				directory,
-				directory+"/build/",
-				null,
-				directory+"/dist/",
+				new File(directory),
 				packageName.replace(".", "/")
-				);		
+				);
+		datamartGenerator.setLibDir(new File("plugins"));
 		
 		boolean result = datamartGenerator.compile();
 		if (result){

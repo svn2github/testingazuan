@@ -10,6 +10,11 @@
       description="Package name used in JPA mapping"
       category="Structural" defaultValue="it.eng.spagobi.meta" />
     </types>
+     <types>
+      <type id="structural.file" name="File"
+      description="File used to store this model"
+      category="Structural" defaultValue="model.sbimodel" />
+    </types>
   </model>
   <table></table>
   <column>

@@ -23,7 +23,10 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 	
 	// Model property names
 	public static final String MODEL_PACKAGE = "structural.package";
+	
 	// Table property names
+	
+	//...
 	
 	// Column property names
 	

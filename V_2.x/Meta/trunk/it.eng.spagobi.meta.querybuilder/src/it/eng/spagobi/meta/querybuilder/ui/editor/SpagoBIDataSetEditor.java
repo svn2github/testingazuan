@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -126,6 +127,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 
 			} 
 			else if(editorInput instanceof FileStoreEditorInput) {
+				//force refresh of workspace
+
 				FileStoreEditorInput fileStoreEditorInput = (FileStoreEditorInput)editorInput;
 				logger.debug("editorInput is outside Eclipse workspace");
 				URI fileStoreEditorInputURI = fileStoreEditorInput.getURI();

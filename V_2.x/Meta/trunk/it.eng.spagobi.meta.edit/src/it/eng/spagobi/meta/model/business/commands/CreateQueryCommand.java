@@ -36,6 +36,13 @@ import java.io.Writer;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -73,6 +80,7 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 	
 	@Override
 	public void execute() {		
+		logger.debug("Executing CreateQueryCommand");
 		//prepareMapping();
 		initQueryFileContents();
 		openQueryEditor();		
@@ -124,17 +132,23 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 //	}
 	
 	protected void initQueryFileContents() {
-		String directory;
+		String queryPath;
 		BusinessModel businessModel;
 		Writer out;
 		
-		directory = (String)parameter.getValue();	
-		logger.debug("Query directory is [{}]", directory);
-		queryFile = new File(directory,"query.metaquery");
+		queryPath = (String)parameter.getValue();	
+		logger.debug("Query path is [{}]", queryPath);
+		//queryFile = new File(directory,"query.metaquery");
+		//Get corresponding IFile
+		IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+		IPath location= Path.fromOSString(queryPath); 
+		IFile ifile= workspace.getRoot().getFileForLocation(location);
+
+		queryFile = new File(queryPath);
 		String modelPath = SpagoBIModelLocator.INSTANCE.getModelPath();
 		logger.debug("Model path is [{}]",modelPath);
 		
-		if(!queryFile.exists()){
+		if(queryFile.exists()){
 			out = null;
 			JSONObject o;
 			String queryContent ;
@@ -148,7 +162,7 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 				throw new SpagoBIPluginException("Impossibile to create JSON Metadata ",e);
 			}
 			try {
-				queryFile.createNewFile();
+				//queryFile.createNewFile();
 				FileWriter fstream = new FileWriter(queryFile);
 				out = new BufferedWriter(fstream);
 				businessModel = (BusinessModel)parameter.getOwner();
@@ -166,6 +180,14 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 				}
 				
 			}
+			/*
+	        try {
+	        	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
+			} catch (CoreException e) {
+				logger.error("Refresh Local workspace error [{}]",e);
+				e.printStackTrace();
+			}
+			*/
 		}
 	}
 	
@@ -173,11 +195,24 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 		if (queryFile.exists() && queryFile.isFile()) {
 		    IFileStore fileStore = EFS.getLocalFileSystem().getStore(queryFile.toURI());
 		    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		 
+		    
+		    //Force Workspace refresh
+			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+			IPath location= Path.fromOSString(queryFile.getAbsolutePath()); 
+			IFile ifile= workspace.getRoot().getFileForLocation(location);
+	        try {
+	        	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
+			} catch (CoreException e) {
+				logger.error("Refresh Local workspace error [{}]",e);
+				e.printStackTrace();
+			}
+			//*******
+			
 		    try {
 		        IDE.openEditorOnFileStore( page, fileStore );
 		    } catch ( PartInitException e ) {
-		        e.printStackTrace();
+		       logger.error("Error Opening Query Editor [{}]",e);
+		    	e.printStackTrace();
 		    }
 		}
 	}

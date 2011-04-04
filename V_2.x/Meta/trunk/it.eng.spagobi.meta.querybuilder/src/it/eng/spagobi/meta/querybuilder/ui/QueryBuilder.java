@@ -78,6 +78,7 @@ public class QueryBuilder {
 	}
 	
 	public QueryBuilder(IDataSource dataSource){
+		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
 		this.dataSource = dataSource;
 		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
 		this.query = new Query();

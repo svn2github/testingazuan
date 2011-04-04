@@ -1,6 +1,6 @@
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -115,24 +115,24 @@ public class JpaInnerRelationship extends AbstractJpaRelationship {
 	
 	@Override
 	public String getSimpleSourceColumnName(){
-		return StringUtil.doubleQuote(businessInnerRelationship.getSourceColumns().get(0).getName());
+		return StringUtils.doubleQuote(businessInnerRelationship.getSourceColumns().get(0).getName());
 	}
 	@Override
 	public String getPropertyName(){
 		if (businessInnerRelationship.getSourceColumns()!=null){
-			return StringUtil.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());
+			return StringUtils.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());
 		}
 		else return "";
 	}
 	@Override
 	protected String getOppositeRoleName(){
-		return StringUtil.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());	
+		return StringUtils.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());	
 	}
 	@Override
 	public String getBidirectionalPropertyName(){
 		if (businessInnerRelationship.getName() != null) 
-			return StringUtil.pluralise(StringUtil.columnNameToVarName( businessInnerRelationship.getName()));
+			return StringUtils.pluralise(StringUtils.columnNameToVarName( businessInnerRelationship.getName()));
 		else 
-			return StringUtil.pluralise(StringUtil.columnNameToVarName("innerJoin"));
+			return StringUtils.pluralise(StringUtils.columnNameToVarName("innerJoin"));
 	}	
 }

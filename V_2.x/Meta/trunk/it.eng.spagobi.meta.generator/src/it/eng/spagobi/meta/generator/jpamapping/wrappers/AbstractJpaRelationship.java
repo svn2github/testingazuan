@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,13 +70,13 @@ public abstract class AbstractJpaRelationship implements IJpaRelationship{
 	 * @return the name of the metod GETTER
 	 */
 	public String getGetter(String par) {
-		return "get"+StringUtil.initUpper(par);
+		return "get"+StringUtils.initUpper(par);
 	}
 	/**
 	 * @return the name of the metod SETTER
 	 */
 	public String getSetter(String par) {
-		return "set"+StringUtil.initUpper(par);
+		return "set"+StringUtils.initUpper(par);
 	}
 	
 	/**

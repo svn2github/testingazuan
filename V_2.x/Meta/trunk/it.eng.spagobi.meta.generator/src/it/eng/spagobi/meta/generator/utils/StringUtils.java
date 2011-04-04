@@ -10,10 +10,10 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StringUtil
+public class StringUtils
 {
 	
-	private static Logger logger = LoggerFactory.getLogger(StringUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
 	 * Converts a database table name to a Java variable name (<em>first letter

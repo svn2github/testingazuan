@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -146,8 +146,8 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		name = null;
 		try {
-			name = StringUtil.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
-			name = StringUtil.initUpper(name);
+			name = StringUtils.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
+			name = StringUtils.initUpper(name);
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
 			name = "pippo";

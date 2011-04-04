@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -143,14 +143,14 @@ public class JpaTable extends AbstractJpaTable {
 	 * @return the name of the metod GETTER
 	 */
 	public String getCompositeKeyPropertyNameGetter() {
-		return "get"+StringUtil.initUpper(getCompositeKeyPropertyName());
+		return "get"+StringUtils.initUpper(getCompositeKeyPropertyName());
 
 	}
 	/**
 	 * @return the name of the metod SETTER
 	 */
 	public String getCompositeKeyPropertyNameSetter() {
-		return "set"+StringUtil.initUpper(getCompositeKeyPropertyName());
+		return "set"+StringUtils.initUpper(getCompositeKeyPropertyName());
 	}	
 	
 	/**
@@ -225,8 +225,8 @@ public class JpaTable extends AbstractJpaTable {
 	 */
 	public String getClassName() {
 		String name;
-		name = StringUtil.tableNameToVarName(businessTable.getPhysicalTable().getName());
-		name = StringUtil.initUpper(name);
+		name = StringUtils.tableNameToVarName(businessTable.getPhysicalTable().getName());
+		name = StringUtils.initUpper(name);
 		return name;
 	}
 	

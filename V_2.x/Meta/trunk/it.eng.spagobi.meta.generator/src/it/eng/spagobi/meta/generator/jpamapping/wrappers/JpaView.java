@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -113,8 +113,8 @@ public class JpaView {
 		
 		name = null;
 		try {
-			name = StringUtil.tableNameToVarName(businessView.getName());
-			name = StringUtil.initUpper(name);
+			name = StringUtils.tableNameToVarName(businessView.getName());
+			name = StringUtils.initUpper(name);
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
 			name = "pippo";

@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
 
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -163,23 +163,23 @@ public class JpaRelationship extends AbstractJpaRelationship {
 
 	public String getPropertyName(){
 		if (getBusinessRelationship().getSourceColumns()!=null){
-			return StringUtil.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());
+			return StringUtils.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());
 		}
 		else return "";
 	}
 	
 	public String getBidirectionalPropertyName(){
-		return StringUtil.pluralise(StringUtil.columnNameToVarName( getBusinessRelationship().getName()));
+		return StringUtils.pluralise(StringUtils.columnNameToVarName( getBusinessRelationship().getName()));
 	}	
 	
 	public String getSimpleSourceColumnName(){
-		return StringUtil.doubleQuote(getBusinessRelationship().getSourceColumns().get(0).getPhysicalColumn().getName());
+		return StringUtils.doubleQuote(getBusinessRelationship().getSourceColumns().get(0).getPhysicalColumn().getName());
 	}
 	/**
 	 * TODO .. da verificare
 	 * @return
 	 */
 	protected String getOppositeRoleName(){
-		return StringUtil.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());	
+		return StringUtils.columnNameToVarName( getBusinessRelationship().getSourceColumns().get(0).getName());	
 	}
 }

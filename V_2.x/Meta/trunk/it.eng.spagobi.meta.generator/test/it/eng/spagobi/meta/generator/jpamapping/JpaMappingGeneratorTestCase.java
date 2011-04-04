@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 
 import it.eng.spagobi.meta.generator.utils.Compiler;
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -119,7 +119,7 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		File viewFile = new File(jarGenerator.getSrcDir(), "views.json");
 		assertTrue("Impossible to find view.json file in [" + jarGenerator.getSrcDir() + "]", viewFile.exists());
 		
-		String viewFileContent = StringUtil.getStringFromFile(viewFile);
+		String viewFileContent = StringUtils.getStringFromFile(viewFile);
 		JSONObject viewJSON = new JSONObject( viewFileContent );
 
 	}

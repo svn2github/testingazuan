@@ -29,7 +29,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.AbstractJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaViewInnerTable;
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -253,7 +253,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
         context.put("jpaTable", jpaTable ); //$NON-NLS-1$
         
         File outputDir = new File(baseOutputDir, "src");
-        outputDir = new File(outputDir, StringUtil.strReplaceAll(jpaTable.getPackage(), ".", "/") );
+        outputDir = new File(outputDir, StringUtils.strReplaceAll(jpaTable.getPackage(), ".", "/") );
 		outputDir.mkdirs();
 		
 		File outputFile = new File(outputDir, className+".java");

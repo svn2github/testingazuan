@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.utils.StringUtil;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -164,7 +164,7 @@ public class JpaColumn {
 	 */
 	public String getPropertyName() {
 		String name;
-		name = StringUtil.tableNameToVarName(businessColumn.getPhysicalColumn().getName());	
+		name = StringUtils.tableNameToVarName(businessColumn.getPhysicalColumn().getName());	
 		return name;
 	}
 	
@@ -220,7 +220,7 @@ public class JpaColumn {
 		return businessColumn.getPhysicalColumn().getName();
 	}
 	public String getColumnNameDoubleQuoted(){
-		return StringUtil.doubleQuote(businessColumn.getPhysicalColumn().getName());
+		return StringUtils.doubleQuote(businessColumn.getPhysicalColumn().getName());
 	}
 	
 	public boolean needMapTemporalType(){
@@ -240,13 +240,13 @@ public class JpaColumn {
 	 * @return
 	 */
 	public String getPropertyNameGetter() {
-		return "get"+StringUtil.initUpper(getPropertyName());
+		return "get"+StringUtils.initUpper(getPropertyName());
 	}
 	/**
 	 * Return the name of the metod SETTER
 	 * @return
 	 */
 	public String getPropertyNameSetter() {
-		return "set"+StringUtil.initUpper(getPropertyName());
+		return "set"+StringUtils.initUpper(getPropertyName());
 	}	
 }

@@ -347,7 +347,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	}
 	
 	protected void prepareMapping(String modelPath) {
-		logger.debug("Creating JPA Mapping of [{}]",modelPath);
+		logger.debug("Creating JPA Mapping of [{}]", modelPath);
 		String modelDirectory = new File(modelPath).getParent();
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);

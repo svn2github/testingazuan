@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class JpaMappingGenerator implements IGenerator {
+public class JpaMappingCodeGenerator implements IGenerator {
 
 	/**
 	 *   The Velocity template directory
@@ -96,10 +96,10 @@ public class JpaMappingGenerator implements IGenerator {
 	
 	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
 	
-	private static Logger logger = LoggerFactory.getLogger(JpaMappingGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(JpaMappingCodeGenerator.class);
 	
 
-	public JpaMappingGenerator() {
+	public JpaMappingCodeGenerator() {
 		String templatesDirRelativePath;
 		
 		logger.trace("IN");

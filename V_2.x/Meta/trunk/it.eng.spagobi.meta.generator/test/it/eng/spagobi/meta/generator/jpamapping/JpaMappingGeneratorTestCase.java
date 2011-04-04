@@ -42,8 +42,12 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	
 	Model model;
 	IModelSerializer serializer;
-	JpaMappingGenerator generator;
+	JpaMappingCodeGenerator codeGenerator;
+	JpaMappingClassesGenerator classesGenerator;
+	JpaMappingJarGenerator jarGenerator;
+	
 	DataMartGenerator compiler;
+	
 	
 	
 	private static final File TEST_FOLDER = new File("test-resources");
@@ -53,7 +57,22 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		super.setUp();
 		serializer = new EmfXmiSerializer();
 		model = serializer.deserialize(TEST_MODEL_FILE);
-		generator = new JpaMappingGenerator();
+		codeGenerator = new JpaMappingCodeGenerator();
+		
+		classesGenerator = new JpaMappingClassesGenerator();
+		classesGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
+		classesGenerator.setLibraryLink(new String[]{
+				"org.eclipse.persistence.core_2.1.2.jar",
+				"javax.persistence_2.0.1.jar"
+		});
+		
+		jarGenerator = new JpaMappingJarGenerator();
+		jarGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
+		jarGenerator.setLibraryLink(new String[]{
+				"org.eclipse.persistence.core_2.1.2.jar",
+				"javax.persistence_2.0.1.jar"
+		});
+		
 		setUpCompiler();
 	}
 	
@@ -76,7 +95,9 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		super.tearDown();
 		model = null;
 		serializer = null;
-		generator = null;
+		codeGenerator = null;
+		classesGenerator = null;
+		jarGenerator = null;
 		compiler = null;
 	}
 	
@@ -84,19 +105,21 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		 assertNotNull("Impossible to load [" + TEST_MODEL_FILE + "]", model);
 	}
 	
-	public void testGenerate() {
-		generator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
+	public void testCodeGenerate() {
+		codeGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
 	}
 	
-	public void testCompile() {
-		assertTrue("Impossible to compile mapping files", compiler.compile());
+	public void testClassesGenerator() {
+		classesGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
+		//assertTrue("Impossible to compile mapping files", compiler.compile());
 	}
 	
-	public void testJar() {
-		try {
-			compiler.jar();
-		} catch(Throwable t) {
-			fail("Impossible to generate the jar file");
-		}
+	public void testJarGenerator() {
+		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
+//		try {
+//			compiler.jar();
+//		} catch(Throwable t) {
+//			fail("Impossible to generate the jar file");
+//		}
 	}
 }

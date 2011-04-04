@@ -39,7 +39,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JpaMappingClassesGenerator extends JpaMappingGenerator {
+public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 	
 	//List<File> libs;
 	

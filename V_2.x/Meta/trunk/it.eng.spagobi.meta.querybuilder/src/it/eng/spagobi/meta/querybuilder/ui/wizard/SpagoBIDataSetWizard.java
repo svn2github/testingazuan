@@ -28,7 +28,6 @@ import it.eng.spagobi.meta.oda.impl.Connection;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDriver;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.design.DataSetDesign;
@@ -102,8 +101,6 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 				logger.error("Error deserializing query");
 				throw new SpagoBIRuntimeException("Error deserializing query",e);
 			}
-		}else{
-			queryBuilder = new QueryBuilder();
 		}
 	}	
 	

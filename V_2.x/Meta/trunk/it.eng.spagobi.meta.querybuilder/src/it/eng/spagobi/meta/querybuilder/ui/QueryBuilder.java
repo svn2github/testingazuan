@@ -28,6 +28,14 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ViewModelStructure;
+import it.eng.qbe.model.structure.filter.IQbeTreeEntityFilter;
+import it.eng.qbe.model.structure.filter.IQbeTreeFieldFilter;
+import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityEntityFilter;
+import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityFieldFilter;
+import it.eng.qbe.model.structure.filter.QbeTreeFilter;
+import it.eng.qbe.model.structure.filter.QbeTreeOrderEntityFilter;
+import it.eng.qbe.model.structure.filter.QbeTreeOrderFieldFilter;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
@@ -71,16 +79,25 @@ public class QueryBuilder {
 	
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 	
-	public QueryBuilder(){
-		this.dataSource = ModelStructureBuilder.buildDataSource();
-		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
-		this.query = new Query();
-	}
+//	public QueryBuilder(){
+//		this.dataSource = ModelStructureBuilder.buildDataSource();
+//		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
+//		this.query = new Query();
+//	}
 	
 	public QueryBuilder(IDataSource dataSource){
 		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
 		this.dataSource = dataSource;
-		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
+
+		IQbeTreeEntityFilter entityFilter = null;
+		IQbeTreeFieldFilter fieldFilter = null;
+		entityFilter = new QbeTreeAccessModalityEntityFilter();
+		entityFilter = new QbeTreeOrderEntityFilter(entityFilter);
+		fieldFilter = new QbeTreeAccessModalityFieldFilter();
+		fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
+		QbeTreeFilter filters =  new QbeTreeFilter(entityFilter, fieldFilter);
+		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
+		this.modelView =  new ViewModelStructure(iDatamartModelStructure, dataSource, filters);
 		this.query = new Query();
 	}
 

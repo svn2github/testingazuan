@@ -16,13 +16,16 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.exception.ModelObjectNotFoundException;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -466,6 +469,31 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	// Utility methods
 	// =========================================================================
 	
+	@Override
+	public List<BusinessTable> getBusinessTables() {
+		List<BusinessTable> businessTables;
+		
+		businessTables = new ArrayList<BusinessTable>();
+		for(int i = 0; i < getTables().size(); i++) {
+			if( getTables().get(i) instanceof BusinessTable ) {
+				businessTables.add((BusinessTable)getTables().get(i));
+			}
+		}
+		return businessTables;
+	}
+	
+	@Override
+	public List<BusinessView> getBusinessViews() {
+		List<BusinessView> businessViews;
+		
+		businessViews = new ArrayList<BusinessView>();
+		for(int i = 0; i < getTables().size(); i++) {
+			if( getTables().get(i) instanceof BusinessView ) {
+				businessViews.add((BusinessView)getTables().get(i));
+			}
+		}
+		return businessViews;
+	}
 	
 	@Override
 	public BusinessTable getBusinessTable(String name) {

@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -188,6 +190,17 @@ public interface BusinessModel extends ModelObject {
 	BusinessIdentifier getIdentifier(String name);
 	
 	BusinessIdentifier getIdentifier(BusinessColumnSet table);
+	
+	/**
+	 * @return all the the business tables contained in the model
+	 */
+	List<BusinessTable> getBusinessTables();
+	
+	/**
+	 * @return all the the business views contained in the model
+	 */
+	List<BusinessView> getBusinessViews();
+	
 	
 	/**
 	 * @return the business table with the given name

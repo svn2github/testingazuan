@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -224,7 +225,11 @@ public class DefaultResourceLocator implements IResourceLocator {
 	@Override
 	public String getString(String key, Object[] substitutions) {
 		String label = labels.getProperty(key);
-		return label != null? label: key;
+		label = (label != null)? label: key;
+		MessageFormat form = new MessageFormat(label);
+		label = form.format(substitutions);
+	
+		return label;
 	}
 
 }

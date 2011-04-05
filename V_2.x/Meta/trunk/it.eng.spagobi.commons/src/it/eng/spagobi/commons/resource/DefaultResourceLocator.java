@@ -25,7 +25,6 @@ import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,8 +32,6 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;

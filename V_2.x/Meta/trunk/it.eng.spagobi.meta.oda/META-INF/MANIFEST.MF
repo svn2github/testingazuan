@@ -7,7 +7,6 @@ Bundle-ClassPath: .,
  src,
  libs/jdbc/mysql-connector-java-3.1.13-bin.jar,
  libs/qbecore/eclipselink/eclipselink.jar,
- libs/qbecore/hibernate/jpa/hibernate-jpa-2.0-api-1.0.0.Final.jar,
  libs/qbecore/hibernate/required/antlr-2.7.6.jar,
  libs/qbecore/hibernate/required/commons-collections-3.1.jar,
  libs/qbecore/hibernate/required/dom4j-1.6.1.jar,
@@ -18,7 +17,8 @@ Bundle-ClassPath: .,
  libs/qbecore/json.jar,
  libs/qbecore/jaxen-1.1-beta-4.jar,
  libs/qbecore/spagobi-qbecore-3.0.jar,
- libs/qbecore/log4j-over-slf4j-1.5.11.jar
+ libs/qbecore/log4j-over-slf4j-1.5.11.jar,
+ libs/qbecore/javax.persistence_2.0.1.v201006031150.jar
 Bundle-Activator: it.eng.spagobi.meta.oda.Activator
 Bundle-Vendor: eng.it
 Bundle-Localization: plugin

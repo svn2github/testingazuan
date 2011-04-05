@@ -60,21 +60,21 @@ public class OdaStructureBuilder {
 	 * @param path path to the of the jar files
 	 * @return The IDataSource
 	 */
-	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties, String path) {
-		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
-		File modelJarFile = null;
-		List<File> modelJarFiles = new ArrayList<File>();
-		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
-		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
-		
-		for(int i = 0; i < modelNames.size(); i++) {
-			modelJarFile = new File(path+modelNames.get(i)+File.separator+"datamart.jar");
-			modelJarFiles.add(modelJarFile);
-			compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(i), modelJarFile));
-		}
-		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
-		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
-	}
+//	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties, String path) {
+//		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
+//		File modelJarFile = null;
+//		List<File> modelJarFiles = new ArrayList<File>();
+//		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
+//		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
+//		
+//		for(int i = 0; i < modelNames.size(); i++) {
+//			modelJarFile = new File(path+modelNames.get(i)+File.separator+"datamart.jar");
+//			modelJarFiles.add(modelJarFile);
+//			compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(i), modelJarFile));
+//		}
+//		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
+//		return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration);
+//	}
 	
 
 	
@@ -84,23 +84,23 @@ public class OdaStructureBuilder {
 	 * @param dataSourceProperties the data source properties
 	 * @return The IDataSource
 	 */
-	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
-		String jarPath = "resources//JPA//";
-		String boundleName = "it.eng.spagobi.meta.querybuilder";
-		Bundle generatorBundle = Platform.getBundle(boundleName);
-		String path = null; 
-		logger.debug("IN:Getting the path to the models..");
-		try {
-			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(jarPath)).getPath());
-			path = ipath.toString();
-		} catch (IOException e) {
-			logger.error("Error loading the datamart file",e);
-			throw new SpagoBIServiceException("Error loading the datamart file",e);
-		}
-		logger.debug("OUT: Path loaded..");
-		return getDataSource(modelNames, dataSourceProperties, path);
-	}
-	
+//	public static IDataSource getDataSource(List<String> modelNames, Map<String, Object> dataSourceProperties) {
+//		String jarPath = "resources//JPA//";
+//		String boundleName = "it.eng.spagobi.meta.querybuilder";
+//		Bundle generatorBundle = Platform.getBundle(boundleName);
+//		String path = null; 
+//		logger.debug("IN:Getting the path to the models..");
+//		try {
+//			IPath ipath = new Path(Platform.asLocalURL(generatorBundle.getEntry(jarPath)).getPath());
+//			path = ipath.toString();
+//		} catch (IOException e) {
+//			logger.error("Error loading the datamart file",e);
+//			throw new SpagoBIServiceException("Error loading the datamart file",e);
+//		}
+//		logger.debug("OUT: Path loaded..");
+//		return getDataSource(modelNames, dataSourceProperties, path);
+//	}
+//	
 	/**
 	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
 	 * @param modelNames the name of the models

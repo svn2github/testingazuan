@@ -77,7 +77,10 @@ public class Connection implements IConnection
 	
 			dataSourceProperties.put("connection", connection);
 			dataSourceProperties.put("dblinkMap", new HashMap());
-			datasource = OdaStructureBuilder.getDataSource(modelNames, dataSourceProperties);
+			
+			String resourceFolder = connProperties.getProperty("resource_folder");
+			
+			datasource = OdaStructureBuilder.getDataSourceSingleModel(modelNames, dataSourceProperties, resourceFolder);
 			logger.debug("Data source initialized");
 		}
 		logger.debug("Connection opened");

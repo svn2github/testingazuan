@@ -99,7 +99,7 @@ public class Query implements IQuery {
 				datsStore = datsSet.getDataStore() ;
 				long rows = datsSet.getDataStore().getRecordsCount();
 				if(m_maxRows>rows){
-					m_maxRows=new Long(rows).intValue()-1;
+					m_maxRows=new Long(rows).intValue()-2;
 				}
 				logger.debug("Query executed");
 			} catch (Throwable e) {

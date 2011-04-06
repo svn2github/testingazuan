@@ -26,6 +26,7 @@ import java.util.List;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 
@@ -33,34 +34,55 @@ import it.eng.spagobi.meta.model.business.BusinessView;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JpaWrapperFactory {
-	public static IJpaTable wrapTable(BusinessTable table) {
-		return new JpaTable(table);
+public class JpaModel {
+	
+	private BusinessModel businessModel;
+	
+	private List<IJpaTable> tables;
+	private List<IJpaView> views;
+	
+	public JpaModel(BusinessModel businessModel) {
+		this.businessModel = businessModel;
+		this.tables = wrapTables(businessModel.getBusinessTables());
+		this.views = wrapViews(businessModel.getBusinessViews());
 	}
 	
-	public static IJpaView wrapView(BusinessView view) {
-		return new JpaView(view);
+	public List<IJpaTable> getTables() {
+		return tables;
 	}
 	
-	public static List<IJpaTable> wrapTables(List<BusinessTable> tables) {
+	public List<IJpaView> getViews() {
+		return views;
+	}
+	
+	public String getName() {
+		return businessModel.getName();
+	}
+	
+	public String getDescription() {
+		return businessModel.getName();
+	}
+	
+	private List<IJpaTable> wrapTables(List<BusinessTable> tables) {
 		List<IJpaTable> jpaTables;
 		
 		jpaTables = new ArrayList<IJpaTable>();
 		for(BusinessTable table : tables) {
-			jpaTables.add( wrapTable(table) );
+			jpaTables.add( new JpaTable(table) );
 		}
 		
 		return jpaTables;
 	}
 	
-	public static List<IJpaView> wrapViews(List<BusinessView> views) {
+	private List<IJpaView> wrapViews(List<BusinessView> views) {
 		List<IJpaView> jpaViews;
 		
 		jpaViews = new ArrayList<IJpaView>();
 		for(BusinessView view : views) {
-			jpaViews.add( wrapView(view) );
+			jpaViews.add(  new JpaView(view) );
 		}
 		
 		return jpaViews;
 	}
+	
 }

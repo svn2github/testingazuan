@@ -31,7 +31,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaWrapperFactory;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -67,12 +67,6 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	protected File baseOutputDir;
 	
 	protected File srcDir;
-	
-	/**
-	 * All views found during generation process are appended to this list waiting 
-	 * for post processing phase
-	 */
-	private List<JpaView> jpaViews;
 	
 	/**
 	 *   The velocity template directory
@@ -142,8 +136,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			persistenceUnitTemplate  = new File(templateDir, "sbi_persistence_unit.vm");
 			logger.trace("[PersistenceUnit] template file is equal to [{}]", persistenceUnitTemplate);
 			Assert.assertTrue("[PersistenceUnit] template file [" + persistenceUnitTemplate + "] does not exist", persistenceUnitTemplate.exists());
-			
-			jpaViews = new ArrayList<JpaView>();
+		
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -190,14 +183,11 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
 		
-		
-		List<IJpaTable> jpaTables = JpaWrapperFactory.wrapTables( model.getBusinessTables() );
-		List<IJpaView> jpaViews = JpaWrapperFactory.wrapViews( model.getBusinessViews() );
-		
-		generateBusinessTableMappings(  jpaTables );
-		generateBusinessViewMappings( jpaViews );
+		JpaModel jpaModel = new JpaModel(model);
+		generateBusinessTableMappings(  jpaModel.getTables() );
+		generateBusinessViewMappings( jpaModel.getViews() );
 
-		generatePersistenceUnitMapping(model);
+		generatePersistenceUnitMapping(jpaModel);
 		
 		logger.trace("OUT");		
 	}
@@ -225,9 +215,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	
 	
-	public void generatePersistenceUnitMapping(BusinessModel model) throws Exception {
+	public void generatePersistenceUnitMapping(JpaModel model) throws Exception {
 		logger.info("Creating persistence unit for model [{}]", model.getName());
-		
 		createMappingFile(persistenceUnitTemplate, model);
 	}
 
@@ -293,7 +282,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaView
 	 */
-	private void createMappingFile(File templateFile, BusinessModel model){
+	private void createMappingFile(File templateFile, JpaModel model){
 
 		VelocityContext context;
 		
@@ -302,11 +291,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		try {
 			logger.debug("Create persistance.xml");
 			
-			List<IJpaTable> jpaTables = JpaWrapperFactory.wrapTables(model.getBusinessTables());
-			
-			
 		    context = new VelocityContext();
-	        context.put("jpaTables", jpaTables ); //$NON-NLS-1$
+	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
 	        context.put("modelName", model.getName());
 	        
 	        File outputDir = new File( new File(baseOutputDir, "build"), "META-INF" );

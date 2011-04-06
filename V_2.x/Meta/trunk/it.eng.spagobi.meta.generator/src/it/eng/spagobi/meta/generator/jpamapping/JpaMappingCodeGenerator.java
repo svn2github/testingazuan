@@ -31,6 +31,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaWrapperFactory;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -301,16 +302,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		try {
 			logger.debug("Create persistance.xml");
 			
-			List<JpaTable> jpaTables = new ArrayList<JpaTable>();
-			Iterator<BusinessColumnSet> tables = model.getTables().iterator();
-			while (tables.hasNext()) {
-				BusinessColumnSet columnSet = tables.next();
-				if (columnSet instanceof BusinessTable) {
-					BusinessTable table = (BusinessTable)columnSet;
-					JpaTable jpaTable = new JpaTable(table);
-					jpaTables.add(jpaTable);
-				}
-			}	
+			List<IJpaTable> jpaTables = JpaWrapperFactory.wrapTables(model.getBusinessTables());
+			
 			
 		    context = new VelocityContext();
 	        context.put("jpaTables", jpaTables ); //$NON-NLS-1$

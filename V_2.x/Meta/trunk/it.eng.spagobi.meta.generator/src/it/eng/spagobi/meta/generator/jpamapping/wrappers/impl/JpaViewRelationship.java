@@ -24,7 +24,7 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewRelationship.class);
 	
-	public JpaViewRelationship(JpaViewInnerTable jpaInnerTable, BusinessViewInnerJoinRelationship businessInnerRelationship) {
+	protected JpaViewRelationship(JpaViewInnerTable jpaInnerTable, BusinessViewInnerJoinRelationship businessInnerRelationship) {
 		this.jpaTable = jpaInnerTable;
 		this.businessInnerRelationship = businessInnerRelationship;
 		

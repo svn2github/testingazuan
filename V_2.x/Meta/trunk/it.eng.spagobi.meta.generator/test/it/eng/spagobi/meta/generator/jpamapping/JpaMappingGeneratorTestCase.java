@@ -109,7 +109,7 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	}
 	
 	public void testJarGenerator() throws Exception {
-		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
+		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings3").getAbsolutePath());
 		assertNotNull("src dir cannot be null", jarGenerator.getSrcDir());
 		assertNotNull("bin dir cannot be null", jarGenerator.getBinDir());
 		assertNotNull("lib dir cannot be null", jarGenerator.getLibDir());

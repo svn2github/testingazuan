@@ -43,11 +43,17 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaColumn implements IJpaColumn {
 	BusinessColumn businessColumn;
-	IJpaTable jpaTable;
+	AbstractJpaTable jpaTable;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
 	
-	public JpaColumn(BusinessColumn businessColumn) {
+	/**
+	 * 
+	 * @param parentTable the jpaTable that contains this column
+	 * @param businessColumn the wrapped business column
+	 */
+	protected JpaColumn(AbstractJpaTable parentTable, BusinessColumn businessColumn) {
+		this.jpaTable = parentTable;
 		this.businessColumn = businessColumn;
 	}
 	
@@ -210,12 +216,7 @@ public class JpaColumn implements IJpaColumn {
 	public IJpaTable getJpaTable() {
 		return jpaTable;
 	}
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#setJpaTable(it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable)
-	 */
-	public void setJpaTable(IJpaTable jpaTable) {
-		this.jpaTable = jpaTable;
-	}
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#isDataTypeLOB()
 	 */

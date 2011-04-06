@@ -113,16 +113,4 @@ public interface IJpaTable {
 	 * @return all the relationships defined uppon this table
 	 */
 	List<IJpaRelationship> getRelationships();
-	
-	/**
-	 * 
-	 * @deprecated
-	 */
-	List<BusinessRelationship> getBusinessRelationships();
-	
-	/**
-	 * 
-	 * @deprecated
-	 */
-	PhysicalTable getPhysicalTable();
 }

@@ -49,7 +49,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	private static Logger logger = LoggerFactory.getLogger(JpaRelationship.class);
 	
 	
-	public JpaRelationship(AbstractJpaTable jpaTable, BusinessRelationship businessRelationship) {
+	protected JpaRelationship(AbstractJpaTable jpaTable, BusinessRelationship businessRelationship) {
 		
 		Assert.assertNotNull("Parameter [jpaTable] cannot be null", jpaTable);
 		Assert.assertNotNull("Parameter [businessRelationship] cannot be null", businessRelationship);

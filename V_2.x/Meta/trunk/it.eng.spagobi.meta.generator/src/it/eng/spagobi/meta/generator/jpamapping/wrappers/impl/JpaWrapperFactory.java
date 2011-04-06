@@ -19,15 +19,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.generator.jpamapping;
+package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaView;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 

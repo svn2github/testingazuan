@@ -50,7 +50,7 @@ public class JpaView implements IJpaView {
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
 	
 	
-	public JpaView(BusinessView businessView) {
+	protected JpaView(BusinessView businessView) {
 		super();
 		Assert.assertNotNull("Parameter [businessView] cannot be null", businessView);
 		this.businessView = businessView;
@@ -124,9 +124,8 @@ public class JpaView implements IJpaView {
 		List<BusinessColumn> businessColumns = businessView.getColumns();
 		for (BusinessColumn businessColumn :businessColumns) {
 			if(businessColumn.getPhysicalColumn().getTable()== table.getPhysicalTable()) {
-				JpaColumn jpaColumn = new JpaColumn(businessColumn);
 				JpaViewInnerTable jpaTable = new JpaViewInnerTable(businessView, businessColumn.getPhysicalColumn().getTable());
-				jpaColumn.setJpaTable(jpaTable);
+				JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);
 				jpaColumns.add(jpaColumn);
 			}
 		}

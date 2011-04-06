@@ -16,7 +16,7 @@ public class JpaViewInnerJoinRelatioship {
 	BusinessView businessView;
 	BusinessViewInnerJoinRelationship joinRelationship;
 	
-	public JpaViewInnerJoinRelatioship(BusinessView businessView, BusinessViewInnerJoinRelationship joinRelationship) {
+	protected JpaViewInnerJoinRelatioship(BusinessView businessView, BusinessViewInnerJoinRelationship joinRelationship) {
 		this.businessView = businessView;
 		this.joinRelationship = joinRelationship;
 	}
@@ -48,8 +48,7 @@ public class JpaViewInnerJoinRelatioship {
 		for(PhysicalColumn physicalColumn: columns) {
 			BusinessColumn businessColumn = innerSourceTable.findColumnInBusinessView(physicalColumn);
 			if(businessColumn != null){
-				JpaColumn jpaColumn = new JpaColumn(businessColumn);
-				jpaColumn.setJpaTable(innerSourceTable);
+				JpaColumn jpaColumn = new JpaColumn(innerSourceTable, businessColumn);
 				sourceColumns.add( jpaColumn );
 			}
 		}
@@ -68,8 +67,7 @@ public class JpaViewInnerJoinRelatioship {
 		for(PhysicalColumn physicalColumn: columns) {
 			BusinessColumn businessColumn = innerDestinationTable.findColumnInBusinessView(physicalColumn);
 			if(businessColumn != null){
-				JpaColumn jpaColumn = new JpaColumn(businessColumn);
-				jpaColumn.setJpaTable(innerDestinationTable);
+				JpaColumn jpaColumn = new JpaColumn(innerDestinationTable, businessColumn);
 				destinationColumns.add( jpaColumn );
 			}
 		}

@@ -59,7 +59,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 * @param businessView The business view that contains the physical table
 	 * @param physicalTable The physical table used to write this java class
 	 */
-	public JpaViewInnerTable(BusinessView businessView, PhysicalTable physicalTable) {
+	protected JpaViewInnerTable(BusinessView businessView, PhysicalTable physicalTable) {
 		super(physicalTable);
 		
 		Assert.assertNotNull("Parameter [businessView] cannot be null", businessView);
@@ -105,8 +105,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
 				// if the colums belong to the BusinessView
 				if (businessColumn!=null){
-						JpaColumn jpaColumn = new JpaColumn(businessColumn);
-						jpaColumn.setJpaTable(this);
+						JpaColumn jpaColumn = new JpaColumn(this, businessColumn);
 						jpaColumns.add(jpaColumn);
 						logger.info("Add "+jpaColumn.getColumnName()+" Column to the BV "+businessView.getName());
 					}					

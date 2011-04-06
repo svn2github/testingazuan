@@ -50,7 +50,7 @@ public class JpaTable extends AbstractJpaTable {
 
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 
-	public JpaTable(BusinessTable businessTable) {
+	protected JpaTable(BusinessTable businessTable) {
 		super(businessTable.getPhysicalTable());
 		this.businessTable = businessTable;
 		initColumnTypesMap();
@@ -83,11 +83,10 @@ public class JpaTable extends AbstractJpaTable {
 	public List<IJpaColumn> getColumns() {
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<IJpaColumn>();
-			for (BusinessColumn c : businessTable.getColumns()) {
-				JpaColumn jpaColumn = new JpaColumn(c);
-				jpaColumn.setJpaTable(this);
+			for (BusinessColumn businessColumn : businessTable.getColumns()) {
+				JpaColumn jpaColumn = new JpaColumn(this, businessColumn);
 				jpaColumns.add(jpaColumn);
-				logger.debug("Business table [{}] contains column [{}]", businessTable.getName(), c.getName());
+				logger.debug("Business table [{}] contains column [{}]", businessTable.getName(), businessColumn.getName());
 			        
 			}
 		}

@@ -21,109 +21,140 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.multi.wizards;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
-import it.eng.spagobi.meta.editor.multi.DSEBridge;
 
-import java.io.File;
 
-import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.preference.StringButtonFieldEditor;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
 /**
  * @author cortella
  *
  */
-public class NewModelWizardFileCreationPage extends WizardPage {
-
+public class NewModelWizardFileCreationPage extends WizardNewFileCreationPage {
 	private Text modelNameFieldInput;
-	private StringButtonFieldEditor modelFileNameFieldInput;
-	private org.eclipse.swt.widgets.List connectionList;
-	private DSEBridge dseBridge;
-	private boolean nameSetted = true;
+	
+	public NewModelWizardFileCreationPage(IStructuredSelection selection) {
+        super("NewSpagoBIModelWizardPage", selection);
+        setTitle("SpagoBI Model");
+        setDescription("Creates a new SpagoBI Model");
+        setFileExtension("sbimodel");
+    }
+	
+	 public void createControl(Composite parent) {
+		 // inherit default container and name specification widgets
+		 super.createControl(parent);
+		 Composite composite = (Composite)getControl();
+		 
+		 // ***** Adding Customization ******
+		 Composite container = new Composite(composite, SWT.NULL);
+		 container.setLayout(new GridLayout(2, false));
+		 container.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
+				 GridData.HORIZONTAL_ALIGN_FILL));
+		 
+		 // Add a group
+		 Group group = new Group(container,SWT.NONE);
+		 group.setLayout(new GridLayout(2,false));
+		 group.setText("SpagoBI Model");
+		 group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
+				 GridData.HORIZONTAL_ALIGN_FILL));
+		 
+		 // Add label and text input
+		 new Label(group, SWT.NONE).setText("Model name:");
+		 modelNameFieldInput = new Text(group, SWT.BORDER);
+		 modelNameFieldInput.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
+				 GridData.HORIZONTAL_ALIGN_FILL));
+		 modelNameFieldInput.setText("My Model");
+	 }
+	 
+	 public String getModelName() {
+		 return modelNameFieldInput.getText();
+	 }
+	 
+
+//	private Text modelNameFieldInput;
+//	private StringButtonFieldEditor modelFileNameFieldInput;
+//	private org.eclipse.swt.widgets.List connectionList;
+//	private boolean nameSetted = true;
 	
 	/**
 	 * @param pageName
 	 */
-	protected NewModelWizardFileCreationPage(String pageName) {
-		super(pageName);
-		setTitle("Create new SpagoBI Metamodel");
-		setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
-		" please insert a name for your BM.");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/newModelWizard"));
-	    if (image!=null) {
-	    	setImageDescriptor(image);
-	    }
-	    dseBridge = new DSEBridge();
-	}
-
-	@Override
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(new GridLayout(3, false));
-		
-		new Label(composite, SWT.NONE).setText("Model name:");
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		modelNameFieldInput = new Text(composite, SWT.BORDER);
-		modelNameFieldInput.setLayoutData(gridData);
-		modelNameFieldInput.setText("Test Model");
-
-		modelFileNameFieldInput = new FileFieldEditor("modelfile", "Model file:", composite);
-		modelFileNameFieldInput.setStringValue("D:/Documenti/Progetti/metadati/libri/TestModel.sbimodel");
-		modelFileNameFieldInput.setEmptyStringAllowed(false);
-		
-		modelNameFieldInput.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (modelNameFieldInput.getText().length()> 0)
-					nameSetted = true;
-				else
-					nameSetted = false;
-				checkPageComplete();
-			}
-		});
-		//Important: Setting page control
- 		setControl(composite);
- 		
- 		checkPageComplete();
-	}
-
-	public void checkPageComplete() {
-		String fileName = modelFileNameFieldInput.getStringValue();
-		
-		if ( (fileName != null ) && (fileName.length()>0 ) && (nameSetted) ){
-			setPageComplete(true);
-		} 
-		else
-			setPageComplete(false);
-	}
-	
-	public String getModelFileName() {
-		String fileName = modelFileNameFieldInput.getStringValue();
-		if(!fileName.endsWith(".sbimodel")) {
-			fileName += ".sbimodel";
-		}
-		return fileName;
-	}
-	
-	public File getModelFile() {
-		return new File( getModelFileName() );
-	}
-
-	public String getModelName() {
-		return modelNameFieldInput.getText();
-	}
+//	protected NewModelWizardFileCreationPage(String pageName) {
+//		super(pageName);
+//		setTitle("Create new SpagoBI Metamodel");
+//		setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
+//		" please insert a name for your BM.");
+//		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/newModelWizard"));
+//	    if (image!=null) {
+//	    	setImageDescriptor(image);
+//	    }
+//	    dseBridge = new DSEBridge();
+//	}
+//
+//	@Override
+//	public void createControl(Composite parent) {
+//		Composite composite = new Composite(parent, SWT.NULL);
+//		composite.setLayout(new GridLayout(3, false));
+//		
+//		new Label(composite, SWT.NONE).setText("Model name:");
+//		GridData gridData = new GridData();
+//		gridData.horizontalAlignment = GridData.FILL;
+//		gridData.horizontalSpan = 2;
+//		modelNameFieldInput = new Text(composite, SWT.BORDER);
+//		modelNameFieldInput.setLayoutData(gridData);
+//		modelNameFieldInput.setText("Test Model");
+//
+//		modelFileNameFieldInput = new FileFieldEditor("modelfile", "Model file:", composite);
+//		modelFileNameFieldInput.setStringValue("D:/Documenti/Progetti/metadati/libri/TestModel.sbimodel");
+//		modelFileNameFieldInput.setEmptyStringAllowed(false);
+//		
+//		modelNameFieldInput.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent e) {
+//				if (modelNameFieldInput.getText().length()> 0)
+//					nameSetted = true;
+//				else
+//					nameSetted = false;
+//				checkPageComplete();
+//			}
+//		});
+//		//Important: Setting page control
+// 		setControl(composite);
+// 		
+// 		checkPageComplete();
+//	}
+//
+//	public void checkPageComplete() {
+//		String fileName = modelFileNameFieldInput.getStringValue();
+//		
+//		if ( (fileName != null ) && (fileName.length()>0 ) && (nameSetted) ){
+//			setPageComplete(true);
+//		} 
+//		else
+//			setPageComplete(false);
+//	}
+//	
+//	public String getModelFileName() {
+//		String fileName = modelFileNameFieldInput.getStringValue();
+//		if(!fileName.endsWith(".sbimodel")) {
+//			fileName += ".sbimodel";
+//		}
+//		return fileName;
+//	}
+//	
+//	public File getModelFile() {
+//		return new File( getModelFileName() );
+//	}
+//
+//	public String getModelName() {
+//		return modelNameFieldInput.getText();
+//	}
 
 	
 }

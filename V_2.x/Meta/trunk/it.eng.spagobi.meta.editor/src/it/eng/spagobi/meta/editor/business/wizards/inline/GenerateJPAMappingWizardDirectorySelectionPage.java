@@ -21,11 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -72,8 +76,13 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	    GridData gd_textDirectory = new GridData(GridData.FILL_HORIZONTAL);
 	    gd_textDirectory.horizontalSpan = 4;
 	    textDirectory.setLayoutData(gd_textDirectory);
-	    textDirectory.setText("D:\\Programmi\\eclipse\\helios-eclipse-3.6.0\\runtime-EclipseApplication\\TestOda\\mappings");
-
+	    Location location = Platform.getInstanceLocation();
+	    if (location != null){
+	    	textDirectory.setText(location.getURL().getPath().substring(1));
+	    }
+	    else
+	    	textDirectory.setText("D:\\Programmi\\eclipse\\helios-eclipse-3.6.0\\runtime-EclipseApplication\\TestOda\\mappings");
+	    
 	    // Browse button to select directory
 	    Button buttonBrowse = new Button(container, SWT.PUSH);
 	    buttonBrowse.setText("Browse...");

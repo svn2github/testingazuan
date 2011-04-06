@@ -179,22 +179,24 @@ public class BusinessModelPropertiesFromFileInitializer implements
 	        //3- Search model admissible types values definitions
 	        nodes = readXMLNodes(doc, "/properties/model/typesValues/admissibleValuesOf");
 			nodesLength = nodes.getLength();
-	        for (int x = 0; x < nodesLength; x++) {
-	        	NamedNodeMap nodeAttributes = nodes.item(x).getAttributes();
-	        	if (nodeAttributes != null) {
-	        		String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
-	        		ModelPropertyType propertyType = getModelPropertyType(o, typeId);
-	        		
-	        		//search each admissible values for this type
-	        		NodeList values = nodes.item(x).getChildNodes();
-	        		int valuesLength = values.getLength();
-	        		for (int z = 0; z < valuesLength; z++) {
-	        			String value = values.item(z).getNodeValue();
-	        			//add admissible value
-	        			propertyType.getAdmissibleValues().add(value);
-	        		}
-	        	}
-	        }
+			for (int j = 0; j < nodesLength; j++) {
+				NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
+				if (nodeAttributes != null) {
+					String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
+					ModelPropertyType propertyType = getModelPropertyType(o, typeId);
+
+					NodeList values = readXMLNodes(doc, "/properties/model/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
+					//search each admissible values for this type
+					int valuesLength = values.getLength();
+					for (int z = 0; z < valuesLength; z++) {
+						String value = values.item(z).getTextContent();
+						//add admissible value
+						propertyType.getAdmissibleValues().add(value);
+					}
+				}
+			}
+			
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -283,11 +285,11 @@ public class BusinessModelPropertiesFromFileInitializer implements
 	        		String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
 	        		ModelPropertyType propertyType = getModelPropertyType(o, typeId);
 	        		
+	        		NodeList values = readXMLNodes(doc, "/properties/column/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
 	        		//search each admissible values for this type
-	        		NodeList values = nodes.item(j).getChildNodes();
 	        		int valuesLength = values.getLength();
 	        		for (int z = 0; z < valuesLength; z++) {
-	        			String value = values.item(z).getNodeValue();
+	        			String value = values.item(z).getTextContent();
 	        			//add admissible value
 	        			propertyType.getAdmissibleValues().add(value);
 	        		}

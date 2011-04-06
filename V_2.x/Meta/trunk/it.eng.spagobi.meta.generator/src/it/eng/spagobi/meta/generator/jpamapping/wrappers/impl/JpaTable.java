@@ -236,6 +236,21 @@ public class JpaTable extends AbstractJpaTable {
 	public String getQualifiedClassName() {
 		return getPackage() + "."  + getClassName();
 	}
+
+	@Override
+	public String getName() {
+		return businessTable.getName();
+	}
+
+	@Override
+	public String getDescription() {
+		return businessTable.getDescription();
+	}
+
+	@Override
+	public String getSqlName() {
+		return businessTable.getPhysicalTable().getName();
+	}
 	
 
 }

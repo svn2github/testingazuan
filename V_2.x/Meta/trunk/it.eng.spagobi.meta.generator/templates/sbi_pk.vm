@@ -6,7 +6,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 ${jpaTable.importStatements}
 /**
- * This is the primary key class for the ${physicalTable.name} table.
+ * This is the primary key class for the ${jpaTable.sqlName} table.
  * 
  */
 @Embeddable

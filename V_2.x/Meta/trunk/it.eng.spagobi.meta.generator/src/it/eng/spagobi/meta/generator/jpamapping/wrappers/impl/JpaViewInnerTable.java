@@ -231,6 +231,21 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		return false;
 	}
 
+	@Override
+	public String getName() {
+		return physicalTable.getName();
+	}
+
+	@Override
+	public String getDescription() {
+		return physicalTable.getDescription();
+	}
+
+	@Override
+	public String getSqlName() {
+		return physicalTable.getName();
+	}
+
 
 	
 }

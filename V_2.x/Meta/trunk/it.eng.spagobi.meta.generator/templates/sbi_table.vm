@@ -7,12 +7,12 @@ import javax.persistence.*;
 ${jpaTable.importStatements}
 
 /**
- * This class refers to the ${physicalTable.name} table.
+ * This class refers to the ${jpaTable.sqlName} table.
  * 
  */
 @Entity
 #if( !${table.defaultname} )
-@Table(name="${physicalTable.name}")
+@Table(name="${jpaTable.sqlName}")
 #end
 public class ${jpaTable.className} implements Serializable {
 

@@ -102,7 +102,7 @@ public class JpaView implements IJpaView {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getTables()
 	 */
 	@Override
-	public List<IJpaTable> getTables() {
+	public List<IJpaTable> getInnerTables() {
 		List<IJpaTable> innerTables;
 		List<PhysicalTable> physiscalTables;
 		

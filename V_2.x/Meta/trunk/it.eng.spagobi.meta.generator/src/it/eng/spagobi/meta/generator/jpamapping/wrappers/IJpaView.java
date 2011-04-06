@@ -12,7 +12,7 @@ public interface IJpaView {
 
 	String getClassName();
 
-	List<IJpaTable> getTables();
+	List<IJpaTable> getInnerTables();
 
 	List<IJpaColumn> getColumns(JpaViewInnerTable table);
 

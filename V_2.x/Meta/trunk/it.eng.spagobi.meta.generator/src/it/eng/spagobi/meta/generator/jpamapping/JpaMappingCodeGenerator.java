@@ -25,6 +25,8 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.generator.SpagoBIMetaGeneratorPlugin;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaView;
@@ -43,6 +45,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -58,7 +61,20 @@ import org.slf4j.LoggerFactory;
 public class JpaMappingCodeGenerator implements IGenerator {
 
 	/**
-	 *   The Velocity template directory
+	 * The base output dir as passed to the method generate (this class is not thread safe!) 
+	 */
+	protected File baseOutputDir;
+	
+	protected File srcDir;
+	
+	/**
+	 * All views found during generation process are appended to this list waiting 
+	 * for post processing phase
+	 */
+	private List<JpaView> jpaViews;
+	
+	/**
+	 *   The velocity template directory
 	 */
 	private File templateDir;
 	
@@ -86,17 +102,9 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	public static final String DEFAULT_SRC_DIR = "src";
 	
-	/**
-	 * The base output dir as passed to the method generate (this class is not thread safe!) 
-	 */
-	protected File baseOutputDir;
 	
-	private File srcDir;
 	
-	/**
-	 * All views found during generation process are appended to this list waiting for post processing phase
-	 */
-	private List<JpaView> jpaViews;
+	
 	
 	
 	
@@ -181,54 +189,40 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
 		
-		Iterator<BusinessColumnSet> tables = model.getTables().iterator();
-		while (tables.hasNext()) {
-			generateColumnSetMapping( tables.next()) ;
-		}	
-		createViewsFile(viewTemplate, jpaViews);
+		
+		List<IJpaTable> jpaTables = JpaWrapperFactory.wrapTables( model.getBusinessTables() );
+		List<IJpaView> jpaViews = JpaWrapperFactory.wrapViews( model.getBusinessViews() );
+		
+		generateBusinessTableMappings(  jpaTables );
+		generateBusinessViewMappings( jpaViews );
+
 		generatePersistenceUnitMapping(model);
 		
 		logger.trace("OUT");		
 	}
 	
-	public void generateColumnSetMapping(BusinessColumnSet columnSet) throws Exception {
+	public void generateBusinessTableMappings(List<IJpaTable> jpaTables) throws Exception {
+		//logger.debug("Creating mapping for business class [{}]", table.getName());
 		
-		if (columnSet instanceof BusinessTable) {
-			generateBusinessTableMapping( (BusinessTable)columnSet );
-		} else if (columnSet instanceof BusinessView) {
-			generateBusinessViewMapping( (BusinessView)columnSet );
-			jpaViews.add( new JpaView( (BusinessView)columnSet ) );
-			
+		for(IJpaTable jpaTable : jpaTables) {
+			createJavaFile(tableTemplate, jpaTable, jpaTable.getClassName());
+			if (jpaTable.hasCompositeKey()) {
+				//logger.info("Creating mapping for composite PK of business table [{}]", jpaTables.getName());
+				createJavaFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
+			}
 		}
 		
+		//logger.debug("Mapping for business class [{}] created succesfully", table.getName());
+	}
+		
+	public void generateBusinessViewMappings(List<IJpaView> jpaViews) throws Exception {
+		for(IJpaView jpaView : jpaViews) {
+			generateBusinessTableMappings( jpaView.getInnerTables() ) ;
+		}	
+		createViewsFile(jpaViews);
 	}
 	
-	public void generateBusinessTableMapping(BusinessTable table) throws Exception {
-		logger.debug("Creating mapping for business class [{}]", table.getName());
-		
-		JpaTable jpaTable = new JpaTable(table);
-		createJavaFile(tableTemplate, jpaTable, jpaTable.getClassName());
-		if (jpaTable.hasCompositeKey()) {
-			logger.info("Creating mapping for composite PK of business table [{}]", table.getName());
-			createJavaFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
-		}
-		
-		logger.debug("Mapping for business class [{}] created succesfully", table.getName());
-	}
 	
-	public void generateBusinessViewMapping(BusinessView view) throws Exception {
-		logger.info("Creating mapping for business view [{}]", view.getName());
-		
-		for (PhysicalTable physicalTable : view.getPhysicalTables()) {
-			JpaViewInnerTable jpaViewInnerTable = new JpaViewInnerTable(view, physicalTable);
-			logger.trace("Inner table [{}] have [{}] columns", jpaViewInnerTable.getClassName(), jpaViewInnerTable.getBusinessColumns().size());
-			createJavaFile(tableTemplate, jpaViewInnerTable, jpaViewInnerTable.getClassName()); 
-			if (jpaViewInnerTable.hasCompositeKey()) {
-				logger.info("Creating mapping for composite PK of business view [{}]", view.getName());
-				createJavaFile(keyTemplate, jpaViewInnerTable,jpaViewInnerTable.getCompositeKeyClassName());
-			}				
-		}
-	}
 	
 	public void generatePersistenceUnitMapping(BusinessModel model) throws Exception {
 		logger.info("Creating persistence unit for model [{}]", model.getName());
@@ -236,31 +230,28 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		createMappingFile(persistenceUnitTemplate, model);
 	}
 
+	
 	/**
 	 * This method create a single java class file
 	 * @param templateFile
 	 * @param businessTable
 	 * @param jpaTable
 	 */
-	private void createJavaFile(File templateFile, AbstractJpaTable jpaTable, String className){
+	private void createJavaFile(File templateFile, IJpaTable jpaTable, String className){
 
-		VelocityContext context;
+		VelocityContext velocityContext;
 		
-		logger.trace("IN. createFile. templateFile="+templateFile+" className="+className+ " jpaTable="+jpaTable.getClassName());
-		
-	    context = new VelocityContext();
-	    context.put("physicalTable", jpaTable.getPhysicalTable()); //$NON-NLS-1$
-        context.put("jpaTable", jpaTable ); //$NON-NLS-1$
+	    velocityContext = new VelocityContext();	  
+        velocityContext.put("jpaTable", jpaTable ); //$NON-NLS-1$
         
         File outputDir = new File(baseOutputDir, "src");
         outputDir = new File(outputDir, StringUtils.strReplaceAll(jpaTable.getPackage(), ".", "/") );
 		outputDir.mkdirs();
-		
 		File outputFile = new File(outputDir, className+".java");
 		
-        createFile(templateFile, outputFile, context);
+        createFile(templateFile, outputFile, velocityContext);
         
-        logger.debug("Created mapping file [{}] for table [{}]", outputFile, jpaTable.getClassName());
+        //logger.debug("Created mapping file [{}] for table [{}]", outputFile, jpaTable.getClassName());
 
 	}
 	
@@ -268,25 +259,25 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 * This method create a single java class file
 	 * @param templateFile
 	 * @param businessTable
-	 * @param jpaView
+	 * @param views
 	 */
-	private void createViewsFile(File templateFile, List<JpaView> jpaView){
+	private void createViewsFile(List<IJpaView> jpaViews){
 
 		VelocityContext context;
 		
 		logger.trace("IN");
 		
 		try {
-			
+		
 		    context = new VelocityContext();
-	        context.put("jpaViews", jpaView ); //$NON-NLS-1$
+	        context.put("jpaViews", jpaViews ); //$NON-NLS-1$
 	        
 	        File outputDir = new File(baseOutputDir, "src" );
 			outputDir.mkdirs();
 			
 			File outputFile = new File(outputDir, "views.json");
 			
-	        createFile(templateFile, outputFile, context);
+	        createFile(viewTemplate, outputFile, context);
 		} catch(Throwable t) {
         	logger.error("Impossible to create mapping", t);
         } finally {

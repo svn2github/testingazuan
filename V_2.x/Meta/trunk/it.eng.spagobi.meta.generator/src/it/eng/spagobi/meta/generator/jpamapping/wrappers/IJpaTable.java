@@ -49,11 +49,17 @@ public interface IJpaTable {
 	 */
 	String getImportStatements();
 	
+	String getName();
+	
+	String getDescription();
+	
 	/**
 	 * 
 	 * @return the name of the class generated from this table (not qualified)
 	 */
 	String getClassName();
+	
+	String getSqlName();
 	
 	/**
 	 * 

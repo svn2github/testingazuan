@@ -1,4 +1,5 @@
 #foreach ($jpaTable in $jpaTables)
 ${jpaTable.uniqueName}.label = $jpaTable.name
 ${jpaTable.uniqueName}.tooltip = $jpaTable.description
+
 #end

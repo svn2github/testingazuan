@@ -83,7 +83,14 @@ public class JDBCTypeMapper {
 	
 	public static String getJavaTypeName(String modelType) {
 		Class javaClass = getJavaType(modelType);
-		String classString=javaClass != null? javaClass.getName(): null;
+		String classString=null;
+		int pointIndex;
+		if(javaClass != null){
+			classString = javaClass.getName();
+			if((pointIndex = classString.lastIndexOf('.'))>0){
+				classString = classString.substring(pointIndex+1);
+			}
+		}
 		if (needArray(modelType)) return classString+"[]";
 		else return classString;
 	}

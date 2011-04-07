@@ -93,7 +93,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
 	public void createPageCustomControl(Composite parent) {
 		initializeControl();
 		setControl( createPageControl( parent ) );
-		getQueryBuilder().refreshQueryEditGroup();
+		//getQueryBuilder().refreshQueryEditGroup();
 	}
 	
 	//updates the result set page before click the next button

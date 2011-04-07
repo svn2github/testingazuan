@@ -8,6 +8,7 @@ import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
@@ -347,6 +348,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		String modelDirectory = new File(modelPath).getParent();
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
+		ModelPackage libraryPackage = ModelPackage.eINSTANCE;
 		try {
 			resource.load( new FileInputStream(source), new HashMap<Object,Object>());
 		} catch (FileNotFoundException e) {

@@ -1,20 +1,17 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
-
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -34,7 +31,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;

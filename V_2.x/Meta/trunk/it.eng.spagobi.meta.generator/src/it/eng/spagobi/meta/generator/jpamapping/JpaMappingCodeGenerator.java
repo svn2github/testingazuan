@@ -93,7 +93,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 */
 	private File persistenceUnitTemplate;
 	
-	
+	private File labelsTemplate;
 	
 	public static final String DEFAULT_SRC_DIR = "src";
 	
@@ -136,7 +136,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			persistenceUnitTemplate  = new File(templateDir, "sbi_persistence_unit.vm");
 			logger.trace("[PersistenceUnit] template file is equal to [{}]", persistenceUnitTemplate);
 			Assert.assertTrue("[PersistenceUnit] template file [" + persistenceUnitTemplate + "] does not exist", persistenceUnitTemplate.exists());
-		
+			
+			labelsTemplate  = new File(templateDir, "sbi_labels.vm");
+			logger.trace("[PersistenceUnit] template file is equal to [{}]", persistenceUnitTemplate);
+			Assert.assertTrue("[Labels] template file [" + labelsTemplate + "] does not exist", persistenceUnitTemplate.exists());
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -187,6 +190,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		generateBusinessTableMappings(  jpaModel.getTables() );
 		generateBusinessViewMappings( jpaModel.getViews() );
 
+		createLabelsFile(labelsTemplate, jpaModel);
 		generatePersistenceUnitMapping(jpaModel);
 		
 		logger.trace("OUT");		
@@ -306,7 +310,31 @@ public class JpaMappingCodeGenerator implements IGenerator {
         } finally {
         	logger.trace("OUT");
         }
+	}
+	
+	private void createLabelsFile(File templateFile, JpaModel model){
 
+		VelocityContext context;
+		
+		logger.trace("IN");
+		
+		try {
+			logger.debug("Create persistance.xml");
+			
+		    context = new VelocityContext();
+	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+	       
+	        File outputDir =  new File(baseOutputDir, "build") ;
+			outputDir.mkdirs();
+			
+			File outputFile = new File(outputDir, "labels.properties");
+			
+	        createFile(templateFile, outputFile, context);
+		} catch(Throwable t) {
+        	logger.error("Impossible to create persitance.xml", t);
+        } finally {
+        	logger.trace("OUT");
+        }
 	}
 	
 	private void createFile(File templateFile, File outputFile, VelocityContext context) {

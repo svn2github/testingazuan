@@ -9,6 +9,9 @@
 
 #foreach ($jpaTable in $jpaTables)
 		<class>$jpaTable.qualifiedClassName</class>
+#if ($jpaTable.hasCompositeKey())
+		<class>$jpaTable.qualifiedCompositeKeyClassName</class>
+#end
 #end
 		
 	</persistence-unit>

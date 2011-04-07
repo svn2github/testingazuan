@@ -49,8 +49,16 @@ public interface IJpaTable {
 	 */
 	String getImportStatements();
 	
+	/**
+	 * 
+	 * @return the name of the table. It is used in java comments or for label generation
+	 */
 	String getName();
 	
+	/**
+	 * 
+	 * @return the name of the table. It is used in java comments or for tooltip generation
+	 */
 	String getDescription();
 	
 	/**
@@ -59,18 +67,27 @@ public interface IJpaTable {
 	 */
 	String getClassName();
 	
+	/**
+	 * @returns the generated java class name (qualified).
+	 */
+	String getQualifiedClassName();
+	
 	String getSqlName();
 	
-	/**
-	 * 
-	 * @return true if the table have a primary key. false otherwise
-	 */
-	boolean hasPrimaryKey();	
+	String getUniqueName();
 	
 	/**
 	 * 
-	 * @return true if the table have a composite primary key (a key composed by more then one column). 
-	 * 		   false otherwise
+	 * @return return true if the wrapped table has no key 
+	 */
+	boolean hasFakePrimaryKey();	
+	
+	/**
+	 * 
+	 * @return it return false iff the table have one column key. If the table have no key
+	 * 			it return true in order to generate a fake key composed by all columns contained in the table
+	 * 			just to keep happy the jpa runtime that work only if all entities have a key. To understand if
+	 * 			the composed key is a real key or a fake one use the method <code>hasFakePrimaryKey</code>
 	 */
 	boolean hasCompositeKey();
 	
@@ -80,6 +97,21 @@ public interface IJpaTable {
 	 * 			are mapped in a separate class and not inline in the same class of the table they belong to)
 	 */
 	String getCompositeKeyClassName();
+	
+	String getQualifiedCompositeKeyClassName();
+	
+	/** 
+	 * 
+	 * @return the name of the composed key property
+	 */
+	String getCompositeKeyPropertyName();
+	
+	/**
+	 * 
+	 * @return the columns contained in the primary key
+	 */
+	List<IJpaColumn> getPrimaryKeyColumns();
+	
 	
 	/**
 	 * 
@@ -95,22 +127,26 @@ public interface IJpaTable {
 	
 	/**
 	 * 
-	 * @return 
+	 * @return equals to getSimpleColumns(true, true, true);
 	 */
 	List<IJpaColumn> getSimpleColumns();
 	
 	/**
+	 * Returns the <code>IJpaColumn</code> objects for the the columns that
+	 * are not part of any association.
 	 * 
-	 * @param genOnly
-	 * @param includePk
-	 * @param includeInherited
-	 * @return
+	 * @param genOnly  			Whether to include only the columns marked for generation.
+	 * 
+	 * @param includePk  		Whether to include the primary key column(s).
+	 * 
+	 * @param includeInherited 	Whether to include the columns associated with java properties
+	 *            				that exist in the super class (if any).
 	 */
 	List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited);
 	
 	/**
 	 * 
-	 * @return all the relationships defined uppon this table
+	 * @return all the relationships defined upon this table
 	 */
 	List<IJpaRelationship> getRelationships();
 }

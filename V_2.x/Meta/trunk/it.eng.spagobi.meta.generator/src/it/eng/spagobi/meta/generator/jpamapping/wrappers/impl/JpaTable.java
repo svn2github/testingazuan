@@ -96,101 +96,38 @@ public class JpaTable extends AbstractJpaTable {
 	
 	
 	
-	/**
-	 * @return true if the table has a primary key
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasFakePrimaryKey()
 	 */
-	public boolean hasPrimaryKey() {
-		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 0 : false;
+	public boolean hasFakePrimaryKey() {
+		return !(businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 0 : false);
 	}
 	
 	
-	/**
-	 * @return true if there is more than 1 column in the table identifier
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasCompositeKey()
 	 */
 	public boolean hasCompositeKey() {	
-		return businessTable.getIdentifier() != null? businessTable.getIdentifier().getColumns().size() > 1 : false;
-	}
-	
-	
-	
-	/**
-	 * @return the primary columns
-	 */
-	public List<IJpaColumn> getPrimaryKeyColumns(){
-		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
-		List<IJpaColumn> columns = getColumns();
-	
-		for (int i = 0, n = columns.size(); i < n; ++i) {
-			IJpaColumn column = columns.get(i);
-			
-			if (column.isIdentifier())	{
-				result.add(column);
+		boolean hasCompositeKey = false;
+		
+		if(businessTable.getIdentifier() != null) { // if there's a key...
+			if(businessTable.getIdentifier().getColumns().size() > 1) { // ...and it is composed by more then one column
+				hasCompositeKey = true;
 			}
+		} else { // if there isn't a key 
+			hasCompositeKey = true;
+			// we return true because we are going to generate a fake key composed by
+			// all columns in the table in order to keep jpa runtime happy (in jpa as in 
+			// hibernate any persisted object must have a key)
 		}
-		return result;		
-	}
-	/**
-	 * @return the composite key property name
-	 * 
-	 *  * TODO .... da implementare
-	 */
-	public String getCompositeKeyPropertyName() {
-		return "compId"; //$NON-NLS-1$
-	}
 
-	/**
-	 * @return the name of the metod GETTER
-	 */
-	public String getCompositeKeyPropertyNameGetter() {
-		return "get"+StringUtils.initUpper(getCompositeKeyPropertyName());
-
-	}
-	/**
-	 * @return the name of the metod SETTER
-	 */
-	public String getCompositeKeyPropertyNameSetter() {
-		return "set"+StringUtils.initUpper(getCompositeKeyPropertyName());
-	}	
-	
-	/**
-	 * @return the boolean expression that verify if two primary key are equal
-	 */
-	public String getPrimaryKeyEqualsClause(){
-		String equalsClause;
-		List<IJpaColumn> columns;
-		
-		equalsClause = null;
-		columns = getPrimaryKeyColumns();
-		for (int i = 0, n = columns.size(); i < n; ++i) {
-			IJpaColumn column = columns.get(i);
-			if (equalsClause == null) equalsClause = "( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
-			else equalsClause += " \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
-		}
-		
-		if (equalsClause==null) return "";
-		else return equalsClause+";";	
-		
+		return hasCompositeKey;
 	}
 	
-	/**
-	 * 
-	 * @return the expresion that compute the hash code for a given primary key
-	 */
-	public String getPrimaryKeyHashCodeClause(){
-		String hashcodeClause;
-		List<IJpaColumn> columns;
-		
-		hashcodeClause = null;
-		columns = getPrimaryKeyColumns();
-		for (int i = 0, n = columns.size(); i < n; ++i) {
-			IJpaColumn column = columns.get(i);
-			if (hashcodeClause==null)  hashcodeClause=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
-			else hashcodeClause=hashcodeClause+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
-		}
-		
-		if (hashcodeClause==null) return "";
-		return hashcodeClause;		
-	}
+	
+	
 	
 
 	
@@ -229,12 +166,7 @@ public class JpaTable extends AbstractJpaTable {
 		return name;
 	}
 	
-	/**
-	 * @returns the generated java class name (qualified).
-	 */
-	public String getQualifiedClassName() {
-		return getPackage() + "."  + getClassName();
-	}
+	
 
 	@Override
 	public String getName() {
@@ -243,7 +175,7 @@ public class JpaTable extends AbstractJpaTable {
 
 	@Override
 	public String getDescription() {
-		return businessTable.getDescription();
+		return businessTable.getDescription() != null? businessTable.getDescription(): getName();
 	}
 
 	@Override

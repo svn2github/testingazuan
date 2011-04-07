@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -88,8 +89,9 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		}
 	}
 	
-	/**
-	 * @return the <code>JpaRelationship</code> that contains this table
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getRelationships()
 	 */
 	public List<IJpaRelationship> getRelationships() {
 		List<IJpaRelationship> jpaRelationships;
@@ -107,7 +109,7 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		return jpaRelationships;		
 	}
 	
-	public PhysicalTable getPhysicalTable() {
+	protected PhysicalTable getPhysicalTable() {
 		return physicalTable;
 	}
 	
@@ -124,8 +126,10 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	public abstract List<BusinessRelationship> getBusinessRelationships();
 	
 	abstract protected BusinessModel getModel();
-	/**
-	 * @return the package name of mapping class associated with this table
+
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getPackage()
 	 */
 	public String getPackage() {
 		String packageName;
@@ -147,23 +151,33 @@ public abstract class AbstractJpaTable implements IJpaTable{
         return packageName;
 	}
 	
-	/**
-	 * @return the composite key java class name (not qualified).
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getCompositeKeyClassName()
 	 */
 	public String getCompositeKeyClassName() {
 		return getClassName() + "PK"; //$NON-NLS-1$
 	}
 	
-	/**
-	 * Returns the <code>JpaColumn</code> objects for the the columns that
-	 * are not part of any association.
-	 * 
-	 * @param genOnly  			Whether to include only the columns marked for generation.
-	 * 
-	 * @param includePk  		Whether to include the primary key column(s).
-	 * 
-	 * @param includeInherited 	Whether to include the columns associated with Jjava properties
-	 *            				that exist in the super class (if any).
+	public String getQualifiedCompositeKeyClassName() {
+		return getPackage() + "." + getClassName() + "PK"; //$NON-NLS-1$
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getQualifiedClassName()
+	 */
+	public String getQualifiedClassName() {
+		return getPackage() + "."  + getClassName();
+	}
+	
+	public String getUniqueName() {
+		return getQualifiedClassName() + "//" + getClassName();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getSimpleColumns(boolean, boolean, boolean)
 	 */
 	public List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
 		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
@@ -172,7 +186,9 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		for (int i = 0, n = columns.size(); i < n; ++i) {
 			IJpaColumn column = columns.get(i);
 			
-			if (column.isIdentifier()) {
+			if( hasFakePrimaryKey() ) {
+				continue;
+			} else if (column.isIdentifier()) {
 				if (!includePk || hasCompositeKey()) {
 					continue;
 				} else {
@@ -182,17 +198,23 @@ public abstract class AbstractJpaTable implements IJpaTable{
 			} else if (column.isColumnInRelationship()) {
 				continue;
 			}
+			
 			result.add(column);
 		}
 		return result;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getSimpleColumns()
+	 */
 	public List<IJpaColumn> getSimpleColumns() {
 		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
 	}
 
-	/**
-	 * @return all the import statements needed in the java class that map this table
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getImportStatements()
 	 */
 	public String getImportStatements(){
 		
@@ -222,6 +244,96 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		
 		return importStatement.toString();
 	}
+	
+	/**
+	 * @return the composite key property name
+	 * 
+	 *  * TODO .... da implementare
+	 */
+	public String getCompositeKeyPropertyName() {
+		return "compId"; //$NON-NLS-1$
+	}
+
+	/**
+	 * @return the name of the metod GETTER
+	 */
+	public String getCompositeKeyPropertyNameGetter() {
+		return "get"+StringUtils.initUpper(getCompositeKeyPropertyName());
+
+	}
+	/**
+	 * @return the name of the metod SETTER
+	 */
+	public String getCompositeKeyPropertyNameSetter() {
+		return "set"+StringUtils.initUpper(getCompositeKeyPropertyName());
+	}	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getPrimaryKeyColumns()
+	 */
+	public List<IJpaColumn> getPrimaryKeyColumns(){
+		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
+		
+		
+		if(hasFakePrimaryKey()) {
+			result = getColumns();
+		} else {
+			List<IJpaColumn> columns = getColumns();
+			
+			for (int i = 0, n = columns.size(); i < n; ++i) {
+				IJpaColumn column = columns.get(i);
+				
+				if (column.isIdentifier())	{
+					result.add(column);
+				}
+			}
+		}
+		
+		return result;		
+	}
+	
+	
+	/**
+	 * @return the boolean expression that verify if two primary key are equal
+	 */
+	public String getPrimaryKeyEqualsClause(){
+		String equalsClause;
+		List<IJpaColumn> columns;
+		
+		equalsClause = null;
+		columns = getPrimaryKeyColumns();
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			IJpaColumn column = columns.get(i);
+			if (equalsClause == null) equalsClause = "( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+			else equalsClause += " \n && ( this."+column.getPropertyName()+".equals(castOther."+column.getPropertyName()+") )";
+		}
+		
+		if (equalsClause==null) return "";
+		else return equalsClause+";";	
+		
+	}
+	
+	/**
+	 * 
+	 * @return the expresion that compute the hash code for a given primary key
+	 */
+	public String getPrimaryKeyHashCodeClause(){
+		String hashcodeClause;
+		List<IJpaColumn> columns;
+		
+		hashcodeClause = null;
+		columns = getPrimaryKeyColumns();
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			IJpaColumn column = columns.get(i);
+			if (hashcodeClause==null)  hashcodeClause=" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
+			else hashcodeClause=hashcodeClause+" hash = hash * prime + this."+column.getPropertyName()+".hashCode() ;\n";
+		}
+		
+		if (hashcodeClause==null) return "";
+		return hashcodeClause;		
+	}
+	
 	
 	
 }

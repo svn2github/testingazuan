@@ -135,16 +135,34 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	
 		
 
-	/**
-	 * Returns true if the table has a Primary KEY
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasFakePrimaryKey()
 	 */
-	
-	public boolean hasPrimaryKey() {		
-		return physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 0 : false;
+	public boolean hasFakePrimaryKey() {
+		//return true;
+		return !(physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 0 : false);
 	}
 	
-	public boolean hasCompositeKey() {		
-		return physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 1 : false;
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasCompositeKey()
+	 */
+	public boolean hasCompositeKey() {	
+		boolean hasCompositeKey = false;
+		
+		if(physicalTable.getPrimaryKey() != null) { // if there's a key...
+			if(physicalTable.getPrimaryKey().getColumns().size() > 1) { // ...and it is composed by more then one column
+				hasCompositeKey = true;
+			}
+		} else { // if there isn't a key 
+			hasCompositeKey = true;
+			// we return true because we are going to generate a fake key composed by
+			// all columns in the table in order to keep jpa runtime happy (in jpa as in 
+			// hibernate any persisted object must have a key)
+		}
+
+		return hasCompositeKey;
 	}
 	
 	public String getClassName() {
@@ -156,7 +174,6 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 			name = StringUtils.initUpper(name);
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
-			name = "pippo";
 		}
 		return name;
 	}

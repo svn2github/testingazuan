@@ -16,10 +16,6 @@
 #end
 #set ($members = "")
 #append($members "name=$jpaColumn.columnNameDoubleQuoted" )
-#if ($jpaColumn.isPKReadOnly())
-#append($members "insertable=false" )
-#append($members "updatable=false" )
-#end
 #####    ADD THE LINE TO THE SOURCE CODE
 #if( $members !="" )
 @Column($members)

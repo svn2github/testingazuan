@@ -79,11 +79,6 @@ public class QueryBuilder {
 	
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 	
-//	public QueryBuilder(){
-//		this.dataSource = ModelStructureBuilder.buildDataSource();
-//		this.modelView = ModelStructureBuilder.buildModelView(dataSource);
-//		this.query = new Query();
-//	}
 	
 	public QueryBuilder(IDataSource dataSource){
 		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
@@ -99,27 +94,6 @@ public class QueryBuilder {
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
 		this.modelView =  new ViewModelStructure(iDatamartModelStructure, dataSource, filters);
 		this.query = new Query();
-	}
-
-	public IDataSource getDataSource() {
-		return dataSource;
-	}
-
-	public Query getQuery() {
-		return query;
-	}
-
-	public void setQuery(Query query) {
-		this.query = query;
-	}
-
-	public IModelStructure getModelView() {
-		return modelView;
-	}
-
-	public IModelStructure getBaseModelStructure() {
-		return modelView;
-		//return dataSource.getModelStructure();
 	}
 
 
@@ -168,6 +142,7 @@ public class QueryBuilder {
 
 	public QueryEditGroup createEditGroup(Composite composite){
 		compositeFilters = new QueryEditGroup(composite, this);
+		refreshQueryEditGroup();
 		return compositeFilters;
 	}
 
@@ -275,7 +250,7 @@ public class QueryBuilder {
 	public Query addSelectFields(Object selectionData){
 		logger.debug("SelectionData: "+selectionData.getClass().getName());
 		if (selectionData instanceof IModelEntity){
-   			System.out.println("DataMartEntity");
+   			logger.debug("Dragghed the entity [{}]",((IModelEntity)selectionData).getUniqueName());
    			IModelEntity dataMartEntity = (IModelEntity)selectionData;
 			List<IModelField> dataMartFields = dataMartEntity.getAllFields();
 			for (IModelField dataMartField : dataMartFields){
@@ -289,6 +264,26 @@ public class QueryBuilder {
 	
 	public void addField(IModelField dataMartField) {
 		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
+	}
+	
+	public IDataSource getDataSource() {
+		return dataSource;
+	}
+
+	public Query getQuery() {
+		return query;
+	}
+
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+
+	public IModelStructure getModelView() {
+		return modelView;
+	}
+
+	public IModelStructure getBaseModelStructure() {
+		return modelView;
 	}
 
 }

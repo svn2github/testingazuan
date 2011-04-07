@@ -2,4 +2,10 @@
 ${jpaTable.uniqueName}.label = $jpaTable.name
 ${jpaTable.uniqueName}.tooltip = $jpaTable.description
 
+#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+${jpaColumn.uniqueName}.label = $jpaColumn.name
+${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
+#end
+
+
 #end

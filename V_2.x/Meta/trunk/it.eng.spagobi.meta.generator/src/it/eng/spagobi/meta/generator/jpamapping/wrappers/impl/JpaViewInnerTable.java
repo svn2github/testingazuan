@@ -107,7 +107,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 				if (businessColumn!=null){
 						JpaColumn jpaColumn = new JpaColumn(this, businessColumn);
 						jpaColumns.add(jpaColumn);
-						logger.info("Add "+jpaColumn.getColumnName()+" Column to the BV "+businessView.getName());
+						logger.info("Add "+jpaColumn.getSqlName()+" Column to the BV "+businessView.getName());
 					}					
 				}	
 		}

@@ -14,17 +14,17 @@ public interface IJpaColumn {
 	 */
 	IJpaTable getJpaTable();
 	
-	/**
-	 * 
-	 * @deprecated
-	 */
-	BusinessColumn getBusinessColumn();
+	String getName();
+	
+	String getDescription();
 	
 	/**
 	 * 
 	 * @return the phisical column name 
 	 */
-	String getColumnName();
+	String getSqlName();
+	
+	String getUniqueName();
 
 	/**
 	 * 

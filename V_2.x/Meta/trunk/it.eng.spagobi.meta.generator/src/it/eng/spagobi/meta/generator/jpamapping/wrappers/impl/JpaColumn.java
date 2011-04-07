@@ -119,7 +119,7 @@ public class JpaColumn implements IJpaColumn {
 				for(BusinessColumn column : columns) {
 					if(column.equals(businessColumn)) {
 						isColumnInRelationship = true;
-						logger.debug("Column [{}] belong to a relationship", getColumnName());
+						logger.debug("Column [{}] belong to a relationship", getSqlName());
 					}
 				}
 			}else {
@@ -151,7 +151,7 @@ public class JpaColumn implements IJpaColumn {
 					for(PhysicalColumn column : columns) {
 						if(column.getName().equals(businessColumn.getPhysicalColumn().getName())) {
 							isColumnInRelationship = true;
-							logger.debug("Column [{}] belong to an inner relationship", getColumnName());
+							logger.debug("Column [{}] belong to an inner relationship", getSqlName());
 						}
 					}
 				}else {
@@ -161,9 +161,27 @@ public class JpaColumn implements IJpaColumn {
 			}
 		}
 		
-		if(!isColumnInRelationship) logger.debug("Column [{}] doesn't belong to any relationship", getColumnName());
+		if(!isColumnInRelationship) logger.debug("Column [{}] doesn't belong to any relationship", getSqlName());
 		
 		return isColumnInRelationship;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn#getName()
+	 */
+	@Override
+	public String getName() {
+		return businessColumn.getName();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		return businessColumn.getDescription() != null? businessColumn.getDescription(): getName();
 	}
 	
 	/* (non-Javadoc)
@@ -201,13 +219,6 @@ public class JpaColumn implements IJpaColumn {
 		return type;
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getBusinessColumn()
-	 */
-	@Override
-	public BusinessColumn getBusinessColumn() {
-		return businessColumn;
-	}
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getJpaTable()
@@ -229,12 +240,18 @@ public class JpaColumn implements IJpaColumn {
 	}
 	
 	/* (non-Javadoc)
-	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getColumnName()
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getSqlName()
 	 */
 	@Override
-	public String getColumnName(){
+	public String getSqlName(){
 		return businessColumn.getPhysicalColumn().getName();
 	}
+	
+	@Override
+	public String getUniqueName() {
+		return this.getJpaTable().getQualifiedClassName() + "//" + getPropertyName();
+	}
+	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getColumnNameDoubleQuoted()
 	 */
@@ -277,6 +294,9 @@ public class JpaColumn implements IJpaColumn {
 	public String getPropertyNameSetter() {
 		return "set"+StringUtils.initUpper(getPropertyName());
 	}
+
+
+	
 
 	
 }

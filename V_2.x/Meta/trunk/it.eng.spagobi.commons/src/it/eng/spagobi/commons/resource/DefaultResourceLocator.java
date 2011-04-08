@@ -35,8 +35,8 @@ import java.util.Properties;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -53,7 +53,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 	public static final String IMAGE_ROOT_FOOLDER = "icons";
 	public static final String CONF_ROOT_FOOLDER = "conf";
 	
-	private static Logger logger = LoggerFactory.getLogger(DefaultResourceLocator.class);
+	//private static Logger logger = LoggerFactory.getLogger(DefaultResourceLocator.class);
 	
 	public DefaultResourceLocator(String pluginId) {
 		this.pluginId = pluginId;
@@ -67,6 +67,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		return null;
 	}
 	
+
 	public URL getFileURL(String fileRelativePath) {
 		
 		URL fileURL;
@@ -76,6 +77,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		
 		bundle = Platform.getBundle(pluginId);
 		if(bundle !=  null) {		
+			System.err.println("Boundle trovato");
 			fileURL = bundle.getEntry(fileRelativePath);
 			if(fileURL == null) {
 				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
@@ -87,6 +89,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 				throw new SpagoBIPluginException("Impossible to resolve URL [" + fileRelativePath + "] to a valid local URL");
 			}
 		} else {
+			System.err.println("Boundle NON trovato");
 			File file = new File(fileRelativePath);
 			try {
 				fileURL =  file.toURL();
@@ -96,7 +99,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		}
 		
 		
-		logger.debug("file [" + fileRelativePath + "] URL is equal to [" + fileURL + "]");
+		//logger.debug("file [" + fileRelativePath + "] URL is equal to [" + fileURL + "]");
 		
 		return fileURL;
 	}
@@ -111,7 +114,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		} catch (URISyntaxException e) {
 			throw new SpagoBIPluginException("The URL [" + fileURL + "] is not formatted strictly according to RFC2396 and cannot be converted to a URI", e);
 		}
-		logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
+		//logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
 		
 		File file = null;
 		try {
@@ -149,18 +152,21 @@ public class DefaultResourceLocator implements IResourceLocator {
 		try {
 		resourceFileURL = getFileURL( CONF_ROOT_FOOLDER + "/" + propertiesFile );
 		} catch(Throwable t) {
-			logger.warn("Impossible to load properties file [{}]", CONF_ROOT_FOOLDER + "/" + propertiesFile);
+			//logger.warn("Impossible to load properties file [{}]", CONF_ROOT_FOOLDER + "/" + propertiesFile);
 		}
 		
 		if(resourceFileURL != null) {
 			try {
 				properties.load( resourceFileURL.openStream() );
 			} catch (IOException e) {
-				logger.error("Impossible to load propertis from URL [" + resourceFileURL + "]", e);
+				//logger.error("Impossible to load propertis from URL [" + resourceFileURL + "]", e);
+				System.err.println("Impossible to load propertis from URL [" + resourceFileURL + "]");
 			}
 		}
 		
-		logger.debug("Succesfully loaded [{}] properties from file [{}]", properties.size(), resourceFileURL);
+		//logger.debug("Succesfully loaded [{}] properties from file [{}]", properties.size(), resourceFileURL);
+		System.err.println("Succesfully loaded [" + properties.size() + "] properties from file [" + resourceFileURL + "]");
+		
 		
 		return properties;
 	}
@@ -213,7 +219,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 			try {
 				propertyValue = Integer.parseInt(str.trim());
 			} catch (Throwable t) {
-				logger.warn("Impossible to convert the value [" + propertyValue + "] of property  [" + key + "] to int", t);
+				//logger.warn("Impossible to convert the value [" + propertyValue + "] of property  [" + key + "] to int", t);
 			}
 		}
 		

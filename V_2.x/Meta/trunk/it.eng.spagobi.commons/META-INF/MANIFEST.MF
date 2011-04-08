@@ -6,9 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: it.eng.spagobi.commons.Activator
 Bundle-Vendor: it.eng
 Require-Bundle: org.eclipse.core.runtime,
- ch.qos.logback.classic;bundle-version="0.9.19",
- ch.qos.logback.core;bundle-version="0.9.19",
- org.slf4j.api;bundle-version="1.5.11",
  org.junit;bundle-version="3.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

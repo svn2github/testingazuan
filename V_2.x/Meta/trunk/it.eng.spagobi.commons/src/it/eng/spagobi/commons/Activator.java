@@ -25,17 +25,24 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-
-		DefaultResourceLocator rs = new DefaultResourceLocator("it.eng.spagobi.commons");
-
-		String fileRelativePath = rs.getPropertyAsString("logback.configurationFile.dir");
-		System.out.println("fileRelativePath: "+fileRelativePath);
-		File logback = rs.getFile(fileRelativePath);
-		System.out.println("Absolute path: "+logback.getAbsolutePath());
 		
-		String logbackConfiguration = System.setProperty("logback.configurationFile", "c:\\logback.xml");
-		System.out.println("property: "+System.getProperty("logback.configurationFile"));
+		System.err.println("Bundle equals to: "+Platform.getBundle("it.eng.spagobi.commons"));
 
+
+		File logback = null;
+		try {
+			DefaultResourceLocator rs = new DefaultResourceLocator("it.eng.spagobi.commons");
+			String fileRelativePath = rs.getPropertyAsString("logback.configurationFile.dir");
+			System.err.println("fileRelativePath: "+fileRelativePath);
+			logback = rs.getFile(fileRelativePath);
+			System.err.println("Absolute path: "+logback.getAbsolutePath());
+		} catch(Throwable t) {
+			t.printStackTrace();
+		}
+		
+		String logbackConfiguration = System.setProperty("logback.configurationFile", logback.getAbsolutePath());
+		System.err.println("property: "+System.getProperty("logback.configurationFile"));
+		System.err.println("OUT");
 	}
 
 	/*

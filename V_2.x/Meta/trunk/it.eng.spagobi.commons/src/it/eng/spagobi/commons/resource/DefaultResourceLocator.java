@@ -145,8 +145,12 @@ public class DefaultResourceLocator implements IResourceLocator {
 		Properties properties = new Properties();
 		URL resourceFileURL;
 		
-		
+		resourceFileURL = null;
+		try {
 		resourceFileURL = getFileURL( CONF_ROOT_FOOLDER + "/" + propertiesFile );
+		} catch(Throwable t) {
+			logger.warn("Impossible to load properties file [{}]", CONF_ROOT_FOOLDER + "/" + propertiesFile);
+		}
 		
 		if(resourceFileURL != null) {
 			try {

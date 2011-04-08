@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core.compiler.batch
-Export-Package: it.eng.spagobi.meta.generator.jpamapping
+Export-Package: it.eng.spagobi.meta.generator.jpamapping,
+ it.eng.spagobi.meta.generator.utils
 Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/velocity/commons-lang-2.4.jar,
  libs/velocity/oro-2.0.8.jar,

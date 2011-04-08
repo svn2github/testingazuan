@@ -100,16 +100,13 @@ public class Zipper {
 
 			for (int i = 0; i < entries.length; i++) {
 				fileToCompress = new File(targetDir, entries[i]);
-				logger.debug("Compress file [{}]", fileToCompress);
+				logger.trace("Compress file [{}]", fileToCompress);
 				if (fileToCompress.isDirectory()) {
 					compressFolder(rootTargetDir, fileToCompress, out);
 				} else {
 					in = new FileInputStream(fileToCompress);
 					String fileToCompressAbsolutePath = fileToCompress.getAbsolutePath();
-					logger.debug(fileToCompressAbsolutePath);
 					String binDirAbsolutePath = rootTargetDir.getAbsolutePath();
-					logger.debug(binDirAbsolutePath);
-					
 					String relativeFileName = fileToCompress.getName();
 					if (fileToCompressAbsolutePath.lastIndexOf(binDirAbsolutePath) != -1) {
 						int index = fileToCompressAbsolutePath.lastIndexOf(binDirAbsolutePath);
@@ -117,9 +114,7 @@ public class Zipper {
 						relativeFileName = fileToCompressAbsolutePath.substring(index + len + 1);
 					}
 					
-					logger.debug("-> " + relativeFileName);
 					relativeFileName = relativeFileName.replaceAll("\\\\", "/");
-					logger.debug(">> " + relativeFileName);
 					
 					JarEntry entry = new JarEntry(relativeFileName);
 					out.putNextEntry(entry);
@@ -127,7 +122,7 @@ public class Zipper {
 						out.write(buffer, 0, bytes_read);
 					}
 					in.close();
-					logger.debug("File compressed into [{}]", entry);
+					logger.trace("File compressed into [{}]", entry);
 				}
 			}
 		} catch (Exception e) {

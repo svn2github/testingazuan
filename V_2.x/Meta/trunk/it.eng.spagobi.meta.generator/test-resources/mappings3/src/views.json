@@ -4,22 +4,5 @@
 	},
 	
 	views: [
-	{
-		name: ProdottoEsteso
-		, tables: [
-		]
-		, joins: [
-		{
-			sourceTable: ProdottoEstesoProduct
-			, sourceColumns: [
-				productClassId,
-			]
-			, destinationTable: ProdottoEstesoProduct
-			, destinationColumns: [
-				productClassId,
-			]
-		}
-		]
-	}
 	]
 }

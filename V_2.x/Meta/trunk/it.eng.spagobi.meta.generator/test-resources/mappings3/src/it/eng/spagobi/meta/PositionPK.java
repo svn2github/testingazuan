@@ -12,17 +12,13 @@ public class PositionPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 		@Column(name="position_id")
-		private java.lang.String positionId;
+		private String positionId;
 		@Column(name="position_title")
-		private java.lang.String positionTitle;
+		private String positionTitle;
 		@Column(name="pay_type")
-		private java.lang.String payType;
-		@Column(name="min_scale")
-		private java.lang.String minScale;
-		@Column(name="max_scale")
-		private java.lang.String maxScale;
+		private String payType;
 		@Column(name="management_role")
-		private java.lang.String managementRole;
+		private String managementRole;
 
     public PositionPK() {
     }
@@ -51,22 +47,6 @@ public void setPayType (String payType) {
 }
 
 
-public String getMinScale () {
-	return this.minScale;
-}
-public void setMinScale (String minScale) {
-	this.minScale = minScale;
-}
-
-
-public String getMaxScale () {
-	return this.maxScale;
-}
-public void setMaxScale (String maxScale) {
-	this.maxScale = maxScale;
-}
-
-
 public String getManagementRole () {
 	return this.managementRole;
 }
@@ -87,8 +67,6 @@ public void setManagementRole (String managementRole) {
 			( this.positionId.equals(castOther.positionId) ) 
  && ( this.positionTitle.equals(castOther.positionTitle) ) 
  && ( this.payType.equals(castOther.payType) ) 
- && ( this.minScale.equals(castOther.minScale) ) 
- && ( this.maxScale.equals(castOther.maxScale) ) 
  && ( this.managementRole.equals(castOther.managementRole) );
 
     }
@@ -99,8 +77,6 @@ public void setManagementRole (String managementRole) {
 		 hash = hash * prime + this.positionId.hashCode() ;
  hash = hash * prime + this.positionTitle.hashCode() ;
  hash = hash * prime + this.payType.hashCode() ;
- hash = hash * prime + this.minScale.hashCode() ;
- hash = hash * prime + this.maxScale.hashCode() ;
  hash = hash * prime + this.managementRole.hashCode() ;
 
 		return hash;

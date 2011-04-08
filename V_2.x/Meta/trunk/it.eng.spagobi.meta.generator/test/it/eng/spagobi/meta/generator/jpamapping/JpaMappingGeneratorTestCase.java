@@ -58,6 +58,8 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	
 	private static final File TEST_FOLDER = new File("test-resources");
 	private static final File TEST_MODEL_FILE = new File(TEST_FOLDER, "TestModel.sbimodel");
+	//private static final File TEST_MODEL_FILE = new File(TEST_FOLDER, "NoKey.sbimodel");
+
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -109,7 +111,7 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	}
 	
 	public void testJarGenerator() throws Exception {
-		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings3").getAbsolutePath());
+		jarGenerator.generate(model.getBusinessModels().get(0), new File(TEST_FOLDER, "mappings").getAbsolutePath());
 		assertNotNull("src dir cannot be null", jarGenerator.getSrcDir());
 		assertNotNull("bin dir cannot be null", jarGenerator.getBinDir());
 		assertNotNull("lib dir cannot be null", jarGenerator.getLibDir());

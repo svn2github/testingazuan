@@ -1,41 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_2_0.xsd" version="2.0">
- 	<persistence-unit name="Test Model" transaction-type="RESOURCE_LOCAL">
+ 	<persistence-unit name="My Model" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<!-- provider>org.hibernate.ejb.HibernatePersistence</provider-->
 		<!-- provider>org.eclipse.persistence.jpa.PersistenceProvider</provider-->
 		<!-- provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider-->
 
+		<class>it.eng.spagobi.meta.Employee</class>
+		<class>it.eng.spagobi.meta.EmployeePK</class>
 		<class>it.eng.spagobi.meta.Position</class>
 		<class>it.eng.spagobi.meta.PositionPK</class>
-		<class>it.eng.spagobi.meta.Product</class>
-		<class>it.eng.spagobi.meta.ProductPK</class>
-		<class>it.eng.spagobi.meta.ProductClass</class>
-		<class>it.eng.spagobi.meta.ProductClassPK</class>
-		<class>it.eng.spagobi.meta.Promotion</class>
-		<class>it.eng.spagobi.meta.PromotionPK</class>
-		<class>it.eng.spagobi.meta.Region</class>
-		<class>it.eng.spagobi.meta.RegionPK</class>
-		<class>it.eng.spagobi.meta.ReserveEmployee</class>
-		<class>it.eng.spagobi.meta.ReserveEmployeePK</class>
-		<class>it.eng.spagobi.meta.Salary</class>
-		<class>it.eng.spagobi.meta.SalaryPK</class>
-		<class>it.eng.spagobi.meta.SalesFact1997</class>
-		<class>it.eng.spagobi.meta.SalesFact1997PK</class>
-		<class>it.eng.spagobi.meta.SalesFact1998</class>
-		<class>it.eng.spagobi.meta.SalesFact1998PK</class>
-		<class>it.eng.spagobi.meta.SalesFactDec1998</class>
-		<class>it.eng.spagobi.meta.SalesFactDec1998PK</class>
-		<class>it.eng.spagobi.meta.SalesRegion</class>
-		<class>it.eng.spagobi.meta.SalesRegionCanada</class>
-		<class>it.eng.spagobi.meta.SalesRegionCanadaPK</class>
-		<class>it.eng.spagobi.meta.StateUnit</class>
-		<class>it.eng.spagobi.meta.StateUnitPK</class>
-		<class>it.eng.spagobi.meta.Store</class>
-		<class>it.eng.spagobi.meta.StorePK</class>
-		<class>it.eng.spagobi.meta.TimeByDay</class>
-		<class>it.eng.spagobi.meta.TimeByDayPK</class>
 		
 	</persistence-unit>
 </persistence>

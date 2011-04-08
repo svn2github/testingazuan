@@ -97,11 +97,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	public static final String DEFAULT_SRC_DIR = "src";
 	
-	
-	
-	
-	
-	
+
 	
 	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
 	
@@ -164,8 +160,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 				logger.debug("src dir is equal to [{}]", srcDir);
 				
 				generateJpaMapping(model);
+				
+				logger.info("Jpa mapping code generated succesfully");
 			} catch (Exception e) {
-				logger.error("An error occur while generating JPA mapping", e);
+				logger.error("An error occur while generating jpa mapping code", e);
 				throw new GenerationException("An error occur while generating JPA mapping", e);
 			}
 		} else {
@@ -188,10 +186,16 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		JpaModel jpaModel = new JpaModel(model);
 		generateBusinessTableMappings(  jpaModel.getTables() );
+		logger.info("Java files for tables of model [{}] succesfully created", model.getName());
+		
 		generateBusinessViewMappings( jpaModel.getViews() );
+		logger.info("Java files for views of model [{}] succesfully created", model.getName());
 
 		createLabelsFile(labelsTemplate, jpaModel);
+		logger.info("Labels file for model [{}] succesfully created", model.getName());
+		
 		generatePersistenceUnitMapping(jpaModel);
+		logger.info("Persistence unit for model [{}] succesfully created", model.getName());
 		
 		logger.trace("OUT");		
 	}
@@ -201,9 +205,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		for(IJpaTable jpaTable : jpaTables) {
 			createJavaFile(tableTemplate, jpaTable, jpaTable.getClassName());
+			logger.debug("Mapping for table [" + jpaTable.getName() + "] succesfully created");
 			if (jpaTable.hasCompositeKey()) {
-				//logger.info("Creating mapping for composite PK of business table [{}]", jpaTables.getName());
 				createJavaFile(keyTemplate, jpaTable, jpaTable.getCompositeKeyClassName());
+				logger.debug("Mapping for composite PK of business table [{}] succesfully", jpaTable.getName());				
 			}
 		}
 		
@@ -220,7 +225,6 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	
 	public void generatePersistenceUnitMapping(JpaModel model) throws Exception {
-		logger.info("Creating persistence unit for model [{}]", model.getName());
 		createMappingFile(persistenceUnitTemplate, model);
 	}
 
@@ -246,7 +250,6 @@ public class JpaMappingCodeGenerator implements IGenerator {
         createFile(templateFile, outputFile, velocityContext);
         
         //logger.debug("Created mapping file [{}] for table [{}]", outputFile, jpaTable.getClassName());
-
 	}
 	
 	/**
@@ -293,8 +296,6 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		logger.trace("IN");
 		
 		try {
-			logger.debug("Create persistance.xml");
-			
 		    context = new VelocityContext();
 	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
 	        context.put("modelName", model.getName());

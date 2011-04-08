@@ -20,7 +20,7 @@
     <appender-ref ref="CONSOLE"/>
   </root>
   
-  <logger name="it.eng.spagobi" additivity="false" level="DEBUG">
+  <logger name="it.eng.spagobi" additivity="false" level="INFO">
     <appender-ref ref="FILE"/>
     <appender-ref ref="CONSOLE"/>
   </logger>

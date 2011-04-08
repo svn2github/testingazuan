@@ -370,7 +370,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			generator.generate(businessModel, modelDirectory);
 		} catch (Exception e) {
 			logger.error("An error occurred while executing generator [{}]:", JpaMappingJarGenerator.class.getName(), e);
-			//showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
+			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
 			executed = false;
 		}
 		
@@ -378,7 +378,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			//showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
 			logger.debug("Mapping jar generated succesfully");
 		} else {
-			//showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
+			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
 			logger.debug("Mapping jar not generated succesfully");
 		}
 	}	

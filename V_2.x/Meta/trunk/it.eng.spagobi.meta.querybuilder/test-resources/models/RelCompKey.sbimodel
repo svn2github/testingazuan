@@ -726,8 +726,8 @@
       </columns>
     </tables>
     <relationships name="BR_Employee_Position" sourceTable="//@businessModels.0/@tables.0" destinationTable="//@businessModels.0/@tables.1" sourceColumns="//@businessModels.0/@tables.0/@columns.4" destinationColumns="//@businessModels.0/@tables.1/@columns.0"/>
-    <identifiers name="Employee" table="//@businessModels.0/@tables.0" columns="//@businessModels.0/@tables.0/@columns.0"/>
-    <identifiers name="Position" table="//@businessModels.0/@tables.1" columns="//@businessModels.0/@tables.1/@columns.0"/>
+    <identifiers name="Employee" table="//@businessModels.0/@tables.0" columns="//@businessModels.0/@tables.0/@columns.0 //@businessModels.0/@tables.0/@columns.1"/>
+    <identifiers name="Position" table="//@businessModels.0/@tables.1" columns="//@businessModels.0/@tables.1/@columns.0 //@businessModels.0/@tables.1/@columns.1"/>
   </businessModels>
   <propertyTypes id="connection.name" name="Connection Name" description="Data Source Connection Name" category="//@propertyCategories.0" defaultValue="foodmart"/>
   <propertyTypes id="connection.url" name="Connection Url" description="Data Source Connection Url" category="//@propertyCategories.0" defaultValue="jdbc:mysql://localhost:3306/foodmart"/>

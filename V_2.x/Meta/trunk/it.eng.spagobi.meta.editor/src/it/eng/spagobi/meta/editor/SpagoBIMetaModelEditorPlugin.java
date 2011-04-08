@@ -9,6 +9,10 @@ package it.eng.spagobi.meta.editor;
 import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.ui.EclipseUIPlugin;
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * This is the central singleton for the SpagoBIMetaModel editor plugin.
@@ -44,6 +48,11 @@ public final class SpagoBIMetaModelEditorPlugin extends EMFPlugin {
 		super
 			(new ResourceLocator [] {
 			});
+		
+	    // assume SLF4J is bound to logback in the current environment
+	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+	    // print logback's internal status
+	    StatusPrinter.print(lc);
 	}
 
 	/**

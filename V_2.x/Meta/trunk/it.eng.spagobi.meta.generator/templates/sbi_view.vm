@@ -11,7 +11,7 @@
 	{
 		name: ${jpaView.className}
 		, tables: [
-#foreach ($jpaTable in $jpaView.tables)
+#foreach ($jpaTable in $jpaView.innerTables)
 		{
 			name: ${jpaTable.className}
 			, package: ${jpaView.package}

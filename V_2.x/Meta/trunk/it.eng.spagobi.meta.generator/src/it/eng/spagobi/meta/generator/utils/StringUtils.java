@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,6 +188,17 @@ public class StringUtils
 	
 	public static String getStringFromFile(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		StringBuffer buffer = new StringBuffer();
+		while((line = reader.readLine()) != null) {
+			buffer.append(line + "\n");
+		}
+		
+		return buffer.toString();
+	}
+	
+	public static String getStringFromStream(InputStream in) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		String line = null;
 		StringBuffer buffer = new StringBuffer();
 		while((line = reader.readLine()) != null) {

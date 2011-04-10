@@ -95,6 +95,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	private File labelsTemplate;
 	
+	private File propertiesTemplate;
+	
 	public static final String DEFAULT_SRC_DIR = "src";
 	
 
@@ -134,8 +136,12 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			Assert.assertTrue("[PersistenceUnit] template file [" + persistenceUnitTemplate + "] does not exist", persistenceUnitTemplate.exists());
 			
 			labelsTemplate  = new File(templateDir, "sbi_labels.vm");
-			logger.trace("[PersistenceUnit] template file is equal to [{}]", persistenceUnitTemplate);
-			Assert.assertTrue("[Labels] template file [" + labelsTemplate + "] does not exist", persistenceUnitTemplate.exists());
+			logger.trace("[Labels] template file is equal to [{}]", labelsTemplate);
+			Assert.assertTrue("[Labels] template file [" + labelsTemplate + "] does not exist", labelsTemplate.exists());
+			
+			propertiesTemplate  = new File(templateDir, "sbi_properties.vm");
+			logger.trace("[Properties] template file is equal to [{}]", propertiesTemplate);
+			Assert.assertTrue("[Properties] template file [" + propertiesTemplate + "] does not exist", propertiesTemplate.exists());
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -194,6 +200,9 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		createLabelsFile(labelsTemplate, jpaModel);
 		logger.info("Labels file for model [{}] succesfully created", model.getName());
 		
+		createPropertiesFile(propertiesTemplate, jpaModel);
+		logger.info("Properties file for model [{}] succesfully created", model.getName());
+		
 		generatePersistenceUnitMapping(jpaModel);
 		logger.info("Persistence unit for model [{}] succesfully created", model.getName());
 		
@@ -242,8 +251,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	    velocityContext = new VelocityContext();	  
         velocityContext.put("jpaTable", jpaTable ); //$NON-NLS-1$
         
-        File outputDir = new File(baseOutputDir, "src");
-        outputDir = new File(outputDir, StringUtils.strReplaceAll(jpaTable.getPackage(), ".", "/") );
+      
+        File outputDir = new File(srcDir, StringUtils.strReplaceAll(jpaTable.getPackage(), ".", "/") );
 		outputDir.mkdirs();
 		File outputFile = new File(outputDir, className+".java");
 		
@@ -269,10 +278,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		    context = new VelocityContext();
 	        context.put("jpaViews", jpaViews ); //$NON-NLS-1$
 	        
-	        File outputDir = new File(baseOutputDir, "src" );
-			outputDir.mkdirs();
-			
-			File outputFile = new File(outputDir, "views.json");
+	     
+			File outputFile = new File(srcDir, "views.json");
 			
 	        createFile(viewTemplate, outputFile, context);
 		} catch(Throwable t) {
@@ -297,10 +304,17 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		try {
 		    context = new VelocityContext();
-	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+		    List<IJpaTable> jpaTables  = new ArrayList<IJpaTable>();
+		    jpaTables.addAll( model.getTables() );
+		    List<IJpaView> jpaViews = model.getViews();
+		    for(IJpaView jpaView : jpaViews) {
+		    	 jpaTables.addAll( jpaView.getInnerTables() );
+		    }
+		    
+	        context.put("jpaTables", jpaTables ); //$NON-NLS-1$
 	        context.put("modelName", model.getName());
 	        
-	        File outputDir = new File( new File(baseOutputDir, "build"), "META-INF" );
+	        File outputDir = new File( srcDir, "META-INF" );
 			outputDir.mkdirs();
 			
 			File outputFile = new File(outputDir, "persistence.xml");
@@ -320,19 +334,42 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		logger.trace("IN");
 		
 		try {
-			logger.debug("Create persistance.xml");
+			logger.debug("Create labels.properties");
 			
 		    context = new VelocityContext();
 	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
 	       
-	        File outputDir =  new File(baseOutputDir, "build") ;
-			outputDir.mkdirs();
+	      
 			
-			File outputFile = new File(outputDir, "labels.properties");
+			File outputFile = new File(srcDir, "labels.properties");
 			
 	        createFile(templateFile, outputFile, context);
 		} catch(Throwable t) {
-        	logger.error("Impossible to create persitance.xml", t);
+        	logger.error("Impossible to create labels.properties", t);
+        } finally {
+        	logger.trace("OUT");
+        }
+	}
+	
+	private void createPropertiesFile(File templateFile, JpaModel model){
+
+		VelocityContext context;
+		
+		logger.trace("IN");
+		
+		try {
+			logger.debug("Create qbe.properties");
+			
+		    context = new VelocityContext();
+	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+	       
+	      
+			
+			File outputFile = new File(srcDir, "qbe.properties");
+			
+	        createFile(templateFile, outputFile, context);
+		} catch(Throwable t) {
+        	logger.error("Impossible to create qbe.properties", t);
         } finally {
         	logger.trace("OUT");
         }

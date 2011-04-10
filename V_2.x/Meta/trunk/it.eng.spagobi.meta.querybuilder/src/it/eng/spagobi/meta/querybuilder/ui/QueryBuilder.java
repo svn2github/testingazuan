@@ -25,10 +25,10 @@ package it.eng.spagobi.meta.querybuilder.ui;
 import java.util.List;
 
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.FilteredModelStructure;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ViewModelStructure;
 import it.eng.qbe.model.structure.filter.IQbeTreeEntityFilter;
 import it.eng.qbe.model.structure.filter.IQbeTreeFieldFilter;
 import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityEntityFilter;
@@ -92,7 +92,7 @@ public class QueryBuilder {
 		fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
 		QbeTreeFilter filters =  new QbeTreeFilter(entityFilter, fieldFilter);
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
-		this.modelView =  new ViewModelStructure(iDatamartModelStructure, dataSource, filters);
+		this.modelView =  new FilteredModelStructure(iDatamartModelStructure, dataSource, filters);
 		this.query = new Query();
 	}
 

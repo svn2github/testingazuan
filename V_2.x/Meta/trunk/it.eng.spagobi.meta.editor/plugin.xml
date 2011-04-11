@@ -52,20 +52,6 @@
    
    
 
-   <extension point="org.eclipse.ui.newWizards">
-      <category
-            id="org.eclipse.emf.ecore.Wizard.category.ID"
-            name="%_UI_Wizard_category"/>
-      <wizard
-            id="it.eng.spagobi.meta.editor.physical.wizards.PhysicalModelWizard"
-            name="%_UI_PhysicalModelModelWizard_label"
-            class="it.eng.spagobi.meta.editor.physical.wizards.PhysicalModelWizard"
-            category="org.eclipse.emf.ecore.Wizard.category.ID"
-            icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif">
-         <description>%_UI_PhysicalModelModelWizard_description</description>
-         <selection class="org.eclipse.core.resources.IResource"/>
-      </wizard>
-   </extension>
 
    <extension point="org.eclipse.ui.editors">
       <editor
@@ -82,20 +68,6 @@
    
    
 
-   <extension point="org.eclipse.ui.newWizards">
-      <category
-            id="org.eclipse.emf.ecore.Wizard.category.ID"
-            name="%_UI_Wizard_category"/>
-      <wizard
-            id="it.eng.spagobi.meta.editor.business.wizards.BusinessModelWizard"
-            name="%_UI_BusinessModelModelWizard_label"
-            class="it.eng.spagobi.meta.editor.business.wizards.BusinessModelWizard"
-            category="org.eclipse.emf.ecore.Wizard.category.ID"
-            icon="icons/full/obj16/SpagoBIBusinessModelFile.gif">
-         <description>%_UI_BusinessModelModelWizard_description</description>
-         <selection class="org.eclipse.core.resources.IResource"/>
-      </wizard>
-   </extension>
 
    <extension point="org.eclipse.ui.editors">
       <editor

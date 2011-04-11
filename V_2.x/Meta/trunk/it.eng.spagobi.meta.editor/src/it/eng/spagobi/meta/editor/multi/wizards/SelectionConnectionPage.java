@@ -266,7 +266,10 @@ public class SelectionConnectionPage extends WizardPage {
 	}
 	
 	public String getConnectionName() {
-		return connectionList.getSelection()[0];
+		if (connectionList.getSelection().length > 0)
+			return connectionList.getSelection()[0];
+		else
+			return null;
 	}
 	
 	public String getCatalogName() {
@@ -311,8 +314,10 @@ public class SelectionConnectionPage extends WizardPage {
 	//Set next page data
 	public IWizardPage getNextPage() {
     	IWizardPage nextPage = super.getNextPage();
-    	if (nextPage instanceof PhysicalTableSelectionPage) {
-    		physicalTableSelectionPageRef.addTableItems(getConnectionName(), getCatalogName(), getSchemaName());
+    	if (getConnectionName() != null){
+        	if (nextPage instanceof PhysicalTableSelectionPage) {
+        		physicalTableSelectionPageRef.addTableItems(getConnectionName(), getCatalogName(), getSchemaName());
+        	}
     	}
             return nextPage;
         }

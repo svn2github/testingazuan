@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.core.runtime,
  ch.qos.logback.classic;bundle-version="0.9.19",
  ch.qos.logback.core;bundle-version="0.9.19",
  org.slf4j.api;bundle-version="1.5.11",
- org.junit;bundle-version="3.8.2"
+ org.junit;bundle-version="3.8.2",
+ org.eclipse.ui
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,

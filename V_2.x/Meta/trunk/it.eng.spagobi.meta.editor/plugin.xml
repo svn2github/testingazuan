@@ -79,6 +79,37 @@
             contributorClass="it.eng.spagobi.meta.editor.business.BusinessModelEditorWorkbenchContributor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="it.eng.spagobi.meta.editor.contribution1"
+            nameFilter="*.sbimodel"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               icon="icons/full/obj16/SpagoBIModelFile.gif"
+               id="it.eng.spagobi.meta.editor.create"
+               label="Create"
+               path="additions">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
+         <action
+               class="it.eng.spagobi.meta.editor.popup.actions.CreateQueryProjectExplorerAction"
+               enablesFor="1"
+               id="it.eng.spagobi.meta.editor.newQueryAction"
+               label="New Query"
+               menubarPath="it.eng.spagobi.meta.editor.create/group">
+         </action>
+         <action
+               class="it.eng.spagobi.meta.editor.popup.actions.CreateJPAMappingProjectExplorerAction"
+               enablesFor="1"
+               id="it.eng.spagobi.meta.editor.newJPAMappingAction"
+               label="JPA Mapping"
+               menubarPath="it.eng.spagobi.meta.editor.create/group">
+         </action>
+      </objectContribution>
+   </extension>
 
 
 

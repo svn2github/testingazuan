@@ -21,14 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
 
 import org.json.JSONObject;
-import org.junit.Assert;
 
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DriverManager;
@@ -36,49 +32,54 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingClassesGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.generator.utils.Compiler;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 import junit.framework.TestCase;
 
+
 /**
+ * This test case test models that contain different combination of keys and relationships definitions
+ * 
+ * 
+ * NOTE: Tests only the ModelStructure and the Query's results. The generated mapping is not tested
+ * because it is already tested by specific tast cases in the exporter package
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JpaMappingGeneratorTestCase extends TestCase {
+public class ModelsWithKeysTestCase extends TestCase {
 	
 	IModelSerializer serializer;
 	JpaMappingJarGenerator jarGenerator;	
 	DBConnection connection;
 	
-	public static String CONNECTION_DIALECT = "org.hibernate.dialect.MySQLDialect";
-	public static String CONNECTION_DRIVER = "com.mysql.jdbc.Driver";
-	public static String CONNECTION_URL = "jdbc:mysql://localhost:3306/foodmart";
-	public static String CONNECTION_USER = "root";
-	public static String CONNECTION_PWD = "mysql";
+	// a model without keys and relationships
+	private static final File TEST_MODEL_NOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/NoKey.sbimodel");
 	
-	private static final File TEST_FOLDER = new File("test-resources");
-	private static final File TEST_MODEL_NOKEY = new File(TEST_FOLDER, "models/NoKey.sbimodel");
-	private static final File TEST_MODEL_SIMPLEKEY = new File(TEST_FOLDER, "models/SimpleKey.sbimodel");
-	private static final File TEST_MODEL_COMPKEY = new File(TEST_FOLDER, "models/CompKey.sbimodel");
-	private static final File TEST_MODEL_RELNOKEY = new File(TEST_FOLDER, "models/RelNoKey.sbimodel");
-	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TEST_FOLDER, "models/RelSimpleKey.sbimodel");
-	private static final File TEST_MODEL_RELCOMPKEY = new File(TEST_FOLDER, "models/RelCompKey.sbimodel");
+	// a model without simple keys only (1 column key) but no relationships
+	private static final File TEST_MODEL_SIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/SimpleKey.sbimodel");
+	
+	// a model with composite keys only but no relationships
+	private static final File TEST_MODEL_COMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/CompKey.sbimodel");
+	
+	// a model with no keys but with relatioships
+	private static final File TEST_MODEL_RELNOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelNoKey.sbimodel");
+	
+	// a model with simple keys and relatioships (...defined upon keys)
+	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelSimpleKey.sbimodel");
+	
+	// a model with composite keys and relatioships (...defined upon keys)
+	private static final File TEST_MODEL_RELCOMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelCompKey.sbimodel");
 
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		serializer = new EmfXmiSerializer();		
 		jarGenerator = new JpaMappingJarGenerator();
-		jarGenerator.setLibDir(new File(TEST_FOLDER.getParentFile(), "libs/eclipselink"));
+		jarGenerator.setLibDir(new File(TestCaseConstants.TEST_FOLDER.getParentFile(), "libs/eclipselink"));
 		jarGenerator.setLibs(new String[]{
 				"org.eclipse.persistence.core_2.1.2.jar",
 				"javax.persistence_2.0.1.jar"
@@ -86,11 +87,11 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 		
 		connection = new DBConnection();			
 		connection.setName( "My Model" );
-		connection.setDialect(CONNECTION_DIALECT );			
-		connection.setDriverClass( CONNECTION_DRIVER  );	
-		connection.setUrl( CONNECTION_URL );
-		connection.setUsername( CONNECTION_USER );		
-		connection.setPassword( CONNECTION_PWD );
+		connection.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
+		connection.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
+		connection.setUrl( TestCaseConstants.CONNECTION_URL );
+		connection.setUsername( TestCaseConstants.CONNECTION_USER );		
+		connection.setPassword( TestCaseConstants.CONNECTION_PWD );
 	}
 
 	protected void tearDown() throws Exception {
@@ -119,29 +120,28 @@ public class JpaMappingGeneratorTestCase extends TestCase {
 	}
 	
 	public void testNoKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_NOKEY, new File(TEST_FOLDER, "outs/01_relNoKey"));
+		doTest(TEST_MODEL_NOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/01_relNoKey"));
 	}
 	
 	public void testSimpleKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_SIMPLEKEY, new File(TEST_FOLDER, "outs/02_relSimpleKey"));
+		doTest(TEST_MODEL_SIMPLEKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/02_relSimpleKey"));
 	}
 	
 	public void testCompKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_COMPKEY, new File(TEST_FOLDER, "outs/03_CompKey"));
+		doTest(TEST_MODEL_COMPKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/03_CompKey"));
 	}
 	
 	public void testRelNoKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELNOKEY, new File(TEST_FOLDER, "outs/04_relNoKey"));
+		doTest(TEST_MODEL_RELNOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/04_relNoKey"));
 	}
 	
 	public void testRelSimpleKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELSIMPLEKEY, new File(TEST_FOLDER, "outs/05_relSimpleKey"));
+		doTest(TEST_MODEL_RELSIMPLEKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/05_relSimpleKey"));
 	}
 	
 	public void testRelCompKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELCOMPKEY, new File(TEST_FOLDER, "outs/06_relCompKey"));
+		doTest(TEST_MODEL_RELCOMPKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/06_relCompKey"));
 	}
-	
 	
 	
 	private void doTest(File modelFile, File outputDir) throws Exception {

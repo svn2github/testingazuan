@@ -6,15 +6,12 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
-import java.io.StringReader;
-import java.io.Writer;
+
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
@@ -22,13 +19,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
@@ -42,8 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
-
-	private Shell shell;
+	
 	private ISelectionProvider selectionProvider;
 	private static Logger logger = LoggerFactory.getLogger(CreateQueryProjectExplorerAction.class);
 
@@ -59,7 +53,7 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
+		
 		selectionProvider = targetPart.getSite().getSelectionProvider();
 	}
 
@@ -67,11 +61,6 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		MessageDialog.openInformation(
-			shell,
-			"it.eng.spagobi.meta.editor",
-			"New Query was executed.");
-		
 		//create Query File
 		IFile queryFile = createQueryFile();
 		
@@ -105,7 +94,6 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		String modelPath = iFile.getRawLocation().toOSString();
 		logger.debug("Model path [{}]",modelPath);
 
-		String modelDirectory = new File(modelPath).getParent();
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
 		ModelPackage libraryPackage = ModelPackage.eINSTANCE;

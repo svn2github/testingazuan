@@ -80,55 +80,9 @@ public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
 	@Override
 	public void execute() {		
 		logger.debug("Executing CreateQueryCommand");
-		//prepareMapping();
 		initQueryFileContents();
 		openQueryEditor();		
 	}
-	
-//	protected void prepareMapping() {
-//		BusinessModel businessModel;
-//		businessModel = (BusinessModel)parameter.getOwner();
-//		String directory = (String)parameter.getValue();
-//
-//		//Call JPA Mapping generator
-//		JpaMappingGenerator generator = new JpaMappingGenerator();
-//		try {
-//			generator.generate(businessModel, directory);
-//		} catch (Exception e) {
-//			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
-//			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
-//		}
-//		
-//		//Get Package Name
-//		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
-//			
-//		//Call Java Compiler
-//		DataMartGenerator datamartGenerator = new DataMartGenerator(
-//				directory,
-//				directory+"/build/",
-//				null,
-//				directory+"/dist/",
-//				packageName.replace(".", "/")
-//				);		
-//		
-//		boolean result = datamartGenerator.compile();
-//		if (result){
-//			// compile OK
-//			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
-//			
-//			//Generate Jar from compiled code
-//			datamartGenerator.jar();
-//			this.executed = true;
-//			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
-//		}else{
-//			// compile error
-//			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-//			this.executed = false; 
-//			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
-//		}
-//		
-//		
-//	}
 	
 	protected void initQueryFileContents() {
 		String queryPath;

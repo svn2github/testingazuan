@@ -31,7 +31,7 @@ public class JpaViewInnerJoinRelatioship {
 	
 	public IJpaTable getDestinationTable() {
 		IJpaTable jpaTable;
-		PhysicalTable viewInnerTable = joinRelationship.getSourceTable();
+		PhysicalTable viewInnerTable = joinRelationship.getDestinationTable();
 		jpaTable = new JpaViewInnerTable(businessView, viewInnerTable);
 		
 		return jpaTable;

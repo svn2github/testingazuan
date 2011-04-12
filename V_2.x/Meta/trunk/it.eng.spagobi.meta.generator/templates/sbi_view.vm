@@ -15,29 +15,47 @@
 		{
 			name: ${jpaTable.className}
 			, package: ${jpaView.package}
-			, columns: [
-#foreach ($jpaColumn in $jpaView.getColumns($jpaTable))
-			{
-				name: ${jpaColumn.propertyName}
-			},
-#end
-			]
+##			, columns: [
+##foreach ($jpaColumn in $jpaView.getColumns($jpaTable))
+##			{
+##				name: ${jpaColumn.propertyName}
+##			},
+##end
+##			]
 		},
 #end
 		]
 		, joins: [
 #foreach ($joinRelationship in $jpaView.joinRelationships)
 		{
-			sourceTable: ${joinRelationship.sourceTable.className}
+			sourceTable: {
+				package: ${joinRelationship.sourceTable.package}
+				, name: ${joinRelationship.sourceTable.className}
+			}
 			, sourceColumns: [
 #foreach ($sourceColumn in $joinRelationship.sourceColumns)
+## column name				
+#if ($sourceColumn.jpaTable.hasFakePrimaryKey()|| ( $sourceColumn.jpaTable.hasCompositeKey() && $sourceColumn.isIdentifier()))			
+				${sourceColumn.jpaTable.compositeKeyPropertyName}.${sourceColumn.propertyName},
+#else
 				${sourceColumn.propertyName},
 #end
+## column name	
+#end
 			]
-			, destinationTable: ${joinRelationship.sourceTable.className}
+			, destinationTable: {
+				package: ${joinRelationship.destinationTable.package}
+				, name: ${joinRelationship.destinationTable.className}
+			}
 			, destinationColumns: [
 #foreach ($destinationColumn in $joinRelationship.destinationColumns)
+## column name				
+#if ($destinationColumn.jpaTable.hasFakePrimaryKey()|| ( $destinationColumn.jpaTable.hasCompositeKey() && $destinationColumn.isIdentifier()))			
+				${destinationColumn.jpaTable.compositeKeyPropertyName}.${destinationColumn.propertyName},
+#else
 				${destinationColumn.propertyName},
+#end
+## column name	
 #end
 			]
 		}

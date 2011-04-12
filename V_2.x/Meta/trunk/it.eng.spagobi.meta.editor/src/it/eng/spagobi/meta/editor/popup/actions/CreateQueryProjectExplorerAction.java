@@ -72,7 +72,7 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 	}
 	
 	public IFile createQueryFile(){
-		//Create Folder Wizard
+		//Open Wizard
 		NewQueryFileProjectExplorerWizard wizard = new NewQueryFileProjectExplorerWizard();
     	wizard.init(PlatformUI.getWorkbench(), new StructuredSelection());
     	WizardDialog dialog = new WizardDialog(wizard.getShell(), wizard);
@@ -84,16 +84,15 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		return queryFile;
 	}
 	
-	public void initQueryFileContents(IFile queryFile){
-		
+	public void initQueryFileContents(IFile queryFile){	
 		ISelection selection = selectionProvider.getSelection();
-		logger.debug("Project Explorer Selection is [{}]",selection);
-		logger.debug("Selection Class is [{}]",selection.getClass().getName());
+		logger.debug("Project Explorer Selection is [{}] of type [{}]",selection,selection.getClass().getName());
 		TreeSelection treeSelection = (TreeSelection)selection;
 		IFile iFile = (IFile)treeSelection.getFirstElement();
 		String modelPath = iFile.getRawLocation().toOSString();
 		logger.debug("Model path [{}]",modelPath);
-
+		
+		//Read the Model File
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
 		ModelPackage libraryPackage = ModelPackage.eINSTANCE;
@@ -110,9 +109,9 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		BusinessModel businessModel;
 		businessModel = root.getBusinessModels().get(0);
 		logger.debug("Business Model name is [{}] ",businessModel.getName() );
-
+		
+		//Write model path on query file
 		if(queryFile.exists()){
-
 			JSONObject o;
 			String queryContent ;
 			try {
@@ -121,15 +120,13 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 				o.put("queryMeta", queryMeta);
 				queryMeta.put("modelPath",modelPath);
 				queryContent = o.toString(3);
+				StringBufferInputStream inputStream = new StringBufferInputStream(queryContent);
+				queryFile.setContents(inputStream, IResource.NONE,null);
 			} catch (JSONException e) {
 				throw new SpagoBIPluginException("Impossibile to create JSON Metadata ",e);
 			}
-			try {
-				StringBufferInputStream inputStream = new StringBufferInputStream(queryContent);
-				queryFile.setContents(inputStream, IResource.NONE,null);
-
-			} catch (CoreException e) {
-				e.printStackTrace();
+			catch (CoreException e) {
+				throw new SpagoBIPluginException("Core Exception ",e);
 			} 
 		}
 	}
@@ -138,11 +135,12 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		if (queryFile.exists() ) {
 			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 			IEditorDescriptor desc = PlatformUI.getWorkbench().
-	        getEditorRegistry().getDefaultEditor(queryFile.getName());
+			getEditorRegistry().getDefaultEditor(queryFile.getName());
 			try {
 				page.openEditor(new FileEditorInput(queryFile), desc.getId());
 			} catch (PartInitException e) {
-				throw new SpagoBIPluginException("Impossibile to Open Query Editor ",e);			}
+				throw new SpagoBIPluginException("Impossibile to Open Query Editor ",e);			
+			}
 		}
 	}	
 	

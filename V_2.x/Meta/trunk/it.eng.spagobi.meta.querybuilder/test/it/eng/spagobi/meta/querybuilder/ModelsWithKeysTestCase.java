@@ -57,22 +57,22 @@ public class ModelsWithKeysTestCase extends TestCase {
 	DBConnection connection;
 	
 	// a model without keys and relationships
-	private static final File TEST_MODEL_NOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/NoKey.sbimodel");
+	private static final File TEST_MODEL_NOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/NoKey.sbimodel");
 	
 	// a model without simple keys only (1 column key) but no relationships
-	private static final File TEST_MODEL_SIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/SimpleKey.sbimodel");
+	private static final File TEST_MODEL_SIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/SimpleKey.sbimodel");
 	
 	// a model with composite keys only but no relationships
-	private static final File TEST_MODEL_COMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/CompKey.sbimodel");
+	private static final File TEST_MODEL_COMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/CompKey.sbimodel");
 	
 	// a model with no keys but with relatioships
-	private static final File TEST_MODEL_RELNOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelNoKey.sbimodel");
+	private static final File TEST_MODEL_RELNOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelNoKey.sbimodel");
 	
 	// a model with simple keys and relatioships (...defined upon keys)
-	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelSimpleKey.sbimodel");
+	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelSimpleKey.sbimodel");
 	
 	// a model with composite keys and relatioships (...defined upon keys)
-	private static final File TEST_MODEL_RELCOMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/RelCompKey.sbimodel");
+	private static final File TEST_MODEL_RELCOMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelCompKey.sbimodel");
 
 
 	protected void setUp() throws Exception {

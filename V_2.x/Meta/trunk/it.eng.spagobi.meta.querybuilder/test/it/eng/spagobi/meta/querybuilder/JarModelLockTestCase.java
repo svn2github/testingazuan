@@ -34,6 +34,9 @@ import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
 
@@ -96,8 +99,10 @@ public class JarModelLockTestCase extends TestCase {
 				deleteFile( new File(TestCaseConstants.TEST_FOLDER, "outs/a"));
 			}
 		} catch (SpagoBIPluginException e) {
+			e.printStackTrace();
 			fail("Can't delete the file");
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail();
 		}
 
@@ -113,11 +118,24 @@ public class JarModelLockTestCase extends TestCase {
 	    		deleteFile(files[i]);
 	    	}
 	    }
+	    try {
+//			FileOutputStream out = new FileOutputStream(file);
+//			out.close();
+//			FileInputStream in = new FileInputStream(file);
+//			System.err.println(">>> " + in.available());
+//			in.close();
+		} catch (Exception e) {
+			throw new SpagoBIPluginException("Can't open stream to file");
+		}
+		while(!file.delete()) {
+			System.err.println(".");
+		}
+		/*
 	    boolean fileDeletionResult = file.delete();
-	    if(!fileDeletionResult){
-	    	
+	    if(!fileDeletionResult) {
 	    	throw new SpagoBIPluginException("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
 	    }
+	    */
 	}
 	
 	private void doTest(File modelFile, File outputDir) throws Exception {

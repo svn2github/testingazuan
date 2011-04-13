@@ -88,7 +88,7 @@ public class Compiler {
 		
 		logger.trace("IN");
 		
-		String command = srcDir + " -classpath " + getClasspath() + " -d " + binDir + " -source 1.5";
+		String command = "\"" +srcDir + "\" -classpath " + getClasspath() + " -d \"" + binDir + "\" -source 1.5";
 		logger.info("Compile command is equal to [{}]", command);
 		
 		PrintWriter error=new PrintWriter(System.err);

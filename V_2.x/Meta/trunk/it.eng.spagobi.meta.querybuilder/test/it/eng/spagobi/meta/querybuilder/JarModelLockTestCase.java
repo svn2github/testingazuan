@@ -89,7 +89,7 @@ public class JarModelLockTestCase extends TestCase {
 	}
 		
 
-	public void testRelNoKeyGenerator() throws Exception {
+	public void testJarModelLock() throws Exception {
 		try {
 			for(int i=0; i<10; i++){
 				doTest(TEST_MODEL_RELNOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/a"));	

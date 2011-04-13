@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <it.eng.spagobi.meta.model:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:it.eng.spagobi.meta.model="http:///it/eng/spagobi/meta/model.ecore" xmlns:it.eng.spagobi.meta.model.business="http:///it/eng/spagobi/meta/model/businessl.ecore" name="My Model">
-  <physicalModels name="My Model" databaseName="MySQL" databaseVersion="5.0.91-community-nt" catalog="foodmart">
+  <physicalModels name="MyModel" databaseName="MySQL" databaseVersion="5.0.91-community-nt" catalog="foodmart">
     <properties key="connection.name">
       <value propertyType="//@propertyTypes.0"/>
     </properties>
@@ -574,7 +574,7 @@
     <primaryKeys name="PRIMARY" table="//@physicalModels.0/@tables.36" columns="//@physicalModels.0/@tables.36/@columns.0"/>
     <primaryKeys name="PRIMARY" table="//@physicalModels.0/@tables.41" columns="//@physicalModels.0/@tables.41/@columns.0"/>
   </physicalModels>
-  <businessModels name="My Model" physicalModel="//@physicalModels.0">
+  <businessModels name="MyModel" physicalModel="//@physicalModels.0">
     <properties key="structural.package">
       <value propertyType="//@propertyTypes.5"/>
     </properties>

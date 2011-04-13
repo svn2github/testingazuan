@@ -11,6 +11,7 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -346,6 +347,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	protected void prepareMapping(String modelPath) {
 		logger.debug("Creating JPA Mapping of [{}]", modelPath);
 		String modelDirectory = new File(modelPath).getParent();
+		/*
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
 		ModelPackage libraryPackage = ModelPackage.eINSTANCE;
@@ -356,7 +358,11 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		} catch (IOException e) {
 			throw new SpagoBIPluginException("JPA Mapping: IO Error",e);
 		}
-		Model root = (Model) resource.getContents().get(0);
+		*/
+		File modelFile = new File(modelPath);
+		EmfXmiSerializer emfXmiSerializer = new EmfXmiSerializer();
+		Model root = emfXmiSerializer.deserialize(modelFile);
+		//Model root = (Model) resource.getContents().get(0);
 		logger.debug("Model root is [{}] ",root );
 
 		BusinessModel businessModel;

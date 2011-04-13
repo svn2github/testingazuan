@@ -70,7 +70,7 @@ public class NewModelWizardFileCreationPage extends WizardNewFileCreationPage {
 		 modelNameFieldInput = new Text(group, SWT.BORDER);
 		 modelNameFieldInput.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
 				 GridData.HORIZONTAL_ALIGN_FILL));
-		 modelNameFieldInput.setText("My Model");
+		 modelNameFieldInput.setText("MyModel");
 	 }
 	 
 	 public String getModelName() {

@@ -21,32 +21,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.generator.SpagoBIMetaGeneratorPlugin;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaView;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -160,6 +151,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			model = (BusinessModel)o;
 			try {
 				baseOutputDir = new File(outputDir);
+				deleteFile(baseOutputDir);
+				baseOutputDir = new File(outputDir);
 				logger.debug("Output dir is equal to [{}]", baseOutputDir);
 				
 				srcDir = (srcDir == null)? new File(baseOutputDir, DEFAULT_SRC_DIR): srcDir;
@@ -177,6 +170,27 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		}
 		
 		logger.trace("OUT");
+	}
+	
+	/**
+	 * Delete the file and all it's children
+	 * @param file
+	 */
+	private void deleteFile(File file){
+		if(!file.exists()){
+			return;
+		}
+	    if (file.isDirectory()) {
+	    	File[] files = file.listFiles();
+	    	for(int i=0; i<files.length; i++){
+	    		deleteFile(files[i]);
+	    	}
+	    }
+	    boolean fileDeletionResult = file.delete();
+	    if(!fileDeletionResult){
+	    	logger.error("Can't delete the file [{}] the file is writtable? [{}]", file.getAbsolutePath(), file.canWrite());
+	    	throw new SpagoBIPluginException("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
+	    }
 	}
 	
 	/**

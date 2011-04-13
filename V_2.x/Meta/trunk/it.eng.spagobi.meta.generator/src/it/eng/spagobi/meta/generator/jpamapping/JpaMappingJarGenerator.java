@@ -52,6 +52,8 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 		logger.trace("IN");
 		
 		try {
+			//The output dir is the model directory plus the business model name
+			outputDir = outputDir+File.separator+o.getName();
 			super.generate(o, outputDir);
 			
 			distDir = (distDir == null)? new File(baseOutputDir, DEFAULT_DIST_DIR): distDir;

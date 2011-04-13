@@ -80,7 +80,7 @@ public class EmfXmiSerializer implements IModelSerializer {
 	        model = deserialize(inputStream);
 	        inputStream.close();
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to serialize model [" + model.getName() + "] to file [" + file.getName() + "]", t);
+			throw new RuntimeException("Impossible to deserialize model [" + model.getName() + "] to file [" + file.getName() + "]", t);
 		}
 		
 		return model;

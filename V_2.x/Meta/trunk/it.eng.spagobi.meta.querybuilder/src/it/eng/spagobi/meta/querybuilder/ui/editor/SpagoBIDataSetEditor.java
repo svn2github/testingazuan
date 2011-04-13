@@ -108,10 +108,10 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				logger.debug("Model path is [{}]",modelPath );
 				  
 				//create JPA Mapping
-				prepareMapping(modelPath);
+				BusinessModel businessModel = prepareMapping(modelPath);
 				
 				//create Data Source
-				IDataSource dataSource = createDataSource(modelPath);
+				IDataSource dataSource = createDataSource(modelPath,businessModel);
 				
 				//create QueryBuilder
 				queryBuilder = new QueryBuilder(dataSource);
@@ -148,10 +148,10 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				logger.debug("Model path is [{}]",modelPath );
 			  
 				//create JPA Mapping
-				prepareMapping(modelPath);
+				BusinessModel businessModel = prepareMapping(modelPath);
 				
 				//create Data Source
-				IDataSource dataSource = createDataSource(modelPath);
+				IDataSource dataSource = createDataSource(modelPath,businessModel);
 				
 				//create QueryBuilder
 				queryBuilder = new QueryBuilder(dataSource);
@@ -344,7 +344,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}
 	
-	protected void prepareMapping(String modelPath) {
+	protected BusinessModel prepareMapping(String modelPath) {
 		logger.debug("Creating JPA Mapping of [{}]", modelPath);
 		String modelDirectory = new File(modelPath).getParent();
 		/*
@@ -387,10 +387,12 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
 			logger.debug("Mapping jar not generated succesfully");
 		}
+		return businessModel;
 	}	
 	
-	public IDataSource createDataSource(String modelPath){
+	public IDataSource createDataSource(String modelPath, BusinessModel businessModel){
 		logger.debug("Creating datasource of [{}]",modelPath);
+		/*
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
 		try {
@@ -404,6 +406,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		
 		BusinessModel businessModel;
 		businessModel = root.getBusinessModels().get(0);
+		*/
 		
 		PhysicalModel physicalModel = businessModel.getPhysicalModel();
 		String connectionUrl = physicalModel.getProperties().get("connection.url").getValue();

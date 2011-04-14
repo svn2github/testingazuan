@@ -58,7 +58,7 @@ public class ResultSet implements IResultSet
     }
     
     public ResultSet(IDataStore dataStore, int m_maxRows) {
-    	this.m_maxRows = m_maxRows;
+    	this.m_maxRows = m_maxRows -1;
     	this.dataStore = dataStore;
     }
     
@@ -96,8 +96,9 @@ public class ResultSet implements IResultSet
         
         // simple implementation done below for demo purpose only
         int maxRows = getMaxRows();
-        if( maxRows <= 0 )  // no limit is specified
-            maxRows = 100;    // hard-coded for demo purpose
+        if( maxRows <= 0 )  maxRows = (int)dataStore.getRecordsCount();
+        
+        maxRows = Math.min(maxRows,  (int)dataStore.getRecordsCount());
         
         if( m_currentRowId < maxRows )
         {

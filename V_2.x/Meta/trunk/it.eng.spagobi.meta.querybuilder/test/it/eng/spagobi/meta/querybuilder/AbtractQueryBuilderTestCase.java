@@ -114,7 +114,7 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 		IDataSourceConfiguration configuration;
 		configuration = new FileDataSourceConfiguration(modelName, jarFile);
 		configuration.loadDataSourceProperties().put("connection", connection);
-		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration);
+		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration, false);
 		
 		return dataSource;
 	}

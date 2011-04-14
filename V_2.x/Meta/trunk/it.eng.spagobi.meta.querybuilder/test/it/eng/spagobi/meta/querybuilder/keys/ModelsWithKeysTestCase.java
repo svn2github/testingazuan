@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.querybuilder;
+package it.eng.spagobi.meta.querybuilder.keys;
 
 import java.io.File;
 
@@ -37,6 +37,7 @@ import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 import junit.framework.TestCase;
 
 

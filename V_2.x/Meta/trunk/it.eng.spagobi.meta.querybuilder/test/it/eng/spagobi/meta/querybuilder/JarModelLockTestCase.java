@@ -118,15 +118,8 @@ public class JarModelLockTestCase extends TestCase {
 	    		deleteFile(files[i]);
 	    	}
 	    }
-	    try {
-//			FileOutputStream out = new FileOutputStream(file);
-//			out.close();
-//			FileInputStream in = new FileInputStream(file);
-//			System.err.println(">>> " + in.available());
-//			in.close();
-		} catch (Exception e) {
-			throw new SpagoBIPluginException("Can't open stream to file");
-		}
+	  
+	    
 		while(!file.delete()) {
 			System.err.println(".");
 		}

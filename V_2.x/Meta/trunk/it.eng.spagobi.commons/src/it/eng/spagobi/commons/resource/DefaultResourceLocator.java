@@ -77,7 +77,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		
 		bundle = Platform.getBundle(pluginId);
 		if(bundle !=  null) {		
-			System.err.println("Boundle trovato");
+			//System.err.println("Boundle trovato");
 			fileURL = bundle.getEntry(fileRelativePath);
 			if(fileURL == null) {
 				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
@@ -89,7 +89,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 				throw new SpagoBIPluginException("Impossible to resolve URL [" + fileRelativePath + "] to a valid local URL");
 			}
 		} else {
-			System.err.println("Boundle NON trovato");
+			//System.err.println("Boundle NON trovato");
 			File file = new File(fileRelativePath);
 			try {
 				fileURL =  file.toURL();
@@ -165,7 +165,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 		}
 		
 		//logger.debug("Succesfully loaded [{}] properties from file [{}]", properties.size(), resourceFileURL);
-		System.err.println("Succesfully loaded [" + properties.size() + "] properties from file [" + resourceFileURL + "]");
+		//System.err.println("Succesfully loaded [" + properties.size() + "] properties from file [" + resourceFileURL + "]");
 		
 		
 		return properties;

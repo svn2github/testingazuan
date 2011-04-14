@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/log4j-over-slf4j-1.5.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar" sourcepath="/QbeCore"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar" sourcepath="D:/sviluppo/helios/SpagoBI30/QbeCore"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jaxen-1.1-beta-4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/json.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/mysql-connector-java-3.1.13-bin.jar"/>
@@ -12,7 +12,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/javassist-3.12.0.GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/jta-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/hibernate3.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar" sourcepath="D:/sviluppo/helios/SpagoBI30/SpagoBIUtils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

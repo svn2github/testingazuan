@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
-import it.eng.qbe.datasource.DataSourceWithClassLoaderFactory;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.CompositeDataSourceConfiguration;
@@ -71,7 +70,7 @@ public class OdaStructureBuilder {
 
 		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
 		IDataSource ds = DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, false); 
-		return DataSourceWithClassLoaderFactory.getDataSource(ds);
+		return ds;
 	}
 	
 	/**

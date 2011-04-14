@@ -71,7 +71,8 @@ public class FilterColumnEditingSupport extends EditingSupport {
 		ExpressionUtilities.updateNodeName(query.getWhereClauseStructure(), "$F{"+elementField.getName()+"}", "$F{"+String.valueOf(value)+"}");
 		elementField.setName(String.valueOf(value));
 		viewer.refresh();
-
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

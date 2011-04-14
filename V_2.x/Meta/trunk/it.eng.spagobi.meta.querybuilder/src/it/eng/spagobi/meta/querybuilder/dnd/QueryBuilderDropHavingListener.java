@@ -90,8 +90,8 @@ public class QueryBuilderDropHavingListener extends ViewerDropAdapter {
 		Query query  = queryBuilder.addHavingField(dataMartField);
         tableViewer.setInput(query.getHavingFields());
         tableViewer.refresh();
-
-
+		
+        queryBuilder.setDirtyEditor();
 	}
 
 }

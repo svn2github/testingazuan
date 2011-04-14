@@ -92,5 +92,7 @@ public class QueryBuilderDropWhereListener extends ViewerDropAdapter {
 		Query query = queryBuilder.addWhereField(dataMartField);
         tableViewer.setInput(query.getWhereFields());
         tableViewer.refresh();
+        
+		queryBuilder.setDirtyEditor();
 	}
 }

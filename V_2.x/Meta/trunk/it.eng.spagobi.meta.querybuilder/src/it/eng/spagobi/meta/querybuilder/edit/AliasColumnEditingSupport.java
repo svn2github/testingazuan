@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.querybuilder.edit;
 
 
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -36,12 +37,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
 public class AliasColumnEditingSupport extends EditingSupport {
 
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public AliasColumnEditingSupport(TableViewer viewer) {
+	public AliasColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -57,15 +60,15 @@ public class AliasColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		//return ((SelectField)element).getAlias();
 		return ((DataMartSelectField) element).getAlias();
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {	
-		//((SelectField) element).setAlias(String.valueOf(value));
 		((DataMartSelectField) element).setAlias(String.valueOf(value));
 		viewer.refresh();
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

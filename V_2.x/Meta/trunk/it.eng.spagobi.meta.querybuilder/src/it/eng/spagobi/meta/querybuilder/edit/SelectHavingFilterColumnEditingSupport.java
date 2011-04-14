@@ -72,6 +72,7 @@ public class SelectHavingFilterColumnEditingSupport extends EditingSupport {
 		if(havingViewer!=null){
 			havingViewer.setInput(query.getHavingFields());
 			havingViewer.refresh();
+			queryBuilder.setDirtyEditor();
 		}
 	}
 

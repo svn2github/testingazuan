@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.HavingField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -35,12 +36,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
 public class HavingFilterColumnEditingSupport extends EditingSupport {
 
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public HavingFilterColumnEditingSupport(TableViewer viewer) {
+	public HavingFilterColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -63,6 +66,8 @@ public class HavingFilterColumnEditingSupport extends EditingSupport {
 	protected void setValue(Object element, Object value) {
 		((HavingField) element).setName(String.valueOf(value));
 		viewer.refresh();
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

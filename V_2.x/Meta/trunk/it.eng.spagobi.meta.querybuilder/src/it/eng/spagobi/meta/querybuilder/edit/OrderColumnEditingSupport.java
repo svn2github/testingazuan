@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -34,12 +35,14 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class OrderColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public OrderColumnEditingSupport(TableViewer viewer) {
+	public OrderColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -59,7 +62,6 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-//		SelectField selectField = (SelectField) element;
 		DataMartSelectField selectField = ((DataMartSelectField) element);
 		if (selectField.getOrderType().equals("NONE")) {
 			return 0;
@@ -74,7 +76,6 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-//		SelectField selectField = (SelectField) element;
 		DataMartSelectField selectField = ((DataMartSelectField) element);
 		if (((Integer) value) == 0) {
 			selectField.setOrderType("NONE");
@@ -86,22 +87,7 @@ public class OrderColumnEditingSupport extends EditingSupport {
 		
 		viewer.refresh();
 		
-		//Update the Query object for execution
-//		int selectFieldIndex = SelectFieldModelProvider.INSTANCE.getSelectFieldIndex(selectField);
-//		Query query = QueryProvider.getQuery();
-//		ISelectField querySelectField = query.getSelectFieldByIndex(selectFieldIndex);
-//		if (querySelectField instanceof DataMartSelectField){
-//			if ((selectField.getOrder()!= null) && (!selectField.getOrder().equals("NONE"))){
-//				if (selectField.getOrder().equals("ASCENDING")){
-//					((DataMartSelectField)querySelectField).setOrderType("ASC");
-//				} else if (selectField.getOrder().equals("DESCENDING")){
-//					((DataMartSelectField)querySelectField).setOrderType("DESC");
-//				}
-//			}	
-//			System.out.println(((DataMartSelectField) querySelectField).getUniqueName()+" is order: "+((DataMartSelectField)querySelectField).getOrderType());
-//		}
-		//**********************
-
+		queryBuilder.setDirtyEditor();		
 	}
 
 }

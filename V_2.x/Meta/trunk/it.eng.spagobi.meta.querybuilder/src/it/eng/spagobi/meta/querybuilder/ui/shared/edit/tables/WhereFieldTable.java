@@ -125,6 +125,8 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 			queryBuilder.getQuery().clearWhereFields();
 			if(tableViewerWhere!=null){
 				tableViewerWhere.refresh();
+				
+				queryBuilder.setDirtyEditor();
 			}
 		}
 	}
@@ -165,7 +167,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 				return whereClause.getOperator();
 			}
 		});		
-		col.setEditingSupport(new OperatorColumnEditingSupport(tableViewerWhere));
+		col.setEditingSupport(new OperatorColumnEditingSupport(tableViewerWhere,queryBuilder));
 
 		
 		//Right Operand Column
@@ -178,7 +180,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 				return rightOperand;
 			}
 		});	
-		col.setEditingSupport(new FilterRightOperandColumnEditingSupport(tableViewerWhere));
+		col.setEditingSupport(new FilterRightOperandColumnEditingSupport(tableViewerWhere,queryBuilder));
 		
 		//Is for Prompt Column
 		col = createTableViewerColumn(columnsTitles[4], columnsBounds[4], 4, tableViewerWhere);
@@ -199,7 +201,7 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 			}
 
 		});		
-		col.setEditingSupport(new IsForPromptColumnEditingSupport(tableViewerWhere));
+		col.setEditingSupport(new IsForPromptColumnEditingSupport(tableViewerWhere,queryBuilder));
 
 		
 		//Bol. Connector Column
@@ -249,6 +251,8 @@ public class WhereFieldTable extends AbstractQueryEditTable {
 					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
 					tableViewerWhere.setInput(query.getWhereFields());
 					tableViewerWhere.refresh();
+					
+					queryBuilder.setDirtyEditor();
 				}
 			}
 			logger.trace("OUT");

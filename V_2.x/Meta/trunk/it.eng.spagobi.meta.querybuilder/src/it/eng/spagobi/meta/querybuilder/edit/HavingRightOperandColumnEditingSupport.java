@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.querybuilder.edit;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
 import java.util.StringTokenizer;
@@ -39,12 +40,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
  */
 public class HavingRightOperandColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public HavingRightOperandColumnEditingSupport(TableViewer viewer) {
+	public HavingRightOperandColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -73,6 +76,8 @@ public class HavingRightOperandColumnEditingSupport extends EditingSupport {
 		Operand rightOperand = new Operand(values, stringValue,AbstractStatement.OPERAND_TYPE_STATIC,values, getValues(stringValue), AggregationFunctions.NONE_FUNCTION);
 		((HavingField) element).setRightOperand(rightOperand);
 		viewer.refresh();
+		
+		queryBuilder.setDirtyEditor();
 	}
 	
 	private String[] getValues(String values){

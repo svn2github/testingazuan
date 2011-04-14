@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.querybuilder.edit;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.util.StringTokenizer;
 
@@ -39,12 +40,14 @@ import org.eclipse.jface.viewers.TextCellEditor;
  */
 public class FilterRightOperandColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public FilterRightOperandColumnEditingSupport(TableViewer viewer) {
+	public FilterRightOperandColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -74,6 +77,8 @@ public class FilterRightOperandColumnEditingSupport extends EditingSupport {
 		Operand rightOperand = new Operand(values,stringValue, AbstractStatement.OPERAND_TYPE_STATIC, values, values);
 		((WhereField) element).setRightOperand(rightOperand);
 		viewer.refresh();
+		
+		queryBuilder.setDirtyEditor();
 	}
 	
 	private String[] getValues(String values){

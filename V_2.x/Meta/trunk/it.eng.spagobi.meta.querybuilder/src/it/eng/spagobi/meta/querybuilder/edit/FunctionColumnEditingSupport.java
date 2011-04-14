@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -35,12 +36,14 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class FunctionColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public FunctionColumnEditingSupport(TableViewer viewer) {
+	public FunctionColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -108,7 +111,8 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 		}
 
 		viewer.refresh();
-
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

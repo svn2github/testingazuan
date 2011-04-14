@@ -72,6 +72,7 @@ public class SelectWhereFilterColumnEditingSupport extends EditingSupport {
 		if(whereViewer!=null){
 			whereViewer.setInput(query.getWhereFields());
 			whereViewer.refresh();	
+			queryBuilder.setDirtyEditor();
 		}
 	}
 

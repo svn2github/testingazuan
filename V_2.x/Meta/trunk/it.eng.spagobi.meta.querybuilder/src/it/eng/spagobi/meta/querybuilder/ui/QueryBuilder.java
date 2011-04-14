@@ -42,6 +42,7 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
+import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
@@ -58,6 +59,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,6 +267,24 @@ public class QueryBuilder {
 	
 	public void addField(IModelField dataMartField) {
 		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
+	}
+	
+	protected IEditorPart getEditorPart() {
+		SpagoBIDataSetEditor dataSetEditor = null;
+		IEditorPart editorPart = 
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if(editorPart instanceof SpagoBIDataSetEditor){
+			dataSetEditor = (SpagoBIDataSetEditor)editorPart;
+		}
+		return dataSetEditor;
+	}
+	
+	public void setDirtyEditor(){	
+		SpagoBIDataSetEditor dataSetEditor = (SpagoBIDataSetEditor)getEditorPart();
+		if (dataSetEditor != null){
+			dataSetEditor.setDirty(true);
+			dataSetEditor.fireDirty();
+		}
 	}
 	
 	public IDataSource getDataSource() {

@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.HavingField.Operand;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 import it.eng.spagobi.tools.dataset.common.query.IAggregationFunction;
 
@@ -37,12 +38,14 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class HavingLeftFunctionColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public HavingLeftFunctionColumnEditingSupport(TableViewer viewer) {
+	public HavingLeftFunctionColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -112,7 +115,8 @@ public class HavingLeftFunctionColumnEditingSupport extends EditingSupport {
 			}
 		}
 		viewer.refresh();
-
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

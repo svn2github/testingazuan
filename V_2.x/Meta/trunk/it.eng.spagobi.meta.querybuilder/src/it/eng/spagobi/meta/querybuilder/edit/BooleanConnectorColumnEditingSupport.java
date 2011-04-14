@@ -82,6 +82,8 @@ public class BooleanConnectorColumnEditingSupport extends EditingSupport {
 		Query query = queryBuilder.getQuery();
 		ExpressionUtilities.updateParentOperation(query.getWhereClauseStructure(), "$F{"+whereClause.getName()+"}", whereClause.getBooleanConnector());
 		viewer.refresh();
+		
+		queryBuilder.setDirtyEditor();
 	}
 	
 

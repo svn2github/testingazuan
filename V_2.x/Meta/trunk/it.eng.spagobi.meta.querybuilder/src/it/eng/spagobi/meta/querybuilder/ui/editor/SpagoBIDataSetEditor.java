@@ -68,6 +68,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	private SpagoBIDataSetEditPage queryEditPage;
 	private SpagoBIDataSetResultPage queryResultPage;
 	private JSONObject o;
+	protected boolean dirty = false;
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
 	
@@ -207,10 +208,22 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
 	}
+
 	
 	public boolean isDirty() {
-		return true;
+		return dirty;
 	}
+	
+	public void setDirty(boolean value){
+		dirty = value;
+		logger.debug("Dirty state is [{}]",value);
+	}
+	
+	public void fireDirty(){
+		firePropertyChange(PROP_DIRTY);
+		logger.debug("fireDirty executed");
+	}
+	
 	
 	/**
 	 * Saves the multi-page editor's document.
@@ -304,6 +317,9 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			}
 			
 		}
+		//reset Dirty state
+		setDirty(false);
+		fireDirty();
 		
 		logger.trace("OUT");
 	}

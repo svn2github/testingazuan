@@ -25,6 +25,7 @@ package it.eng.spagobi.meta.querybuilder.edit;
 
 
 import it.eng.qbe.query.WhereField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -38,12 +39,14 @@ import org.eclipse.swt.SWT;
  */
 public class IsForPromptColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public IsForPromptColumnEditingSupport(TableViewer viewer) {
+	public IsForPromptColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -67,7 +70,8 @@ public class IsForPromptColumnEditingSupport extends EditingSupport {
 		WhereField whereClause = (WhereField) element;
 		whereClause.setPromptable((Boolean) value);
 		viewer.refresh();
-
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

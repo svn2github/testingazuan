@@ -165,7 +165,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 				return field.getAlias();
 			}
 		});		
-		col.setEditingSupport(new AliasColumnEditingSupport(viewer));
+		col.setEditingSupport(new AliasColumnEditingSupport(viewer,queryBuilder));
 		
 		//Function Column
 		col = createTableViewerColumn(columnsTitles[3], columnsBounds[3], 3, viewer);
@@ -178,7 +178,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 				return field.getFunction().getName();
 			}
 		});		
-		col.setEditingSupport(new FunctionColumnEditingSupport(viewer));
+		col.setEditingSupport(new FunctionColumnEditingSupport(viewer,queryBuilder));
 		
 		
 		//Order Column
@@ -192,7 +192,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 				return field.getOrderType();
 			}
 		});	
-		col.setEditingSupport(new OrderColumnEditingSupport(viewer));
+		col.setEditingSupport(new OrderColumnEditingSupport(viewer,queryBuilder));
 		
 		//Group Column
 		col = createTableViewerColumn(columnsTitles[5], columnsBounds[5], 5, viewer);
@@ -219,7 +219,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			}
 
 		});	
-		col.setEditingSupport(new GroupColumnEditingSupport(viewer));
+		col.setEditingSupport(new GroupColumnEditingSupport(viewer,queryBuilder));
 		
 		//Include Column
 		col = createTableViewerColumn(columnsTitles[6], columnsBounds[6], 6, viewer);
@@ -246,7 +246,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			}
 
 		});	
-		col.setEditingSupport(new IncludeColumnEditingSupport(viewer));
+		col.setEditingSupport(new IncludeColumnEditingSupport(viewer,queryBuilder));
 		
 		//Visible Column
 		col = createTableViewerColumn(columnsTitles[7], columnsBounds[7], 7, viewer);
@@ -273,7 +273,7 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			}
 
 		});	
-		col.setEditingSupport(new VisibleColumnEditingSupport(viewer));
+		col.setEditingSupport(new VisibleColumnEditingSupport(viewer,queryBuilder));
 
 		
 		//Filter Column
@@ -343,6 +343,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
 					viewer.setInput(query.getSelectFields(false));
 					viewer.refresh();
+					
+					queryBuilder.setDirtyEditor();
 				}
 			}
 			logger.trace("OUT");
@@ -365,6 +367,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			if(viewer!=null){
 				viewer.setInput(new ArrayList<Object>());
 				viewer.refresh();
+				
+				queryBuilder.setDirtyEditor();
 			}
 		}
 	}
@@ -385,6 +389,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			queryBuilder.getQuery().clearWhereFields();
 			queryBuilder.getQuery().clearHavingFields();
 			queryBuilder.refreshQueryEditGroup();
+			
+			queryBuilder.setDirtyEditor();
 		}
 	}
 	

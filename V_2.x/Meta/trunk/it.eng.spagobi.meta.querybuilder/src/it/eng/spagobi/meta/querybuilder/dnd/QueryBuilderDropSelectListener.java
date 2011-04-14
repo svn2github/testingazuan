@@ -62,6 +62,7 @@ public class QueryBuilderDropSelectListener extends ViewerDropAdapter {
 
 		queryBuilder.addSelectFields(selectionData);
 		queryBuilder.refreshSelectFields();
+		queryBuilder.setDirtyEditor();
 		return true;
 	}
 

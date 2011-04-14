@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.HavingField;
+import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -34,12 +35,14 @@ import org.eclipse.jface.viewers.TableViewer;
  */
 public class HavingBooleanConnectorColumnEditingSupport extends EditingSupport {
 	private final TableViewer viewer;
+	private QueryBuilder queryBuilder;
 	/**
 	 * @param viewer
 	 */
-	public HavingBooleanConnectorColumnEditingSupport(TableViewer viewer) {
+	public HavingBooleanConnectorColumnEditingSupport(TableViewer viewer, QueryBuilder queryBuilder) {
 		super(viewer);
 		this.viewer = viewer;
+		this.queryBuilder = queryBuilder;
 	}
 
 	@Override
@@ -79,7 +82,8 @@ public class HavingBooleanConnectorColumnEditingSupport extends EditingSupport {
 		} 
 
 		viewer.refresh();
-
+		
+		queryBuilder.setDirtyEditor();
 	}
 
 }

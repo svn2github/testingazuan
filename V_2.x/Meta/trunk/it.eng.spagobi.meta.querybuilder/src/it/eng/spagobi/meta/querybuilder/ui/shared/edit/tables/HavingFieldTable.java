@@ -125,6 +125,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 			queryBuilder.getQuery().clearHavingFields();
 			if(tableViewerHaving!=null){
 				tableViewerHaving.refresh();
+				queryBuilder.setDirtyEditor();
 			}
 		}
 	}
@@ -142,7 +143,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return havingClause.getName();
 			}
 		});	
-		col.setEditingSupport(new HavingFilterColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingFilterColumnEditingSupport(tableViewerHaving,queryBuilder));
 
 		
 		//Left Function Column
@@ -158,7 +159,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return "";
 			}
 		});	
-		col.setEditingSupport(new HavingLeftFunctionColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingLeftFunctionColumnEditingSupport(tableViewerHaving,queryBuilder));
 
 		
 		//Left Operand Column
@@ -184,7 +185,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return havingClause.getOperator();
 			}
 		});	
-		col.setEditingSupport(new HavingOperatorColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingOperatorColumnEditingSupport(tableViewerHaving,queryBuilder));
 
 		
 		//Right Function Column
@@ -200,7 +201,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return "";
 			}
 		});	
-		col.setEditingSupport(new HavingRightFunctionColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingRightFunctionColumnEditingSupport(tableViewerHaving,queryBuilder));
 
 		
 		//Right Operand Column
@@ -216,7 +217,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return "";
 			}
 		});	                    
-		col.setEditingSupport(new HavingRightOperandColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingRightOperandColumnEditingSupport(tableViewerHaving,queryBuilder));
 		
 		//Is for Prompt Column
 		col = createTableViewerColumn(columnsTitles[6], columnsBounds[6], 6, tableViewerHaving);
@@ -236,7 +237,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				}
 			}
 		});	
-		col.setEditingSupport(new HavingIsForPromptColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingIsForPromptColumnEditingSupport(tableViewerHaving, queryBuilder));
 
 		
 		//Bol. Connector Column
@@ -248,7 +249,7 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 				return havingClause.getBooleanConnector();
 			}
 		});	
-		col.setEditingSupport(new HavingBooleanConnectorColumnEditingSupport(tableViewerHaving));
+		col.setEditingSupport(new HavingBooleanConnectorColumnEditingSupport(tableViewerHaving,queryBuilder));
 
 	}
 	
@@ -280,7 +281,9 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 					//Assert.assertTrue("Unable to delete alla select fields from query", selectFieldsNumber - query.getSelectFields(false).size() == indexLength);
 					tableViewerHaving.setInput(query.getHavingFields());
 					tableViewerHaving.refresh();
+					queryBuilder.setDirtyEditor();
 				}
+
 			}
 			logger.trace("OUT");
 		}

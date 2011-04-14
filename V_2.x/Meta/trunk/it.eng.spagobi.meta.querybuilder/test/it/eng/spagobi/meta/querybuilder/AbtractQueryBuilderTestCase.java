@@ -29,6 +29,7 @@ import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
+import it.eng.qbe.datasource.configuration.InMemoryDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
@@ -54,6 +55,7 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 		setUpConncetion();
 		setUpSerializer();
 		setUpGenarator();
+		System.err.println("-- SET-UP --------------------------------");
 	}
 	
 	protected void tearDown() throws Exception {
@@ -61,6 +63,8 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 		tearDownSerializer();
 		tearDownConncetion();
 		tearDownClassLoader();
+		
+		System.err.println("-- TEAR-DOWN --------------------------------");
 	}
 	
 	protected void setUpGenarator() {

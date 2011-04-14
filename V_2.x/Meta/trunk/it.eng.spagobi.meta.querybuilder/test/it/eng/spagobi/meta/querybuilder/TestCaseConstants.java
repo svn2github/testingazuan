@@ -35,4 +35,5 @@ public class TestCaseConstants {
 	public static String CONNECTION_PWD = "mysql";
 	
 	public static final File TEST_FOLDER = new File("test-resources");
+	public static final File TEST_OUPUT_ROOT_FOLDER = new File(TEST_FOLDER, "outs");
 }

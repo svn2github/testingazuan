@@ -27,11 +27,13 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
+import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+import it.eng.spagobi.meta.querybuilder.AbtractQueryBuilderTestCase;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
 import java.io.File;
@@ -45,59 +47,34 @@ import junit.framework.TestCase;
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
-public class JarModelLockTestCase extends TestCase {
+public class JarModelLockTestCase extends AbtractQueryBuilderTestCase {
 
-	IModelSerializer serializer;
-	JpaMappingJarGenerator jarGenerator;	
-	DBConnection connection;
+	// How many time creation/deletion loop must iterate
+	public static final int ITERATION_NUMBER = 10;
 	
+	public static final File TEST_INPUT_FOLDER = new File(TestCaseConstants.TEST_FOLDER, "models/stress");
+	public static final File TEST_OUTPUT_FOLDER = new File(TestCaseConstants.TEST_OUPUT_ROOT_FOLDER, "stress");
 	
-	// a model with no keys but with relatioships
-	private static final File TEST_MODEL_RELNOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/a.sbimodel");
+	// a model with no keys but with relationships
+	private static final File TEST_MODEL_FILE = new File(TEST_INPUT_FOLDER, "lockTestModel.sbimodel");
 	
 
 
 	protected void setUp() throws Exception {
+		modelName = "a";
 		super.setUp();
-		serializer = new EmfXmiSerializer();		
-		jarGenerator = new JpaMappingJarGenerator();
-		jarGenerator.setLibDir(new File(TestCaseConstants.TEST_FOLDER.getParentFile(), "libs/eclipselink"));
-		jarGenerator.setLibs(new String[]{
-				"org.eclipse.persistence.core_2.1.2.jar",
-				"javax.persistence_2.0.1.jar"
-		});	
-		
-		connection = new DBConnection();			
-		connection.setName( "a" );
-		connection.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
-		connection.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
-		connection.setUrl( TestCaseConstants.CONNECTION_URL );
-		connection.setUsername( TestCaseConstants.CONNECTION_USER );		
-		connection.setPassword( TestCaseConstants.CONNECTION_PWD );
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		serializer = null;
-		jarGenerator = null;
 	}
-	
-	
-	private IDataSource getDataSource(File file) {
-		IDataSourceConfiguration configuration;
-		configuration = new FileDataSourceConfiguration("a", file);
-		configuration.loadDataSourceProperties().put("connection", connection);
-		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration);
-		
-		return dataSource;
-	}
-		
 
 	public void testJarModelLock() throws Exception {
 		try {
-			for(int i=0; i<10; i++){
-				doTest(TEST_MODEL_RELNOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/a"));	
-				deleteFile( new File(TestCaseConstants.TEST_FOLDER, "outs/a"));
+			for(int i = 0; i < ITERATION_NUMBER; i++){
+				File outputFolder = new File( TEST_OUTPUT_FOLDER, "lock" );
+				doDataSourceCreationTest( TEST_MODEL_FILE, outputFolder );	
+				doDeleteJarFileTest( outputFolder );
 			}
 		} catch (SpagoBIPluginException e) {
 			e.printStackTrace();
@@ -109,14 +86,14 @@ public class JarModelLockTestCase extends TestCase {
 
 	}
 
-	private void deleteFile(File file){
+	private void doDeleteJarFileTest(File file){
 		if(!file.exists()){
 			return;
 		}
 	    if (file.isDirectory()) {
 	    	File[] files = file.listFiles();
 	    	for(int i=0; i<files.length; i++){
-	    		deleteFile(files[i]);
+	    		doDeleteJarFileTest(files[i]);
 	    	}
 	    }
 	  
@@ -132,19 +109,28 @@ public class JarModelLockTestCase extends TestCase {
 	    */
 	}
 	
-	private void doTest(File modelFile, File outputDir) throws Exception {
+	private void doDataSourceCreationTest(File modelFile, File outputDir) throws Exception {
 		Model model = serializer.deserialize(modelFile);
 		jarGenerator.generate(model.getBusinessModels().get(0), outputDir.getAbsolutePath());
 
-		File file = new File(jarGenerator.getDistDir(), "datamart.jar");
+		File jarFile = new File(jarGenerator.getDistDir(), "datamart.jar");
+		
 		IDataSource dataSource = null;
 		try {
-			dataSource = getDataSource(file);
+			dataSource = createDataSource(jarFile);
 		} catch(Throwable t){
+			t.printStackTrace();
 			fail();
 		}
 		
-		dataSource.getModelStructure();
+		IModelStructure structure = null;
+		try {
+			structure = dataSource.getModelStructure();
+		} catch(Throwable t){
+			t.printStackTrace();
+			fail();
+		}
+		
 	}
 	
 }

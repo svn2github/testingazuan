@@ -37,6 +37,7 @@ import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+import it.eng.spagobi.meta.querybuilder.AbtractQueryBuilderTestCase;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 import junit.framework.TestCase;
 
@@ -51,97 +52,60 @@ import junit.framework.TestCase;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ModelsWithKeysTestCase extends TestCase {
+public class ModelsWithKeysTestCase extends AbtractQueryBuilderTestCase {
 	
-	IModelSerializer serializer;
-	JpaMappingJarGenerator jarGenerator;	
-	DBConnection connection;
+	public static final File TEST_INPUT_FOLDER = new File(TestCaseConstants.TEST_FOLDER, "models/keys");
+	public static final File TEST_OUTPUT_FOLDER = new File(TestCaseConstants.TEST_OUPUT_ROOT_FOLDER, "keys");
 	
 	// a model without keys and relationships
-	private static final File TEST_MODEL_NOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/NoKey.sbimodel");
+	private static final File TEST_MODEL_NOKEY = new File(TEST_INPUT_FOLDER, "NoKey.sbimodel");
 	
 	// a model without simple keys only (1 column key) but no relationships
-	private static final File TEST_MODEL_SIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/SimpleKey.sbimodel");
+	private static final File TEST_MODEL_SIMPLEKEY = new File(TEST_INPUT_FOLDER, "SimpleKey.sbimodel");
 	
 	// a model with composite keys only but no relationships
-	private static final File TEST_MODEL_COMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/CompKey.sbimodel");
+	private static final File TEST_MODEL_COMPKEY = new File(TEST_INPUT_FOLDER, "CompKey.sbimodel");
 	
-	// a model with no keys but with relatioships
-	private static final File TEST_MODEL_RELNOKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelNoKey.sbimodel");
+	// a model with no keys but with relationships
+	private static final File TEST_MODEL_RELNOKEY = new File(TEST_INPUT_FOLDER, "RelNoKey.sbimodel");
 	
-	// a model with simple keys and relatioships (...defined upon keys)
-	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelSimpleKey.sbimodel");
+	// a model with simple keys and relationships (...defined upon keys)
+	private static final File TEST_MODEL_RELSIMPLEKEY = new File(TEST_INPUT_FOLDER, "RelSimpleKey.sbimodel");
 	
-	// a model with composite keys and relatioships (...defined upon keys)
-	private static final File TEST_MODEL_RELCOMPKEY = new File(TestCaseConstants.TEST_FOLDER, "models/modelsWithKeys/RelCompKey.sbimodel");
+	// a model with composite keys and relationships (...defined upon keys)
+	private static final File TEST_MODEL_RELCOMPKEY = new File(TEST_INPUT_FOLDER, "RelCompKey.sbimodel");
 
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		serializer = new EmfXmiSerializer();		
-		jarGenerator = new JpaMappingJarGenerator();
-		jarGenerator.setLibDir(new File(TestCaseConstants.TEST_FOLDER.getParentFile(), "libs/eclipselink"));
-		jarGenerator.setLibs(new String[]{
-				"org.eclipse.persistence.core_2.1.2.jar",
-				"javax.persistence_2.0.1.jar"
-		});	
-		
-		connection = new DBConnection();			
-		connection.setName( "My Model" );
-		connection.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
-		connection.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
-		connection.setUrl( TestCaseConstants.CONNECTION_URL );
-		connection.setUsername( TestCaseConstants.CONNECTION_USER );		
-		connection.setPassword( TestCaseConstants.CONNECTION_PWD );
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		serializer = null;
-		jarGenerator = null;
-	}
-	
-	
-	private IDataSource getDataSource(File file) {
-		IDataSourceConfiguration configuration;
-		configuration = new FileDataSourceConfiguration("My Model", file);
-		configuration.loadDataSourceProperties().put("connection", connection);
-		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration);
-		
-		return dataSource;
 	}
 		
-	public void testAllInOneShot() throws Exception {
-		testNoKeyGenerator();
-		testSimpleKeyGenerator();
-		testCompKeyGenerator();
-		testRelNoKeyGenerator();
-		testRelSimpleKeyGenerator();
-		testRelCompKeyGenerator();
-	}
-	
 	public void testNoKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_NOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/01_relNoKey"));
+		doTest(TEST_MODEL_NOKEY, new File(TEST_OUTPUT_FOLDER, "01_relNoKey"));
 	}
 	
 	public void testSimpleKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_SIMPLEKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/02_relSimpleKey"));
+		doTest(TEST_MODEL_SIMPLEKEY, new File(TEST_OUTPUT_FOLDER, "02_relSimpleKey"));
 	}
 	
 	public void testCompKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_COMPKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/03_CompKey"));
+		doTest(TEST_MODEL_COMPKEY, new File(TEST_OUTPUT_FOLDER, "03_CompKey"));
 	}
 	
 	public void testRelNoKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELNOKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/04_relNoKey"));
+		doTest(TEST_MODEL_RELNOKEY, new File(TEST_OUTPUT_FOLDER, "04_relNoKey"));
 	}
 	
 	public void testRelSimpleKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELSIMPLEKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/05_relSimpleKey"));
+		doTest(TEST_MODEL_RELSIMPLEKEY, new File(TEST_OUTPUT_FOLDER, "05_relSimpleKey"));
 	}
 	
 	public void testRelCompKeyGenerator() throws Exception {
-		doTest(TEST_MODEL_RELCOMPKEY, new File(TestCaseConstants.TEST_FOLDER, "outs/06_relCompKey"));
+		doTest(TEST_MODEL_RELCOMPKEY, new File(TEST_OUTPUT_FOLDER, "06_relCompKey"));
 	}
 	
 	
@@ -160,10 +124,10 @@ public class ModelsWithKeysTestCase extends TestCase {
 		String viewFileContent = StringUtils.getStringFromFile(viewFile);
 		JSONObject viewJSON = new JSONObject( viewFileContent );
 		
-		File file = new File(jarGenerator.getDistDir(), "datamart.jar");
+		File jarFile = new File(jarGenerator.getDistDir(), "datamart.jar");
 		IDataSource dataSource = null;
 		try {
-			dataSource = getDataSource(file);
+			dataSource = createDataSource(jarFile);
 		} catch(Throwable t){
 			fail();
 		}

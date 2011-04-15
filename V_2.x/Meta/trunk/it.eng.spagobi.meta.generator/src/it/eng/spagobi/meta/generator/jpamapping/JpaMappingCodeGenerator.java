@@ -351,15 +351,20 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			logger.debug("Create labels.properties");
 			
 		    context = new VelocityContext();
-	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+		    List<IJpaTable> tables = new ArrayList<IJpaTable>();
+		    tables.addAll( model.getTables() );
+		    for( IJpaView jpaView : model.getViews()) {
+		    	tables.addAll(jpaView.getInnerTables());
+		    }
+	        context.put("jpaTables", tables ); //$NON-NLS-1$
 	       
 	      
 			
-			File outputFile = new File(srcDir, "labels.properties");
+			File outputFile = new File(srcDir, "label.properties");
 			
 	        createFile(templateFile, outputFile, context);
 		} catch(Throwable t) {
-        	logger.error("Impossible to create labels.properties", t);
+        	logger.error("Impossible to create label.properties", t);
         } finally {
         	logger.trace("OUT");
         }

@@ -117,7 +117,7 @@ public abstract class AbstractJpaMappingGeneratorTestCase extends TestCase {
 		assertTrue("Impossible to find META-INF folder in [" + jarGenerator.getSrcDir() + "]", metainfDir.exists());
 		persistenceFile = new File(metainfDir, "persistence.xml");
 		assertTrue("Impossible to find persistence.xml file in [" + metainfDir + "]", persistenceFile.exists());
-		labelsFile = new File(jarGenerator.getSrcDir(), "labels.properties");
+		labelsFile = new File(jarGenerator.getSrcDir(), "label.properties");
 		assertTrue("Impossible to find labels.properties file in [" + jarGenerator.getSrcDir() + "]", labelsFile.exists());
 		propertiesFile = new File(jarGenerator.getSrcDir(), "qbe.properties");
 		assertTrue("Impossible to find qbe.properties file in [" + jarGenerator.getSrcDir() + "]", propertiesFile.exists());
@@ -126,7 +126,7 @@ public abstract class AbstractJpaMappingGeneratorTestCase extends TestCase {
 		assertTrue("Impossible to find META-INF folder in [" + jarGenerator.getBinDir() + "]", metainfDir.exists());
 		persistenceFile = new File(metainfDir, "persistence.xml");
 		assertTrue("Impossible to find persistence.xml file in [" + metainfDir + "]", persistenceFile.exists());
-		labelsFile = new File(jarGenerator.getBinDir(), "labels.properties");
+		labelsFile = new File(jarGenerator.getBinDir(), "label.properties");
 		assertTrue("Impossible to find labels.properties file in [" + jarGenerator.getBinDir() + "]", labelsFile.exists());
 		propertiesFile = new File(jarGenerator.getBinDir(), "qbe.properties");
 		assertTrue("Impossible to find qbe.properties file in [" + jarGenerator.getBinDir() + "]", propertiesFile.exists());
@@ -152,7 +152,7 @@ public abstract class AbstractJpaMappingGeneratorTestCase extends TestCase {
 		try {
 			jarFile = new JarFile( jarGenerator.getJarFile() );
 			assertNotNull("Impossible to find file persistence.xml in jar file [" + jarGenerator.getJarFile() + "]", jarFile.getJarEntry("META-INF/persistence.xml"));
-			assertNotNull("Impossible to find file labels.properties in jar file [" + jarGenerator.getJarFile() + "]", jarFile.getJarEntry("labels.properties"));
+			assertNotNull("Impossible to find file labels.properties in jar file [" + jarGenerator.getJarFile() + "]", jarFile.getJarEntry("label.properties"));
 			assertNotNull("Impossible to find file qbe.properties in jar file [" + jarGenerator.getJarFile() + "]", jarFile.getJarEntry("qbe.properties"));
 			assertNotNull("Impossible to find file views.json in jar file [" + jarGenerator.getJarFile()  + "]", jarFile.getJarEntry("views.json"));
 		} catch (IOException e) {

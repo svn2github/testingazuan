@@ -249,12 +249,12 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 
 	@Override
 	public String getName() {
-		return physicalTable.getName();
+		return businessView.getName() + " > " + StringUtils.initUpper(physicalTable.getName().replace("_", " "));
 	}
 
 	@Override
 	public String getDescription() {
-		return physicalTable.getDescription();
+		return physicalTable.getDescription() != null? physicalTable.getDescription(): "";
 	}
 
 	@Override

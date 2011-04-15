@@ -249,7 +249,16 @@ public class JpaColumn implements IJpaColumn {
 	
 	@Override
 	public String getUniqueName() {
-		return this.getJpaTable().getQualifiedClassName() + "//" + getPropertyName();
+		String uniqueName = this.getName();
+		
+		if(this.getJpaTable().hasFakePrimaryKey() || (this.isIdentifier() && this.getJpaTable().hasCompositeKey())) {
+			uniqueName = this.getJpaTable().getQualifiedClassName() + "/" + this.getJpaTable().getCompositeKeyPropertyName() + "." + getPropertyName();
+		} else {
+			uniqueName = this.getJpaTable().getQualifiedClassName() + "/" + getPropertyName();
+		}
+		
+		
+		return uniqueName;
 	}
 	
 	/* (non-Javadoc)

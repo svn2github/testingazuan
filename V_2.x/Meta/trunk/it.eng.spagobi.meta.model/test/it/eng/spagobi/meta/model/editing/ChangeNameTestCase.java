@@ -22,13 +22,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.editing;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Assert;
 
 import it.eng.spagobi.meta.model.AbtractModelTestCase;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.TestCaseConstants;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
@@ -41,7 +44,10 @@ import junit.framework.TestCase;
  */
 public class ChangeNameTestCase extends AbtractModelTestCase {	
 	
-	private static final File TEST_MODEL_FILE = new File(TestCaseConstants.TEST_FOLDER, "TestModel.sbimodel");
+	public static final File TEST_INPUT_FOLDER = new File(TestCaseConstants.TEST_FOLDER, "models/edit");
+	public static final File TEST_OUTPUT_FOLDER = new File(TestCaseConstants.TEST_OUPUT_ROOT_FOLDER, "edit");
+	
+	private static final File TEST_MODEL_FILE = new File(TEST_INPUT_FOLDER, "RelSimpleKey.sbimodel");
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -58,46 +64,43 @@ public class ChangeNameTestCase extends AbtractModelTestCase {
 	}
 	
 	public void testSerializer() {
-		Model testModel;
-		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
-		serializer.serialize(model, outFile);
-	       
-		testModel = serializer.deserialize(outFile);
-		
-		Assert.assertTrue("Original model and test model have not the same name", testModel.getName().equals(model.getName()));
-		Assert.assertTrue("Original model and test model have not the same number of business models", testModel.getBusinessModels().size() == model.getBusinessModels().size());
-		Assert.assertTrue("Original model and test model have not the same number of physical models", testModel.getPhysicalModels().size() == model.getPhysicalModels().size());
-		
-		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
-		PhysicalModel testPhysicalModel = testModel.getPhysicalModels().get(0);
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of FK", physicalModel.getForeignKeys().size() == testPhysicalModel.getForeignKeys().size());
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of PK", physicalModel.getPrimaryKeys().size() == testPhysicalModel.getPrimaryKeys().size());
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of tables", physicalModel.getTables().size() == testPhysicalModel.getTables().size());
+		assertNotNull( model.getBusinessModels() );
+		assertTrue( model.getBusinessModels().size() > 0);
 		
 		BusinessModel businessModel = model.getBusinessModels().get(0);
-		BusinessModel testBusinessModel = testModel.getBusinessModels().get(0);
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of bidentifiers", businessModel.getIdentifiers().size() == testBusinessModel.getIdentifiers().size());
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of brelationship", businessModel.getRelationships().size() == testBusinessModel.getRelationships().size());
-		Assert.assertTrue("Original pmodel and test pmodel have not the same number of tables", businessModel.getTables().size() == testBusinessModel.getTables().size());
+		assertNotNull( businessModel );
 		
+		List<BusinessRelationship> relationships = businessModel.getRelationships();
+		assertNotNull( relationships );
+		assertTrue( relationships.size() > 0);
+		
+		BusinessRelationship relationship = relationships.get(0);
+		assertNotNull( relationship );
+		
+		List<BusinessColumn> destinationColumns = relationship.getDestinationColumns();
+		assertNotNull( destinationColumns );
+		assertTrue( destinationColumns.size() > 0);
+		
+		for(BusinessColumn column : destinationColumns) {
+			column.setName(column.getName() + "X");
+		}
+		
+		// -------
+		relationships = businessModel.getRelationships();
+		assertNotNull( relationships );
+		assertTrue( relationships.size() > 0);
+		
+		relationship = relationships.get(0);
+		assertNotNull( relationship );
+		
+		destinationColumns = relationship.getDestinationColumns();
+		assertNotNull( destinationColumns );
+		assertTrue( destinationColumns.size() > 0);
+		
+		for(BusinessColumn column : destinationColumns) {
+			assertTrue(column.getName().endsWith("X"));
+		}
 	}
 	
-	public void testDeleteTable() {
-		Model testModel;
-		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
-		
-		BusinessModel businessModel = model.getBusinessModels().get(0);
-		BusinessTable table = (BusinessTable)businessModel.getTables().get(0);
-		String tableName = table.getName();
-		
-		Assert.assertNotNull("Impossible to get table [" + tableName+ "]", businessModel.getBusinessTable(tableName));
-		Assert.assertTrue("Ipossible to remove table [" + tableName+ "]", businessModel.getTables().remove(table) );
-		Assert.assertNull("Table [" + tableName+ "] has not been removed porperly", businessModel.getBusinessTable(tableName));
-		
-		serializer.serialize(model, outFile);
-		testModel = serializer.deserialize(outFile);
-		businessModel = testModel.getBusinessModels().get(0);
-		Assert.assertNull("Table [" + tableName+ "] has not been removed porperly", businessModel.getBusinessTable(tableName));
-		
-	}
+
 }

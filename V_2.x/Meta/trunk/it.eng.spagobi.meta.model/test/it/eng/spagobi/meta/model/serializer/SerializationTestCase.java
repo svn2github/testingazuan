@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ModelTestCase extends AbtractModelTestCase {	
+public class SerializationTestCase extends AbtractModelTestCase {	
 	
 	private static final File TEST_MODEL_FILE = new File(TestCaseConstants.TEST_FOLDER, "TestModel.sbimodel");
 

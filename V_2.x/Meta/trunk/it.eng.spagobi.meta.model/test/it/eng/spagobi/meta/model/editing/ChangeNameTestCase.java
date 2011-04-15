@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.serializer;
+package it.eng.spagobi.meta.model.editing;
 
 import java.io.File;
 
@@ -39,14 +39,10 @@ import junit.framework.TestCase;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class SerializationTestCase extends AbtractModelTestCase {	
+public class ChangeNameTestCase extends AbtractModelTestCase {	
 	
-	
-	public static final File TEST_INPUT_FOLDER = new File(TestCaseConstants.TEST_FOLDER, "models/serializer");
-	public static final File TEST_OUTPUT_FOLDER = new File(TestCaseConstants.TEST_OUPUT_ROOT_FOLDER, "serializer");
-	
-	private static final File TEST_MODEL_FILE = new File(TEST_INPUT_FOLDER, "TestModel.sbimodel");
-	
+	private static final File TEST_MODEL_FILE = new File(TestCaseConstants.TEST_FOLDER, "TestModel.sbimodel");
+
 	protected void setUp() throws Exception {
 		super.setUp();
 		model = serializer.deserialize(TEST_MODEL_FILE);
@@ -63,7 +59,7 @@ public class SerializationTestCase extends AbtractModelTestCase {
 	
 	public void testSerializer() {
 		Model testModel;
-		File outFile = new File(TEST_OUTPUT_FOLDER, "out.sbimodel");
+		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
 		serializer.serialize(model, outFile);
 	       
 		testModel = serializer.deserialize(outFile);
@@ -88,7 +84,7 @@ public class SerializationTestCase extends AbtractModelTestCase {
 	
 	public void testDeleteTable() {
 		Model testModel;
-		File outFile = new File(TEST_OUTPUT_FOLDER, "out.sbimodel");
+		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
 		
 		BusinessModel businessModel = model.getBusinessModels().get(0);
 		BusinessTable table = (BusinessTable)businessModel.getTables().get(0);

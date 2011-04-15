@@ -1,6 +1,6 @@
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
-import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
@@ -437,15 +437,15 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		logger.debug("Datasource model name is [{}]",modelName);
 		
 		//Create Connection
-		DBConnection connection = new DBConnection();			
-		connection.setName( businessModel.getName());
-		connection.setDialect( "org.hibernate.dialect.MySQLDialect" );			
-		connection.setDriverClass( "com.mysql.jdbc.Driver");			
-		connection.setPassword( connectionPassword );
-		connection.setUrl( connectionUrl);
-		connection.setUsername( connectionUsername );
+		ConnectionDescriptor connectionDescriptor = new ConnectionDescriptor();			
+		connectionDescriptor.setName( businessModel.getName());
+		connectionDescriptor.setDialect( "org.hibernate.dialect.MySQLDialect" );			
+		connectionDescriptor.setDriverClass( "com.mysql.jdbc.Driver");			
+		connectionDescriptor.setPassword( connectionPassword );
+		connectionDescriptor.setUrl( connectionUrl);
+		connectionDescriptor.setUsername( connectionUsername );
 		
-		dataSourceProperties.put("connection", connection);
+		dataSourceProperties.put("connection", connectionDescriptor);
 		
 		String modelDirectory = new File(modelPath).getParent();
 		List modelList = new ArrayList();

@@ -28,15 +28,12 @@ import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -148,13 +145,13 @@ public class JarFilelLockAfterJpaInitTestCase extends AbtractQueryBuilderTestCas
 	
 	private Map<String,Object> buildEmptyConfiguration() {
 		Map<String,Object> cfg = new HashMap<String,Object>();
-		if(connection.isJndiConncetion()) {
-			cfg.put("javax.persistence.nonJtaDataSource", connection.getJndiName());
+		if(connectionDescriptor.isJndiConncetion()) {
+			cfg.put("javax.persistence.nonJtaDataSource", connectionDescriptor.getJndiName());
 		} else {
-			cfg.put("javax.persistence.jdbc.url", connection.getUrl());
-			cfg.put("javax.persistence.jdbc.password", connection.getPassword());
-			cfg.put("javax.persistence.jdbc.user", connection.getUsername());
-			cfg.put("javax.persistence.jdbc.driver", connection.getDriverClass());
+			cfg.put("javax.persistence.jdbc.url", connectionDescriptor.getUrl());
+			cfg.put("javax.persistence.jdbc.password", connectionDescriptor.getPassword());
+			cfg.put("javax.persistence.jdbc.user", connectionDescriptor.getUsername());
+			cfg.put("javax.persistence.jdbc.driver", connectionDescriptor.getDriverClass());
 		}
 		return cfg;
 	}

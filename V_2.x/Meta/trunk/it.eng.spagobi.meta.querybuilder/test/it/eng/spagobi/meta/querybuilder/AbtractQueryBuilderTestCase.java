@@ -21,19 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder;
 
-import java.io.File;
-
-import junit.framework.TestCase;
-import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
-import it.eng.qbe.datasource.configuration.InMemoryDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+
+import java.io.File;
+
+import junit.framework.TestCase;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -42,7 +42,7 @@ import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 public abstract class AbtractQueryBuilderTestCase extends TestCase {
 	
 	protected ClassLoader classLoader;
-	protected DBConnection connection;
+	protected ConnectionDescriptor connectionDescriptor;
 	protected IModelSerializer serializer;
 	protected JpaMappingJarGenerator jarGenerator;	
 	protected String modelName;
@@ -97,23 +97,23 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 	}
 	
 	protected void setUpConncetion() {
-		connection = new DBConnection();			
-		connection.setName( "My Model" );
-		connection.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
-		connection.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
-		connection.setUrl( TestCaseConstants.CONNECTION_URL );
-		connection.setUsername( TestCaseConstants.CONNECTION_USER );		
-		connection.setPassword( TestCaseConstants.CONNECTION_PWD );
+		connectionDescriptor = new ConnectionDescriptor();			
+		connectionDescriptor.setName( "My Model" );
+		connectionDescriptor.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
+		connectionDescriptor.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
+		connectionDescriptor.setUrl( TestCaseConstants.CONNECTION_URL );
+		connectionDescriptor.setUsername( TestCaseConstants.CONNECTION_USER );		
+		connectionDescriptor.setPassword( TestCaseConstants.CONNECTION_PWD );
 	}
 	
 	protected void tearDownConncetion() {
-		connection = null;
+		connectionDescriptor = null;
 	}
 	
 	protected IDataSource createDataSource(File jarFile) {
 		IDataSourceConfiguration configuration;
 		configuration = new FileDataSourceConfiguration(modelName, jarFile);
-		configuration.loadDataSourceProperties().put("connection", connection);
+		configuration.loadDataSourceProperties().put("connection", connectionDescriptor);
 		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration, false);
 		
 		return dataSource;

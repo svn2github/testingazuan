@@ -21,25 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.keys;
 
-import java.io.File;
-
-
-import org.json.JSONObject;
-
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
-import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
-import it.eng.qbe.datasource.jpa.JPADriver;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 import it.eng.spagobi.meta.querybuilder.AbtractQueryBuilderTestCase;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
-import junit.framework.TestCase;
+
+import java.io.File;
+
+import org.json.JSONObject;
 
 
 /**

@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.oda.impl;
 
-import it.eng.qbe.datasource.DBConnection;
+import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class Connection implements IConnection
 			List<String> modelNames = new ArrayList<String>();
 			modelNames.add( modelName );
 		
-			DBConnection connection = new DBConnection();
+			ConnectionDescriptor connection = new ConnectionDescriptor();
 			connection.setName( modelName );
 			connection.setDialect( connProperties.getProperty("database_dialect") );			
 			connection.setJndiName( null );			

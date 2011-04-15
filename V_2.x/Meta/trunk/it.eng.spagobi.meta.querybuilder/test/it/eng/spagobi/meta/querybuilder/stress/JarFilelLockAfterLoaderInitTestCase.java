@@ -22,29 +22,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.stress;
 
 import it.eng.qbe.classloader.ClassLoaderManager;
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DriverManager;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
-import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
-import it.eng.qbe.datasource.jpa.JPADriver;
-import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 import it.eng.spagobi.meta.querybuilder.AbtractQueryBuilderTestCase;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import junit.framework.TestCase;
 
 /**
  * @author Alberto Ghedin (alberto.ghedin@eng.it)

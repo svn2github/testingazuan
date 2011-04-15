@@ -36,8 +36,10 @@ public class JarFileLockTestSuite extends TestCase {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(JarFilelLockAfterConfLoadedTestCase.class);
 		suite.addTestSuite(JarFilelLockAfterLoaderInitTestCase.class);
+		suite.addTestSuite(JarFilelLockAfterJpaInitTestCase.class);
 		suite.addTestSuite(JarFilelLockAfterDataSourceInitTestCase.class);
-		suite.addTestSuite(JarFilelLockCompleteTestCase.class);
+		
+		//suite.addTestSuite(JarFilelLockCompleteTestCase.class);
 		
 		return suite;
 	}

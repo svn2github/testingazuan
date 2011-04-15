@@ -22,18 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.stress;
 
 import it.eng.qbe.classloader.ClassLoaderManager;
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.DriverManager;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
-import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
-import it.eng.qbe.datasource.jpa.JPADriver;
-import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
 import it.eng.spagobi.meta.querybuilder.AbtractQueryBuilderTestCase;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
@@ -43,14 +32,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileLock;
+import java.util.HashMap;
+import java.util.Map;
 
-import junit.framework.TestCase;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
-public class JarFilelLockAfterLoaderInitTestCase extends AbtractQueryBuilderTestCase {
+public class JarFilelLockAfterJpaInitTestCase extends AbtractQueryBuilderTestCase {
 
 	// How many time creation/deletion loop must iterate
 	public static final int ITERATION_NUMBER = 10;
@@ -87,11 +81,13 @@ public class JarFilelLockAfterLoaderInitTestCase extends AbtractQueryBuilderTest
 	public void testJarFileLock() throws Exception {
 		try {
 			for(int i = 0; i < ITERATION_NUMBER; i++){
+				//tearDownClassLoader();
 				copyFile(TEST_JAR_FILE, TEST_OUTPUT_FOLDER);
 				File jarFile = new File(TEST_OUTPUT_FOLDER, "datamart.jar");
-				doClassLoaderInitializationTest( jarFile );	
+				doJpaInitializationTest( jarFile );	
+				System.err.println("jpa succesfully initialized (iteration " + (i+1) + " of " + ITERATION_NUMBER +")");
 				doDeleteJarFileTest( jarFile );
-				System.err.println("Jar file [" + jarFile.getAbsolutePath() + "] deleted succesfully (iteration " + (i+1) + " of " + ITERATION_NUMBER +")");
+				//System.err.println("Jar file [" + jarFile.getAbsolutePath() + "] deleted succesfully (iteration " + (i+1) + " of " + ITERATION_NUMBER +")");
 			}
 		} catch (SpagoBIPluginException e) {
 			e.printStackTrace();
@@ -106,21 +102,77 @@ public class JarFilelLockAfterLoaderInitTestCase extends AbtractQueryBuilderTest
 	private void doDeleteJarFileTest(File file){
 		boolean b = file.delete();
 		if(!b) {
-			throw new SpagoBIPluginException("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
+			System.err.println("FILE NOT DELETED");
+			OutputStream out = null;
+			try {
+				out = new FileOutputStream(file);
+				out.write(1);
+			} catch (Throwable t) {
+				System.err.println("An error occurred while clearing file content");
+			} finally {
+				closeOutputStream(out);
+			}
+			
+
+			 b = file.delete();
+
+			 if(!b) {
+				 throw new SpagoBIPluginException("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
+			 } else {
+				 System.err.println("NOW THE FILE IS DELETED");
+			 }
+			 
+			 
 		}
 	}
 	
-	private void doClassLoaderInitializationTest(File jarFile) throws Exception {
-		//ClassLoaderManager.qbeClassLoader = null;
-		ClassLoaderManager.updateCurrentWebClassLoader(jarFile);	
+	private void closeOutputStream(OutputStream outputStram) {
+		if (outputStram != null) {
+			try {
+				outputStram.flush();
+				outputStram.close();
+			} catch (Throwable t) {
+				throw new RuntimeException("Impossible to close stream");
+			}
+		}
 	}
+	
+	private void doJpaInitializationTest(File jarFile) throws Exception {
+		ClassLoaderManager.updateCurrentWebClassLoader(jarFile);
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory(modelName, buildEmptyConfiguration());
+//		EntityManager entityManager = factory.createEntityManager();
+//		entityManager.clear();
+//		entityManager.close();
+		factory.close();
+	}
+	
+	private Map<String,Object> buildEmptyConfiguration() {
+		Map<String,Object> cfg = new HashMap<String,Object>();
+		if(connection.isJndiConncetion()) {
+			cfg.put("javax.persistence.nonJtaDataSource", connection.getJndiName());
+		} else {
+			cfg.put("javax.persistence.jdbc.url", connection.getUrl());
+			cfg.put("javax.persistence.jdbc.password", connection.getPassword());
+			cfg.put("javax.persistence.jdbc.user", connection.getUsername());
+			cfg.put("javax.persistence.jdbc.driver", connection.getDriverClass());
+		}
+		return cfg;
+	}
+	
 	
 	private void copyFile(File sourceFile, File destinationFolder) {
 		try {
+						
 			File destinationFile = new File(destinationFolder, sourceFile.getName());
 			if(!destinationFolder.exists()) {
 				destinationFolder.mkdirs();
 			}
+			
+			boolean b = destinationFile.delete();
+			if(b == false) {
+				System.err.println("ERROR: Destination file already exists and cannot be deleted");
+			}
+			
 		    InputStream in = new FileInputStream(sourceFile);
 		    OutputStream out = new FileOutputStream(destinationFile);
 
@@ -142,7 +194,7 @@ public class JarFilelLockAfterLoaderInitTestCase extends AbtractQueryBuilderTest
 		    Runtime javaRuntime = Runtime.getRuntime();
 		    javaRuntime.gc();
 			*/
-		    
+		   
 		    System.err.println("File [" + destinationFile.getAbsolutePath() + "] succesfully created");
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to copy file [" + sourceFile + "] into folder [" + destinationFolder + "]", t);

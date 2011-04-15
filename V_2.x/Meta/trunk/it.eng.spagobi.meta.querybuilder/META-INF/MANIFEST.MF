@@ -24,3 +24,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.spagobi.meta.querybuilder.ui,
  it.eng.spagobi.meta.querybuilder.ui.wizard
+Import-Package: javax.persistence

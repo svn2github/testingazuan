@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.multi;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -45,6 +49,8 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class BusinessTableSelectionPage extends WizardPage {
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	private Table physicalTables;
 	private Table businessTables;
 	private Image physicalTableImage = null;
@@ -59,17 +65,17 @@ public class BusinessTableSelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Select Tables");
 		setMessage("Select the tables to import in your Business Model");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/selectTables"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectTables") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
 	    }
-		ImageDescriptor physicalTableImageDescriptor = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/obj16/PhysicalTable"));
+		ImageDescriptor physicalTableImageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.PhysicalTable") );
 		physicalTableImage = null;
 		if (physicalTableImageDescriptor!=null) {
 			physicalTableImage = physicalTableImageDescriptor.createImage();
 	    }
 		
-		ImageDescriptor dbTableImageDescriptor = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/obj16/BusinessTable"));
+		ImageDescriptor dbTableImageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.BusinessTable") );
 		if (dbTableImageDescriptor!=null) {
 			businessTableImage = dbTableImageDescriptor.createImage();
 	    }
@@ -141,11 +147,11 @@ public class BusinessTableSelectionPage extends WizardPage {
 		compButtons.setLayout(glC);
 		Button bAddBusinessTable = new Button(compButtons,SWT.FLAT);
 		bAddBusinessTable.setToolTipText("Add table as a Business Table");
-		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
+		Image imageAdd =ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddBusinessTable.setImage(imageAdd);
 		Button bRemoveBusinessTable = new Button(compButtons,SWT.FLAT);
 		bRemoveBusinessTable.setToolTipText("Remove table from Business Model");
-		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveBusinessTable.setImage(imageRem);
 	    addListenerButtons(bAddBusinessTable,bRemoveBusinessTable);
 	}

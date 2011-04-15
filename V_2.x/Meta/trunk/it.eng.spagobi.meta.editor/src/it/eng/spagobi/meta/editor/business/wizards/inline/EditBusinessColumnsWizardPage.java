@@ -1,5 +1,7 @@
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -8,6 +10,7 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.net.URL;
 import java.util.Collection;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -33,11 +36,13 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 	private BusinessTable businessTable;
 	private BusinessView businessView;
 	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	protected EditBusinessColumnsWizardPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Edit Business Table Columns");
 		setDescription("Please select the columns to add in your Business Table");
-		ImageDescriptor image =	ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));	
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
 	    if (businessColumnSet instanceof BusinessTable)
@@ -85,11 +90,11 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		compCenter.setLayout(glC);
 		Button bAddField = new Button(compCenter,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Table Column");
-		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
+		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		Button bRemoveField = new Button(compCenter,SWT.FLAT);
 		bRemoveField.setToolTipText("Remove column from Business Table");
-		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
 		
 		//Right table -------------------------------

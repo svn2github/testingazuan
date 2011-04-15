@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.editor.multi.wizards;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
@@ -26,6 +28,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +52,7 @@ import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -74,7 +78,9 @@ import org.slf4j.LoggerFactory;
  * @generated
  */
 public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
-		
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIModelEditorWizard.class);
 	protected Model spagobiModel;
 	protected String modelPath;
@@ -160,7 +166,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 		this.workbench = workbench;
 		this.selection = selection;
 		setWindowTitle(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_Wizard_label"));
-		setDefaultPageImageDescriptor(ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/NewBusinessModel")));
+		setDefaultPageImageDescriptor(ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.NewBusinessModel") ));
 	}
 
 	/**

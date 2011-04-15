@@ -23,10 +23,13 @@ package it.eng.spagobi.meta.editor.multi.wizards;
 
 
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.DSEBridge;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -64,6 +67,8 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SelectionConnectionPage extends WizardPage {
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	private List connectionList;
 	private DSEBridge dseBridge;
 	private IConnectionProfile[] profiles;
@@ -80,7 +85,7 @@ public class SelectionConnectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Select Connection");
 		setMessage("Select a connection, catalog and schema to extract information.");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/selectConnection"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectConnection") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
 	    }

@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -49,6 +53,9 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 	private String tableSelected;
 	private AddBusinessIdentifierWizardPageColumnSelection pageTwoRef;
 	private BusinessColumnSet businessColumnSet;
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	/**
 	 * @param pageName
 	 */
@@ -58,7 +65,7 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 		setTitle("Business Identifier Creation");
 		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
 				"Plese select a Business Table.");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBI.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBI") );
 		if (image!=null) setImageDescriptor(image);	
 	    this.defaultTable = defaultTable;
 	    this.businessColumnSet = businessColumnSet;

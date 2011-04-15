@@ -21,10 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.multi.wizards;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.DSEBridge;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -52,6 +55,7 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class PhysicalTableSelectionPage extends WizardPage {
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	
 	private Table databaseTables;
 	private Table physicalTables;
@@ -68,17 +72,17 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Select Tables");
 		setMessage("Select the tables to import in your Physical Model");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/selectTables"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectTables") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
 	    }
-		ImageDescriptor physicalTableImageDescriptor = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/obj16/PhysicalTable"));
+		ImageDescriptor physicalTableImageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.PhysicalTable") );
 		physicalTableImage = null;
 		if (physicalTableImageDescriptor!=null) {
 			physicalTableImage = physicalTableImageDescriptor.createImage();
 	    }
 		
-		ImageDescriptor dbTableImageDescriptor = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/obj16/DatabaseTable"));
+		ImageDescriptor dbTableImageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.DatabaseTable") );
 		if (dbTableImageDescriptor!=null) {
 	    	dbTableImage = dbTableImageDescriptor.createImage();
 	    }
@@ -139,11 +143,11 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		compButtons.setLayout(glC);
 		Button bAddPhysicalTable = new Button(compButtons,SWT.FLAT);
 		bAddPhysicalTable.setToolTipText("Add table as a Physical Table");
-		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
+		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddPhysicalTable.setImage(imageAdd);
 		Button bRemovePhysicalTable = new Button(compButtons,SWT.FLAT);
 		bRemovePhysicalTable.setToolTipText("Remove table from Physical Model");
-		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemovePhysicalTable.setImage(imageRem);
 	    addListenerButtons(bAddPhysicalTable,bRemovePhysicalTable);
 	}

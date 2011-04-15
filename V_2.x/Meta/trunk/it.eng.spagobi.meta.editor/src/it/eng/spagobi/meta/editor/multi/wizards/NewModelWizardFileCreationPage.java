@@ -91,7 +91,7 @@ public class NewModelWizardFileCreationPage extends WizardNewFileCreationPage {
 //		setTitle("Create new SpagoBI Metamodel");
 //		setDescription("This wizard drives you to create a new SpagoBI Meta Business Model," +
 //		" please insert a name for your BM.");
-//		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("full/wizban/newModelWizard"));
+//		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPluginasdasdasd"full/wizban/newModelWizard"));
 //	    if (image!=null) {
 //	    	setImageDescriptor(image);
 //	    }

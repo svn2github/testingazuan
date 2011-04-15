@@ -1,15 +1,16 @@
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -49,12 +50,14 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	private List sourceColumnList, columnCorrelationList, destinationColumnList ;
 	private boolean nameInserted;
 	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	protected AddBusinessRelationshipWizardPage(String pageName, BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable) {
 		super(pageName);
 		setPageComplete(false);
 		setTitle("Business Relationship Creation");
 		setDescription("This wizard drives you to create a new Business Relationship in your Business Model.\n");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBR.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBR") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
 	    this.model = model;

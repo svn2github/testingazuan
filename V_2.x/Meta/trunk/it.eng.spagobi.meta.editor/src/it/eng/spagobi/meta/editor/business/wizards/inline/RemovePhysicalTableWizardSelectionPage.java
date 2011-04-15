@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -44,6 +48,8 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	private List tableList;
 	private BusinessColumnSet owner;
 	private String tableSelected;
@@ -54,7 +60,7 @@ public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Remove Physical Table");
 		setDescription("Please select the physical table to remove from your Business Table.");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    owner = businessColumnSet;
 	}

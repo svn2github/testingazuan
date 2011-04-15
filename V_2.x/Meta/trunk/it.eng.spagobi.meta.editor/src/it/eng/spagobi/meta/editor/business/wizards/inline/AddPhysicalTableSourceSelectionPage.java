@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -55,6 +59,9 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	private List listPhysicalTableColumns;
 	private String selectedPhysicalTable;
 	private AddBusinessViewInnerJoinPage pageThreeRef;
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	/**
 	 * @param pageName
 	 */
@@ -62,7 +69,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Select Source Physical Table to Join");
 		setDescription("Please select the physical table to use as source for join relationship");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
 	}

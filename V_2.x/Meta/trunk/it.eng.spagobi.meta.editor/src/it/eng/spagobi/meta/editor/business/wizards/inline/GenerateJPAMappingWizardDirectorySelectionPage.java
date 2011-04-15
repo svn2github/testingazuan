@@ -23,6 +23,8 @@ package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import java.net.URL;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.core.runtime.Platform;
@@ -48,6 +50,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	Text textDirectory;
 	/**
 	 * @param pageName
@@ -56,7 +60,7 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Generate JPA Mapping");
 		setDescription("Please select the directory where to put JPA Mapping source code.");
-		ImageDescriptor image =	ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));	
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
 	}

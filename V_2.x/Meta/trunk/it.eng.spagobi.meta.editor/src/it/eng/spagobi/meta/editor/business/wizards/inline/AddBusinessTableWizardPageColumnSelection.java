@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -56,6 +60,8 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 	private PhysicalTable physicalTable;
 	private Button bAddField, bRemoveField;
 	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	/**
 	 * @param pageName
 	 */
@@ -66,7 +72,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		super(pageName);
 		setTitle("Business Table Creation");
 		setDescription("Please select the columns to use in your Business Table");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 		columnsToImport = null;
 	    if (image!=null) setImageDescriptor(image);	
 	    pageOneRef = columnSelectionPage;
@@ -142,11 +148,11 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		compButtons.setLayout(glC);
 		bAddField = new Button(compButtons,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Table Column");
-		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
+		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		bRemoveField = new Button(compButtons,SWT.FLAT);
 		bRemoveField.setToolTipText("Remove column from Business Table");
-		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);		
 	}
 	

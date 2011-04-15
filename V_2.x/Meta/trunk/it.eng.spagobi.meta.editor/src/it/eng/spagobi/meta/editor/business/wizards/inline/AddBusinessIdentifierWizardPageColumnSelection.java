@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import java.net.URL;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -57,6 +61,8 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 	private BusinessColumnSet businessColumnSet;
 	private Button bAddField, bRemoveField;
 	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	/**
 	 * @param pageName
 	 */
@@ -64,7 +70,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		super(pageName);
 		setTitle("Business Identifier Creation");
 		setDescription("Please select the columns to use in your Business Identifier");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBI.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBI") );
 	    if (image!=null) setImageDescriptor(image);	
 		this.defaultTable = defaultTable;
 		this.businessColumnSet = businessColumnSet;
@@ -137,12 +143,12 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		compButtons.setLayout(glC);
 		bAddField = new Button(compButtons,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Identifier Column");
-		Image imageAdd = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_right.png")).createImage();
-	    if (imageAdd!=null) bAddField.setImage(imageAdd);
+		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
+		if (imageAdd!=null) bAddField.setImage(imageAdd);
 		bRemoveField = new Button(compButtons,SWT.FLAT);
 		bRemoveField.setToolTipText("Remove column from Business Identifier");
-		Image imageRem = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("arrow_left.png")).createImage();
-	    if (imageRem!=null) bRemoveField.setImage(imageRem);		
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
+		if (imageRem!=null) bRemoveField.setImage(imageRem);		
 	}
 	
 	public void createErrorLabel(Composite composite, int style){

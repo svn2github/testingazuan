@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -28,6 +30,7 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -55,6 +58,9 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private AddBusinessViewInnerJoinPage pageThreeRef;
 	private boolean isBusinessView;
 	private String selectedPhysicalTableName;
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
 	/**
 	 * @param pageName
 	 */
@@ -62,7 +68,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 		super(pageName);
 		setTitle("Add Physical Table");
 		setDescription("Please select the physical table to add to your Business Table.");
-		ImageDescriptor image = ExtendedImageRegistry.INSTANCE.getImageDescriptor(SpagoBIMetaModelEditorPlugin.INSTANCE.getImage("wizards/createBC.png"));
+		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
 	    this.isBusinessView = isBusinessView;

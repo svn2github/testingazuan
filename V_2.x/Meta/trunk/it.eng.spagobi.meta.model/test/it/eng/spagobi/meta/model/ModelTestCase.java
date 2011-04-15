@@ -36,23 +36,18 @@ import junit.framework.TestCase;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ModelTestCase extends TestCase {
+public class ModelTestCase extends AbtractModelTestCase {	
 	
-	Model model;
-	IModelSerializer serializer;
-	
-	private static final File TEST_FOLDER = new File("test-resources");
-	private static final File TEST_MODEL_FILE = new File(TEST_FOLDER, "TestModel.sbimodel");
+	private static final File TEST_MODEL_FILE = new File(TestCaseConstants.TEST_FOLDER, "TestModel.sbimodel");
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		serializer = new EmfXmiSerializer();
 		model = serializer.deserialize(TEST_MODEL_FILE);
 	}
 
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		model = null;
+		super.tearDown();
 	}
 	
 	public void testSmoke() {
@@ -61,7 +56,7 @@ public class ModelTestCase extends TestCase {
 	
 	public void testSerializer() {
 		Model testModel;
-		File outFile = new File(TEST_FOLDER, "out.sbimodel");
+		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
 		serializer.serialize(model, outFile);
 	       
 		testModel = serializer.deserialize(outFile);
@@ -86,7 +81,7 @@ public class ModelTestCase extends TestCase {
 	
 	public void testDeleteTable() {
 		Model testModel;
-		File outFile = new File(TEST_FOLDER, "out.sbimodel");
+		File outFile = new File(TestCaseConstants.TEST_FOLDER, "out.sbimodel");
 		
 		BusinessModel businessModel = model.getBusinessModels().get(0);
 		BusinessTable table = (BusinessTable)businessModel.getTables().get(0);

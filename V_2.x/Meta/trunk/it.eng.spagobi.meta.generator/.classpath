@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="libs/velocity/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="libs/velocity/velocity-1.6.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDT"/>
 	<classpathentry kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>

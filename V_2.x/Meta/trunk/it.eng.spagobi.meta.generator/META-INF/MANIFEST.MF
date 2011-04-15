@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  ch.qos.logback.core;bundle-version="0.9.19",
  org.slf4j.api;bundle-version="1.5.11",
  org.junit;bundle-version="3.8.2",
- it.eng.spagobi.commons;bundle-version="1.0.0"
+ it.eng.spagobi.commons;bundle-version="1.0.0",
+ org.eclipse.jdt.core;bundle-version="3.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core.compiler.batch

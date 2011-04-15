@@ -9,5 +9,9 @@ ${jpaColumn.uniqueName}.label = $jpaColumn.name
 ${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
 #end
 
+#foreach ($jpaView in $jpaViews)
+${jpaView.uniqueName}.label = $jpaView.name
+${jpaView.uniqueName}.tooltip = $jpaView.description
+#end
 
 #end

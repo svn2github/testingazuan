@@ -151,6 +151,21 @@ public class JpaView implements IJpaView {
 		return jpaViewInnerJoinRelatioships;
 	}
 	
+	public String getQualifiedClassName() {
+		return getPackage() + "."  + getClassName();
+	}
+	
+	public String getUniqueName() {
+		return getQualifiedClassName() + "//" + getClassName();
+	}
+	
+	public String getName() {
+		return businessView.getName();
+	}
+	
+	public String getDescription() {
+		return businessView.getDescription() != null? businessView.getDescription(): getName();
+	}
 	
 	
 }

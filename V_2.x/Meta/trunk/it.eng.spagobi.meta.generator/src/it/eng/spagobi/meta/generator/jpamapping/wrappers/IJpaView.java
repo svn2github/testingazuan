@@ -10,12 +10,22 @@ public interface IJpaView {
 	
 	String getPackage();
 
+	public String getName();
+	
+	public String getDescription();
+	
 	String getClassName();
+	
+	String getQualifiedClassName();
+	
+	String getUniqueName();
+	
 
 	List<IJpaTable> getInnerTables();
 
 	List<IJpaColumn> getColumns(JpaViewInnerTable table);
 
 	List<JpaViewInnerJoinRelatioship> getJoinRelationships();
+	
 
 }

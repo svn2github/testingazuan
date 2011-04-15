@@ -357,7 +357,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		    	tables.addAll(jpaView.getInnerTables());
 		    }
 	        context.put("jpaTables", tables ); //$NON-NLS-1$
-	       
+	        context.put("jpaViews", model.getViews() );
 	      
 			
 			File outputFile = new File(srcDir, "label.properties");

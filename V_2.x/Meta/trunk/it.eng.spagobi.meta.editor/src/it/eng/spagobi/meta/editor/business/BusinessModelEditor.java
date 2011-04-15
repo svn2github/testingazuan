@@ -51,12 +51,15 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
@@ -1122,7 +1125,21 @@ public class BusinessModelEditor
 	
 					EmfXmiSerializer serializer = new EmfXmiSerializer();
 					serializer.serialize(spagobiModel, new File(resourceURI.toFileString()));
-		
+					
+				    //Force Workspace refresh
+					IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+					IPath location= Path.fromOSString(resourceURI.toFileString()); 
+					IFile ifile= workspace.getRoot().getFileForLocation(location);
+			        try {
+			        	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
+						logger.debug("Refresh Local workspace on [{}]",ifile.getRawLocation().toOSString());
+
+					} catch (CoreException e) {
+						logger.error("Refresh Local workspace error [{}]",e);
+						e.printStackTrace();
+					}
+					//*******
+					
 					logger.debug("doSave");
 					} else {
 						logger.debug("not saved");

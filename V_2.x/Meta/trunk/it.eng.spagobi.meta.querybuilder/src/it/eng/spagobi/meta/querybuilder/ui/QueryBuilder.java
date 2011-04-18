@@ -45,6 +45,7 @@ import it.eng.qbe.statement.AbstractStatement;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDragListener;
 import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables.QueryEditGroup;
+import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelLabelProvider;
 import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
@@ -80,14 +81,14 @@ public class QueryBuilder {
 	private int havingFilterCount=1;
 	private ResultTableViewer tableViewer = null;
 	private QueryEditGroup compositeFilters = null;
+	private ModelLabelProvider labelProvider = null;
 	
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
-	
 	
 	public QueryBuilder(IDataSource dataSource){
 		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
 		this.dataSource = dataSource;
-
+		labelProvider = new ModelLabelProvider(this.dataSource);
 		IQbeTreeEntityFilter entityFilter = null;
 		IQbeTreeFieldFilter fieldFilter = null;
 		entityFilter = new QbeTreeAccessModalityEntityFilter();
@@ -269,7 +270,8 @@ public class QueryBuilder {
 	}
 	
 	public void addField(IModelField dataMartField) {
-		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", dataMartField.getName(), true, true, false, null, dataMartField.getPropertyAsString("format"));
+		String alias = labelProvider.getLabel(dataMartField);
+		query.addSelectFiled(dataMartField.getUniqueName(), "NONE", alias , true, true, false, null, dataMartField.getPropertyAsString("format"));
 	}
 	
 	protected IEditorPart getEditorPart() {
@@ -310,4 +312,7 @@ public class QueryBuilder {
 		return modelView;
 	}
 
+	public ModelLabelProvider getLabelProvider() {
+		return labelProvider;
+	}
 }

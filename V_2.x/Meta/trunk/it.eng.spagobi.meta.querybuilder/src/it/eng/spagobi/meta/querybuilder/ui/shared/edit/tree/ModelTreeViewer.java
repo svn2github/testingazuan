@@ -59,7 +59,7 @@ public class ModelTreeViewer extends TreeViewer {
 		logger.debug("IN: initializing the datamartTree");
 		List<IModelEntity> roots = getModelViewRootEntities(modelView);
 		setContentProvider(new ViewContentProvider(roots));
-		setLabelProvider(new ViewLabelProvider(this,new ModelLabelProvider(dataSource)));
+		setLabelProvider(new ViewLabelProvider(this,queryBuilder.getLabelProvider()));
 		setInput(roots);
 		logger.debug("OUT: datamartTree initialized");
 		addDoubleClickListener(new DoubleClickListener());

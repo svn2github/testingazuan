@@ -43,14 +43,14 @@ import org.eclipse.ui.PlatformUI;
 public 	class ViewLabelProvider extends LabelProvider {
 
 	private ModelLabelProvider modelLabelProvider;
-	private static final String imgPath = "img";
-	private TreeViewer viewer;
+//	private static final String imgPath = "img";
+//	private TreeViewer viewer;
 	
 	private static final IResourceLocator RL = SpagoBIMetaQueryBuilderPlugin.getInstance().getResourceLocator();
 	
 	
 	public ViewLabelProvider (TreeViewer viewer, ModelLabelProvider modelLabelProvider){
-		this.viewer = viewer;
+//		this.viewer = viewer;
 		this.modelLabelProvider = modelLabelProvider;
 	}
 	

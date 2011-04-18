@@ -27,6 +27,7 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
+import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
@@ -114,7 +115,7 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 		IDataSourceConfiguration configuration;
 		configuration = new FileDataSourceConfiguration(modelName, jarFile);
 		configuration.loadDataSourceProperties().put("connection", connectionDescriptor);
-		IDataSource dataSource = DriverManager.getDataSource(JPADriver.DRIVER_ID, configuration, false);
+		IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration, false);
 		
 		return dataSource;
 	}

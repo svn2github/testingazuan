@@ -110,7 +110,7 @@ public class OdaStructureBuilder {
 
 
 		logger.debug("OUT: "+jarFile+" has the dialect: "+dialectName);
-		return dialectName;
+		return dialectName+"with_cl";
 	}
 	
 	

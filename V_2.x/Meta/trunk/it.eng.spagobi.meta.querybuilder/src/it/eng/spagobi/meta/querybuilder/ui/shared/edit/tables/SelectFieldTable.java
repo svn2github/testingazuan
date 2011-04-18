@@ -123,7 +123,6 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDropSelectListener(this, queryBuilder));		
 		
 		//Delete via Keyboard
-		//TODO: modify the removeSelectField
 		viewer.getTable().addKeyListener(new SelectTableKeyAdapter(queryBuilder) ); 
 	}
 	

@@ -151,8 +151,8 @@ public class SpagoBIModelEditorWorkbenchContributor
 	 */
 	public SpagoBIModelEditorWorkbenchContributor() {
 		super(ADDITIONS_LAST_STYLE);
-		loadResourceAction = new LoadResourceAction();
-		validateAction = new ValidateAction();
+		//loadResourceAction = new LoadResourceAction();
+		//validateAction = new ValidateAction();
 		controlAction = new ControlAction();
 	}
 

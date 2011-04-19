@@ -82,39 +82,12 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
 		}
 		
 		if(executed) {
-			showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
+			//showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
 			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
 		} else {
 			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
 			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
 		}
-		/*
-		//Get Package Name
-		String packageName = businessModel.getProperties().get(BusinessModelDefaultPropertiesInitializer.MODEL_PACKAGE).getValue();
-			
-		//Call Java Compiler
-		DataMartGenerator datamartGenerator = new DataMartGenerator(
-				new File(directory),
-				packageName.replace(".", "/")
-				);
-		datamartGenerator.setLibDir(new File("plugins"));
-		
-		boolean result = datamartGenerator.compile();
-		if (result){
-			// compile OK
-			showInformation("Successfull Compilation ","JPA Source Code correctly compiled");
-			
-			//Generate Jar from compiled code
-			datamartGenerator.jar();
-			this.executed = true;
-			
-		}else{
-			// compile error
-			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-			this.executed = false; 
-			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
-		}
-		*/
 
 	}
 	

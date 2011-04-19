@@ -58,8 +58,8 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	 */
 	protected GenerateJPAMappingWizardDirectorySelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Generate JPA Mapping");
-		setDescription("Please select the directory where to put JPA Mapping source code.");
+		setTitle("Export JPA Mapping");
+		setDescription("Please select the directory for exporting JPA Mapping.");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    

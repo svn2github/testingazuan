@@ -99,7 +99,7 @@ public class BusinessModelMenuActionFactory {
 	    	
 	    	List generateActions = new ArrayList();
 	    	generateActions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
-	    	actions.put("Generate", generateActions);
+	    	actions.put("Export", generateActions);
 	    	
 	    	List queryActions = new ArrayList();
 	    	queryActions.add(new CreateQueryAction(activeEditorPart, selection));

@@ -16,6 +16,8 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
 /**
+ * @deprecated
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */

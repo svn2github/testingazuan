@@ -63,7 +63,7 @@ import org.xml.sax.SAXException;
  * @author cortella
  *
  */
-public class BusinessModelPropertiesFromFileInitializer implements IPropertiesInitializer {
+public class CopyOfBusinessModelPropertiesFromFileInitializer implements IPropertiesInitializer {
 
 	private Document document;
 	
@@ -72,10 +72,10 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	static public IResourceLocator RL = SpagoBIMetaInitializerPlugin.getInstance().getResourceLocator();
 	
-	private static Logger logger = LoggerFactory.getLogger(BusinessModelPropertiesFromFileInitializer.class);
+	private static Logger logger = LoggerFactory.getLogger(CopyOfBusinessModelPropertiesFromFileInitializer.class);
 	
 	
-	public BusinessModelPropertiesFromFileInitializer() {
+	public CopyOfBusinessModelPropertiesFromFileInitializer() {
 		
 		logger.trace("IN");
 		try {
@@ -91,7 +91,15 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	}
 	
 	public void addProperties(ModelObject o) {
-
+		
+		//read file
+//		try {
+//			document = readFile();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		
 		if(o instanceof BusinessModel) {
 			initModelProperties((BusinessModel)o);
 		} else if(o instanceof BusinessTable) {
@@ -107,24 +115,119 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		}
 	}
 	
-
+//	private Document readFile() throws Exception{
+//		File propertiesFile = null;
+//		Bundle generatorBundle = Platform.getBundle("it.eng.spagobi.meta.initializer");
+//		try {
+//			IPath path = new Path(Platform.asLocalURL(generatorBundle.getEntry("properties")).getPath());
+//			String propertiesPath = path.toString();
+//			propertiesFile = new File(propertiesPath+"\\customProperties.xml");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}	
+//		
+//		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+//        DocumentBuilder builder = domFactory.newDocumentBuilder();
+//        Document doc = builder.parse(propertiesFile);
+//        return doc;		
+//	}
 	
+    private NodeList readXMLNodes(Document doc, String xpathExpression) throws Exception {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        XPathExpression expr = xpath.compile(xpathExpression);
+ 
+        Object result = expr.evaluate(doc, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+ 
+        return nodes;
+    }
+	
+
 	private void initModelProperties(BusinessModel o) {
-        
+        NodeList nodes;
+        int nodesLength;
 		try {
 			
 			//1- Search model categories definitions
-			NodeList nodes = readXMLNodes(document, "/properties/model/categories/category");
-			initeModelPropertyCategories(nodes, o.getParentModel());
+			nodes = readXMLNodes(document, "/properties/model/categories/category");
+			nodesLength = nodes.getLength();
+	        for (int i = 0; i < nodesLength; i++) {
+	        	NamedNodeMap nodeAttributes = nodes.item(i).getAttributes();
+	        	if (nodeAttributes != null) {
+	        		String categoryName = nodeAttributes.getNamedItem("name").getNodeValue();
+	        		String categoryDescription = nodeAttributes.getNamedItem("description").getNodeValue();
+	        		
+	                // if doesn't exist, create a model category
+	        		ModelPropertyCategory modelCategory =  o.getParentModel().getPropertyCategory(categoryName);
+	                if(modelCategory == null) {
+	                    modelCategory = FACTORY.createModelPropertyCategory();
+	                    modelCategory.setName(categoryName);
+	                    modelCategory.setDescription(categoryDescription);
+	                    o.getParentModel().getPropertyCategories().add(modelCategory);	
+	                }   
+	        	}
+	        }
 	        
 	      	//2- Search model types definitions
 			nodes = readXMLNodes(document, "/properties/model/types/type");
-			initModelPropertyTypes(nodes, o.getParentModel(), o);
+			nodesLength = nodes.getLength();
+	        for (int j = 0; j < nodesLength; j++) {
+	        	NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
+	        	if (nodeAttributes != null) {
+	        		String typeId = nodeAttributes.getNamedItem("id").getNodeValue();
+	        		String typeName = nodeAttributes.getNamedItem("name").getNodeValue();
+	        		String typeDescription = nodeAttributes.getNamedItem("description").getNodeValue();
+	        		String typeCategory = nodeAttributes.getNamedItem("category").getNodeValue();
+	        		String typeDefaultValue = nodeAttributes.getNamedItem("defaultValue").getNodeValue();
+	        		
+	                // Create the new property type 
+	        		ModelPropertyType propertyType = null;
+	               
+	                if(o.getParentModel() != null) {
+	                	propertyType = o.getParentModel().getPropertyType(typeId);
+	                }
+	                if(propertyType == null) {
+	                    propertyType = FACTORY.createModelPropertyType();
+	                    propertyType.setId( typeId );
+	                    propertyType.setName(typeName);
+	                    propertyType.setDescription(typeDescription);
+	                    propertyType.setCategory(getModelPropertyCategory(o, typeCategory));
+	                    propertyType.setDefaultValue(typeDefaultValue);
+	                    
+	                    if(o.getParentModel() != null) {
+	                    	o.getParentModel().getPropertyTypes().add(propertyType);
+	                    }
+	                }
+	               
+	                // add a model property type for model object
+	                ModelProperty property = FACTORY.createModelProperty();
+	                property.setPropertyType(propertyType);
+	                o.getProperties().put(property.getPropertyType().getId(), property); 
+	        	}
+	        }
 	        
 	        //3- Search model admissible types values definitions
 	        nodes = readXMLNodes(document, "/properties/model/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, o.getParentModel());
+			nodesLength = nodes.getLength();
+			for (int j = 0; j < nodesLength; j++) {
+				NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
+				if (nodeAttributes != null) {
+					String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
+					ModelPropertyType propertyType = getModelPropertyType(o, typeId);
 
+					NodeList values = readXMLNodes(document, "/properties/model/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
+					//search each admissible values for this type
+					int valuesLength = values.getLength();
+					for (int z = 0; z < valuesLength; z++) {
+						String value = values.item(z).getTextContent();
+						//add admissible value
+						propertyType.getAdmissibleValues().add(value);
+					}
+				}
+			}
+			
+
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -132,21 +235,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	}
 	
 	private void initTableProperties(BusinessTable o) {
-		try {
-			//1- Search model categories definitions
-			NodeList nodes = readXMLNodes(document, "/properties/table/categories/category");
-			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
-	        
-	      	//2- Search model types definitions
-			nodes = readXMLNodes(document, "/properties/table/types/type");
-			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
-	        
-	        //3- Search model admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/table/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 	}
 	
 
@@ -161,16 +250,81 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 			}
 			//1- Search column categories definitions
 			nodes = readXMLNodes(document, "/properties/column/categories/category");
-			initeModelPropertyCategories(nodes, rootModel);
+			nodesLength = nodes.getLength();
+	        for (int i = 0; i < nodesLength; i++) {
+	        	NamedNodeMap nodeAttributes = nodes.item(i).getAttributes();
+	        	if (nodeAttributes != null) {
+	        		String categoryName = nodeAttributes.getNamedItem("name").getNodeValue();
+	        		String categoryDescription = nodeAttributes.getNamedItem("description").getNodeValue();
+	        		
+	                // if doesn't exist, create a column category
+	        		ModelPropertyCategory modelCategory =  rootModel.getPropertyCategory(categoryName);
+	                if(modelCategory == null) {
+	                    modelCategory = FACTORY.createModelPropertyCategory();
+	                    modelCategory.setName(categoryName);
+	                    modelCategory.setDescription(categoryDescription);
+	                    rootModel.getPropertyCategories().add(modelCategory);	
+	                }   
+	        	}
+	        }
 	        
 	      	//2- Search column types definitions
 			nodes = readXMLNodes(document, "/properties/column/types/type");
 			nodesLength = nodes.getLength();
-			initModelPropertyTypes(nodes, rootModel, o);
+	        for (int i = 0; i < nodesLength; i++) {
+	        	NamedNodeMap nodeAttributes = nodes.item(i).getAttributes();
+	        	if (nodeAttributes != null) {
+	        		String typeId = nodeAttributes.getNamedItem("id").getNodeValue();
+	        		String typeName = nodeAttributes.getNamedItem("name").getNodeValue();
+	        		String typeDescription = nodeAttributes.getNamedItem("description").getNodeValue();
+	        		String typeCategory = nodeAttributes.getNamedItem("category").getNodeValue();
+	        		String typeDefaultValue = nodeAttributes.getNamedItem("defaultValue").getNodeValue();
+	        		
+	                // Create the new property type 
+	        		ModelPropertyType propertyType = null;
+	               
+	                if(rootModel != null) {
+	                	propertyType = rootModel.getPropertyType(typeId);
+	                }
+	                if(propertyType == null) {
+	                    propertyType = FACTORY.createModelPropertyType();
+	                    propertyType.setId( typeId );
+	                    propertyType.setName(typeName);
+	                    propertyType.setDescription(typeDescription);
+	                    propertyType.setCategory(getModelPropertyCategory(o, typeCategory));
+	                    propertyType.setDefaultValue(typeDefaultValue);
+	                    
+	                    if(rootModel != null) {
+	                    	rootModel.getPropertyTypes().add(propertyType);
+	                    }
+	                }
+	               
+	                // add a column property type for column object
+	                ModelProperty property = FACTORY.createModelProperty();
+	                property.setPropertyType(propertyType);
+	                o.getProperties().put(property.getPropertyType().getId(), property); 
+	        	}
+	        }
 	        
 	        //3- Search column admissible types values definitions
 	        nodes = readXMLNodes(document, "/properties/column/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, rootModel);
+			nodesLength = nodes.getLength();
+	        for (int j = 0; j < nodesLength; j++) {
+	        	NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
+	        	if (nodeAttributes != null) {
+	        		String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
+	        		ModelPropertyType propertyType = getModelPropertyType(o, typeId);
+	        		
+	        		NodeList values = readXMLNodes(document, "/properties/column/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
+	        		//search each admissible values for this type
+	        		int valuesLength = values.getLength();
+	        		for (int z = 0; z < valuesLength; z++) {
+	        			String value = values.item(z).getTextContent();
+	        			//add admissible value
+	        			propertyType.getAdmissibleValues().add(value);
+	        		}
+	        	}
+	        }
 	        
 	        // *********************************************************************
 	        // THIS WILL ADD PHYSICAL TABLE REFERENCE PROPERTY FOR BUSINESS COLUMN
@@ -222,105 +376,13 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		
 	}	
 	
-    private NodeList readXMLNodes(Document doc, String xpathExpression) throws Exception {
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        XPathExpression expr = xpath.compile(xpathExpression);
- 
-        Object result = expr.evaluate(doc, XPathConstants.NODESET);
-        NodeList nodes = (NodeList) result;
- 
-        return nodes;
-    }
-	
-    
-    private void initeModelPropertyCategories(NodeList nodes, Model model) {
-    	int nodesLength = nodes.getLength();
-        for (int i = 0; i < nodesLength; i++) {
-        	NamedNodeMap nodeAttributes = nodes.item(i).getAttributes();
-        	if (nodeAttributes != null) {
-        		String categoryName = nodeAttributes.getNamedItem("name").getNodeValue();
-        		String categoryDescription = nodeAttributes.getNamedItem("description").getNodeValue();
-        		
-                // if doesn't exist, create a model category
-        		ModelPropertyCategory modelCategory =  model.getPropertyCategory(categoryName);
-                if(modelCategory == null) {
-                    modelCategory = FACTORY.createModelPropertyCategory();
-                    modelCategory.setName(categoryName);
-                    modelCategory.setDescription(categoryDescription);
-                    model.getPropertyCategories().add(modelCategory);	
-                }   
-        	}
-        }
-    }
-
-    private void initModelPropertyTypes(NodeList nodes, Model model, ModelObject o) {
-    	int nodesLength = nodes.getLength();
-        for (int j = 0; j < nodesLength; j++) {
-        	NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
-        	if (nodeAttributes != null) {
-        		String typeId = nodeAttributes.getNamedItem("id").getNodeValue();
-        		String typeName = nodeAttributes.getNamedItem("name").getNodeValue();
-        		String typeDescription = nodeAttributes.getNamedItem("description").getNodeValue();
-        		String typeCategory = nodeAttributes.getNamedItem("category").getNodeValue();
-        		String typeDefaultValue = nodeAttributes.getNamedItem("defaultValue").getNodeValue();
-        		
-                // Create the new property type 
-        		ModelPropertyType propertyType = null;
-               
-                if(model != null) {
-                	propertyType = model.getPropertyType(typeId);
-                }
-                if(propertyType == null) {
-                    propertyType = FACTORY.createModelPropertyType();
-                    propertyType.setId( typeId );
-                    propertyType.setName(typeName);
-                    propertyType.setDescription(typeDescription);
-                    propertyType.setCategory(getModelPropertyCategory(model, typeCategory));
-                    propertyType.setDefaultValue(typeDefaultValue);
-                    
-                    if(model != null) {
-                    	model.getPropertyTypes().add(propertyType);
-                    }
-                }
-               
-                // add a model property type for model object
-                ModelProperty property = FACTORY.createModelProperty();
-                property.setPropertyType(propertyType);
-                o.getProperties().put(property.getPropertyType().getId(), property); 
-        	}
-        }
-    }
-    
-    private void initModelAdmissibleValues(NodeList nodes, Model model) throws Exception {
-    	int nodesLength = nodes.getLength();
-		for (int j = 0; j < nodesLength; j++) {
-			NamedNodeMap nodeAttributes = nodes.item(j).getAttributes();
-			if (nodeAttributes != null) {
-				String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
-				ModelPropertyType propertyType = getModelPropertyType(model, typeId);
-
-				NodeList values = readXMLNodes(document, "/properties/model/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
-				//search each admissible values for this type
-				int valuesLength = values.getLength();
-				for (int z = 0; z < valuesLength; z++) {
-					String value = values.item(z).getTextContent();
-					//add admissible value
-					propertyType.getAdmissibleValues().add(value);
-				}
-			}
-		}
-    }
-	
-	
 	// Utility methods
 	//-----------------------------------------------------------------------
 	
 	
 	private ModelPropertyCategory getModelPropertyCategory(Object o, String categoryName){
 		EList<ModelPropertyCategory> categories = null;
-		if(o instanceof Model) {
-			categories = ((Model)o).getPropertyCategories();
-		} else if (o instanceof BusinessModel){
+		if (o instanceof BusinessModel){
 			categories = ((BusinessModel)o).getParentModel().getPropertyCategories();
 		}
 		else if (o instanceof BusinessTable){
@@ -334,7 +396,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		}
 		else if (o instanceof BusinessRelationship){
 			categories = ((BusinessRelationship)o).getModel().getParentModel().getPropertyCategories();							
-		} 
+		}
 		
 		if (categories != null){
 			for (ModelPropertyCategory category : categories){
@@ -349,9 +411,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	private ModelPropertyType getModelPropertyType(Object o, String typeId){
 		EList<ModelPropertyType> types = null;
 		
-		if(o instanceof Model) {
-			types = ((Model)o).getPropertyTypes();
-		} else if (o instanceof BusinessModel){
+		if (o instanceof BusinessModel){
 			types = ((BusinessModel)o).getParentModel().getPropertyTypes();
 		}
 		else if (o instanceof BusinessTable){

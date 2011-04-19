@@ -44,33 +44,7 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	protected AdapterFactoryItemDelegator itemDelegator;
 	protected Object staticImage;
 	
-	 /**
-	   * This class uses a static image
-	   */
-	  protected class ItemDelegator extends AdapterFactoryItemDelegator {
-	    protected ResourceLocator resourceLocator;
-
-	    public ItemDelegator(AdapterFactory adapterFactory) {
-	      super(adapterFactory);
-	    }
-
-	    public ItemDelegator(AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
-	      super(adapterFactory);
-	      this.resourceLocator = resourceLocator;
-	    }
-
-	    @Override
-	    public String getText(Object object) {
-	    	
-	    	return (String)object;
-	    }
-
-	    @Override
-	    public Object getImage(Object object) {
-	      return staticImage == null ? super.getImage(object) : staticImage;
-	    }
-	  }
-	
+		
 	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
 		this.property = property;
 		this.itemDelegator = new ItemDelegator(adapterFactory, resourceLocator);
@@ -187,5 +161,32 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	public void setPropertyValue(Object object, Object value) {
 		property.setValue("" + value);		
 	}
+	
+	 /**
+	   * This class uses a static image
+	   */
+	  protected class ItemDelegator extends AdapterFactoryItemDelegator {
+	    protected ResourceLocator resourceLocator;
+
+	    public ItemDelegator(AdapterFactory adapterFactory) {
+	      super(adapterFactory);
+	    }
+
+	    public ItemDelegator(AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
+	      super(adapterFactory);
+	      this.resourceLocator = resourceLocator;
+	    }
+
+	    @Override
+	    public String getText(Object object) {
+	    	
+	    	return (String)object;
+	    }
+
+	    @Override
+	    public Object getImage(Object object) {
+	      return staticImage == null ? super.getImage(object) : staticImage;
+	    }
+	  }
 
 }

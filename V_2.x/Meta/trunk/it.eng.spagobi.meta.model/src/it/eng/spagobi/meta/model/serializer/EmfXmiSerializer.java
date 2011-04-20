@@ -115,7 +115,7 @@ public class EmfXmiSerializer implements IModelSerializer {
 			
 			//resource.save(System.out, Collections.EMPTY_MAP);
 		} catch (Throwable e) {
-			throw new RuntimeException("Impossible to serialize model [" + model.getName() + "]", e);
+			throw new RuntimeException("Impossible to deserialize model [" + model.getName() + "]", e);
 		}
 		
 		return model;

@@ -98,6 +98,7 @@ public class OdaStructureBuilder {
 				zis.closeEntry();
 			}
 			zis.close();
+			fis.close();
 			if(isJpa){
 				dialectName = "jpa";
 			} else{

@@ -92,15 +92,17 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			logger.debug("editorInput parameter type is equal to [{}]", editorInput.getClass());
 			if (editorInput instanceof FileEditorInput) {
 				FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
-				InputStream inputStram = fileEditorInput.getFile().getContents();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStram));
+				InputStream inputStream = fileEditorInput.getFile().getContents();
+				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+				BufferedReader reader = new BufferedReader(inputStreamReader);
 				String line = null;
 				StringBuffer stringBuffer  = new StringBuffer();
 				while((line = reader.readLine())!= null) {
 					stringBuffer.append(line);
 				}
+				inputStreamReader.close();
 				reader.close();
-				
+				inputStream.close();
 				String queryString = stringBuffer.toString();
 			    o = new JSONObject(queryString);
 
@@ -132,15 +134,19 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				logger.debug("editorInput is outside Eclipse workspace");
 				URI fileStoreEditorInputURI = fileStoreEditorInput.getURI();
 				logger.debug("fileStoreEditorInputURI is [{}]",fileStoreEditorInputURI);
-				InputStream inputStram = new BufferedInputStream(new FileInputStream(new File(fileStoreEditorInputURI)));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStram));
+				FileInputStream fileInputStream = new FileInputStream(new File(fileStoreEditorInputURI));
+				InputStream inputStream = new BufferedInputStream(fileInputStream);
+				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+				BufferedReader reader = new BufferedReader(inputStreamReader);
 				String line = null;
 				StringBuffer stringBuffer  = new StringBuffer();
 				while((line = reader.readLine())!= null) {
 					stringBuffer.append(line);
 				}
+				inputStreamReader.close();
 				reader.close();
-				
+				inputStream.close();
+				fileInputStream.close();
 				String queryString = stringBuffer.toString();
 			    o = new JSONObject(queryString);
 
@@ -246,15 +252,17 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				InputStream inputStream = null;
 
 				inputStream = fileEditorInput.getFile().getContents();
-
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+				BufferedReader reader = new BufferedReader(inputStreamReader);
+				
 				String line = null;
 				StringBuffer stringBuffer  = new StringBuffer();
 				while((line = reader.readLine())!= null) {
 					stringBuffer.append(line);
 				}
+				inputStreamReader.close();
 				reader.close();
-
+				inputStream.close();
 				String queryString = stringBuffer.toString();
 				o = new JSONObject(queryString);
 
@@ -303,7 +311,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			
 			in = new ByteArrayInputStream(o.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
 			fileEditorInput.getFile().setContents(in, true, true, monitor);
-			
+			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

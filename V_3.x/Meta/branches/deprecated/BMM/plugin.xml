@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="bi.bmm.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="bi.bmm.Perspective"
+            id="bi.bmm.perspective">
+      </perspective>
+      <perspective
+            class="bi.bmm.BMEPerspectiveFactory"
+            id="bi.bmm.perspectives.bme"
+            name="BME perspective">
+      </perspective>
+      <perspective
+            class="bi.bmm.BMQPerspectiveFactory"
+            id="bi.bmm.perspectives.bmq"
+            name="BMQ perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="bi.bmm.commands.ExitHandler"
+            id="bi.bmm.commands.Exit"
+            name="Exit">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.AboutHandler"
+            id="bi.bmm.commands.About"
+            name="About">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.OpenHandler"
+            id="bi.bmm.commands.Open"
+            name="Open">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ui.handlers.ShowPerspectiveHandler"
+            id="bi.bmm.commands.PerspectiveShow"
+            name="PerspectiveShow">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.ShowBMEHandler"
+            id="bi.bmm.commands.ShowBME"
+            name="ShowBME">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.NewConnectionWizardHandler"
+            id="bi.bmm.commands.NewConnectionWizard"
+            name="NewConnectionWizard">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.createProjectHandler"
+            id="bi.bmm.commands.createProject"
+            name="createProject">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.SaveHandler"
+            id="bi.bmm.commands.Save"
+            name="Save">
+      </command>
+      <command
+            defaultHandler="bi.bmm.commands.QueryHandler"
+            id="bi.bmm.commands.Query"
+            name="Query">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="menuFile"
+               label="SpagoBIMeta">
+            <command
+                  commandId="bi.bmm.commands.ShowBME"
+                  label="Create a new BM"
+                  style="push"
+                  tooltip="Open the perspective">
+            </command>
+            <command
+                  commandId="bi.bmm.commands.Open"
+                  label="Open a BM..."
+                  style="push"
+                  tooltip="Open a Business Model">
+            </command>
+            <command
+                  commandId="bi.bmm.commands.Save"
+                  label="Save BM"
+                  style="push"
+                  tooltip="Save the current BM in a .bm file">
+            </command>
+            <command
+                  commandId="bi.bmm.commands.createProject"
+                  label="Persist BM on fly..."
+                  style="push"
+                  tooltip="Create .java file for the selected business model">
+            </command>
+            <command
+                  commandId="bi.bmm.commands.Query"
+                  label="Query a BM"
+                  style="push"
+                  tooltip="Create queries on your BM">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="bi.bmm.BMUniverseView"
+            id="bi.bmm.views.bme.bmuniverse"
+            name="BMUniverse"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.ELUniverseView"
+            id="bi.bmm.views.bme.eluniverse"
+            name="ELUniverse"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.DataPools"
+            id="bi.bmm.views.bme.datapools"
+            name="DataPools"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.BMPoolsView"
+            id="bi.bmm.views.bmq.bmpools"
+            name="BMPools"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.BMQResourceView"
+            id="bi.bmm.views.bmq.bmqresource"
+            name="BMQResource"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.BMQEditorView"
+            id="bi.bmm.views.bmq.bmqeditor"
+            name="JPQLEditor"
+            restorable="true">
+      </view>
+      <view
+            class="bi.bmm.CBCQEditorView"
+            id="bi.bmm.views.bmq.cbcqeditor"
+            name="CBCQEditor"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="bi.bmm.wizards.NewConnectionWizard"
+            id="bi.bmm.wizards.NewConnection"
+            name="NewConnection">
+      </wizard>
+      <wizard
+            class="bi.bmm.wizards.CreateProjectWizard"
+            id="bi.bmm.wizards.createProject"
+            name="CreateProjectWizard">
+      </wizard>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="bi.bmm.application"
+            name="BI Business Meta">
+         <property
+               name="appName"
+               value="BI Business Meta">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="product1"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="bi.bmm.application"
+            name="BI Business Meta">
+         <property
+               name="appName"
+               value="BI Business Meta">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="product2"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="bi.bmm.application"
+            name="BiBmm1">
+      </product>
+   </extension>
+   <extension
+         id="product3"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="bi.bmm.application"
+            name="BI Business Meta">
+         <property
+               name="appName"
+               value="BI Business Meta">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

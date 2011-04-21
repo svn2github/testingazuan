@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SpagoBI Meta Model Generators
+Bundle-SymbolicName: it.eng.spagobi.meta.generator
+Bundle-Version: 1.0.0
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;bundle-version="2.6.0",
+ it.eng.spagobi.meta.model;bundle-version="1.0.0",
+ org.eclipse.emf.codegen;bundle-version="2.6.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.jdt.core.compiler.batch,
+ org.junit
+Export-Package: it.eng.spagobi.meta.compiler,
+ it.eng.spagobi.meta.generator.jpamapping
+Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
+ libs/velocity/commons-lang-2.4.jar,
+ libs/velocity/oro-2.0.8.jar,
+ libs/velocity/velocity-1.6.4.jar,
+ .,
+ templates/,
+ libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
+ libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
+ libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
+ libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar

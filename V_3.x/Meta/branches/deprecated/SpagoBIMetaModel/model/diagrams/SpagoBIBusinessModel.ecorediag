@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmi:id="_2z2mEPlzEd-ALNv_a0HG6Q" type="EcoreTools" measurementUnit="Pixel">
+  <children xmi:type="notation:Node" xmi:id="_20L9QPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20MkUPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20NLYPlzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20NLYflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20NLYvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20NLY_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20NLZPlzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20NLZflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20NLZvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20NLZ_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20L9QflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessModel"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20L9QvlzEd-ALNv_a0HG6Q" x="615" y="530"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20NycPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20QOsPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20QOsflzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20QOsvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20QOs_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20QOtPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20QOtflzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20QOtvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20QOt_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20QOuPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20NycflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessColumn"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20NycvlzEd-ALNv_a0HG6Q" x="410" y="80"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20Q1wPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20Rc0PlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20Rc0flzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20Rc0vlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20Rc0_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20Rc1PlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20Rc1flzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20Rc1vlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20Rc1_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20Rc2PlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20Q1wflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessColumnSet"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20Q1wvlzEd-ALNv_a0HG6Q" x="645" y="-125"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20SD4PlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20SD4_lzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20Sq8PlzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20Sq8flzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20Sq8vlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20Sq8_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20Sq9PlzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20Sq9flzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20Sq9vlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20Sq9_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20SD4flzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessTable"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20SD4vlzEd-ALNv_a0HG6Q" x="180" y="-105"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20Sq-PlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20TSAPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20TSAflzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20TSAvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20TSA_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20TSBPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20T5EPlzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20T5EflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20T5EvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20T5E_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20Sq-flzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessView"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20Sq-vlzEd-ALNv_a0HG6Q" x="980" y="25"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20T5FPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20UgIPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20UgIflzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20UgIvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20UgI_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20UgJPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20VHMPlzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20VHMflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20VHMvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20VHM_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20T5FflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20T5FvlzEd-ALNv_a0HG6Q" x="130" y="155"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20VHNPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20VuQPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20VuQflzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20VuQvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20VuQ_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20VuRPlzEd-ALNv_a0HG6Q"/>
+      <layoutConstraint xmi:type="notation:Ratio" xmi:id="_b5KPUPl1Ed-ALNv_a0HG6Q" value="0.2926829268292683"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20VuRflzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20VuRvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20VuR_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20VuSPlzEd-ALNv_a0HG6Q"/>
+      <layoutConstraint xmi:type="notation:Ratio" xmi:id="_b5LdcPl1Ed-ALNv_a0HG6Q" value="0.2926829268292683"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20VHNflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessDomain"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20VHNvlzEd-ALNv_a0HG6Q" x="455" y="325"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20WVUPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20W8YPlzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20W8YflzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20W8YvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20W8Y_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20W8ZPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20W8ZflzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20W8ZvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20W8Z_lzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20W8aPlzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20WVUflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessIdentifier"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20WVUvlzEd-ALNv_a0HG6Q" x="635" y="185"/>
+  </children>
+  <children xmi:type="notation:Node" xmi:id="_20XjcPlzEd-ALNv_a0HG6Q" type="1001">
+    <children xmi:type="notation:Node" xmi:id="_20Xjc_lzEd-ALNv_a0HG6Q" type="4001"/>
+    <children xmi:type="notation:Node" xmi:id="_20YKgPlzEd-ALNv_a0HG6Q" type="5001">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20YKgflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20YKgvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20YKg_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20YKhPlzEd-ALNv_a0HG6Q" type="5002">
+      <styles xmi:type="notation:DrawerStyle" xmi:id="_20YKhflzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_20YKhvlzEd-ALNv_a0HG6Q"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_20YKh_lzEd-ALNv_a0HG6Q"/>
+    </children>
+    <styles xmi:type="notation:ShapeStyle" xmi:id="_20XjcflzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+    <element xmi:type="ecore:EClass" href="SpagoBIMetaModel.ecore#//business/BusinessViewInnerJoinRelationship"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_20XjcvlzEd-ALNv_a0HG6Q" x="920" y="435"/>
+  </children>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_2z2mEflzEd-ALNv_a0HG6Q"/>
+  <element xmi:type="ecore:EPackage" href="SpagoBIMetaModel.ecore#//business"/>
+  <edges xmi:type="notation:Edge" xmi:id="_20YKiPlzEd-ALNv_a0HG6Q" type="3002" source="_20L9QPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20YxkPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20YxkflzEd-ALNv_a0HG6Q" x="52" y="24"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20YxkvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20Yxk_lzEd-ALNv_a0HG6Q" x="95" y="22"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20YKiflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20YKivlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessModel/tables"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20YKi_lzEd-ALNv_a0HG6Q" points="[40, 0, -33, 615]$[123, 0, 50, 615]$[73, -614, 0, 1]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24dZQPlzEd-ALNv_a0HG6Q" id="(0.6330275229357798,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24dZQflzEd-ALNv_a0HG6Q" id="(0.8421052631578947,0.9767441860465116)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20ZYoPlzEd-ALNv_a0HG6Q" type="3002" source="_20L9QPlzEd-ALNv_a0HG6Q" target="_20T5FPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20ZYpPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ZYpflzEd-ALNv_a0HG6Q" x="4" y="38"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20ZYpvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ZYp_lzEd-ALNv_a0HG6Q" x="109" y="14"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20ZYoflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20ZYovlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessModel/relationships"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20ZYo_lzEd-ALNv_a0HG6Q" points="[-8, 0, 450, 334]$[-458, 10, 0, 344]$[-458, -334, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24i40PlzEd-ALNv_a0HG6Q" id="(0.027522935779816515,0.4186046511627907)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24i40flzEd-ALNv_a0HG6Q" id="(0.2553191489361702,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20ZYqPlzEd-ALNv_a0HG6Q" type="3002" source="_20L9QPlzEd-ALNv_a0HG6Q" target="_20WVUPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20Z_svlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20Z_s_lzEd-ALNv_a0HG6Q" x="11" y="-31"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20Z_tPlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20Z_tflzEd-ALNv_a0HG6Q" x="37" y="16"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20ZYqflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20Z_sPlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessModel/identifiers"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20Z_sflzEd-ALNv_a0HG6Q" points="[3, 0, -4, 305]$[3, -111, -4, 194]$[7, -304, 0, 1]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24kG8PlzEd-ALNv_a0HG6Q" id="(0.44954128440366975,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24kG8flzEd-ALNv_a0HG6Q" id="(0.2975206611570248,0.9767441860465116)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20Z_tvlzEd-ALNv_a0HG6Q" type="3002" source="_20L9QPlzEd-ALNv_a0HG6Q" target="_20VHNPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20amwflzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20amwvlzEd-ALNv_a0HG6Q" x="17" y="-38"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20amw_lzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20amxPlzEd-ALNv_a0HG6Q" x="36" y="-15"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20Z_t_lzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20Z_uPlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessModel/domains"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20amwPlzEd-ALNv_a0HG6Q" points="[-28, 0, 123, 164]$[-151, 0, 0, 164]$[-151, -164, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24ToQPlzEd-ALNv_a0HG6Q" id="(0.26605504587155965,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24ToQflzEd-ALNv_a0HG6Q" id="(0.3275862068965517,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20amxflzEd-ALNv_a0HG6Q" type="3002" source="_20L9QPlzEd-ALNv_a0HG6Q" target="_20XjcPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20bN0PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20bN0flzEd-ALNv_a0HG6Q" x="36" y="-50"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20bN0vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20bN0_lzEd-ALNv_a0HG6Q" x="9" y="-31"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20amxvlzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20amx_lzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessModel/joinRelationships"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20amyPlzEd-ALNv_a0HG6Q" points="[2, 0, -307, 71]$[309, 0, 0, 71]$[309, -71, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="__7LFAPl1Ed-ALNv_a0HG6Q" id="(0.981651376146789,0.4186046511627907)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="__7LFAfl1Ed-ALNv_a0HG6Q" id="(0.5,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20bN1PlzEd-ALNv_a0HG6Q" type="3002" source="_20NycPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20b04PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20b04flzEd-ALNv_a0HG6Q" x="-25" y="10"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20b04vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20b04_lzEd-ALNv_a0HG6Q" x="-10" y="-19"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20bN1flzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20bN1vlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessColumn/table"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20bN1_lzEd-ALNv_a0HG6Q" points="[0, 0, -189, 164]$[0, -85, -189, 79]$[189, -164, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OfbYoPl2Ed-ALNv_a0HG6Q" id="(0.6608695652173913,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OfbYofl2Ed-ALNv_a0HG6Q" id="(0.21804511278195488,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20b05PlzEd-ALNv_a0HG6Q" type="3002" source="_20Q1wPlzEd-ALNv_a0HG6Q" target="_20L9QPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20cb8PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20cb8flzEd-ALNv_a0HG6Q" x="-12" y="-32"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20cb8vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20cb8_lzEd-ALNv_a0HG6Q" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20b05flzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20b05vlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessColumnSet/model"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20b05_lzEd-ALNv_a0HG6Q" points="[0, 1, 73, -614]$[50, 615, 123, 0]$[-33, 615, 40, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Uzq94Pl2Ed-ALNv_a0HG6Q" id="(0.8421052631578947,0.9767441860465116)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Uzq94fl2Ed-ALNv_a0HG6Q" id="(0.6330275229357798,0.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20cb9PlzEd-ALNv_a0HG6Q" type="3002" source="_20Q1wPlzEd-ALNv_a0HG6Q" target="_20NycPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20dDAPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20dDAflzEd-ALNv_a0HG6Q" x="26" y="-25"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20dDAvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20dDA_lzEd-ALNv_a0HG6Q" x="-22" y="-15"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20cb9flzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20cb9vlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessColumnSet/columns"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20cb9_lzEd-ALNv_a0HG6Q" points="[0, 0, 189, -164]$[-189, 79, 0, -85]$[-189, 164, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24U2YPlzEd-ALNv_a0HG6Q" id="(0.21804511278195488,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24U2YflzEd-ALNv_a0HG6Q" id="(0.6608695652173913,0.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20dDBPlzEd-ALNv_a0HG6Q" type="3003" source="_20SD4PlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20dDBflzEd-ALNv_a0HG6Q" routing="Rectilinear" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20dDBvlzEd-ALNv_a0HG6Q" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20dDB_lzEd-ALNv_a0HG6Q" points="[0, 0, -310, 9]$[0, -25, -310, -16]$[305, -25, -5, -16]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24WrkPlzEd-ALNv_a0HG6Q" id="(0.5,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24WrkflzEd-ALNv_a0HG6Q" id="(0.045112781954887216,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20dqEPlzEd-ALNv_a0HG6Q" type="3002" source="_20Sq-PlzEd-ALNv_a0HG6Q" target="_20XjcPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20dqFPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20dqFflzEd-ALNv_a0HG6Q" x="16" y="51"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20dqFvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20dqF_lzEd-ALNv_a0HG6Q" x="47" y="15"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20dqEflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20dqEvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessView/joinRelationships"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20dqE_lzEd-ALNv_a0HG6Q" points="[1, 3, -42, -410]$[39, 372, -4, -41]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24cLIPlzEd-ALNv_a0HG6Q" id="(0.6078431372549019,0.9302325581395349)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24cLIflzEd-ALNv_a0HG6Q" id="(0.5272727272727272,0.13953488372093023)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20eRIPlzEd-ALNv_a0HG6Q" type="3003" source="_20Sq-PlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20eRIflzEd-ALNv_a0HG6Q" routing="Rectilinear" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20eRIvlzEd-ALNv_a0HG6Q" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20eRI_lzEd-ALNv_a0HG6Q" points="[37, 0, 266, 109]$[37, -129, 266, -20]$[-209, -129, 20, -20]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24hqsPlzEd-ALNv_a0HG6Q" id="(0.5,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24hqsflzEd-ALNv_a0HG6Q" id="(0.849624060150376,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20eRJPlzEd-ALNv_a0HG6Q" type="3002" source="_20T5FPlzEd-ALNv_a0HG6Q" target="_20L9QPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20e4MPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20e4MflzEd-ALNv_a0HG6Q" x="60" y="10"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20e4MvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20e4M_lzEd-ALNv_a0HG6Q" x="15" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20eRJflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20eRJvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship/model"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20eRJ_lzEd-ALNv_a0HG6Q" points="[0, 0, -458, -334]$[0, 344, -458, 10]$[450, 334, -8, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_D1_UwPl2Ed-ALNv_a0HG6Q" id="(0.2553191489361702,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_D1_Uwfl2Ed-ALNv_a0HG6Q" id="(0.027522935779816515,0.4186046511627907)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20e4NPlzEd-ALNv_a0HG6Q" type="3002" source="_20T5FPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20ffQPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ffQflzEd-ALNv_a0HG6Q" x="-210" y="19"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20ffQvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ffQ_lzEd-ALNv_a0HG6Q" x="4" y="-10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20e4NflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20e4NvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship/sourceTable"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20e4N_lzEd-ALNv_a0HG6Q" points="[0, 0, -463, 239]$[0, -140, -463, 99]$[463, -239, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24enYPlzEd-ALNv_a0HG6Q" id="(0.5035460992907801,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24enYflzEd-ALNv_a0HG6Q" id="(0.13533834586466165,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20ffRPlzEd-ALNv_a0HG6Q" type="3002" source="_20T5FPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20gGUPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20gGUflzEd-ALNv_a0HG6Q" x="-180" y="-8"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20gGUvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20gGU_lzEd-ALNv_a0HG6Q" x="1" y="-12"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20ffRflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20ffRvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship/destinationTable"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20ffR_lzEd-ALNv_a0HG6Q" points="[0, 0, -486, 248]$[0, -195, -486, 53]$[345, -236, -141, 12]$[480, -248, -6, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24eAUPlzEd-ALNv_a0HG6Q" id="(0.2553191489361702,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24eAUflzEd-ALNv_a0HG6Q" id="(0.05263157894736842,0.7906976744186046)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20gGVPlzEd-ALNv_a0HG6Q" type="3002" source="_20T5FPlzEd-ALNv_a0HG6Q" target="_20NycPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20gtYPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20gtYflzEd-ALNv_a0HG6Q" x="-67" y="-28"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20gtYvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20gtY_lzEd-ALNv_a0HG6Q" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20gGVflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20gGVvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship/sourceColumns"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20gGV_lzEd-ALNv_a0HG6Q" points="[0, 0, -187, 61]$[0, -61, -187, 0]$[187, -61, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24XSoflzEd-ALNv_a0HG6Q" id="(0.6737588652482269,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24YgwPlzEd-ALNv_a0HG6Q" id="(0.0,0.3488372093023256)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20gtZPlzEd-ALNv_a0HG6Q" type="3002" source="_20T5FPlzEd-ALNv_a0HG6Q" target="_20NycPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20gtaPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20gtaflzEd-ALNv_a0HG6Q" x="-34" y="-14"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20hUcPlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20hUcflzEd-ALNv_a0HG6Q" x="-9" y="-25"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20gtZflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20gtZvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessRelationship/destinationColumns"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20gtZ_lzEd-ALNv_a0HG6Q" points="[4, 0, -197, 58]$[201, 0, 0, 58]$[201, -58, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24ZH0PlzEd-ALNv_a0HG6Q" id="(0.9716312056737588,0.6046511627906976)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24ZH0flzEd-ALNv_a0HG6Q" id="(0.4956521739130435,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20hUcvlzEd-ALNv_a0HG6Q" type="3002" source="_20VHNPlzEd-ALNv_a0HG6Q" target="_20L9QPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20hUdvlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20hUd_lzEd-ALNv_a0HG6Q" x="-33" y="-12"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20h7gPlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20h7gflzEd-ALNv_a0HG6Q" x="17" y="-12"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20hUc_lzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20hUdPlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessDomain/model"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20hUdflzEd-ALNv_a0HG6Q" points="[0, 0, -151, -164]$[0, 164, -151, 0]$[123, 164, -28, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_W-SbUPl2Ed-ALNv_a0HG6Q" id="(0.3275862068965517,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_W-TCYPl2Ed-ALNv_a0HG6Q" id="(0.26605504587155965,0.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20h7gvlzEd-ALNv_a0HG6Q" type="3002" source="_20VHNPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20iikPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20iikflzEd-ALNv_a0HG6Q" x="-41" y="-25"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20jJoPlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20jJoflzEd-ALNv_a0HG6Q" x="25" y="-15"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20h7g_lzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20h7hPlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessDomain/tables"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20h7hflzEd-ALNv_a0HG6Q" points="[0, 0, -150, 409]$[150, -409, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24hDoPlzEd-ALNv_a0HG6Q" id="(0.6637931034482759,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24hDoflzEd-ALNv_a0HG6Q" id="(0.2706766917293233,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20jJovlzEd-ALNv_a0HG6Q" type="3002" source="_20VHNPlzEd-ALNv_a0HG6Q" target="_20T5FPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20jwsPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20jwsflzEd-ALNv_a0HG6Q" x="-132" y="23"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20jwsvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20jws_lzEd-ALNv_a0HG6Q" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20jJo_lzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20jJpPlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessDomain/relationships"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20jJpflzEd-ALNv_a0HG6Q" points="[0, 0, 90, 60]$[-90, -60, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24bkEPlzEd-ALNv_a0HG6Q" id="(0.3275862068965517,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24bkEflzEd-ALNv_a0HG6Q" id="(0.75177304964539,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20jwtPlzEd-ALNv_a0HG6Q" type="3002" source="_20WVUPlzEd-ALNv_a0HG6Q" target="_20L9QPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20kXwPlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20kXwflzEd-ALNv_a0HG6Q" x="-8" y="-16"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20kXwvlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20kXw_lzEd-ALNv_a0HG6Q" x="2" y="21"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20jwtflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20jwtvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessIdentifier/model"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20jwt_lzEd-ALNv_a0HG6Q" points="[0, 1, 7, -304]$[-4, 194, 3, -111]$[-4, 305, 3, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_wQHW0Pl0Ed-ALNv_a0HG6Q" id="(0.2975206611570248,0.9767441860465116)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_wQH94Pl0Ed-ALNv_a0HG6Q" id="(0.44954128440366975,0.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20kXxPlzEd-ALNv_a0HG6Q" type="3002" source="_20WVUPlzEd-ALNv_a0HG6Q" target="_20Q1wPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20k-0PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20k-0flzEd-ALNv_a0HG6Q" x="-69" y="23"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20k-0vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20k-0_lzEd-ALNv_a0HG6Q" x="25" y="11"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20kXxflzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20kXxvlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessIdentifier/table"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20kXx_lzEd-ALNv_a0HG6Q" points="[0, 0, -20, 269]$[20, -269, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24gckPlzEd-ALNv_a0HG6Q" id="(0.371900826446281,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24gckflzEd-ALNv_a0HG6Q" id="(0.41353383458646614,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20k-1PlzEd-ALNv_a0HG6Q" type="3002" source="_20WVUPlzEd-ALNv_a0HG6Q" target="_20NycPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20ll4PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ll4flzEd-ALNv_a0HG6Q" x="-20" y="-20"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20ll4vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20ll4_lzEd-ALNv_a0HG6Q" x="-25" y="18"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20k-1flzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20k-1vlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessIdentifier/columns"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20k-1_lzEd-ALNv_a0HG6Q" points="[0, 0, 186, 60]$[-186, -60, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24Zu4PlzEd-ALNv_a0HG6Q" id="(0.18181818181818182,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24aV8PlzEd-ALNv_a0HG6Q" id="(0.7478260869565218,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Edge" xmi:id="_20ll5PlzEd-ALNv_a0HG6Q" type="3002" source="_20XjcPlzEd-ALNv_a0HG6Q" target="_20L9QPlzEd-ALNv_a0HG6Q">
+    <children xmi:type="notation:Node" xmi:id="_20mM8PlzEd-ALNv_a0HG6Q" type="4011">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20mM8flzEd-ALNv_a0HG6Q" x="-10" y="-10"/>
+    </children>
+    <children xmi:type="notation:Node" xmi:id="_20mM8vlzEd-ALNv_a0HG6Q" type="4012">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_20mM8_lzEd-ALNv_a0HG6Q" x="10" y="10"/>
+    </children>
+    <styles xmi:type="notation:ConnectorStyle" xmi:id="_20ll5flzEd-ALNv_a0HG6Q" lineColor="4210752"/>
+    <styles xmi:type="notation:FontStyle" xmi:id="_20ll5vlzEd-ALNv_a0HG6Q" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+    <element xmi:type="ecore:EReference" href="SpagoBIMetaModel.ecore#//business/BusinessViewInnerJoinRelationship/model"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_20ll5_lzEd-ALNv_a0HG6Q" points="[0, 0, 309, -71]$[0, 71, 309, 0]$[-307, 71, 2, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24cyMPlzEd-ALNv_a0HG6Q" id="(0.5,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_24cyMflzEd-ALNv_a0HG6Q" id="(0.981651376146789,0.4186046511627907)"/>
+  </edges>
+</notation:Diagram>

@@ -1,0 +1,17 @@
+#foreach ($jpaTable in $jpaTables)
+${jpaTable.uniqueName}.label = $jpaTable.name
+${jpaTable.uniqueName}.tooltip = $jpaTable.description
+
+
+
+#foreach ($jpaColumn in $jpaTable.getColumns())
+${jpaColumn.uniqueName}.label = $jpaColumn.name
+${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
+#end
+
+#foreach ($jpaView in $jpaViews)
+${jpaView.uniqueName}.label = $jpaView.name
+${jpaView.uniqueName}.tooltip = $jpaView.description
+#end
+
+#end

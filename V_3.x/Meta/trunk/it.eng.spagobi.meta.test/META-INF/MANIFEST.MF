@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: it.eng.spagobi.meta.test
+Bundle-SymbolicName: it.eng.spagobi.meta.test
+Bundle-Version: 1.0.0
+Bundle-Vendor: it.eng
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: it.eng.spagobi.meta.edit;bundle-version="1.0.0",
+ it.eng.spagobi.meta.editor;bundle-version="1.0.0",
+ it.eng.spagobi.meta.generator;bundle-version="1.0.0",
+ it.eng.spagobi.meta.initializer;bundle-version="1.0.0",
+ it.eng.spagobi.meta.mapper;bundle-version="1.0.0",
+ it.eng.spagobi.meta.model;bundle-version="1.0.0"
+Import-Package: org.junit

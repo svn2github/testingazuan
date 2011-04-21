@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="it.eng.spagobi.meta.editor.multi.wizards.SpagoBIModelEditorWizard"
+            name="%_UI_ModelModelWizard_label"
+            class="it.eng.spagobi.meta.editor.multi.wizards.SpagoBIModelEditorWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/SpagoBIModelFile.gif">
+         <description>%_UI_ModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor"
+            name="%_UI_ModelEditor_label"
+            icon="icons/full/obj16/SpagoBIModelFile.gif"
+            class="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorWorkbenchContributor">
+      </editor>
+   </extension>
+   
+    <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapter"
+            name="%_UI_ModelEditorAdapter_label"
+            icon="icons/full/obj16/SpagoBIModelFile.gif"
+            extensions="sbimodel"
+            class="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapter"
+            contributorClass="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorWorkbenchContributor"
+            launcher="it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapterLauncher">
+      </editor>
+   </extension>
+   
+   
+   
+   
+   
+
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.editor.physical.PhysicalModelEditor"
+            name="%_UI_PhysicalModelEditor_label"
+            icon="icons/full/obj16/SpagoBIPhysicalModelFile.gif"
+            extensions="physicalmodel"
+            class="it.eng.spagobi.meta.editor.physical.PhysicalModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.physical.PhysicalModelEditorWorkbenchContributor">
+      </editor>
+   </extension>
+   
+   
+   
+   
+
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="it.eng.spagobi.meta.editor.business.BusinessModelEditor"
+            name="%_UI_BusinessModelEditor_label"
+            icon="icons/full/obj16/SpagoBIBusinessModelFile.gif"
+            extensions="sbibusinessmodel"
+            class="it.eng.spagobi.meta.editor.business.BusinessModelEditor"
+            contributorClass="it.eng.spagobi.meta.editor.business.BusinessModelEditorWorkbenchContributor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="it.eng.spagobi.meta.editor.contribution1"
+            nameFilter="*.sbimodel"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               icon="icons/full/obj16/SpagoBIModelFile.gif"
+               id="it.eng.spagobi.meta.editor.create"
+               label="Create"
+               path="additions">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
+         <action
+               class="it.eng.spagobi.meta.editor.popup.actions.CreateQueryProjectExplorerAction"
+               enablesFor="1"
+               id="it.eng.spagobi.meta.editor.newQueryAction"
+               label="New Query"
+               menubarPath="it.eng.spagobi.meta.editor.create/group">
+         </action>
+         <action
+               class="it.eng.spagobi.meta.editor.popup.actions.CreateJPAMappingProjectExplorerAction"
+               enablesFor="1"
+               id="it.eng.spagobi.meta.editor.newJPAMappingAction"
+               label="JPA Mapping"
+               menubarPath="it.eng.spagobi.meta.editor.create/group">
+         </action>
+      </objectContribution>
+   </extension>
+
+
+
+
+
+
+
+</plugin>

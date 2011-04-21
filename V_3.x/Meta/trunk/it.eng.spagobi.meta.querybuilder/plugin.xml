@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor"
+            contributorClass="it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetBuilderEditorContributor"
+            extensions="metaquery"
+            icon="icons/query.gif"
+            id="it.eng.spagobi.meta.querybuilder.ui.editor.CreateQueryBuilderEditor"
+            name="Query Builder Editor">
+      </editor>
+   </extension>
+
+</plugin>

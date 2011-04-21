@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+  <model>
+    <categories>
+      <category name="Structural"
+      description="Structural properties" />
+    </categories>
+    <types>
+      <type id="structural.package" name="Package Name"
+      description="Package name used in JPA mapping"
+      category="Structural" defaultValue="it.eng.spagobi.meta" />
+    </types>
+     <types>
+      <type id="structural.file" name="File"
+      description="File used to store this model"
+      category="Structural" defaultValue="model.sbimodel" />
+    </types>
+  </model>
+  
+  <table>
+   
+   <categories>
+      <category name="Structural"
+      description="Structural properties" />
+      <category name="Style" description="Style properties" />
+    </categories>
+    
+    <types>
+      <type id="structural.visible" name="Visible"
+      description="Specify if this table is visible in the query editor"
+      category="Structural" defaultValue="true" />
+      
+      <type id="structural.type" name="Type"
+      description="The role played by this table in the data model (cube or dimension)"
+      category="Structural" defaultValue="true" />
+    </types>
+    
+    <typesValues>
+      <admissibleValuesOf typeId="structural.visible">
+        <value>true</value>
+        <value>false</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.type">
+        <value>cube</value>
+        <value>dimension</value>
+      </admissibleValuesOf>
+    </typesValues>
+  
+  </table>
+  
+  <column>
+    <categories>
+      <category name="Structural"
+      description="Structural properties" />
+      <category name="Style" description="Style properties" />
+    </categories>
+    
+    <types>
+     <type id="structural.visible" name="Visible"
+      description="Specify if this column is visible in the query editor"
+      category="Structural" defaultValue="true" />
+      
+      <type id="structural.type" name="Type"
+      description="The role played by this column in the data model (measure or attribute)"
+      category="Structural" defaultValue="attribute" />
+      
+      <type id="structural.type" name="Type"
+      description="The role played by this table in the data model (cube or dimension)"
+      category="Structural" defaultValue="true" />
+      
+      <type id="structural.aggtype" name="Agregation Type"
+      description="The preferred agregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
+      category="Structural" defaultValue="COUNT" />
+      
+      <type id="structural.datatype" name="Data Type"
+      description="The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)"
+      category="Structural" defaultValue="VARCHAR" />
+      
+	  <type id="style.alignment" name="Alignment Type"
+      description="The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)"
+      category="Style" defaultValue="LEFT" />
+    </types>
+    
+    <typesValues>
+      <admissibleValuesOf typeId="structural.visible">
+        <value>true</value>
+        <value>false</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.type">
+        <value>measure</value>
+        <value>attribute</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.aggtype">
+        <value>COUNT</value>
+        <value>SUM</value>
+        <value>AVG</value>
+        <value>MAX</value>
+        <value>MIN</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.datatype">
+        <value>VARCHAR</value>
+        <value>INTEGER</value>
+        <value>DOUBLE</value>
+        <value>DATE</value>
+        <value>TIMESTAMP</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="style.alignment">
+        <value>LEFT</value>
+        <value>CENTER</value>
+        <value>RIGHT</value>
+        <value>JUSTIFIED</value>
+      </admissibleValuesOf>	  
+      
+    </typesValues>
+  </column>
+  
+  <identifier></identifier>
+  
+  <relationship></relationship>
+</properties>

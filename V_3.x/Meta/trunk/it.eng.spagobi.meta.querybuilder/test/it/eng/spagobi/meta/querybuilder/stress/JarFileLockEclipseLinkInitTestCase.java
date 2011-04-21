@@ -87,12 +87,16 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
         try {
             for(int i=0; i<10; i++){
                 //copiare da un altra parte file del datamart
+                logger.error("Copyng file...");
                 copyFile(TEST_JAR_FILE, TEST_OUTPUT_FOLDER);
                 //mettere file del datamart
+                logger.error("Testing...");
                 doTest(TEST_JAR_FILE);
                 //doTest1(new File(TestCaseConstants.TEST_FOLDER, "PERCORSO FILE"));   
+                logger.error("Deleting file...");
                 deleteFile(TEST_JAR_FILE);
                 //ri-copiare file datamart in directory originale
+                logger.error("Copyng file to original folder...");
                 copyFile(new File(TEST_OUTPUT_FOLDER, "datamart.jar"), TEST_INPUT_FOLDER);
             }
         } catch (SpagoBIPluginException e) {

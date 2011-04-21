@@ -172,7 +172,7 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
 		    javaRuntime.gc();
     		 */
 
-    		System.err.println("File succesfully copied");
+    		logger.debug("File succesfully copied");
     	} catch(Throwable t) {
     		throw new RuntimeException("Impossible to copy file [" + sourceFile + "] into folder [" + destinationFolder + "]", t);
     	}

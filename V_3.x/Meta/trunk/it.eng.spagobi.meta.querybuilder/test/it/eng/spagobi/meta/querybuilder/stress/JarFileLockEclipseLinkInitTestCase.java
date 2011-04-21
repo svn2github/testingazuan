@@ -28,6 +28,7 @@ import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
 import java.io.File;
@@ -35,6 +36,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -46,7 +50,8 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
 
 	public static final File TEST_INPUT_FOLDER = new File(TestCaseConstants.TEST_FOLDER, "models/stress");
 	public static final File TEST_OUTPUT_FOLDER = new File(TestCaseConstants.TEST_OUPUT_ROOT_FOLDER, "stress");
-	
+	private static Logger logger = LoggerFactory.getLogger(JarFileLockEclipseLinkInitTestCase.class);
+
 	// a model with no keys but with relationships
 	private static final File TEST_JAR_FILE = new File(TEST_INPUT_FOLDER, "datamart.jar");
     ConnectionDescriptor connection;
@@ -73,7 +78,7 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
         configuration = new FileDataSourceConfiguration("a", file);
         configuration.loadDataSourceProperties().put("connection", connection);
         IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration);
-       
+        logger.debug("Datasource is [{}]",dataSource );
         return dataSource;
     }
        
@@ -100,7 +105,8 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
 
     private void deleteFile(File file){
         if(!file.exists()){
-            return;
+            logger.error("File doesn't exists");
+        	return;
         }
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -110,14 +116,13 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
         }
         boolean fileDeletionResult = file.delete();
         if(!fileDeletionResult){
-           
+        	logger.error("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
             throw new SpagoBIPluginException("Can't delete the file "+ file.getAbsolutePath()+" the file is writtable? "+file.canWrite() +" "+file.canExecute());
         }
     }
    
     private void doTest(File datamartfile) throws Exception {
 
-       
         IDataSource dataSource = null;
         try {
             dataSource = getDataSource(datamartfile);
@@ -129,8 +134,6 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
    
    
     private void doTest1(File datamartfile) throws Exception {
-
-
         IDataSource dataSource = null;
         try {
             dataSource = getDataSource(datamartfile);

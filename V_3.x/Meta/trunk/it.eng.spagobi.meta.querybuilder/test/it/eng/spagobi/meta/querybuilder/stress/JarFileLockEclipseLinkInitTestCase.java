@@ -91,8 +91,8 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
                 copyFile(TEST_JAR_FILE, TEST_OUTPUT_FOLDER);
                 //mettere file del datamart
                 logger.error("Testing...");
-                doTest(TEST_JAR_FILE);
-                //doTest1(new File(TestCaseConstants.TEST_FOLDER, "PERCORSO FILE"));   
+                //doTest(TEST_JAR_FILE);
+                doTest1(TEST_JAR_FILE);   
                 logger.error("Deleting file...");
                 deleteFile(TEST_JAR_FILE);
                 //ri-copiare file datamart in directory originale

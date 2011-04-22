@@ -95,7 +95,9 @@ public class HavingFieldTable extends AbstractQueryEditTable {
 		tableViewerHaving.setColumnProperties(new String[] { "Filter Name","Function", "Left Operand", "Operator", "Function","Right Operand", "Is for prompt", "Bol. connector" });
 		
 		Table table = tableViewerHaving.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		GridData gdTable = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+		gdTable.heightHint = 100;
+		table.setLayoutData(gdTable);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		

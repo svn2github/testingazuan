@@ -107,9 +107,12 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		viewer.setColumnProperties(new String[] { "Entity", "Field", "Alias", "Function", "Order", "Group", "Include", "Visible", "Filter", "Having" });
 		
 		Table table = viewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		GridData gdTable = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+		gdTable.heightHint = 100;
+		table.setLayoutData(gdTable);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
+		
 		
 		viewer.setContentProvider(new ArrayContentProvider());
 		Query query = queryBuilder.getQuery();

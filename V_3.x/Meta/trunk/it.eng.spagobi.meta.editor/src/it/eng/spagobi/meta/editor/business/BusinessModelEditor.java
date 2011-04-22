@@ -1218,7 +1218,7 @@ public class BusinessModelEditor
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		return true;
+		return false;
 	}
 
 	/**

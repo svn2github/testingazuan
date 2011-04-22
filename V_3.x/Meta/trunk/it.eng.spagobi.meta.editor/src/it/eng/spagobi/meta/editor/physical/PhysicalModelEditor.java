@@ -1550,7 +1550,7 @@ public class PhysicalModelEditor
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		return true;
+		return false;
 	}
 
 	/**

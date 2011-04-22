@@ -27,3 +27,4 @@ Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,
  org.eclipse.datatools.modelbase.sql.schema,
  org.eclipse.datatools.modelbase.sql.tables
+Export-Package: it.eng.spagobi.meta.editor.business.actions

@@ -77,7 +77,7 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
         IDataSourceConfiguration configuration;
         configuration = new FileDataSourceConfiguration("a", file);
         configuration.loadDataSourceProperties().put("connection", connection);
-        IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration);
+        IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration,false);
         logger.debug("Datasource is [{}]",dataSource );
         return dataSource;
     }

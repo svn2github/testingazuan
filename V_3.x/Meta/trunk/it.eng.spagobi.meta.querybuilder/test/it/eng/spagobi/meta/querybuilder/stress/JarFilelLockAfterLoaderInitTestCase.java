@@ -98,7 +98,7 @@ public class JarFilelLockAfterLoaderInitTestCase extends AbtractQueryBuilderTest
 	
 	private void doClassLoaderInitializationTest(File jarFile) throws Exception {
 		//ClassLoaderManager.qbeClassLoader = null;
-		ClassLoaderManager.updateCurrentWebClassLoader(jarFile);	
+		ClassLoaderManager.updateCurrentClassLoader(jarFile);	
 	}
 	
 	private void copyFile(File sourceFile, File destinationFolder) {

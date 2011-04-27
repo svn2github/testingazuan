@@ -36,7 +36,8 @@ public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	AbstractSpagoBIModelCommand performFinishCommand; 
 	public AddToIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddToIdentifierCommand.class, workbenchPart, selection);
-		this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
+		if (command instanceof AbstractSpagoBIModelCommand)
+			this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
 	}
 	
 	/**
@@ -58,6 +59,13 @@ public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the performFinishCommand
+	 */
+	public AbstractSpagoBIModelCommand getPerformFinishCommand() {
+		return performFinishCommand;
 	}
 	
 }

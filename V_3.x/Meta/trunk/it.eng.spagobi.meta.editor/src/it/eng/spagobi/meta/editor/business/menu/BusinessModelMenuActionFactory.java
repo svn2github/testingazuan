@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.menu;
 
+import it.eng.spagobi.meta.editor.business.actions.AbstractSpagoBIModelAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIdentifierAction;
@@ -35,6 +36,7 @@ import it.eng.spagobi.meta.editor.business.actions.RemovePhysicalTableToBusiness
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -89,7 +92,12 @@ public class BusinessModelMenuActionFactory {
 			 actions.put("Remove", removeActions);
 		} else if(target instanceof BusinessColumn){
 			List editActions = new ArrayList();
-			editActions.add(new AddToIdentifierAction(activeEditorPart, selection));
+			//Check if Command is executable
+			AddToIdentifierAction addToIdentifierAction = new AddToIdentifierAction(activeEditorPart, selection);
+			Command command = addToIdentifierAction.getPerformFinishCommand();
+			if (command instanceof AbstractSpagoBIModelCommand){
+				editActions.add(addToIdentifierAction);
+			}
 			actions.put("Add", editActions);
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();

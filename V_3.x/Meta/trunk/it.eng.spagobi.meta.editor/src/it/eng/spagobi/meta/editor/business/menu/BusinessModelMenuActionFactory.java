@@ -33,6 +33,7 @@ import it.eng.spagobi.meta.editor.business.actions.CreateQueryAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.editor.business.actions.RemovePhysicalTableToBusinessViewAction;
+import it.eng.spagobi.meta.editor.business.actions.RemoveToIdentifierAction;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -92,13 +93,26 @@ public class BusinessModelMenuActionFactory {
 			 actions.put("Remove", removeActions);
 		} else if(target instanceof BusinessColumn){
 			List editActions = new ArrayList();
-			//Check if Command is executable
-			AddToIdentifierAction addToIdentifierAction = new AddToIdentifierAction(activeEditorPart, selection);
-			Command command = addToIdentifierAction.getPerformFinishCommand();
-			if (command instanceof AbstractSpagoBIModelCommand){
-				editActions.add(addToIdentifierAction);
+			List removeActions = new ArrayList();
+			BusinessColumn businessColumn = (BusinessColumn)target;
+			if ((businessColumn.isIdentifier()) || (businessColumn.isPartOfCompositeIdentifier())){
+				RemoveToIdentifierAction removeToIdentifierAction = new RemoveToIdentifierAction(activeEditorPart, selection);
+				Command command = removeToIdentifierAction.getPerformFinishCommand();
+				//Check if Command is executable
+				if (command instanceof AbstractSpagoBIModelCommand){
+					removeActions.add(removeToIdentifierAction);
+				}
+				actions.put("Remove", removeActions);
 			}
-			actions.put("Add", editActions);
+			else{
+				AddToIdentifierAction addToIdentifierAction = new AddToIdentifierAction(activeEditorPart, selection);
+				Command command = addToIdentifierAction.getPerformFinishCommand();
+				//Check if Command is executable
+				if (command instanceof AbstractSpagoBIModelCommand){
+					editActions.add(addToIdentifierAction);
+				}
+				actions.put("Add", editActions);
+			}
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();
 	    	editActions.add(new AddBusinessTableAction(activeEditorPart, selection, null));

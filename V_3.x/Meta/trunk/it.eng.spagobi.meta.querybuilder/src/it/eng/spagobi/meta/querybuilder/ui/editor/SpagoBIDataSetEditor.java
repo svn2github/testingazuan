@@ -12,6 +12,7 @@ import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
+import it.eng.spagobi.meta.model.validator.ModelValidator;
 import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -76,106 +77,40 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-		//queryBuilder = new QueryBuilder();
 	}
-	
-	/**
-	 * The <code>MultiPageEditorExample</code> implementation of this method
-	 * checks that the input is an instance of <code>IFileEditorInput</code>.
-	 */
+
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+		
 		logger.trace("IN");
 		
 		try {
 			super.init(site, editorInput);
-		
-			logger.debug("editorInput parameter type is equal to [{}]", editorInput.getClass());
-			if (editorInput instanceof FileEditorInput) {
-				FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
-				InputStream inputStream = fileEditorInput.getFile().getContents();
-				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-				BufferedReader reader = new BufferedReader(inputStreamReader);
-				String line = null;
-				StringBuffer stringBuffer  = new StringBuffer();
-				while((line = reader.readLine())!= null) {
-					stringBuffer.append(line);
-				}
-				inputStreamReader.close();
-				reader.close();
-				inputStream.close();
-				String queryString = stringBuffer.toString();
-			    o = new JSONObject(queryString);
-
-				JSONObject queryMeta = o.optJSONObject("queryMeta");
-				String modelPath = queryMeta.optString("modelPath");
-				logger.debug("Model path is [{}]",modelPath );
-				  
-				//create JPA Mapping
-				BusinessModel businessModel = prepareMapping(modelPath);
-				
-				//create Data Source
-				IDataSource dataSource = createDataSource(modelPath,businessModel);
-				
-				//create QueryBuilder
-				queryBuilder = new QueryBuilder(dataSource);
-				
-			    JSONObject queryJSON = o.optJSONObject("query");
-			    if(queryJSON == null) {
-					logger.debug("No previously saved query to load");
-				} else {
-					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
-				}
-
-			} 
-			else if(editorInput instanceof FileStoreEditorInput) {
-				//force refresh of workspace
-
-				FileStoreEditorInput fileStoreEditorInput = (FileStoreEditorInput)editorInput;
-				logger.debug("editorInput is outside Eclipse workspace");
-				URI fileStoreEditorInputURI = fileStoreEditorInput.getURI();
-				logger.debug("fileStoreEditorInputURI is [{}]",fileStoreEditorInputURI);
-				FileInputStream fileInputStream = new FileInputStream(new File(fileStoreEditorInputURI));
-				InputStream inputStream = new BufferedInputStream(fileInputStream);
-				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-				BufferedReader reader = new BufferedReader(inputStreamReader);
-				String line = null;
-				StringBuffer stringBuffer  = new StringBuffer();
-				while((line = reader.readLine())!= null) {
-					stringBuffer.append(line);
-				}
-				inputStreamReader.close();
-				reader.close();
-				inputStream.close();
-				fileInputStream.close();
-				String queryString = stringBuffer.toString();
-			    o = new JSONObject(queryString);
-
-				JSONObject queryMeta = o.optJSONObject("queryMeta");
-				String modelPath = queryMeta.optString("modelPath");
-				logger.debug("Model path is [{}]",modelPath );
-			  
-				//create JPA Mapping
-				BusinessModel businessModel = prepareMapping(modelPath);
-				
-				//create Data Source
-				IDataSource dataSource = createDataSource(modelPath,businessModel);
-				
-				//create QueryBuilder
-				queryBuilder = new QueryBuilder(dataSource);
-				
-			    JSONObject queryJSON = o.optJSONObject("query");
-			    
-			    if(queryJSON == null) {
-					logger.debug("No previously saved query to load");
-				} else {
-					queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
-				}
+			String inputContents = getInputConetnts(editorInput);
+			try {
+				o = new JSONObject(inputContents);
+			} catch (Throwable t) {
+				throw new SpagoBIPluginException("Impossible to parse editor input [" + inputContents + "]", t);
 			}
-			else {
-				throw new PartInitException("Editor class [" + this.getClass().getName() + "] is unable to manage input of type [" + editorInput.getClass().getName() + "]");
-			} 
+			
+			JSONObject queryMeta = o.optJSONObject("queryMeta");
+			JSONObject queryJSON = o.optJSONObject("query");
+			String modelPath = queryMeta.optString("modelPath");
+			logger.debug("Model path is [{}]",modelPath );
+			  
+			String modelDirectory = new File(modelPath).getParent();
+			BusinessModel businessModel = loadBusinessModel(modelPath);
+			validateModel(businessModel);
+			generateMapping(businessModel, modelDirectory);
+			IDataSource dataSource = createDataSource(modelPath, businessModel);
+			queryBuilder = new QueryBuilder(dataSource);
+			
+		    if(queryJSON == null) {
+				logger.debug("No previously saved query to load");
+			} else {
+				queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
+			}
 		} catch(Throwable t) {
-			logger.error("Impossible to initialize editor [" + this.getClass().getName()+ "]", t);
+			showInformation("Impossible to open Query editor","Query editor cannot be opened: " + t.getMessage());
 			throw new PartInitException("Impossible to initialize editor [" + this.getClass().getName()+ "]: " + t.getCause().getMessage());
 		} finally {
 			logger.trace("OUT");
@@ -183,6 +118,63 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 
 
 	}
+	
+	public String getInputConetnts(IEditorInput editorInput) {
+		String contents;
+		
+		contents = null;
+		
+		try {
+			InputStream inputStream = openInputStream(editorInput);
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+			BufferedReader reader = new BufferedReader(inputStreamReader);
+			
+			String line = null;
+			StringBuffer stringBuffer  = new StringBuffer();
+			while((line = reader.readLine())!= null) {
+				stringBuffer.append(line);
+			}
+			
+			inputStreamReader.close();
+			reader.close();
+			inputStream.close();
+			
+			contents = stringBuffer.toString();
+		} catch(Throwable t) {
+			throw new SpagoBIPluginException("Impossible to read editor input [" + editorInput.getName() + "]", t);
+		} finally {
+			logger.trace("OUT");
+		}
+		
+		return contents;
+	}
+	
+	public InputStream openInputStream(IEditorInput editorInput) {
+		InputStream inputStream;
+		
+		inputStream = null;
+		
+		try {
+			if (editorInput instanceof FileEditorInput) { // input file is within eclipse workspace
+				FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+				inputStream = fileEditorInput.getFile().getContents();
+			} else if(editorInput instanceof FileStoreEditorInput) { // input file is outside eclipse workspace
+				FileStoreEditorInput fileStoreEditorInput = (FileStoreEditorInput)editorInput;
+				URI fileStoreEditorInputURI = fileStoreEditorInput.getURI();
+				FileInputStream fileInputStream = new FileInputStream(new File(fileStoreEditorInputURI));
+				inputStream = new BufferedInputStream(fileInputStream);
+			} else {
+				throw new SpagoBIPluginException("Impossible to manage editor input of type [" + editorInput.getClass().getName() + "]");
+			}
+		} catch(Throwable t) {
+			throw new SpagoBIPluginException("Impossible to open editor input [" + editorInput.getName() + "]", t);
+		} finally {
+			logger.trace("OUT");
+		}
+		
+		return inputStream;
+	}
+	
 	
 
 	protected void createPages() {
@@ -368,69 +360,59 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}
 	
-	protected BusinessModel prepareMapping(String modelPath) {
-		logger.debug("Creating JPA Mapping of [{}]", modelPath);
-		String modelDirectory = new File(modelPath).getParent();
-		/*
-		XMIResourceImpl resource = new XMIResourceImpl();
-		File source = new File(modelPath);
-		ModelPackage libraryPackage = ModelPackage.eINSTANCE;
-		try {
-			resource.load( new FileInputStream(source), new HashMap<Object,Object>());
-		} catch (FileNotFoundException e) {
-			throw new SpagoBIPluginException("JPA Mapping: File not found",e);
-		} catch (IOException e) {
-			throw new SpagoBIPluginException("JPA Mapping: IO Error",e);
-		}
-		*/
-		File modelFile = new File(modelPath);
-		EmfXmiSerializer emfXmiSerializer = new EmfXmiSerializer();
-		Model root = emfXmiSerializer.deserialize(modelFile);
-		//Model root = (Model) resource.getContents().get(0);
-		logger.debug("Model root is [{}] ",root );
-
+	protected BusinessModel loadBusinessModel(String modelPath) {
 		BusinessModel businessModel;
-		businessModel = root.getBusinessModels().get(0);
-		logger.debug("Business Model name is [{}] ",businessModel.getName() );
-
-		JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
-		generator.setLibDir(new File("plugins"));
-		boolean executed = true;
+		
+		logger.trace("IN");
+		
+		businessModel = null;
 		try {
-			generator.generate(businessModel, modelDirectory);
-		} catch (Exception e) {
-			logger.error("An error occurred while executing generator [{}]:", JpaMappingJarGenerator.class.getName(), e);
-			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
-			executed = false;
+			File modelFile = new File(modelPath);
+			EmfXmiSerializer emfXmiSerializer = new EmfXmiSerializer();
+			Model root = emfXmiSerializer.deserialize(modelFile);
+			logger.debug("Model root is [{}] ",root );
+
+			businessModel = root.getBusinessModels().get(0);
+			logger.debug("Business Model name is [{}] ", businessModel.getName() );
+		} catch(Throwable t) {
+			throw new SpagoBIPluginException("Impossible to load model from file [" + modelPath + "]", t);
+		} finally {
+			logger.trace("OUT");
 		}
 		
-		if(executed) {
-			//showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
-			logger.debug("Mapping jar generated succesfully");
-		} else {
-			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-			logger.debug("Mapping jar not generated succesfully");
-		}
 		return businessModel;
+	}
+	
+	
+	protected void validateModel(BusinessModel businessModel) {
+		ModelValidator modelValidator = new ModelValidator();
+		if(modelValidator.validate(businessModel.getParentModel()) == false) {
+			String message = "Model [" + businessModel.getName() + "] contains the following structural errors: ";
+			for(String diagnosticMessage : modelValidator.getDiagnosticMessages()) {
+				message += "\n - " + diagnosticMessage;
+			}
+			throw new SpagoBIPluginException(message);
+			
+		}
+	}	
+	
+	protected void generateMapping(BusinessModel businessModel, String outputFolder) {
+	
+		logger.trace("IN");
+	
+		try {
+			JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
+			generator.setLibDir(new File("plugins"));
+			generator.generate(businessModel, outputFolder);
+		} catch(Throwable t) {
+			throw new SpagoBIPluginException("Impossible to generate mapping for business model [" + businessModel.getName() + "] into folder [" + outputFolder + "]", t);
+		} finally {
+			logger.trace("OUT");
+		}
 	}	
 	
 	public IDataSource createDataSource(String modelPath, BusinessModel businessModel){
 		logger.debug("Creating datasource of [{}]",modelPath);
-		/*
-		XMIResourceImpl resource = new XMIResourceImpl();
-		File source = new File(modelPath);
-		try {
-			resource.load( new FileInputStream(source), new HashMap<Object,Object>());
-		} catch (FileNotFoundException e) {
-			throw new SpagoBIPluginException("JPA Mapping: File not found",e);
-		} catch (IOException e) {
-			throw new SpagoBIPluginException("JPA Mapping: IO Error",e);
-		}
-		Model root = (Model) resource.getContents().get(0);
-		
-		BusinessModel businessModel;
-		businessModel = root.getBusinessModels().get(0);
-		*/
 		
 		PhysicalModel physicalModel = businessModel.getPhysicalModel();
 		String connectionUrl = physicalModel.getProperties().get("connection.url").getValue();

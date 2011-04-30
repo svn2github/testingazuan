@@ -58,7 +58,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author cortella
  *	This class create an Editor for the QueryBuilder
  *  - First Page is for editing the query
  *  - Second Page is for showing query results

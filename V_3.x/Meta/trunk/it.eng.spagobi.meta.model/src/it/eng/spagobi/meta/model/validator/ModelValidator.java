@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.validator;
 
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -40,6 +43,14 @@ public class ModelValidator {
 	
 	public List<String> getDiagnosticMessages() {
 		return diagnosticMessages;
+	}
+	
+	public String getDiagnosticMessage() {
+		String msg = "Model contains the following validation errors: ";
+		for(String m : getDiagnosticMessages()) {
+			msg += "\n - " + m;
+		}
+		return msg;
 	}
 
 	public boolean validate(Model model) {
@@ -75,6 +86,11 @@ public class ModelValidator {
 	
 	public boolean validate(BusinessModel businessModel) {
 		boolean isValid = true;
+		
+		List<BusinessIdentifier> identifiers = businessModel.getIdentifiers();
+		for(BusinessIdentifier identifier : identifiers) {
+			isValid = isValid && validate(identifier);
+		}
 		
 		List<BusinessRelationship> relationships = businessModel.getRelationships();
 		for(BusinessRelationship relationship : relationships) {
@@ -112,6 +128,51 @@ public class ModelValidator {
 			diagnosticMessages.add("inbound business relationship  [" + relationship.getName() + "] defined on table [" + relationship.getDestinationTable().getName() + "] does not specifies any destination column");
 		}
 		
+		
+		return isValid;
+	}
+	
+	public boolean validate(BusinessIdentifier identifier) {
+		boolean isValid = true;
+		
+		if(identifier.getModel() == null) {
+			isValid = false;
+			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] does not belong to any model");
+			return false;
+		}
+		BusinessModel model = identifier.getModel();
+		
+		if(identifier.getTable() == null) {
+			isValid = false;
+			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] is not associated to any table");
+			return false;
+		}
+		BusinessColumnSet table = identifier.getTable();
+		
+		String tableName = table.getName();
+		if(model.getTable(tableName) == null) {
+			isValid = false;
+			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] is defined on table [" + table.getName() + "] that does not belong to the model");
+			return false;
+		}
+		
+		if(identifier.getColumns().size() < 1) {
+			isValid = false;
+			diagnosticMessages.add("Business table  [" + table.getName() + "] have an empty identifier");
+			return false;
+		}
+		
+		for(BusinessColumn column : identifier.getColumns()) {
+			if(table.getColumn(column.getName()) == null) {
+				isValid = false;
+				diagnosticMessages.add("Key column of identifier [" + identifier.getName() + "] does not belong to to table [" + table.getName() + "]");
+			}
+			
+			if( !(column.isIdentifier() || column.isPartOfCompositeIdentifier()) ) {
+				isValid = false;
+				diagnosticMessages.add("Key column of identifier [" + identifier.getName() + "] is not tagged as key column");
+			}
+		}
 		
 		return isValid;
 	}

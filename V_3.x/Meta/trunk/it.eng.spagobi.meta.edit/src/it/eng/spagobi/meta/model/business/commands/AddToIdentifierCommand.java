@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
+public class AddToIdentifierCommand extends AbstractSpagoBIModelEditCommand {
 
 	BusinessColumn businessColumn;
 	
@@ -106,5 +107,14 @@ public class AddToIdentifierCommand extends AbstractSpagoBIModelCommand {
 		}			
 	}
 	
-
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(businessColumn != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessColumn.getTable());
+		}
+		return affectedObjects;
+	}
+	
 }

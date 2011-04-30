@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.menu;
 
+import it.eng.spagobi.meta.editor.business.actions.RefreshViewerAction;
+import it.eng.spagobi.meta.editor.business.actions.ShowPropertiesViewAction;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,6 +34,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,12 +46,25 @@ import org.eclipse.ui.IEditorPart;
  */
 public class BusinessModelPopupMenuContributor {
 
-	protected Map<String, Collection<IAction>> actions;
+	ISelection selection;
+	Collection<?> newChildDescriptors;
+	Collection<?> newSiblingDescriptors;
+	IEditorPart activeEditorPart;
+	
+	RefreshViewerAction refreshViewerAction;
+	ShowPropertiesViewAction showPropertiesViewAction;
+	
+	public BusinessModelPopupMenuContributor() {
+		refreshViewerAction = new RefreshViewerAction();
+		showPropertiesViewAction = new ShowPropertiesViewAction();
+	}
 	
 	public void menuAboutToShow(IMenuManager menuManager) {
 		
-		MenuManager submenuManager = null;
+		Map<String, Collection<IAction>> actions;
+		MenuManager submenuManager;
 		
+		actions = BusinessModelMenuActionFactory.getActions(activeEditorPart, newChildDescriptors, selection);
 		Iterator<String> it = actions.keySet().iterator();
 		while(it.hasNext()) {
 			String menuName = it.next();
@@ -56,18 +73,20 @@ public class BusinessModelPopupMenuContributor {
 			menuManager.insertBefore("edit", submenuManager);
 		}
 		
+		menuManager.insertAfter("additions-end", new Separator("ui-actions"));
+		menuManager.insertAfter("ui-actions", showPropertiesViewAction);
+		menuManager.insertAfter("ui-actions", refreshViewerAction);
 	}
 	
 	public void setActiveEditor(IEditorPart activeEditorPart) {
-		// do nothing for the moment
+		refreshViewerAction.setActiveEditorPart(activeEditorPart);
+		showPropertiesViewAction.setActiveEditorPart(activeEditorPart);
 	}
 	
 	public void selectionChanged(IEditorPart activeEditorPart, SelectionChangedEvent event) {
-		
-		Collection<?> newChildDescriptors = null;
-		Collection<?> newSiblingDescriptors = null;
-		
-		ISelection selection = event.getSelection();
+	
+		this.activeEditorPart = activeEditorPart;
+		selection = event.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1) {
 			Object object = ((IStructuredSelection)selection).getFirstElement();
 
@@ -76,8 +95,6 @@ public class BusinessModelPopupMenuContributor {
 			newChildDescriptors = domain.getNewChildDescriptors(object, null);
 			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
 		}
-		
-		actions = BusinessModelMenuActionFactory.getActions(activeEditorPart, newChildDescriptors, selection);
 	}
 	
 	/**

@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
+public class EditBusinessColumnsCommand extends AbstractSpagoBIModelEditCommand {
 
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> removedColumns;
@@ -64,25 +65,26 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 	public void execute() {
 		BusinessModelInitializer initializer;
 		BusinessColumnSet businessColumnSet;
-		BusinessView businessView;
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
 
-		Collection<PhysicalColumn> selectedColumns = (Collection)parameter.getValue();
+		Collection<PhysicalColumn> newSelectionColumns = (Collection)parameter.getValue();
+		Collection<PhysicalColumn> oldSelectionColumns = extractPhysicalColumns(businessColumnSet);
+		
 		List<PhysicalColumn> columns;
 		
-		removedColumns = new ArrayList();
-		addedColumns = new ArrayList();
+		removedColumns = new ArrayList<BusinessColumn>();
+		addedColumns = new ArrayList<BusinessColumn>();
 		
 		initializer = new BusinessModelInitializer();	
 		
-		columns = getColumnsToRemove(businessColumnSet, selectedColumns);
+		columns = getColumnsToRemove(oldSelectionColumns, newSelectionColumns);
 		for(PhysicalColumn column: columns) {
 			BusinessColumn c = businessColumnSet.getColumn(column);
 			businessColumnSet.getColumns().remove(c);
 			removedColumns.add(c);
 		}
 				
-		columns = getColumnsToAdd(businessColumnSet, selectedColumns);
+		columns = getColumnsToAdd(oldSelectionColumns, newSelectionColumns);
 		for(PhysicalColumn column: columns) {
 			initializer.addColumn(column, businessColumnSet);
 			addedColumns.add( businessColumnSet.getColumn(column) );
@@ -92,42 +94,63 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
 	}
 	
-	private List<PhysicalColumn> getColumnsToRemove(BusinessColumnSet businessColumnSet, Collection<PhysicalColumn> newColumnSet) {
+	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {
+		List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
+		for(BusinessColumn businessColumn: businessColumnSet.getColumns()) {
+			physicalColumns.add(businessColumn.getPhysicalColumn());
+		}
+		return physicalColumns;
+	} 
+
+	private List<PhysicalColumn> getColumnsToRemove(Collection<PhysicalColumn> oldSelectionColumns, Collection<PhysicalColumn> newSelectionColumns) {
 		
-		List columnsToRemove;
+		List<PhysicalColumn> columnsToRemove = new ArrayList<PhysicalColumn>();
 		
-		columnsToRemove = new ArrayList();
-		
-		for(BusinessColumn businessColumn : businessColumnSet.getColumns()) {
-			boolean deleteColumn = true;
-			for(PhysicalColumn column : newColumnSet) {
-				if(businessColumn.equals(column)) {
-					deleteColumn = false;
-				}
-			}
-			if(deleteColumn) {
-				columnsToRemove.add(businessColumn.getPhysicalColumn());
+		for(PhysicalColumn oldSelectionColumn : oldSelectionColumns) {
+			if(isColumnPartOfTheNewSelection(oldSelectionColumn, newSelectionColumns) == false) {
+				columnsToRemove.add(oldSelectionColumn);
 			}
 		}
 		
 		return columnsToRemove;
 	}
 	
-	private List<PhysicalColumn> getColumnsToAdd(BusinessColumnSet businessColumnSet, Collection<PhysicalColumn> newColumnSet) {
+	public boolean isColumnPartOfTheNewSelection(PhysicalColumn oldSelectionColumn, Collection<PhysicalColumn> newSelectionColumns) {
+		boolean isPart = false;
+		for(PhysicalColumn column : newSelectionColumns) {
+			if(oldSelectionColumn.equals(column)) {
+				isPart = true;
+			}
+		}
+		return isPart;
+	}
+	
+	private List<PhysicalColumn> getColumnsToAdd(Collection<PhysicalColumn> oldSelectionColumns, Collection<PhysicalColumn> newSelectionColumns) {
 		
 		List<PhysicalColumn> columnsToAdd;
 		
-		columnsToAdd = new ArrayList();
+		columnsToAdd = new ArrayList<PhysicalColumn>();
 		
-		for(PhysicalColumn column : newColumnSet) {
-			if(businessColumnSet.getColumn(column) == null) {
-				columnsToAdd.add(column);
+		for(PhysicalColumn newSelectionColumn : newSelectionColumns) {
+			if(isColumnPartOfTheOldSelection(newSelectionColumn, oldSelectionColumns) == false) {
+				columnsToAdd.add(newSelectionColumn);
 			}
 		}
 		
 		return columnsToAdd;
 	}
 
+	public boolean isColumnPartOfTheOldSelection(PhysicalColumn newSelectionColumn, Collection<PhysicalColumn> oldSelectionColumns) {
+		boolean isPart = false;
+		
+		for(PhysicalColumn oldSelectionColumn : oldSelectionColumns) {
+			if(oldSelectionColumn.equals(newSelectionColumn)) {
+				isPart = true;
+			}
+		}
+		
+		return isPart;
+	}
 	
 	@Override
 	public void undo() {
@@ -153,7 +176,16 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelCommand {
 		}			
 	}
 	
-
+	@Override
+	public Collection<?> getAffectedObjects() {
+		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(businessTable != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessTable);
+		}
+		return affectedObjects;
+	}
 	
 
 }

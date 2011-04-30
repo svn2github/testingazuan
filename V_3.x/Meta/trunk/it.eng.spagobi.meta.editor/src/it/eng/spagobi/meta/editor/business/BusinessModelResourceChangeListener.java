@@ -153,7 +153,7 @@ public class BusinessModelResourceChangeListener implements IResourceChangeListe
 			if (editingDomain.getResourceToReadOnlyMap() != null) {
 			  editingDomain.getResourceToReadOnlyMap().clear();
 			  // Refresh any actions that may become enabled or disabled.
-			  editor.setSelection(editor.getSelection());
+			  //editor.setSelection(editor.getSelection());
 			  logger.debug("Read only state recomputed succesfully");
 			}
 			
@@ -164,13 +164,14 @@ public class BusinessModelResourceChangeListener implements IResourceChangeListe
 			if (!removedResources.isEmpty()) {
 				
 				// shows a dialog that asks if conflicting changes should be discarded...
-				if (editor.handleDirtyConflict()) { // ...if YES
-					editor.getSite().getPage().closeEditor(editor, false);
-				} else { // ...if NO
-					removedResources.clear();
-					changedResources.clear();
-					savedResources.clear();
-				}
+//				if (editor.handleDirtyConflict()) { // ...if YES
+//					editor.getSite().getPage().closeEditor(editor, false);
+//				} else { // ...if NO
+//					removedResources.clear();
+//					changedResources.clear();
+//					savedResources.clear();
+//				}
+				editor.getSite().getPage().closeEditor(editor, false);
 			
 			} else if (!changedResources.isEmpty()) {
 				changedResources.removeAll(savedResources);
@@ -193,25 +194,25 @@ public class BusinessModelResourceChangeListener implements IResourceChangeListe
 		
 		logger.trace("IN");
 		
-		if (!changedResources.isEmpty() && (!isDirty() || editor.handleDirtyConflict())) {
-			if (isDirty()) {
-				changedResources.addAll(editingDomain.getResourceSet().getResources());
-			}
-			editingDomain.getCommandStack().flush();
+//		if (!changedResources.isEmpty() && (!isDirty() || editor.handleDirtyConflict())) {
+//			if (isDirty()) {
+//				changedResources.addAll(editingDomain.getResourceSet().getResources());
+//			}
+//			editingDomain.getCommandStack().flush();
+//
+//			//editor.setUpdateProblemIndication(false);
+//			for (Resource resource : changedResources) {
+//				reloadResource(resource);
+//				logger.debug("Resource [{}] has been reloaded succesfully", resource.getURI());
+//			}
+//
+//			if (AdapterFactoryEditingDomain.isStale(editor.getEditorSelection())) {
+//				editor.setSelection(StructuredSelection.EMPTY);
+//			}
 
-			editor.setUpdateProblemIndication(false);
-			for (Resource resource : changedResources) {
-				reloadResource(resource);
-				logger.debug("Resource [{}] has been reloaded succesfully", resource.getURI());
-			}
-
-			if (AdapterFactoryEditingDomain.isStale(editor.getEditorSelection())) {
-				editor.setSelection(StructuredSelection.EMPTY);
-			}
-
-			editor.setUpdateProblemIndication(true);
-			editor.updateProblemIndication();
-		}
+			//editor.setUpdateProblemIndication(true);
+			//editor.updateProblemIndication();
+	//	}
 		
 		logger.trace("OUT");
 	}
@@ -222,9 +223,9 @@ public class BusinessModelResourceChangeListener implements IResourceChangeListe
 			try {
 				resource.load(Collections.EMPTY_MAP);
 			} catch (IOException exception) {
-				if (!editor.getResourceToDiagnosticMap().containsKey(resource)) {
-					editor.getResourceToDiagnosticMap().put(resource, editor.analyzeResourceProblems(resource, exception));
-				}
+//				if (!editor.getResourceToDiagnosticMap().containsKey(resource)) {
+//					editor.getResourceToDiagnosticMap().put(resource, editor.analyzeResourceProblems(resource, exception));
+//				}
 			}
 		}
 	}

@@ -10,7 +10,7 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.AddToIdentifierCommand;
-import it.eng.spagobi.meta.model.business.commands.RemoveToIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.RemoveFromIdentifierCommand;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
@@ -187,8 +187,8 @@ public class BusinessColumnItemProvider
 		 if(commandClass == AddToIdentifierCommand.class) {
 			 result = new AddToIdentifierCommand(domain, commandParameter);
 		 }
-		 else if(commandClass == RemoveToIdentifierCommand.class) {
-			 result = new RemoveToIdentifierCommand(domain, commandParameter);
+		 else if(commandClass == RemoveFromIdentifierCommand.class) {
+			 result = new RemoveFromIdentifierCommand(domain, commandParameter);
 		 }
 		 
 		 return result;

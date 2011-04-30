@@ -44,8 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class RemovePhysicalTableToBusinessViewCommand extends
-AbstractSpagoBIModelCommand {
+public class RemovePhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelEditCommand {
 
 	BusinessView businessView;
 	PhysicalTable physicalTable;

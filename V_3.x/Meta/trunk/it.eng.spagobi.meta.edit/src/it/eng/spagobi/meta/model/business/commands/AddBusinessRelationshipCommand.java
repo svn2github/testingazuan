@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelCommand {
+public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditCommand {
 	
 	BusinessRelationship addedBusinessRelationship;
 	

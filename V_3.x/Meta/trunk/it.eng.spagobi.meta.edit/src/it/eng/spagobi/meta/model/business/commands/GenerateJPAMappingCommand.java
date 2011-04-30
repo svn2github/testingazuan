@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class GenerateJPAMappingCommand extends AbstractSpagoBIModelCommand {
+public class GenerateJPAMappingCommand extends AbstractSpagoBIModelGenerateCommand {
 
 	private static Logger logger = LoggerFactory.getLogger(GenerateJPAMappingCommand.class);
 	

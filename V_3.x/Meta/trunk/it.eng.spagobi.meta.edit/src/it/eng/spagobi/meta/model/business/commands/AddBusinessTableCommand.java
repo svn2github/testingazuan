@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.model.business.commands;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
@@ -31,7 +32,9 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -42,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
+public class AddBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 
 	private BusinessTable addedBusinessTable;
 	
@@ -110,6 +113,15 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelCommand {
 		businessModel.getTables().add(addedBusinessTable);
 	}
 	
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(addedBusinessTable != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(addedBusinessTable);
+		}
+		return affectedObjects;
+	}
 	
 	//-------------------------------------------------------------------------
 	//	Inner Classes

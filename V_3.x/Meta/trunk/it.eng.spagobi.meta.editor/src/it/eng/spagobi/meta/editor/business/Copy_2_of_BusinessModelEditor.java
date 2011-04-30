@@ -21,33 +21,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business;
 
-import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
-import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
-import it.eng.spagobi.meta.model.validator.ModelValidator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,13 +59,18 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CommandStackListener;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.ui.MarkerHelper;
 import org.eclipse.emf.common.ui.ViewerPane;
+import org.eclipse.emf.common.ui.editor.ProblemEditorPart;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -76,10 +84,12 @@ import org.eclipse.emf.edit.ui.celleditor.AdapterFactoryTreeEditor;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.provider.UnwrappingSelectionProvider;
+import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -114,9 +124,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -124,13 +139,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class BusinessModelEditor
+/**
+ * This is an example of a BusinessModel model editor.
+ * <!-- begin-user-doc -->
+ * <!-- end-user-doc -->
+ * @generated
+ */
+public class Copy_2_of_BusinessModelEditor
 	extends MultiPageEditorPart
-	implements IEditingDomainProvider, IMenuListener, IViewerProvider {
+	implements IEditingDomainProvider, ISelectionProvider, IMenuListener, IViewerProvider, IGotoMarker {
 	
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	
-	public static final String EDITOR_ID = BusinessModelEditor.class.getName();
+	public static final String EDITOR_ID = Copy_2_of_BusinessModelEditor.class.getName();
 	
 	
 	// ================================================================================
@@ -151,6 +172,8 @@ public class BusinessModelEditor
 		return editingDomain;
 	}
 
+	protected BusinessModelResourceChangeListener resourceChangeListener;
+		
 	
 	// ================================================================================
 	// Model views: only one for the moment (i.e. tree)
@@ -182,7 +205,23 @@ public class BusinessModelEditor
 	
 	
 	
-	
+	// ================================================================================
+	// Outline
+	// ================================================================================
+	/**
+	 * This is the content outline page.
+	 */
+	protected IContentOutlinePage contentOutlinePage;
+
+	/**
+	 * This is a kludge...
+	 */
+	protected IStatusLineManager contentOutlineStatusLineManager;
+
+	/**
+	 * This is the content outline page's viewer.
+	 */
+	protected TreeViewer contentOutlineViewer;
 	
 	// ================================================================================
 	
@@ -197,27 +236,108 @@ public class BusinessModelEditor
 	 */
 	protected ISelectionChangedListener selectionChangedListener;
 
-	protected BusinessModelEditorSelectionProvider selectionProvider;
+	/**
+	 * This keeps track of all the {@link org.eclipse.jface.viewers.ISelectionChangedListener}s 
+	 * that are listening to this editor.
+	 */
+	protected Collection<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
 
-	
+	/**
+	 * This keeps track of the selection of the editor as a whole.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ISelection editorSelection = StructuredSelection.EMPTY;
 
-	
+	public ISelection getEditorSelection() {
+		return editorSelection;
+	}
+
+	public void setEditorSelection(ISelection editorSelection) {
+		this.editorSelection = editorSelection;
+	}
+
+	/**
+	 * The MarkerHelper is responsible for creating workspace resource markers presented
+	 * in Eclipse's Problems View.
+	 */
+	protected MarkerHelper markerHelper = new EditUIMarkerHelper();
+
 	/**
 	 * This listens for when the outline becomes active
 	 */
-	protected IPartListener partListener; 
+	protected IPartListener partListener = new BusinessModelPartListenerX(logger); 
 	
+	protected class BusinessModelPartListenerX extends DiagnosticPartListener {
+		
+		BusinessModelPartListenerX(Logger l) {
+			super(l);
+		}
+	
+		public void partActivated(IWorkbenchPart p) {
+			logger.trace("IN");
+			
+			logger.debug("Activated part [{}]", p.getClass().getName());
+			if (p instanceof ContentOutline) {
+				logger.debug("Activated [{}]", ContentOutline.class.getName());
+				if (((ContentOutline)p).getCurrentPage() == contentOutlinePage) {
+					logger.debug("Activated the content outline of this editor");
+					getActionBarContributor().setActiveEditor(Copy_2_of_BusinessModelEditor.this);
+					setCurrentViewer(contentOutlineViewer);
+				}
+			} else if (p instanceof PropertySheet) {
+				logger.debug("Activated [{}]", PropertySheet.class.getName());
+				if (((PropertySheet)p).getCurrentPage() == propertySheetPage) {
+					logger.debug("Activated the property sheet  of this editor");
+					getActionBarContributor().setActiveEditor(Copy_2_of_BusinessModelEditor.this);
+					resourceChangeListener.handleActivate();
+				}
+			} else if (p == Copy_2_of_BusinessModelEditor.this) {
+				logger.debug("Activated [{}]", Copy_2_of_BusinessModelEditor.class.getName());
+				resourceChangeListener.handleActivate();
+			}
+			
+			logger.trace("OUT");
+		}
+	};
+
+	
+
+	/**
+	 * Map to store the diagnostic associated with a resource.
+	 */
+	protected Map<Resource, Diagnostic> resourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
+
+	public Map<Resource, Diagnostic> getResourceToDiagnosticMap() {
+		return resourceToDiagnosticMap;
+	}
+
+	public void setResourceToDiagnosticMap(Map<Resource, Diagnostic> resourceToDiagnosticMap) {
+		this.resourceToDiagnosticMap = resourceToDiagnosticMap;
+	}
+
+	/**
+	 * Controls whether the problem indication should be updated.
+	 */
+	protected boolean updateProblemIndication = true;
+
+	public boolean isUpdateProblemIndication() {
+		return updateProblemIndication;
+	}
+
+	public void setUpdateProblemIndication(boolean updateProblemIndication) {
+		this.updateProblemIndication = updateProblemIndication;
+	}
+
 	
 
 	
-
-
-
 	
 
 		
 		
-	private static Logger logger = LoggerFactory.getLogger(BusinessModelEditor.class);
+	private static Logger logger = LoggerFactory.getLogger(Copy_2_of_BusinessModelEditor.class);
 	
 	
 	// =================================================================================================
@@ -225,7 +345,7 @@ public class BusinessModelEditor
 	/**
 	 * This creates a model editor.
 	 */
-	public BusinessModelEditor() {
+	public Copy_2_of_BusinessModelEditor() {
 		super();
 		initializeAdapterFactory();
 		initializeEditingDomain();
@@ -241,7 +361,7 @@ public class BusinessModelEditor
 		logger.trace("IN");
 		
 		commandStack = new BasicCommandStack();
-		commandStack.addCommandStackListener(new BusinessModelEditorCommandStackListener(this));
+		commandStack.addCommandStackListener(new BusinessModelEditorCommandStackListener());
 		resourceToReadOnlyMap = new HashMap<Resource, Boolean>();
 
 		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, resourceToReadOnlyMap);
@@ -265,22 +385,48 @@ public class BusinessModelEditor
 		adapterFactory.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 	}
 
-	
+	/**
+	 * 
+	 *  a listener to set the most recent command's affected objects to be the selection 
+	 *  of the viewer with focus.
+	 *
+	 */
+	class BusinessModelEditorCommandStackListener implements CommandStackListener {
+		 public void commandStackChanged(final EventObject event) {
+			 getContainer().getDisplay().asyncExec
+				 (new Runnable() {
+					  public void run() {
+						  firePropertyChange(IEditorPart.PROP_DIRTY);
 
-	
+						  // Try to select the affected objects.
+						  //
+						  Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
+						  if (mostRecentCommand != null) {
+							  setSelectionToViewer(mostRecentCommand.getAffectedObjects());
+						  }
+						  if (propertySheetPage != null && !propertySheetPage.getControl().isDisposed()) {
+							  propertySheetPage.refresh();
+						  }
+					  }
+				  });
+		 }
+	}
+
+	/**
+	 * This is called during startup.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput editorInput) {
 		setSite(site);
 		setInputWithNotify(editorInput);
 		setPartName(editorInput.getName());
-		
-		selectionProvider = new BusinessModelEditorSelectionProvider(this);
-		partListener = new BusinessModelPartListener(this, logger);
-		
-		site.setSelectionProvider(selectionProvider);
+		site.setSelectionProvider(this);
 		site.getPage().addPartListener(partListener);
-		
-		loadModel();
+		//resourceChangeListener = new BusinessModelResourceChangeListener(editingDomain, this);
+		//ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_CHANGE);
 	}
 	
 	/**
@@ -289,7 +435,7 @@ public class BusinessModelEditor
 	@Override
 	public void createPages() {
 		
-		//loadModel();
+		createModel();
 
 		// Only creates the pages if there is something that can be edited
 		if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
@@ -321,12 +467,96 @@ public class BusinessModelEditor
 				}
 			 });
 
+		getSite().getShell().getDisplay().asyncExec
+			(new Runnable() {
+				 public void run() {
+					 updateProblemIndication();
+				 }
+			 });
+	}
 		
-	}	
+	/**
+	 * This is the method called to load a resource into the editing domain's 
+	 * resource set based on the editor's input.
+	 */
+	public void createModel() {
+		URI resourceURI = ((BusinessModelEditorInput)getEditorInput()).getResourceFileURI();
+		Exception exception = null;
+		Resource resource = null;
+		try {
+			// Load the resource through the editing domain.
+			resource = editingDomain.getResourceSet().getResource(resourceURI, true);
+		} catch (Exception e) {
+			exception = e;
+			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
+		}
+
+		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
+		if (diagnostic.getSeverity() != Diagnostic.OK) {
+			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
+		}
+		
+		editingDomain.getResourceSet().eAdapters().add(new BusinessModelEContentAdapter(resourceToDiagnosticMap));
+	}
+	
+	/**
+	 * Adapter used to update the problem indication when resources are demanded loaded.
+	 */
+	protected class BusinessModelEContentAdapter extends EContentAdapter {
+		
+		Map<Resource, Diagnostic> resourceToDiagnosticMap;
+		
+		public BusinessModelEContentAdapter(Map<Resource, Diagnostic> resourceToDiagnosticMap) {
+			this.resourceToDiagnosticMap = resourceToDiagnosticMap;
+		}
+		
+		@Override
+		public void notifyChanged(Notification notification) {
+			if (notification.getNotifier() instanceof Resource) {
+				switch (notification.getFeatureID(Resource.class)) {
+					case Resource.RESOURCE__IS_LOADED:
+					case Resource.RESOURCE__ERRORS:
+					case Resource.RESOURCE__WARNINGS: {
+						Resource resource = (Resource)notification.getNotifier();
+						Diagnostic diagnostic = analyzeResourceProblems(resource, null);
+						if (diagnostic.getSeverity() != Diagnostic.OK) {
+							resourceToDiagnosticMap.put(resource, diagnostic);
+						}
+						else {
+							resourceToDiagnosticMap.remove(resource);
+						}
+
+						if (updateProblemIndication) {
+							getSite().getShell().getDisplay().asyncExec
+								(new Runnable() {
+									 public void run() {
+										 updateProblemIndication();
+									 }
+								 });
+						}
+						break;
+					}
+				}
+			}
+			else {
+				super.notifyChanged(notification);
+			}
+		}
+
+		@Override
+		protected void setTarget(Resource target) {
+			basicSetTarget(target);
+		}
+
+			@Override
+		protected void unsetTarget(Resource target) {
+			basicUnsetTarget(target);
+		}
+	};
 	
 	public void createSelectionTreeView() {
 		ViewerPane viewerPane =
-			new ViewerPane(getSite().getPage(), BusinessModelEditor.this) {
+			new ViewerPane(getSite().getPage(), Copy_2_of_BusinessModelEditor.this) {
 				@Override
 				public Viewer createViewer(Composite composite) {
 					Tree tree = new Tree(composite, SWT.MULTI);
@@ -366,6 +596,99 @@ public class BusinessModelEditor
 	
 	// =================================================================================================
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	/**
+	 * Updates the problems indication with the information described in the specified diagnostic.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void updateProblemIndication() {
+		if (updateProblemIndication) {
+			BasicDiagnostic diagnostic =
+				new BasicDiagnostic
+					(Diagnostic.OK,
+					 "it.eng.spagobi.meta.editor",
+					 0,
+					 null,
+					 new Object [] { editingDomain.getResourceSet() });
+			for (Diagnostic childDiagnostic : resourceToDiagnosticMap.values()) {
+				if (childDiagnostic.getSeverity() != Diagnostic.OK) {
+					diagnostic.add(childDiagnostic);
+				}
+			}
+
+			int lastEditorPage = getPageCount() - 1;
+			if (lastEditorPage >= 0 && getEditor(lastEditorPage) instanceof ProblemEditorPart) {
+				((ProblemEditorPart)getEditor(lastEditorPage)).setDiagnostic(diagnostic);
+				if (diagnostic.getSeverity() != Diagnostic.OK) {
+					setActivePage(lastEditorPage);
+				}
+			}
+			else if (diagnostic.getSeverity() != Diagnostic.OK) {
+				ProblemEditorPart problemEditorPart = new ProblemEditorPart();
+				problemEditorPart.setDiagnostic(diagnostic);
+				problemEditorPart.setMarkerHelper(markerHelper);
+				try {
+					addPage(++lastEditorPage, problemEditorPart, getEditorInput());
+					setPageText(lastEditorPage, problemEditorPart.getPartName());
+					setActivePage(lastEditorPage);
+					showTabs();
+				}
+				catch (PartInitException exception) {
+					logger.error("Impossible to updates the problems indication with the information described in the specified diagnostic", exception);
+				}
+			}
+
+			if (markerHelper.hasMarkers(editingDomain.getResourceSet())) {
+				markerHelper.deleteMarkers(editingDomain.getResourceSet());
+				if (diagnostic.getSeverity() != Diagnostic.OK) {
+					try {
+						markerHelper.createMarkers(diagnostic);
+					}
+					catch (CoreException exception) {
+						logger.error("Impossible to create markers", exception);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Shows a dialog that asks if conflicting changes should be discarded.
+	 * @generated
+	 */
+	protected boolean handleDirtyConflict() {
+		return
+			MessageDialog.openQuestion
+				(getSite().getShell(),
+				 RL.getString("business.editor.dialog.fileconflict.label"),
+				 RL.getString("business.editor.dialog.fileconflict.message"));
+	}
+
+	
+	/**
+	 * This is here for the listener to be able to call it.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+			@Override
+	protected void firePropertyChange(int action) {
+		super.firePropertyChange(action);
+	}
 
 	/**
 	 * This sets the selection into whichever viewer is active.
@@ -412,24 +735,29 @@ public class BusinessModelEditor
 	 */
 	public void setCurrentViewer(Viewer viewer) {
 		// If it is changing...
+		//
 		if (currentViewer != viewer) {
 			if (selectionChangedListener == null) {
 				// Create the listener on demand.
+				//
 				selectionChangedListener =
 					new ISelectionChangedListener() {
 						// This just notifies those things that are affected by the section.
+						//
 						public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
-							selectionProvider.setSelection(selectionChangedEvent.getSelection());
+							setSelection(selectionChangedEvent.getSelection());
 						}
 					};
 			}
 
 			// Stop listening to the old one.
+			//
 			if (currentViewer != null) {
 				currentViewer.removeSelectionChangedListener(selectionChangedListener);
 			}
 
 			// Start listening to the new one.
+			//
 			if (viewer != null) {
 				viewer.addSelectionChangedListener(selectionChangedListener);
 			}
@@ -439,7 +767,8 @@ public class BusinessModelEditor
 			currentViewer = viewer;
 
 			// Set the editors selection based on the current viewer's selection.
-			selectionProvider.setSelection(currentViewer == null ? StructuredSelection.EMPTY : currentViewer.getSelection());
+			//
+			setSelection(currentViewer == null ? StructuredSelection.EMPTY : currentViewer.getSelection());
 		}
 	}
 
@@ -483,7 +812,38 @@ public class BusinessModelEditor
 
 	
 
-	
+	/**
+	 * Returns a diagnostic describing the errors and warnings listed in the resource
+	 * and the specified exception (if any).
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Diagnostic analyzeResourceProblems(Resource resource, Exception exception) {
+		if (!resource.getErrors().isEmpty() || !resource.getWarnings().isEmpty()) {
+			BasicDiagnostic basicDiagnostic =
+				new BasicDiagnostic
+					(Diagnostic.ERROR,
+					 "it.eng.spagobi.meta.editor",
+					 0,
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
+					 new Object [] { exception == null ? (Object)resource : exception });
+			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
+			return basicDiagnostic;
+		}
+		else if (exception != null) {
+			return
+				new BasicDiagnostic
+					(Diagnostic.ERROR,
+					 "it.eng.spagobi.meta.editor",
+					 0,
+					 RL.getString("business.editor.diagnostic.createmodelerror.message", new Object[]{resource.getURI()}),
+					 new Object[] { exception });
+		}
+		else {
+			return Diagnostic.OK_INSTANCE;
+		}
+	}
 
 	
 
@@ -523,35 +883,122 @@ public class BusinessModelEditor
 		}
 	}
 
+	/**
+	 * This is used to track the active viewer.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected void pageChange(int pageIndex) {
+		super.pageChange(pageIndex);
 
+		if (contentOutlinePage != null) {
+			handleContentOutlineSelection(contentOutlinePage.getSelection());
+		}
+	}
 
 	/**
 	 * This is how the framework determines which interfaces we implement.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if (key.equals(IPropertySheetPage.class)) {
+		if (key.equals(IContentOutlinePage.class)) {
+			return showOutlineView() ? getContentOutlinePage() : null;
+		}
+		else if (key.equals(IPropertySheetPage.class)) {
 			return getPropertySheetPage();
+		}
+		else if (key.equals(IGotoMarker.class)) {
+			return this;
 		}
 		else {
 			return super.getAdapter(key);
 		}
 	}
 
-	
+	/**
+	 * This accesses a cached version of the content outliner.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public IContentOutlinePage getContentOutlinePage() {
+		if (contentOutlinePage == null) {
+			// The content outline is just a tree.
+			//
+			class MyContentOutlinePage extends ContentOutlinePage {
+				@Override
+				public void createControl(Composite parent) {
+					super.createControl(parent);
+					contentOutlineViewer = getTreeViewer();
+					contentOutlineViewer.addSelectionChangedListener(this);
+
+					// Set up the tree viewer.
+					//
+					contentOutlineViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+					contentOutlineViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+					contentOutlineViewer.setInput(editingDomain.getResourceSet());
+
+					// Make sure our popups work.
+					//
+					createContextMenuFor(contentOutlineViewer);
+
+					if (!editingDomain.getResourceSet().getResources().isEmpty()) {
+					  // Select the root object in the view.
+					  //
+					  contentOutlineViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
+					}
+				}
+
+				@Override
+				public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager, IStatusLineManager statusLineManager) {
+					super.makeContributions(menuManager, toolBarManager, statusLineManager);
+					contentOutlineStatusLineManager = statusLineManager;
+				}
+
+				@Override
+				public void setActionBars(IActionBars actionBars) {
+					super.setActionBars(actionBars);
+					getActionBarContributor().shareGlobalActions(this, actionBars);
+				}
+			}
+
+			contentOutlinePage = new MyContentOutlinePage();
+
+			// Listen to selection so that we can handle it is a special way.
+			//
+			contentOutlinePage.addSelectionChangedListener
+				(new ISelectionChangedListener() {
+					 // This ensures that we handle selections correctly.
+					 //
+					 public void selectionChanged(SelectionChangedEvent event) {
+						 handleContentOutlineSelection(event.getSelection());
+					 }
+				 });
+		}
+
+		return contentOutlinePage;
+	}
 
 	/**
 	 * This accesses a cached version of the property sheet.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
 	 */
-	public PropertySheetPage getPropertySheetPage() {
+	public IPropertySheetPage getPropertySheetPage() {
 		if (propertySheetPage == null) {
 			propertySheetPage =
 				new ExtendedPropertySheetPage(editingDomain) {
 					@Override
 					public void setSelectionToViewer(List<?> selection) {
-						BusinessModelEditor.this.setSelectionToViewer(selection);
-						BusinessModelEditor.this.setFocus();
+						Copy_2_of_BusinessModelEditor.this.setSelectionToViewer(selection);
+						Copy_2_of_BusinessModelEditor.this.setFocus();
 					}
 
 					@Override
@@ -567,6 +1014,46 @@ public class BusinessModelEditor
 		return propertySheetPage;
 	}
 
+	/**
+	 * This deals with how we want selection in the outliner to affect the other views.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void handleContentOutlineSelection(ISelection selection) {
+		if (currentViewerPane != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+			Iterator<?> selectedElements = ((IStructuredSelection)selection).iterator();
+			if (selectedElements.hasNext()) {
+				// Get the first selected element.
+				//
+				Object selectedElement = selectedElements.next();
+
+				// If it's the selection viewer, then we want it to select the same selection as this selection.
+				//
+				if (currentViewerPane.getViewer() == modelTreeViewer) {
+					ArrayList<Object> selectionList = new ArrayList<Object>();
+					selectionList.add(selectedElement);
+					while (selectedElements.hasNext()) {
+						selectionList.add(selectedElements.next());
+					}
+
+					// Set the selection to the widget.
+					//
+					modelTreeViewer.setSelection(new StructuredSelection(selectionList));
+				}
+				else {
+					// Set the input to the widget.
+					//
+					if (currentViewerPane.getViewer().getInput() != selectedElement) {
+						currentViewerPane.getViewer().setInput(selectedElement);
+						currentViewerPane.setTitle(selectedElement);
+					}
+				}
+			}
+		}
+	}
+
+	
 	
 	
 	
@@ -586,26 +1073,6 @@ public class BusinessModelEditor
 	@Override
 	public boolean isDirty() {
 		return ((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded();
-	}
-	
-	/**
-	 * This is the method called to load a resource into the editing domain's 
-	 * resource set based on the editor's input.
-	 */
-	public void loadModel() {
-		URI resourceURI = ((BusinessModelEditorInput)getEditorInput()).getResourceFileURI();
-		try {
-			Resource resource = editingDomain.getResourceSet().getResource(resourceURI, true);
-			List<EObject> eObjects = resource.getContents();
-			Model model = (Model)eObjects.get(0);
-			ModelValidator validator = new ModelValidator();
-			if(validator.validate(model) == false) {
-				showError("Impossible to load model", validator.getDiagnosticMessage());
-			}
-		} catch (Throwable t) {
-			showError("Impossible to load model", "An eror occurred while loading model: \n" + t.getMessage());
-			t.printStackTrace();
-		}
 	}
 
 	/**
@@ -662,10 +1129,15 @@ public class BusinessModelEditor
 				}
 			};
 		 */
-	
+		updateProblemIndication = false;
 		try {
 			BusinessModelEditorInput businessModelEditorInput = (BusinessModelEditorInput)getEditorInput();
 			Resource resource = editingDomain.getResourceSet().getResources().get(0);
+			for(Resource r : editingDomain.getResourceSet().getResources()) {
+				for(Object o : r.getContents()) {
+					logger.debug(">>> " + o.getClass().getName());
+				}
+			}
 			URI resourceURI = businessModelEditorInput.getResourceFileURI();
 			new ProgressMonitorDialog(getSite().getShell()).run(true, false, new SaveOperation(resource, resourceURI));
 
@@ -673,11 +1145,12 @@ public class BusinessModelEditor
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		} catch (Throwable t) {
-			Throwable rootCause = t;
-			while ( rootCause.getCause() != null ) rootCause = rootCause.getCause();
-			showError("Impossible to save model", rootCause.getMessage());
+			showError("Impossible to save model", "An eror occurred while saving model: \n" + t.getMessage());
 			t.printStackTrace();
 		}
+		
+		updateProblemIndication = true;
+		updateProblemIndication();
 		
 		logger.trace("OUT");
 	}
@@ -694,7 +1167,27 @@ public class BusinessModelEditor
 	  });
 	}	
 
-	
+	/**
+	 * This returns whether something has been persisted to the URI of the specified resource.
+	 * The implementation uses the URI converter from the editor's resource set to try to open an input stream. 
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected boolean isPersisted(Resource resource) {
+		boolean result = false;
+		try {
+			InputStream stream = editingDomain.getResourceSet().getURIConverter().createInputStream(resource.getURI());
+			if (stream != null) {
+				result = true;
+				stream.close();
+			}
+		}
+		catch (IOException e) {
+			// Ignore
+		}
+		return result;
+	}
 
 	/**
 	 * This always returns true because it is not currently supported.
@@ -742,6 +1235,29 @@ public class BusinessModelEditor
 		doSave(progressMonitor);
 	}
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void gotoMarker(IMarker marker) {
+		try {
+			if (marker.getType().equals(EValidator.MARKER)) {
+				String uriAttribute = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
+				if (uriAttribute != null) {
+					URI uri = URI.createURI(uriAttribute);
+					EObject eObject = editingDomain.getResourceSet().getEObject(uri, true);
+					if (eObject != null) {
+					  setSelectionToViewer(Collections.singleton(editingDomain.getWrapper(eObject)));
+					}
+				}
+			}
+		}
+		catch (CoreException exception) {
+			logger.error("Impossible to go to marker", exception);
+		}
+	}
+
 	
 	/**
 	 * <!-- begin-user-doc -->
@@ -758,11 +1274,60 @@ public class BusinessModelEditor
 		}
 	}
 
+	/**
+	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionChangedListeners.add(listener);
+	}
 
+	/**
+	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionChangedListeners.remove(listener);
+	}
 
-	
+	/**
+	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider} to return this editor's overall selection.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ISelection getSelection() {
+		return editorSelection;
+	}
+
+	/**
+	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider} to set this editor's overall selection.
+	 * Calling this result will notify the listeners.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSelection(ISelection selection) {
+		editorSelection = selection;
+
+		for (ISelectionChangedListener listener : selectionChangedListeners) {
+			listener.selectionChanged(new SelectionChangedEvent(this, selection));
+		}
+		setStatusLineManager(selection);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public void setStatusLineManager(ISelection selection) {
-		IStatusLineManager statusLineManager = getActionBars().getStatusLineManager();
+		IStatusLineManager statusLineManager = currentViewer != null && currentViewer == contentOutlineViewer ?
+			contentOutlineStatusLineManager : getActionBars().getStatusLineManager();
 
 		if (statusLineManager != null) {
 			if (selection instanceof IStructuredSelection) {
@@ -830,10 +1395,16 @@ public class BusinessModelEditor
 		return adapterFactory;
 	}
 
-
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public void dispose() {
-	
+		updateProblemIndication = false;
+
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
 		getSite().getPage().removePartListener(partListener);
 
 		adapterFactory.dispose();
@@ -846,13 +1417,13 @@ public class BusinessModelEditor
 			propertySheetPage.dispose();
 		}
 
-		
+		if (contentOutlinePage != null) {
+			contentOutlinePage.dispose();
+		}
+
 		super.dispose();
 	}
 
-	public void firePropertyChange(int propertyId) {
-		super.firePropertyChange(propertyId);
-	}
 	/**
 	 * Returns whether the outline view should be presented to the user.
 	 * <!-- begin-user-doc -->

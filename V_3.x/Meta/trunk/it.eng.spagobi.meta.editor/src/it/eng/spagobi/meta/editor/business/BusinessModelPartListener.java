@@ -19,46 +19,44 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.editor.commons;
+package it.eng.spagobi.meta.editor.business;
 
-import org.eclipse.ui.IPartListener;
+import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
+
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class DiagnosticPartListener implements IPartListener {
+public class BusinessModelPartListener extends DiagnosticPartListener {
 	
-	protected final Logger logger;
+	BusinessModelEditor editor;
 	
-	public DiagnosticPartListener(Logger logger) {
-		this.logger = logger;
+	BusinessModelPartListener(BusinessModelEditor editor, Logger logger) {
+		super(logger);
+		this.editor = editor;
 	}
-	
-	@Override
+
 	public void partActivated(IWorkbenchPart p) {
+		logger.trace("IN");
+		
 		logger.debug("Activated part [{}]", p.getClass().getName());
+		if (p instanceof PropertySheet) {
+			logger.debug("Activated [{}]", PropertySheet.class.getName());
+			if (((PropertySheet)p).getCurrentPage() == editor.getPropertySheetPage()) {
+				logger.debug("Activated the property sheet  of this editor");
+				editor.getActionBarContributor().setActiveEditor(editor);
+
+			}
+		} else if (p == editor) {
+			logger.debug("Activated [{}]", BusinessModelEditor.class.getName());
+		}
+		
+		logger.trace("OUT");
 	}
 
-	@Override
-	public void partBroughtToTop(IWorkbenchPart p) {
-		logger.debug("Brought to top part [{}]", p.getClass().getName());
-	}
-
-	@Override
-	public void partClosed(IWorkbenchPart p) {
-		logger.debug("Closed part [{}]", p.getClass().getName());
-	}
-
-	@Override
-	public void partDeactivated(IWorkbenchPart p) {
-		logger.debug("Deactivated part [{}]", p.getClass().getName());
-	}
-
-	@Override
-	public void partOpened(IWorkbenchPart p) {
-		logger.debug("Opened part [{}]", p.getClass().getName());
-	}
 }

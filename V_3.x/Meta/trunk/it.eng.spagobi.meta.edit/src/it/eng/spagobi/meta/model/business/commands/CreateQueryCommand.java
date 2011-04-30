@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  * @authors cortella, gioia
  *
  */
-public class CreateQueryCommand extends AbstractSpagoBIModelCommand {
+public class CreateQueryCommand extends AbstractSpagoBIModelGenerateCommand {
 
 	File queryFile;
 	

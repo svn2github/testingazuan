@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -39,21 +40,21 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class RemoveToIdentifierCommand extends AbstractSpagoBIModelCommand {
+public class RemoveFromIdentifierCommand extends AbstractSpagoBIModelEditCommand {
 
 	BusinessColumn businessColumn;
 	
-	private static Logger logger = LoggerFactory.getLogger(RemoveToIdentifierCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(RemoveFromIdentifierCommand.class);
 	
 	
-	public RemoveToIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
+	public RemoveFromIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
 		super("model.business.commands.removetoidentifier.label"
 			 , "model.business.commands.removetoidentifier.description"
 			 , "model.business.commands.removetoidentifier"
 			 , domain, parameter);
 	}
 	
-	public RemoveToIdentifierCommand(EditingDomain domain) {
+	public RemoveFromIdentifierCommand(EditingDomain domain) {
 		this(domain, null);
 	}
 	
@@ -75,7 +76,7 @@ public class RemoveToIdentifierCommand extends AbstractSpagoBIModelCommand {
 		}
 		
 		this.executed = true;
-		logger.debug("Command [{}] executed succesfully", RemoveToIdentifierCommand.class.getName());
+		logger.debug("Command [{}] executed succesfully", RemoveFromIdentifierCommand.class.getName());
 	}
 	
 	
@@ -105,6 +106,16 @@ public class RemoveToIdentifierCommand extends AbstractSpagoBIModelCommand {
 			BusinessModel businessModel = businessColumnSet.getModel();
 			businessModel.getIdentifiers().remove(businessIdentifier);
 		}
+	}
+	
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(businessColumn != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessColumn.getTable());
+		}
+		return affectedObjects;
 	}
 	
 

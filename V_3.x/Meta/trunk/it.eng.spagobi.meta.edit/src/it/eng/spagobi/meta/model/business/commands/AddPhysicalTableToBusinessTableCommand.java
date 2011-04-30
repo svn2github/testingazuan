@@ -40,8 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class AddPhysicalTableToBusinessTableCommand extends
-		AbstractSpagoBIModelCommand {
+public class AddPhysicalTableToBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 	
 	BusinessColumnSet businessColumnSet;
 	BusinessTable businessTable;

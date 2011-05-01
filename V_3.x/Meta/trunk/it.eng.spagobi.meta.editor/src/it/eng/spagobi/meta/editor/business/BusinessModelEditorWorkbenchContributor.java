@@ -21,17 +21,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business;
 
+import it.eng.spagobi.meta.editor.business.actions.DeleteBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelMenuBarContributor;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelPopupMenuContributor;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * This is the action bar contributor for the BusinessModel model editor.
@@ -138,17 +147,73 @@ public class BusinessModelEditorWorkbenchContributor
 		toolbarMenu.selectionChanged(activeEditorPart, event);
 		popupMenu.selectionChanged(activeEditorPart, event);
 	}
-
 	
+	
+	
+	@Override
+	public void init(IActionBars actionBars) {
+	    super.init(actionBars);
+	    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 
+	    deleteAction = createDeleteAction(); 
+	    deleteAction.setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
+	    actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+	}
+	
 	/**
 	 * This populates the pop-up menu before it appears.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 */
 	@Override
 	public void menuAboutToShow(IMenuManager menuManager) {
-		super.menuAboutToShow(menuManager);
+		cutAction.setEnabled(false);
+		copyAction.setEnabled(false);
+		pasteAction.setEnabled(false);
+		//deleteAction.setEnabled(false);
+		
+		//super.menuAboutToShow(menuManager);
+		// Add our standard marker.
+	    if ((style & ADDITIONS_LAST_STYLE) == 0)
+	    {
+	      menuManager.add(new Separator("additions"));
+	    }
+	    menuManager.add(new Separator("edit"));
+
+	    // Add the edit menu actions.
+	    //
+	    menuManager.add(new ActionContributionItem(undoAction));
+	    menuManager.add(new ActionContributionItem(redoAction));
+	    menuManager.add(new Separator());
+	    menuManager.add(new ActionContributionItem(cutAction));
+	    menuManager.add(new ActionContributionItem(copyAction));
+	    menuManager.add(new ActionContributionItem(pasteAction));
+	    menuManager.add(new Separator());
+	    Object object = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+	    if(object instanceof BusinessTable) {
+	    	DeleteBusinessTableAction deleteTableAction = new DeleteBusinessTableAction(activeEditorPart, selectionProvider.getSelection());
+	    	ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+	    	deleteTableAction.setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
+	    	deleteTableAction.setText("Delete");
+	    	menuManager.add(new ActionContributionItem(deleteTableAction));
+		    menuManager.add(new Separator());
+	    } else {
+	    	menuManager.add(new ActionContributionItem(deleteAction));
+		    menuManager.add(new Separator());
+	    }
+	    
+	    
+
+	    if ((style & ADDITIONS_LAST_STYLE) != 0)
+	    {
+	      menuManager.add(new Separator("additions"));
+	      menuManager.add(new Separator());
+	    }
+	    // Add our other standard marker.
+	    //
+	    menuManager.add(new Separator("additions-end"));
+
+	    addGlobalActions(menuManager);
+	    
+	    
 		popupMenu.menuAboutToShow(menuManager);
 		
 	}

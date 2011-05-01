@@ -21,27 +21,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessIdentifierWizard;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.identifier.RemoveColumnFromIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddIdentifierAction extends AbstractSpagoBIModelAction {
+public class DeleteBusinessTableAction extends AbstractSpagoBIModelAction {
 	
-	private String defaultTable;
-	private BusinessColumnSet businessColumnSet;
-	public AddIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(CreateIdentifierCommand.class, workbenchPart, selection);
-		
+	AbstractSpagoBIModelCommand performFinishCommand; 
+	
+	public DeleteBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection) {
+		super(DeleteBusinessTableCommand.class, workbenchPart, selection);
+		if (command instanceof AbstractSpagoBIModelCommand)
+			this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
 	}
 	
 	/**
@@ -49,16 +47,27 @@ public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 	 */
 	@Override
 	public void run() {
-		try {	
-			businessColumnSet = (BusinessColumnSet)owner;
-			defaultTable = businessColumnSet.getName();
-			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command, defaultTable, businessColumnSet );
-	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-			dialog.create();
-	    	dialog.open();
+		try {
+			/*
+			no wizard here because we do not need some extra input. we can execute command directly
+	    	*/
+			
+			// this guard is for extra security, but should not be necessary
+		    if (editingDomain != null && performFinishCommand != null) {
+		    	// use up the command
+		    	editingDomain.getCommandStack().execute(performFinishCommand);
+		    }
+
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the performFinishCommand
+	 */
+	public AbstractSpagoBIModelCommand getPerformFinishCommand() {
+		return performFinishCommand;
 	}
 	
 }

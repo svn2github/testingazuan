@@ -25,7 +25,7 @@ import it.eng.spagobi.meta.editor.business.wizards.inline.CreateQueryWizard;
 import it.eng.spagobi.meta.editor.business.wizards.inline.NewQueryFileWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.CreateQueryCommand;
+import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import org.eclipse.jface.viewers.ISelection;

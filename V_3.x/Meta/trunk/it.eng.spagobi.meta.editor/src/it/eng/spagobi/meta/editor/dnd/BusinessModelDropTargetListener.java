@@ -30,8 +30,8 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -166,7 +166,7 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 
 						//Create addBusinessTable command
 						Command addBusinessTableCommand = editingDomain.createCommand
-						(AddBusinessTableCommand.class, 
+						(CreateBusinessTableCommand.class, 
 								new CommandParameter(businessModel, null, null, new ArrayList<Object>()));
 						//Launch AddBusinessTableWizard
 						AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(AbstractSpagoBIModelCommand)addBusinessTableCommand);

@@ -11,11 +11,11 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.AddIdentifierCommand;
-import it.eng.spagobi.meta.model.business.commands.AddPhysicalTableToBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
@@ -241,12 +241,12 @@ public class BusinessViewItemProvider
 		 
 		 result = null;
 		 
-		 if(commandClass == EditBusinessColumnsCommand.class) {
-		    	result = new EditBusinessColumnsCommand(domain, commandParameter);
+		 if(commandClass == ModifyBusinessTableColumnsCommand.class) {
+		    	result = new ModifyBusinessTableColumnsCommand(domain, commandParameter);
 		    } else if(commandClass == AddBusinessRelationshipCommand.class) {
 		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
-		    } else if(commandClass == AddIdentifierCommand.class) {
-		    	result = new AddIdentifierCommand(domain, commandParameter);
+		    } else if(commandClass == CreateIdentifierCommand.class) {
+		    	result = new CreateIdentifierCommand(domain, commandParameter);
 		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
 		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
 		    } else if(commandClass == RemovePhysicalTableToBusinessViewCommand.class) {

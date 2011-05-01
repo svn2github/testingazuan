@@ -4,10 +4,10 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.CreateQueryCommand;
-import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
+import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
 import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
 
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 		 
 		 result = null;
 		 
-		 if(commandClass == AddBusinessTableCommand.class) {
-		   	result = new AddBusinessTableCommand(domain, commandParameter);
+		 if(commandClass == CreateBusinessTableCommand.class) {
+		   	result = new CreateBusinessTableCommand(domain, commandParameter);
 		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
 			result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		 } else if(commandClass == GenerateJPAMappingCommand.class) {

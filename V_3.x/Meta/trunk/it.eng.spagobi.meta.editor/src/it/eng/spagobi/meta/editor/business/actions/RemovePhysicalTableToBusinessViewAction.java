@@ -25,7 +25,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.RemovePhysicalTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;

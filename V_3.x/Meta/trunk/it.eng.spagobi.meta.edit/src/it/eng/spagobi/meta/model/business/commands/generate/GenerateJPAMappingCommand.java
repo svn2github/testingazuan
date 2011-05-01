@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands;
+package it.eng.spagobi.meta.model.business.commands.generate;
 
 
 import java.io.File;
@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -76,17 +77,17 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelGenerateComma
 		try {
 			generator.generate(businessModel, directory);
 		} catch (Exception e) {
-			logger.error("An error occurred while executing command [{}]:", EditBusinessColumnsCommand.class.getName(), e);
+			logger.error("An error occurred while executing command [{}]:", ModifyBusinessTableColumnsCommand.class.getName(), e);
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
 			executed = false;
 		}
 		
 		if(executed) {
 			//showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
-			logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+			logger.debug("Command [{}] executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());
 		} else {
 			showInformation("Failed Compilation","Error: JPA Source Code NOT correctly compiled");
-			logger.debug("Command [{}] not executed succesfully", EditBusinessColumnsCommand.class.getName());
+			logger.debug("Command [{}] not executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());
 		}
 
 	}

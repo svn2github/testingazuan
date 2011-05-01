@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands;
+package it.eng.spagobi.meta.model.business.commands.edit.table;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessTableDescriptor;
@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -45,21 +46,21 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
+public class CreateBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 
 	private BusinessTable addedBusinessTable;
 	
-	private static Logger logger = LoggerFactory.getLogger(AddBusinessTableCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(CreateBusinessTableCommand.class);
 	
 	
-	public AddBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
-		super( "model.business.commands.addbtable.label"
-			 , "model.business.commands.addbtable.description"
-			 , "model.business.commands.addbtable"
+	public CreateBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
+		super( "model.business.commands.edit.table.create.label"
+			 , "model.business.commands.edit.table.create.description"
+			 , "model.business.commands.edit.table.create"
 			 , domain, parameter);
 	}
 	
-	public AddBusinessTableCommand(EditingDomain domain) {
+	public CreateBusinessTableCommand(EditingDomain domain) {
 		this(domain, null);
 	}
 	
@@ -82,7 +83,7 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 			addedBusinessTable = initializer.addTable(physicalTable, new PhysicalColumnFilter(selectedColumns), businessTableName, businessTableDescription, businessModel, true);	
 						
 			this.executed = true;			
-			logger.debug("Command [{}] executed succesfully", AddBusinessTableCommand.class.getName());
+			logger.debug("Command [{}] executed succesfully", CreateBusinessTableCommand.class.getName());
 			
 		} else if (parameter.getValue() instanceof String){
 			//parameter is a String with Physical Table name to import as Business Table
@@ -95,7 +96,7 @@ public class AddBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 			addedBusinessTable = initializer.addTable(physicalTable, businessModel, true);
 
 			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", AddBusinessTableCommand.class.getName());	
+			logger.debug("Command [{}] executed succesfully", CreateBusinessTableCommand.class.getName());	
 		}
 
 	}

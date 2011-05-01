@@ -19,12 +19,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands;
+package it.eng.spagobi.meta.model.business.commands.edit.table;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
@@ -41,23 +42,23 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class EditBusinessColumnsCommand extends AbstractSpagoBIModelEditCommand {
+public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditCommand {
 
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> removedColumns;
 	List<BusinessColumn> addedColumns;
 
-	private static Logger logger = LoggerFactory.getLogger(EditBusinessColumnsCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
 	
 	
-	public EditBusinessColumnsCommand(EditingDomain domain, CommandParameter parameter) {
+	public ModifyBusinessTableColumnsCommand(EditingDomain domain, CommandParameter parameter) {
 		super( "model.business.commands.editbcolumn.label"
 			 , "model.business.commands.editbcolumn.description"
 			 , "model.business.commands.editbcolumn"
 			 , domain, parameter);
 	}
 	
-	public EditBusinessColumnsCommand(EditingDomain domain) {
+	public ModifyBusinessTableColumnsCommand(EditingDomain domain) {
 		this(domain, null);
 	}
 	
@@ -91,7 +92,7 @@ public class EditBusinessColumnsCommand extends AbstractSpagoBIModelEditCommand 
 		}
 		
 		this.executed = true;
-		logger.debug("Command [{}] executed succesfully", EditBusinessColumnsCommand.class.getName());
+		logger.debug("Command [{}] executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());
 	}
 	
 	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {

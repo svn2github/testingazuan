@@ -19,13 +19,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands;
+package it.eng.spagobi.meta.model.business.commands.edit.identifier;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,23 +41,23 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AddIdentifierCommand extends AbstractSpagoBIModelEditCommand {
+public class CreateIdentifierCommand extends AbstractSpagoBIModelEditCommand {
 
 	BusinessIdentifier addedBusinessIdentifier;
 	Collection<BusinessColumn> selectedColumns;
 	Collection<BusinessColumn> oldColumns = new ArrayList<BusinessColumn>(); //may be empty
 	
-	private static Logger logger = LoggerFactory.getLogger(AddIdentifierCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(CreateIdentifierCommand.class);
 	
 	
-	public AddIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
-		super( "model.business.commands.addidentifier.label"
-			 , "model.business.commands.addidentifier.description"
-			 , "model.business.commands.addidentifier"
+	public CreateIdentifierCommand(EditingDomain domain, CommandParameter parameter) {
+		super( "model.business.commands.edit.identifier.create.label"
+			 , "model.business.commands.edit.identifier.create.description"
+			 , "model.business.commands.edit.identifier.create"
 			 , domain, parameter);
 	}
 	
-	public AddIdentifierCommand(EditingDomain domain) {
+	public CreateIdentifierCommand(EditingDomain domain) {
 		this(domain, null);
 	}
 	
@@ -84,7 +85,7 @@ public class AddIdentifierCommand extends AbstractSpagoBIModelEditCommand {
 		}
 		
 		this.executed = true;
-		logger.debug("Command [{}] executed succesfully", AddIdentifierCommand.class.getName());
+		logger.debug("Command [{}] executed succesfully", CreateIdentifierCommand.class.getName());
 	}
 	
 	

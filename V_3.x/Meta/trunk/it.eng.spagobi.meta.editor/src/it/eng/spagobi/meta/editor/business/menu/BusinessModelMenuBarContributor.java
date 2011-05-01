@@ -25,7 +25,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.actions.RefreshViewerAction;
 import it.eng.spagobi.meta.editor.business.actions.ShowPropertiesViewAction;
-import it.eng.spagobi.meta.model.business.commands.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
 
 import java.util.Collection;
 import java.util.HashMap;

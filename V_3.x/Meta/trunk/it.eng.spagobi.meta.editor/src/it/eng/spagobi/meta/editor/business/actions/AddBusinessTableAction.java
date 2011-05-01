@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.AddBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -40,7 +40,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
 	PhysicalTable physicalTable; //used for drag&drop
 	public AddBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection, PhysicalTable physicalTable) {
-		super(AddBusinessTableCommand.class, workbenchPart, selection);
+		super(CreateBusinessTableCommand.class, workbenchPart, selection);
 		this.physicalTable = physicalTable;
 	}
 	

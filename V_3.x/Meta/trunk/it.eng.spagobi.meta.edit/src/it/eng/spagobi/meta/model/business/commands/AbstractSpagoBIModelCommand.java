@@ -37,8 +37,8 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 public class AbstractSpagoBIModelCommand extends AbstractCommand implements CommandActionDelegate {
 
 	EditingDomain domain;
-	CommandParameter parameter;
-	boolean executed;
+	protected CommandParameter parameter;
+	protected boolean executed;
 	
 	Object image;
 	

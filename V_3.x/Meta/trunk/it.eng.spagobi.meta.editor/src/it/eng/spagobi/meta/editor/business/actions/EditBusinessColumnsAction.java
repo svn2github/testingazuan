@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.EditBusinessColumnsWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.EditBusinessColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class EditBusinessColumnsAction extends AbstractSpagoBIModelAction {
 	
 	public EditBusinessColumnsAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(EditBusinessColumnsCommand.class, workbenchPart, selection);
+		super(ModifyBusinessTableColumnsCommand.class, workbenchPart, selection);
 	}
 	
 	

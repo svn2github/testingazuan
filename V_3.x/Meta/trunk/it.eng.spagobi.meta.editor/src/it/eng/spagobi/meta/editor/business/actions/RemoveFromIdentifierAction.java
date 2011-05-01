@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.RemoveFromIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.identifier.RemoveColumnFromIdentifierCommand;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -35,7 +35,7 @@ public class RemoveFromIdentifierAction extends AbstractSpagoBIModelAction {
 	
 	AbstractSpagoBIModelCommand performFinishCommand; 
 	public RemoveFromIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(RemoveFromIdentifierCommand.class, workbenchPart, selection);
+		super(RemoveColumnFromIdentifierCommand.class, workbenchPart, selection);
 		if (command instanceof AbstractSpagoBIModelCommand)
 			this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
 	}

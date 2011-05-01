@@ -72,8 +72,7 @@ public class InlineMenuContributor {
 			for (IAction action : actions) {
 				if (contributionID != null) {
 					menuManager.insertBefore(contributionID, action);
-				}
-				else {
+				} else {
 					menuManager.add(action);
 				}
 			}
@@ -85,15 +84,14 @@ public class InlineMenuContributor {
 		if (actions != null) {
 			IContributionItem[] items = menuManager.getItems();
 			for (int i = 0; i < items.length; i++) {
+				
 				// Look into SubContributionItems
-				//
 				IContributionItem contributionItem = items[i];
 				while (contributionItem instanceof SubContributionItem) {
 					contributionItem = ((SubContributionItem)contributionItem).getInnerItem();
 				}
 
 				// Delete the ActionContributionItems with matching action.
-				//
 				if (contributionItem instanceof ActionContributionItem) {
 					IAction action = ((ActionContributionItem)contributionItem).getAction();
 					if (actions.contains(action)) {
@@ -103,7 +101,7 @@ public class InlineMenuContributor {
 			}
 		}
 		
-		// just to avoid to depopulate a manager alredy depopulated
+		// just to avoid to de-populate a manager already de-populated
 		actions = null;
 	}
 }

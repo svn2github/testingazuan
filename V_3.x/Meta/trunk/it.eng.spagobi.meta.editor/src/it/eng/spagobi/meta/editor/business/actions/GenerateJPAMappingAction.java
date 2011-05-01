@@ -26,7 +26,7 @@ import it.eng.spagobi.meta.editor.business.wizards.inline.GenerateJPAMappingWiza
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapterLauncher;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.GenerateJPAMappingCommand;
+import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import org.eclipse.core.resources.IFile;

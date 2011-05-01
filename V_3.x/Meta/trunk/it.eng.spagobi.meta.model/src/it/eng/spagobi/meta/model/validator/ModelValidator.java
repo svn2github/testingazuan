@@ -106,30 +106,29 @@ public class ModelValidator {
 	}
 	
 	public boolean validate(BusinessRelationship relationship) {
-		boolean isValid = true;
 		
 		if(relationship.getSourceTable() == null) {
-			isValid = false;
 			diagnosticMessages.add("Business relationship [" + relationship.getName() + "] does not specifies any source table");
+			return false;
 		}
 		
 		if(relationship.getDestinationTable() == null) {
-			isValid = false;
 			diagnosticMessages.add("Business relationship  [" + relationship.getName() + "] does not specifies any source table");
+			return false;
 		}
 		
 		if(relationship.getSourceColumns() == null || relationship.getSourceColumns().size() < 1) {
-			isValid = false;
 			diagnosticMessages.add("Outbound business relationship  [" + relationship.getName() + "] defined on table [" + relationship.getSourceTable().getName() + "] does not specifies any source column");
+			return false;
 		}
 		
 		if(relationship.getDestinationColumns() == null || relationship.getDestinationColumns().size() < 1) {
-			isValid = false;
 			diagnosticMessages.add("inbound business relationship  [" + relationship.getName() + "] defined on table [" + relationship.getDestinationTable().getName() + "] does not specifies any destination column");
+			return false;
 		}
 		
 		
-		return isValid;
+		return true;
 	}
 	
 	public boolean validate(BusinessIdentifier identifier) {

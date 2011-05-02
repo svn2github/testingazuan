@@ -79,7 +79,7 @@ public class CopyOfBusinessModelPropertiesFromFileInitializer implements IProper
 		
 		logger.trace("IN");
 		try {
-			File propertiesFile = RL.getFile("properties\\customProperties.xml");
+			File propertiesFile = RL.getFile("properties/customProperties.xml");
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder builder = domFactory.newDocumentBuilder();
 	        document = builder.parse(propertiesFile);

@@ -25,7 +25,7 @@ import it.eng.spagobi.meta.editor.business.wizards.inline.AddPhysicalTableWizard
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -46,7 +46,7 @@ public class AddPhysicalTableToBusinessTableAction extends
 	 * @param selection
 	 */
 	public AddPhysicalTableToBusinessTableAction(IWorkbenchPart workbenchPart, ISelection selection){
-		super(AddPhysicalTableToBusinessTableCommand.class, workbenchPart, selection);
+		super(AddPhysicalTableToBusinessViewCommand.class, workbenchPart, selection);
 	}
 	
 	/**

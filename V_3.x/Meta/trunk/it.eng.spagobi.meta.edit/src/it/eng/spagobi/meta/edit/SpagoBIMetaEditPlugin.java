@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.edit;
 
 import it.eng.spagobi.commons.SpagoBIPlugin;
-import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class SpagoBIMetaEditPlugin extends SpagoBIPlugin {
 	
 	public static final String PLUGIN_ID = "it.eng.spagobi.meta.edit"; //$NON-NLS-1$
 	
-	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableToBusinessViewCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableFromBusinessViewCommand.class);
 	
 	
 	static {

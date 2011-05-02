@@ -25,7 +25,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.RemovePhysicalTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -44,7 +44,7 @@ AbstractSpagoBIModelAction {
 	 * @param command
 	 */
 	public RemovePhysicalTableToBusinessViewAction(IWorkbenchPart workbenchPart, ISelection selection) {
-		super(RemovePhysicalTableToBusinessViewCommand.class, workbenchPart, selection);
+		super(RemovePhysicalTableFromBusinessViewCommand.class, workbenchPart, selection);
 	}
 	/**
 	 * This executes the command.

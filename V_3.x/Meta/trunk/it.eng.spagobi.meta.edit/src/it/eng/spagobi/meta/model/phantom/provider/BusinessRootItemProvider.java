@@ -4,7 +4,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;

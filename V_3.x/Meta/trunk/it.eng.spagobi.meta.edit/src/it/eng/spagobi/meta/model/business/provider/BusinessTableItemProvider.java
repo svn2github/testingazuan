@@ -10,11 +10,11 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
@@ -270,8 +270,8 @@ public class BusinessTableItemProvider
 		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		    } else if(commandClass == CreateIdentifierCommand.class) {
 		    	result = new CreateIdentifierCommand(domain, commandParameter);
-		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
-		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
+		    } else if(commandClass == AddPhysicalTableToBusinessViewCommand.class) {
+		    	result = new AddPhysicalTableToBusinessViewCommand(domain, commandParameter);
 		    }  else if(commandClass == DeleteBusinessTableCommand.class) {
 		    	result = new DeleteBusinessTableCommand(domain, commandParameter);
 		    }

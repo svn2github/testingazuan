@@ -10,7 +10,7 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;

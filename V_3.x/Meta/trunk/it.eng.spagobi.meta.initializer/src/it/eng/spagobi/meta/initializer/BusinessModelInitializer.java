@@ -305,31 +305,39 @@ public class BusinessModelInitializer {
 		physicalPrimaryKey = businessTable.getPhysicalTable().getPrimaryKey();
 		if (physicalPrimaryKey != null) {
 			try {
-				// check if all the physical columns in PK are also in the business table				
-				boolean allPKColumnsAreInBusinessTable = true;
-				List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
-				for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
-					businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
-					if (businessColumn != null){
-						businessColumns.add(businessColumn);
-					} else {
-						allPKColumnsAreInBusinessTable = false;
-						break;
-					}
-				}
-				
-				if (businessColumns.size() > 0 && allPKColumnsAreInBusinessTable){
+				if ( areAllPKColumnsContainedInBusinessTable(physicalPrimaryKey, businessTable) ){
+					List<BusinessColumn> businessColumns = getContainedBusinessColumn(physicalPrimaryKey.getColumns(), businessTable);
 					businessIdentifier = addIdentifier(physicalPrimaryKey.getName(), businessTable, businessColumns);					
 					businessIdentifier.setPhysicalPrimaryKey(physicalPrimaryKey);
-				}
-				
-				
+				}	
 			} catch(Throwable t) {
 				throw new RuntimeException("Impossible to initialize identifier meta", t);
 			}
 			
 		}
 		return businessIdentifier;
+	}
+	
+	public boolean areAllPKColumnsContainedInBusinessTable(PhysicalPrimaryKey physicalPrimaryKey, BusinessColumnSet businessTable) {
+		List<BusinessColumn> containedBusinessColumns;
+		
+		containedBusinessColumns = getContainedBusinessColumn(physicalPrimaryKey.getColumns(), businessTable);
+		
+		return containedBusinessColumns.size() == physicalPrimaryKey.getColumns().size();
+	}
+	
+	public List<BusinessColumn> getContainedBusinessColumn(List<PhysicalColumn> physicalColumns, BusinessColumnSet businessTable) {
+		List<BusinessColumn> businessColumns;
+		
+		businessColumns = new ArrayList<BusinessColumn>();
+		for(int j = 0; j < physicalColumns.size(); j++) {
+			BusinessColumn businessColumn = businessTable.getColumn(physicalColumns.get(j));
+			if (businessColumn != null){
+				businessColumns.add(businessColumn);
+			} 
+		}
+		
+		return businessColumns;
 	}
 	
 	//add Identifier without PhysicalPrimaryKey specified

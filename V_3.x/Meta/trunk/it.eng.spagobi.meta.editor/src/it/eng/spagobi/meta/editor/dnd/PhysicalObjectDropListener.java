@@ -13,8 +13,8 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -153,7 +153,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
             				} else {
             					//add PhysicalTable is necessary
                 				Command addPhysicalTableCommand = editingDomain.createCommand
-                		        (AddPhysicalTableToBusinessTableCommand.class, 
+                		        (AddPhysicalTableToBusinessViewCommand.class, 
                 		        		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()) );
                 				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, true, sourcePhysicalTable.getName() );
                 		    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
@@ -175,7 +175,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
                 			else {
                 				//upgrade BusinessTable to BusinessView
                 				Command addPhysicalTableCommand = editingDomain.createCommand
-                		        (AddPhysicalTableToBusinessTableCommand.class, 
+                		        (AddPhysicalTableToBusinessViewCommand.class, 
                 		        		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
                 				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
                 		    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
@@ -204,7 +204,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
            			}
            			//add PhysicalTable to BusinessTable or BusinessView
         			Command addPhysicalTableCommand = editingDomain.createCommand
-        		    (AddPhysicalTableToBusinessTableCommand.class, 
+        		    (AddPhysicalTableToBusinessViewCommand.class, 
         		      		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
         			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, isBusinessView, sourcePhysicalTable.getName());
         		    WizardDialog dialog = new WizardDialog(new Shell(), wizard);

@@ -25,7 +25,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.actions.RefreshViewerAction;
 import it.eng.spagobi.meta.editor.business.actions.ShowPropertiesViewAction;
-import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class BusinessModelMenuBarContributor {
 	protected RefreshViewerAction refreshViewerAction;
 	protected ShowPropertiesViewAction showPropertiesViewAction;
 	
-	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableToBusinessViewCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableFromBusinessViewCommand.class);
 	private static IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator();
 	
 	public Map<String, InlineMenuContributor> getSubmenuManagers() {

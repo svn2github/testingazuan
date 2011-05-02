@@ -19,7 +19,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands.edit;
+package it.eng.spagobi.meta.model.business.commands.edit.view;
 
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class RemovePhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelEditCommand {
+public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIModelEditCommand {
 
 	BusinessView businessView;
 	PhysicalTable physicalTable;
@@ -52,17 +53,17 @@ public class RemovePhysicalTableToBusinessViewCommand extends AbstractSpagoBIMod
 	BusinessModel businessModel;
 	BusinessTable businessTable ;
 	
-	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableToBusinessViewCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(RemovePhysicalTableFromBusinessViewCommand.class);
 	
 	
-	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
+	public RemovePhysicalTableFromBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
 		super( "model.business.commands.removeptable.label"
 			 , "model.business.commands.removeptable.description"
 			 , "model.business.commands.removeptable"
 			 , domain, parameter);
 	}
 
-	public RemovePhysicalTableToBusinessViewCommand(EditingDomain domain){
+	public RemovePhysicalTableFromBusinessViewCommand(EditingDomain domain){
 		this(domain, null);
 	}
 	
@@ -76,10 +77,10 @@ public class RemovePhysicalTableToBusinessViewCommand extends AbstractSpagoBIMod
 		
 		if (innerJoinRelationship != null){
 			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", RemovePhysicalTableToBusinessViewCommand.class.getName());
+			logger.debug("Command [{}] executed succesfully", RemovePhysicalTableFromBusinessViewCommand.class.getName());
 		} else {
 			this.executed = false;
-			logger.debug("Command [{}] not executed succesfully", RemovePhysicalTableToBusinessViewCommand.class.getName());
+			logger.debug("Command [{}] not executed succesfully", RemovePhysicalTableFromBusinessViewCommand.class.getName());
 			showInformation("Warning","Cannot delete this physical table because is used in a join relationship as a source table.\nPlease remove first the other tables.");
 		}
 

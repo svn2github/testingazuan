@@ -132,17 +132,13 @@ public class ModelValidator {
 	}
 	
 	public boolean validate(BusinessIdentifier identifier) {
-		boolean isValid = true;
-		
 		if(identifier.getModel() == null) {
-			isValid = false;
 			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] does not belong to any model");
 			return false;
 		}
 		BusinessModel model = identifier.getModel();
 		
 		if(identifier.getTable() == null) {
-			isValid = false;
 			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] is not associated to any table");
 			return false;
 		}
@@ -150,30 +146,28 @@ public class ModelValidator {
 		
 		String tableName = table.getName();
 		if(model.getTable(tableName) == null) {
-			isValid = false;
 			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] is defined on table [" + table.getName() + "] that does not belong to the model");
 			return false;
 		}
 		
 		if(identifier.getColumns().size() < 1) {
-			isValid = false;
 			diagnosticMessages.add("Business table  [" + table.getName() + "] have an empty identifier");
 			return false;
 		}
 		
 		for(BusinessColumn column : identifier.getColumns()) {
 			if(table.getColumn(column.getName()) == null) {
-				isValid = false;
-				diagnosticMessages.add("Key column of identifier [" + identifier.getName() + "] does not belong to to table [" + table.getName() + "]");
+				diagnosticMessages.add("Column [" + column.getName() + "] of identifier [" + identifier.getName() + "] does not belong to to table [" + table.getName() + "]");
+				return false;
 			}
 			
 			if( !(column.isIdentifier() || column.isPartOfCompositeIdentifier()) ) {
-				isValid = false;
-				diagnosticMessages.add("Key column of identifier [" + identifier.getName() + "] is not tagged as key column");
+				diagnosticMessages.add("Column [" + column.getName() + "] of identifier [" + identifier.getName() + "] is not tagged as key column");
+				return false;
 			}
 		}
 		
-		return isValid;
+		return true;
 	}
 	
 	public boolean validate(BusinessTable table) {

@@ -19,13 +19,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands.edit;
+package it.eng.spagobi.meta.model.business.commands.edit.view;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class AddPhysicalTableToBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
+public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelEditCommand {
 	
 	BusinessColumnSet businessColumnSet;
 	BusinessTable businessTable;
@@ -49,17 +50,17 @@ public class AddPhysicalTableToBusinessTableCommand extends AbstractSpagoBIModel
 	BusinessViewInnerJoinRelationshipDescriptor joinRelationshipDescriptor;
 	List<PhysicalColumn> addedColumns = new ArrayList<PhysicalColumn>();
 		
-	private static Logger logger = LoggerFactory.getLogger(AddPhysicalTableToBusinessTableCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(AddPhysicalTableToBusinessViewCommand.class);
 	
 	
-	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
+	public AddPhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
 		super( "model.business.commands.addptable.label"
 			 , "model.business.commands.addptable.description"
 			 , "model.business.commands.addptable"
 			 , domain, parameter);
 	}
 	
-	public AddPhysicalTableToBusinessTableCommand(EditingDomain domain){
+	public AddPhysicalTableToBusinessViewCommand(EditingDomain domain){
 		this(domain, null);
 	}
 	
@@ -104,7 +105,7 @@ public class AddPhysicalTableToBusinessTableCommand extends AbstractSpagoBIModel
 		}
 		
 		this.executed = true;
-		logger.debug("Command [{}] executed succesfully", AddPhysicalTableToBusinessTableCommand.class.getName());
+		logger.debug("Command [{}] executed succesfully", AddPhysicalTableToBusinessViewCommand.class.getName());
 	}
 	
 	

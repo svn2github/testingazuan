@@ -24,6 +24,8 @@ package it.eng.spagobi.meta.model.business.commands.edit.table;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -47,7 +49,8 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> removedColumns;
 	List<BusinessColumn> addedColumns;
-
+	BusinessModelInitializer initializer;
+	
 	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
 	
 	
@@ -56,6 +59,7 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 			 , "model.business.commands.editbcolumn.description"
 			 , "model.business.commands.editbcolumn"
 			 , domain, parameter);
+		initializer = new BusinessModelInitializer();	
 	}
 	
 	public ModifyBusinessTableColumnsCommand(EditingDomain domain) {
@@ -64,7 +68,7 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 	
 	@Override
 	public void execute() {
-		BusinessModelInitializer initializer;
+		
 		BusinessColumnSet businessColumnSet;
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
 
@@ -73,25 +77,18 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		
 		List<PhysicalColumn> columns;
 		
-		removedColumns = new ArrayList<BusinessColumn>();
-		addedColumns = new ArrayList<BusinessColumn>();
-		
-		initializer = new BusinessModelInitializer();	
-		
+		// remove
 		columns = getColumnsToRemove(oldSelectionColumns, newSelectionColumns);
-		for(PhysicalColumn column: columns) {
-			BusinessColumn c = businessColumnSet.getColumn(column);
-			businessColumnSet.getColumns().remove(c);
-			removedColumns.add(c);
-		}
-				
+		removeColumns(columns, businessColumnSet);		
+		
+		// add
 		columns = getColumnsToAdd(oldSelectionColumns, newSelectionColumns);
-		for(PhysicalColumn column: columns) {
-			initializer.addColumn(column, businessColumnSet);
-			addedColumns.add( businessColumnSet.getColumn(column) );
-		}
+		addColumns(columns, businessColumnSet);
+			
+		updateIdentifier(businessColumnSet);
 		
 		this.executed = true;
+		
 		logger.debug("Command [{}] executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());
 	}
 	
@@ -152,6 +149,51 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		
 		return isPart;
 	}
+	
+	public List<BusinessColumn> removeColumns(List<PhysicalColumn> columns, BusinessColumnSet businessColumnSet) {
+		removedColumns = new ArrayList<BusinessColumn>();
+		
+		for(PhysicalColumn column: columns) {
+			BusinessColumn c = businessColumnSet.getColumn(column);
+			if(c.isIdentifier()) {
+				BusinessIdentifier identifier = businessColumnSet.getIdentifier();
+				identifier.getColumns().remove(c);
+				if(identifier.getColumns().size() == 0) {
+					businessColumnSet.getModel().getIdentifiers().remove(identifier);
+				}
+			}
+			
+			
+			businessColumnSet.getColumns().remove(c);
+			removedColumns.add(c);
+		}
+		return removedColumns;
+	}
+	
+	public List<BusinessColumn> addColumns(List<PhysicalColumn> columns, BusinessColumnSet businessColumnSet) {
+		addedColumns = new ArrayList<BusinessColumn>();
+		for(PhysicalColumn column: columns) {
+			initializer.addColumn(column, businessColumnSet);
+			addedColumns.add( businessColumnSet.getColumn(column) );
+		}
+		return addedColumns;
+	}
+	
+	private void updateIdentifier(BusinessColumnSet businessColumnSet) {
+		if(businessColumnSet instanceof BusinessTable) {
+			BusinessTable businessTable = (BusinessTable)businessColumnSet;
+			BusinessIdentifier identifier = businessColumnSet.getIdentifier();
+			if(identifier != null) {
+				if( identifier.getPhysicalPrimaryKey() != null 
+						&& initializer.areAllPKColumnsContainedInBusinessTable(identifier.getPhysicalPrimaryKey(), businessTable) == false ) {
+					identifier.setPhysicalPrimaryKey(null);
+				}
+			} else { // identifier is null
+				initializer.addIdentifier(businessTable, businessColumnSet.getModel());
+			}
+		}
+	}
+
 	
 	@Override
 	public void undo() {

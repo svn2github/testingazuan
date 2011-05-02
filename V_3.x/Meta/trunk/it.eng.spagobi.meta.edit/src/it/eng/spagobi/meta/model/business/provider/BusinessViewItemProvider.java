@@ -11,11 +11,11 @@ package it.eng.spagobi.meta.model.business.provider;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.commands.edit.AddBusinessRelationshipCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.AddPhysicalTableToBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.RemovePhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
@@ -247,10 +247,10 @@ public class BusinessViewItemProvider
 		    	result = new AddBusinessRelationshipCommand(domain, commandParameter);
 		    } else if(commandClass == CreateIdentifierCommand.class) {
 		    	result = new CreateIdentifierCommand(domain, commandParameter);
-		    } else if(commandClass == AddPhysicalTableToBusinessTableCommand.class) {
-		    	result = new AddPhysicalTableToBusinessTableCommand(domain, commandParameter);
-		    } else if(commandClass == RemovePhysicalTableToBusinessViewCommand.class) {
-		    	result = new RemovePhysicalTableToBusinessViewCommand(domain, commandParameter);
+		    } else if(commandClass == AddPhysicalTableToBusinessViewCommand.class) {
+		    	result = new AddPhysicalTableToBusinessViewCommand(domain, commandParameter);
+		    } else if(commandClass == RemovePhysicalTableFromBusinessViewCommand.class) {
+		    	result = new RemovePhysicalTableFromBusinessViewCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

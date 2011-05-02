@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.DeleteIdentifierCommand;
@@ -38,6 +39,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -78,7 +80,9 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 			model.getIdentifiers().remove(identifier);
 		}
 		
-		// TODO remove releationships
+		//remove relationships of this business table
+		List<BusinessRelationship> businessRelationships = businessTable.getRelationships();
+		model.getRelationships().removeAll(businessRelationships);
 		
 		
 		model.getTables().remove(businessTable);

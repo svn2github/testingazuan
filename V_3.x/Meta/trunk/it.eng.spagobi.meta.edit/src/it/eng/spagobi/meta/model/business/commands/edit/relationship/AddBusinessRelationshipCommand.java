@@ -45,9 +45,9 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditComm
 	
 	
 	public AddBusinessRelationshipCommand(EditingDomain domain, CommandParameter parameter) {
-		super("model.business.commands.addbrelationship.label"
-			 ,"model.business.commands.addbrelationship.description"
-			 ,"model.business.commands.addbrelationship"
+		super("model.business.commands.edit.relationship.add.label"
+			 ,"model.business.commands.edit.relationship.add.description"
+			 ,"model.business.commands.edit.relationship.add"
 			 ,domain, parameter);
 	}
 	

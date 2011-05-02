@@ -54,9 +54,9 @@ public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelE
 	
 	
 	public AddPhysicalTableToBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
-		super( "model.business.commands.addptable.label"
-			 , "model.business.commands.addptable.description"
-			 , "model.business.commands.addptable"
+		super( "model.business.commands.edit.view.addtable.label"
+			 , "model.business.commands.edit.view.addtable.description"
+			 , "model.business.commands.edit.view.addtable"
 			 , domain, parameter);
 	}
 	

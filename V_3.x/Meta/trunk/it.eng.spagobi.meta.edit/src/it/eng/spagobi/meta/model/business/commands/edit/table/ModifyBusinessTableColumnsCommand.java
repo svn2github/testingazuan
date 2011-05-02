@@ -55,9 +55,9 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 	
 	
 	public ModifyBusinessTableColumnsCommand(EditingDomain domain, CommandParameter parameter) {
-		super( "model.business.commands.editbcolumn.label"
-			 , "model.business.commands.editbcolumn.description"
-			 , "model.business.commands.editbcolumn"
+		super( "model.business.commands.edit.table.modifycolumns.label"
+			 , "model.business.commands.edit.table.modifycolumns.description"
+			 , "model.business.commands.edit.table.modifycolumns"
 			 , domain, parameter);
 		initializer = new BusinessModelInitializer();	
 	}

@@ -30,6 +30,8 @@ import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEdit
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -132,6 +134,16 @@ public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelE
 		} else if (businessView != null){
 			initializer.addPhysicalTableToBusinessView(businessView, joinRelationshipDescriptor);
 		}
+	}
+	
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(businessView != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessView);
+		}
+		return affectedObjects;
 	}
 	
 }

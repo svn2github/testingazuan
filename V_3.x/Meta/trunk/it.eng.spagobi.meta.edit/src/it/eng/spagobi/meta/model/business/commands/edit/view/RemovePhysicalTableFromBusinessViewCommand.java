@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands.edit.view;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -128,6 +132,16 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 	      MessageDialog.openInformation(null, title, message);
 	    }
 	  });
+	}
+	
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(businessView != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessView);
+		}
+		return affectedObjects;
 	}
 
 }

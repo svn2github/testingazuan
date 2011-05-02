@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands.edit.relationship;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -81,6 +85,16 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditComm
 		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		BusinessModel businessModel = businessTable.getModel();
 		businessModel.getRelationships().add(addedBusinessRelationship);			
+	}
+	
+	@Override
+	public Collection<?> getAffectedObjects() {
+		Collection affectedObjects = Collections.EMPTY_LIST;
+		if(addedBusinessRelationship != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(addedBusinessRelationship);
+		}
+		return affectedObjects;
 	}
 	
 }

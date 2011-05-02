@@ -41,7 +41,9 @@ import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
@@ -275,38 +277,57 @@ public class BusinessModelInitializer {
 		BusinessTable businessTable;
 		BusinessColumn businessColumn;
 		
+		businessIdentifier = null;
+		
 		try {
-			businessIdentifier = FACTORY.createBusinessIdentifier();
-			businessIdentifier.setName( physicalPrimaryKey.getName() );
-			businessIdentifier.setPhysicalPrimaryKey(physicalPrimaryKey);
-			businessIdentifier.setModel(businessModel);
-			//Note: use a filter on physical table to check?
 			physicalTable = physicalPrimaryKey.getTable();
 			businessTable = businessModel.getBusinessTable( physicalTable );
+				
 			
-			//check if businessTable is present in Business Model
+			//create identifier iff  businessTable is present in businessModel
 			if (businessTable != null){
-				businessIdentifier.setTable(businessTable);
-				
-				for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
-					businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
-					if (businessColumn != null){
-						businessIdentifier.getColumns().add(businessColumn);
-					}
-				}
-				
-				if (businessIdentifier.getColumns().size() > 0){
-					businessModel.getIdentifiers().add(businessIdentifier);			
-					getPropertiesInitializer().addProperties(businessIdentifier);
-				}
-				else{
-					//remove "empty" Business Identifier from memory
-					businessIdentifier = null;
-				}				
+				addIdentifier(businessTable, businessModel);
 			}
 	
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
+		}
+		
+		return businessIdentifier;
+	}
+	
+	//add Identifier with PhysicalPrimaryKey discovered through passed BusinessTable 
+	public BusinessIdentifier addIdentifier(BusinessTable businessTable, BusinessModel businessModel){
+		BusinessIdentifier businessIdentifier = null;		
+		BusinessColumn businessColumn;
+		PhysicalPrimaryKey physicalPrimaryKey;
+	
+		physicalPrimaryKey = businessTable.getPhysicalTable().getPrimaryKey();
+		if (physicalPrimaryKey != null) {
+			try {
+				// check if all the physical columns in PK are also in the business table				
+				boolean allPKColumnsAreInBusinessTable = true;
+				List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+				for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
+					businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
+					if (businessColumn != null){
+						businessColumns.add(businessColumn);
+					} else {
+						allPKColumnsAreInBusinessTable = false;
+						break;
+					}
+				}
+				
+				if (businessColumns.size() > 0 && allPKColumnsAreInBusinessTable){
+					businessIdentifier = addIdentifier(physicalPrimaryKey.getName(), businessTable, businessColumns);					
+					businessIdentifier.setPhysicalPrimaryKey(physicalPrimaryKey);
+				}
+				
+				
+			} catch(Throwable t) {
+				throw new RuntimeException("Impossible to initialize identifier meta", t);
+			}
+			
 		}
 		return businessIdentifier;
 	}
@@ -318,15 +339,17 @@ public class BusinessModelInitializer {
 		
 		try {
 			businessIdentifier = FACTORY.createBusinessIdentifier();
-			businessIdentifier.setName( businessIdentifierName );
-			businessIdentifier.setModel( businessModel );
+			businessIdentifier.setName( businessIdentifierName );			
 			businessIdentifier.setTable( businessColumnSet );
+			
+			businessIdentifier.setModel( businessModel );
+			businessModel.getIdentifiers().add(businessIdentifier);			
 			
 			for(BusinessColumn businessColumn : businessColumns) {
 				businessIdentifier.getColumns().add(businessColumn);
 			}
 			
-			businessModel.getIdentifiers().add(businessIdentifier);			
+			
 			getPropertiesInitializer().addProperties(businessIdentifier);
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize identifier meta", t);
@@ -334,43 +357,7 @@ public class BusinessModelInitializer {
 		return businessIdentifier;
 	}
 	
-	//add Identifier with PhysicalPrimaryKey discovered through passed BusinessTable 
-	public BusinessIdentifier addIdentifier(BusinessTable businessTable, BusinessModel businessModel){
-		BusinessIdentifier businessIdentifier = null;		
-		BusinessColumn businessColumn;
-		PhysicalPrimaryKey physicalPrimaryKey = businessTable.getPhysicalTable().getPrimaryKey();
 	
-		if (physicalPrimaryKey != null) {
-			try {
-				businessIdentifier = FACTORY.createBusinessIdentifier();
-				businessIdentifier.setName( physicalPrimaryKey.getName() );
-				businessIdentifier.setModel( businessModel );
-				businessIdentifier.setTable( businessTable );
-				
-				for(int j = 0; j < physicalPrimaryKey.getColumns().size(); j++) {
-					businessColumn = businessTable.getColumn(physicalPrimaryKey.getColumns().get(j));
-					if (businessColumn != null){
-						businessIdentifier.getColumns().add(businessColumn);
-					}
-				}
-				
-				if (businessIdentifier.getColumns().size() > 0){
-					businessModel.getIdentifiers().add(businessIdentifier);			
-					getPropertiesInitializer().addProperties(businessIdentifier);
-				}
-				else{
-					//remove "empty" Business Identifier from memory
-					businessIdentifier = null;
-				}
-		
-				getPropertiesInitializer().addProperties(businessIdentifier);
-			} catch(Throwable t) {
-				throw new RuntimeException("Impossible to initialize identifier meta", t);
-			}
-			
-		}
-		return businessIdentifier;
-	}
 	
 	
 	public void addRelationships(PhysicalModel physicalModel, BusinessModel businessModel) {

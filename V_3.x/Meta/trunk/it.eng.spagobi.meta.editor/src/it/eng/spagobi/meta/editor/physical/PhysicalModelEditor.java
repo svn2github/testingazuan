@@ -1038,6 +1038,8 @@ public class PhysicalModelEditor
 				createContextMenuFor(selectionViewer);
 				int pageIndex = addPage(viewerPane.getControl());
 				setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));
+				
+				selectionViewer.expandToLevel(2);
 			}
 			/*
 			// Create a page for the parent tree view.

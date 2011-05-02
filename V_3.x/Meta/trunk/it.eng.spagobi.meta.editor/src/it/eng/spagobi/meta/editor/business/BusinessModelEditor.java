@@ -361,6 +361,8 @@ public class BusinessModelEditor
 		createContextMenuFor(modelTreeViewer);
 		int pageIndex = addPage(viewerPane.getControl());
 		setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));
+		
+		modelTreeViewer.expandToLevel(2);
 	}
 
 	
@@ -389,6 +391,16 @@ public class BusinessModelEditor
 					}
 				};
 			getSite().getShell().getDisplay().asyncExec(runnable);
+		}
+	}
+	
+	public void refreshViewer() {
+		if (currentViewer != null) {
+			currentViewer.refresh();
+			if(currentViewer instanceof TreeViewer) {
+				TreeViewer treeViewer = (TreeViewer)currentViewer;
+				treeViewer.expandToLevel(2);
+			}
 		}
 	}
 

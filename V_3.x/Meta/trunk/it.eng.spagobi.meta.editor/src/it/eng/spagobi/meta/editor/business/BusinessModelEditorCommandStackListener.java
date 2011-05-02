@@ -36,8 +36,10 @@ import java.util.Iterator;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.command.CommandStackListener;
+import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.edit.command.DeleteCommand;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 
@@ -62,6 +64,7 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 							&& (mostRecentCommand instanceof AbstractSpagoBIModelEditCommand || mostRecentCommand instanceof DeleteCommand)) {
 						editor.firePropertyChange(IEditorPart.PROP_DIRTY);
 						validateCommandResults(mostRecentCommand, false);  
+						editor.refreshViewer();
 						editor.setSelectionToViewer(mostRecentCommand.getAffectedObjects());
 					}
 					

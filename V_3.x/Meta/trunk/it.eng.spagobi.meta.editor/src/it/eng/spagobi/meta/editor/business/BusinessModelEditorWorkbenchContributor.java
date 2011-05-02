@@ -22,10 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business;
 
 import it.eng.spagobi.meta.editor.business.actions.DeleteBusinessTableAction;
+import it.eng.spagobi.meta.editor.business.actions.DeleteModelObjectAction;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelMenuBarContributor;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelPopupMenuContributor;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 
+import org.eclipse.emf.edit.ui.action.DeleteAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -151,14 +153,10 @@ public class BusinessModelEditorWorkbenchContributor
 	
 	
 	@Override
-	public void init(IActionBars actionBars) {
-	    super.init(actionBars);
-	    ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-
-	    deleteAction = createDeleteAction(); 
-	    deleteAction.setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
-	    actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+	protected DeleteAction createDeleteAction() {
+	    return new DeleteModelObjectAction(removeAllReferencesOnDelete());
 	}
+	
 	
 	/**
 	 * This populates the pop-up menu before it appears.
@@ -170,50 +168,7 @@ public class BusinessModelEditorWorkbenchContributor
 		pasteAction.setEnabled(false);
 		//deleteAction.setEnabled(false);
 		
-		//super.menuAboutToShow(menuManager);
-		// Add our standard marker.
-	    if ((style & ADDITIONS_LAST_STYLE) == 0)
-	    {
-	      menuManager.add(new Separator("additions"));
-	    }
-	    menuManager.add(new Separator("edit"));
-
-	    // Add the edit menu actions.
-	    //
-	    menuManager.add(new ActionContributionItem(undoAction));
-	    menuManager.add(new ActionContributionItem(redoAction));
-	    menuManager.add(new Separator());
-	    menuManager.add(new ActionContributionItem(cutAction));
-	    menuManager.add(new ActionContributionItem(copyAction));
-	    menuManager.add(new ActionContributionItem(pasteAction));
-	    menuManager.add(new Separator());
-	    Object object = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
-	    if(object instanceof BusinessTable) {
-	    	DeleteBusinessTableAction deleteTableAction = new DeleteBusinessTableAction(activeEditorPart, selectionProvider.getSelection());
-	    	ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-	    	deleteTableAction.setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
-	    	deleteTableAction.setText("Delete");
-	    	menuManager.add(new ActionContributionItem(deleteTableAction));
-		    menuManager.add(new Separator());
-	    } else {
-	    	menuManager.add(new ActionContributionItem(deleteAction));
-		    menuManager.add(new Separator());
-	    }
-	    
-	    
-
-	    if ((style & ADDITIONS_LAST_STYLE) != 0)
-	    {
-	      menuManager.add(new Separator("additions"));
-	      menuManager.add(new Separator());
-	    }
-	    // Add our other standard marker.
-	    //
-	    menuManager.add(new Separator("additions-end"));
-
-	    addGlobalActions(menuManager);
-	    
-	    
+		super.menuAboutToShow(menuManager);
 		popupMenu.menuAboutToShow(menuManager);
 		
 	}

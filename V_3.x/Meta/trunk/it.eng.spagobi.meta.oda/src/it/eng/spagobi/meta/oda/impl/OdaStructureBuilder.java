@@ -49,14 +49,18 @@ public class OdaStructureBuilder {
 
 	/**
 	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
-	 * @param modelNames the name of the models
+	 * @param persistenceUnitNames the name of the models
 	 * @param dataSourceProperties the data source properties
 	 * @param path path to the of the jar files
 	 * @return The IDataSource
 	 */
-	public static IDataSource getDataSourceSingleModel(List<String> modelNames, Map<String, Object> dataSourceProperties, String path) {
-		logger.debug("IN: Getting the data source for the model names "+modelNames+"..");
-		String f = path.substring(0, path.indexOf("dist"))+modelNames.get(0)+File.separator+"dist"+File.separator+"datamart.jar";
+	public static IDataSource getDataSourceSingleModel(List<String> persistenceUnitNames, Map<String, Object> dataSourceProperties, String path) {
+		logger.debug("IN: Getting the data source for the model names "+persistenceUnitNames+"..");
+		String modelName = persistenceUnitNames.get(0);
+		if(modelName.indexOf("_") != -1) {
+			modelName = modelName.substring(0, modelName.indexOf("_"));
+		}
+		String f = path.substring(0, path.indexOf("dist"))+modelName+File.separator+"dist"+File.separator+"datamart.jar";
 			
 		File modelJarFile = null;
 		List<File> modelJarFiles = new ArrayList<File>();
@@ -66,9 +70,9 @@ public class OdaStructureBuilder {
 		
 		modelJarFile = new File(f);
 		modelJarFiles.add(modelJarFile);
-		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(0), modelJarFile));
+		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(persistenceUnitNames.get(0), modelJarFile));
 
-		logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
+		logger.debug("OUT: Finish to load the data source for the model names "+persistenceUnitNames+"..");
 		IDataSource ds = DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, false); 
 		return ds;
 	}

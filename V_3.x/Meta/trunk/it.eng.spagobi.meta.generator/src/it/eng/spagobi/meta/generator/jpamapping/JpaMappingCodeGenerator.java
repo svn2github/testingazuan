@@ -88,7 +88,11 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	private File propertiesTemplate;
 	
+	private String persistenceUnitName;
+	
 	public static final String DEFAULT_SRC_DIR = "src";
+	
+	
 	
 
 	
@@ -248,7 +252,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	
 	public void generatePersistenceUnitMapping(JpaModel model) throws Exception {
-		createMappingFile(persistenceUnitTemplate, model);
+		model.setPersistenceUnitName(persistenceUnitName);
+		createPersistenceUnitFile(persistenceUnitTemplate, model);
 	}
 
 	
@@ -310,7 +315,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	 * @param businessTable
 	 * @param jpaView
 	 */
-	private void createMappingFile(File templateFile, JpaModel model){
+	private void createPersistenceUnitFile(File templateFile, JpaModel model){
 
 		VelocityContext context;
 		
@@ -326,7 +331,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		    }
 		    
 	        context.put("jpaTables", jpaTables ); //$NON-NLS-1$
-	        context.put("modelName", model.getName());
+	        context.put("model", model);
 	        
 	        File outputDir = new File( srcDir, "META-INF" );
 			outputDir.mkdirs();
@@ -439,6 +444,16 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	public void setSrcDir(File srcDir) {
 		this.srcDir = srcDir;
 	}
+
+	public String getPersistenceUnitName() {
+		return persistenceUnitName;
+	}
+
+	public void setPersistenceUnitName(String persistenceUnitName) {
+		this.persistenceUnitName = persistenceUnitName;
+	}
+	
+	
 	
 	
 

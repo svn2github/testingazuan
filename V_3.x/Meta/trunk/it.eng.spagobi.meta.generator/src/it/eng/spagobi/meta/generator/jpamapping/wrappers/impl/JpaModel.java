@@ -40,6 +40,7 @@ public class JpaModel {
 	
 	private List<IJpaTable> tables;
 	private List<IJpaView> views;
+	private String persistenceUnitName;
 	
 	public JpaModel(BusinessModel businessModel) {
 		this.businessModel = businessModel;
@@ -61,6 +62,14 @@ public class JpaModel {
 	
 	public String getDescription() {
 		return businessModel.getName();
+	}
+	
+	public String getPersistenceUnitName() {
+		return persistenceUnitName == null? getName(): persistenceUnitName;
+	}
+	
+	public void setPersistenceUnitName(String persistenceUnitName) {
+		this.persistenceUnitName = persistenceUnitName;
 	}
 	
 	private List<IJpaTable> wrapTables(List<BusinessTable> tables) {

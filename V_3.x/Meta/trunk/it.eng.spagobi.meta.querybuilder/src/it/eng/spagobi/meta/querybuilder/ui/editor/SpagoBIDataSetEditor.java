@@ -99,8 +99,9 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			String modelDirectory = new File(modelPath).getParent();
 			BusinessModel businessModel = loadBusinessModel(modelPath);
 			validateModel(businessModel);
-			generateMapping(businessModel, modelDirectory);
-			IDataSource dataSource = createDataSource(modelPath, businessModel);
+			String persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
+			generateMapping(businessModel, modelDirectory, persistenceUnitName);
+			IDataSource dataSource = createDataSource(modelPath, businessModel, persistenceUnitName);
 			queryBuilder = new QueryBuilder(dataSource);
 			
 		    if(queryJSON == null) {
@@ -395,13 +396,14 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}	
 	
-	protected void generateMapping(BusinessModel businessModel, String outputFolder) {
+	protected void generateMapping(BusinessModel businessModel, String outputFolder, String persistenceUnitName) {
 	
 		logger.trace("IN");
 	
 		try {
 			JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
 			generator.setLibDir(new File("plugins"));
+			generator.setPersistenceUnitName(persistenceUnitName);
 			generator.generate(businessModel, outputFolder);
 		} catch(Throwable t) {
 			throw new SpagoBIPluginException("Impossible to generate mapping for business model [" + businessModel.getName() + "] into folder [" + outputFolder + "]", t);
@@ -410,7 +412,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}	
 	
-	public IDataSource createDataSource(String modelPath, BusinessModel businessModel){
+	public IDataSource createDataSource(String modelPath, BusinessModel businessModel, String persistenceUnitName){
 		logger.debug("Creating datasource of [{}]",modelPath);
 		
 		PhysicalModel physicalModel = businessModel.getPhysicalModel();
@@ -437,10 +439,10 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		dataSourceProperties.put("connection", connectionDescriptor);
 		
 		String modelDirectory = new File(modelPath).getParent();
-		List modelList = new ArrayList();
+		List modelNames = new ArrayList();
 		
-		modelList.add(modelName);
-		return OdaStructureBuilder.getDataSourceSingleModel(modelList, dataSourceProperties,modelDirectory+File.separatorChar+"dist"+File.separatorChar);
+		modelNames.add( persistenceUnitName );
+		return OdaStructureBuilder.getDataSourceSingleModel(modelNames, dataSourceProperties,modelDirectory+File.separatorChar+"dist"+File.separatorChar);
 	}
 	
 	/**

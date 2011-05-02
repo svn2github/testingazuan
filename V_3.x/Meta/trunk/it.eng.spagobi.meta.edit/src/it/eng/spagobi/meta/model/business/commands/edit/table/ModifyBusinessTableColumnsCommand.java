@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
@@ -35,6 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.slf4j.Logger;
@@ -49,6 +51,7 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> removedColumns;
 	List<BusinessColumn> addedColumns;
+	List<BusinessRelationship> removedRelationships;
 	BusinessModelInitializer initializer;
 	
 	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
@@ -155,6 +158,7 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		
 		for(PhysicalColumn column: columns) {
 			BusinessColumn c = businessColumnSet.getColumn(column);
+			//check identifiers
 			if(c.isIdentifier()) {
 				BusinessIdentifier identifier = businessColumnSet.getIdentifier();
 				identifier.getColumns().remove(c);
@@ -162,11 +166,38 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 					businessColumnSet.getModel().getIdentifiers().remove(identifier);
 				}
 			}
-			
-			
+			//check relationships
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			removedRelationships = new ArrayList<BusinessRelationship>();
+			for (BusinessRelationship businessRelationship : businessRelationships){	
+				EList<BusinessColumn> sourceColumns = businessRelationship.getSourceColumns();
+				EList<BusinessColumn> destinationColumns = businessRelationship.getDestinationColumns();
+				
+				if (sourceColumns.contains(c)){
+					int index = businessRelationship.getSourceColumns().indexOf(c);
+					businessRelationship.getSourceColumns().remove(c);
+					//remove other part 
+					businessRelationship.getDestinationColumns().remove(index);
+				}
+				else if (destinationColumns.contains(c)){
+					int index = businessRelationship.getDestinationColumns().indexOf(c);
+					businessRelationship.getDestinationColumns().remove(c);
+					//remove other part 
+					businessRelationship.getSourceColumns().remove(index);
+				}
+				
+				if (businessRelationship.getSourceColumns().isEmpty() || businessRelationship.getDestinationColumns().isEmpty()){
+					removedRelationships.add(businessRelationship);
+				}
+				
+			}
+			//remove inconsistent relationships
+			businessColumnSet.getRelationships().removeAll(removedRelationships);
+
 			businessColumnSet.getColumns().remove(c);
 			removedColumns.add(c);
 		}
+		
 		return removedColumns;
 	}
 	

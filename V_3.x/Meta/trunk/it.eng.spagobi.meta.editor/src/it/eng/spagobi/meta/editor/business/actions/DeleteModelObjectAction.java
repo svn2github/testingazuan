@@ -21,10 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -64,11 +70,28 @@ public class DeleteModelObjectAction extends DeleteAction {
 			if(o instanceof BusinessTable) {
 				CommandParameter parameter = new CommandParameter(o);
 				command = new DeleteBusinessTableCommand(domain, parameter);
+			} else if(o instanceof BusinessColumn) {
+				BusinessColumn businessColumn = (BusinessColumn)o;
+				BusinessColumnSet businessColumnSet = businessColumn.getTable();
+				Collection<PhysicalColumn> physicalColumns = extractPhysicalColumns(businessColumnSet);
+				physicalColumns.remove(businessColumn.getPhysicalColumn());
+				CommandParameter parameter = new CommandParameter(businessColumnSet, null, physicalColumns, null);
+				command = new ModifyBusinessTableColumnsCommand(domain, parameter);
 			}
 		}
+		
+		
 		if(command == null) {
 			command = super.createCommand(selection);
 		}
 	    return command;
 	}
+	
+	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {
+		List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
+		for(BusinessColumn businessColumn: businessColumnSet.getColumns()) {
+			physicalColumns.add(businessColumn.getPhysicalColumn());
+		}
+		return physicalColumns;
+	} 
 }

@@ -142,6 +142,12 @@ public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelE
 		if(businessView != null) {
 			affectedObjects = new ArrayList();
 			affectedObjects.add(businessView);
+		} else if (addedBusinessView != null) {
+			affectedObjects = new ArrayList();
+			affectedObjects.add(addedBusinessView);
+		} else if (businessTable != null){
+			affectedObjects = new ArrayList();
+			affectedObjects.add(businessTable);
 		}
 		return affectedObjects;
 	}

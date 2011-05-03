@@ -25,7 +25,9 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -36,19 +38,21 @@ public class ModelExtractor {
 		Model model;
 		
 		model = null;
+		
+		if(o == null) return null;
+		
 		if(o instanceof Model) {
 			model = (Model)o;
 		} else if(o instanceof BusinessModel) {
 			model = ((BusinessModel)o).getParentModel();
 		} else if(o instanceof BusinessColumnSet) {
-			BusinessModel bModel = ((BusinessColumnSet)o).getModel();
-			if(bModel != null) model = bModel.getParentModel();
+			model = getModel( ((BusinessColumnSet)o).getModel() );
 		} else if(o instanceof BusinessColumn) {
-			BusinessColumnSet bTable = ((BusinessColumn)o).getTable();
-			if(bTable != null) {
-				BusinessModel bModel = bTable.getModel();
-				if(bModel != null) model = bModel.getParentModel();
-			}
+			model = getModel( ((BusinessColumn)o).getTable() );
+		} else if(o instanceof BusinessIdentifier) {
+			model = getModel( ((BusinessIdentifier)o).getModel() );
+		} else if(o instanceof BusinessRelationship) {
+			model = getModel( ((BusinessRelationship)o).getModel() );
 		}
 		
 		return model;

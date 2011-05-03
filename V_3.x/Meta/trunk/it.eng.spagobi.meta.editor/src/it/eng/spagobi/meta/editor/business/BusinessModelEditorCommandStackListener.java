@@ -88,7 +88,7 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 								}
 							}
 						} else {
-							showError("Starnge behaviour from command " + mostRecentCommand.getLabel(), "Impossible to resolve root model from edit command affected object [" + modelObject + "]");
+							showError("Strange behaviour from command " + mostRecentCommand.getLabel(), "Impossible to resolve root model from edit command affected object [" + modelObject + "]");
 						}
 					} else {
 						showError("Starnge behaviour from command " + mostRecentCommand.getLabel(), "Edit command does not specify any affected object");

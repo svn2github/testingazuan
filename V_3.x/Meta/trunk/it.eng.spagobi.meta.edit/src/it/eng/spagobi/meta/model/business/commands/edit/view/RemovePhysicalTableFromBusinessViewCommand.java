@@ -63,7 +63,7 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 	public RemovePhysicalTableFromBusinessViewCommand(EditingDomain domain, CommandParameter parameter) {
 		super( "model.business.commands.edit.view.removetable.label"
 			 , "model.business.commands.edit.view.removetable.description"
-			 , "model.business.commands.edit.view.removetable.removeptable"
+			 , "model.business.commands.edit.view.removetable"
 			 , domain, parameter);
 	}
 

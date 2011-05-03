@@ -152,9 +152,9 @@ public class PhysicalModelEditorWorkbenchContributor
 	 */
 	public PhysicalModelEditorWorkbenchContributor() {
 		super(ADDITIONS_LAST_STYLE);
-		loadResourceAction = new LoadResourceAction();
-		validateAction = new ValidateAction();
-		controlAction = new ControlAction();
+		//loadResourceAction = new LoadResourceAction();
+		//validateAction = new ValidateAction();
+		//controlAction = new ControlAction();
 	}
 
 	/**

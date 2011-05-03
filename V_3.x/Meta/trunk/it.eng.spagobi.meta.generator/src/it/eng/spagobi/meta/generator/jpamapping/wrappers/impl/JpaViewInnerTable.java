@@ -140,8 +140,8 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasFakePrimaryKey()
 	 */
 	public boolean hasFakePrimaryKey() {
-		//return true;
-		return !(physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 0 : false);
+		return true;
+		//return !(physicalTable.getPrimaryKey() != null? physicalTable.getPrimaryKey().getColumns().size() > 0 : false);
 	}
 	
 	/*
@@ -149,6 +149,8 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#hasCompositeKey()
 	 */
 	public boolean hasCompositeKey() {	
+		return true;
+		/*
 		boolean hasCompositeKey = false;
 		
 		if(physicalTable.getPrimaryKey() != null) { // if there's a key...
@@ -163,6 +165,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		}
 
 		return hasCompositeKey;
+		*/
 	}
 	
 	public String getClassName() {

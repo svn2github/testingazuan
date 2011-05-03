@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
 
 
 public class AddBusinessRelationshipWizardPage extends WizardPage {
-	private int cardinality;
+	private int cardinality = ONE_TO_MANY; //initial default value
 	
 	java.util.List<BusinessColumn> sourceColumns;
 	java.util.List<BusinessColumn> destinationColumns;
@@ -142,9 +142,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	public void initCardinalityGroup(Composite parent, int style){
  		Composite cardinalityGroup = new Composite(parent, style);
  		cardinalityGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
- 		//cardinalityGroup.setSize(279, 52);
- 		cardinalityGroup.setLayout(new GridLayout(4, false));
+ 		cardinalityGroup.setLayout(new GridLayout(2, false));
  		
+ 		/*
+ 		 *  Hiding this components because we don't use cardinality now
+ 		 */
+
+ 		/*
  		Label lblCardinality = new Label(cardinalityGroup, SWT.NONE);
  		lblCardinality.setText("Cardinality");
  		lblCardinality.setLocation(0, 0);
@@ -152,8 +156,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		Composite compGroup = new Composite(cardinalityGroup, SWT.NONE);
  		compGroup.setLayout(new FillLayout(SWT.HORIZONTAL));
  		compGroup.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
- 		//compGroup.setBounds(0, 0, 64, 64);
- 		
+ 
  		Button button1to1 = new Button(compGroup, SWT.RADIO);
  		button1to1.setText("1 to 1");
  		button1to1.addSelectionListener(new SelectionAdapter() {
@@ -190,6 +193,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 				cardinality = MANY_TO_MANY;
 			}
 		});
+		*/
  		
  		Button btnAddRelationship = new Button(cardinalityGroup, SWT.NONE);
  		btnAddRelationship.setText("Add Relationship");
@@ -252,7 +256,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		
  		Composite compCorrelation = new Composite(correlationSummaryGroup, SWT.NONE);
  		compCorrelation.setLayout(new GridLayout(1, false));
- 		
+
  		initCardinalityGroup(compCorrelation, SWT.NONE);
  		
  		columnCorrelationList = new List(compCorrelation, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);

@@ -60,12 +60,17 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 			(new Runnable() {
 				public void run() {
 					Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
-					if(mostRecentCommand != null 
-							&& (mostRecentCommand instanceof AbstractSpagoBIModelEditCommand || mostRecentCommand instanceof DeleteCommand)) {
+					if(mostRecentCommand != null){
+						if(mostRecentCommand instanceof AbstractSpagoBIModelEditCommand || mostRecentCommand instanceof DeleteCommand) {
+							editor.firePropertyChange(IEditorPart.PROP_DIRTY);
+							validateCommandResults(mostRecentCommand, false);  
+							editor.refreshViewer();
+							editor.setSelectionToViewer(mostRecentCommand.getAffectedObjects());
+						}
+					} else {
+						// TODO: this is a strange behaviour. try to fix it!
 						editor.firePropertyChange(IEditorPart.PROP_DIRTY);
-						validateCommandResults(mostRecentCommand, false);  
 						editor.refreshViewer();
-						editor.setSelectionToViewer(mostRecentCommand.getAffectedObjects());
 					}
 					
 					if (editor.getPropertySheetPage() != null && !editor.getPropertySheetPage().getControl().isDisposed()) {

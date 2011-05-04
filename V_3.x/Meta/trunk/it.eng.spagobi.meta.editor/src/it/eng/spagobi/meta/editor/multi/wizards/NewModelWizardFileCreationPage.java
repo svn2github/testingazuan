@@ -77,6 +77,11 @@ public class NewModelWizardFileCreationPage extends WizardNewFileCreationPage {
 		 return modelNameFieldInput.getText();
 	 }
 	 
+	 @Override
+	protected void initialPopulateContainerNameField() {
+		// TODO Auto-generated method stub
+		super.initialPopulateContainerNameField();
+	}
 
 //	private Text modelNameFieldInput;
 //	private StringButtonFieldEditor modelFileNameFieldInput;

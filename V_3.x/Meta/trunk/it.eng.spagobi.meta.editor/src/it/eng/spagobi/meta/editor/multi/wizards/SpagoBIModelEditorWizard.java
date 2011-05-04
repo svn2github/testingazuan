@@ -17,13 +17,10 @@ import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.filter.PhysicalTableFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalModelFactory;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.io.File;
@@ -39,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
@@ -48,7 +46,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -96,6 +93,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 	protected String modelName = null;
 	protected Connection connection = null;
 	protected List<PhysicalTable> selectedBusinessTable = null;
+	protected IPath containerFullPath = null;
 	
 	/**
 	 * The supported extensions for created files.
@@ -494,6 +492,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 		// Create a page, set the title, and the initial model file name.
 		//
 		newModelWizardFileCreationPage = new NewModelWizardFileCreationPage(selection);
+		if(containerFullPath != null)newModelWizardFileCreationPage.setContainerFullPath(containerFullPath);
 		selectionConnectionPage = new SelectionConnectionPage("Select Connection");
 		physicalTableSelectionPage = new PhysicalTableSelectionPage("Select Physical Tables");
 		businessTableSelectionPage = new BusinessTableSelectionPage("Select Business Tables");
@@ -505,4 +504,15 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 		physicalTableSelectionPage.setBusinessTableSelectionPageRef(businessTableSelectionPage);
 
 	}
+
+	public IPath getContainerFullPath() {
+		return containerFullPath;
+	}
+
+	public void setContainerFullPath(IPath containerFullPath) {
+		this.containerFullPath = containerFullPath;
+	}
+		
+		
+		
 }

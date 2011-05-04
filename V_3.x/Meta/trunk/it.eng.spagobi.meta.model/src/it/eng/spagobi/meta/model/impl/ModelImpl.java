@@ -279,7 +279,7 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 		return super.eIsSet(featureID);
 	}
 
-	@Override
+
 	public ModelPropertyCategory getPropertyCategory(String name) {
 		
 		for(int i = 0; i < getPropertyCategories().size(); i++) {

@@ -46,8 +46,16 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	
 		
 	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
+		this(property, adapterFactory, resourceLocator, null);
+	}
+	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator, Object image) {
 		this.property = property;
+		this.staticImage = image;
 		this.itemDelegator = new ItemDelegator(adapterFactory, resourceLocator);
+	}
+	
+	public void setImage(Object image) {
+		this.staticImage = image;
 	}
 
 	@Override

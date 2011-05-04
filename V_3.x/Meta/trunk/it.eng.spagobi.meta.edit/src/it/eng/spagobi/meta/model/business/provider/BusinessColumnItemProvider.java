@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
@@ -62,9 +64,6 @@ public class BusinessColumnItemProvider
 		IUpdateableItemText {
 	/**
 	 * This constructs an instance from a factory and a notifier.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public BusinessColumnItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
@@ -72,55 +71,54 @@ public class BusinessColumnItemProvider
 
 	/**
 	 * This returns the property descriptors for the adapted class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 */
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addPhysicalColumnPropertyDescriptor(object);
 			addTablePropertyDescriptor(object);
+			addPhysicalColumnPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
 	 * This adds a property descriptor for the Physical Column feature.
-	 * @generated
 	 */
 	protected void addPhysicalColumnPropertyDescriptor(Object object) {
+		IResourceLocator RL = SpagoBIMetaEditPlugin.getInstance().getResourceLocator();
+		
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BusinessColumn_physicalColumn_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessColumn_physicalColumn_feature", "_UI_BusinessColumn_type"),
+				 RL.getString("model.business.column.feature.physicalcolumn.name"),
+				 RL.getString("model.property.descriptor", new Object[]{"model.business.column.feature.physicalcolumn.longname", "model.business.column.type"}),
 				 BusinessModelPackage.Literals.BUSINESS_COLUMN__PHYSICAL_COLUMN,
-				 true,
+				 false,
 				 false,
 				 true,
 				 null,
-				 null,
+				 "Physical References",
 				 null));
 	}
+	
 
 	/**
 	 * This adds a property descriptor for the Table feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected void addTablePropertyDescriptor(Object object) {
+		IResourceLocator RL = SpagoBIMetaEditPlugin.getInstance().getResourceLocator();
+		
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_BusinessColumn_table_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_BusinessColumn_table_feature", "_UI_BusinessColumn_type"),
+				 RL.getString("model.business.column.feature.businesstable.name"),
+				 RL.getString("model.property.descriptor", new Object[]{"model.business.column.feature.businesstable.longname", "model.business.column.type"}),
 				 BusinessModelPackage.Literals.BUSINESS_COLUMN__TABLE,
-				 true,
+				 false,
 				 false,
 				 true,
 				 null,

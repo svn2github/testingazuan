@@ -24,11 +24,13 @@ package it.eng.spagobi.commons.resource;
 import java.io.File;
 import java.net.URL;
 
+import org.eclipse.emf.common.util.ResourceLocator;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public interface IResourceLocator {
+public interface IResourceLocator extends ResourceLocator {
 	/** 
 	   * Returns the URL from which all resources are based.
 	   * @return the URL from which all resources are based.

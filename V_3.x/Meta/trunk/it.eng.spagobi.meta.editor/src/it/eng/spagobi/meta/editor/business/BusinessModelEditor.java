@@ -24,6 +24,8 @@ package it.eng.spagobi.meta.editor.business;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
+import it.eng.spagobi.meta.editor.business.properties.CustomizedPropertySheetPage;
+import it.eng.spagobi.meta.editor.business.properties.CustomizedPropertySheetSorter;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.model.Model;
@@ -105,6 +107,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetSorter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -543,24 +546,12 @@ public class BusinessModelEditor
 	 */
 	public PropertySheetPage getPropertySheetPage() {
 		if (propertySheetPage == null) {
-			propertySheetPage =
-				new ExtendedPropertySheetPage(editingDomain) {
-					@Override
-					public void setSelectionToViewer(List<?> selection) {
-						BusinessModelEditor.this.setSelectionToViewer(selection);
-						BusinessModelEditor.this.setFocus();
-					}
-
-					@Override
-					public void setActionBars(IActionBars actionBars) {
-						super.setActionBars(actionBars);
-						getActionBarContributor().shareGlobalActions(this, actionBars);
-					}
-				};
+			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
+			propertySheetPage = new CustomizedPropertySheetPage(this, propertySheetSorter);
 			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
 			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
-
+	
 		return propertySheetPage;
 	}
 

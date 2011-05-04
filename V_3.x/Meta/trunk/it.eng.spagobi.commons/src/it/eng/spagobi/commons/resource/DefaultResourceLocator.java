@@ -34,6 +34,7 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.ResourceLocator;
 import org.osgi.framework.Bundle;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -237,9 +238,25 @@ public class DefaultResourceLocator implements IResourceLocator {
 		String label = labels.getProperty(key);
 		label = (label != null)? label: key;
 		MessageFormat form = new MessageFormat(label);
-		label = form.format(substitutions);
+		Object[] translatedSubstitutions = new Object[substitutions.length];
+		for(int i = 0; i < substitutions.length; i ++) {
+			translatedSubstitutions[i] = getString((String)substitutions[i]);
+		}
+		
+		label = form.format(translatedSubstitutions);
 	
 		return label;
+	}
+
+	@Override
+	public String getString(String key, boolean translate) {
+		return getString(key);
+	}
+
+	@Override
+	public String getString(String key, Object[] substitutions,
+			boolean translate) {
+		return getString(key, substitutions);
 	}
 
 }

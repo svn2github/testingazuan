@@ -177,10 +177,10 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	        // This is not a custom property readed from xml file
 	        // *********************************************************************
 
-	        ModelPropertyCategory physicalReferenceCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Physical Reference");
+	        ModelPropertyCategory physicalReferenceCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Physical References");
 			if(physicalReferenceCategory == null) {
 				physicalReferenceCategory = FACTORY.createModelPropertyCategory();
-				physicalReferenceCategory.setName("Physical Reference");
+				physicalReferenceCategory.setName("Physical References");
 				physicalReferenceCategory.setDescription("The reference to the original physical object");
 				o.getTable().getModel().getParentModel().getPropertyCategories().add(physicalReferenceCategory);
 			}
@@ -192,7 +192,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 			if(propertyType == null) {
 				propertyType = FACTORY.createModelPropertyType();
 				propertyType.setId(COLUMN_PHYSICAL_TABLE);
-				propertyType.setName("Physical Table");
+				propertyType.setName("Physical table");
 				propertyType.setDescription("The original physical table of this column");
 				propertyType.setCategory(physicalReferenceCategory);
 				propertyType.setDefaultValue(o.getPhysicalColumn().getTable().getName());

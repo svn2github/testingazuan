@@ -75,7 +75,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addIdPropertyDescriptor(object);
+			//addIdPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
 			//Added
@@ -90,9 +90,21 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 		while (it.hasNext()) {
 			String key = it.next();
 			ModelProperty property = modelObject.getProperties().get(key);
-			itemPropertyDescriptors.add(new CustomItemPropertyDescriptor(
-					property, ((ComposeableAdapterFactory) adapterFactory)
-							.getRootAdapterFactory(), getResourceLocator()));
+			
+			
+			
+			
+			CustomItemPropertyDescriptor propertyDescriptor = new CustomItemPropertyDescriptor(
+					property, 
+					((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), 
+					getResourceLocator());
+			
+			String propertyId = property.getPropertyType().getId();
+			if(propertyId.equals("physical.physicaltable")) {
+				propertyDescriptor.setImage( getResourceLocator().getImage("full/obj16/PhysicalTable") );
+			}
+			
+			itemPropertyDescriptors.add(propertyDescriptor);
 		}
 	}
 	

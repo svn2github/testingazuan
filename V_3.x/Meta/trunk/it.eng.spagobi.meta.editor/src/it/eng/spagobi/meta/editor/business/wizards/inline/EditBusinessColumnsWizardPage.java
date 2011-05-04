@@ -89,13 +89,24 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		glC.numColumns = 1;
 		compCenter.setLayout(glC);
 		Button bAddField = new Button(compCenter,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Table Column");
+		bAddField.setToolTipText("Add column as a Business Class Column");
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		Button bRemoveField = new Button(compCenter,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove column from Business Table");
+		bRemoveField.setToolTipText("Remove column from Business Class");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
+	    
+	    Button bAddAllField = new Button(compCenter,SWT.FLAT);
+		bAddAllField.setToolTipText("Add all column as a Business Class Column");
+		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
+	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
+	    
+		Button bRemoveAllField = new Button(compCenter,SWT.FLAT);
+		bRemoveAllField.setToolTipText("Remove all column from Business Class");
+		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
+	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
+	    
 		
 		//Right table -------------------------------
 		Composite compRight = new Composite(columnsGroup, SWT.NONE);
@@ -180,6 +191,48 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 
 			}
 		}); 	
+ 		
+		//adding listener to Add All button		
+ 		bAddAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem tiSel = null;
+				TableItem[] columnToAdd = null;
+				columnToAdd = columns.getItems();
+				
+				//add Fields to Business Class panel
+				for (int i=0; i< columnToAdd.length; i++){
+					TableItem ti = new TableItem(fields, 0);
+					ti.setText(columnToAdd[i].getText());
+					ti.setData(columnToAdd[i].getData());											
+				}
+				//Remove columns from Physical Table panel
+				columns.removeAll();
+				
+				checkPageComplete();
+			}
+		});
+ 		
+		//adding listener to Remove All button		
+ 		bRemoveAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem tiSel = null;
+				TableItem[] fieldsToRemove = null;
+				fieldsToRemove = fields.getItems();
+				
+				//add Fields to Physical Table panel
+				for (int i=0; i< fieldsToRemove.length; i++){
+					TableItem ti = new TableItem(columns, 0);
+					ti.setText(fieldsToRemove[i].getText());
+					ti.setData(fieldsToRemove[i].getData());											
+				}
+				//Remove columns from Business Class panel 
+				fields.removeAll();
+				
+				checkPageComplete();
+			}
+		}); 
  		
  		//populate tables
  		addTableItems();

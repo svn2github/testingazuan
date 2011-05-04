@@ -256,7 +256,6 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
  		bAddAllField.addListener(SWT.Selection, new Listener() {		
 			@Override
 			public void handleEvent(Event event) {
-				TableItem tiSel = null;
 				TableItem[] columnToAdd = null;
 				columnToAdd = columns.getItems();
 				
@@ -277,7 +276,6 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
  		bRemoveAllField.addListener(SWT.Selection, new Listener() {		
 			@Override
 			public void handleEvent(Event event) {
-				TableItem tiSel = null;
 				TableItem[] fieldsToRemove = null;
 				fieldsToRemove = fields.getItems();
 				

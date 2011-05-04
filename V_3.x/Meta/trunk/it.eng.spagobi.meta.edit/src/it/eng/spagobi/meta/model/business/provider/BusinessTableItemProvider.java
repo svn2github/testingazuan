@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -40,6 +41,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.IUpdateableItemText;
 
 
 /**
@@ -55,7 +57,8 @@ public class BusinessTableItemProvider
 		IStructuredItemContentProvider,
 		ITreeItemContentProvider,
 		IItemLabelProvider,
-		IItemPropertySource {
+		IItemPropertySource,
+		IUpdateableItemText {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -277,6 +280,12 @@ public class BusinessTableItemProvider
 		    }
 		 
 		 return result;
+	}
+
+	@Override
+	public void setText(Object object, String text) {
+		ModelObject modelObject = (ModelObject)object;
+		modelObject.setName(text);
 	}
 
 }

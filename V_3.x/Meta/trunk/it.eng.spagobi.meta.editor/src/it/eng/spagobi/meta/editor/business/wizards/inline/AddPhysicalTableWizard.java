@@ -60,14 +60,22 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 
 	@Override
 	public void addPages() {
-		pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView, selectedPhysicalTableName);
-		addPage(pageOne);
-		pageTwo = new AddPhysicalTableSourceSelectionPage("Select Source Physical Table to Join",owner);
-		addPage(pageTwo);
+		if(selectedPhysicalTableName == null){
+			pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView, selectedPhysicalTableName);
+			addPage(pageOne);	
+		}
+		if (isBusinessView){
+			pageTwo = new AddPhysicalTableSourceSelectionPage("Select Source Physical Table to Join",owner);
+			addPage(pageTwo);
+		}
 		pageThree = new AddBusinessViewInnerJoinPage("Select join relationship",owner, selectedPhysicalTableName);
 		addPage(pageThree);
-		pageOne.setPageThreeRef(pageThree);
-		pageTwo.setPageThreeRef(pageThree);
+		if (pageOne != null){
+			pageOne.setPageThreeRef(pageThree);	
+		}
+		if (pageTwo != null){
+			pageTwo.setPageThreeRef(pageThree);	
+		}
 	}	
 	
 	@Override

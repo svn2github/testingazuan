@@ -141,20 +141,6 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 			}
 		}
 
-		/*
-		EList<BusinessColumn> businessColumns = ((BusinessView)owner).getColumns();
-		for (BusinessColumn businessColumn : businessColumns){
-			if (businessColumn.getPhysicalColumn().getTable() == selectedPhysicalTable ){
-				listPhysicalTableColumns.add(businessColumn.getName());
-			}
-		}
-		//warning the user: there are no columns imported from the selected physical table
-		if (listPhysicalTableColumns.getItemCount() == 0){
-			this.setErrorMessage("Attention, you haven't imported columns from this physical table yet. Please select another Physical Table or add columns to you Business Table");
-		}
-		else 
-			this.setErrorMessage(null);
-		*/
 		EList<PhysicalColumn> physicalColumns = selectedPhysicalTable.getColumns();
 		for (PhysicalColumn physicalColumn : physicalColumns){
 			listPhysicalTableColumns.add(physicalColumn.getName());

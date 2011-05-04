@@ -4,8 +4,10 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.editor.multi.wizards.SpagoBIModelEditorWizard;
 
-import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -14,7 +16,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.jface.wizard.WizardDialog;
 
 
 
@@ -31,9 +32,23 @@ public class NewSpagoBIModelAction  implements IObjectActionDelegate {
 		logger.debug("IN");
 		SpagoBIModelEditorWizard sbindw = new SpagoBIModelEditorWizard();
 		IStructuredSelection sel=(IStructuredSelection)selection;
+		IFolder folderSelected = null;
+		Object objSel = sel.getFirstElement();
+		// selection is limited to folder
+		if(objSel instanceof IFolder){
+			folderSelected = (IFolder)objSel;
+		}
+		else{
+			logger.error(" Not a folder selected: this should not be allowed");
+			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+					"Not a folder", "You must select a folder in wich to create the Meta Model");			
+			return;
+		}
 
+		IPath pathSelected = folderSelected.getFullPath();
 		// init wizard
 		sbindw.init(PlatformUI.getWorkbench(), sel);
+		sbindw.setContainerFullPath(pathSelected);
 		// Create the wizard dialog
 		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),sbindw);
 		// Open the wizard dialog

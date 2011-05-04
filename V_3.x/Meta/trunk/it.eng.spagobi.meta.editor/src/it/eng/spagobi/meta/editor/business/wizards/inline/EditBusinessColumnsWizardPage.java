@@ -88,6 +88,11 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		GridLayout glC = new GridLayout();
 		glC.numColumns = 1;
 		compCenter.setLayout(glC);
+	    Button bAddAllField = new Button(compCenter,SWT.FLAT);
+		bAddAllField.setToolTipText("Add all column as a Business Class Column");
+		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
+	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
+	    
 		Button bAddField = new Button(compCenter,SWT.FLAT);
 		bAddField.setToolTipText("Add column as a Business Class Column");
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
@@ -96,11 +101,6 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		bRemoveField.setToolTipText("Remove column from Business Class");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
-	    
-	    Button bAddAllField = new Button(compCenter,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all column as a Business Class Column");
-		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
-	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		Button bRemoveAllField = new Button(compCenter,SWT.FLAT);
 		bRemoveAllField.setToolTipText("Remove all column from Business Class");

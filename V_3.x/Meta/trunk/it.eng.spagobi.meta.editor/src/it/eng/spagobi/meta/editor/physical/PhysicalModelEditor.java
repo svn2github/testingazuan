@@ -13,6 +13,9 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDragListener;
+import it.eng.spagobi.meta.editor.properties.CustomizedAdapterFactoryContentProvider;
+import it.eng.spagobi.meta.editor.properties.CustomizedPhysicalPropertySheetPage;
+import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetSorter;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
@@ -1389,21 +1392,25 @@ public class PhysicalModelEditor
 	 */
 	public IPropertySheetPage getPropertySheetPage() {
 		if (propertySheetPage == null) {
-			propertySheetPage =
-				new ExtendedPropertySheetPage(editingDomain) {
-					@Override
-					public void setSelectionToViewer(List<?> selection) {
-						PhysicalModelEditor.this.setSelectionToViewer(selection);
-						PhysicalModelEditor.this.setFocus();
-					}
-
-					@Override
-					public void setActionBars(IActionBars actionBars) {
-						super.setActionBars(actionBars);
-						getActionBarContributor().shareGlobalActions(this, actionBars);
-					}
-				};
-			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+//			propertySheetPage =
+//				new ExtendedPropertySheetPage(editingDomain) {
+//					@Override
+//					public void setSelectionToViewer(List<?> selection) {
+//						PhysicalModelEditor.this.setSelectionToViewer(selection);
+//						PhysicalModelEditor.this.setFocus();
+//					}
+//
+//					@Override
+//					public void setActionBars(IActionBars actionBars) {
+//						super.setActionBars(actionBars);
+//						getActionBarContributor().shareGlobalActions(this, actionBars);
+//					}
+//				};
+//			propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
+			propertySheetPage = new CustomizedPhysicalPropertySheetPage(this, propertySheetSorter);
+			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
+			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 
 		return propertySheetPage;

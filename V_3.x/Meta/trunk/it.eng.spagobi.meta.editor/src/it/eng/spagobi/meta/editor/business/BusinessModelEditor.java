@@ -26,7 +26,8 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.editor.properties.CustomizedAdapterFactoryContentProvider;
-import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetPage;
+import it.eng.spagobi.meta.editor.properties.CustomizedBusinessPropertySheetPage;
+import it.eng.spagobi.meta.editor.properties.CustomizedPhysicalPropertySheetPage;
 import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetSorter;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
@@ -547,7 +548,7 @@ public class BusinessModelEditor
 	public PropertySheetPage getPropertySheetPage() {
 		if (propertySheetPage == null) {
 			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
-			propertySheetPage = new CustomizedPropertySheetPage(this, propertySheetSorter);
+			propertySheetPage = new CustomizedBusinessPropertySheetPage(this, propertySheetSorter);
 			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
 			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}

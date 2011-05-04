@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.properties;
 
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
 
 import java.util.List;
 
@@ -34,25 +35,25 @@ import org.eclipse.ui.views.properties.PropertySheetSorter;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CustomizedPropertySheetPage extends ExtendedPropertySheetPage {
-	BusinessModelEditor businessEditor;
+public class CustomizedPhysicalPropertySheetPage extends ExtendedPropertySheetPage {
+	PhysicalModelEditor physicalEditor;
 	
-	public CustomizedPropertySheetPage(BusinessModelEditor businessEditor,
+	public CustomizedPhysicalPropertySheetPage(PhysicalModelEditor businessEditor,
 			PropertySheetSorter propertySheetSorter) {
 		super((AdapterFactoryEditingDomain)businessEditor.getEditingDomain());
-		this.businessEditor = businessEditor;
+		this.physicalEditor = businessEditor;
 		this.setSorter(propertySheetSorter);
 	}
 	
 	@Override
 	public void setSelectionToViewer(List<?> selection) {
-		businessEditor.setSelectionToViewer(selection);
-		businessEditor.setFocus();
+		physicalEditor.setSelectionToViewer(selection);
+		physicalEditor.setFocus();
 	}
 
 	@Override
 	public void setActionBars(IActionBars actionBars) {
 		super.setActionBars(actionBars);
-		businessEditor.getActionBarContributor().shareGlobalActions(this, actionBars);
+		physicalEditor.getActionBarContributor().shareGlobalActions(this, actionBars);
 	}
 }

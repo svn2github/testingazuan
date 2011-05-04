@@ -103,6 +103,10 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 			String propertyId = property.getPropertyType().getId();
 			if(propertyId.equals("physical.physicaltable")) {
 				propertyDescriptor.setImage( getResourceLocator().getImage("full/obj16/PhysicalTable") );
+			} else if (propertyId.equals("structural.visible")){
+				propertyDescriptor.setImage( ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE );
+			} else {
+				propertyDescriptor.setImage( ItemPropertyDescriptor.GENERIC_VALUE_IMAGE );
 			}
 			
 			itemPropertyDescriptors.add(propertyDescriptor);

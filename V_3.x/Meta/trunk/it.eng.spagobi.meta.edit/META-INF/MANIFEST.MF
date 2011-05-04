@@ -8,7 +8,8 @@ Bundle-ClassPath: .,
 Bundle-Activator: it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin$Implementation
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: it.eng.spagobi.meta.model.analytical.provider,
+Export-Package: it.eng.spagobi.meta.edit.properties,
+ it.eng.spagobi.meta.model.analytical.provider,
  it.eng.spagobi.meta.model.behavioural.provider,
  it.eng.spagobi.meta.model.business.commands,
  it.eng.spagobi.meta.model.business.commands.edit,

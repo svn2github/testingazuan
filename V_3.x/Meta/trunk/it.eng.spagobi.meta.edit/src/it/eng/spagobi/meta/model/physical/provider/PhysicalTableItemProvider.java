@@ -70,7 +70,7 @@ public class PhysicalTableItemProvider
 
 			addCommentPropertyDescriptor(object);
 			addTypePropertyDescriptor(object);
-			addColumnsPropertyDescriptor(object);
+			//addColumnsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -89,7 +89,7 @@ public class PhysicalTableItemProvider
 				 getString("_UI_PhysicalTable_comment_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_comment_feature", "_UI_PhysicalTable_type"),
 				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__COMMENT,
-				 true,
+				 false,
 				 false,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
@@ -111,8 +111,8 @@ public class PhysicalTableItemProvider
 				 getString("_UI_PhysicalTable_type_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_type_feature", "_UI_PhysicalTable_type"),
 				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__TYPE,
-				 true,
 				 false,
+				 true,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
 				 null,
@@ -133,7 +133,7 @@ public class PhysicalTableItemProvider
 				 getString("_UI_PhysicalTable_columns_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_PhysicalTable_columns_feature", "_UI_PhysicalTable_type"),
 				 PhysicalModelPackage.Literals.PHYSICAL_TABLE__COLUMNS,
-				 true,
+				 false,
 				 false,
 				 true,
 				 null,

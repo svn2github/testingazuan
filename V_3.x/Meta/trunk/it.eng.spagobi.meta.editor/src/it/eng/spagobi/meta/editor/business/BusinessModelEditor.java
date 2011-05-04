@@ -23,11 +23,11 @@ package it.eng.spagobi.meta.editor.business;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.editor.business.properties.CustomizedAdapterFactoryContentProvider;
-import it.eng.spagobi.meta.editor.business.properties.CustomizedPropertySheetPage;
-import it.eng.spagobi.meta.editor.business.properties.CustomizedPropertySheetSorter;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
+import it.eng.spagobi.meta.editor.properties.CustomizedAdapterFactoryContentProvider;
+import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetPage;
+import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetSorter;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;

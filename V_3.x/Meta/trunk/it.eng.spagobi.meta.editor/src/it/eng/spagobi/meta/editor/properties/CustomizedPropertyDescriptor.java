@@ -19,9 +19,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.editor.business.properties;
+package it.eng.spagobi.meta.editor.properties;
 
-import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
+import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
 
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;

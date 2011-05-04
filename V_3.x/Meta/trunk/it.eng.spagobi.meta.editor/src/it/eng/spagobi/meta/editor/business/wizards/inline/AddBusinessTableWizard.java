@@ -61,14 +61,20 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public void addPages() {
-		pageOne = new AddBusinessTableWizardPagePhysicalTableSelection("Create Business Table step one", owner, physicalTable);
-		addPage(pageOne);
+		if (physicalTable == null){
+			pageOne = new AddBusinessTableWizardPagePhysicalTableSelection("Create Business Table step one", owner, physicalTable);
+			addPage(pageOne);
+		}
 		pageTwo = new AddBusinessTableWizardPageColumnSelection("Create Business Table step two", owner, pageOne, physicalTable);
 		addPage(pageTwo);
-		pageOne.setColumnSelectionPage(pageTwo);
+		if (pageOne != null){
+			pageOne.setColumnSelectionPage(pageTwo);
+		}
 		pageThree = new AddBusinessTableWizardPropertiesPage("Create Business Table step three", owner, pageOne, physicalTable);
 		addPage(pageThree);
-		pageOne.setPropertiesPage(pageThree);
+		if (pageOne != null){
+			pageOne.setPropertiesPage(pageThree);
+		}
 	}
 
 	@Override
@@ -98,10 +104,12 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 				return new CommandParameter(owner, null, businessTableDescriptor, new ArrayList<Object>());
 			}
 		}
-		if (pageOne.isPageComplete()){
-			String tableName = pageOne.getTableSelected();
-			//Create Business Table from a Physical Table
-			return new CommandParameter(owner, null, tableName, new ArrayList<Object>());
+		if (pageOne != null){
+			if (pageOne.isPageComplete()){
+				String tableName = pageOne.getTableSelected();
+				//Create Business Table from a Physical Table
+				return new CommandParameter(owner, null, tableName, new ArrayList<Object>());
+			}
 		}
 		return null;
 	}
@@ -114,8 +122,10 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 				return true;
 			}
 		}
-		if (pageOne.isPageComplete()){
-			return true;
+		if (pageOne != null){
+			if (pageOne.isPageComplete()){
+				return true;
+			}
 		}
 		return false;
 	}

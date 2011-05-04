@@ -172,7 +172,6 @@ public class AddBusinessTableWizardPropertiesPage extends WizardPage {
 		if (textName.getText().length() > 0){
 			setErrorMessage(null);
 			setMessage("Please set the properties of your Business Table");
-			this.
 			setPageComplete(true);
 		} else {			
 			setErrorMessage("Name already in use or not valid");

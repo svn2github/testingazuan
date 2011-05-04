@@ -108,7 +108,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
  		//workaround: if a PhysicalTable is passed, use It to populate widgets
  		if (physicalTable != null){
  			addTableItems(physicalTable);
- 			pageOneRef.checkPageComplete();
+ 			//pageOneRef.checkPageComplete();
  		}
 	}
 
@@ -332,7 +332,22 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 	
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
-		if (pageOneRef.isColumnSelection()){
+		if (pageOneRef != null){
+			if (pageOneRef.isColumnSelection()){
+				if(fields.getItemCount() > 0){
+					setColumnSelected(true);				
+					//store the Physical Columns selected
+					setErrorMessage(null);
+					setColumnsToImport(fields.getItems());
+					setPageComplete(true);
+				}
+				else{			
+					setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+					setPageComplete(false);
+				}
+			}
+		}
+		else {
 			if(fields.getItemCount() > 0){
 				setColumnSelected(true);				
 				//store the Physical Columns selected
@@ -344,9 +359,10 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 				setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
 				setPageComplete(false);
 			}
-		}
-		else {
-			setPageComplete(true);
+			
+//			setPageComplete(true);
+//			setColumnSelected(true);
+//			setColumnsToImport(fields.getItems());
 		}
 	}
 	

@@ -27,6 +27,5 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers;
  */
 public class JpaProperties {
 	public static final String MODEL_PACKAGE = "structural.package";
-	//public static final String COLUMN_AGGTYPE = "structural.aggtype";
 	public static final String COLUMN_DATATYPE = "structural.datatype";
 }

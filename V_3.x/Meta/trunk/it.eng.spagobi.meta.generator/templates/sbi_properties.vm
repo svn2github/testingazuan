@@ -1,10 +1,14 @@
 #foreach ($jpaTable in $jpaTables)
 ${jpaTable.uniqueName}.label = $jpaTable.name
 ${jpaTable.uniqueName}.tooltip = $jpaTable.description
+${jpaTable.uniqueName}.visible = $jpaTable.getAttribute("structural.visible")
+${jpaTable.uniqueName}.type = $jpaTable.getAttribute("structural.type")
 
 #foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
 ${jpaColumn.uniqueName}.label = $jpaColumn.name
 ${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
+${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
+${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.type")
 #end
 
 

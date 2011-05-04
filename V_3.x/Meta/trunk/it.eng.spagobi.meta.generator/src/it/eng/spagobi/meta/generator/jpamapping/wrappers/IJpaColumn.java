@@ -80,6 +80,11 @@ public interface IJpaColumn {
 	 */
 	public abstract String getPropertyNameSetter();
 	
+	/**
+	 * @return the value of the specified column attribute
+	 */
+	public String getAttribute(String name);
+	
 	
 	/**
 	 * @TODO da verificare 

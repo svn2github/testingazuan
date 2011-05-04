@@ -149,4 +149,9 @@ public interface IJpaTable {
 	 * @return all the relationships defined upon this table
 	 */
 	List<IJpaRelationship> getRelationships();
+	
+	/**
+	 * @return the value of the specified table attribute
+	 */
+	public String getAttribute(String name);
 }

@@ -304,6 +304,12 @@ public class JpaColumn implements IJpaColumn {
 		return "set"+StringUtils.initUpper(getPropertyName());
 	}
 
+	@Override
+	public String getAttribute(String name) {
+		ModelProperty property = businessColumn.getProperties().get(name);
+		return property != null? property.getValue(): "";
+	}
+
 
 	
 

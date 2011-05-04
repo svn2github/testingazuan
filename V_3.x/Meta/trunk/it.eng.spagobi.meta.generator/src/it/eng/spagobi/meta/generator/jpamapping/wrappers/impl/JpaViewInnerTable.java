@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -263,6 +264,12 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	@Override
 	public String getSqlName() {
 		return physicalTable.getName();
+	}
+	
+	@Override
+	public String getAttribute(String name) {
+		ModelProperty property = businessView.getProperties().get(name);
+		return property != null? property.getValue(): "";
 	}
 
 

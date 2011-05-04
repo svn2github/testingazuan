@@ -58,11 +58,15 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 	}
 	
 	public void addPages() {
-		pageOne = new AddBusinessIdentifierWizardPageBusinessTableSelection("Add Business Identifier page one", defaultTable, businessColumnSet);
-		addPage(pageOne);
+		if (defaultTable == null){
+			pageOne = new AddBusinessIdentifierWizardPageBusinessTableSelection("Add Business Identifier page one", defaultTable, businessColumnSet);
+			addPage(pageOne);
+		}
 		pageTwo = new AddBusinessIdentifierWizardPageColumnSelection("Add Business Identifier page two", defaultTable, businessColumnSet);
 		addPage(pageTwo);	
-		pageOne.setPageTwoRef(pageTwo);
+		if (pageOne != null){
+			pageOne.setPageTwoRef(pageTwo);
+		}
 	}
 
 	@Override

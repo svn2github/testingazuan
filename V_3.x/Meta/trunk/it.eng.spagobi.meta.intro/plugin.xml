@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+<!--
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="it.eng.spagobi.meta.intro.Application">
+         </run>
+      </application>
+   </extension>
+   
+   <extension
+         id="org.eclipse.platform.ide"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="it.eng.spagobi.meta.intro.Application"
+            name="Meta Product">
+         <property
+               name="windowImages"
+               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+         </property>
+      </product>
+   </extension>
+-->
+
+  <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="it.eng.spagobi.studio.core.welcome.intro">
+      </intro>
+      <introProductBinding
+            introId="it.eng.spagobi.studio.core.welcome.intro"
+            productId="org.eclipse.platform.ide">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            id="it.eng.spagobi.studio.core.welcome.configId"
+            introId="it.eng.spagobi.studio.core.welcome.intro"
+            content="introContent.xml"
+            >
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+
+
+</plugin>

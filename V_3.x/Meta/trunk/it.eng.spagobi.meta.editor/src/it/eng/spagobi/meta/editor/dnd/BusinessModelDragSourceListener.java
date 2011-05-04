@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.dnd;
 
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 
 import org.eclipse.emf.ecore.EObject;
@@ -45,7 +46,7 @@ public class BusinessModelDragSourceListener implements DragSourceListener {
 	@Override
 	public void dragStart(DragSourceEvent event) {
 		StructuredSelection selection = (StructuredSelection)viewer.getSelection();
-		if (selection.getFirstElement() instanceof BusinessColumnSet){
+		if (selection.getFirstElement() instanceof BusinessColumn){
 			event.doit = true;
 		} else {
 			event.doit = false;

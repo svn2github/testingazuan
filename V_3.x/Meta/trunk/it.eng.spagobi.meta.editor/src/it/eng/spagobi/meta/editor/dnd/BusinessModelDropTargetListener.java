@@ -137,6 +137,30 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 			}
 			return true;
 		}
+		else if (target instanceof BusinessColumn){
+			if (data != null)
+			{
+				StructuredSelection selection = (StructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
+				BusinessColumn businessColumn = (BusinessColumn)selection.getFirstElement();
+				BusinessColumnSet businessColumnSet = businessColumn.getTable();
+				
+				if (model instanceof BusinessModel){
+					BusinessModel businessModel = (BusinessModel)model;
+					if(nextTo != null)
+					{
+						for (int i = 0; i < businessColumnSet.getColumns().size(); i++)
+						{
+							Object item = businessColumnSet.getColumns().get(i);
+							if(item == nextTo)
+							{
+								businessColumnSet.getColumns().move(i, businessColumn);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 	

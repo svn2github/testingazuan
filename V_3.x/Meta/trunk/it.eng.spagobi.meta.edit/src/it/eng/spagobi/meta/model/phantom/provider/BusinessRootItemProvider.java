@@ -1,5 +1,6 @@
 package it.eng.spagobi.meta.model.phantom.provider;
 
+import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -8,7 +9,6 @@ import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusiness
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
-import it.eng.spagobi.meta.model.provider.CustomItemPropertyDescriptor;
 
 import java.util.ArrayList;
 import java.util.Collection;

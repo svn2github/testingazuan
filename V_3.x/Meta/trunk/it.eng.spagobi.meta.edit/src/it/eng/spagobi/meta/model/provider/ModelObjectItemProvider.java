@@ -6,6 +6,7 @@
  */
 package it.eng.spagobi.meta.model.provider;
 
+import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;

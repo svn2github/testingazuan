@@ -30,6 +30,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.SortBusinessColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
@@ -154,7 +155,15 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 							Object item = businessColumnSet.getColumns().get(i);
 							if(item == nextTo)
 							{
-								businessColumnSet.getColumns().move(i, businessColumn);
+								//businessColumnSet.getColumns().move(i, businessColumn);
+								try {
+									CommandParameter commandParameter =  new CommandParameter(businessColumnSet, i, businessColumn, new ArrayList<Object>());
+								    if (editingDomain != null) {	    	
+								    	editingDomain.getCommandStack().execute(new SortBusinessColumnsCommand(editingDomain,commandParameter));
+								    }
+								} catch(Throwable t) {
+									t.printStackTrace();
+								}
 								break;
 							}
 						}

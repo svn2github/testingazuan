@@ -234,7 +234,7 @@ public class BusinessModelEditor
 		resourceToReadOnlyMap = new HashMap<Resource, Boolean>();
 
 		editingDomain = new AdapterFactoryEditingDomain(adapterFactory, commandStack, resourceToReadOnlyMap);
-	
+		
 		logger.trace("OUT");
 	}
 	
@@ -549,7 +549,10 @@ public class BusinessModelEditor
 		if (propertySheetPage == null) {
 			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
 			propertySheetPage = new CustomizedBusinessPropertySheetPage(this, propertySheetSorter);
-			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
+			CustomizedAdapterFactoryContentProvider adapterFactoryContentProvider = new CustomizedAdapterFactoryContentProvider(adapterFactory);
+			adapterFactoryContentProvider.setEditor(this);
+			propertySheetPage.setPropertySourceProvider(adapterFactoryContentProvider);
+			isDirty();
 		}
 	
 		return propertySheetPage;
@@ -562,18 +565,21 @@ public class BusinessModelEditor
 	
 	
 	
-	
+	boolean isDirty;
 	
 	
 	/**
 	 * This is for implementing {@link IEditorPart} and simply tests the command stack.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public boolean isDirty() {
-		return ((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded();
+		boolean b = isDirty || ((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded();
+		return isDirty || ((BasicCommandStack)editingDomain.getCommandStack()).isSaveNeeded();
+	}
+	
+	public void setDirty(boolean isDirty){
+		this.isDirty = isDirty;
 	}
 	
 	/**
@@ -659,6 +665,7 @@ public class BusinessModelEditor
 
 			// Refresh the necessary state.
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
+			setDirty(false);
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		} catch (Throwable t) {
 			Throwable rootCause = t;
@@ -841,6 +848,7 @@ public class BusinessModelEditor
 	public void firePropertyChange(int propertyId) {
 		super.firePropertyChange(propertyId);
 	}
+	
 	/**
 	 * Returns whether the outline view should be presented to the user.
 	 * <!-- begin-user-doc -->

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.properties;
 
+import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
@@ -32,6 +34,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
  */
 public class CustomizedAdapterFactoryContentProvider extends AdapterFactoryContentProvider {
 
+	BusinessModelEditor editor;
+
 	/**
 	 * @param adapterFactory
 	 */
@@ -40,7 +44,13 @@ public class CustomizedAdapterFactoryContentProvider extends AdapterFactoryConte
 	}
 	
 	protected IPropertySource createPropertySource(Object object, IItemPropertySource itemPropertySource) {
-		return new CustomizedPropertySource(object, itemPropertySource);
+		CustomizedPropertySource propertySource = new CustomizedPropertySource(object, itemPropertySource);
+		propertySource.setEditor(editor);
+		return propertySource;
+	}
+
+	public void setEditor(BusinessModelEditor editor) {
+		this.editor = editor;
 	}
 
 }

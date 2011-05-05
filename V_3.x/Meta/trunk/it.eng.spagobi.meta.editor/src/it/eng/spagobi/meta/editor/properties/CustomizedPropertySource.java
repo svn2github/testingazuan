@@ -21,9 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.properties;
 
+import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.PropertySource;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
@@ -32,6 +35,8 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 public class CustomizedPropertySource extends PropertySource {
 
+	BusinessModelEditor editor;
+	
 	/**
 	 * @param object
 	 * @param itemPropertySource
@@ -42,6 +47,18 @@ public class CustomizedPropertySource extends PropertySource {
 	
 	protected IPropertyDescriptor createPropertyDescriptor(IItemPropertyDescriptor itemPropertyDescriptor) {
 		return new CustomizedPropertyDescriptor(object, itemPropertyDescriptor);
+	}
+	
+	public void setPropertyValue(Object propertyId, Object value) {
+		super.setPropertyValue(propertyId, value);
+	    if(editor != null) {
+	    	editor.setDirty(true);
+	    	editor.firePropertyChange(IEditorPart.PROP_DIRTY);
+	    }
+	}
+
+	public void setEditor(BusinessModelEditor editor) {
+		this.editor = editor;
 	}
 
 }

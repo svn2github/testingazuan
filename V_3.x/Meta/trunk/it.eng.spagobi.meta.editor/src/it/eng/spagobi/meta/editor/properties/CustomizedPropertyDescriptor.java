@@ -31,6 +31,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
 
 /**
  * @author cortella
@@ -49,6 +50,7 @@ public class CustomizedPropertyDescriptor extends PropertyDescriptor {
 
 	@Override
 	public CellEditor createPropertyEditor(Composite composite) {
+	
 		if (itemPropertyDescriptor instanceof CustomItemPropertyDescriptor) {
 			CellEditor result;
 			if(itemPropertyDescriptor.getChoiceOfValues(object) != null && itemPropertyDescriptor.getChoiceOfValues(object).size() > 1) {

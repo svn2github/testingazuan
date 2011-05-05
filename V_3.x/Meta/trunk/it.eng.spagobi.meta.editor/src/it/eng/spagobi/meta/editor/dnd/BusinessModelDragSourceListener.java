@@ -46,7 +46,7 @@ public class BusinessModelDragSourceListener implements DragSourceListener {
 	@Override
 	public void dragStart(DragSourceEvent event) {
 		StructuredSelection selection = (StructuredSelection)viewer.getSelection();
-		if (selection.getFirstElement() instanceof BusinessColumn){
+		if (selection.getFirstElement() instanceof BusinessColumn || selection.getFirstElement() instanceof BusinessColumnSet){
 			event.doit = true;
 		} else {
 			event.doit = false;

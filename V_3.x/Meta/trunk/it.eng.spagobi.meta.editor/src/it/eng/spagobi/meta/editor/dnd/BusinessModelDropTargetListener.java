@@ -109,7 +109,7 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 	}
 	
 	/*
-	 * Used for resort of BusinessTable/View with drag&drop
+	 * Used for resort of BusinessTable/View and Business Columns inside BusinessModelEditor with drag&drop
 	 */
 	private boolean dragDropResortBusinessModelEditor(Object data, Object target){
 		//check if current target is a BusinessColumnSet (BusinessTable/BusinessView)
@@ -137,6 +137,7 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 			}
 			return true;
 		}
+		//check if current target is a BusinessColumn 
 		else if (target instanceof BusinessColumn){
 			if (data != null)
 			{

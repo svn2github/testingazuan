@@ -549,7 +549,6 @@ public class BusinessModelEditor
 		if (propertySheetPage == null) {
 			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
 			propertySheetPage = new CustomizedBusinessPropertySheetPage(this, propertySheetSorter);
-			//propertySheetPage.setPropertySourceProvider(new AdapterFactoryContentProvider(adapterFactory));
 			propertySheetPage.setPropertySourceProvider(new CustomizedAdapterFactoryContentProvider(adapterFactory));
 		}
 	

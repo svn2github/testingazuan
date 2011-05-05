@@ -35,6 +35,7 @@ import org.eclipse.ui.views.properties.PropertySheetSorter;
  *
  */
 public class CustomizedBusinessPropertySheetPage extends ExtendedPropertySheetPage {
+	
 	BusinessModelEditor businessEditor;
 	
 	public CustomizedBusinessPropertySheetPage(BusinessModelEditor businessEditor,

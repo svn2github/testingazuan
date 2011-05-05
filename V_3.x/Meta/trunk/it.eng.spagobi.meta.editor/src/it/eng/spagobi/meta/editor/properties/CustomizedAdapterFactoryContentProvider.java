@@ -30,8 +30,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * @author cortella
  *
  */
-public class CustomizedAdapterFactoryContentProvider extends
-		AdapterFactoryContentProvider {
+public class CustomizedAdapterFactoryContentProvider extends AdapterFactoryContentProvider {
 
 	/**
 	 * @param adapterFactory
@@ -40,9 +39,8 @@ public class CustomizedAdapterFactoryContentProvider extends
 		super(adapterFactory);
 	}
 	
-	protected IPropertySource createPropertySource(Object object,
-			 IItemPropertySource itemPropertySource) {
-			            return new CustomizedPropertySource(object, itemPropertySource);
-			}
+	protected IPropertySource createPropertySource(Object object, IItemPropertySource itemPropertySource) {
+		return new CustomizedPropertySource(object, itemPropertySource);
+	}
 
 }

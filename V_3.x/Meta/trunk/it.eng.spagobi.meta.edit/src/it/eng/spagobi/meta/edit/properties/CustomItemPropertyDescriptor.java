@@ -162,7 +162,9 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 
 	@Override
 	public void setPropertyValue(Object object, Object value) {
-		property.setValue("" + value);		
+		if(value != null) {
+			property.setValue("" + value);	
+		}
 	}
 
 

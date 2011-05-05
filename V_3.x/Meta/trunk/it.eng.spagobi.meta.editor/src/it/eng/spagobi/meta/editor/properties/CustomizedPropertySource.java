@@ -36,14 +36,12 @@ public class CustomizedPropertySource extends PropertySource {
 	 * @param object
 	 * @param itemPropertySource
 	 */
-	public CustomizedPropertySource(Object object,
-			IItemPropertySource itemPropertySource) {
+	public CustomizedPropertySource(Object object, IItemPropertySource itemPropertySource) {
 		super(object, itemPropertySource);
 	}
 	
-	protected IPropertyDescriptor createPropertyDescriptor(
-			IItemPropertyDescriptor itemPropertyDescriptor) {
-			      return new CustomizedPropertyDescriptor(object, itemPropertyDescriptor);
-			}
+	protected IPropertyDescriptor createPropertyDescriptor(IItemPropertyDescriptor itemPropertyDescriptor) {
+		return new CustomizedPropertyDescriptor(object, itemPropertyDescriptor);
+	}
 
 }

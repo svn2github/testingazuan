@@ -30,9 +30,9 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.model.SortBusinessTablesCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.model.SortBusinessModelTablesCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.table.SortBusinessColumnsCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.SortBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -134,7 +134,7 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 								try {
 									CommandParameter commandParameter =  new CommandParameter(businessModel, i, businessColumnSet, new ArrayList<Object>());
 								    if (editingDomain != null) {	    	
-								    	editingDomain.getCommandStack().execute(new SortBusinessTablesCommand(editingDomain,commandParameter));
+								    	editingDomain.getCommandStack().execute(new SortBusinessModelTablesCommand(editingDomain,commandParameter));
 								    }
 								} catch(Throwable t) {
 									t.printStackTrace();
@@ -169,7 +169,7 @@ public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 								try {
 									CommandParameter commandParameter =  new CommandParameter(businessColumnSet, i, businessColumn, new ArrayList<Object>());
 								    if (editingDomain != null) {	    	
-								    	editingDomain.getCommandStack().execute(new SortBusinessColumnsCommand(editingDomain,commandParameter));
+								    	editingDomain.getCommandStack().execute(new SortBusinessTableColumnsCommand(editingDomain,commandParameter));
 								    }
 								} catch(Throwable t) {
 									t.printStackTrace();

@@ -36,7 +36,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
  * @author cortella
  *
  */
-public class SortBusinessColumnsCommand extends AbstractSpagoBIModelEditCommand {
+public class SortBusinessTableColumnsCommand extends AbstractSpagoBIModelEditCommand {
 	
 	BusinessColumnSet businessColumnSet;
 	BusinessColumn businessColumn;
@@ -49,11 +49,11 @@ public class SortBusinessColumnsCommand extends AbstractSpagoBIModelEditCommand 
 	 * @param domain
 	 * @param parameter
 	 */
-	public SortBusinessColumnsCommand(EditingDomain domain, CommandParameter parameter) {
+	public SortBusinessTableColumnsCommand(EditingDomain domain, CommandParameter parameter) {
 		super("model.business.commands.edit.table.sortcolumns.label", "model.business.commands.edit.table.sortcolumns.description", "model.business.commands.edit.table.sortcolumns", domain, parameter);
 	}
 	
-	public SortBusinessColumnsCommand(EditingDomain domain){
+	public SortBusinessTableColumnsCommand(EditingDomain domain){
 		this(domain,null);
 	}
 	@Override

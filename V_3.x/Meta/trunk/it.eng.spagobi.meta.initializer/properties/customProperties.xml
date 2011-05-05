@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  
+  
+  <!--  ===================================================================================================== -->
+  <!--  MODEL																								  -->
+  <!--  ===================================================================================================== -->
   <model>
+  	   
     <categories>
       <category name="Structural"
       description="Structural properties" />
     </categories>
+    
     <types>
       <type id="structural.package" name="Package Name"
       description="Package name used in JPA mapping"
       category="Structural" defaultValue="it.eng.spagobi.meta" />
-    </types>
-     <types>
+   
       <type id="structural.file" name="File"
       description="File used to store this model"
       category="Structural" defaultValue="model.sbimodel" />
     </types>
+  
   </model>
   
+  <!--  ===================================================================================================== -->
+  <!--  TABLE																								  -->
+  <!--  ===================================================================================================== -->
   <table>
    
-   <categories>
+   	<categories>
       <category name="Structural"
       description="Structural properties" />
       <category name="Style" description="Style properties" />
@@ -30,7 +40,7 @@
       description="Specify if this table is visible in the query editor"
       category="Structural" defaultValue="true" />
       
-      <type id="structural.type" name="Type"
+      <type id="structural.tabletype" name="Type"
       description="The role played by this table in the data model (cube or dimension)"
       category="Structural" defaultValue="true" />
     </types>
@@ -41,7 +51,7 @@
         <value>false</value>
       </admissibleValuesOf>
       
-      <admissibleValuesOf typeId="structural.type">
+      <admissibleValuesOf typeId="structural.tabletype">
         <value>cube</value>
         <value>dimension</value>
       </admissibleValuesOf>
@@ -49,6 +59,9 @@
   
   </table>
   
+  <!--  ===================================================================================================== -->
+  <!--  COLUMN																								  -->
+  <!--  ===================================================================================================== -->
   <column>
     <categories>
       <category name="Structural"
@@ -61,16 +74,12 @@
       description="Specify if this column is visible in the query editor"
       category="Structural" defaultValue="true" />
       
-      <type id="structural.type" name="Type"
+      <type id="structural.columntype" name="Type"
       description="The role played by this column in the data model (measure or attribute)"
       category="Structural" defaultValue="attribute" />
       
-      <type id="structural.type" name="Type"
-      description="The role played by this table in the data model (cube or dimension)"
-      category="Structural" defaultValue="true" />
-      
-      <type id="structural.aggtype" name="Agregation Type"
-      description="The preferred agregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
+      <type id="structural.aggtype" name="Aggregation Type"
+      description="The preferred aggregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
       category="Structural" defaultValue="COUNT" />
       
       <type id="structural.datatype" name="Data Type"
@@ -88,7 +97,7 @@
         <value>false</value>
       </admissibleValuesOf>
       
-      <admissibleValuesOf typeId="structural.type">
+      <admissibleValuesOf typeId="structural.columntype">
         <value>measure</value>
         <value>attribute</value>
       </admissibleValuesOf>
@@ -99,6 +108,7 @@
         <value>AVG</value>
         <value>MAX</value>
         <value>MIN</value>
+        <value>NONE</value>
       </admissibleValuesOf>
       
       <admissibleValuesOf typeId="structural.datatype">
@@ -119,7 +129,14 @@
     </typesValues>
   </column>
   
+  <!--  ===================================================================================================== -->
+  <!--  IDENTIFIER																							  -->
+  <!--  ===================================================================================================== -->
   <identifier></identifier>
   
+  <!--  ===================================================================================================== -->
+  <!--  RELATIONSHIP																						  -->
+  <!--  ===================================================================================================== -->
   <relationship></relationship>
+
 </properties>

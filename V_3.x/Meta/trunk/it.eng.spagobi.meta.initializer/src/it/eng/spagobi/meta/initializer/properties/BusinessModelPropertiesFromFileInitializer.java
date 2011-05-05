@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -299,13 +300,15 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 				String typeId = nodeAttributes.getNamedItem("typeId").getNodeValue();
 				ModelPropertyType propertyType = getModelPropertyType(model, typeId);
 
-				NodeList values = readXMLNodes(document, "/properties/model/typesValues/admissibleValuesOf"+"[@typeId"+"='"+typeId+"']/value");
-				//search each admissible values for this type
-				int valuesLength = values.getLength();
-				for (int z = 0; z < valuesLength; z++) {
-					String value = values.item(z).getTextContent();
-					//add admissible value
-					propertyType.getAdmissibleValues().add(value);
+				NodeList values = nodes.item(j).getChildNodes();
+			
+				for (int z = 0; z < values.getLength(); z++) {
+					Node n = values.item(z);
+					String nodeName = n.getNodeName();
+					if("value".equalsIgnoreCase(nodeName)) {
+						String value = values.item(z).getTextContent();
+						propertyType.getAdmissibleValues().add(value);
+					}
 				}
 			}
 		}

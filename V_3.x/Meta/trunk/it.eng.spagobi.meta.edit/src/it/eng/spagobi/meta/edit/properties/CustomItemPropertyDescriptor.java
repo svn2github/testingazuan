@@ -26,11 +26,14 @@ import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.AbstractEnumerator;
+import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
@@ -38,24 +41,19 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
+public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, IItemLabelProvider {
 	
 	ModelProperty property;
-	protected AdapterFactoryItemDelegator itemDelegator;
-	protected Object staticImage;
-	
+	Object image;
+	ResourceLocator resourceLocator;
 		
 	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
 		this(property, adapterFactory, resourceLocator, null);
 	}
 	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator, Object image) {
 		this.property = property;
-		this.staticImage = image;
-		this.itemDelegator = new ItemDelegator(adapterFactory, resourceLocator);
-	}
-	
-	public void setImage(Object image) {
-		this.staticImage = image;
+		this.image = image;
+		this.resourceLocator = resourceLocator;
 	}
 
 	@Override
@@ -70,17 +68,14 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public Collection<?> getChoiceOfValues(Object arg0) {
-		/*
+		
 		List<Enumerator> enumerators = new ArrayList<Enumerator>();
 		Collection<String> admissibleValues = property.getPropertyType().getAdmissibleValues();
 		int index = 0;
-		for(String admissibleValue : admissibleValues) {
-			enumerators.add(new AbstractEnumerator(index++, admissibleValue){});
-		}
-		return enumerators;
-		*/
+
+		return admissibleValues;
 		//return property.getPropertyType().getAdmissibleValues();
-		return null;
+		//return null;
 	}
 
 	@Override
@@ -115,7 +110,7 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 
 	@Override
 	public IItemLabelProvider getLabelProvider(Object object) {
-		return itemDelegator;
+		return this;
 	}
 
 	@Override
@@ -169,32 +164,20 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor {
 	public void setPropertyValue(Object object, Object value) {
 		property.setValue("" + value);		
 	}
+
+
+	@Override
+	public String getText(Object object) {
+		return (String)object;
+	}
+
+	@Override
+	public Object getImage(Object object) {
+		return image;
+	}
 	
-	 /**
-	   * This class uses a static image
-	   */
-	  protected class ItemDelegator extends AdapterFactoryItemDelegator {
-	    protected ResourceLocator resourceLocator;
-
-	    public ItemDelegator(AdapterFactory adapterFactory) {
-	      super(adapterFactory);
-	    }
-
-	    public ItemDelegator(AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
-	      super(adapterFactory);
-	      this.resourceLocator = resourceLocator;
-	    }
-
-	    @Override
-	    public String getText(Object object) {
-	    	
-	    	return (String)object;
-	    }
-
-	    @Override
-	    public Object getImage(Object object) {
-	      return staticImage == null ? super.getImage(object) : staticImage;
-	    }
-	  }
+	public void setImage(Object image) {
+		this.image = image;
+	}
 
 }

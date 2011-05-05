@@ -360,9 +360,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 				setPageComplete(false);
 			}
 			
-//			setPageComplete(true);
-//			setColumnSelected(true);
-//			setColumnsToImport(fields.getItems());
+
 		}
 	}
 	

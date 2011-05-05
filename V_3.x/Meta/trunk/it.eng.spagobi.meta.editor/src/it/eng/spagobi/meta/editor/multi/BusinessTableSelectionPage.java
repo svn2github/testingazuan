@@ -145,6 +145,11 @@ public class BusinessTableSelectionPage extends WizardPage {
 		GridLayout glC = new GridLayout();
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
+	    Button bAddAllField = new Button(compButtons,SWT.FLAT);
+		bAddAllField.setToolTipText("Add all tables as Business Tables");
+		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
+	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
+		
 		Button bAddBusinessTable = new Button(compButtons,SWT.FLAT);
 		bAddBusinessTable.setToolTipText("Add table as a Business Table");
 		Image imageAdd =ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
@@ -153,10 +158,16 @@ public class BusinessTableSelectionPage extends WizardPage {
 		bRemoveBusinessTable.setToolTipText("Remove table from Business Model");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveBusinessTable.setImage(imageRem);
-	    addListenerButtons(bAddBusinessTable,bRemoveBusinessTable);
+	    
+	    Button bRemoveAllField = new Button(compButtons,SWT.FLAT);
+		bRemoveAllField.setToolTipText("Remove all tables from Business Model");
+		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
+	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
+	    
+	    addListenerButtons(bAddBusinessTable,bRemoveBusinessTable,bAddAllField,bRemoveAllField);
 	}
 	
-	public void addListenerButtons(Button bAddBusinessTable, Button bRemoveBusinessTable ){
+	public void addListenerButtons(Button bAddBusinessTable, Button bRemoveBusinessTable, Button bAddAllField, Button bRemoveAllField ){
 		//adding listener to Add button		
 		bAddBusinessTable.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -227,6 +238,47 @@ public class BusinessTableSelectionPage extends WizardPage {
 	
 			}
 		}); 	
+		
+		//adding listener to Add All button		
+ 		bAddAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem[] tableToAdd = null;
+				tableToAdd = physicalTables.getItems();
+				
+				//add Table to Business Model panel
+				for (int i=0; i< tableToAdd.length; i++){
+					TableItem ti = new TableItem(businessTables, 0);
+					ti.setText(tableToAdd[i].getText());
+					ti.setImage(businessTableImage);											
+				}
+				//Remove table from Physical Model panel
+				physicalTables.removeAll();
+				
+				checkPageComplete();
+			}
+		});
+ 		
+		//adding listener to Remove All button		
+ 		bRemoveAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem[] tableToRemove = null;
+				tableToRemove = businessTables.getItems();
+				
+				//add table to Physical Model panel
+				for (int i=0; i< tableToRemove.length; i++){
+					TableItem ti = new TableItem(physicalTables, 0);
+					ti.setText(tableToRemove[i].getText());
+					ti.setImage(physicalTableImage);												
+				}
+				//Remove table from Business Model panel 
+				businessTables.removeAll();
+				
+				checkPageComplete();
+			}
+		});		
+		
 	}
 	//add the original physical columns as TableItem (in the left Table Widget)
 	public void addTableItems(TableItem[] physicalTableImported){		

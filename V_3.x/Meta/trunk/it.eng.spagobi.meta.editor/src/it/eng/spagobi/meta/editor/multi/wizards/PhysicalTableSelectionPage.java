@@ -64,6 +64,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 	private Image physicalTableImage = null;
 	private Image dbTableImage = null;
 	private BusinessTableSelectionPage businessTableSelectionPageRef;
+
 	
 	/**
 	 * @param pageName
@@ -141,6 +142,11 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		GridLayout glC = new GridLayout();
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
+	    Button bAddAllField = new Button(compButtons,SWT.FLAT);
+		bAddAllField.setToolTipText("Add all tables as Physical Tables");
+		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
+	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
+	    
 		Button bAddPhysicalTable = new Button(compButtons,SWT.FLAT);
 		bAddPhysicalTable.setToolTipText("Add table as a Physical Table");
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
@@ -149,7 +155,13 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		bRemovePhysicalTable.setToolTipText("Remove table from Physical Model");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemovePhysicalTable.setImage(imageRem);
-	    addListenerButtons(bAddPhysicalTable,bRemovePhysicalTable);
+	  
+		Button bRemoveAllField = new Button(compButtons,SWT.FLAT);
+		bRemoveAllField.setToolTipText("Remove all tables from Physical Model");
+		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
+	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
+	    
+	    addListenerButtons(bAddPhysicalTable,bRemovePhysicalTable,bAddAllField,bRemoveAllField);
 	}
 	
 	public void initPhysicalTableGroup(Composite parent, int style){
@@ -165,7 +177,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
  		physicalTables.setLayoutData(gdR);		
 	}
 	
-	public void addListenerButtons(Button bAddPhysicalTable, Button bRemovePhysicalTable ){
+	public void addListenerButtons(Button bAddPhysicalTable, Button bRemovePhysicalTable, Button bAddAllField, Button bRemoveAllField ){
 		//adding listener to Add button		
 		bAddPhysicalTable.addListener(SWT.Selection, new Listener() {		
 			@Override
@@ -236,7 +248,48 @@ public class PhysicalTableSelectionPage extends WizardPage {
 	
 			}
 		}); 	
-	}
+		
+		//adding listener to Add All button		
+ 		bAddAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem[] tableToAdd = null;
+				tableToAdd = databaseTables.getItems();
+				
+				//add Table to Physical Model panel
+				for (int i=0; i< tableToAdd.length; i++){
+					TableItem ti = new TableItem(physicalTables, 0);
+					ti.setText(tableToAdd[i].getText());
+					ti.setImage(physicalTableImage);											
+				}
+				//Remove table from Database Table panel
+				databaseTables.removeAll();
+				
+				checkPageComplete();
+			}
+		});
+ 		
+		//adding listener to Remove All button		
+ 		bRemoveAllField.addListener(SWT.Selection, new Listener() {		
+			@Override
+			public void handleEvent(Event event) {
+				TableItem[] tableToRemove = null;
+				tableToRemove = physicalTables.getItems();
+				
+				//add table to Database Table panel
+				for (int i=0; i< tableToRemove.length; i++){
+					TableItem ti = new TableItem(databaseTables, 0);
+					ti.setText(tableToRemove[i].getText());
+					ti.setImage(dbTableImage);												
+				}
+				//Remove table from Physical Model panel 
+				physicalTables.removeAll();
+				
+				checkPageComplete();
+			}
+		});
+		
+}		
 
 	
 	//add the original physical columns as TableItem (in the left Table Widget)

@@ -77,7 +77,7 @@ public class BusinessViewItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addJoinRelationshipsPropertyDescriptor(object);
+			//addJoinRelationshipsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}

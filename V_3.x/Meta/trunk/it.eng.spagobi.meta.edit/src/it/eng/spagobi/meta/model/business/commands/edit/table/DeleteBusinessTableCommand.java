@@ -21,10 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands.edit.table;
 
-import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.descriptor.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -33,8 +30,6 @@ import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEdit
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.DeleteIdentifierCommand;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,10 +47,11 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 
-	private BusinessModel model;
-	private BusinessTable businessTable;
-	private BusinessIdentifier identifier;
 	
+	BusinessTable businessTable;
+	
+	BusinessIdentifier removedIdentifier;
+	List<BusinessRelationship> removedRelationships;
 	
 	private static Logger logger = LoggerFactory.getLogger(DeleteBusinessTableCommand.class);
 	
@@ -70,49 +66,55 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 		this(domain, null);
 	}
 	
+	protected BusinessTable getBusinessTable() {
+		if(businessTable == null) businessTable = (BusinessTable)parameter.getOwner();
+		return businessTable;
+	}
+	
 	@Override
 	public void execute() {
-		businessTable = (BusinessTable)parameter.getOwner();
-		model = businessTable.getModel();
+		BusinessModel model = getBusinessTable().getModel();
 		
-		identifier = businessTable.getIdentifier();
-		if(identifier != null) {
-			model.getIdentifiers().remove(identifier);
+		removedIdentifier = getBusinessTable().getIdentifier();
+		if(removedIdentifier != null) {
+			model.getIdentifiers().remove(removedIdentifier);
 		}
 		
 		//remove relationships of this business table
-		List<BusinessRelationship> businessRelationships = businessTable.getRelationships();
-		model.getRelationships().removeAll(businessRelationships);
+		removedRelationships = getBusinessTable().getRelationships();
+		model.getRelationships().removeAll(removedRelationships);
 		
+		model.getTables().remove(getBusinessTable());
 		
-		model.getTables().remove(businessTable);
 		executed = true;
-		logger.debug("Command [{}] executed succesfully", DeleteIdentifierCommand.class.getName());
 	}
 	
 	
 	@Override
 	public void undo() {
-		model.getTables().add(businessTable);
-		if(identifier != null) {
-			model.getIdentifiers().add(identifier);
+		
+		BusinessModel model = getBusinessTable().getModel();
+		
+		model.getTables().add( getBusinessTable() );
+		
+		model.getRelationships().addAll(removedRelationships);
+		
+		if(removedIdentifier != null) {
+			model.getIdentifiers().add(removedIdentifier);
 		}
 	}
 
 	@Override
 	public void redo() {
-		model.getTables().remove(businessTable);
-		if(identifier != null) {
-			model.getIdentifiers().remove(identifier);
-		}
+		execute();
 	}
 	
 	@Override
 	public Collection<?> getAffectedObjects() {
 		Collection affectedObjects = Collections.EMPTY_LIST;
-		if(model != null) {
+		if(getBusinessTable().getModel() != null) {
 			affectedObjects = new ArrayList();
-			affectedObjects.add(model);
+			affectedObjects.add(getBusinessTable().getModel());
 		}
 		return affectedObjects;
 	}

@@ -34,7 +34,10 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -43,16 +46,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * TODO preserve column order upon undo
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditCommand {
 
+	BusinessModelInitializer initializer;
+	
+	// input values
+	BusinessColumnSet businessTable;
+	Collection<PhysicalColumn> newColumnSet;
+	Collection<PhysicalColumn> oldColumnSet;
+	
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> removedColumns;
 	List<BusinessColumn> addedColumns;
+	
+	BusinessIdentifier removedIdentifier;
+	BusinessIdentifier addedIdentifier;
+	List<BusinessColumn> columnsRemovedFromIdentifier;
+	
 	List<BusinessRelationship> removedRelationships;
-	BusinessModelInitializer initializer;
+	List<RelationshipModification> relationshipModifications;
+	
+	private class RelationshipModification  {
+		BusinessRelationship relationship;
+		public int index;
+		public BusinessColumn sourceColumn;
+		public BusinessColumn destinationColumn;
+		
+		public RelationshipModification(BusinessRelationship r, int i, BusinessColumn s, BusinessColumn d){relationship = r; index = i; sourceColumn = s; destinationColumn = d;}
+	}
 	
 	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
 	
@@ -69,30 +95,50 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		this(domain, null);
 	}
 	
+	protected BusinessColumnSet getBusinessTable() {
+		if(businessTable == null) businessTable = (BusinessColumnSet)parameter.getOwner();
+		return businessTable;
+	}
+	
+	protected Collection<PhysicalColumn> getNewColumnSet() {
+		if(newColumnSet == null) newColumnSet = (Collection)parameter.getValue();
+		return newColumnSet;
+	}
+	
+	protected Collection<PhysicalColumn> getOldColumnSet() {
+		if(oldColumnSet == null) oldColumnSet = extractPhysicalColumns( getBusinessTable() );
+		return oldColumnSet;
+	}
+	
+	protected void clearCachedObjects() {
+		removedColumns = new ArrayList<BusinessColumn>();
+		columnsRemovedFromIdentifier = new ArrayList<BusinessColumn>();
+		removedIdentifier = null;
+		relationshipModifications = new ArrayList<RelationshipModification>();
+		removedRelationships = new ArrayList<BusinessRelationship>();
+		addedColumns = new ArrayList<BusinessColumn>();
+		addedIdentifier = null;
+	}
+	
 	@Override
 	public void execute() {
 		
-		BusinessColumnSet businessColumnSet;
-		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
-
-		Collection<PhysicalColumn> newSelectionColumns = (Collection)parameter.getValue();
-		Collection<PhysicalColumn> oldSelectionColumns = extractPhysicalColumns(businessColumnSet);
+		clearCachedObjects();
 		
-		List<PhysicalColumn> columns;
+		removeColumns();		
+		addColumns();			
+		addIdentifier();
 		
-		// remove
-		columns = getColumnsToRemove(oldSelectionColumns, newSelectionColumns);
-		removeColumns(columns, businessColumnSet);		
-		
-		// add
-		columns = getColumnsToAdd(oldSelectionColumns, newSelectionColumns);
-		addColumns(columns, businessColumnSet);
-			
-		updateIdentifier(businessColumnSet);
-		
-		this.executed = true;
+		executed = true;
 		
 		logger.debug("Command [{}] executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());
+	}
+	
+	@Override
+	public void undo() {
+		undoAddIdentifier();
+		undoAddColumns();
+		undoRemoveColumns();
 	}
 	
 	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {
@@ -103,12 +149,12 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		return physicalColumns;
 	} 
 
-	private List<PhysicalColumn> getColumnsToRemove(Collection<PhysicalColumn> oldSelectionColumns, Collection<PhysicalColumn> newSelectionColumns) {
+	private List<PhysicalColumn> getColumnsToRemove() {
 		
 		List<PhysicalColumn> columnsToRemove = new ArrayList<PhysicalColumn>();
 		
-		for(PhysicalColumn oldSelectionColumn : oldSelectionColumns) {
-			if(isColumnPartOfTheNewSelection(oldSelectionColumn, newSelectionColumns) == false) {
+		for(PhysicalColumn oldSelectionColumn : getOldColumnSet()) {
+			if(isColumnPartOfTheNewSelection(oldSelectionColumn, getNewColumnSet()) == false) {
 				columnsToRemove.add(oldSelectionColumn);
 			}
 		}
@@ -126,14 +172,14 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		return isPart;
 	}
 	
-	private List<PhysicalColumn> getColumnsToAdd(Collection<PhysicalColumn> oldSelectionColumns, Collection<PhysicalColumn> newSelectionColumns) {
+	private List<PhysicalColumn> getColumnsToAdd() {
 		
 		List<PhysicalColumn> columnsToAdd;
 		
 		columnsToAdd = new ArrayList<PhysicalColumn>();
 		
-		for(PhysicalColumn newSelectionColumn : newSelectionColumns) {
-			if(isColumnPartOfTheOldSelection(newSelectionColumn, oldSelectionColumns) == false) {
+		for(PhysicalColumn newSelectionColumn : getNewColumnSet()) {
+			if(isColumnPartOfTheOldSelection(newSelectionColumn, getOldColumnSet()) == false) {
 				columnsToAdd.add(newSelectionColumn);
 			}
 		}
@@ -153,101 +199,146 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 		return isPart;
 	}
 	
-	public List<BusinessColumn> removeColumns(List<PhysicalColumn> columns, BusinessColumnSet businessColumnSet) {
-		removedColumns = new ArrayList<BusinessColumn>();
+	public List<BusinessColumn> removeColumns() {
+		List<PhysicalColumn> columns;
+		
+		columns = getColumnsToRemove();
 		
 		for(PhysicalColumn column: columns) {
-			BusinessColumn c = businessColumnSet.getColumn(column);
-			//check identifiers
-			if(c.isIdentifier()) {
-				BusinessIdentifier identifier = businessColumnSet.getIdentifier();
-				identifier.getColumns().remove(c);
-				if(identifier.getColumns().size() == 0) {
-					businessColumnSet.getModel().getIdentifiers().remove(identifier);
-				}
-			}
-			//check relationships
-			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
-			removedRelationships = new ArrayList<BusinessRelationship>();
-			for (BusinessRelationship businessRelationship : businessRelationships){	
-				EList<BusinessColumn> sourceColumns = businessRelationship.getSourceColumns();
-				EList<BusinessColumn> destinationColumns = businessRelationship.getDestinationColumns();
-				
-				if (sourceColumns.contains(c)){
-					int index = businessRelationship.getSourceColumns().indexOf(c);
-					businessRelationship.getSourceColumns().remove(c);
-					//remove other part 
-					businessRelationship.getDestinationColumns().remove(index);
-				}
-				else if (destinationColumns.contains(c)){
-					int index = businessRelationship.getDestinationColumns().indexOf(c);
-					businessRelationship.getDestinationColumns().remove(c);
-					//remove other part 
-					businessRelationship.getSourceColumns().remove(index);
-				}
-				
-				if (businessRelationship.getSourceColumns().isEmpty() || businessRelationship.getDestinationColumns().isEmpty()){
-					removedRelationships.add(businessRelationship);
-				}
-				
-			}
-			//remove inconsistent relationships
-			businessColumnSet.getRelationships().removeAll(removedRelationships);
-
-			businessColumnSet.getColumns().remove(c);
+			BusinessColumn c = getBusinessTable().getColumn(column);
+			updateIdentifier(c);			
+			updateRelationships(c);
+			
+			// remove
+			getBusinessTable().getColumns().remove(c);
 			removedColumns.add(c);
 		}
 		
 		return removedColumns;
 	}
 	
-	public List<BusinessColumn> addColumns(List<PhysicalColumn> columns, BusinessColumnSet businessColumnSet) {
-		addedColumns = new ArrayList<BusinessColumn>();
+	public void undoRemoveColumns() {
+		for(BusinessColumn column: removedColumns) {			
+			businessTable.getColumns().add(column);			
+		}	
+		undoUpdateRelationships();
+		undoUpdateIdentifier();
+	}
+
+	public List<BusinessColumn> addColumns() {
+		List<PhysicalColumn> columns;
+		
+		columns = getColumnsToAdd();
+		
+		
 		for(PhysicalColumn column: columns) {
-			initializer.addColumn(column, businessColumnSet);
-			addedColumns.add( businessColumnSet.getColumn(column) );
+			initializer.addColumn(column, getBusinessTable());
+			addedColumns.add( getBusinessTable().getColumn(column) );
 		}
 		return addedColumns;
 	}
 	
-	private void updateIdentifier(BusinessColumnSet businessColumnSet) {
-		if(businessColumnSet instanceof BusinessTable) {
-			BusinessTable businessTable = (BusinessTable)businessColumnSet;
-			BusinessIdentifier identifier = businessColumnSet.getIdentifier();
-			if(identifier != null) {
-				if( identifier.getPhysicalPrimaryKey() != null 
-						&& initializer.areAllPKColumnsContainedInBusinessTable(identifier.getPhysicalPrimaryKey(), businessTable) == false ) {
-					identifier.setPhysicalPrimaryKey(null);
-				}
-			} else { // identifier is null
-				initializer.addIdentifier(businessTable, businessColumnSet.getModel());
+	public void undoAddColumns() {
+		for(BusinessColumn column: addedColumns) {
+			businessTable.getColumns().remove(column);
+		}	
+	}
+	
+	private void updateRelationships(BusinessColumn businessColumn) {
+		
+		List<BusinessRelationship> businessRelationships;
+		List<BusinessRelationship> removedRelationshipsAfterColumnDeletion = new ArrayList<BusinessRelationship>();
+		
+		businessRelationships = getBusinessTable().getRelationships();
+		
+		
+		for (BusinessRelationship businessRelationship : businessRelationships) {	
+			List<BusinessColumn> sourceColumns = businessRelationship.getSourceColumns();
+			List<BusinessColumn> destinationColumns = businessRelationship.getDestinationColumns();
+			
+		
+			if (sourceColumns.contains(businessColumn)){
+				int index = businessRelationship.getSourceColumns().indexOf(businessColumn);
+				businessRelationship.getSourceColumns().remove(businessColumn);
+				//remove other part 
+				BusinessColumn destinationColumn = businessRelationship.getDestinationColumns().get(index);
+				businessRelationship.getDestinationColumns().remove(destinationColumn);
+				relationshipModifications.add(0, new RelationshipModification(businessRelationship, index, businessColumn, destinationColumn));
 			}
+			else if (destinationColumns.contains(businessColumn)){
+				int index = businessRelationship.getDestinationColumns().indexOf(businessColumn);
+				businessRelationship.getDestinationColumns().remove(businessColumn);
+				//remove other part 
+				BusinessColumn sourceColumn = businessRelationship.getSourceColumns().get(index);
+				businessRelationship.getSourceColumns().remove(sourceColumn);
+				relationshipModifications.add(0, new RelationshipModification(businessRelationship, index, sourceColumn, businessColumn));
+			}
+			
+			if (businessRelationship.getSourceColumns().isEmpty() || businessRelationship.getDestinationColumns().isEmpty()){
+				removedRelationshipsAfterColumnDeletion.add(businessRelationship);
+			}
+		}
+		//remove inconsistent relationships
+		removedRelationships.addAll( removedRelationshipsAfterColumnDeletion );
+		getBusinessTable().getModel().getRelationships().removeAll(removedRelationshipsAfterColumnDeletion);
+	}
+	
+	private void undoUpdateRelationships() {
+		getBusinessTable().getModel().getRelationships().addAll(removedRelationships);
+		
+		for(RelationshipModification modification : relationshipModifications) {
+			modification.relationship.getSourceColumns().add( modification.index, modification.sourceColumn );
+			modification.relationship.getDestinationColumns().add( modification.index, modification.destinationColumn );
 		}
 	}
 
-	
-	@Override
-	public void undo() {
-		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
-		for(BusinessColumn column: removedColumns) {
-			businessTable.getColumns().add(column);
-		}	
+	private void updateIdentifier(BusinessColumn businessColumn) {
 		
-		for(BusinessColumn column: addedColumns) {
-			businessTable.getColumns().remove(column);
-		}	
+		if(businessColumn.isIdentifier()) {
+			BusinessIdentifier identifier = getBusinessTable().getIdentifier();
+			identifier.getColumns().remove(businessColumn);
+			columnsRemovedFromIdentifier.add(businessColumn);
+			
+			if(identifier.getColumns().size() == 0) {
+				getBusinessTable().getModel().getIdentifiers().remove(identifier);
+				removedIdentifier = identifier;
+			}
+		}
 	}
+	
+	private void undoUpdateIdentifier() {
+		if(removedIdentifier != null) {
+			getBusinessTable().getModel().getIdentifiers().add(removedIdentifier);
+		}
+		
+		if(columnsRemovedFromIdentifier.size() > 0) {
+			getBusinessTable().getIdentifier().getColumns().addAll(columnsRemovedFromIdentifier);
+		}
+		
+	}
+	
+	private void addIdentifier() {
+		if(getBusinessTable() instanceof BusinessTable) {
+			BusinessTable businessTable = (BusinessTable)getBusinessTable();
+			BusinessIdentifier identifier = getBusinessTable().getIdentifier();
+			if(identifier == null) {
+				addedIdentifier = initializer.addIdentifier(businessTable, getBusinessTable().getModel());
+			}
+		}
+	}
+	
+	private void undoAddIdentifier() {
+		if(addedIdentifier != null) {
+			businessTable.getModel().getIdentifiers().remove(addedIdentifier);
+		}
+	}
+	
+	
+	
 
 	@Override
 	public void redo() {
-		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
-		for(BusinessColumn column: removedColumns) {
-			businessTable.getColumns().remove(column);
-		}	
-		
-		for(BusinessColumn column: addedColumns) {
-			businessTable.getColumns().add(column);
-		}			
+		execute();
 	}
 	
 	@Override

@@ -1,15 +1,35 @@
 #foreach ($jpaTable in $jpaTables)
+
 ${jpaTable.uniqueName}.label = $jpaTable.name
 ${jpaTable.uniqueName}.tooltip = $jpaTable.description
 ${jpaTable.uniqueName}.visible = $jpaTable.getAttribute("structural.visible")
-${jpaTable.uniqueName}.type = $jpaTable.getAttribute("structural.type")
+${jpaTable.uniqueName}.type = $jpaTable.getAttribute("structural.tabletype")
 
 #foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
 ${jpaColumn.uniqueName}.label = $jpaColumn.name
 ${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
 ${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
-${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.type")
+${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
 #end
 
+#end
+
+#foreach ($jpaView in $jpaViews)
+
+#foreach ($jpaTable in $jpaView.innerTables)
+
+${jpaTable.uniqueName}.label = $jpaTable.name
+${jpaTable.uniqueName}.tooltip = $jpaTable.name
+${jpaTable.uniqueName}.visible = false
+${jpaTable.uniqueName}.type = dimension
+
+#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+${jpaColumn.uniqueName}.label = $jpaColumn.name
+${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
+${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
+${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
+#end
+
+#end
 
 #end

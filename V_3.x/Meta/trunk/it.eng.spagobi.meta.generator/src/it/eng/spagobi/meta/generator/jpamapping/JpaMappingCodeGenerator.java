@@ -386,6 +386,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			
 		    context = new VelocityContext();
 	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+	        context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
 	       
 	      
 			

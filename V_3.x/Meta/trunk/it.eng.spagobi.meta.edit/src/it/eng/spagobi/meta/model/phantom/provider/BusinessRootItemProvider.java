@@ -3,6 +3,7 @@ package it.eng.spagobi.meta.model.phantom.provider;
 import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -116,13 +118,14 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 	
 	protected void addCustomColumnPropertyDescriptors(Object object) {
 		ModelObject modelObject = (ModelObject) object;
-		Iterator<String> it = modelObject.getProperties().keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
+		Set<String> propertyNames = modelObject.getProperties().keySet();
+		for (String propertyName : propertyNames) {
 			
-			ModelProperty property = modelObject.getProperties().get(key);
+			ModelProperty property = modelObject.getProperties().get(propertyName);
+			ModelPropertyType propertyType = property.getPropertyType();
+			
 			itemPropertyDescriptors.add(new CustomItemPropertyDescriptor(
-					property, ((ComposeableAdapterFactory) adapterFactory)
+					propertyType, ((ComposeableAdapterFactory) adapterFactory)
 							.getRootAdapterFactory(), getResourceLocator()));
 		}
 	}

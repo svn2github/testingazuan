@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.edit.properties;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 
 import java.util.ArrayList;
@@ -43,15 +44,15 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
  */
 public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, IItemLabelProvider {
 	
-	ModelProperty property;
+	ModelPropertyType propertyType;
 	Object image;
 	ResourceLocator resourceLocator;
 		
-	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
-		this(property, adapterFactory, resourceLocator, null);
+	public CustomItemPropertyDescriptor(ModelPropertyType propertyType, AdapterFactory adapterFactory, ResourceLocator resourceLocator) {
+		this(propertyType, adapterFactory, resourceLocator, null);
 	}
-	public CustomItemPropertyDescriptor(ModelProperty property, AdapterFactory adapterFactory, ResourceLocator resourceLocator, Object image) {
-		this.property = property;
+	public CustomItemPropertyDescriptor(ModelPropertyType propertyType, AdapterFactory adapterFactory, ResourceLocator resourceLocator, Object image) {
+		this.propertyType = propertyType;
 		this.image = image;
 		this.resourceLocator = resourceLocator;
 	}
@@ -63,29 +64,22 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 
 	@Override
 	public String getCategory(Object o) {
-		return property.getPropertyType().getCategory().getName();
+		return propertyType.getCategory().getName();
 	}
 
 	@Override
 	public Collection<?> getChoiceOfValues(Object arg0) {
-		
-		List<Enumerator> enumerators = new ArrayList<Enumerator>();
-		Collection<String> admissibleValues = property.getPropertyType().getAdmissibleValues();
-		int index = 0;
-
-		return admissibleValues;
-		//return property.getPropertyType().getAdmissibleValues();
-		//return null;
+		return propertyType.getAdmissibleValues();
 	}
 
 	@Override
 	public String getDescription(Object object) {
-		return property.getPropertyType().getDescription();
+		return propertyType.getDescription();
 	}
 
 	@Override
 	public String getDisplayName(Object object) {
-		return property.getPropertyType().getName();
+		return propertyType.getName();
 	}
 
 	@Override
@@ -105,7 +99,7 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 
 	@Override
 	public String getId(Object object) {
-		return property.getPropertyType().getId();
+		return propertyType.getId();
 	}
 
 	@Override
@@ -118,12 +112,12 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 		ModelProperty p = null;
 		if(object instanceof ModelObject) {
 			ModelObject modelObject = (ModelObject)object;
-			p = modelObject.getProperties().get(property.getPropertyType().getId());
+			p = modelObject.getProperties().get(propertyType.getId());
 			
 		} else if(object instanceof FolderItemProvider) {
 			FolderItemProvider folderItemProvider = (FolderItemProvider)object;
 			ModelObject modelObject = (ModelObject)folderItemProvider.getParentObject();
-			p = modelObject.getProperties().get(property.getPropertyType().getId());
+			p = modelObject.getProperties().get(propertyType.getId());
 		}
 		
 		return p != null? p.getValue(): null; 
@@ -156,12 +150,14 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 
 	@Override
 	public void resetPropertyValue(Object object) {
-		property.setValue("NULL");
+		setPropertyValue(object, propertyType.getDefaultValue());
 		
 	}
 
 	@Override
 	public void setPropertyValue(Object object, Object value) {
+		ModelObject modelObject = (ModelObject)object;
+		ModelProperty property = modelObject.getProperties().get(propertyType.getId());
 		if(value != null) {
 			property.setValue("" + value);	
 		}

@@ -42,7 +42,7 @@
       
       <type id="structural.tabletype" name="Type"
       description="The role played by this table in the data model (cube or dimension)"
-      category="Structural" defaultValue="true" />
+      category="Structural" defaultValue="dimension" />
     </types>
     
     <typesValues>

@@ -10,11 +10,13 @@ import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
@@ -87,20 +89,18 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 
 	protected void addCustomColumnPropertyDescriptors(Object object) {
 		ModelObject modelObject = (ModelObject) object;
-		Iterator<String> it = modelObject.getProperties().keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			ModelProperty property = modelObject.getProperties().get(key);
+		Set<String> propertyNames = modelObject.getProperties().keySet();
+		for (String propertyName : propertyNames) {
 			
-			
-			
+			ModelProperty property = modelObject.getProperties().get(propertyName);
+			ModelPropertyType propertyType = property.getPropertyType();
 			
 			CustomItemPropertyDescriptor propertyDescriptor = new CustomItemPropertyDescriptor(
-					property, 
+					propertyType, 
 					((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), 
 					getResourceLocator());
 			
-			String propertyId = property.getPropertyType().getId();
+			String propertyId = propertyType.getId();
 			if(propertyId.equals("physical.physicaltable")) {
 				propertyDescriptor.setImage( getResourceLocator().getImage("full/obj16/PhysicalTable") );
 			} else if (propertyId.equals("structural.visible")){

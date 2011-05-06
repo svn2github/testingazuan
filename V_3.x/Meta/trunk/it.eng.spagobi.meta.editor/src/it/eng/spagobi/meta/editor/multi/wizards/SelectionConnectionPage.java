@@ -83,8 +83,8 @@ public class SelectionConnectionPage extends WizardPage {
 	 */
 	protected SelectionConnectionPage(String pageName) {
 		super(pageName);
-		setTitle("Select Connection");
-		setMessage("Select a connection, catalog and schema to extract information.");
+		setTitle(RL.getString("multi.editor.wizard.selectionconnection.title"));
+		setMessage(RL.getString("multi.editor.wizard.selectionconnection.message"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectConnection") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
@@ -105,7 +105,7 @@ public class SelectionConnectionPage extends WizardPage {
 		container.setLayout(new GridLayout(1, false));
 		
 		Group grpConnection = new Group(container, SWT.NONE);
-		grpConnection.setText("Connection");
+		grpConnection.setText(RL.getString("multi.editor.wizard.selectionconnection.label"));
 		grpConnection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		FillLayout fl_grpConnection = new FillLayout(SWT.HORIZONTAL);
 		grpConnection.setLayout(fl_grpConnection);
@@ -169,7 +169,7 @@ public class SelectionConnectionPage extends WizardPage {
 		});
 		listViewer.setInput(profiles);
 		Group grpCatalogAndSchema = new Group(container, SWT.NONE);
-		grpCatalogAndSchema.setText("Catalog and Schema");
+		grpCatalogAndSchema.setText(RL.getString("multi.editor.wizard.selectionconnection.catalogschema.label"));
 		grpCatalogAndSchema.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpCatalogAndSchema.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -178,7 +178,7 @@ public class SelectionConnectionPage extends WizardPage {
 		
 		Label lblCatalog = new Label(composite, SWT.NONE);
 		lblCatalog.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblCatalog.setText("Catalog: ");
+		lblCatalog.setText(RL.getString("multi.editor.wizard.selectionconnection.catalog.label"));
 		
 		catalogCombo = new Combo(composite, SWT.READ_ONLY);
 		catalogCombo.setEnabled(false);
@@ -194,7 +194,7 @@ public class SelectionConnectionPage extends WizardPage {
 		
 		Label lblSchema = new Label(composite, SWT.NONE);
 		lblSchema.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblSchema.setText("Schema: ");
+		lblSchema.setText(RL.getString("multi.editor.wizard.selectionconnection.schema.label"));
 		
 		schemaCombo = new Combo(composite, SWT.READ_ONLY);
 		schemaCombo.setEnabled(false);

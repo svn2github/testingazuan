@@ -64,8 +64,8 @@ public class AddBusinessTableWizardPagePhysicalTableSelection extends
 	 */
 	protected AddBusinessTableWizardPagePhysicalTableSelection(String pageName, BusinessModel owner, PhysicalTable physicalTable) {
 		super(pageName);
-		setTitle("Business Table Creation");
-		setDescription("Please select the physical table used to create the Business Table.");
+		setTitle(RL.getString("business.editor.wizard.addbusinessclass.title"));
+		setDescription(RL.getString("business.editor.wizard.addbusinessclass.physicaltableselection.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.physicalTable = physicalTable;
@@ -83,7 +83,7 @@ public class AddBusinessTableWizardPagePhysicalTableSelection extends
 		
 		//Physical Table List
 		Group tableGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-		tableGroup.setText("Physical Table Selection");
+		tableGroup.setText(RL.getString("business.editor.wizard.addbusinessclass.physicaltableselection"));
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		glTable.numColumns = 1;

@@ -62,8 +62,8 @@ public class AddBusinessTableWizardPropertiesPage extends WizardPage {
 	 */
 	protected AddBusinessTableWizardPropertiesPage(String pageName, BusinessModel owner, AddBusinessTableWizardPagePhysicalTableSelection physicalTableSelectionPage, PhysicalTable physicalTable) {
 		super(pageName);
-		setTitle("Business Table Creation");
-		setDescription("Please set the properties of your Business Table");
+		setTitle(RL.getString("business.editor.wizard.addbusinessclass.title"));
+		setDescription(RL.getString("business.editor.wizard.addbusinessclass.properties.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 		if (image!=null) setImageDescriptor(image);
 		this.physicalTable = physicalTable;
@@ -91,23 +91,23 @@ public class AddBusinessTableWizardPropertiesPage extends WizardPage {
 	
 	public void createPropertiesGroup(Composite composite, int style)	{
  		Group groupBusinessTableProperties = new Group(composite, style);
- 		groupBusinessTableProperties.setText("Business Table Properties");
+ 		groupBusinessTableProperties.setText(RL.getString("business.editor.wizard.addbusinessclass.properties"));
  		groupBusinessTableProperties.setLayout(new GridLayout(2, false));
  		
  		Label lblName = new Label(groupBusinessTableProperties, SWT.NONE);
  		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
- 		lblName.setText("Name: ");
+ 		lblName.setText(RL.getString("business.editor.wizard.addbusinessclass.properties.label.name"));
  		
  		textName = new Text(groupBusinessTableProperties, SWT.BORDER);
  		textName.addModifyListener(new ModifyListener(){
 			public void modifyText(ModifyEvent me){
 				String string = textName.getText();
  				if (checkNameAlreadyUsed(string)){
- 					setErrorMessage("Name already in use or not valid");
+ 					setErrorMessage(RL.getString("business.editor.wizard.addbusinessclass.properties.error.name"));
  					setPageComplete(false);
  				} else if (string.length() > 0) {
  					setErrorMessage(null);
- 					setMessage("Please set the properties of your Business Table");
+ 					setMessage(RL.getString("business.editor.wizard.addbusinessclass.properties.message"));
  					checkPageComplete();
  				}	
 			}
@@ -117,7 +117,7 @@ public class AddBusinessTableWizardPropertiesPage extends WizardPage {
  		
  		Label lblDescription = new Label(groupBusinessTableProperties, SWT.NONE);
  		lblDescription.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
- 		lblDescription.setText("Description: ");
+ 		lblDescription.setText(RL.getString("business.editor.wizard.addbusinessclass.properties.label.description"));
  		
  		textDescription = new Text(groupBusinessTableProperties, SWT.BORDER);
  		textDescription.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -171,10 +171,10 @@ public class AddBusinessTableWizardPropertiesPage extends WizardPage {
 	private void checkPageComplete(){
 		if (textName.getText().length() > 0){
 			setErrorMessage(null);
-			setMessage("Please set the properties of your Business Table");
+			setMessage(RL.getString("business.editor.wizard.addbusinessclass.properties.message"));
 			setPageComplete(true);
 		} else {			
-			setErrorMessage("Name already in use or not valid");
+			setErrorMessage(RL.getString("business.editor.wizard.addbusinessclass.properties.error.name"));
 			setPageComplete(false);
 		}
 	}

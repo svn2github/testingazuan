@@ -70,8 +70,8 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 			AddBusinessTableWizardPagePhysicalTableSelection columnSelectionPage,
 			PhysicalTable physicalTable) {
 		super(pageName);
-		setTitle("Business Table Creation");
-		setDescription("Please select the columns to use in your Business Table");
+		setTitle(RL.getString("business.editor.wizard.addbusinessclass.title"));
+		setDescription(RL.getString("business.editor.wizard.addbusinessclass.columnselection.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 		columnsToImport = null;
 	    if (image!=null) setImageDescriptor(image);	
@@ -115,7 +115,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 	public Group createColumnsGroup(Composite composite, int style){
 		//Columns Group
 		Group columnsGroup = new Group(composite, style);
-		columnsGroup.setText("Columns selection");
+		columnsGroup.setText(RL.getString("business.editor.wizard.addbusinessclass.columnselection.label"));
 		GridLayout glColumns = new GridLayout();
 		GridData gd2 = new GridData(GridData.FILL_BOTH);
 		glColumns.numColumns = 3;
@@ -135,7 +135,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		compPhysicalColumns.setLayout(glL);
 		compPhysicalColumns.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compPhysicalColumns,SWT.NONE);
-		lblLeftTab.setText("Physical Table Columns: ");
+		lblLeftTab.setText(RL.getString("business.editor.wizard.addbusinessclass.physicalcolumnsselection"));
  		columns = new Table(compPhysicalColumns, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);
 	}
@@ -147,21 +147,21 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
 	    bAddAllField = new Button(compButtons,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all column as a Business Class Column");
+		bAddAllField.setToolTipText(RL.getString("business.editor.wizard.addbusinessclass.columnselection.addallbutton.tooltip"));
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		bAddField = new Button(compButtons,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Table Column");
+		bAddField.setToolTipText(RL.getString("business.editor.wizard.addbusinessclass.columnselection.addbutton.tooltip"));
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		bRemoveField = new Button(compButtons,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove column from Business Table");
+		bRemoveField.setToolTipText(RL.getString("business.editor.wizard.addbusinessclass.columnselection.removebutton.tooltip"));
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);	
 	    
 		bRemoveAllField = new Button(compButtons,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all column from Business Class");
+		bRemoveAllField.setToolTipText(RL.getString("business.editor.wizard.addbusinessclass.columnselection.removeallbutton.tooltip"));
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	}
@@ -175,7 +175,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 		compBusinessColumns.setLayout(glR);
 		compBusinessColumns.setLayoutData(gdR);
 		Label lblRightTab = new Label(compBusinessColumns,SWT.NONE);
-		lblRightTab.setText("Business Table Columns: ");
+		lblRightTab.setText(RL.getString("business.editor.wizard.addbusinessclass.columnselection"));
  		fields = new Table(compBusinessColumns, SWT.BORDER | SWT.MULTI);
  		fields.setLayoutData(gdR);		
 	}
@@ -342,7 +342,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 					setPageComplete(true);
 				}
 				else{			
-					setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+					setErrorMessage(RL.getString("business.editor.wizard.addbusinessclass.columnselection.error.noselection"));
 					setPageComplete(false);
 				}
 			}
@@ -356,7 +356,7 @@ public class AddBusinessTableWizardPageColumnSelection extends WizardPage {
 				setPageComplete(true);
 			}
 			else{			
-				setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+				setErrorMessage(RL.getString("business.editor.wizard.addbusinessclass.columnselection.error.noselection"));
 				setPageComplete(false);
 			}
 			

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -49,10 +51,11 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 	private BusinessModel owner;
 	private String businessTableName,businessTableDescription;
 	private BusinessTableDescriptor businessTableDescriptor;
-	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	public AddBusinessTableWizard(BusinessModel owner, PhysicalTable physicalTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle("Create a new Business Table");
+		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessclass.title"));
 		this.setHelpAvailable(false);
 		this.physicalTable = physicalTable;
 		this.owner = owner;

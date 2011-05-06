@@ -1,5 +1,7 @@
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -16,11 +18,12 @@ public class AddBusinessRelationshipWizard extends AbstractSpagoBIModelWizard {
 	BusinessModel model;
 	BusinessColumnSet sourceTable;
 	BusinessColumnSet destinationTable;
-	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	
 	public AddBusinessRelationshipWizard(BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle("Add business relationship");
+		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessrelationship.title"));
 		this.setHelpAvailable(false);	
 		this.model = model;
 		this.sourceTable = sourceTable;

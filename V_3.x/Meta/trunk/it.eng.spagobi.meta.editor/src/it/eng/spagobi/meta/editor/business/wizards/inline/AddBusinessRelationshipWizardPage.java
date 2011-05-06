@@ -55,8 +55,8 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	protected AddBusinessRelationshipWizardPage(String pageName, BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable) {
 		super(pageName);
 		setPageComplete(false);
-		setTitle("Business Relationship Creation");
-		setDescription("This wizard drives you to create a new Business Relationship in your Business Model.\n");
+		setTitle(RL.getString("business.editor.wizard.addbusinessrelationship.title"));
+		setDescription(RL.getString("business.editor.wizard.addbusinessrelationship.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBR") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
@@ -116,9 +116,9 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		composite_name.setLayout(new GridLayout(2, false));
  		
  		Label lblBusinessRelationshipName = new Label(composite_name, SWT.NONE);
- 		lblBusinessRelationshipName.setText("Business Relationship Name");
+ 		lblBusinessRelationshipName.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label.name"));
  		relationshipNameInputField = new Text(composite_name, SWT.BORDER);
- 		relationshipNameInputField.setToolTipText("Name to assign to the Business Relationship");
+ 		relationshipNameInputField.setToolTipText(RL.getString("business.editor.wizard.addbusinessrelationship.input.tooltip"));
  		relationshipNameInputField.setText("business relationship name");
  		relationshipNameInputField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
  		relationshipNameInputField.addModifyListener(new ModifyListener(){
@@ -196,7 +196,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		*/
  		
  		Button btnAddRelationship = new Button(cardinalityGroup, SWT.NONE);
- 		btnAddRelationship.setText("Add Relationship");
+ 		btnAddRelationship.setText(RL.getString("business.editor.wizard.addbusinessrelationship.addbutton"));
 		btnAddRelationship.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -215,14 +215,14 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 					
 					checkPageComplete();
 				} else {
-					setErrorMessage("You must select a source attribute, a target attribute and specify a name");
+					setErrorMessage(RL.getString("business.editor.wizard.addbusinessrelationship.error"));
 				}
 					
 			}
 		});
  		
  		Button btnRemoveRelationship = new Button(cardinalityGroup, SWT.NONE);
- 		btnRemoveRelationship.setText("Remove Relationship");
+ 		btnRemoveRelationship.setText(RL.getString("business.editor.wizard.addbusinessrelationship.removebutton"));
  		btnRemoveRelationship.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -250,7 +250,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void initCorrelationSummaryGroup(Composite parent, int style) {
  		Group correlationSummaryGroup = new Group(parent, style);
- 		correlationSummaryGroup.setText("Relationship");
+ 		correlationSummaryGroup.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label"));
  		correlationSummaryGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
  		correlationSummaryGroup.setLayout(new FillLayout(SWT.HORIZONTAL));
  		
@@ -266,13 +266,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void initSourceGroup(Composite parent, int style) {
  		Group grpSourceBusinessTable = new Group(parent, style);
- 		grpSourceBusinessTable.setText("Source Business Class");
+ 		grpSourceBusinessTable.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label.source"));
  		grpSourceBusinessTable.setLayout(new GridLayout(1, false));
  		
  		initSourceTableCombo(grpSourceBusinessTable, SWT.READ_ONLY);
  		
  		Label lblSourceColumns = new Label(grpSourceBusinessTable, SWT.NONE);
- 		lblSourceColumns.setText("Source Attributes");
+ 		lblSourceColumns.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label.source.attributes"));
  		//lblSourceColumns.setLocation(0, 0);
  		
  		initSourceColumnList(grpSourceBusinessTable, SWT.NONE);
@@ -280,13 +280,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void initDestinationGroup(Composite parent, int style) {
 		Group grpTargetBusinessTable = new Group(parent, style);
- 		grpTargetBusinessTable.setText("Target Business Class");
+ 		grpTargetBusinessTable.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label.target"));
  		grpTargetBusinessTable.setLayout(new GridLayout(1, false));
  		
  		initDestinationTableCombo(grpTargetBusinessTable, SWT.READ_ONLY);
  		
  		Label lblTargetColumns = new Label(grpTargetBusinessTable, SWT.NONE);
- 		lblTargetColumns.setText("Target Attributes");
+ 		lblTargetColumns.setText(RL.getString("business.editor.wizard.addbusinessrelationship.label.target.attributes"));
  		lblTargetColumns.setLocation(0, 0);
  		
  		initDestinationColumnList(grpTargetBusinessTable, SWT.NONE);

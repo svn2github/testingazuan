@@ -57,14 +57,12 @@ public class AbstractSpagoBIModelAction extends StaticSelectionCommandAction {
 		configureAction(selection);
 	}
 	
+	/*
 	public void configureAction(ISelection selection) {
 		// only handle structured selections
-	    if (!(selection instanceof IStructuredSelection))
-	    {
+	    if (!(selection instanceof IStructuredSelection)) {
 	      disable();
-	    }
-	    else
-	    {
+	    } else {
 	      // convert the selection to a collection of the selected objects
 	      IStructuredSelection sselection = (IStructuredSelection) selection;
 	      List<?> list = sselection.toList();
@@ -141,11 +139,12 @@ public class AbstractSpagoBIModelAction extends StaticSelectionCommandAction {
 	      }
 	    }
 	  }
-	 
+	 */
 	@Override
 	protected Command createActionCommand(EditingDomain editingDomain, Collection<?> collection) {
 		
 		if (collection.size() == 1) {
+			owner = collection.iterator().next();
 		      return editingDomain.createCommand
 		        (commandClass, 
 		        		new CommandParameter(owner, null, null, new ArrayList<Object>(collection)));

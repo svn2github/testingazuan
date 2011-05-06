@@ -63,8 +63,8 @@ public class BusinessTableSelectionPage extends WizardPage {
 	 */
 	public BusinessTableSelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Select Tables");
-		setMessage("Select the tables to import in your Business Model");
+		setTitle(RL.getString("multi.editor.wizard.businessclassselection.title"));
+		setMessage(RL.getString("multi.editor.wizard.businessclassselection.message"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectTables") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
@@ -105,7 +105,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 	
 	public Group initMainGroup(Composite parent, int style){
 		Group mainGroup = new Group(parent, style);
-		mainGroup.setText("Tables selection");
+		mainGroup.setText(RL.getString("multi.editor.wizard.businessclassselection.label"));
 		GridLayout glColumns = new GridLayout();
 		glColumns.numColumns = 3;
 		glColumns.makeColumnsEqualWidth = false;
@@ -122,7 +122,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 		compPhysicalTable.setLayout(glL);
 		compPhysicalTable.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compPhysicalTable,SWT.NONE);
-		lblLeftTab.setText("Physical Model Tables: ");
+		lblLeftTab.setText(RL.getString("multi.editor.wizard.businessclassselection.physicaltables.label"));
  		physicalTables = new Table(compPhysicalTable, SWT.BORDER | SWT.MULTI);
  		physicalTables.setLayoutData(gdL);		
 	}	
@@ -135,7 +135,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 		compBusinessTable.setLayout(glR);
 		compBusinessTable.setLayoutData(gdR);
 		Label lblRightTab = new Label(compBusinessTable,SWT.NONE);
-		lblRightTab.setText("Business Model Classes: ");
+		lblRightTab.setText(RL.getString("multi.editor.wizard.businessclassselection.businessclasses.label"));
  		businessTables = new Table(compBusinessTable, SWT.BORDER | SWT.MULTI);
  		businessTables.setLayoutData(gdR);		
 	}
@@ -146,21 +146,21 @@ public class BusinessTableSelectionPage extends WizardPage {
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
 	    Button bAddAllField = new Button(compButtons,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all tables as Business Classes");
+		bAddAllField.setToolTipText(RL.getString("multi.editor.wizard.businessclassselection.addallbutton.tooltip"));
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 		
 		Button bAddBusinessTable = new Button(compButtons,SWT.FLAT);
-		bAddBusinessTable.setToolTipText("Add table as a Business Class");
+		bAddBusinessTable.setToolTipText(RL.getString("multi.editor.wizard.businessclassselection.addbutton.tooltip"));
 		Image imageAdd =ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddBusinessTable.setImage(imageAdd);
 		Button bRemoveBusinessTable = new Button(compButtons,SWT.FLAT);
-		bRemoveBusinessTable.setToolTipText("Remove class from Business Model");
+		bRemoveBusinessTable.setToolTipText(RL.getString("multi.editor.wizard.businessclassselection.removebutton.tooltip"));
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveBusinessTable.setImage(imageRem);
 	    
 	    Button bRemoveAllField = new Button(compButtons,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all classes from Business Model");
+		bRemoveAllField.setToolTipText(RL.getString("multi.editor.wizard.businessclassselection.removeallbutton.tooltip"));
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	    

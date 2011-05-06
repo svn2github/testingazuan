@@ -71,8 +71,8 @@ public class PhysicalTableSelectionPage extends WizardPage {
 	 */
 	protected PhysicalTableSelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Select Tables");
-		setMessage("Select the tables to import in your Physical Model");
+		setTitle(RL.getString("multi.editor.wizard.physicaltablesselection.title"));
+		setMessage(RL.getString("multi.editor.wizard.physicaltablesselection.message"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.selectTables") );
 	    if (image!=null) {
 	    	setImageDescriptor(image);
@@ -115,7 +115,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 	
 	public Group initMainGroup(Composite parent, int style){
 		Group mainGroup = new Group(parent, style);
-		mainGroup.setText("Tables selection");
+		mainGroup.setText(RL.getString("multi.editor.wizard.physicaltablesselection.label"));
 		GridLayout glColumns = new GridLayout();
 		glColumns.numColumns = 3;
 		glColumns.makeColumnsEqualWidth = false;
@@ -132,7 +132,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		compDatabaseTable.setLayout(glL);
 		compDatabaseTable.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compDatabaseTable,SWT.NONE);
-		lblLeftTab.setText("Original Database Tables: ");
+		lblLeftTab.setText(RL.getString("multi.editor.wizard.physicaltablesselection.originaldbtables.label"));
  		databaseTables = new Table(compDatabaseTable, SWT.BORDER | SWT.MULTI);
  		databaseTables.setLayoutData(gdL);		
 	}
@@ -143,21 +143,21 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
 	    Button bAddAllField = new Button(compButtons,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all tables as Physical Tables");
+		bAddAllField.setToolTipText(RL.getString("multi.editor.wizard.physicaltablesselection.addallbutton"));
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		Button bAddPhysicalTable = new Button(compButtons,SWT.FLAT);
-		bAddPhysicalTable.setToolTipText("Add table as a Physical Table");
+		bAddPhysicalTable.setToolTipText(RL.getString("multi.editor.wizard.physicaltablesselection.addbutton"));
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddPhysicalTable.setImage(imageAdd);
 		Button bRemovePhysicalTable = new Button(compButtons,SWT.FLAT);
-		bRemovePhysicalTable.setToolTipText("Remove table from Physical Model");
+		bRemovePhysicalTable.setToolTipText(RL.getString("multi.editor.wizard.physicaltablesselection.removebutton"));
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemovePhysicalTable.setImage(imageRem);
 	  
 		Button bRemoveAllField = new Button(compButtons,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all tables from Physical Model");
+		bRemoveAllField.setToolTipText(RL.getString("multi.editor.wizard.physicaltablesselection.removeallbutton"));
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	    
@@ -172,7 +172,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 		compPhysicalTable.setLayout(glR);
 		compPhysicalTable.setLayoutData(gdR);
 		Label lblRightTab = new Label(compPhysicalTable,SWT.NONE);
-		lblRightTab.setText("Physical Model Tables: ");
+		lblRightTab.setText(RL.getString("multi.editor.wizard.physicaltablesselection.physicaltables.label"));
  		physicalTables = new Table(compPhysicalTable, SWT.BORDER | SWT.MULTI);
  		physicalTables.setLayoutData(gdR);		
 	}
@@ -331,7 +331,7 @@ public class PhysicalTableSelectionPage extends WizardPage {
 			setPageComplete(true);
 		}
 		else{			
-			setErrorMessage("The Physical Model hasn't any tables, please select at least one to continue");
+			setErrorMessage(RL.getString("multi.editor.wizard.physicaltablesselection.error"));
 			setPageComplete(false);
 		}
 	}

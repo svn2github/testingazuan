@@ -58,8 +58,8 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	 */
 	protected GenerateJPAMappingWizardDirectorySelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Export JPA Mapping");
-		setDescription("Please select the directory for exporting JPA Mapping.");
+		setTitle(RL.getString("business.editor.wizard.generatemapping.title"));
+		setDescription(RL.getString("business.editor.wizard.generatemapping.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
@@ -73,7 +73,7 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 		container.setLayout(new GridLayout(6, false));
 		
 		Label lblDirectory = new Label(container, SWT.NONE);
-		lblDirectory.setText("Directory:");
+		lblDirectory.setText(RL.getString("business.editor.wizard.generatemapping.label"));
 		
 	    // Input text box
 	    textDirectory = new Text(container, SWT.BORDER);
@@ -89,7 +89,7 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	    
 	    // Browse button to select directory
 	    Button buttonBrowse = new Button(container, SWT.PUSH);
-	    buttonBrowse.setText("Browse...");
+	    buttonBrowse.setText(RL.getString("business.editor.wizard.generatemapping.browsebutton"));
 	    buttonBrowse.addSelectionListener(new SelectionAdapter() {
 	      public void widgetSelected(SelectionEvent event) {
 	        DirectoryDialog dlg = new DirectoryDialog(new Shell());
@@ -98,8 +98,8 @@ public class GenerateJPAMappingWizardDirectorySelectionPage extends WizardPage {
 	        // to anything they've selected or typed in
 	        dlg.setFilterPath(textDirectory.getText());
 
-	        dlg.setText("Select Directory");
-	        dlg.setMessage("Select a directory");
+	        dlg.setText(RL.getString("business.editor.wizard.generatemapping.directoryselection"));
+	        dlg.setMessage(RL.getString("business.editor.wizard.generatemapping.directoryselection"));
 
 	        // Calling open() will open and run the dialog.
 	        // It will return the selected directory, or

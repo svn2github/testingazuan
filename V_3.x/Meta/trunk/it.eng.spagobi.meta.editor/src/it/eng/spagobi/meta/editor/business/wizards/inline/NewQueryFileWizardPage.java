@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
@@ -29,10 +32,12 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
  *
  */
 public class NewQueryFileWizardPage extends WizardNewFileCreationPage {
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	public NewQueryFileWizardPage(IStructuredSelection selection) {
         super("NewQueryFileWizardPage", selection);
-        setTitle("QueryFile");
-        setDescription("Creates a new Query File");
+        setTitle(RL.getString("business.editor.wizard.newqueryfile.title"));
+        setDescription(RL.getString("business.editor.wizard.newqueryfile.description"));
         setFileExtension("metaquery");
     }
 

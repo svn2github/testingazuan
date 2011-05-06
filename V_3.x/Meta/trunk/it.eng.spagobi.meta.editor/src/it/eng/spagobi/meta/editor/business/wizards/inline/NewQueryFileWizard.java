@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
@@ -57,6 +59,8 @@ public class NewQueryFileWizard extends AbstractSpagoBIModelWizard implements IN
     private IWorkbench workbench;
     private IFile file;
     private BusinessModel businessModel;
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
     
 	private static Logger logger = LoggerFactory.getLogger(NewQueryFileWizard.class);
 
@@ -64,7 +68,7 @@ public class NewQueryFileWizard extends AbstractSpagoBIModelWizard implements IN
     public NewQueryFileWizard(BusinessModel businessModel, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command) {
 		super(editingDomain, command);
-		this.setWindowTitle("Create Query");
+		this.setWindowTitle(RL.getString("business.editor.wizard.newqueryfile.title"));
 		this.setHelpAvailable(false);	
 		this.businessModel = businessModel;
 

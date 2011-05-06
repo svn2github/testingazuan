@@ -58,8 +58,8 @@ public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 	 */
 	protected RemovePhysicalTableWizardSelectionPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
-		setTitle("Remove Physical Table");
-		setDescription("Please select the physical table to remove from your Business Class.");
+		setTitle(RL.getString("business.editor.wizard.removephysicaltable.title"));
+		setDescription(RL.getString("business.editor.wizard.removephysicaltable.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    owner = businessColumnSet;
@@ -86,7 +86,7 @@ public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 	private void createTableGroup(Composite composite, int style){
 		//Physical Table List
 		Group tableGroup = new Group(composite, style);
-		tableGroup.setText("Physical Table Selection");
+		tableGroup.setText(RL.getString("business.editor.wizard.removephysicaltable.label"));
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		glTable.numColumns = 1;

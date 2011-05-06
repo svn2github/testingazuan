@@ -135,7 +135,7 @@ public class BusinessTableSelectionPage extends WizardPage {
 		compBusinessTable.setLayout(glR);
 		compBusinessTable.setLayoutData(gdR);
 		Label lblRightTab = new Label(compBusinessTable,SWT.NONE);
-		lblRightTab.setText("Business Model Tables: ");
+		lblRightTab.setText("Business Model Classes: ");
  		businessTables = new Table(compBusinessTable, SWT.BORDER | SWT.MULTI);
  		businessTables.setLayoutData(gdR);		
 	}
@@ -146,21 +146,21 @@ public class BusinessTableSelectionPage extends WizardPage {
 		glC.numColumns = 1;
 		compButtons.setLayout(glC);
 	    Button bAddAllField = new Button(compButtons,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all tables as Business Tables");
+		bAddAllField.setToolTipText("Add all tables as Business Classes");
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 		
 		Button bAddBusinessTable = new Button(compButtons,SWT.FLAT);
-		bAddBusinessTable.setToolTipText("Add table as a Business Table");
+		bAddBusinessTable.setToolTipText("Add table as a Business Class");
 		Image imageAdd =ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddBusinessTable.setImage(imageAdd);
 		Button bRemoveBusinessTable = new Button(compButtons,SWT.FLAT);
-		bRemoveBusinessTable.setToolTipText("Remove table from Business Model");
+		bRemoveBusinessTable.setToolTipText("Remove class from Business Model");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveBusinessTable.setImage(imageRem);
 	    
 	    Button bRemoveAllField = new Button(compButtons,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all tables from Business Model");
+		bRemoveAllField.setToolTipText("Remove all classes from Business Model");
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	    

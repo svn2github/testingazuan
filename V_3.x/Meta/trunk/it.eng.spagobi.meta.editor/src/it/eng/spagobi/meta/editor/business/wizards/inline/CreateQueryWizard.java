@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
@@ -38,6 +40,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 public class CreateQueryWizard extends AbstractSpagoBIModelWizard {
 	
 	BusinessModel businessModel;
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	
 	/**
 	 * @param editingDomain
@@ -46,7 +50,7 @@ public class CreateQueryWizard extends AbstractSpagoBIModelWizard {
 	public CreateQueryWizard(BusinessModel businessModel, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command) {
 		super(editingDomain, command);
-		this.setWindowTitle("Create Query");
+		this.setWindowTitle(RL.getString("business.editor.wizard.createquery.title"));
 		this.setHelpAvailable(false);	
 		this.businessModel = businessModel;
 	}

@@ -56,8 +56,8 @@ public class CreateQueryWizardDirectorySelectionPage extends WizardPage {
 	 */
 	protected CreateQueryWizardDirectorySelectionPage(String pageName) {
 		super(pageName);
-		setTitle("Create Query");
-		setDescription("Please select the directory where to put SpagoBI Query file.");
+		setTitle(RL.getString("business.editor.wizard.createquery.title"));
+		setDescription(RL.getString("business.editor.wizard.createquery.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
@@ -71,7 +71,7 @@ public class CreateQueryWizardDirectorySelectionPage extends WizardPage {
 		container.setLayout(new GridLayout(6, false));
 		
 		Label lblDirectory = new Label(container, SWT.NONE);
-		lblDirectory.setText("Directory:");
+		lblDirectory.setText(RL.getString("business.editor.wizard.createquery.label.directory"));
 		
 	    // Input text box
 	    textDirectory = new Text(container, SWT.BORDER);
@@ -81,7 +81,7 @@ public class CreateQueryWizardDirectorySelectionPage extends WizardPage {
 
 	    // Browse button to select directory
 	    Button buttonBrowse = new Button(container, SWT.PUSH);
-	    buttonBrowse.setText("Browse...");
+	    buttonBrowse.setText(RL.getString("business.editor.wizard.createquery.browsebutton"));
 	    buttonBrowse.addSelectionListener(new SelectionAdapter() {
 	      public void widgetSelected(SelectionEvent event) {
 	        DirectoryDialog dlg = new DirectoryDialog(new Shell());
@@ -90,8 +90,8 @@ public class CreateQueryWizardDirectorySelectionPage extends WizardPage {
 	        // to anything they've selected or typed in
 	        dlg.setFilterPath(textDirectory.getText());
 
-	        dlg.setText("Select Directory");
-	        dlg.setMessage("Select a directory");
+	        dlg.setText(RL.getString("business.editor.wizard.createquery.directoryselection"));
+	        dlg.setMessage(RL.getString("business.editor.wizard.createquery.directoryselection"));
 
 	        // Calling open() will open and run the dialog.
 	        // It will return the selected directory, or

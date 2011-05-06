@@ -1,6 +1,6 @@
 package it.eng.spagobi.meta.editor.business.wizards;
 
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -8,10 +8,10 @@ import org.eclipse.jface.wizard.Wizard;
 
 public abstract class AbstractSpagoBIModelWizard extends Wizard {
 
-	AbstractSpagoBIModelCommand performFinishCommand;
+	ISpagoBIModelCommand performFinishCommand;
 	EditingDomain editingDomain;
 	
-	public AbstractSpagoBIModelWizard(EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	public AbstractSpagoBIModelWizard(EditingDomain editingDomain, ISpagoBIModelCommand command){
 		super();
 		this.editingDomain = editingDomain;
 		this.performFinishCommand = command;

@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.AddColumnToIdentifierCommand;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -33,11 +33,11 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	
-	AbstractSpagoBIModelCommand performFinishCommand; 
+	ISpagoBIModelCommand performFinishCommand; 
 	public AddToIdentifierAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddColumnToIdentifierCommand.class, workbenchPart, selection);
-		if (command instanceof AbstractSpagoBIModelCommand)
-			this.performFinishCommand = (AbstractSpagoBIModelCommand)command;
+		if (command instanceof ISpagoBIModelCommand)
+			this.performFinishCommand = (ISpagoBIModelCommand)command;
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class AddToIdentifierAction extends AbstractSpagoBIModelAction {
 	/**
 	 * @return the performFinishCommand
 	 */
-	public AbstractSpagoBIModelCommand getPerformFinishCommand() {
+	public ISpagoBIModelCommand getPerformFinishCommand() {
 		return performFinishCommand;
 	}
 	

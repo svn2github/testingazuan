@@ -25,7 +25,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class GenerateJPAMappingWizard extends AbstractSpagoBIModelWizard {
 	 * @param command
 	 */
 	public GenerateJPAMappingWizard(BusinessModel businessModel, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command) {
+			ISpagoBIModelCommand command) {
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.generatemapping.title"));
 		this.setHelpAvailable(false);	

@@ -25,7 +25,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.ArrayList;
 
@@ -48,7 +48,7 @@ public class CreateQueryWizard extends AbstractSpagoBIModelWizard {
 	 * @param command
 	 */
 	public CreateQueryWizard(BusinessModel businessModel, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command) {
+			ISpagoBIModelCommand command) {
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.createquery.title"));
 		this.setHelpAvailable(false);	

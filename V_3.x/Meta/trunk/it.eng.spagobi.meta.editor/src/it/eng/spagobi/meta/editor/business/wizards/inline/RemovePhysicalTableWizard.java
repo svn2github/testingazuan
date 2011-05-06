@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.wizards.inline;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class RemovePhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	 * @param command
 	 */
 	public RemovePhysicalTableWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command) {
+			ISpagoBIModelCommand command) {
 		super(editingDomain, command);
 		this.owner = businessColumnSet;
 	}

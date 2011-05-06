@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.editor.business.wizards.inline.EditBusinessColumnsWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -49,7 +49,7 @@ public class EditBusinessColumnsAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
-		EditBusinessColumnsWizard wizard = new EditBusinessColumnsWizard( businessColumnSet, editingDomain, (AbstractSpagoBIModelCommand)command );
+		EditBusinessColumnsWizard wizard = new EditBusinessColumnsWizard( businessColumnSet, editingDomain, (ISpagoBIModelCommand)command );
     	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 		dialog.create();
     	dialog.open();

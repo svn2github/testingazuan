@@ -26,6 +26,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
 import it.eng.spagobi.meta.model.validator.ModelExtractor;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
 
@@ -61,7 +62,9 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 				public void run() {
 					Command mostRecentCommand = ((CommandStack)event.getSource()).getMostRecentCommand();
 					if(mostRecentCommand != null){
-						if(mostRecentCommand instanceof AbstractSpagoBIModelEditCommand || mostRecentCommand instanceof DeleteCommand) {
+						if(mostRecentCommand instanceof AbstractSpagoBIModelEditCommand 
+						|| mostRecentCommand instanceof AbstractSpagoBIModelEditCompoundCommand
+						|| mostRecentCommand instanceof DeleteCommand) {
 							editor.firePropertyChange(IEditorPart.PROP_DIRTY);
 							validateCommandResults(mostRecentCommand, false);  
 							editor.refreshViewer();

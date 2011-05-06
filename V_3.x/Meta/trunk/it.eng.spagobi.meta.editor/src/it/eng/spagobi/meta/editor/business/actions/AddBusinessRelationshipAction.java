@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessRelationshipWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
@@ -77,7 +77,7 @@ public class AddBusinessRelationshipAction extends AbstractSpagoBIModelAction {
 				model = destinationTable.getModel();
 			}
 			
-			AddBusinessRelationshipWizard wizard = new AddBusinessRelationshipWizard( model, sourceTable, destinationTable,  editingDomain, (AbstractSpagoBIModelCommand)command );
+			AddBusinessRelationshipWizard wizard = new AddBusinessRelationshipWizard( model, sourceTable, destinationTable,  editingDomain, (ISpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

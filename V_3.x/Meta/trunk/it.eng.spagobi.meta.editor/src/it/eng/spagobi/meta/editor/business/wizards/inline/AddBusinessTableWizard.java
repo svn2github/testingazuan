@@ -26,7 +26,7 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessTableDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -53,7 +53,7 @@ public class AddBusinessTableWizard extends AbstractSpagoBIModelWizard {
 	private BusinessTableDescriptor businessTableDescriptor;
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 
-	public AddBusinessTableWizard(BusinessModel owner, PhysicalTable physicalTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	public AddBusinessTableWizard(BusinessModel owner, PhysicalTable physicalTable, EditingDomain editingDomain, ISpagoBIModelCommand command){
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessclass.title"));
 		this.setHelpAvailable(false);

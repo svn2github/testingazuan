@@ -38,7 +38,7 @@ import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class BusinessModelMenuActionFactory {
 				RemoveFromIdentifierAction removeFromIdentifierAction = new RemoveFromIdentifierAction(activeEditorPart, selection);
 				Command command = removeFromIdentifierAction.getPerformFinishCommand();
 				//Check if Command is executable
-				if (command instanceof AbstractSpagoBIModelCommand){
+				if (command instanceof ISpagoBIModelCommand){
 					removeActions.add(removeFromIdentifierAction);
 				}
 				actions.put("Remove", removeActions);
@@ -108,7 +108,7 @@ public class BusinessModelMenuActionFactory {
 				AddToIdentifierAction addToIdentifierAction = new AddToIdentifierAction(activeEditorPart, selection);
 				Command command = addToIdentifierAction.getPerformFinishCommand();
 				//Check if Command is executable
-				if (command instanceof AbstractSpagoBIModelCommand){
+				if (command instanceof ISpagoBIModelCommand){
 					editActions.add(addToIdentifierAction);
 				}
 				actions.put("Add", editActions);

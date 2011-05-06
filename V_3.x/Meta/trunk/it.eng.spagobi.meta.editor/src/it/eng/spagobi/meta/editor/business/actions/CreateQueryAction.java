@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 import it.eng.spagobi.meta.editor.business.wizards.inline.CreateQueryWizard;
 import it.eng.spagobi.meta.editor.business.wizards.inline.NewQueryFileWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
@@ -60,7 +60,7 @@ public class CreateQueryAction extends AbstractSpagoBIModelAction {
 		try {
 			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
 			//CreateQueryWizard wizard = new CreateQueryWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
-	    	NewQueryFileWizard wizard = new NewQueryFileWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
+	    	NewQueryFileWizard wizard = new NewQueryFileWizard(businessModel, editingDomain, (ISpagoBIModelCommand)command );
 	    	wizard.init(PlatformUI.getWorkbench(), new StructuredSelection());
 	    	WizardDialog dialog = new WizardDialog(wizard.getShell(), wizard);
 			dialog.create();

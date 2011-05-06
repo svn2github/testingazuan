@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.editor.business.wizards.inline.RemovePhysicalTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -52,7 +52,7 @@ AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
-		RemovePhysicalTableWizard wizard = new RemovePhysicalTableWizard( businessColumnSet, editingDomain, (AbstractSpagoBIModelCommand)command );
+		RemovePhysicalTableWizard wizard = new RemovePhysicalTableWizard( businessColumnSet, editingDomain, (ISpagoBIModelCommand)command );
     	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 		dialog.create();
     	dialog.open();

@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessTableWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -51,7 +51,7 @@ public class AddBusinessTableAction extends AbstractSpagoBIModelAction {
 	public void run() {
 		try {
 			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
-			AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain, (AbstractSpagoBIModelCommand)command );
+			AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain, (ISpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

@@ -5,7 +5,7 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class AddBusinessRelationshipWizard extends AbstractSpagoBIModelWizard {
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 
 	
-	public AddBusinessRelationshipWizard(BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	public AddBusinessRelationshipWizard(BusinessModel model, BusinessColumnSet sourceTable, BusinessColumnSet destinationTable, EditingDomain editingDomain, ISpagoBIModelCommand command){
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessrelationship.title"));
 		this.setHelpAvailable(false);	

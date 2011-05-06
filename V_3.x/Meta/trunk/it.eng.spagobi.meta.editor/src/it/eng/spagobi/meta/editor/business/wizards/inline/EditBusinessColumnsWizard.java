@@ -1,11 +1,9 @@
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
-import it.eng.spagobi.commons.resource.IResourceLocator;
-import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
@@ -19,12 +17,11 @@ import org.eclipse.swt.widgets.TableItem;
 public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 
 	BusinessColumnSet businessColumnSet;
-	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
-
 	
-	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
+	
+	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, ISpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle(RL.getString("business.editor.wizard.editbusinessattributes.title"));
+		this.setWindowTitle("Edit business columns");
 		this.setHelpAvailable(false);	
 		this.businessColumnSet = businessColumnSet;
 		
@@ -32,7 +29,7 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Attribute page one",businessColumnSet);
+		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessColumnSet);
 		addPage( pageOne );
 	}
 	

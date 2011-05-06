@@ -19,23 +19,23 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.model.business.commands.generate;
+package it.eng.spagobi.meta.model.business.commands.edit;
 
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelSimpleCommand;
+import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCompoundCommand;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
 /**
- * All commands that use the model as input to generate some other artifact must extends this class
+ * All commands that modify the model structure must extends this abstract class
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AbstractSpagoBIModelGenerateCommand extends AbstractSpagoBIModelSimpleCommand {
+public class AbstractSpagoBIModelEditCompoundCommand extends AbstractSpagoBIModelCompoundCommand {
 
-	public AbstractSpagoBIModelGenerateCommand(String commandLabel,
+	public AbstractSpagoBIModelEditCompoundCommand(String commandLabel,
 			String commandDescription, String commandImage,
 			EditingDomain domain, CommandParameter parameter) {
 		super(commandLabel, commandDescription, commandImage, domain, parameter);

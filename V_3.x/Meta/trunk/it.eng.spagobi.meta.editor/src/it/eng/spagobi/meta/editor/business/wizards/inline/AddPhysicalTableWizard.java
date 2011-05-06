@@ -26,7 +26,7 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.ArrayList;
 
@@ -53,7 +53,7 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	 * @param command
 	 */
 	public AddPhysicalTableWizard(BusinessColumnSet owner, EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command, boolean isBusinessView, String physicalTableName) {
+			ISpagoBIModelCommand command, boolean isBusinessView, String physicalTableName) {
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.addphysicaltable.title"));
 		this.setHelpAvailable(false);	

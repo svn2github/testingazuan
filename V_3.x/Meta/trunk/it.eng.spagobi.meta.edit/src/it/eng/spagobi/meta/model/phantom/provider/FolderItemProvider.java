@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.meta.model.phantom.provider;
 
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
 import java.util.ArrayList;
@@ -267,7 +267,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 						newChildParameter.getEStructuralFeature(),
 						newChildParameter.getValue(), newChildParameter.getIndex(),
 						commandParameter.getCollection());
-			} else if (AbstractSpagoBIModelCommand.class.isAssignableFrom(commandClass)) {
+			} else if (ISpagoBIModelCommand.class.isAssignableFrom(commandClass)) {
 				result = createCustomCommand(object, domain, commandClass, commandParameter);
 			}
 

@@ -11,7 +11,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.ModelPropertyType;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -343,7 +343,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 					newChildParameter.getEStructuralFeature(),
 					newChildParameter.getValue(), newChildParameter.getIndex(),
 					commandParameter.getCollection());
-		} else if (AbstractSpagoBIModelCommand.class.isAssignableFrom(commandClass)) {
+		} else if (ISpagoBIModelCommand.class.isAssignableFrom(commandClass)) {
 			result = createCustomCommand(object, domain, commandClass, commandParameter);
 		}
 

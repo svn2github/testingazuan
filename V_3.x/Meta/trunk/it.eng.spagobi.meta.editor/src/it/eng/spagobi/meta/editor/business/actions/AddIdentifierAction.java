@@ -23,7 +23,7 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessIdentifierWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -52,7 +52,7 @@ public class AddIdentifierAction extends AbstractSpagoBIModelAction {
 		try {	
 			businessColumnSet = (BusinessColumnSet)owner;
 			defaultTable = businessColumnSet.getName();
-			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (AbstractSpagoBIModelCommand)command, defaultTable, businessColumnSet );
+			AddBusinessIdentifierWizard wizard = new AddBusinessIdentifierWizard( editingDomain, (ISpagoBIModelCommand)command, defaultTable, businessColumnSet );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

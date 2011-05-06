@@ -25,7 +25,7 @@ import it.eng.spagobi.meta.editor.business.BusinessModelEditorInput;
 import it.eng.spagobi.meta.editor.business.wizards.inline.GenerateJPAMappingWizard;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorAdapterLauncher;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
@@ -106,7 +106,7 @@ public class GenerateJPAMappingAction extends AbstractSpagoBIModelAction {
 			*/
 			
 			BusinessModel businessModel = (BusinessModel)((BusinessRootItemProvider)owner).getParentObject();
-			GenerateJPAMappingWizard wizard = new GenerateJPAMappingWizard(businessModel, editingDomain, (AbstractSpagoBIModelCommand)command );
+			GenerateJPAMappingWizard wizard = new GenerateJPAMappingWizard(businessModel, editingDomain, (ISpagoBIModelCommand)command );
 	    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 			dialog.create();
 	    	dialog.open();

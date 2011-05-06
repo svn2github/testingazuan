@@ -26,6 +26,7 @@ import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
 import java.util.ArrayList;
 
 import org.eclipse.emf.common.command.AbstractCommand;
+import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.edit.command.CommandActionDelegate;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -34,17 +35,15 @@ import org.eclipse.emf.edit.domain.EditingDomain;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AbstractSpagoBIModelCommand extends AbstractCommand implements CommandActionDelegate {
+public class AbstractSpagoBIModelCompoundCommand extends CompoundCommand implements ISpagoBIModelCommand {
 
-	EditingDomain domain;
+	protected EditingDomain domain;
 	protected CommandParameter parameter;
 	protected boolean executed;
 	
 	Object image;
-	
-	
 
-	public AbstractSpagoBIModelCommand(String commandLabel, String commandDescription, String commandImage, EditingDomain domain, CommandParameter parameter) {
+	public AbstractSpagoBIModelCompoundCommand(String commandLabel, String commandDescription, String commandImage, EditingDomain domain, CommandParameter parameter) {
 		
 		
 		super( SpagoBIMetaEditPlugin.getInstance().getResourceLocator().getString(commandLabel)
@@ -68,34 +67,8 @@ public class AbstractSpagoBIModelCommand extends AbstractCommand implements Comm
 		}
 	}
 	
-	@Override
-	public boolean canExecute() {
-		return domain != null && parameter != null;
-	}
-
-	@Override
-	public void execute() {
-		executed = true;
-	}
-
-	@Override
-	public boolean canUndo() {
-		return true;
-	}
-
-	@Override
-	public void undo() {
-		
-	}
-
-	@Override
-	public void redo() {
-		
-	}
-	
 	
 	// Implementation of CommandActionDelegate
-	
 	
 	@Override
 	public Object getImage() {

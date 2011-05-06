@@ -12,7 +12,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
@@ -99,7 +99,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
         		        (CreateBusinessTableCommand.class, 
         		        		new CommandParameter(businessModel, null, null, new ArrayList<Object>()));
         				//Launch AddBusinessTableWizard
-        				AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(AbstractSpagoBIModelCommand)addBusinessTableCommand);
+        				AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(ISpagoBIModelCommand)addBusinessTableCommand);
         		    	WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
         				dialog.create();
         		    	dialog.open();
@@ -155,7 +155,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
                 				Command addPhysicalTableCommand = editingDomain.createCommand
                 		        (AddPhysicalTableToBusinessViewCommand.class, 
                 		        		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()) );
-                				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, true, sourcePhysicalTable.getName() );
+                				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, true, sourcePhysicalTable.getName() );
                 		    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
                 				dialog.create();
                 		    	dialog.open();
@@ -177,7 +177,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
                 				Command addPhysicalTableCommand = editingDomain.createCommand
                 		        (AddPhysicalTableToBusinessViewCommand.class, 
                 		        		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
-                				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
+                				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
                 		    	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
                 				dialog.create();
                 		    	dialog.open();
@@ -206,7 +206,7 @@ public class PhysicalObjectDropListener  extends ViewerDropAdapter {
         			Command addPhysicalTableCommand = editingDomain.createCommand
         		    (AddPhysicalTableToBusinessViewCommand.class, 
         		      		new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
-        			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (AbstractSpagoBIModelCommand)addPhysicalTableCommand, isBusinessView, sourcePhysicalTable.getName());
+        			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, isBusinessView, sourcePhysicalTable.getName());
         		    WizardDialog dialog = new WizardDialog(new Shell(), wizard);
         			dialog.create();
         		    dialog.open();

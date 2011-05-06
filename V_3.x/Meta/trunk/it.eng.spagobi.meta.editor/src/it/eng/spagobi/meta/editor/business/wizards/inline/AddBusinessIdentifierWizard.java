@@ -26,7 +26,7 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.commands.AbstractSpagoBIModelCommand;
+import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 	 * @param command
 	 */
 	public AddBusinessIdentifierWizard(EditingDomain editingDomain,
-			AbstractSpagoBIModelCommand command, String defaultTable, BusinessColumnSet businessColumnSet) {
+			ISpagoBIModelCommand command, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessidentifier.title"));
 		this.setHelpAvailable(false);		

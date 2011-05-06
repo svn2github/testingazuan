@@ -67,7 +67,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView, String selectedPhysicalTableName) {
 		super(pageName);
 		setTitle("Add Physical Table");
-		setDescription("Please select the physical table to add to your Business Table.");
+		setDescription("Please select the physical table to add to your Business Class.");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;

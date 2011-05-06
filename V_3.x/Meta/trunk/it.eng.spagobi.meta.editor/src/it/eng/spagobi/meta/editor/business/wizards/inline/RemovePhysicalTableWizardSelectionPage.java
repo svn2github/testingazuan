@@ -59,7 +59,7 @@ public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 	protected RemovePhysicalTableWizardSelectionPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Remove Physical Table");
-		setDescription("Please select the physical table to remove from your Business Table.");
+		setDescription("Please select the physical table to remove from your Business Class.");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    owner = businessColumnSet;

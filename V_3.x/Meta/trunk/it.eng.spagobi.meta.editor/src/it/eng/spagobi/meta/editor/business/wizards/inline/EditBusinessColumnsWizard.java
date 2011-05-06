@@ -21,7 +21,7 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 	
 	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle("Edit business columns");
+		this.setWindowTitle("Edit business attributes");
 		this.setHelpAvailable(false);	
 		this.businessColumnSet = businessColumnSet;
 		
@@ -29,7 +29,7 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessColumnSet);
+		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Attribute page one",businessColumnSet);
 		addPage( pageOne );
 	}
 	

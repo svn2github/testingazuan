@@ -71,7 +71,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 	protected AddBusinessIdentifierWizardPageColumnSelection(String pageName, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(pageName);
 		setTitle("Business Identifier Creation");
-		setDescription("Please select the columns to use in your Business Identifier");
+		setDescription("Please select the attributes to use in your Business Identifier");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBI") );
 	    if (image!=null) setImageDescriptor(image);	
 		this.defaultTable = defaultTable;
@@ -113,7 +113,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 	public Group createColumnsGroup(Composite composite, int style){
 		//Columns Group
 		Group columnsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-		columnsGroup.setText("Columns selection");
+		columnsGroup.setText("Attributes selection");
 		GridLayout glColumns = new GridLayout();
 		GridData gd2 = new GridData(GridData.FILL_BOTH);
 		glColumns.numColumns = 3;
@@ -132,7 +132,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		compBusinessColumns.setLayout(glL);
 		compBusinessColumns.setLayoutData(gdL);
 		Label lblBusinessColumns = new Label(compBusinessColumns,SWT.NONE);
-		lblBusinessColumns.setText("Business Table Columns: ");
+		lblBusinessColumns.setText(RL.getString("business.editor.wizard.addbusinessclass.columnselection"));
  		columns = new Table(compBusinessColumns, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);		
 	}
@@ -145,21 +145,21 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		compButtons.setLayout(glC);
 		
 		bAddAllField = new Button(compButtons,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all column as a Business Class Column");
+		bAddAllField.setToolTipText("Add all attributes as a Business Identifier attributes");
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		bAddField = new Button(compButtons,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Identifier Column");
+		bAddField.setToolTipText("Add attribute as a Business Identifier attribute");
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 		if (imageAdd!=null) bAddField.setImage(imageAdd);
 		bRemoveField = new Button(compButtons,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove column from Business Identifier");
+		bRemoveField.setToolTipText("Remove attributes from Business Identifier");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 		if (imageRem!=null) bRemoveField.setImage(imageRem);
 		
 		bRemoveAllField = new Button(compButtons,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all column from Business Class");
+		bRemoveAllField.setToolTipText("Remove all attributes from Business Identifier");
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	}
@@ -295,7 +295,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		compBusinessIdentifier.setLayout(glR);
 		compBusinessIdentifier.setLayoutData(gdR);
 		Label lblRightTab = new Label(compBusinessIdentifier,SWT.NONE);
-		lblRightTab.setText("Business Identifier Columns: ");
+		lblRightTab.setText("Business Identifier Attributes: ");
  		columnsIdentifier = new Table(compBusinessIdentifier, SWT.BORDER | SWT.MULTI);
  		columnsIdentifier.setLayoutData(gdR);
 	}
@@ -347,7 +347,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 				setPageComplete(true);
 			}
 			else{			
-				setErrorMessage("This Business Identifier hasn't columns, please select at least one to continue");
+				setErrorMessage("This Business Identifier hasn't attributes, please select at least one to continue");
 				setPageComplete(false);
 			}
 

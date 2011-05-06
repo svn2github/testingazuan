@@ -40,8 +40,8 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 	
 	protected EditBusinessColumnsWizardPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
-		setTitle("Edit Business Table Columns");
-		setDescription("Please select the columns to add in your Business Table");
+		setTitle("Edit Business Class Columns");
+		setDescription("Please select the columns to add to your Business Class");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
@@ -89,21 +89,21 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		glC.numColumns = 1;
 		compCenter.setLayout(glC);
 	    Button bAddAllField = new Button(compCenter,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all column as a Business Class Column");
+		bAddAllField.setToolTipText("Add all columns as a Business Class Attributes");
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		Button bAddField = new Button(compCenter,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Class Column");
+		bAddField.setToolTipText("Add column as a Business Class Attribute");
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		Button bRemoveField = new Button(compCenter,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove column from Business Class");
+		bRemoveField.setToolTipText("Remove attribute from Business Class");
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
 	    
 		Button bRemoveAllField = new Button(compCenter,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all column from Business Class");
+		bRemoveAllField.setToolTipText("Remove all attributes from Business Class");
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	    
@@ -116,7 +116,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		compRight.setLayout(glR);
 		compRight.setLayoutData(gdR);
 		Label lblRightTab = new Label(compRight,SWT.NONE);
-		lblRightTab.setText("Business Table Columns: ");
+		lblRightTab.setText("Business Class Attributes: ");
  		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
  		fields.setLayoutData(gdR);
  	
@@ -316,7 +316,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			setPageComplete(true);
 		}
 		else{			
-			setErrorMessage("This Business Table hasn't columns, please select at least one to continue");
+			setErrorMessage("This Business Class hasn't attributes, please select at least one to continue");
 			setPageComplete(false);
 		}
 	}

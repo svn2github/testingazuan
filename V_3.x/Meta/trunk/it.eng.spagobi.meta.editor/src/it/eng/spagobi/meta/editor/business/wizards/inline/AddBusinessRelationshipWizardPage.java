@@ -215,7 +215,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 					
 					checkPageComplete();
 				} else {
-					setErrorMessage("You must select a source column, a target column and specify a name");
+					setErrorMessage("You must select a source attribute, a target attribute and specify a name");
 				}
 					
 			}
@@ -266,13 +266,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void initSourceGroup(Composite parent, int style) {
  		Group grpSourceBusinessTable = new Group(parent, style);
- 		grpSourceBusinessTable.setText("Source Business Table");
+ 		grpSourceBusinessTable.setText("Source Business Class");
  		grpSourceBusinessTable.setLayout(new GridLayout(1, false));
  		
  		initSourceTableCombo(grpSourceBusinessTable, SWT.READ_ONLY);
  		
  		Label lblSourceColumns = new Label(grpSourceBusinessTable, SWT.NONE);
- 		lblSourceColumns.setText("Source Columns");
+ 		lblSourceColumns.setText("Source Attributes");
  		//lblSourceColumns.setLocation(0, 0);
  		
  		initSourceColumnList(grpSourceBusinessTable, SWT.NONE);
@@ -280,13 +280,13 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void initDestinationGroup(Composite parent, int style) {
 		Group grpTargetBusinessTable = new Group(parent, style);
- 		grpTargetBusinessTable.setText("Target Business Table");
+ 		grpTargetBusinessTable.setText("Target Business Class");
  		grpTargetBusinessTable.setLayout(new GridLayout(1, false));
  		
  		initDestinationTableCombo(grpTargetBusinessTable, SWT.READ_ONLY);
  		
  		Label lblTargetColumns = new Label(grpTargetBusinessTable, SWT.NONE);
- 		lblTargetColumns.setText("Target Columns");
+ 		lblTargetColumns.setText("Target Attributes");
  		lblTargetColumns.setLocation(0, 0);
  		
  		initDestinationColumnList(grpTargetBusinessTable, SWT.NONE);

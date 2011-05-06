@@ -61,7 +61,7 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	@Override
 	public void addPages() {
 		if(selectedPhysicalTableName == null){
-			pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Table", owner, isBusinessView, selectedPhysicalTableName);
+			pageOne = new AddPhysicalTableSelectionPage("Add Physical Table to Business Class", owner, isBusinessView, selectedPhysicalTableName);
 			addPage(pageOne);	
 		}
 		if (isBusinessView){

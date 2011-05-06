@@ -67,8 +67,8 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	 */
 	protected AddPhysicalTableSourceSelectionPage(String pageName, BusinessColumnSet owner) {
 		super(pageName);
-		setTitle("Select Source Physical Table to Join");
-		setDescription("Please select the physical table to use as source for join relationship");
+		setTitle(RL.getString("business.editor.wizard.addphysicaltable.sourcetableselection.title"));
+		setDescription(RL.getString("business.editor.wizard.addphysicaltable.sourcetableselection.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
@@ -88,7 +88,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 		//create GUI only for BusinessView
 		if (owner instanceof BusinessView){
 	 		Group grpSourcePhysicalTable = new Group(composite, SWT.NONE);
-	 		grpSourcePhysicalTable.setText("Source Physical Table Selection");
+	 		grpSourcePhysicalTable.setText(RL.getString("business.editor.wizard.addphysicaltable.sourcetableselection.label"));
 	 		grpSourcePhysicalTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	 		grpSourcePhysicalTable.setLayout(new FillLayout(SWT.HORIZONTAL));
 	 		
@@ -108,7 +108,7 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	 		comboPhysicalTables.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	 		
 	 		Label lblCurrentlyDerivedColumns = new Label(compSourcePhysicalTableSelection, SWT.NONE);
-	 		lblCurrentlyDerivedColumns.setText("Columns:");
+	 		lblCurrentlyDerivedColumns.setText(RL.getString("business.editor.wizard.addphysicaltable.sourcetableselection.columns.label"));
 	 		
 	 		listPhysicalTableColumns = new List(compSourcePhysicalTableSelection, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 	 		listPhysicalTableColumns.setEnabled(false);

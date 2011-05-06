@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -43,6 +45,8 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	private BusinessColumnSet owner;
 	private boolean isBusinessView;
 	private String selectedPhysicalTableName;
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	
 	/**
 	 * @param editingDomain
@@ -51,7 +55,7 @@ public class AddPhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	public AddPhysicalTableWizard(BusinessColumnSet owner, EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command, boolean isBusinessView, String physicalTableName) {
 		super(editingDomain, command);
-		this.setWindowTitle("Add a Physical Table");
+		this.setWindowTitle(RL.getString("business.editor.wizard.addphysicaltable.title"));
 		this.setHelpAvailable(false);	
 		this.owner = owner;
 		this.isBusinessView = isBusinessView;

@@ -66,8 +66,8 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	 */
 	protected AddPhysicalTableSelectionPage(String pageName, BusinessColumnSet owner, boolean isBusinessView, String selectedPhysicalTableName) {
 		super(pageName);
-		setTitle("Add Physical Table");
-		setDescription("Please select the physical table to add to your Business Class.");
+		setTitle(RL.getString("business.editor.wizard.addphysicaltable.title"));
+		setDescription(RL.getString("business.editor.wizard.physicaltableselection.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
@@ -109,7 +109,7 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private void createTableGroup(Composite composite, int style){
 		//Physical Table List
 		Group tableGroup = new Group(composite, style);
-		tableGroup.setText("Physical Table Selection");
+		tableGroup.setText(RL.getString("business.editor.wizard.physicaltableselection.label"));
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		glTable.numColumns = 1;

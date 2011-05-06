@@ -72,8 +72,8 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	 */
 	protected AddBusinessViewInnerJoinPage(String pageName, BusinessColumnSet owner, String selectedPhysicalTableName) {
 		super(pageName);
-		setTitle("Select join relationship");
-		setDescription("Please select the columns to use in the join relationship.");
+		setTitle(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.title"));
+		setDescription(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.owner = owner;
@@ -115,7 +115,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	
 	public void createSourcePhysicalTableGroup(Composite composite, int style){
 		Group grpBusinessTableColumns = new Group(composite, style);
-		grpBusinessTableColumns.setText("Source Physical Table Columns");
+		grpBusinessTableColumns.setText(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.sourcecolumns.label"));
 		grpBusinessTableColumns.setLayout(new GridLayout(1, false));
 		grpBusinessTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
@@ -132,7 +132,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 	
 	public void createDestinationPhysicalTableGroup(Composite composite, int style){
 		Group grpPhysicalTableColumns = new Group(composite, style);
-		grpPhysicalTableColumns.setText("Destination Physical Table Columns");
+		grpPhysicalTableColumns.setText(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.destinationcolumns.label"));
 		grpPhysicalTableColumns.setLayout(new GridLayout(1, false));
 		grpPhysicalTableColumns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
@@ -162,14 +162,14 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 					addJoinRelationship(sourcePhysicalColumnsList.getSelection()[0],destinationPhysicalColumnsList.getSelection()[0]);
 					checkPageComplete();
 				} else {
-					setErrorMessage("You must select a source column and a destination column");
+					setErrorMessage(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.error"));
 				}
 			}
 		});
-		btnAddRelationship.setText("Add Relationship");
+		btnAddRelationship.setText(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.addbutton"));
 		
 		Button btnRemoveRelationship = new Button(compButton, SWT.NONE);
-		btnRemoveRelationship.setText("Remove Relationship");
+		btnRemoveRelationship.setText(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.removebutton"));
 		btnRemoveRelationship.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -193,7 +193,7 @@ public class AddBusinessViewInnerJoinPage extends WizardPage {
 		compositeRelationship.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		
 		Group grpJoinRelationship = new Group(compositeRelationship, SWT.NONE);
-		grpJoinRelationship.setText("Join Relationship");
+		grpJoinRelationship.setText(RL.getString("business.editor.wizard.addphysicaltable.innerjoin.label"));
 		grpJoinRelationship.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		grpJoinRelationship.setLayout(new GridLayout(1, false));
 		

@@ -40,8 +40,8 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 	
 	protected EditBusinessColumnsWizardPage(String pageName, BusinessColumnSet businessColumnSet) {
 		super(pageName);
-		setTitle("Edit Business Class Columns");
-		setDescription("Please select the columns to add to your Business Class");
+		setTitle(RL.getString("business.editor.wizard.editbusinessattributes.title"));
+		setDescription(RL.getString("business.editor.wizard.editbusinessattributes.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBC") );
 	    if (image!=null) setImageDescriptor(image);	
 	    
@@ -62,7 +62,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		
 		//Columns Group
 		Group columnsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-		columnsGroup.setText("Columns selection");
+		columnsGroup.setText(RL.getString("business.editor.wizard.editbusinessattributes.label"));
 		GridLayout glColumns = new GridLayout();
 		GridData gd2 = new GridData(GridData.FILL_BOTH);
 		glColumns.numColumns = 3;
@@ -78,7 +78,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		compLeft.setLayout(glL);
 		compLeft.setLayoutData(gdL);
 		Label lblLeftTab = new Label(compLeft,SWT.NONE);
-		lblLeftTab.setText("Physical Table Columns: ");
+		lblLeftTab.setText(RL.getString("business.editor.wizard.editbusinessattributes.physicalcolumns.label"));
  		columns = new Table(compLeft, SWT.BORDER | SWT.MULTI);
  		columns.setLayoutData(gdL);
  		
@@ -89,21 +89,21 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		glC.numColumns = 1;
 		compCenter.setLayout(glC);
 	    Button bAddAllField = new Button(compCenter,SWT.FLAT);
-		bAddAllField.setToolTipText("Add all columns as a Business Class Attributes");
+		bAddAllField.setToolTipText(RL.getString("business.editor.wizard.editbusinessattributes.addallbutton"));
 		Image imageAddAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_right") ).createImage();
 	    if (imageAddAll!=null) bAddAllField.setImage(imageAddAll);
 	    
 		Button bAddField = new Button(compCenter,SWT.FLAT);
-		bAddField.setToolTipText("Add column as a Business Class Attribute");
+		bAddField.setToolTipText(RL.getString("business.editor.wizard.editbusinessattributes.addbutton"));
 		Image imageAdd = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_right") ).createImage();
 	    if (imageAdd!=null) bAddField.setImage(imageAdd);
 		Button bRemoveField = new Button(compCenter,SWT.FLAT);
-		bRemoveField.setToolTipText("Remove attribute from Business Class");
+		bRemoveField.setToolTipText(RL.getString("business.editor.wizard.editbusinessattributes.removebutton"));
 		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.arrow_left") ).createImage();
 	    if (imageRem!=null) bRemoveField.setImage(imageRem);
 	    
 		Button bRemoveAllField = new Button(compCenter,SWT.FLAT);
-		bRemoveAllField.setToolTipText("Remove all attributes from Business Class");
+		bRemoveAllField.setToolTipText(RL.getString("business.editor.wizard.editbusinessattributes.removeallbutton"));
 		Image imageRemAll = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.double_arrow_left") ).createImage();
 	    if (imageRemAll!=null) bRemoveAllField.setImage(imageRemAll);
 	    
@@ -116,7 +116,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		compRight.setLayout(glR);
 		compRight.setLayoutData(gdR);
 		Label lblRightTab = new Label(compRight,SWT.NONE);
-		lblRightTab.setText("Business Class Attributes: ");
+		lblRightTab.setText(RL.getString("business.editor.wizard.editbusinessattributes.businessattributes.label"));
  		fields = new Table(compRight, SWT.BORDER | SWT.MULTI);
  		fields.setLayoutData(gdR);
  	
@@ -316,7 +316,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			setPageComplete(true);
 		}
 		else{			
-			setErrorMessage("This Business Class hasn't attributes, please select at least one to continue");
+			setErrorMessage(RL.getString("business.editor.wizard.editbusinessattributes.error"));
 			setPageComplete(false);
 		}
 	}

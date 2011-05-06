@@ -1,5 +1,7 @@
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -17,11 +19,12 @@ import org.eclipse.swt.widgets.TableItem;
 public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 
 	BusinessColumnSet businessColumnSet;
-	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 	
 	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, AbstractSpagoBIModelCommand command){
 		super(editingDomain, command);
-		this.setWindowTitle("Edit business attributes");
+		this.setWindowTitle(RL.getString("business.editor.wizard.editbusinessattributes.title"));
 		this.setHelpAvailable(false);	
 		this.businessColumnSet = businessColumnSet;
 		

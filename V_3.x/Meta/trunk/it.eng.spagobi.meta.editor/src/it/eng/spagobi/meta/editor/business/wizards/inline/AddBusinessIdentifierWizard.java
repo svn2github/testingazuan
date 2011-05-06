@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -43,6 +45,7 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 	private AddBusinessIdentifierWizardPageBusinessTableSelection pageOne;
 	private AddBusinessIdentifierWizardPageColumnSelection pageTwo;
 	private BusinessColumnSet businessColumnSet;
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 
 	/**
 	 * @param editingDomain
@@ -51,7 +54,7 @@ public class AddBusinessIdentifierWizard extends AbstractSpagoBIModelWizard {
 	public AddBusinessIdentifierWizard(EditingDomain editingDomain,
 			AbstractSpagoBIModelCommand command, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(editingDomain, command);
-		this.setWindowTitle("Create a new Business Identifier");
+		this.setWindowTitle(RL.getString("business.editor.wizard.addbusinessidentifier.title"));
 		this.setHelpAvailable(false);		
 		this.defaultTable = defaultTable;
 		this.businessColumnSet = businessColumnSet;

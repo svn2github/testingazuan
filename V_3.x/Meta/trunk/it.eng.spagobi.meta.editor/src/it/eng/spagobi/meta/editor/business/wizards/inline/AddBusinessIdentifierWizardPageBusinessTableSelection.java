@@ -62,9 +62,8 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 	protected AddBusinessIdentifierWizardPageBusinessTableSelection(
 			String pageName, String defaultTable, BusinessColumnSet businessColumnSet) {
 		super(pageName);
-		setTitle("Business Identifier Creation");
-		setDescription("This wizard drives you to create a new Business Identifier in your Business Model.\n"+
-				"Plese select a Business Class.");
+		setTitle(RL.getString("business.editor.wizard.addbusinessidentifier.title"));
+		setDescription(RL.getString("business.editor.wizard.addbusinessidentifier.tableselection.description"));
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.createBI") );
 		if (image!=null) setImageDescriptor(image);	
 	    this.defaultTable = defaultTable;
@@ -96,7 +95,7 @@ public class AddBusinessIdentifierWizardPageBusinessTableSelection extends
 	private void createTableGroup(Composite composite, int style){
 		//Business Table List
 		Group tableGroup = new Group(composite, style);
-		tableGroup.setText("Business Class Selection");
+		tableGroup.setText(RL.getString("business.editor.wizard.addbusinessidentifier.tableselection.label"));
 		GridLayout glTable = new GridLayout();
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		glTable.numColumns = 1;

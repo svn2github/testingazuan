@@ -107,6 +107,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -1023,8 +1025,16 @@ public class PhysicalModelEditor
 
 				selectionViewer = (TreeViewer)viewerPane.getViewer();
 				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+				
+				selectionViewer.getTree().addKeyListener(new KeyAdapter() {
+				      public void keyPressed(KeyEvent event) {
+				    	  if (event.keyCode == SWT.DEL) {
+				    		 // stops propagation
+				    		 event.doit = false;
+				    	  }
+				    }
+				});
 				
 				URI rootObjectURI = ((PhysicalModelEditorInput)getEditorInput()).getRootObjectURI();
 				EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);

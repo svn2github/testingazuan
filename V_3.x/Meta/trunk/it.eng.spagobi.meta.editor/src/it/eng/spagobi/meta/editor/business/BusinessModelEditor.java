@@ -93,9 +93,13 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
@@ -334,7 +338,16 @@ public class BusinessModelEditor
 		modelTreeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 		modelTreeViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 		
-	
+		modelTreeViewer.getTree().addKeyListener(new KeyAdapter() {
+		      public void keyPressed(KeyEvent event) {
+		    	  if (event.keyCode == SWT.DEL) {
+		    		 // stops propagation
+		    		 event.doit = false;
+		    	  } else if(event.keyCode == SWT.F5) {
+		    		  refreshViewer();
+		    	  }
+		    }
+		});
 		
 		URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
@@ -355,6 +368,7 @@ public class BusinessModelEditor
 	}
 
 	
+
 	// =================================================================================================
 	
 

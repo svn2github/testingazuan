@@ -155,7 +155,7 @@ public class BusinessTableItemProvider
 			businessTable = (BusinessTable)object;
 			//group columns
 			folderItemProvider = new BusinessColumnFolderItemProvider(adapterFactory, businessTable, businessTable.getColumns());
-			folderItemProvider.setText("Columns ("+folderItemProvider.getChildrenNumber()+")");
+			folderItemProvider.setText("Attributes ("+folderItemProvider.getChildrenNumber()+")");
 			if (folderItemProvider.getChildrenNumber() == 0)
 				folderItemProvider.setImage("full/obj16/EmptyFolder");
 			

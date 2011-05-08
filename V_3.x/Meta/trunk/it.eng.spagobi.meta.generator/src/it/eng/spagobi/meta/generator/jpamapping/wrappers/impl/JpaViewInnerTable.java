@@ -127,7 +127,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	protected BusinessColumn findColumnInBusinessView(PhysicalColumn physicalColumn){
 		
 		for (BusinessColumn businessColumn : businessView.getColumns()) {
-			if (physicalColumn.getName().equals(businessColumn.getPhysicalColumn().getName())){
+			if (physicalColumn.equals(businessColumn.getPhysicalColumn())){
 					return businessColumn;
 			}					
 		}	

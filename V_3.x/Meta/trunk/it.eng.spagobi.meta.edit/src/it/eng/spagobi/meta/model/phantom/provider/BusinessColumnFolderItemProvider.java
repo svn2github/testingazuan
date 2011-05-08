@@ -78,7 +78,7 @@ public class BusinessColumnFolderItemProvider extends FolderItemProvider {
 		switch (notification.getFeatureID(BusinessModel.class)) {
 		case BusinessModelPackage.BUSINESS_MODEL__IDENTIFIERS:
 			BusinessColumnFolderItemProvider columnFolder = this;
-			BusinessTable parentTable = (BusinessTable) columnFolder.getParentObject();	
+			BusinessColumnSet parentTable = (BusinessColumnSet) columnFolder.getParentObject();	
 			fireNotifyChanged(new ViewerNotification(notification, parentTable, true, false));
 			return;
 		}

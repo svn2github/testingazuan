@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -77,6 +78,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	public List<BusinessColumn> getBusinessColumns() {
 		return businessView.getColumns();
 	}
+	
 	
 	public List<BusinessRelationship> getBusinessRelationships() {
 		return businessView.getRelationships();
@@ -182,42 +184,31 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		return name;
 	}
 	
+	
 	/**
 	 * Return the <code>JpaRelationship</code> that contains this table
 	 * We have to ADD only the relationship belong to this Physical Table.
 	 * @return
 	 */
 	public List<IJpaRelationship> getRelationships() {
+		List<IJpaRelationship> jpaRelationships;
+		JpaRelationship jpaRelationship;
 		
 		logger.trace("IN");
-		
-		List<IJpaRelationship> jpaRelationships;
-		
-		jpaRelationships = super.getRelationships();
-		/*
-		for (BusinessViewInnerJoinRelationship innerJoin : businessView.getJoinRelationships()){
-			JpaInnerRelationship jpainnerRelationship = new JpaInnerRelationship(this, innerJoin);
+	
+		jpaRelationships = new ArrayList<IJpaRelationship>();
+	
+		for(BusinessRelationship relationship : getBusinessRelationships()) {
+			PhysicalTable sourceTable;
 			
-			if (jpainnerRelationship.getBusinessInnerRelationship()==null || 
-					jpainnerRelationship.getBusinessInnerRelationship().getSourceTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any source Table");
-				continue;
-			}
-			if (jpainnerRelationship.getBusinessInnerRelationship()==null || 
-					jpainnerRelationship.getBusinessInnerRelationship().getDestinationTable()==null){
-				logger.error("There is a problem , the relationship doesn't have any destination Table");
-				continue;
-			}
+			sourceTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
 			
-			if (jpainnerRelationship!=null ) {
-				jpaRelationships.add(jpainnerRelationship);
-				logger.info("ADD the relationship : "+innerJoin.getName());
-			}else {
-				logger.info("Don't ADD the relationship : "+innerJoin.getName());
-			}			
+			if(sourceTable.equals(physicalTable)) {
+				jpaRelationship = new JpaRelationship(this, relationship);		
+				jpaRelationships.add(jpaRelationship);	
+			}
 		}
-		*/
-		logger.debug("OUT");		
+		logger.trace("OUT");		
 		return jpaRelationships;		
 	}
 	

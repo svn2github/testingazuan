@@ -27,6 +27,8 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -37,6 +39,8 @@ import java.util.List;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,15 +110,33 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		clearCachedObjects();
 		
 		
+		
 		for(PhysicalColumn column: columnsToRemove) {
-			BusinessColumn c = businessTable.getColumn(column);
+			BusinessColumn businessColumnToRemove = businessTable.getColumn(column);
 			
-			updateIdentifier(c);			
-			updateRelationships(c);
+			boolean canBeDeleted = true;
+			if(businessTable instanceof BusinessView) {
+				BusinessView businessView = (BusinessView)businessTable;
+				List<BusinessViewInnerJoinRelationship> innerRelationships = businessView.getJoinRelationships();
+				for(BusinessViewInnerJoinRelationship innerRelationship : innerRelationships) {
+					if(innerRelationship.getSourceColumns().contains(businessColumnToRemove.getPhysicalColumn())
+					|| innerRelationship.getDestinationColumns().contains(businessColumnToRemove.getPhysicalColumn())) {
+						canBeDeleted = false;
+						break;
+					}
+				}
+			}
+			if(canBeDeleted == false) {
+				showInformation("Impossible to delete attribute", "Business attribute [" + businessColumnToRemove.getName() + "] cannot be deleted because it is used in join relationship. If you want to hide it in query editor set its visible property to false.");
+				continue;
+			}
+			
+			updateIdentifier(businessColumnToRemove);			
+			updateRelationships(businessColumnToRemove);
 			
 			// remove
-			businessTable.getColumns().remove(c);
-			removedColumns.add(c);
+			businessTable.getColumns().remove(businessColumnToRemove);
+			removedColumns.add(businessColumnToRemove);
 		}
 		
 		executed = true;
@@ -222,6 +244,18 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 	public Collection<?> getResult() {
 		// TODO the result here should change with operation type (execute = columns; undo = table)
 		return getAffectedObjects();
+	}
+	
+	/**
+	 * Show an information dialog box.
+	 */
+	public void showInformation(final String title, final String message) {
+	  Display.getDefault().asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+	      MessageDialog.openInformation(null, title, message);
+	    }
+	  });
 	}
 
 }

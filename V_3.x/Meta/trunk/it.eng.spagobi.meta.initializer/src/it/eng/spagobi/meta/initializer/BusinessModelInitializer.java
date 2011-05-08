@@ -561,7 +561,8 @@ public class BusinessModelInitializer {
 		BusinessTable businessTable;
 		PhysicalTable physicalTable;
 		BusinessModel businessModel = businessView.getModel();
-		Collection<BusinessColumn> businessColumns = businessView.getColumns();
+		Collection<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+		
 		
 		Collection<BusinessRelationship> businessRelationships = businessView.getRelationships();
 		BusinessIdentifier businessIdentifier;
@@ -569,6 +570,12 @@ public class BusinessModelInitializer {
 		try {
 			//get the only PhysicalTable to mantain
 			physicalTable = businessView.getJoinRelationships().get(0).getSourceTable();
+			
+			for(BusinessColumn bc: businessView.getColumns()) {
+				if(bc.getPhysicalColumn().getTable().equals(physicalTable)) {
+					businessColumns.add( bc );
+				}				
+			}
 			
 			//remove BusinessViewInnerJoinRelationship object
 			businessView.getJoinRelationships().clear();
@@ -672,63 +679,8 @@ public class BusinessModelInitializer {
 	}	
 	
 	
-	public BusinessViewInnerJoinRelationship removePhysicalTableToBusinessView(BusinessView businessView, PhysicalTable physicalTable){
-		BusinessModel businessModel = businessView.getModel();
-		BusinessViewInnerJoinRelationship innerJoinRelationship = null;
-
-		try {
-			if (isSourceTable(businessView,physicalTable)){
-				//if the physicalTable to remove is used as a SourceTable in a joinRelationship
-				//then DO NOT remove the physical table	
-				return null;
-			}
-			else {
-				//check if the removed physicalTable was in join with another PhysicalTable in this BusinessView
-				EList<BusinessViewInnerJoinRelationship> joinRelationships = businessView.getJoinRelationships();
-				for(BusinessViewInnerJoinRelationship joinRelationship : joinRelationships){
-					if (joinRelationship.getDestinationTable() == physicalTable){
-						innerJoinRelationship = joinRelationship;
-						if (businessView.getJoinRelationships().size() == 1){
-							//downgrade to BusinessTable
-							downgradeBusinessViewToBusinessTable(businessView);
-						}
-						else{
-							//remove the inner join relationship between two physical table
-							businessView.getJoinRelationships().remove(joinRelationship);
-							//remove he inner join relationship from BusinessModel
-							businessModel.getJoinRelationships().remove(joinRelationship);
-							
-							//remove physical table's columns
-							EList<BusinessColumn> businessColumns = businessView.getColumns();
-							for (BusinessColumn businessColumn : businessColumns){
-								if (businessColumn.getPhysicalColumn().getTable() == physicalTable){
-									businessView.getColumns().remove(businessColumn);
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-
-			
-		} 
-		catch(Throwable t) {
-			throw new RuntimeException("Impossible to remove physical table to business view", t);
-		}
-		return innerJoinRelationship;	
-	}
 	
-	//check if the PhysicalTable is used as a SourceTable in the inner join relationship for BusinessView
-	public boolean isSourceTable(BusinessView businessView, PhysicalTable physicalTable){
-		EList<BusinessViewInnerJoinRelationship> joinRelationships = businessView.getJoinRelationships();
-		for(BusinessViewInnerJoinRelationship joinRelationship : joinRelationships){
-			if (joinRelationship.getSourceTable() == physicalTable){
-				return true;
-			} 
-		}
-		return false;
-	}
+
 	
 	/**
 	 * Create BusinessViewInnerJoinRelationship from a BusinessViewInnerJoinRelationshipDescriptor

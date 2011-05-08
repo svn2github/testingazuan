@@ -208,6 +208,8 @@ public interface BusinessModel extends ModelObject {
 	BusinessTable getBusinessTable(String name);
 	
 	/**
+	 * @deprecated need a fix. To one physicalTable can be associated multiple businessTables
+	 * 
 	 * @return the business table associated to the given physical table
 	 */
 	BusinessTable getBusinessTable(PhysicalTable physicalTable);

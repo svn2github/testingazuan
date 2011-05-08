@@ -384,46 +384,74 @@ public class BusinessModelInitializer {
 	public BusinessRelationship addRelationship(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
 		BusinessRelationship businessRelationship;
 		PhysicalTable physicalTable;
-		BusinessTable businessTable;
+		BusinessTable sourceBusinessTable;
+		BusinessTable destinationBusinessTable;
 		BusinessColumn businessColumn;
 		
+		businessRelationship = null;
 		try {
-			businessRelationship = FACTORY.createBusinessRelationship();
-			
-			businessRelationship.setName( physicalForeignKey.getSourceName() );
-			businessRelationship.setPhysicalForeignKey(physicalForeignKey);
-			
+						
 			physicalTable = physicalForeignKey.getSourceTable();
-			businessTable = businessModel.getBusinessTable( physicalTable );
-			if (businessTable != null) {
-				businessRelationship.setSourceTable(businessTable);
+			sourceBusinessTable = businessModel.getBusinessTable( physicalTable );
+			
+			physicalTable = physicalForeignKey.getDestinationTable();
+			destinationBusinessTable = businessModel.getBusinessTable( physicalTable );
+			
+			businessRelationship = addRelationship(sourceBusinessTable, destinationBusinessTable, physicalForeignKey);
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);
+		}
+		
+		return businessRelationship;
+	}
+	
+	public BusinessRelationship addRelationship(BusinessTable sourceBusinessTable, BusinessTable destinationBusinessTable, PhysicalForeignKey physicalForeignKey) {
+		BusinessRelationship businessRelationship;
+		BusinessColumn businessColumn;
+		
+		if(destinationBusinessTable.getModel() != sourceBusinessTable.getModel()) return null;
+		if(destinationBusinessTable.getPhysicalTable() != physicalForeignKey.getDestinationTable()) return null;
+		if(sourceBusinessTable.getPhysicalTable() != physicalForeignKey.getSourceTable()) return null;
+		
+		businessRelationship = null;
+		try {
+			BusinessModel businessModel = destinationBusinessTable.getModel();			
+			
+			if (sourceBusinessTable != null && destinationBusinessTable != null) {
+				
+				// create an empty relationship
+				businessRelationship = FACTORY.createBusinessRelationship();
+				businessRelationship.setName( physicalForeignKey.getSourceName() );
+				businessRelationship.setPhysicalForeignKey(physicalForeignKey);
+				
+				// add source columns
+				businessRelationship.setSourceTable(sourceBusinessTable);
 				for(int j = 0; j < physicalForeignKey.getSourceColumns().size(); j++) {
-					businessColumn = businessTable.getColumn(physicalForeignKey.getSourceColumns().get(j));
+					businessColumn = sourceBusinessTable.getColumn(physicalForeignKey.getSourceColumns().get(j));
 					businessRelationship.getSourceColumns().add(businessColumn);
 				}
 				
-				physicalTable = physicalForeignKey.getDestinationTable();
-				businessTable = businessModel.getBusinessTable( physicalTable );
-				if (businessTable != null) {
-					businessRelationship.setDestinationTable(businessTable);
-					for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
-						businessColumn = businessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
-						businessRelationship.getDestinationColumns().add(businessColumn);
-					}
-					
-					businessModel.getRelationships().add(businessRelationship);
-					
-					getPropertiesInitializer().addProperties(businessRelationship);
+				// add destination columns
+				businessRelationship.setDestinationTable(destinationBusinessTable);
+				for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
+					businessColumn = destinationBusinessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
+					businessRelationship.getDestinationColumns().add(businessColumn);
 				}
-
+					
+				if(businessRelationship.getDestinationColumns().size() == physicalForeignKey.getDestinationColumns().size()
+				&& businessRelationship.getSourceColumns().size() == physicalForeignKey.getSourceColumns().size()) {
+					businessModel.getRelationships().add(businessRelationship);
+					getPropertiesInitializer().addProperties(businessRelationship);
+				} else {
+					businessRelationship = null;
+				}
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);
 		}
+		
 		return businessRelationship;
 	}
-	
-	
 	
 	//add Relationship without PhysicalForeignKey specified
 	public BusinessRelationship addRelationship(BusinessRelationshipDescriptor descriptor){

@@ -26,6 +26,8 @@ import org.eclipse.emf.edit.command.CommandActionDelegate;
 import org.eclipse.emf.edit.command.CommandParameter;
 
 /**
+ * TODO implement some mechanism to handle command exception
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */

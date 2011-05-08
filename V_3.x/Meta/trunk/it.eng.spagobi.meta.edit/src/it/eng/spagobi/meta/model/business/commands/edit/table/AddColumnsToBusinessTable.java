@@ -87,8 +87,11 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 		clearCachedObjects();
 		
 		for(PhysicalColumn column: columnsToAdd) {
-			initializer.addColumn(column, businessTable);
-			addedColumns.add( businessTable.getColumn(column) );
+			if(businessTable.getColumn(column) == null) { // avoid columns duplicaion
+				initializer.addColumn(column, businessTable);
+				addedColumns.add( businessTable.getColumn(column) );
+			}
+			
 		}
 		
 		addIdentifier();

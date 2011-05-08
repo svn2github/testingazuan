@@ -30,7 +30,7 @@ ${jpaColumn.uniqueName}.position = $velocityCount
 
 #foreach ($jpaTable in $jpaView.innerTables)
 
-${jpaTable.uniqueName}.visible = false
+${jpaTable.uniqueName}.visible = true
 ${jpaTable.uniqueName}.type = dimension
 
 #foreach ($jpaColumn in $jpaTable.columns)

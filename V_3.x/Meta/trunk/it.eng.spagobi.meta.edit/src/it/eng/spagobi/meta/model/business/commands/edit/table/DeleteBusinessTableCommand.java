@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand {
 
-	
+	BusinessModel model;
 	BusinessTable businessTable;
 	
 	BusinessIdentifier removedIdentifier;
@@ -56,9 +56,9 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 	private static Logger logger = LoggerFactory.getLogger(DeleteBusinessTableCommand.class);
 	
 	public DeleteBusinessTableCommand(EditingDomain domain, CommandParameter parameter) {
-		super( "model.business.commands.edit.table.create.label"
-			 , "model.business.commands.edit.table.create.description"
-			 , "model.business.commands.edit.table.create"
+		super( "model.business.commands.edit.table.delete.label"
+			 , "model.business.commands.edit.table.delete.description"
+			 , "model.business.commands.edit.table.delete"
 			 , domain, parameter);
 	}
 	
@@ -73,7 +73,7 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 	
 	@Override
 	public void execute() {
-		BusinessModel model = getBusinessTable().getModel();
+		model = getBusinessTable().getModel();
 		
 		removedIdentifier = getBusinessTable().getIdentifier();
 		if(removedIdentifier != null) {
@@ -93,12 +93,9 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 	@Override
 	public void undo() {
 		
-		BusinessModel model = getBusinessTable().getModel();
 		
 		model.getTables().add( getBusinessTable() );
-		
 		model.getRelationships().addAll(removedRelationships);
-		
 		if(removedIdentifier != null) {
 			model.getIdentifiers().add(removedIdentifier);
 		}
@@ -112,9 +109,9 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 	@Override
 	public Collection<?> getAffectedObjects() {
 		Collection affectedObjects = Collections.EMPTY_LIST;
-		if(getBusinessTable().getModel() != null) {
+		if(model != null) {
 			affectedObjects = new ArrayList();
-			affectedObjects.add(getBusinessTable().getModel());
+			affectedObjects.add(model);
 		}
 		return affectedObjects;
 	}

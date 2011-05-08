@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddOutcomeBusinessRelationshipAction extends AddBusinessRelationshipAction{
 	public AddOutcomeBusinessRelationshipAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(workbenchPart, selection, true);
-		this.setText("Outcome Relationship");
-		this.setToolTipText("Add an outcome relationship");
+		this.setText("Add outcome relationship");
+		this.setToolTipText("Add outcome relationship");
 	}
 }

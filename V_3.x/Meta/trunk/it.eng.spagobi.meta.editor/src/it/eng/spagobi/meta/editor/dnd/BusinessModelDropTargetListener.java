@@ -54,6 +54,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Shell;
@@ -67,300 +68,110 @@ import org.eclipse.ui.PlatformUI;
  */
 public class BusinessModelDropTargetListener extends ViewerDropAdapter {
 
-	private Viewer viewer;
-	private EObject model;
-	private Object nextTo;
-	private BusinessModel businessModel;
-	private AdapterFactoryEditingDomain editingDomain;
+	BusinessModelDropFromBusinessModelHandler bmHandler;
+	BusinessModelDropFromPhysicalModelHandler pmHandler;
 		
 	public BusinessModelDropTargetListener(Viewer viewer, EObject model, AdapterFactoryEditingDomain editingDomain) {
 		super(viewer);
-		this.viewer = viewer;
-		this.model = model;
-		nextTo = null;
-		businessModel = (BusinessModel)model;
-		this.editingDomain = editingDomain;
-		
+			
 		this.setScrollEnabled(true);
 		this.setExpandEnabled(true);
 		this.setSelectionFeedbackEnabled(true);
 		this.setFeedbackEnabled(true);
+		bmHandler = new BusinessModelDropFromBusinessModelHandler(model, editingDomain);
+		pmHandler = new BusinessModelDropFromPhysicalModelHandler(model, editingDomain);
 
 	}
 
-	// This method performs the actual drop
 	@Override
 	public boolean performDrop(Object data) {
-		BusinessModelInitializer initializer = new BusinessModelInitializer();
-		int loc = getCurrentLocation();
-		Object target = getCurrentTarget();
-
-		// ************************************************************************
-		// Check the dragged data type for different behaviors
-		//
-		// 1- data is TreeSelection for resorting inside BusinessModelEditor or...
-		// 2- data is String for drag&drop from PhysicalModelEditor
-		// ************************************************************************
+		boolean isLocationBeoforeOrAfterTarget = getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER;
 		
-		if (data instanceof TreeSelection){
-			return dragDropResortBusinessModelEditor(data,target);
+		Class dataType = getDataType();
+		
+		if (getDragSource() == DragSource.BUSINESS_MODEL_EDITOR){
+			bmHandler.setNextTo(getCurrentTarget());
+			return bmHandler.performDrop(data, getCurrentTarget(), isLocationBeoforeOrAfterTarget);
+			//return performBusinessModelObjectDrop(data,currentTarget);
+		} else if (getDragSource() == DragSource.PHYSICAL_MODEL_EDITOR){
+			String strData = (String)data;
+			strData = strData.substring(3);
+
+			return pmHandler.performDrop(strData, getCurrentTarget(), isLocationBeoforeOrAfterTarget);
+			//return performPhysicalModelObjectDrop(data, currentTarget, currentLocation, initializer);
 		} else {
-			return dragDropFromPhysicalModelEditor(data, target, loc, initializer);
-		}
-
-	}
-	
-	/*
-	 * Used for resort of BusinessTable/View and Business Columns inside BusinessModelEditor with drag&drop
-	 */
-	private boolean dragDropResortBusinessModelEditor(Object data, Object target){
-		//check if current target is a BusinessColumnSet (BusinessTable/BusinessView)
-		if (target instanceof BusinessColumnSet){
-			if (data != null)
-			{
-				StructuredSelection selection = (StructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
-				BusinessColumnSet businessColumnSet = (BusinessColumnSet)selection.getFirstElement();
-
-				if (model instanceof BusinessModel){
-					BusinessModel businessModel = (BusinessModel)model;
-					if(nextTo != null)
-					{
-						for (int i = 0; i < businessModel.getTables().size(); i++)
-						{
-							Object item = businessModel.getTables().get(i);
-							if(item == nextTo)
-							{
-								//businessModel.getTables().move(i, businessColumnSet);
-								try {
-									CommandParameter commandParameter =  new CommandParameter(businessModel, i, businessColumnSet, new ArrayList<Object>());
-								    if (editingDomain != null) {	    	
-								    	editingDomain.getCommandStack().execute(new SortBusinessModelTablesCommand(editingDomain,commandParameter));
-								    }
-								} catch(Throwable t) {
-									t.printStackTrace();
-								}
-								
-								break;
-							}
-						}
-					}
-				}
-			}
-			return true;
-		}
-		//check if current target is a BusinessColumn 
-		else if (target instanceof BusinessColumn){
-			if (data != null)
-			{
-				StructuredSelection selection = (StructuredSelection)LocalSelectionTransfer.getTransfer().getSelection();
-				BusinessColumn businessColumn = (BusinessColumn)selection.getFirstElement();
-				BusinessColumnSet businessColumnSet = businessColumn.getTable();
-				
-				if (model instanceof BusinessModel){
-					BusinessModel businessModel = (BusinessModel)model;
-					if(nextTo != null)
-					{
-						for (int i = 0; i < businessColumnSet.getColumns().size(); i++)
-						{
-							Object item = businessColumnSet.getColumns().get(i);
-							if(item == nextTo)
-							{
-								//businessColumnSet.getColumns().move(i, businessColumn);
-								try {
-									CommandParameter commandParameter =  new CommandParameter(businessColumnSet, i, businessColumn, new ArrayList<Object>());
-								    if (editingDomain != null) {	    	
-								    	editingDomain.getCommandStack().execute(new SortBusinessTableColumnsCommand(editingDomain,commandParameter));
-								    }
-								} catch(Throwable t) {
-									t.printStackTrace();
-								}
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	/*
-	 * Drag&Drop from Physical Model Editor
-	 */
-	private boolean dragDropFromPhysicalModelEditor(Object data, Object target, int loc, BusinessModelInitializer initializer){
-		//----------------------------------------------------------------
-		// Creation of a new BusinessTable from the dragged PhysicalTable
-		//----------------------------------------------------------------
-		if ( (target instanceof BusinessRootItemProvider) || 
-				( (target instanceof BusinessColumnSet) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ) {
-			StringTokenizer stringTokenizer = new StringTokenizer(data.toString(), "$$");
-			//obtaining table(s) name(s) from the passed string
-			while (stringTokenizer.hasMoreTokens()){
-				String tableName = stringTokenizer.nextToken();
-
-				//getting physical table
-				URI uri = URI.createURI(tableName);
-				EObject eObject = model.eResource().getResourceSet().getEObject(uri, false);
-
-				if (eObject instanceof PhysicalTable){
-					PhysicalTable physicalTable = (PhysicalTable)eObject;
-					if (physicalTable != null){
-						//Get Active Window
-						IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-
-						//Create addBusinessTable command
-						Command addBusinessTableCommand = editingDomain.createCommand
-						(CreateBusinessTableCommand.class, 
-								new CommandParameter(businessModel, null, null, new ArrayList<Object>()));
-						//Launch AddBusinessTableWizard
-						AddBusinessTableWizard wizard = new AddBusinessTableWizard(businessModel, physicalTable, editingDomain,(ISpagoBIModelCommand)addBusinessTableCommand);
-						WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-						dialog.create();
-						dialog.open();
-					}		
-				}	
-			}
-			return true;
-		}
-		//----------------------------------------------------------------
-		// Add BusinessColumns or PhysicalTable to BusinessColumnSet from the dragged PhysicalColumn or PhysicalTable
-		//----------------------------------------------------------------
-		else if ( (target instanceof BusinessColumnSet) || 
-				( (target instanceof BusinessColumn) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ){
-
-			BusinessColumnSet businessColumnSet = null;
-			//getting target table object
-			if (target instanceof BusinessTable){
-				businessColumnSet = (BusinessTable)target;
-			}
-			else if (target instanceof BusinessColumn){
-				businessColumnSet = (BusinessColumnSet)((BusinessColumn)target).getTable();
-			}
-			else if (target instanceof BusinessView){
-				businessColumnSet = (BusinessView)target;
-			}
-
-			StringTokenizer stringTokenizer = new StringTokenizer(data.toString(), "$$");
-
-			while (stringTokenizer.hasMoreTokens()){
-				String objectName = stringTokenizer.nextToken();
-
-				URI uri = URI.createURI(objectName);
-				EObject eObject = model.eResource().getResourceSet().getEObject(uri, false);
-
-				//------------------
-				// Add Columns
-				//------------------
-				//obtaining column(s) name(s) from the passed string
-				if (eObject instanceof PhysicalColumn){
-					PhysicalColumn physicalColumn = (PhysicalColumn)eObject;
-					if (physicalColumn != null){
-						//check if target is a BusinessView or BusinessTable
-						if ( businessColumnSet instanceof BusinessView ){
-							// check if column's source PhysicalTable is inside target Physical TableS 
-							List<PhysicalTable> targetPhysicalTables = ((BusinessView)businessColumnSet).getPhysicalTables();
-							PhysicalTable sourcePhysicalTable = physicalColumn.getTable();
-
-							if (targetPhysicalTables.contains(sourcePhysicalTable)){
-								//add column
-								initializer.addColumn(physicalColumn, businessColumnSet);
-							} else {
-								//add PhysicalTable is necessary
-								Command addPhysicalTableCommand = editingDomain.createCommand
-								(AddPhysicalTableToBusinessViewCommand.class, 
-										new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()) );
-								AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, true, sourcePhysicalTable.getName() );
-								WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-								dialog.create();
-								dialog.open();
-
-								//add column
-								initializer.addColumn(physicalColumn, businessColumnSet);
-							}
-						}
-						else if ( businessColumnSet instanceof BusinessTable ){
-							PhysicalTable sourcePhysicalTable = physicalColumn.getTable();
-							PhysicalTable targetPhysicalTable = ((BusinessTable)businessColumnSet).getPhysicalTable();
-							//if target table has the same PhysicalTable of the added columns, then perform the addColumn
-							if (sourcePhysicalTable.equals(targetPhysicalTable)){
-								initializer.addColumn(physicalColumn, businessColumnSet);
-							}
-							//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
-							else {
-								//upgrade BusinessTable to BusinessView
-								Command addPhysicalTableCommand = editingDomain.createCommand
-								(AddPhysicalTableToBusinessViewCommand.class, 
-										new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
-								AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
-								WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-								dialog.create();
-								dialog.open();
-
-								//re-set businessColumnSet reference to point to BusinessView
-								businessColumnSet = (BusinessView)businessModel.getTable(businessColumnSet.getName());
-
-								//add the column
-								initializer.addColumn(physicalColumn, businessColumnSet);
-							}
-						}
-
-					}		
-				}
-				//------------------
-				// Add Table
-				//------------------
-				//obtaining table(s) name(s) from the passed string
-				else if (eObject instanceof PhysicalTable){
-					PhysicalTable sourcePhysicalTable = (PhysicalTable)eObject;
-					boolean isBusinessView = false;
-					if (businessColumnSet instanceof BusinessView){
-						isBusinessView = true;
-					}
-					//add PhysicalTable to BusinessTable or BusinessView
-					Command addPhysicalTableCommand = editingDomain.createCommand
-					(AddPhysicalTableToBusinessViewCommand.class, 
-							new CommandParameter(businessColumnSet, null, null, new ArrayList<Object>()));
-					AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessColumnSet,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, isBusinessView, sourcePhysicalTable.getName());
-					WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-					dialog.create();
-					dialog.open();
-
-					//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
-					businessColumnSet = businessModel.getTable(businessColumnSet.getName());
-				}
-
-			}
-			return true;
-
-		}
-		//----------------------------------------------------------------
-		// Drop not possible
-		//----------------------------------------------------------------
-		else {
-			this.getCurrentEvent().detail = DND.DROP_NONE;
 			return false;
 		}
-	}
 
+	}
+	
+	public enum DragSource{UNKNOWN_SOURCE, PHYSICAL_MODEL_EDITOR, BUSINESS_MODEL_EDITOR};
+	
+	public DragSource getDragSource() {
+		DragSource source = DragSource.UNKNOWN_SOURCE;
+		if(this.getCurrentEvent().data instanceof TreeSelection) {
+			source = DragSource.BUSINESS_MODEL_EDITOR;
+		} else {
+			source = DragSource.PHYSICAL_MODEL_EDITOR;
+		}
+		return source;
+	}
+	
+	
+	public Class getDataType() {
+		Class c = null;
+		
+		if (getDragSource() == DragSource.BUSINESS_MODEL_EDITOR){
+			TreeSelection selection = (TreeSelection)getCurrentEvent().data;
+			c = selection.getFirstElement().getClass();
+		} else if (getDragSource() == DragSource.PHYSICAL_MODEL_EDITOR){
+			String text = (String)getCurrentEvent().data;
+			if(text.startsWith(PhysicalObjectDragListener.HEADER_FOR_COLUMNS_DATA)) {
+				c = PhysicalColumn.class;
+			} else if(text.startsWith(PhysicalObjectDragListener.HEADER_FOR_TABLES_DATA)) {
+				c = PhysicalTable.class;
+			}
+		} 
+		
+		return c;
+	}
+	
 	@Override
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
-		nextTo = target;
-		int loc = getCurrentLocation();
-		if ( (target instanceof BusinessRootItemProvider) || 
-		       	   ( (target instanceof BusinessColumnSet) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ) {
-			return TextTransfer.getInstance().isSupportedType(transferType);
+		boolean isLocationBeoforeOrAfterTarget = getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER;
+		
+		/*
+		boolean isSupportedType = TextTransfer.getInstance().isSupportedType(transferType) || LocalSelectionTransfer.getTransfer().isSupportedType(transferType);
+		if(isSupportedType == false) return false;
+	
+		Class dataType = getDataType();
+		
+		
+		if (getDragSource() == DragSource.BUSINESS_MODEL_EDITOR){
+			bmHandler.setNextTo(nextTo);
+			return bmHandler.validateDrop(dataType, target, isLocationBeoforeOrAfterTarget);
+		} else if (getDragSource() == DragSource.PHYSICAL_MODEL_EDITOR){
+			return pmHandler.validateDrop(dataType, target, isLocationBeoforeOrAfterTarget);
+		} else {
+			this.getCurrentEvent().detail = DND.DROP_NONE;
+			return false;
 		}
-		else if ( (target instanceof BusinessColumnSet) || 
-            	( (target instanceof BusinessColumn) && (loc == LOCATION_BEFORE || loc == LOCATION_AFTER)) ){
-			return TextTransfer.getInstance().isSupportedType(transferType)||LocalSelectionTransfer.getTransfer().isSupportedType(transferType);
+		*/
+		
+		if((target instanceof BusinessColumnSet)) {
+			LocalSelectionTransfer.getTransfer();
+		}
+		
+		if ( (target instanceof BusinessRootItemProvider) || ( (target instanceof BusinessColumnSet) && isLocationBeoforeOrAfterTarget) ) {
+			return TextTransfer.getInstance().isSupportedType(transferType)|| LocalSelectionTransfer.getTransfer().isSupportedType(transferType);
+		}
+		else if ( (target instanceof BusinessColumnSet) || ( (target instanceof BusinessColumn) && isLocationBeoforeOrAfterTarget) ){
+			return TextTransfer.getInstance().isSupportedType(transferType) || LocalSelectionTransfer.getTransfer().isSupportedType(transferType);
 		}
 		else {
 			this.getCurrentEvent().detail = DND.DROP_NONE;
 			return false;
-		}
+		}	
 		
 	}
-	
-	
-
 }

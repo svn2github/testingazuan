@@ -486,10 +486,12 @@ public class BusinessModelEditor
 		URI rootObjectURI = ((BusinessModelEditorInput)getEditorInput()).getRootObjectURI();
 		EObject rootObject = editingDomain.getResourceSet().getEObject(rootObjectURI, false);
 
-		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
+		
 		//set drop target
+		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		DropTargetListener dropTargetListener = new BusinessModelDropTargetListener(viewer, rootObject,editingDomain);
 		viewer.addDropSupport(DND.DROP_MOVE, transferTypes, dropTargetListener);
+		
 		//set dragSource (drag in the same tree)
 		DragSourceListener dragSourceListener = new BusinessModelDragSourceListener(viewer, rootObject);
 		viewer.addDragSupport(DND.DROP_MOVE,  new Transfer[] {LocalSelectionTransfer.getTransfer()}, dragSourceListener);

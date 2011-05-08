@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddIncomeBusinessRelationshipAction extends AddBusinessRelationshipAction{
 	public AddIncomeBusinessRelationshipAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(workbenchPart, selection, false);
-		this.setText("Income Relationship");
-		this.setToolTipText("Add an income relationship");
+		this.setText("Add income relationship");
+		this.setToolTipText("Add income relationship");
 	}
 }

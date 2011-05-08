@@ -20,6 +20,11 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 	private final Viewer physicalModelTree;
 	private String textToTransfer;
 	
+	public static final String HEADER_FOR_COLUMNS_DATA = "C";
+	public static final String HEADER_FOR_TABLES_DATA = "T";
+	public static final String DATA_CHUNKS_SEPARATOR = "$$";
+	
+	
 	private static Logger logger = LoggerFactory.getLogger(PhysicalObjectDragListener.class);
 	
 
@@ -61,13 +66,13 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 		if (selectionSize == 1){
 			if (selection.getFirstElement() instanceof PhysicalTable){
 				PhysicalTable physicalTable = (PhysicalTable) selection.getFirstElement();
-				textToTransfer = EcoreUtil.getURI(physicalTable).toString();
+				textToTransfer = HEADER_FOR_TABLES_DATA + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalTable).toString();
 				logger.debug("Dragged physical table [{}]", physicalTable);
 				return true;
 			}			
 			else if (selection.getFirstElement() instanceof PhysicalColumn){
 				PhysicalColumn physicalColumn = (PhysicalColumn) selection.getFirstElement();
-				textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
+				textToTransfer = HEADER_FOR_COLUMNS_DATA + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalColumn).toString();
 				logger.debug("Dragged physical column [{}]", physicalColumn);
 				return true;
 			}			
@@ -86,11 +91,11 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 						PhysicalTable physicalTable = (PhysicalTable)selectionArray[i];
 						logger.debug("Dragged physical table [{}]", physicalTable);
 						if (firstElement){
-							textToTransfer = EcoreUtil.getURI(physicalTable).toString();
+							textToTransfer = HEADER_FOR_TABLES_DATA + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalTable).toString();
 							firstElement = false;
 						}
 						else {
-							textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalTable).toString();
+							textToTransfer = textToTransfer + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalTable).toString();
 						}
 					}
 					else {
@@ -109,11 +114,11 @@ public class PhysicalObjectDragListener implements DragSourceListener {
 						PhysicalColumn physicalColumn = (PhysicalColumn)selectionArray[i];
 						logger.debug("Dragged physical column [{}]", physicalColumn);
 						if (firstElement){
-							textToTransfer = EcoreUtil.getURI(physicalColumn).toString();
+							textToTransfer = HEADER_FOR_COLUMNS_DATA + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalColumn).toString();
 							firstElement = false;
 						}
 						else {
-							textToTransfer = textToTransfer+"$$"+EcoreUtil.getURI(physicalColumn).toString();
+							textToTransfer = textToTransfer + DATA_CHUNKS_SEPARATOR + EcoreUtil.getURI(physicalColumn).toString();
 						}
 					}
 					else {

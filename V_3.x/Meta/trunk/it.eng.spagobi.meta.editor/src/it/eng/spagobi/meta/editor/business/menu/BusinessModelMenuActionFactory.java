@@ -78,7 +78,7 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
-			 actions.put("Add", editActions);
+			 actions.put("Edit", editActions);
 		} else if(target instanceof BusinessView) {
 			 List editActions = new ArrayList();
 			 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
@@ -86,12 +86,12 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
-		     //actions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
-			 actions.put("Add", editActions);
+			 editActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+			 actions.put("Edit", editActions);
 			 
-			 List removeActions = new ArrayList();
-			 removeActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
-			 actions.put("Remove", removeActions);
+//			 List removeActions = new ArrayList();
+//			 removeActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+//			 actions.put("Remove", removeActions);
 		} else if(target instanceof BusinessColumn){
 			List editActions = new ArrayList();
 			List removeActions = new ArrayList();
@@ -103,7 +103,7 @@ public class BusinessModelMenuActionFactory {
 				if (command instanceof ISpagoBIModelCommand){
 					removeActions.add(removeFromIdentifierAction);
 				}
-				actions.put("Remove", removeActions);
+				actions.put("Edit", removeActions);
 			} else {
 				AddToIdentifierAction addToIdentifierAction = new AddToIdentifierAction(activeEditorPart, selection);
 				Command command = addToIdentifierAction.getPerformFinishCommand();
@@ -111,21 +111,22 @@ public class BusinessModelMenuActionFactory {
 				if (command instanceof ISpagoBIModelCommand){
 					editActions.add(addToIdentifierAction);
 				}
-				actions.put("Add", editActions);
+				actions.put("Edit", editActions);
 			}
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();
 	    	editActions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
 	    	editActions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
-	    	actions.put("Add", editActions);
+	    	actions.put("Edit", editActions);
 	    	
 	    	List generateActions = new ArrayList();
+	    	generateActions.add(new CreateQueryAction(activeEditorPart, selection));
 	    	generateActions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
-	    	actions.put("Export", generateActions);
+	    	actions.put("Create", generateActions);
 	    	
-	    	List queryActions = new ArrayList();
-	    	queryActions.add(new CreateQueryAction(activeEditorPart, selection));
-	    	actions.put("Query", queryActions);
+//	    	List queryActions = new ArrayList();
+//	    	queryActions.add(new CreateQueryAction(activeEditorPart, selection));
+//	    	actions.put("Query", queryActions);
 	    } 
 		
 		return actions;

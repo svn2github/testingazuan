@@ -84,7 +84,7 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
 			 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
-			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
+			 //editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
 			 editActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
 			 actions.put("Edit", editActions);

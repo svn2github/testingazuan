@@ -6,6 +6,7 @@ import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -373,8 +374,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	}
 	
 	private void populateDestinationTableCombo(){
-		EList<BusinessColumnSet> businessTables = model.getTables();
-		for(BusinessColumnSet table : businessTables){
+		for(BusinessColumnSet table : model.getBusinessTables()){
 			destinationTableCombo.add(table.getName());
 		}
 	}

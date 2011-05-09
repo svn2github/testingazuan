@@ -397,7 +397,9 @@ public class BusinessModelInitializer {
 			physicalTable = physicalForeignKey.getDestinationTable();
 			destinationBusinessTable = businessModel.getBusinessTable( physicalTable );
 			
-			businessRelationship = addRelationship(sourceBusinessTable, destinationBusinessTable, physicalForeignKey);
+			if(sourceBusinessTable != null && destinationBusinessTable != null ) {
+				businessRelationship = addRelationship(sourceBusinessTable, destinationBusinessTable, physicalForeignKey);
+			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);
 		}

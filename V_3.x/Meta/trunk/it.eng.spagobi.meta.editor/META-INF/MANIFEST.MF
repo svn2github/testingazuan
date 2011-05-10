@@ -27,5 +27,29 @@ Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,
  org.eclipse.datatools.modelbase.sql.schema,
  org.eclipse.datatools.modelbase.sql.tables
-Export-Package: it.eng.spagobi.meta.editor.business.actions,
- it.eng.spagobi.meta.editor.multi.wizards
+Export-Package: it.eng.spagobi.meta.editor.business.actions;
+  uses:="org.eclipse.jface.action,
+   it.eng.spagobi.meta.model.physical,
+   org.eclipse.emf.edit.ui.action,
+   org.eclipse.ui,
+   org.eclipse.jface.viewers,
+   it.eng.spagobi.meta.model.business.commands,
+   org.eclipse.emf.common.command,
+   org.eclipse.emf.edit.domain",
+ it.eng.spagobi.meta.editor.multi.wizards;
+  uses:="org.eclipse.jface.wizard,
+   org.eclipse.core.runtime,
+   it.eng.spagobi.meta.model.business,
+   it.eng.spagobi.meta.editor.multi,
+   org.eclipse.emf.common.util,
+   org.eclipse.ui,
+   it.eng.spagobi.meta.model,
+   org.eclipse.core.resources,
+   org.eclipse.jface.viewers,
+   org.eclipse.ui.dialogs,
+   org.eclipse.swt.widgets",
+ it.eng.spagobi.meta.editor.popup.actions;
+  uses:="org.eclipse.jface.action,
+   org.eclipse.ui,
+   org.eclipse.core.resources,
+   org.eclipse.jface.viewers"

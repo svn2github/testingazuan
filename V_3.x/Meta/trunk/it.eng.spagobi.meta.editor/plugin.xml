@@ -80,7 +80,7 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
+         point="org.eclipse.ui.popupMenus">s
       <objectContribution
             id="it.eng.spagobi.meta.editor.contribution1"
             nameFilter="*.sbimodel"

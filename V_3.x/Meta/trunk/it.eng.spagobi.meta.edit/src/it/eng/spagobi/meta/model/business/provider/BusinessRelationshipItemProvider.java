@@ -309,8 +309,7 @@ public class BusinessRelationshipItemProvider
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-		
-		//***** Pending Relationship removal ******
+		/*
 		if (notification.getNotifier() instanceof BusinessRelationship){
 			BusinessRelationship businessRelationship = ((BusinessRelationship)notification.getNotifier());
 
@@ -320,7 +319,7 @@ public class BusinessRelationshipItemProvider
 				businessModel.getRelationships().remove(businessRelationship);	
 			}
 		}
-		//*****************************************
+		*/
 		
 		switch (notification.getFeatureID(BusinessRelationship.class)) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_COLUMNS:

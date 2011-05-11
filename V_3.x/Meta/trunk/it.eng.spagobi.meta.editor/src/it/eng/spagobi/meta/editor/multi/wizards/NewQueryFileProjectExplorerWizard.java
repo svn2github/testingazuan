@@ -28,6 +28,7 @@ import it.eng.spagobi.studio.utils.util.SpagoBIStudioConstants;
 
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -35,6 +36,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.internal.decorators.FullTextDecoratorRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,15 @@ INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
+		if(selection != null){
+			Object objSel = selection.toList().get(0);
+			if(objSel instanceof IFile){
+				logger.debug("set default dataset path");
+				IProject project = ((IFile)objSel).getProject();
+				IPath pathProj = project.getFullPath();
+				containerFullPath = pathProj.append(SpagoBIStudioConstants.FOLDER_DATASET);
+			}
+		}
 	}
 
 
@@ -102,7 +113,7 @@ INewWizard {
 				logger.error("Refresh Local workspace error");
 				e.printStackTrace();
 			}
-			
+
 			return true;
 		}
 		else

@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -37,11 +38,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
-	
+
 	private ISelectionProvider selectionProvider;
 	private static Logger logger = LoggerFactory.getLogger(CreateQueryProjectExplorerAction.class);
+	private ISelection selection;
 
-	
 	/**
 	 * Constructor for Action.
 	 */
@@ -53,7 +54,7 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
+
 		selectionProvider = targetPart.getSite().getSelectionProvider();
 	}
 
@@ -63,27 +64,36 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		//create Query File
 		IFile queryFile = createQueryFile();
-		
+
 		//init Query File contents
 		initQueryFileContents(queryFile);
-		
+
 		//open Query Editor
 		openQueryEditor(queryFile);
 	}
-	
+
 	public IFile createQueryFile(){
-		//Open Wizard
+		//Open Wizard	
 		NewQueryFileProjectExplorerWizard wizard = new NewQueryFileProjectExplorerWizard();
-    	wizard.init(PlatformUI.getWorkbench(), new StructuredSelection());
-    	WizardDialog dialog = new WizardDialog(wizard.getShell(), wizard);
+		if(selection != null){
+			logger.debug("selection is not null");	
+			wizard.init(PlatformUI.getWorkbench(), (IStructuredSelection)selection);
+		}
+		else{
+			logger.debug("selection is null");	
+			wizard.init(PlatformUI.getWorkbench(), new StructuredSelection());
+
+		}
+
+		WizardDialog dialog = new WizardDialog(wizard.getShell(), wizard);
 		dialog.create();
-    	dialog.open();
-    	
-    	IFile queryFile = wizard.getFile();
+		dialog.open();
+
+		IFile queryFile = wizard.getFile();
 		logger.debug("New Query File is [{}]",queryFile.getRawLocation().toOSString());
 		return queryFile;
 	}
-	
+
 	public void initQueryFileContents(IFile queryFile){	
 		ISelection selection = selectionProvider.getSelection();
 		logger.debug("Project Explorer Selection is [{}] of type [{}]",selection,selection.getClass().getName());
@@ -91,7 +101,7 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		IFile iFile = (IFile)treeSelection.getFirstElement();
 		String modelPath = iFile.getRawLocation().toOSString();
 		logger.debug("Model path [{}]",modelPath);
-		
+
 		//Read the Model File
 		XMIResourceImpl resource = new XMIResourceImpl();
 		File source = new File(modelPath);
@@ -109,7 +119,7 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 		BusinessModel businessModel;
 		businessModel = root.getBusinessModels().get(0);
 		logger.debug("Business Model name is [{}] ",businessModel.getName() );
-		
+
 		//Write model path on query file
 		if(queryFile.exists()){
 			JSONObject o;
@@ -143,11 +153,21 @@ public class CreateQueryProjectExplorerAction implements IObjectActionDelegate {
 			}
 		}
 	}	
-	
+
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
+
+	public ISelection getSelection() {
+		return selection;
+	}
+
+	public void setSelection(ISelection selection) {
+		this.selection = selection;
+	}
+
+
 
 }

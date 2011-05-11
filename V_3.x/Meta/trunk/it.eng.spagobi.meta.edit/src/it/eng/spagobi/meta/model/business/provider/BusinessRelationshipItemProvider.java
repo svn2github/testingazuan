@@ -309,17 +309,6 @@ public class BusinessRelationshipItemProvider
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
-		/*
-		if (notification.getNotifier() instanceof BusinessRelationship){
-			BusinessRelationship businessRelationship = ((BusinessRelationship)notification.getNotifier());
-
-				
-			BusinessModel businessModel = ((BusinessRelationship)notification.getNotifier()).getModel();
-			if ( (businessModel != null) && (businessModel.getRelationships().contains(businessRelationship)) ){
-				businessModel.getRelationships().remove(businessRelationship);	
-			}
-		}
-		*/
 		
 		switch (notification.getFeatureID(BusinessRelationship.class)) {
 			case BusinessModelPackage.BUSINESS_RELATIONSHIP__SOURCE_COLUMNS:

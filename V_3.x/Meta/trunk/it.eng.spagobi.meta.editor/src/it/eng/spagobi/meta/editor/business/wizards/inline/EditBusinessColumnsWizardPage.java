@@ -310,6 +310,44 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		//------
 	}
 	
+	//add the physical columns of the specified PhyscalTable as TableItem (in the left Table Widget)
+	public void addTableItems(String physicalTableName){		
+		columns.removeAll();
+		fields.removeAll();
+		
+		//Get Columns for a simple Business Table
+		if (businessTable != null) {
+			//retrieve the Physical Table Columns
+			PhysicalTable pTable = businessTable.getModel().getPhysicalModel().getTable(physicalTableName);
+			int numCols;
+			if (pTable != null){
+				numCols = pTable.getColumns().size();
+				for (int i=0; i<numCols; i++){
+					PhysicalColumn pColumn = pTable.getColumns().get(i);
+					//check if a corresponding Business Column already exist in the Business Table
+					if ( businessTable.getColumn(pColumn) == null ){
+						TableItem ti = new TableItem(columns, 0);
+						//associate table item with the object It represents
+						ti.setData(pColumn);
+						ti.setText(pColumn.getName());
+					}
+				}
+			}
+
+			//retrieve Business Table Columns
+			numCols = businessTable.getColumns().size();
+			for (int i=0; i<numCols; i++){
+				TableItem ti = new TableItem(fields, 0);
+				BusinessColumn bColumn = businessTable.getColumns().get(i);
+				//associate table item with the object It represents
+				ti.setData(bColumn);
+				ti.setText(bColumn.getName());
+			}
+			
+		}
+		
+	}
+	
 	//check if the right conditions to go forward occurred
 	private void checkPageComplete(){
 		if(fields.getItemCount() > 0){				

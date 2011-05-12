@@ -55,9 +55,12 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> addedColumns;
 	BusinessIdentifier addedIdentifier;
+	private PhysicalTable addedPhysicalTable;
 	
 	//check if Business Table has empty Physical Table reference
 	boolean isEmptyBusinessTable = false;
+
+
 	
 		
 	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
@@ -106,7 +109,8 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 			if(businessTable.getColumn(column) == null) { // avoid columns duplication
 				initializer.addColumn(column, businessTable);
 				if (isEmptyBusinessTable){
-					((BusinessTable)businessTable).setPhysicalTable(column.getTable());
+					addedPhysicalTable = column.getTable();
+					((BusinessTable)businessTable).setPhysicalTable(addedPhysicalTable);
 					isEmptyBusinessTable = false;
 				}
 				addedColumns.add( businessTable.getColumn(column) );
@@ -122,7 +126,8 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 	@Override
 	public void undo() {
 		undoAddIdentifier();
-
+		undoAddPhysicalTable();
+		
 		for(BusinessColumn column: addedColumns) {
 			businessTable.getColumns().remove(column);
 		}	
@@ -146,6 +151,12 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 	private void undoAddIdentifier() {
 		if(addedIdentifier != null) {
 			businessTable.getModel().getIdentifiers().remove(addedIdentifier);
+		}
+	}
+	
+	private void undoAddPhysicalTable(){
+		if (addedPhysicalTable != null){
+			((BusinessTable)businessTable).setPhysicalTable(null);
 		}
 	}
 	

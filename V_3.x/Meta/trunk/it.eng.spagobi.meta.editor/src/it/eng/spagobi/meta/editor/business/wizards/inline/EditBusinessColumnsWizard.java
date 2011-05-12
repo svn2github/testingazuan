@@ -3,6 +3,7 @@ package it.eng.spagobi.meta.editor.business.wizards.inline;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -17,6 +18,8 @@ import org.eclipse.swt.widgets.TableItem;
 public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 
 	BusinessColumnSet businessColumnSet;
+	EditBusinessColumnsWizardPagePhysicalTableSelection pageZero;
+	IWizardPage pageOne;
 	
 	
 	public EditBusinessColumnsWizard(BusinessColumnSet businessColumnSet, EditingDomain editingDomain, ISpagoBIModelCommand command){
@@ -29,12 +32,23 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 	
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessColumnSet);
+		if (businessColumnSet instanceof BusinessTable){
+			BusinessTable businessTable = (BusinessTable)businessColumnSet;
+			//check for empty Physical Table reference
+			if (businessTable.getPhysicalTable() == null){
+				pageZero = new EditBusinessColumnsWizardPagePhysicalTableSelection("Edit Business Column page zero",businessColumnSet.getModel());
+			}
+		}
+		pageOne = new EditBusinessColumnsWizardPage("Edit Business Column page one",businessColumnSet);
+		if (pageZero != null){
+			pageZero.setColumnSelectionPage((EditBusinessColumnsWizardPage)pageOne);
+			addPage(pageZero);
+		}	
 		addPage( pageOne );
 	}
 	
 	public CommandParameter getCommandInputParameter(){
-		EditBusinessColumnsWizardPage wizardPage = (EditBusinessColumnsWizardPage)this.getStartingPage();
+		EditBusinessColumnsWizardPage wizardPage = (EditBusinessColumnsWizardPage)pageOne;
 		
 		TableItem[] columnsToImport = wizardPage.getColumnsToImport();
 		int numCol = columnsToImport.length;

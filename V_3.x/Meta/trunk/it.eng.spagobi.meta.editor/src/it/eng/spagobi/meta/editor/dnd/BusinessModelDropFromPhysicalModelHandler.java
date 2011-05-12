@@ -229,30 +229,37 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		
 		PhysicalTable sourcePhysicalTable = physicalColumn.getTable();
 		PhysicalTable targetPhysicalTable = businessTable.getPhysicalTable();
-		
-		//if target table has the same PhysicalTable of the added columns, then perform the addColumn
-		if (sourcePhysicalTable.equals(targetPhysicalTable)){
-			executeAddColumnsToBusinessTableAction(businessTable, physicalColumn);
-			//initializer.addColumn(physicalColumn, businessTable);
+		if (targetPhysicalTable != null){
+			//if target table has the same PhysicalTable of the added columns, then perform the addColumn
+			if (sourcePhysicalTable.equals(targetPhysicalTable)){
+				executeAddColumnsToBusinessTableAction(businessTable, physicalColumn);
+				//initializer.addColumn(physicalColumn, businessTable);
+			}
+			//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
+			else {
+				//upgrade BusinessTable to BusinessView
+				Command addPhysicalTableCommand = editingDomain.createCommand
+				(AddPhysicalTableToBusinessViewCommand.class, 
+						new CommandParameter(businessTable, null, null, new ArrayList<Object>()));
+				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessTable,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
+				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
+				dialog.create();
+				dialog.open();
+
+				//re-set businessColumnSet reference to point to BusinessView
+				BusinessView businessView = (BusinessView)((BusinessModel)model).getTable(businessTable.getName());
+
+				//add the column
+				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+				//initializer.addColumn(physicalColumn, businessView);
+			}
 		}
-		//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
 		else {
-			//upgrade BusinessTable to BusinessView
-			Command addPhysicalTableCommand = editingDomain.createCommand
-			(AddPhysicalTableToBusinessViewCommand.class, 
-					new CommandParameter(businessTable, null, null, new ArrayList<Object>()));
-			AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessTable,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
-			WizardDialog dialog = new WizardDialog(new Shell(), wizard);
-			dialog.create();
-			dialog.open();
-
-			//re-set businessColumnSet reference to point to BusinessView
-			BusinessView businessView = (BusinessView)((BusinessModel)model).getTable(businessTable.getName());
-
-			//add the column
-			executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
-			//initializer.addColumn(physicalColumn, businessView);
+			//target is an empty Business Table
+			executeAddColumnsToBusinessTableAction(businessTable, physicalColumn);
 		}
+			
+
 	}
 	
 	public boolean executeAddColumnsToBusinessTableAction(BusinessColumnSet businessColumnSet, PhysicalColumn physicalColumn) {

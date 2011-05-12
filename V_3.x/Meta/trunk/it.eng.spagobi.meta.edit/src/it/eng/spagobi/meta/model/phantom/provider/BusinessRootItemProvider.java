@@ -8,6 +8,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.CreateEmptyBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
 
@@ -59,7 +60,9 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 			result = new GenerateJPAMappingCommand(domain, commandParameter);
 		 } else if(commandClass == CreateQueryCommand.class) {
 			result = new CreateQueryCommand(domain, commandParameter);
-		 } 
+		 } else if (commandClass == CreateEmptyBusinessTableCommand.class){
+			result = new CreateEmptyBusinessTableCommand(domain, commandParameter);
+		 }
 		 
 		 return result;
 	}

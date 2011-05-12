@@ -217,6 +217,30 @@ public class BusinessModelInitializer {
 		}
 		return businessTable;
 	}
+	
+	//Add an empty Business Table without Physical Table reference
+	public  BusinessTable addEmptyTable(BusinessModel businessModel, String tableName){
+		BusinessTable businessTable;
+		try {
+			businessTable = FACTORY.createBusinessTable();
+			//check if name is already used
+			if (businessModel.getTable(tableName) != null){				
+				businessTable.setName(tableName+"_copy");
+			}
+			else{
+				businessTable.setName(tableName);
+			}		
+			businessTable.setDescription("");
+			businessTable.setModel(businessModel);
+			businessModel.getTables().add(businessTable);
+
+			getPropertiesInitializer().addProperties(businessTable);	
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to add empty business table ");
+		}
+		return businessTable;
+		
+	}
 
 	public void addColumns(PhysicalTable physicalTable, BusinessTable businessTable) {
 		addColumns(physicalTable, null, businessTable);

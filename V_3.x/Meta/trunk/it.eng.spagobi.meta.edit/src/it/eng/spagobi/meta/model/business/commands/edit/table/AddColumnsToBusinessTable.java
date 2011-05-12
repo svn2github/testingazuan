@@ -38,6 +38,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -54,6 +55,9 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 	// cache edited columns (added and removed) for undo e redo
 	List<BusinessColumn> addedColumns;
 	BusinessIdentifier addedIdentifier;
+	
+	//check if Business Table has empty Physical Table reference
+	boolean isEmptyBusinessTable = false;
 	
 		
 	private static Logger logger = LoggerFactory.getLogger(ModifyBusinessTableColumnsCommand.class);
@@ -85,10 +89,26 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 	public void execute() {
 		
 		clearCachedObjects();
+		//check if BusinessTable has null Physical Table reference
+		if (businessTable instanceof BusinessTable){
+			BusinessTable bTable = (BusinessTable)businessTable;
+			PhysicalTable physicalTable = bTable.getPhysicalTable();
+			if (physicalTable == null){
+				isEmptyBusinessTable = true;
+			}
+			else{
+				isEmptyBusinessTable = false;
+			}				
+		}
+		
 		
 		for(PhysicalColumn column: columnsToAdd) {
-			if(businessTable.getColumn(column) == null) { // avoid columns duplicaion
+			if(businessTable.getColumn(column) == null) { // avoid columns duplication
 				initializer.addColumn(column, businessTable);
+				if (isEmptyBusinessTable){
+					((BusinessTable)businessTable).setPhysicalTable(column.getTable());
+					isEmptyBusinessTable = false;
+				}
 				addedColumns.add( businessTable.getColumn(column) );
 			}
 			

@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.editor.business.menu;
 import it.eng.spagobi.meta.editor.business.actions.AbstractSpagoBIModelAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessTableAction;
+import it.eng.spagobi.meta.editor.business.actions.AddEmptyBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIdentifierAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIncomeBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddOutcomeBusinessRelationshipAction;
@@ -73,11 +74,16 @@ public class BusinessModelMenuActionFactory {
 		
 		if(target instanceof BusinessTable) {
 			 List editActions = new ArrayList();
-			 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
-			 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
-			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
-			 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
-			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+			 if (((BusinessTable)target).getPhysicalTable() != null ){
+				 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
+				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
+				 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
+				 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
+				 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+			 }
+			 else {
+				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
+			 }
 			 actions.put("Edit", editActions);
 		} else if(target instanceof BusinessView) {
 			 List editActions = new ArrayList();
@@ -116,6 +122,7 @@ public class BusinessModelMenuActionFactory {
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();
 	    	editActions.add(new AddBusinessTableAction(activeEditorPart, selection, null));
+	    	editActions.add(new AddEmptyBusinessTableAction(activeEditorPart, selection));
 	    	editActions.add(new AddBusinessRelationshipAction(activeEditorPart, selection));
 	    	actions.put("Edit", editActions);
 	    	

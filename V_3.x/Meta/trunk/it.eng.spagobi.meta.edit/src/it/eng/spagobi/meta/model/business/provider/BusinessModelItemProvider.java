@@ -12,6 +12,7 @@ import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.CreateEmptyBusinessTableCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
@@ -325,7 +326,7 @@ public class BusinessModelItemProvider
 		   	result = new CreateBusinessTableCommand(domain, commandParameter);
 		 } else if(commandClass == AddBusinessRelationshipCommand.class) {
 			result = new AddBusinessRelationshipCommand(domain, commandParameter);
-		 }
+		 } 
 		 
 		 return result;
 	}

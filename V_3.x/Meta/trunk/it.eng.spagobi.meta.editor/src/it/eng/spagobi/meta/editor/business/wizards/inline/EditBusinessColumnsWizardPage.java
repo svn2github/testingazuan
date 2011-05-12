@@ -251,19 +251,22 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 		if (businessTable != null) {
 			//retrieve the Physical Table Columns
 			PhysicalTable pTable = businessTable.getPhysicalTable();
-			int numCols = pTable.getColumns().size();
-			for (int i=0; i<numCols; i++){
-				PhysicalColumn pColumn = pTable.getColumns().get(i);
-				//check if a corresponding Business Column already exist in the Business Table
-				if ( businessTable.getColumn(pColumn) == null ){
-					TableItem ti = new TableItem(columns, 0);
-					//associate table item with the object It represents
-					ti.setData(pColumn);
-					ti.setText(pColumn.getName());
+			int numCols;
+			if (pTable != null){
+				numCols = pTable.getColumns().size();
+				for (int i=0; i<numCols; i++){
+					PhysicalColumn pColumn = pTable.getColumns().get(i);
+					//check if a corresponding Business Column already exist in the Business Table
+					if ( businessTable.getColumn(pColumn) == null ){
+						TableItem ti = new TableItem(columns, 0);
+						//associate table item with the object It represents
+						ti.setData(pColumn);
+						ti.setText(pColumn.getName());
+					}
 				}
 			}
-			
-			//retrieve Business Table Columns
+
+						//retrieve Business Table Columns
 			numCols = businessTable.getColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(fields, 0);

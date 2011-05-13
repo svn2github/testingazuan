@@ -68,16 +68,11 @@ public class DeleteModelObjectAction extends DeleteAction {
 	public DeleteModelObjectAction() {
 		super();
 	}
-	
-	 /**
-	   * This simply execute the command.
-	   */
-	  @Override
-	  public void run()
-	  {
+
+	@Override
+	public void run() {
 	    domain.getCommandStack().execute(command);
-	    boolean b = command.canUndo();
-	  }
+	}
 	  
 	Command removeCommand;
 	

@@ -29,8 +29,12 @@ import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.business.BusinessModelEditorSelectionProvider;
+import it.eng.spagobi.meta.editor.business.BusinessModelPartListener;
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
+import it.eng.spagobi.meta.editor.properties.CustomizedBusinessPropertySheetPage;
+import it.eng.spagobi.meta.editor.properties.CustomizedPhysicalPropertySheetPage;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -49,8 +53,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiEditor;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +87,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	private static final Logger logger = LoggerFactory.getLogger(SpagoBIModelEditor.class);
 	
+	private boolean needActivation = true;
 	
 	@Override
 	public void createPartControl(Composite parentContainer) {
@@ -139,7 +149,34 @@ public class SpagoBIModelEditor extends MultiEditor {
 		}, IResourceChangeEvent.POST_CHANGE);
 		*/
 		
-		getSite().getPage().addPartListener(new DiagnosticPartListener(logger));
+		BusinessModelEditorSelectionProvider selectionProvider = new BusinessModelEditorSelectionProvider(businessModelEditor);
+		getSite().setSelectionProvider(selectionProvider);
+		
+		getSite().getPage().addPartListener(new DiagnosticPartListener(logger) {
+			public void partActivated(IWorkbenchPart p) {
+				//logger.debug("> Activated part [{}]", p.getClass().getName());
+			}
+			public void partDeactivated(IWorkbenchPart p) {
+				if(p.getClass() == SpagoBIModelEditor.class /*|| p.getClass() == BusinessModelEditor.class ||  p.getClass() == PhysicalModelEditor.class*/ ) {
+					//logger.debug("> Deactivated part [{}]", p.getClass().getName());
+					needActivation = true;
+				}
+			}
+		});
+	}
+	
+	/**
+	 * This is how the framework determines which interfaces we implement.
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getAdapter(Class key) {
+		if (key.equals(IPropertySheetPage.class)) {
+			return super.getAdapter(key);
+		}
+		else {
+			return super.getAdapter(key);
+		}
 	}
 	
 	protected void createInnerEditorContainer(int innerEditorIndex, Composite parentContainer) {
@@ -160,21 +197,53 @@ public class SpagoBIModelEditor extends MultiEditor {
 		
 		class InnerEditorListener implements Listener {
 			IEditorPart editor;
+			boolean notSet = true;
 			InnerEditorListener(IEditorPart editor) {
 				this.editor = editor;
 			}
 			public void handleEvent(Event event) {
 			     if (event.type == SWT.Activate) {
-			    	 logger.debug("Activating editor [{}]", editor);
-			    	 logger.debug("Active editor PRE [{}]", getActiveEditor().getClass().getName());
-			    	 activateEditor(editor);
-			    	 logger.debug("Active editor POST [{}]", getActiveEditor().getClass().getName());
+			    	 needActivation = false;
+			    	 logger.debug("ACTIVATE editor [{}]", editor);
+			    	 IEditorPart e = getActiveEditor();
+			    	 IViewReference[] viewReferences = e.getSite().getPage().getViewReferences();
+						IViewReference viewReference = null;
+						for(int i = 0; i < viewReferences.length; i++) {
+							if(viewReferences[i].getId().equalsIgnoreCase("org.eclipse.ui.views.PropertySheet")) {
+								viewReference = viewReferences[i];
+								break;
+							}
+						}
+						if(viewReference != null) {
+							PropertySheet propertySheet = (PropertySheet)viewReference.getView(true);
+							Object o = propertySheet.getCurrentPage();
+							if((editor instanceof BusinessModelEditor && !(o instanceof CustomizedBusinessPropertySheetPage))
+								|| (editor instanceof PhysicalModelEditor && !(o instanceof CustomizedPhysicalPropertySheetPage))) {
+								e.getSite().getPage().hideView(viewReference);
+								try {
+									IViewPart viewp = e.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+								} catch (PartInitException e1) {
+									e1.printStackTrace();
+								}
+							} else {
+								logger.debug("d1");
+							}
+						} else {
+							logger.debug("d2");
+						}
+						
+			     } else if(event.type == SWT.Deactivate) {
+			    	 //logger.debug("DEACTIVATE editor [{}]", editor);
+			    	 notSet = true;
 			     }
 			}
+			
 		}
-		
-		innerEditorWrapperContainer.addListener(SWT.Activate, new InnerEditorListener(innerEditor));
 
+		InnerEditorListener innerEditorListener = new InnerEditorListener(innerEditor);
+		innerEditorWrapperContainer.addListener(SWT.Activate, innerEditorListener);
+		innerEditorWrapperContainer.addListener(SWT.Deactivate, innerEditorListener);
+		
 		
 		refreshInnerEditorTitle(innerEditor, innerEditorTitle[innerEditorIndex]);
 		

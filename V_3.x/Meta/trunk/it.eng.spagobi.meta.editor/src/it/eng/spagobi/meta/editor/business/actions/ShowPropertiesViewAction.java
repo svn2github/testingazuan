@@ -25,7 +25,10 @@ import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.views.properties.PropertySheet;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -53,7 +56,16 @@ public class ShowPropertiesViewAction extends Action {
 	@Override
 	public void run() {
 		try {
-			activeEditorPart.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+			IViewReference[] views = activeEditorPart.getSite().getPage().getViewReferences();
+			IViewReference view = null;
+			for(int i = 0; i < views.length; i++) {
+				if(views[i].getId().equalsIgnoreCase("org.eclipse.ui.views.PropertySheet")) {
+					view = views[i];
+					break;
+				}
+			}
+			if(view != null) activeEditorPart.getSite().getPage().hideView(view);
+			IViewPart viewp = activeEditorPart.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
 		}
 		catch (PartInitException exception) {
 			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);

@@ -1,7 +1,5 @@
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-
 public interface IJpaColumn {
 
 	public static final String PUBLIC_SCOPE = "public"; //$NON-NLS-1$
@@ -94,5 +92,7 @@ public interface IJpaColumn {
 	boolean needMapTemporalType();
 
 	String getMapTemporalType();
+
+	String getUnqualifiedUniqueName();
 	
 }

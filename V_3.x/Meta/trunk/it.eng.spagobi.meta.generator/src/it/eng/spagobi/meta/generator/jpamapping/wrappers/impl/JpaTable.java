@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -188,6 +189,20 @@ public class JpaTable extends AbstractJpaTable {
 	public String getAttribute(String name) {
 		ModelProperty property = businessTable.getProperties().get(name);
 		return property != null? property.getValue(): "";
+	}
+
+	@Override
+	public List<IJpaSubEntity> getSubEntities() {
+		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		
+		for(BusinessRelationship relationship : businessTable.getRelationships()) {
+			if(relationship.getSourceTable() != businessTable) continue;
+			
+			JpaSubEntity subEntity = new JpaSubEntity(businessTable, null, relationship);
+			subEntities.add(subEntity);
+		}
+		
+		return subEntities;
 	}
 	
 

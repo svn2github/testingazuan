@@ -247,16 +247,26 @@ public class JpaColumn implements IJpaColumn {
 		return businessColumn.getPhysicalColumn().getName();
 	}
 	
+	
+	@Override
+	public String getUnqualifiedUniqueName() {
+		String uniqueName = this.getName();
+		
+		if(this.getJpaTable().hasFakePrimaryKey() || (this.isIdentifier() && this.getJpaTable().hasCompositeKey())) {
+			uniqueName = this.getJpaTable().getCompositeKeyPropertyName() + "." + getPropertyName();
+		} else {
+			uniqueName = getPropertyName();
+		}
+		
+		
+		return uniqueName;
+	}
+	
 	@Override
 	public String getUniqueName() {
 		String uniqueName = this.getName();
 		
-		if(this.getJpaTable().hasFakePrimaryKey() || (this.isIdentifier() && this.getJpaTable().hasCompositeKey())) {
-			uniqueName = this.getJpaTable().getQualifiedClassName() + "/" + this.getJpaTable().getCompositeKeyPropertyName() + "." + getPropertyName();
-		} else {
-			uniqueName = this.getJpaTable().getQualifiedClassName() + "/" + getPropertyName();
-		}
-		
+		uniqueName = this.getJpaTable().getQualifiedClassName() + "/" + getUnqualifiedUniqueName();
 		
 		return uniqueName;
 	}

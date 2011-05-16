@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -264,5 +265,18 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	}
 
 
+	@Override
+	public List<IJpaSubEntity> getSubEntities() {
+		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		
+		for(BusinessRelationship relationship : businessView.getRelationships()) {
+			if(relationship.getSourceTable() != businessView) continue;
+			
+			JpaSubEntity subEntity = new JpaSubEntity(this, null, relationship);
+			subEntities.add(subEntity);
+		}
+		
+		return subEntities;
+	}
 	
 }

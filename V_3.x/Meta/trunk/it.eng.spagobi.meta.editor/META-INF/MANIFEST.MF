@@ -50,7 +50,6 @@ Export-Package: it.eng.spagobi.meta.editor.business.actions;
    org.eclipse.jface.viewers,
    org.eclipse.ui.dialogs,
    org.eclipse.swt.widgets",
- it.eng.spagobi.meta.editor.multi.wizards.deployDatasetWizard,
  it.eng.spagobi.meta.editor.popup.actions;
   uses:="org.eclipse.jface.action,
    org.eclipse.ui,

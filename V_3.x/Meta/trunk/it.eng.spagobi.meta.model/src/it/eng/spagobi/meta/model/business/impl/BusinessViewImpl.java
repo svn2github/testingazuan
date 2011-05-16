@@ -158,5 +158,42 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 		physicalTables = new ArrayList<PhysicalTable>(physicalTableSet);
 		return physicalTables;
 	}
+	
+	@Override
+	public List<PhysicalTable> getPhysicalTablesOccurrences(){
+		EList<BusinessViewInnerJoinRelationship> joinRelationships = this.getJoinRelationships();
+		List<PhysicalTable> physicalTablesOccurences = new ArrayList<PhysicalTable>();
+		for (BusinessViewInnerJoinRelationship relationship: joinRelationships){
+			if (!physicalTablesOccurences.contains(relationship.getSourceTable())){
+				physicalTablesOccurences.add(relationship.getSourceTable());
+			}
+			physicalTablesOccurences.add(relationship.getDestinationTable());
+		}
+		return physicalTablesOccurences;
+	}
+	
+	//if the PhysicalTable has more occurrence, return the BusinessInnerJoinRelationship corresponding at the occurence numer specified
+	@Override
+	public BusinessViewInnerJoinRelationship getBusinessViewInnerJoinRelationshipAtOccurrenceNumber(PhysicalTable physicalTable, int index){
+		int counter=0;
+		EList<BusinessViewInnerJoinRelationship> joinRelationships = this.getJoinRelationships();
+		for (BusinessViewInnerJoinRelationship relationship: joinRelationships){
+			if (relationship.getSourceTable().equals(physicalTable)){
+				counter++;
+				if (counter == index){
+					return relationship;
+				}
+			}
+			if (relationship.getDestinationTable().equals(physicalTable)){
+				counter++;	
+				if (counter == index){
+					return relationship;
+				}
+			}				
+		}
+		return null;
+		
+	}
+	
 
 } //BusinessViewImpl

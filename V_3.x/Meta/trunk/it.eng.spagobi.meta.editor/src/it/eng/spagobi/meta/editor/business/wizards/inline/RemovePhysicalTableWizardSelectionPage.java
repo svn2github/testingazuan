@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
@@ -122,9 +123,24 @@ public class RemovePhysicalTableWizardSelectionPage extends WizardPage {
 	//populate the list with the Physical Tables' names
 	private void populateTableList(){
 		if (owner instanceof BusinessView){
-			java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+			//java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+			java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTablesOccurrences();
+			java.util.List<String> duplicatePhysicalTables = new ArrayList<String>();
 			for (PhysicalTable physicalTable : physicalTables){
-				tableList.add(physicalTable.getName());
+				if (duplicatePhysicalTables.contains(physicalTable.getName())){
+					int counter=1;
+					for (String tableName:duplicatePhysicalTables){
+						if (tableName.equals(physicalTable.getName())){
+							counter++;
+						}
+					}
+					duplicatePhysicalTables.add(physicalTable.getName());
+					tableList.add(physicalTable.getName()+"#"+counter);
+				}
+				else {
+					duplicatePhysicalTables.add(physicalTable.getName());
+					tableList.add(physicalTable.getName());
+				}
 			}
 		}
 	}

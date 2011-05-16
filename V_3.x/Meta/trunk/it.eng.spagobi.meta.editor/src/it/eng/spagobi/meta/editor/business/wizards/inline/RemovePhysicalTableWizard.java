@@ -59,6 +59,7 @@ public class RemovePhysicalTableWizard extends AbstractSpagoBIModelWizard {
 	public CommandParameter getCommandInputParameter() {
 		String tableName = pageOne.getTableSelected();
 		if (owner instanceof BusinessView){
+		/*
 			java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
 			for (PhysicalTable physicalTable:physicalTables ){
 				if (physicalTable.getName().equals(tableName))
@@ -66,6 +67,8 @@ public class RemovePhysicalTableWizard extends AbstractSpagoBIModelWizard {
 					return new CommandParameter(owner, null, physicalTable, new ArrayList<Object>());
 				}
 			}
+		*/	
+			return new CommandParameter(owner, null, tableName, new ArrayList<Object>());
 		}
 		return null;	
 	}

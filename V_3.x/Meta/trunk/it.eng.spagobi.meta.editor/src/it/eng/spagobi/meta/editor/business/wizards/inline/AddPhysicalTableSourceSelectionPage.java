@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
@@ -101,6 +102,9 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	 			public void widgetSelected(SelectionEvent e) {
 	 				int selectionIndex = comboPhysicalTables.getSelectionIndex();
 	 				selectedPhysicalTable = comboPhysicalTables.getItem(selectionIndex);
+	 				if (selectedPhysicalTable.contains("#")){
+	 					selectedPhysicalTable = selectedPhysicalTable.substring(0,selectedPhysicalTable.indexOf("#"));
+	 				}
 	 				populateColumnList(selectedPhysicalTable);
 	 				checkPageComplete();
 	 			}
@@ -124,15 +128,32 @@ public class AddPhysicalTableSourceSelectionPage extends WizardPage {
 	
 	public void populatePhysicalTablesCombo(){
 		comboPhysicalTables.removeAll();
-		java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+		//java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+		java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTablesOccurrences();
+		java.util.List<String> duplicatePhysicalTables = new ArrayList<String>();
 		for (PhysicalTable physicalTable:physicalTables){
-			comboPhysicalTables.add(physicalTable.getName());
+			if (duplicatePhysicalTables.contains(physicalTable.getName())){
+				int counter=1;
+				for (String tableName:duplicatePhysicalTables){
+					if (tableName.equals(physicalTable.getName())){
+						counter++;
+					}
+				}
+				duplicatePhysicalTables.add(physicalTable.getName());
+				comboPhysicalTables.add(physicalTable.getName()+"#"+counter);
+			}
+			else {
+				duplicatePhysicalTables.add(physicalTable.getName());
+				comboPhysicalTables.add(physicalTable.getName());
+			}
+			
 		}
 	}
 	
 	public void populateColumnList(String physicalTableName){
 		listPhysicalTableColumns.removeAll();
-		java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+		//java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTables();
+		java.util.List<PhysicalTable> physicalTables = ((BusinessView)owner).getPhysicalTablesOccurrences();
 		PhysicalTable selectedPhysicalTable = null;
 		for (PhysicalTable physicalTable : physicalTables){
 			if (physicalTable.getName().equals(physicalTableName)){

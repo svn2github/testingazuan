@@ -49,5 +49,10 @@ public interface BusinessView extends BusinessColumnSet {
 	// Utility methods
 	// =========================================================================
 	List<PhysicalTable> getPhysicalTables();
+	
+	List<PhysicalTable> getPhysicalTablesOccurrences();
+	
+	//if the PhysicalTable has more occurrence, return the BusinessInnerJoinRelationship corresponding at the occurence numer specified
+	BusinessViewInnerJoinRelationship getBusinessViewInnerJoinRelationshipAtOccurrenceNumber(PhysicalTable physicalTable, int index);
 
 } // BusinessView

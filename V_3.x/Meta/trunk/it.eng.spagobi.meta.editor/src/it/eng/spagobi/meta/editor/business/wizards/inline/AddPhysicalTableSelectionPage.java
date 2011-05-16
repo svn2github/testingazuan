@@ -146,8 +146,10 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 	private void populateTableList(){
 		PhysicalModel physicalModel = owner.getModel().getPhysicalModel();
 		
+		
 		//get already present Physical Table to exclude
 		java.util.List<PhysicalTable> excludedPhysicalTables = new ArrayList<PhysicalTable>();
+		/*
 		if (owner instanceof BusinessTable){
 			//get the only Physical Table of Business Table
 			excludedPhysicalTables.add(((BusinessTable)owner).getPhysicalTable());
@@ -155,7 +157,8 @@ public class AddPhysicalTableSelectionPage extends WizardPage {
 			//get the Physical Tables of the Business View
 			excludedPhysicalTables.addAll(((BusinessView)owner).getPhysicalTables());
 		}
-			
+		*/
+		
 		int numTables = physicalModel.getTables().size();
 		String tabName;
 		for (int i = 0; i < numTables; i++){

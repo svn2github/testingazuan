@@ -82,10 +82,39 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 	public void execute() {
 		
 		businessView = (BusinessView)parameter.getOwner();
-		physicalTable = (PhysicalTable)parameter.getValue();
+		//physicalTable = (PhysicalTable)parameter.getValue();
+		String tableName = (String)parameter.getValue();
+		int occurrenceNumber = 0;
+		if (tableName.contains("#")){
+			//special case: duplicate physical table
+			occurrenceNumber = Integer.parseInt(tableName.substring(tableName.indexOf("#")+1));
+			tableName = tableName.substring(0, tableName.indexOf("#"));
+		} else {
+			//normal case
+			List<PhysicalTable> physicalTables = businessView.getPhysicalTablesOccurrences();
+			for (PhysicalTable table:physicalTables){
+				if (table.getName().equals(tableName))
+					physicalTable = table;
+				break;
+			}
+		}
+			
 		businessModel = businessView.getModel();
 		removedBusinessColumns = new ArrayList<BusinessColumn>();
-		innerJoinRelationship = removePhysicalTableToBusinessView(businessView, physicalTable);
+		if (physicalTable != null){
+			//normal case
+			innerJoinRelationship = removePhysicalTableToBusinessView(businessView, physicalTable);
+		}
+		else {
+			//special case
+			List<PhysicalTable> physicalTables = businessView.getPhysicalTablesOccurrences();
+			for (PhysicalTable table:physicalTables){
+				if (table.getName().equals(tableName))
+					physicalTable = table;
+				break;
+			}
+			innerJoinRelationship = removePhysicalTableToBusinessView(businessView, physicalTable, occurrenceNumber);
+		}
 		
 		if (innerJoinRelationship != null){
 			this.executed = true;
@@ -150,6 +179,46 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 		return innerJoinRelationship;	
 	}
 	
+	public BusinessViewInnerJoinRelationship removePhysicalTableToBusinessView(BusinessView businessView, PhysicalTable physicalTable, int occurenceNumber){
+		BusinessViewInnerJoinRelationship innerJoinRelationship = null;
+
+		try {
+			EList<BusinessViewInnerJoinRelationship> joinRelationships = businessView.getJoinRelationships();
+			innerJoinRelationship = businessView.getBusinessViewInnerJoinRelationshipAtOccurrenceNumber(physicalTable, occurenceNumber);
+				//check if the removed physicalTable was in join with another PhysicalTable in this BusinessView
+						
+						
+						if (businessView.getJoinRelationships().size() == 1){
+							//downgrade to BusinessTable
+							
+//							for(BusinessColumn bc: businessView.getColumns()) {
+//								if(bc.getPhysicalColumn().getTable().equals(physicalTable)) {
+//									removedBusinessColumns.add( bc );
+//								}				
+//							}
+							initializer.downgradeBusinessViewToBusinessTable(businessView);
+						}
+						else {
+							//remove the inner join relationship between two physical table
+							businessView.getJoinRelationships().remove(innerJoinRelationship);
+							//remove he inner join relationship from BusinessModel
+							businessModel.getJoinRelationships().remove(innerJoinRelationship);
+							
+							//remove physical table's columns
+//							EList<BusinessColumn> businessColumns = businessView.getColumns();
+//							for (BusinessColumn businessColumn : businessColumns){
+//								if (businessColumn.getPhysicalColumn().getTable() == physicalTable){
+//									businessView.getColumns().remove(businessColumn);
+//								}
+//							}
+						}
+
+		} 
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to remove physical table to business view", t);
+		}
+		return innerJoinRelationship;	
+	}
 	
 	//check if the PhysicalTable is used as a SourceTable in the inner join relationship for BusinessView
 	public boolean isSourceTable(BusinessView businessView, PhysicalTable physicalTable){

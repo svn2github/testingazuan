@@ -3,7 +3,7 @@ package it.eng.spagobi.meta.editor.multi.wizards.deployDatasetWizard;
 import it.eng.spagobi.studio.utils.bo.Dataset;
 import it.eng.spagobi.studio.utils.bo.Template;
 import it.eng.spagobi.studio.utils.exceptions.NoActiveServerException;
-import it.eng.spagobi.studio.utils.services.SpagoBIServerObjects;
+import it.eng.spagobi.studio.utils.services.SpagoBIServerObjectsFactory;
 import it.eng.spagobi.studio.utils.util.BiObjectUtilities;
 import it.eng.spagobi.studio.utils.wizard.AbstractSpagoBIDocumentWizard;
 
@@ -68,9 +68,9 @@ public class SpagoBIDeployDatasetWizard extends AbstractSpagoBIDocumentWizard  {
 		URI uri=fileSel.getLocationURI();
 		projectName = fileSel.getProject().getName();
 
-		SpagoBIServerObjects proxyServerObjects = null;
+		SpagoBIServerObjectsFactory proxyServerObjects = null;
 		try{
-			proxyServerObjects = new SpagoBIServerObjects(projectName);
+			proxyServerObjects = new SpagoBIServerObjectsFactory(projectName);
 		}
 		catch (NoActiveServerException e1) {
 			logger.error("No active server found", e1);			
@@ -91,7 +91,7 @@ public class SpagoBIDeployDatasetWizard extends AbstractSpagoBIDocumentWizard  {
 		template.setContent(dataHandler);
 
 		try {
-			Integer returnCode=proxyServerObjects.saveDataSet(newDataset);
+			Integer returnCode=proxyServerObjects.getServerDatasets().saveDataSet(newDataset);
 			if(returnCode==null){
 				logger.error("Error during document deploy: Check that label is not already present");			
 				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 

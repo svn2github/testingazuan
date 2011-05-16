@@ -27,7 +27,8 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,
  org.eclipse.datatools.modelbase.sql.schema,
- org.eclipse.datatools.modelbase.sql.tables
+ org.eclipse.datatools.modelbase.sql.tables,
+ org.junit
 Export-Package: it.eng.spagobi.meta.editor.business.actions;
   uses:="org.eclipse.jface.action,
    it.eng.spagobi.meta.model.physical,
@@ -49,6 +50,7 @@ Export-Package: it.eng.spagobi.meta.editor.business.actions;
    org.eclipse.jface.viewers,
    org.eclipse.ui.dialogs,
    org.eclipse.swt.widgets",
+ it.eng.spagobi.meta.editor.multi.wizards.deployDatasetWizard,
  it.eng.spagobi.meta.editor.popup.actions;
   uses:="org.eclipse.jface.action,
    org.eclipse.ui,

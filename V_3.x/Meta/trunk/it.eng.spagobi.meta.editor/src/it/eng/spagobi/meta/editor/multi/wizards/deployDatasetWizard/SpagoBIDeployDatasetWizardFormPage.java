@@ -6,7 +6,7 @@ import it.eng.spagobi.studio.utils.bo.DataSource;
 import it.eng.spagobi.studio.utils.bo.Functionality;
 import it.eng.spagobi.studio.utils.exceptions.NoActiveServerException;
 import it.eng.spagobi.studio.utils.sdk.SDKProxyFactory;
-import it.eng.spagobi.studio.utils.services.SpagoBIServerObjects;
+import it.eng.spagobi.studio.utils.services.SpagoBIServerObjectsFactory;
 import it.eng.spagobi.studio.utils.util.SpagoBIStudioConstants;
 
 import java.lang.reflect.InvocationTargetException;
@@ -272,10 +272,10 @@ public class SpagoBIDeployDatasetWizardFormPage extends WizardPage {
 
 
 		// first of all get info from server		
-		final SpagoBIServerObjects proxyObjects;
+		final SpagoBIServerObjectsFactory proxyObjects;
 		SDKProxyFactory proxyFactory= null;
 		try{
-			proxyObjects = new SpagoBIServerObjects(projectName);
+			proxyObjects = new SpagoBIServerObjectsFactory(projectName);
 		}
 		catch (NoActiveServerException e1) {
 			logger.error("No active server found", e1);			
@@ -291,7 +291,7 @@ public class SpagoBIDeployDatasetWizardFormPage extends WizardPage {
 
 				try{
 
-					datasourceList=proxyObjects.getDataSourceList();
+					datasourceList=proxyObjects.getServerDataSources().getDataSourceList();
 				}
 				catch (Exception e) {
 					logger.error("No comunication with SpagoBI server",e);		

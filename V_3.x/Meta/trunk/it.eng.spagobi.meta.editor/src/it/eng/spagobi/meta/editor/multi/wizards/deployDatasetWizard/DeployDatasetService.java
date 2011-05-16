@@ -1,11 +1,10 @@
 package it.eng.spagobi.meta.editor.multi.wizards.deployDatasetWizard;
 
 import it.eng.spagobi.studio.utils.bo.Dataset;
-import it.eng.spagobi.studio.utils.bo.Document;
 import it.eng.spagobi.studio.utils.bo.Template;
 import it.eng.spagobi.studio.utils.exceptions.NoActiveServerException;
 import it.eng.spagobi.studio.utils.exceptions.NoDocumentException;
-import it.eng.spagobi.studio.utils.services.SpagoBIServerObjects;
+import it.eng.spagobi.studio.utils.services.SpagoBIServerObjectsFactory;
 import it.eng.spagobi.studio.utils.util.SpagoBIStudioConstants;
 
 import java.io.File;
@@ -88,7 +87,7 @@ public class DeployDatasetService {
 					try{
 						logger.debug("dataset associated, upload the query to dataset "+label2);
 
-						SpagoBIServerObjects spagoBIServerObjects = new SpagoBIServerObjects(projectname);
+						SpagoBIServerObjectsFactory spagoBIServerObjects = new SpagoBIServerObjectsFactory(projectname);
 
 
 						URI uri=fileSel2.getLocationURI();
@@ -96,19 +95,20 @@ public class DeployDatasetService {
 						File fileJava=new File(uri.getPath()); 
 						FileDataSource fileDataSource=new FileDataSource(fileJava);
 						DataHandler dataHandler=new DataHandler(fileDataSource);			
+					// TO DO
 						Template template=new Template();
 						template.setFileName(fileSel2.getName());
 						template.setContent(dataHandler);
 
 						// check ataset still exists
-						Dataset ds=spagoBIServerObjects.getDataSet(idInteger);
+						Dataset ds=spagoBIServerObjects.getServerDatasets().getDataSet(idInteger);
 						if(ds==null){
 							datasetException.setNoDocument(true);
 							logger.warn("Dataset no more present on server: with id "+idInteger);					
 						}
 						else{
 							datasetException.setNoDocument(false);
-							spagoBIServerObjects.uploadTemplate(idInteger, template);
+							spagoBIServerObjects.getServerDocuments().uploadTemplate(idInteger, template);
 						}
 					}
 

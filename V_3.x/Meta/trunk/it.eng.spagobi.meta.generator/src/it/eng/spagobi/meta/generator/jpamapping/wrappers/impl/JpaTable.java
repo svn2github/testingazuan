@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 public class JpaTable extends AbstractJpaTable {
 	
 	BusinessTable businessTable;
+	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
 
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 
@@ -194,16 +195,51 @@ public class JpaTable extends AbstractJpaTable {
 	@Override
 	public List<IJpaSubEntity> getSubEntities() {
 		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
-		
+		allSubEntities.clear();
+
 		for(BusinessRelationship relationship : businessTable.getRelationships()) {
 			if(relationship.getSourceTable() != businessTable) continue;
 			
 			JpaSubEntity subEntity = new JpaSubEntity(businessTable, null, relationship);
 			subEntities.add(subEntity);
+			allSubEntities.addAll(subEntities);
+			
+			//add children to max deep level of 10
+			//getSubLevelEntities(subEntity,1);
+			//subEntities.addAll(allSubEntities);	
+			
+			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
+			levelEntities.addAll(subEntity.getChildren());
+			allSubEntities.addAll(levelEntities);
+			for (int i=0; i<8; i++){
+				List<IJpaSubEntity> nextLevel = getSubLevelEntities(levelEntities);
+				allSubEntities.addAll(nextLevel);
+				levelEntities = nextLevel;
+			}
+		}	
+		return allSubEntities;
+	}
+	
+	public List<IJpaSubEntity> getSubLevelEntities(List<IJpaSubEntity> entities){
+		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		for (IJpaSubEntity entity:entities){
+			subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
 		}
-		
 		return subEntities;
 	}
 	
+	
+	/*
+	public List<IJpaSubEntity> getSubLevelEntities(JpaSubEntity entity, int deepLevel){
+		if (deepLevel <= 9){
+			List<IJpaSubEntity> childrens = entity.getChildren();
+			for (IJpaSubEntity child:childrens){
+				allSubEntities.addAll(getSubLevelEntities((JpaSubEntity)child,deepLevel+1));
+			}
+		}
+		return entity.getChildren();
+		
+	}
+	*/
 
 }

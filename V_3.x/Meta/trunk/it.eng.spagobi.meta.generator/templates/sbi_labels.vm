@@ -18,12 +18,12 @@ ${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
 # Subentities
 # ------------------------------------------------------------------
 #foreach ($jpaSubEntity in $jpaTable.getSubEntities())
-${jpaSubEntity.uniqueName}.label = xxx
-${jpaSubEntity.uniqueName}.tooltip = xxx
+${jpaSubEntity.uniqueName}.label = $jpaSubEntity.label
+${jpaSubEntity.uniqueName}.tooltip = $jpaSubEntity.tooltip
 
-#foreach ($columnName in $jpaSubEntity.getColumnUniqueNames())
-${columnName}.label = yyy
-${columnName}.tooltip = yyy
+#foreach ($columnName in $jpaSubEntity.getColumnsNames())
+${columnName}.label = $columnName
+${columnName}.tooltip = $columnName
 #end
 #end
 

@@ -42,9 +42,12 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
  *
  */
 public class JpaSubEntity implements IJpaSubEntity {
+	
+	public static final String DESTINATION_ROLE = "structural.destinationRole";
+
 	Object root; // table or view
 	BusinessRelationship relationship;
-	
+
 	JpaSubEntity parent; // null if parent is equal to root
 	List<JpaSubEntity> children;
 
@@ -162,10 +165,34 @@ public class JpaSubEntity implements IJpaSubEntity {
 		
 		return uniqueNames;
 	}
-
+	
+	public List<String> getColumnNames() {
+		List<String> columnsNames = new ArrayList<String>();
+		
+		IJpaTable table = getTable();
+		for(IJpaColumn column : table.getColumns()) {
+			columnsNames.add(column.getUnqualifiedUniqueName());
+		}
+		
+		return columnsNames;
+	}
+	
+	public String getLabel() {
+		return getAttribute("label");
+	}
+	
+	public String getTooltip(){
+		return getAttribute("tooltip");
+	}
+	
 	@Override
 	public String getAttribute(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		if ( (name.equals("label")) || (name.equals("tooltip")) ){
+			return relationship.getProperties().get(DESTINATION_ROLE).getValue();
+		}
+		else {
+			return this.getTable().getAttribute(name);
+		}
+
 	}
 }

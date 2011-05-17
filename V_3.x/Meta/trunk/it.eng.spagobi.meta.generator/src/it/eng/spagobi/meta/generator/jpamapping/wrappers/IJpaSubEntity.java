@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
+import java.util.List;
+
 /**
  * A unique reference to a table or view given its position in a 
  * relationship path
@@ -39,5 +41,20 @@ public interface IJpaSubEntity {
 	 * @return the value of the specified entity attribute
 	 */
 	public String getAttribute(String name);
+	
+	/**
+	 * @return the columns objects of the sub entity
+	 */
+	public List<IJpaColumn> getColumns();
+	
+	/**
+	 * @return the columns names of the sub entity
+	 */
+	public List<String> getColumnNames();
+	
+	/**
+	 * @return the unique columns names of the sub entity
+	 */
+	public List<String> getColumnUniqueNames();
 	
 }

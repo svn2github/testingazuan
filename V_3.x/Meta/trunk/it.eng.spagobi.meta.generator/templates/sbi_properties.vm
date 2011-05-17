@@ -16,8 +16,23 @@ ${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
 ${jpaColumn.uniqueName}.position = $velocityCount
 #end
 
+# ------------------------------------------------------------------
+# Subentities
+# ------------------------------------------------------------------
+#foreach ($jpaSubEntity in $jpaTable.getSubEntities())
+${jpaSubEntity.uniqueName}.visible = $jpaSubEntity.getAttribute("structural.visible")
+${jpaSubEntity.uniqueName}.type = $jpaSubEntity.getAttribute("structural.tabletype")
+${jpaSubEntity.uniqueName}.position = $velocityCount
+
+#foreach ($jpaColumn in $jpaSubEntity.getColumns())
+${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
+${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.tabletype")
+${jpaColumn.uniqueName}.position = $velocityCount
+
+#end
 #end
 
+#end
 
 # ==================================================================
 # VIEWS

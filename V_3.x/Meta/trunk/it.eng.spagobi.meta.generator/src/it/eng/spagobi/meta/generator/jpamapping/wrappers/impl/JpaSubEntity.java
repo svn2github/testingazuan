@@ -155,6 +155,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		return uniqueName;
 	}
 	
+	@Override
 	public List<String> getColumnUniqueNames() {
 		List<String> uniqueNames = new ArrayList<String>();
 		
@@ -166,6 +167,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		return uniqueNames;
 	}
 	
+	@Override
 	public List<String> getColumnNames() {
 		List<String> columnsNames = new ArrayList<String>();
 		
@@ -175,6 +177,12 @@ public class JpaSubEntity implements IJpaSubEntity {
 		}
 		
 		return columnsNames;
+	}
+	
+	@Override
+	public List<IJpaColumn> getColumns() {
+		IJpaTable table = getTable();
+		return table.getColumns();
 	}
 	
 	public String getLabel() {

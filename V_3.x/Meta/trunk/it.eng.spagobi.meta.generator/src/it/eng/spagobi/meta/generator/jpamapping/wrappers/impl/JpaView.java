@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
@@ -32,6 +33,7 @@ import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -48,7 +50,8 @@ public class JpaView implements IJpaView {
 	private BusinessView businessView;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
-	
+	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
+
 	
 	protected JpaView(BusinessView businessView) {
 		super();
@@ -165,6 +168,39 @@ public class JpaView implements IJpaView {
 	
 	public String getDescription() {
 		return businessView.getDescription() != null? businessView.getDescription(): getName();
+	}
+	
+	@Override
+	public List<IJpaSubEntity> getSubEntities() {
+		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		allSubEntities.clear();
+
+		for(BusinessRelationship relationship : businessView.getRelationships()) {
+			if(relationship.getSourceTable() != businessView) continue;
+			
+			JpaSubEntity subEntity = new JpaSubEntity(businessView, null, relationship);
+			subEntities.add(subEntity);
+			allSubEntities.addAll(subEntities);
+
+			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
+			levelEntities.addAll(subEntity.getChildren());
+			allSubEntities.addAll(levelEntities);
+			//add children to max deep level of 10
+			for (int i=0; i<8; i++){
+				List<IJpaSubEntity> nextLevel = getSubLevelEntities(levelEntities);
+				allSubEntities.addAll(nextLevel);
+				levelEntities = nextLevel;
+			}
+		}	
+		return allSubEntities;
+	}
+	
+	public List<IJpaSubEntity> getSubLevelEntities(List<IJpaSubEntity> entities){
+		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		for (IJpaSubEntity entity:entities){
+			subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
+		}
+		return subEntities;
 	}
 	
 	

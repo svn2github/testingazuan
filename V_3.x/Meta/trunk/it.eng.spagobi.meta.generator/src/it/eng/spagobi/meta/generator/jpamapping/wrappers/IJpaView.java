@@ -27,5 +27,6 @@ public interface IJpaView {
 
 	List<JpaViewInnerJoinRelatioship> getJoinRelationships();
 	
+	List<IJpaSubEntity> getSubEntities();
 
 }

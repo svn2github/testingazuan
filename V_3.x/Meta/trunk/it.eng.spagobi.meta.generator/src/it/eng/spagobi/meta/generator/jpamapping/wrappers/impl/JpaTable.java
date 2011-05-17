@@ -203,14 +203,11 @@ public class JpaTable extends AbstractJpaTable {
 			JpaSubEntity subEntity = new JpaSubEntity(businessTable, null, relationship);
 			subEntities.add(subEntity);
 			allSubEntities.addAll(subEntities);
-			
-			//add children to max deep level of 10
-			//getSubLevelEntities(subEntity,1);
-			//subEntities.addAll(allSubEntities);	
-			
+
 			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
 			levelEntities.addAll(subEntity.getChildren());
 			allSubEntities.addAll(levelEntities);
+			//add children to max deep level of 10
 			for (int i=0; i<8; i++){
 				List<IJpaSubEntity> nextLevel = getSubLevelEntities(levelEntities);
 				allSubEntities.addAll(nextLevel);
@@ -227,19 +224,5 @@ public class JpaTable extends AbstractJpaTable {
 		}
 		return subEntities;
 	}
-	
-	
-	/*
-	public List<IJpaSubEntity> getSubLevelEntities(JpaSubEntity entity, int deepLevel){
-		if (deepLevel <= 9){
-			List<IJpaSubEntity> childrens = entity.getChildren();
-			for (IJpaSubEntity child:childrens){
-				allSubEntities.addAll(getSubLevelEntities((JpaSubEntity)child,deepLevel+1));
-			}
-		}
-		return entity.getChildren();
-		
-	}
-	*/
 
 }

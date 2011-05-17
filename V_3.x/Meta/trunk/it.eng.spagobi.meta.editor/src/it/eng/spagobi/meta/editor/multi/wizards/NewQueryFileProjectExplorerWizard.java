@@ -69,7 +69,7 @@ INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
-		if(selection != null){
+		if(selection != null && !selection.toList().isEmpty()){
 			Object objSel = selection.toList().get(0);
 			if(objSel instanceof IFile){
 				logger.debug("set default dataset path");
@@ -88,22 +88,24 @@ INewWizard {
 		if (file != null){
 			EmfXmiSerializer emfXmiSerializer = new EmfXmiSerializer();
 			// go on only if you selected a folder
-			Object objSel = selection.toList().get(0);
-			if(objSel instanceof IFile){
-				File fileSel = null;		
-				fileSel=(File)objSel;
-				try{
-					Model root = emfXmiSerializer.deserialize(fileSel.getContents());
-					logger.debug("Model root is [{}] ",root );
-					BusinessModel businessModel = root.getBusinessModels().get(0);
-					logger.debug("link to model "+businessModel.getName());
-					logger.debug("file "+file.getName());
-					file.setPersistentProperty(SpagoBIStudioConstants.MODEL_NAME, businessModel.getName());
-					file.setPersistentProperty(SpagoBIStudioConstants.MODEL_FILE_NAME, fileSel.getName());				
-					logger.debug("Set file metadata with model name "+businessModel.getName()+" and file name "+fileSel.getName());
-				}
-				catch (Exception e) {
-					logger.error("could not link to model metadata", e);		
+			if(selection != null && !selection.toList().isEmpty()){
+				Object objSel = selection.toList().get(0);
+				if(objSel instanceof IFile){
+					File fileSel = null;		
+					fileSel=(File)objSel;
+					try{
+						Model root = emfXmiSerializer.deserialize(fileSel.getContents());
+						logger.debug("Model root is [{}] ",root );
+						BusinessModel businessModel = root.getBusinessModels().get(0);
+						logger.debug("link to model "+businessModel.getName());
+						logger.debug("file "+file.getName());
+						file.setPersistentProperty(SpagoBIStudioConstants.MODEL_NAME, businessModel.getName());
+						file.setPersistentProperty(SpagoBIStudioConstants.MODEL_FILE_NAME, fileSel.getName());				
+						logger.debug("Set file metadata with model name "+businessModel.getName()+" and file name "+fileSel.getName());
+					}
+					catch (Exception e) {
+						logger.error("could not link to model metadata", e);		
+					}
 				}
 			}
 

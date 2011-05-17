@@ -69,6 +69,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	private Document document;
 	
 	public static final String COLUMN_PHYSICAL_TABLE = "physical.physicaltable";
+	public static final String ROLE_DESTINATION = "structural.destinationRole";
 	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	static public IResourceLocator RL = SpagoBIMetaInitializerPlugin.getInstance().getResourceLocator();
@@ -220,7 +221,21 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	}
 	
 	private void initRelationshipProperties(BusinessRelationship o) {
-		
+		try {
+			//1- Search relationship categories definitions
+			NodeList nodes = readXMLNodes(document, "/properties/relationship/categories/category");
+			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
+	        
+	      	//2- Search relationship types definitions
+			nodes = readXMLNodes(document, "/properties/relationship/types/type");
+			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
+	        
+	        //3- Search relationship admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/relationship/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}	
 	
     private NodeList readXMLNodes(Document doc, String xpathExpression) throws Exception {
@@ -313,7 +328,10 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 			}
 		}
     }
-	
+
+ 
+    
+    
 	
 	// Utility methods
 	//-----------------------------------------------------------------------

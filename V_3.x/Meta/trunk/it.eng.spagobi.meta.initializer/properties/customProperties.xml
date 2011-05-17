@@ -137,6 +137,15 @@
   <!--  ===================================================================================================== -->
   <!--  RELATIONSHIP																						  -->
   <!--  ===================================================================================================== -->
-  <relationship></relationship>
+  <relationship>
+      <categories>
+     	 <category name="Structural" description="Structural properties" />
+      </categories>
+      <types>
+      	<type id="structural.destinationRole" name="Destination Role"
+      description="Role name of the destination table"
+      category="Structural" defaultValue="role name" />
+      </types>
+  </relationship>
 
 </properties>

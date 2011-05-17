@@ -468,6 +468,8 @@ public class BusinessModelInitializer {
 				&& businessRelationship.getSourceColumns().size() == physicalForeignKey.getSourceColumns().size()) {
 					businessModel.getRelationships().add(businessRelationship);
 					getPropertiesInitializer().addProperties(businessRelationship);
+					//set the destinationRole property
+					businessRelationship.setProperty(BusinessModelPropertiesFromFileInitializer.ROLE_DESTINATION, businessRelationship.getDestinationTable().getName());
 				} else {
 					businessRelationship = null;
 				}

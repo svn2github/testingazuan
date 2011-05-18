@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/logback/logback-access-0.9.28.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/logback/logback-classic-0.9.28.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/logback/logback-core-0.9.28.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/logback/slf4j-api-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/log4j-over-slf4j-1.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar" sourcepath="/QbeCore/src"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jaxen-1.1-beta-4.jar"/>

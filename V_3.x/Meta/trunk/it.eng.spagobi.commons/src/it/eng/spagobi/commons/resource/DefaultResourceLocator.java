@@ -34,10 +34,7 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.ResourceLocator;
 import org.osgi.framework.Bundle;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

@@ -7,5 +7,9 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="libs/misc/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="libs/jdbc/mysql-connector-java-5.1.14-bin.jar"/>
+	<classpathentry kind="lib" path="libs/misc/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
+	<classpathentry kind="lib" path="libs/misc/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
+	<classpathentry kind="lib" path="libs/misc/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
+	<classpathentry kind="lib" path="libs/misc/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

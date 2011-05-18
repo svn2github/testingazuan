@@ -4,7 +4,11 @@ Bundle-Name: it.eng.spagobi.meta.model
 Bundle-SymbolicName: it.eng.spagobi.meta.model;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .,
- libs/misc/commons-lang-2.5.jar
+ libs/misc/commons-lang-2.5.jar,
+ libs/misc/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
+ libs/misc/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
+ libs/misc/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
+ libs/misc/org.slf4j.api_1.5.11.v20100519-1910.jar
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: it.eng.spagobi.meta.model,
@@ -33,9 +37,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;bundle-version="2.5.0",
  it.eng.spagobi.commons;bundle-version="1.0.0",
- ch.qos.logback.classic;bundle-version="0.9.19",
- ch.qos.logback.core;bundle-version="0.9.19",
- org.slf4j.api;bundle-version="1.5.11",
  org.junit;bundle-version="3.8.2"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.jface.dialogs,

@@ -3,7 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.editor
 Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
+ lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
+ lib/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
+ lib/org.slf4j.api_1.5.11.v20100519-1910.jar,
+ lib/json.jar
 Bundle-Activator: it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin$Implementation
 Bundle-Vendor: it.eng
 Bundle-Localization: plugin
@@ -17,12 +22,8 @@ Require-Bundle: org.eclipse.core.runtime,
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
  it.eng.spagobi.meta.initializer;bundle-version="1.0.0",
  it.eng.spagobi.commons;bundle-version="1.0.0",
- ch.qos.logback.classic;bundle-version="0.9.19",
- ch.qos.logback.core;bundle-version="0.9.19",
- org.slf4j.api;bundle-version="1.5.11",
  org.junit;bundle-version="3.8.2",
- org.eclipse.ui,
- it.eng.spagobi.studio.utils;bundle-version="1.0.0"
+ org.eclipse.ui
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,

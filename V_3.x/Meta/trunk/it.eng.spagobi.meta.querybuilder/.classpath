@@ -5,5 +5,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
+	<classpathentry kind="lib" path="libs/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
+	<classpathentry kind="lib" path="libs/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
+	<classpathentry kind="lib" path="libs/json.jar"/>
+	<classpathentry kind="lib" path="libs/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

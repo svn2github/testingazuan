@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.meta.editor.multi.wizards;
 
+import it.eng.spagobi.meta.editor.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.studio.utils.util.SpagoBIStudioConstants;
 
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
@@ -36,7 +36,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.decorators.FullTextDecoratorRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,7 @@ INewWizard {
 				logger.debug("set default dataset path");
 				IProject project = ((IFile)objSel).getProject();
 				IPath pathProj = project.getFullPath();
-				containerFullPath = pathProj.append(SpagoBIStudioConstants.FOLDER_DATASET);
+				containerFullPath = pathProj.append(SpagoBIMetaConstants.FOLDER_DATASET);
 			}
 		}
 	}
@@ -99,8 +98,8 @@ INewWizard {
 						BusinessModel businessModel = root.getBusinessModels().get(0);
 						logger.debug("link to model "+businessModel.getName());
 						logger.debug("file "+file.getName());
-						file.setPersistentProperty(SpagoBIStudioConstants.MODEL_NAME, businessModel.getName());
-						file.setPersistentProperty(SpagoBIStudioConstants.MODEL_FILE_NAME, fileSel.getName());				
+						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_NAME, businessModel.getName());
+						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_FILE_NAME, fileSel.getName());				
 						logger.debug("Set file metadata with model name "+businessModel.getName()+" and file name "+fileSel.getName());
 					}
 					catch (Exception e) {

@@ -77,7 +77,8 @@ public class JpaModel {
 		
 		jpaTables = new ArrayList<IJpaTable>();
 		for(BusinessTable table : tables) {
-			jpaTables.add( new JpaTable(table) );
+			if (table.getPhysicalTable()!=null)
+				jpaTables.add( new JpaTable(table) );
 		}
 		
 		return jpaTables;

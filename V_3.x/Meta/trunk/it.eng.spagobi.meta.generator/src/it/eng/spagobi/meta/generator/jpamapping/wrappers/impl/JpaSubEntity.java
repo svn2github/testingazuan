@@ -91,8 +91,21 @@ public class JpaSubEntity implements IJpaSubEntity {
 	}
 	
 	public IJpaColumn getParentColumn() {
-		JpaTable sourceTable = new JpaTable( (BusinessTable)relationship.getSourceColumns().get(0).getTable() );
-		IJpaColumn sourceColumn = new JpaColumn(sourceTable, relationship.getSourceColumns().get(0));
+		JpaTable sourceTable = null;
+		IJpaColumn sourceColumn = null;
+		BusinessColumnSet businessColumnSet = relationship.getSourceColumns().get(0).getTable();
+		if (businessColumnSet instanceof BusinessTable){
+			sourceTable = new JpaTable( (BusinessTable)relationship.getSourceColumns().get(0).getTable() );
+			sourceColumn = new JpaColumn(sourceTable, relationship.getSourceColumns().get(0));
+		} else if (businessColumnSet instanceof BusinessView){
+			//TODO: check this case
+			BusinessView businessView = (BusinessView)relationship.getSourceColumns().get(0).getTable() ;
+			PhysicalTable physicalTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
+			JpaViewInnerTable sourceView = new JpaViewInnerTable(businessView, physicalTable);
+			sourceColumn = new JpaColumn(sourceView, relationship.getSourceColumns().get(0));
+			//************
+		}
+		
 		return sourceColumn;
 	}
 	
@@ -133,7 +146,13 @@ public class JpaSubEntity implements IJpaSubEntity {
 		name = null;
 		
 		IJpaTable table = getTable();
-		name = table.getClassName() + "(" + getParentColumn().getPropertyName().toLowerCase() + ")";
+		IJpaColumn jpaColumn = getParentColumn();
+		if (jpaColumn!=null){
+			name = table.getClassName() + "(" + getParentColumn().getPropertyName().toLowerCase() + ")";
+		}
+		else {
+			logger.debug("Cannot retrieve parent column of [{}]",this);
+		}
 		
 		return name;
 	}

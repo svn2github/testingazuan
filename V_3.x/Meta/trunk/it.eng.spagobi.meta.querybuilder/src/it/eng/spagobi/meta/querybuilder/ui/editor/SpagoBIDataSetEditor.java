@@ -263,7 +263,13 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				//******
 
 				fileEditorInput = (FileEditorInput)getEditorInput();
-				query.setId(fileEditorInput.getURI().toString());
+				
+				
+				long UUID =System.currentTimeMillis();
+				query.setId("q"+Long.valueOf(UUID).toString());
+				//query.setId(fileEditorInput.getURI().toString());
+				
+				
 				query.setDescription(fileEditorInput.getURI().toString());
 				query.setDistinctClauseEnabled(false);
 			} catch(CoreException e){
@@ -396,7 +402,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 	}	
 	
-	protected void generateMapping(BusinessModel businessModel, String outputFolder, String persistenceUnitName) {
+	public void generateMapping(BusinessModel businessModel, String outputFolder, String persistenceUnitName) {
 	
 		logger.trace("IN");
 	

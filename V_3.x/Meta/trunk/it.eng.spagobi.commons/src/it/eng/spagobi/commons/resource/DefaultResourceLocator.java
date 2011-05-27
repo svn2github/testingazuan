@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.resource;
 
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
@@ -43,36 +43,36 @@ import org.osgi.framework.Bundle;
 public class DefaultResourceLocator implements IResourceLocator {
 
 	String pluginId;
-	
+
 	public Properties images;
 	public Properties labels;
 	public Properties settings;
-	
+
 	public static final String IMAGE_ROOT_FOOLDER = "icons";
 	public static final String CONF_ROOT_FOOLDER = "conf";
-	
+
 	//private static Logger logger = LoggerFactory.getLogger(DefaultResourceLocator.class);
-	
+
 	public DefaultResourceLocator(String pluginId) {
 		this.pluginId = pluginId;
 		loadImages();
 		loadLabels();
 		loadSettings();
 	}
-	
+
 	@Override
 	public URL getBaseURL() {
 		return null;
 	}
-	
+
 
 	public URL getFileURL(String fileRelativePath) {
-		
+
 		URL fileURL;
 		Bundle bundle;
-		
+
 		fileURL = null;
-		
+
 		bundle = Platform.getBundle(pluginId);
 		if(bundle !=  null) {		
 			//System.err.println("Boundle trovato");
@@ -80,7 +80,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 			if(fileURL == null) {
 				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL");
 			}
-			
+
 			try {
 				fileURL = FileLocator.toFileURL(fileURL);
 			} catch (IOException e) {
@@ -95,64 +95,72 @@ public class DefaultResourceLocator implements IResourceLocator {
 				throw new SpagoBIPluginException("Impossible to resolve resource [" + fileRelativePath + "] to a valid URL", e);
 			}
 		}
-		
-		
+
+
 		//logger.debug("file [" + fileRelativePath + "] URL is equal to [" + fileURL + "]");
-		
+
 		return fileURL;
 	}
-	
+
 	public File getFile(String fileRelativePath) {
-		
+		File toreturn;
+
 		URL fileURL = getFileURL( fileRelativePath );
-		
-		URI fileURI = null;
-		try {
-			fileURI = fileURL.toURI();
-		} catch (URISyntaxException e) {
-			throw new SpagoBIPluginException("The URL [" + fileURL + "] is not formatted strictly according to RFC2396 and cannot be converted to a URI", e);
+		try{
+			String fullPath = fileURL.getFile();
+			toreturn = new File(fullPath);	
 		}
-		//logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
-		
-		File file = null;
-		try {
-			file = new File( fileURI );
-		} catch (Throwable t) {
-			throw new SpagoBIPluginException("Impossible to creta a file object from URI [" + fileURI + "]");
+		catch (Exception e) {
+			throw new SpagoBIPluginException("From the URL [" + fileURL + "] no file is found ", e);
 		}
-		
-		return file;
+
+		//		URI fileURI = null;
+		//		try {
+		//			fileURI = fileURL.toURI();
+		//		} catch (URISyntaxException e) {
+		//			throw new SpagoBIPluginException("The URL [" + fileURL + "] is not formatted strictly according to RFC2396 and cannot be converted to a URI", e);
+		//		}
+		//		//logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
+		//		
+		//		File file = null;
+		//		try {
+		//			file = new File( fileURI );
+		//		} catch (Throwable t) {
+		//			throw new SpagoBIPluginException("Impossible to creta a file object from URI [" + fileURI + "]");
+		//		}
+
+		return toreturn;
 	}
 
 	@Override
 	public Object getImage(String key) {
 		return getFileURL(getImagePath(key));
 	}
-	
+
 	private String getImagePath(String imageKey) {
 		String imagePath;
-		
+
 		imagePath = null;
 		if(images.containsKey(imageKey)) {
 			imagePath =  IMAGE_ROOT_FOOLDER + "/" + images.get(imageKey);
 		} else {
 			imagePath =  IMAGE_ROOT_FOOLDER + "/" + imageKey;
 		}
-		
+
 		return imagePath;
 	}
-	
+
 	private Properties loadProperties(String propertiesFile) {
 		Properties properties = new Properties();
 		URL resourceFileURL;
-		
+
 		resourceFileURL = null;
 		try {
-		resourceFileURL = getFileURL( CONF_ROOT_FOOLDER + "/" + propertiesFile );
+			resourceFileURL = getFileURL( CONF_ROOT_FOOLDER + "/" + propertiesFile );
 		} catch(Throwable t) {
 			//logger.warn("Impossible to load properties file [{}]", CONF_ROOT_FOOLDER + "/" + propertiesFile);
 		}
-		
+
 		if(resourceFileURL != null) {
 			try {
 				properties.load( resourceFileURL.openStream() );
@@ -161,22 +169,22 @@ public class DefaultResourceLocator implements IResourceLocator {
 				System.err.println("Impossible to load propertis from URL [" + resourceFileURL + "]");
 			}
 		}
-		
+
 		//logger.debug("Succesfully loaded [{}] properties from file [{}]", properties.size(), resourceFileURL);
 		//System.err.println("Succesfully loaded [" + properties.size() + "] properties from file [" + resourceFileURL + "]");
-		
-		
+
+
 		return properties;
 	}
-	
+
 	private void loadImages() {
 		images = loadProperties("images.properties");
 	}
-	
+
 	private void loadLabels() {
 		labels = loadProperties("labels.properties");
 	}
-	
+
 	private void loadSettings() {
 		settings = loadProperties("settings.properties");
 	}
@@ -185,33 +193,33 @@ public class DefaultResourceLocator implements IResourceLocator {
 	public Object getProperty(String key) {
 		return getProperty(key, null);
 	}
-	
+
 	public Object getProperty(String key, Object defaultValue) {
 		Object propertyValue;
-		
+
 		propertyValue = settings.getProperty(key);
 		propertyValue = propertyValue != null? propertyValue: defaultValue;
-		
+
 		return propertyValue;
 	}
-	
+
 	public String getPropertyAsString(String key) {
 		return getPropertyAsString(key, null);
 	}
-	
+
 	public String getPropertyAsString(String key, String defaultValue) {
 		return (String)settings.getProperty(key, defaultValue);
 	}
-	
+
 	public Integer getPropertyAsInteger(String key) {
 		return getPropertyAsInteger(key, null);
 	}
-			
+
 	public Integer getPropertyAsInteger(String key, Integer defaultValue) {
 		Integer propertyValue;
-		
+
 		propertyValue = defaultValue;
-		
+
 		String str = getPropertyAsString(key);
 		if(str != null) {
 			try {
@@ -220,7 +228,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 				//logger.warn("Impossible to convert the value [" + propertyValue + "] of property  [" + key + "] to int", t);
 			}
 		}
-		
+
 		return propertyValue;
 	}
 
@@ -239,9 +247,9 @@ public class DefaultResourceLocator implements IResourceLocator {
 		for(int i = 0; i < substitutions.length; i ++) {
 			translatedSubstitutions[i] = getString((String)substitutions[i]);
 		}
-		
+
 		label = form.format(translatedSubstitutions);
-	
+
 		return label;
 	}
 

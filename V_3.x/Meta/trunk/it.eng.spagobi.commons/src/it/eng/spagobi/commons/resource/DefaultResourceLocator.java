@@ -111,7 +111,7 @@ public class DefaultResourceLocator implements IResourceLocator {
 			toreturn = new File(fullPath);	
 		}
 		catch (Exception e) {
-			throw new SpagoBIPluginException("From the URL [" + fileURL + "] no file is found ", e);
+			throw new SpagoBIPluginException("From the URL [" + fileURL + "] no file could be retrieved ", e);
 		}
 
 		//		URI fileURI = null;

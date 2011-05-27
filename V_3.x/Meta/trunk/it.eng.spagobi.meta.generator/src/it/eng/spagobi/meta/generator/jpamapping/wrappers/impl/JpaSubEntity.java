@@ -123,6 +123,11 @@ public class JpaSubEntity implements IJpaSubEntity {
 		return table;
 	}
 	
+	public BusinessColumnSet getBusinessColumnSet(){
+		BusinessColumnSet columnSet = relationship.getDestinationTable();
+		return columnSet;
+	}
+	
 	public String getRootQualifiedClassName() {
 		String uniqueName;
 		

@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -50,6 +51,7 @@ public class JpaTable extends AbstractJpaTable {
 	
 	BusinessTable businessTable;
 	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
+	List<BusinessColumnSet> parents;
 
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 
@@ -194,24 +196,32 @@ public class JpaTable extends AbstractJpaTable {
 
 	@Override
 	public List<IJpaSubEntity> getSubEntities() {
-		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		//List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
 		allSubEntities.clear();
+		
 
 		for(BusinessRelationship relationship : businessTable.getRelationships()) {
 			if(relationship.getSourceTable() != businessTable) continue;
 			
+			//List of parents to avoid cyclic exploration
+			parents = new ArrayList<BusinessColumnSet>();
+			
 			JpaSubEntity subEntity = new JpaSubEntity(businessTable, null, relationship);
-			subEntities.add(subEntity);
-			allSubEntities.addAll(subEntities);
+			//subEntities.add(subEntity);
+			allSubEntities.add(subEntity);
+			parents.add(businessTable);
 
 			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
 			levelEntities.addAll(subEntity.getChildren());
+			
+			
 			allSubEntities.addAll(levelEntities);
 			//add children to max deep level of 10
 			for (int i=0; i<8; i++){
 				List<IJpaSubEntity> nextLevel = getSubLevelEntities(levelEntities);
 				allSubEntities.addAll(nextLevel);
 				levelEntities = nextLevel;
+				logger.debug("getSubEntities iteration level is [{}]",i);
 			}
 		}	
 		return allSubEntities;
@@ -220,7 +230,11 @@ public class JpaTable extends AbstractJpaTable {
 	public List<IJpaSubEntity> getSubLevelEntities(List<IJpaSubEntity> entities){
 		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
 		for (IJpaSubEntity entity:entities){
-			subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
+			BusinessColumnSet businessColumnSet = ((JpaSubEntity)entity).getBusinessColumnSet();
+			if (!parents.contains(businessColumnSet)){
+				subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
+				parents.add(businessColumnSet);
+			}
 		}
 		return subEntities;
 	}

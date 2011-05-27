@@ -84,7 +84,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		
 		try {
 			super.init(site, editorInput);
-			String inputContents = getInputConetnts(editorInput);
+			String inputContents = getInputContents(editorInput);
 			try {
 				o = new JSONObject(inputContents);
 			} catch (Throwable t) {
@@ -119,7 +119,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 
 	}
 	
-	public String getInputConetnts(IEditorInput editorInput) {
+	public String getInputContents(IEditorInput editorInput) {
 		String contents;
 		
 		contents = null;

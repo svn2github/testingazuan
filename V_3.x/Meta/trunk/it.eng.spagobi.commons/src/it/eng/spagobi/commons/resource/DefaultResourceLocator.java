@@ -114,21 +114,6 @@ public class DefaultResourceLocator implements IResourceLocator {
 			throw new SpagoBIPluginException("From the URL [" + fileURL + "] no file could be retrieved ", e);
 		}
 
-		//		URI fileURI = null;
-		//		try {
-		//			fileURI = fileURL.toURI();
-		//		} catch (URISyntaxException e) {
-		//			throw new SpagoBIPluginException("The URL [" + fileURL + "] is not formatted strictly according to RFC2396 and cannot be converted to a URI", e);
-		//		}
-		//		//logger.debug("file [" + fileRelativePath + "] URI is equals to [" + fileURL + "]");
-		//		
-		//		File file = null;
-		//		try {
-		//			file = new File( fileURI );
-		//		} catch (Throwable t) {
-		//			throw new SpagoBIPluginException("Impossible to creta a file object from URI [" + fileURI + "]");
-		//		}
-
 		return toreturn;
 	}
 

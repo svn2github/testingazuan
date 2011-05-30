@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.meta.oda.impl;
 
 import it.eng.qbe.datasource.DriverManager;
@@ -57,17 +57,17 @@ public class OdaStructureBuilder {
 	public static IDataSource getDataSourceSingleModel(List<String> persistenceUnitNames, Map<String, Object> dataSourceProperties, String path) {
 		logger.debug("IN: Getting the data source for the model names "+persistenceUnitNames+"..");
 		String modelName = persistenceUnitNames.get(0);
-		if(modelName.indexOf("_") != -1) {
-			modelName = modelName.substring(0, modelName.indexOf("_"));
+		if(modelName.lastIndexOf("_") != -1) {
+			modelName = modelName.substring(0, modelName.lastIndexOf("_"));
 		}
 		String f = path.substring(0, path.indexOf("dist"))+modelName+File.separator+"dist"+File.separator+"datamart.jar";
-			
+
 		File modelJarFile = null;
 		List<File> modelJarFiles = new ArrayList<File>();
 		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
 		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
 
-		
+
 		modelJarFile = new File(f);
 		modelJarFiles.add(modelJarFile);
 		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(persistenceUnitNames.get(0), modelJarFile));
@@ -76,7 +76,7 @@ public class OdaStructureBuilder {
 		IDataSource ds = DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, false); 
 		return ds;
 	}
-	
+
 	/**
 	 * Get the driver name (hibernate or jpa). It checks if the passed jar file contains the persistence.xml
 	 * in the META-INF folder
@@ -89,7 +89,7 @@ public class OdaStructureBuilder {
 		JarEntry zipEntry;
 		String dialectName;
 		boolean isJpa = false;
-			
+
 		try {
 			FileInputStream fis = new FileInputStream(jarFile);
 			zis = new JarInputStream(fis);
@@ -117,7 +117,7 @@ public class OdaStructureBuilder {
 		logger.debug("OUT: "+jarFile+" has the dialect: "+dialectName);
 		return dialectName+"_with_cl";
 	}
-	
-	
-	
+
+
+
 }

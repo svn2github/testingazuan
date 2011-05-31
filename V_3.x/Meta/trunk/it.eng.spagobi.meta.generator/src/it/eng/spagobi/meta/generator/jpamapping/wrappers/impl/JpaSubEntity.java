@@ -103,7 +103,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 			PhysicalTable physicalTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
 			JpaViewInnerTable sourceView = new JpaViewInnerTable(businessView, physicalTable);
 			sourceColumn = new JpaColumn(sourceView, relationship.getSourceColumns().get(0));
-			//************
+			//***********
 		}
 		
 		return sourceColumn;

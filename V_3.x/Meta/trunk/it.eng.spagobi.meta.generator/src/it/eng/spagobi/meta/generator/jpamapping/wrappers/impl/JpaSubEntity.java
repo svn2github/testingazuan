@@ -98,7 +98,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 			sourceTable = new JpaTable( (BusinessTable)relationship.getSourceColumns().get(0).getTable() );
 			sourceColumn = new JpaColumn(sourceTable, relationship.getSourceColumns().get(0));
 		} else if (businessColumnSet instanceof BusinessView){
-			//TODO: check this case
+			//TODO: check this cases
 			BusinessView businessView = (BusinessView)relationship.getSourceColumns().get(0).getTable() ;
 			PhysicalTable physicalTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
 			JpaViewInnerTable sourceView = new JpaViewInnerTable(businessView, physicalTable);

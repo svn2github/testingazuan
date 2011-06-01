@@ -32,19 +32,19 @@
   <!-- ===============================================================================  -->
   
   <root level="ERROR">
-    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
   </root>
   
-  <logger name="it.eng.spagobi.meta.editor" additivity="false" level="TRACE">
+  <logger name="it.eng.spagobi.meta.editor" additivity="false" level="ERROR">
     <appender-ref ref="FILE"/>
-    <appender-ref ref="CONSOLE"/>
+ 
   </logger>
   
   <!-- ===============================================================================  -->
   <!-- HOOK with console  																		-->
   <!-- ===============================================================================  -->
   
-  <consolePlugin />
+   <!-- consolePlugin /-->
   
   
 </configuration>

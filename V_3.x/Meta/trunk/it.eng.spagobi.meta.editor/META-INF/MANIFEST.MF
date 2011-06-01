@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="3.8.2",
  org.eclipse.ui
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.datatools.connectivity,
+Import-Package: it.eng.spagobi.commons.utilities,
+ org.eclipse.datatools.connectivity,
  org.eclipse.datatools.connectivity.sqm.core.connection,
  org.eclipse.datatools.modelbase.sql.schema,
  org.eclipse.datatools.modelbase.sql.tables,

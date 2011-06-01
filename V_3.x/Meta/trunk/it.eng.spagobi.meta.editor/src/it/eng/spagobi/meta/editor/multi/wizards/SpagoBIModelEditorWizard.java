@@ -7,6 +7,7 @@
 package it.eng.spagobi.meta.editor.multi.wizards;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
@@ -232,6 +233,10 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 			//
 			IFile modelIFile = newModelWizardFileCreationPage.createNewFile();
 
+			// set the dirty property to model file cause it has just been created 20110601G
+			logger.debug("set the model as dirty");
+			modelIFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "true");
+
 			modelPath = modelIFile.getRawLocation().toOSString();
 			logger.debug("New SpagoBI Model path is [{}]",modelPath);
 			fileURI = URI.createFileURI(modelPath);			
@@ -441,6 +446,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 
 			//Get the Model file
 			File modelFile = new File(modelPath);
+
 
 			// Select the new file resource in the current view.
 			//

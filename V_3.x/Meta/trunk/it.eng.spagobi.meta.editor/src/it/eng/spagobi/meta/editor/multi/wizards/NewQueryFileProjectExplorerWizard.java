@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.meta.editor.multi.wizards;
 
-import it.eng.spagobi.meta.editor.utils.SpagoBIMetaConstants;
+import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
@@ -99,7 +99,12 @@ INewWizard {
 						logger.debug("link to model "+businessModel.getName());
 						logger.debug("file "+file.getName());
 						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_NAME, businessModel.getName());
+						
+						logger.debug("model file is name "+fileSel.getName()+" witrh relative path "+fileSel.getProjectRelativePath().toOSString()+" and full path "+fileSel.getFullPath());
 						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_FILE_NAME, fileSel.getName());				
+						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_FILE_NAME_FULL_PATH, fileSel.getFullPath().toOSString());				
+						file.setPersistentProperty(SpagoBIMetaConstants.MODEL_FILE_NAME_REL_PATH, fileSel.getProjectRelativePath().toOSString());				
+						
 						logger.debug("Set file metadata with model name "+businessModel.getName()+" and file name "+fileSel.getName());
 					}
 					catch (Exception e) {

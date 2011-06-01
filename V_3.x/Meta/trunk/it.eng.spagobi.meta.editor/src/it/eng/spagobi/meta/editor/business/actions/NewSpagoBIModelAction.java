@@ -52,7 +52,7 @@ public class NewSpagoBIModelAction  implements IWorkbenchWindowActionDelegate {
 
 		sbindw.init(PlatformUI.getWorkbench(), sel);
 
-		if(objSel != null){
+		if(objSel != null && containerSelected!= null){
 			IPath pathSelected = containerSelected.getFullPath();
 			sbindw.setContainerFullPath(pathSelected);
 

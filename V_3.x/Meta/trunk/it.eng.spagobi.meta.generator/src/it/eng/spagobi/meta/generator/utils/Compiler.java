@@ -24,6 +24,8 @@ package it.eng.spagobi.meta.generator.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,17 +86,26 @@ public class Compiler {
 	 * @return boolean : true if the compiler has worked well.
 	 */
 	public boolean compile(){
-		boolean result;
+		boolean result = false;
 		
 		logger.trace("IN");
 		
 		String command = "\"" +srcDir + "\" -classpath " + getClasspath() + " -d \"" + binDir + "\" -source 1.5";
 		logger.info("Compile command is equal to [{}]", command);
 		
-		PrintWriter error=new PrintWriter(System.err);
-		PrintWriter out=new PrintWriter(System.out);
-		result = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
-		
+		PrintWriter error;
+		PrintWriter out;
+		try {
+			error = new PrintWriter(new FileWriter("./log/spagobi/metacompiler_errors.log", true));
+			//error=new PrintWriter(System.err);
+			out=new PrintWriter(new FileWriter("./log/spagobi/metacompiler_out.log", true));
+			//out=new PrintWriter(System.out);
+			result = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
 		logger.info("Mapping files compiled succesfully: [{}]", result);
 		
 		logger.trace("OUT");

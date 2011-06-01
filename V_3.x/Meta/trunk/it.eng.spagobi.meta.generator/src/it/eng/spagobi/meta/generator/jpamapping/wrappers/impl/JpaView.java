@@ -32,6 +32,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JpaView implements IJpaView {
 	private BusinessView businessView;
-	
+	List<BusinessColumnSet> parents;
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
 	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
 
@@ -172,25 +173,34 @@ public class JpaView implements IJpaView {
 	
 	@Override
 	public List<IJpaSubEntity> getSubEntities() {
-		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
+		//List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
 		allSubEntities.clear();
+		
 
 		for(BusinessRelationship relationship : businessView.getRelationships()) {
 			if(relationship.getSourceTable() != businessView) continue;
 			
+			//List of parents to avoid cyclic exploration
+			parents = new ArrayList<BusinessColumnSet>();
+			
 			JpaSubEntity subEntity = new JpaSubEntity(businessView, null, relationship);
-			subEntities.add(subEntity);
-			allSubEntities.addAll(subEntities);
+			//subEntities.add(subEntity);
+			allSubEntities.add(subEntity);
+			parents.add(businessView);
 
 			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
 			levelEntities.addAll(subEntity.getChildren());
+			
+			
 			allSubEntities.addAll(levelEntities);
 			//add children to max deep level of 10
 			for (int i=0; i<8; i++){
 				List<IJpaSubEntity> nextLevel = getSubLevelEntities(levelEntities);
 				allSubEntities.addAll(nextLevel);
 				levelEntities = nextLevel;
+				logger.debug("getSubEntities iteration level is [{}]",i);
 			}
+			
 		}	
 		return allSubEntities;
 	}
@@ -198,7 +208,11 @@ public class JpaView implements IJpaView {
 	public List<IJpaSubEntity> getSubLevelEntities(List<IJpaSubEntity> entities){
 		List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();
 		for (IJpaSubEntity entity:entities){
-			subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
+			BusinessColumnSet businessColumnSet = ((JpaSubEntity)entity).getBusinessColumnSet();
+			if (!parents.contains(businessColumnSet)){
+				subEntities.addAll( ((JpaSubEntity)entity).getChildren() );
+				parents.add(businessColumnSet);
+			}
 		}
 		return subEntities;
 	}

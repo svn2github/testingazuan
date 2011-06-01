@@ -223,6 +223,7 @@ public class JpaTable extends AbstractJpaTable {
 				levelEntities = nextLevel;
 				logger.debug("getSubEntities iteration level is [{}]",i);
 			}
+			
 		}	
 		return allSubEntities;
 	}

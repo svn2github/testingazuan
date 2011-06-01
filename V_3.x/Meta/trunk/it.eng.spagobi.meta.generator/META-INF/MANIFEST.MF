@@ -9,10 +9,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.codegen;bundle-version="2.6.0",
  org.junit;bundle-version="3.8.2",
  it.eng.spagobi.commons;bundle-version="1.0.0",
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.eclipse.core.resources;bundle-version="3.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.jdt.core.compiler.batch
+Import-Package: it.eng.spagobi.commons.utilities,
+ org.eclipse.jdt.core.compiler.batch
 Export-Package: it.eng.spagobi.meta.generator.jpamapping,
  it.eng.spagobi.meta.generator.utils
 Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,

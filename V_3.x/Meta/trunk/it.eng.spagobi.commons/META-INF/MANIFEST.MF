@@ -12,4 +12,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.spagobi.commons,
  it.eng.spagobi.commons.exception,
- it.eng.spagobi.commons.resource
+ it.eng.spagobi.commons.resource,
+ it.eng.spagobi.commons.utils

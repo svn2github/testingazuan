@@ -6,6 +6,7 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
@@ -33,12 +34,25 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -54,6 +68,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 
@@ -69,6 +86,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	private SpagoBIDataSetResultPage queryResultPage;
 	private JSONObject o;
 	protected boolean dirty = false;
+	private String dirtyMapping;
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
 	
@@ -79,7 +97,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-		
+		String persistenceUnitName;
 		logger.trace("IN");
 		
 		try {
@@ -95,12 +113,26 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			JSONObject queryJSON = o.optJSONObject("query");
 			String modelPath = queryMeta.optString("modelPath");
 			logger.debug("Model path is [{}]",modelPath );
+			//get the value for dirty mapping
+			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+			IPath location= Path.fromOSString(modelPath); 
+			IFile ifile= workspace.getRoot().getFileForLocation(location);
+			dirtyMapping = ifile.getPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL);
+			//
 			  
 			String modelDirectory = new File(modelPath).getParent();
 			BusinessModel businessModel = loadBusinessModel(modelPath);
 			validateModel(businessModel);
-			String persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
-			generateMapping(businessModel, modelDirectory, persistenceUnitName);
+			
+			if (dirtyMapping.equals("true")){
+				persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
+				generateMapping(businessModel, modelDirectory, persistenceUnitName);
+				//set the dirty property to false cause the mapping has just been created
+				ifile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
+			}
+			else {
+				persistenceUnitName = discoverPersistenceUnitName(modelDirectory, businessModel.getName());
+			}
 			IDataSource dataSource = createDataSource(modelPath, businessModel, persistenceUnitName);
 			queryBuilder = new QueryBuilder(dataSource);
 			
@@ -117,6 +149,38 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		}
 
 
+	}
+	
+	public String discoverPersistenceUnitName(String modelDirectory, String modelName) {
+		File persistenceFile = new File(modelDirectory+File.separatorChar+modelName+File.separatorChar+"src"+File.separatorChar+"META-INF","persistence.xml");
+		String persistenceName = null;
+		if (persistenceFile.exists()) {
+			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder builder;
+			try {
+				builder = domFactory.newDocumentBuilder();
+		        Document document = builder.parse(persistenceFile);
+				
+				XPath xpath = XPathFactory.newInstance().newXPath();
+		        XPathExpression expr = xpath.compile("/persistence/persistence-unit/@name");
+		 
+		        Object result = expr.evaluate(document, XPathConstants.STRING);
+		        persistenceName = (String) result;
+			} catch (ParserConfigurationException e) {
+				logger.error("Impossible to retrieve Persistence Unit Name - ParserConfigurationException : [{}]",e);
+				e.printStackTrace();
+			} catch (SAXException e) {
+				logger.error("Impossible to retrieve Persistence Unit Name - SAXException : [{}]",e);
+				e.printStackTrace();
+			} catch (IOException e) {
+				logger.error("Impossible to retrieve Persistence Unit Name - IOException : [{}]",e);
+				e.printStackTrace();
+			} catch (XPathExpressionException e) {
+				logger.error("Impossible to retrieve Persistence Unit Name - XPathExpressionException : [{}]",e);
+				e.printStackTrace();
+			}
+		}
+		return persistenceName;
 	}
 	
 	public String getInputContents(IEditorInput editorInput) {

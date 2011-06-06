@@ -236,7 +236,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 			// set the dirty property to model file cause it has just been created 20110601G
 			logger.debug("set the model as dirty");
 			modelIFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "true");
-
+		
 			modelPath = modelIFile.getRawLocation().toOSString();
 			logger.debug("New SpagoBI Model path is [{}]",modelPath);
 			fileURI = URI.createFileURI(modelPath);			

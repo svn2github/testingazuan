@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business;
 
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
@@ -128,6 +129,9 @@ public class SaveOperation extends WorkspaceModifyOperation {
 		IPath location= Path.fromOSString(resourceURI.toFileString()); 
 		IFile ifile= workspace.getRoot().getFileForLocation(location);
         try {
+        	// set the dirty property to model file cause it has just been modified
+    		logger.debug("set the model as dirty");
+    		ifile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "true");
         	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
 			logger.debug("Refresh Local workspace on [{}]", ifile.getRawLocation().toOSString());
 		} catch (CoreException e) {

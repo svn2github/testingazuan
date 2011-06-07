@@ -118,7 +118,6 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			IPath location= Path.fromOSString(modelPath); 
 			IFile ifile= workspace.getRoot().getFileForLocation(location);
 			dirtyMapping = ifile.getPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL);
-			//
 			  
 			String modelDirectory = new File(modelPath).getParent();
 			BusinessModel businessModel = loadBusinessModel(modelPath);

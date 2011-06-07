@@ -1,25 +1,39 @@
-/*
- *************************************************************************
- * Copyright (c) 2008 <<Your Company Name here>>
- *  
- *************************************************************************
- */
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package spagobi.birt.oda.impl;
 
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDataSetMetaData;
 import org.eclipse.datatools.connectivity.oda.IQuery;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import spagobi.birt.oda.impl.util.ProxyDataRetriever;
-import spagobi.birt.oda.impl.util.SpagoBIServerConnectionDefinition;
 
 import com.ibm.icu.util.ULocale;
 
@@ -28,51 +42,110 @@ import com.ibm.icu.util.ULocale;
  */
 public class Connection implements IConnection
 {
-	DataSetsSDKServiceProxy datasource = null;
-	private boolean m_isOpen = false;
-	private static Logger logger = Logger.getLogger(Connection.class);
+	
+	boolean isOpen;
+	DataSetsSDKServiceProxy dataSetServiceProxy;
+	
+	public static final String CONN_PROP_SERVER_URL = "ServerUrl";
+	public static final String CONN_PROP_USER = "Username";
+	public static final String CONN_PROP_PASSWORD = "Password";
+	
+	private static Logger logger = LoggerFactory.getLogger(Connection.class);
+	
+	
+	public Connection() {
+		isOpen = false;
+		dataSetServiceProxy = null;
+	}
+	
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#open(java.util.Properties)
 	 */
 	public void open( Properties connProperties ) throws OdaException
 	{
-		logger.debug("Opening connection");
-
-		logger.debug("The datasource is null.. Initializing the data source");
-		String serverUrl = connProperties.getProperty("ServerUrl");
-		String username = connProperties.getProperty("Username");
-		String password = connProperties.getProperty("Password");
+		String serverUrl;
+		String username;
+		String password;
 		
-
+		logger.trace("IN");
 		
-		DataSetsSDKServiceProxy proxy = getDataSetsSDKServiceProxy(serverUrl, username, password);
+		try {
+			
+			serverUrl = connProperties.getProperty( CONN_PROP_SERVER_URL );
+			logger.debug("Connection properties [" + CONN_PROP_SERVER_URL + "] is equal to [" + serverUrl + "]");
+			
+			username = connProperties.getProperty( CONN_PROP_USER );
+			logger.debug("Connection properties [" + CONN_PROP_USER + "] is equal to [" + username + "]");
+			
+			password = connProperties.getProperty( CONN_PROP_PASSWORD);
+			logger.debug("Connection properties [" + CONN_PROP_PASSWORD + "] is equal to [" + password + "]");
+					
+			if(serverUrl == null || username == null || password == null) {
+				throw new RuntimeException("Connection paramters (["+CONN_PROP_SERVER_URL+"],["+CONN_PROP_USER+"],["+CONN_PROP_PASSWORD+"]) cannot be null");
+			}
+			
+			dataSetServiceProxy = createDataSetServiceProxy(serverUrl, username, password);
+			
+			logger.info("Connection sucesfully opened");
+			
+		} catch (Throwable t) {
+			throw (OdaException) new OdaException("Impossible to open connection").initCause(t);
+		}
 		
-		datasource = proxy;
 
 		logger.debug("Data source initialized");
 
 		logger.debug("Connection opened");
-		m_isOpen = true;    
-	    
+		isOpen = true;    
+		
+		logger.trace("OUT");
  	}
-	private static DataSetsSDKServiceProxy getDataSetsSDKServiceProxy(String serverUrl, String username, String password) {
+	
+	private DataSetsSDKServiceProxy createDataSetServiceProxy(String serverUrl, String username, String password) {
+		
+		DataSetsSDKServiceProxy proxy;
 		
 		Properties props = System.getProperties();
 		props.put("http.proxyHost", "proxy.eng.it");
 		props.put("http.proxyPort", 3128);
 		
-		DataSetsSDKServiceProxy proxy = new DataSetsSDKServiceProxy(username, password);
-
+		proxy = null;
+		
+		try {
+			proxy = new DataSetsSDKServiceProxy(username, password);
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to create dataset proxy", t);
+		}
+		
 		if (serverUrl != null && !serverUrl.endsWith("/")) {
 			serverUrl += "/";
 		}
-		proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");
-		new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		
+		logger.debug("Dataset proxy created succesfully");
+		
+		try {
+			proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");
+		} catch(Throwable t) {
+			throw  new RuntimeException("Impossible to set dataset proxy's endpoint", t);
+		}
+		
+		logger.debug("Dataset proxy's endpoint succesfully set to [" + serverUrl + "sdk/DataSetsSDKService" + "]");
+		
+		try {
+			new ProxyDataRetriever().initProxyData(proxy, serverUrl);
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize dataset proxy", t);
+		}
+		
+		logger.debug("Dataset proxy initialized succesfully");
 		
 		return proxy;
 	}
 
+	
+	
+	
+	
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IConnection#setAppContext(java.lang.Object)
 	 */
@@ -86,8 +159,8 @@ public class Connection implements IConnection
 	 */
 	public void close() throws OdaException
 	{
-        // TODO replace with data source specific implementation
-	    m_isOpen = false;
+	    isOpen = false;
+	    dataSetServiceProxy = null;
 	}
 
 	/*
@@ -95,8 +168,7 @@ public class Connection implements IConnection
 	 */
 	public boolean isOpen() throws OdaException
 	{
-        // TODO Auto-generated method stub
-		return m_isOpen;
+		return isOpen;
 	}
 
 	/*
@@ -116,7 +188,7 @@ public class Connection implements IConnection
 	{
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
-		return new Query(datasource);
+		return new Query(dataSetServiceProxy);
 	}
 
 	/*

@@ -43,11 +43,7 @@ public class ResultSet implements IResultSet
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException
 	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this result set.
-         */
-		return new ResultSetMetaData(this.dataStore);
+		return new ResultSetMetaData(dataStore);
 	}
 
 	/*
@@ -76,10 +72,8 @@ public class ResultSet implements IResultSet
         
         // simple implementation done below for demo purpose only
         int maxRows = getMaxRows();
-        if( maxRows <= 0 )  // no limit is specified
-            maxRows = 5;    // hard-coded for demo purpose
         
-        if( m_currentRowId < maxRows )
+        if( maxRows <= 0 || m_currentRowId < maxRows )
         {
             m_currentRowId++;
             return true;
@@ -93,7 +87,6 @@ public class ResultSet implements IResultSet
 	 */
 	public void close() throws OdaException
 	{
-        // TODO Auto-generated method stub       
         m_currentRowId = 0;     // reset row counter
 	}
 
@@ -110,7 +103,7 @@ public class ResultSet implements IResultSet
 	 */
 	public String getString( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
+		
         
         // hard-coded for demo purpose
         return "row" + getRow() + "_column" + index + " value";
@@ -129,9 +122,6 @@ public class ResultSet implements IResultSet
 	 */
 	public int getInt( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-        
-        // hard-coded for demo purpose
         return getRow();
 	}
 

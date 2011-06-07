@@ -24,21 +24,26 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
  */
 public class ResultSetMetaData implements IResultSetMetaData
 {
-	SDKDataStoreMetadata metadata;
+	SDKDataStoreMetadata dataStoreMeta;
 	
-	public ResultSetMetaData(SDKDataStoreMetadata metadata) {
+	public ResultSetMetaData(SDKDataStoreMetadata dataStoreMeta) {
 		
-		this.metadata = metadata;
+		this.dataStoreMeta = dataStoreMeta;
 	}
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSetMetaData#getColumnCount()
 	 */
 	public int getColumnCount() throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        return 2;
+        int columnCount = 0;
+		
+        try {
+			columnCount = dataStoreMeta.getFieldsMetadata().length;
+		} catch(Throwable t) {
+			throw (OdaException) new OdaException("Impossible to extract column count from data store meta").initCause(t);
+		}
+		
+		return columnCount;
 	}
 
 	/*
@@ -46,10 +51,15 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnName( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        return "Column" + index;
+		String name = "undefined";
+		
+		 try {
+			 name = dataStoreMeta.getFieldsMetadata()[index-1].getName();
+		} catch(Throwable t) {
+			throw (OdaException) new OdaException("Impossible to extract column-" + index + "'s name from data store meta").initCause(t);
+		}
+      
+        return name;
 	}
 
 	/*
@@ -65,12 +75,12 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnType( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        if( index == 1 )
-            return java.sql.Types.INTEGER;   // as defined in data set extension manifest
-        return java.sql.Types.CHAR;          // as defined in data set extension manifest
+		String className =  dataStoreMeta.getFieldsMetadata()[index-1].getClassName();
+		
+        if( className.endsWith("Integer") ) {
+            return java.sql.Types.INTEGER;   
+        }
+        return java.sql.Types.CHAR;          
 	}
 
 	/*
@@ -87,8 +97,6 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnDisplayLength( int index ) throws OdaException
 	{
-        // TODO replace with data source specific implementation
-
         // hard-coded for demo purpose
 		return 8;
 	}

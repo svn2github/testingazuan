@@ -1,9 +1,24 @@
-/*
- *************************************************************************
- * Copyright (c) 2008 <<Your Company Name here>>
- *  
- *************************************************************************
- */
+/**
+
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+**/
 
 package spagobi.birt.oda.impl;
 
@@ -15,9 +30,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.IQuery;
 import org.eclipse.datatools.connectivity.oda.IResultSet;
@@ -25,6 +38,8 @@ import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.SortSpec;
 import org.eclipse.datatools.connectivity.oda.spec.QuerySpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation class of IQuery for an ODA runtime driver.
@@ -37,19 +52,21 @@ import org.eclipse.datatools.connectivity.oda.spec.QuerySpecification;
  */
 public class Query implements IQuery
 {
-	private static Logger logger = Logger.getLogger(Query.class);
+	private static Logger logger = LoggerFactory.getLogger(Query.class);
 
 	private int m_maxRows;
 	private String queryString;
-	DataSetsSDKServiceProxy datasource;
-	SDKDataStoreMetadata datsStore;
+	
+	DataSetsSDKServiceProxy dataSetServiceProxy;
+	SDKDataStoreMetadata dataStoreMeta;
 	
 	public Query() {
 		m_maxRows = 101;
 		logger.debug("ODA Query created");
 	}
-	public Query(DataSetsSDKServiceProxy proxy) {
-		this.datasource = proxy;
+	
+	public Query(DataSetsSDKServiceProxy dataSetServiceProxy) {
+		this.dataSetServiceProxy = dataSetServiceProxy;
 		m_maxRows = 101;
 		logger.debug("ODA Query created");
 	}
@@ -57,27 +74,21 @@ public class Query implements IQuery
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
 	public void prepare( String queryText ) throws OdaException
-	{
-		logger.debug("Open dataset with label "+ queryText);
-		logger.debug("ODA Query prepare");
+	{		
 		this.queryString = queryText;
-		
 
-		if(queryText!=null){
-
+		if(queryText != null) {
 			try {
-				SDKDataSet[] datasets = this.datasource.getDataSets();
+				SDKDataSet[] datasets = dataSetServiceProxy.getDataSets();
 				for(int i =0; i<datasets.length; i++){
 					SDKDataSet datsSet = (SDKDataSet)datasets[i];
 					if(queryText.equals(datsSet.getLabel())){
-						SDKDataStoreMetadata sdkDataStoreMetadata= this.datasource.getDataStoreMetadata(datsSet);
-						datsStore = sdkDataStoreMetadata;
+						SDKDataStoreMetadata sdkDataStoreMetadata=  dataSetServiceProxy.getDataStoreMetadata(datsSet);
+						dataStoreMeta = sdkDataStoreMetadata;
 					}
 				}
-
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(e);
 			} 
 		}
 	}
@@ -95,7 +106,8 @@ public class Query implements IQuery
 	 */
 	public void close() throws OdaException
 	{
-        // TODO Auto-generated method stub
+		dataSetServiceProxy = null;
+		dataStoreMeta = null;
 	}
 
 	/*
@@ -103,11 +115,7 @@ public class Query implements IQuery
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException
 	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this prepared query.
-         */
-		return new ResultSetMetaData(datsStore);
+		return new ResultSetMetaData( dataStoreMeta );
 	}
 
 	/*
@@ -115,7 +123,7 @@ public class Query implements IQuery
 	 */
 	public IResultSet executeQuery() throws OdaException
 	{
-		return new ResultSet( datsStore );
+		return new ResultSet( dataStoreMeta );
 	}
 
 	/*

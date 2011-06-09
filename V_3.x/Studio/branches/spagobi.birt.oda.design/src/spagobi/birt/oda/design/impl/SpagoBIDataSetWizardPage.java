@@ -56,7 +56,6 @@ public class SpagoBIDataSetWizardPage extends DataSetWizardPage
 	public SpagoBIDataSetWizardPage( String pageName )
 	{
         super( pageName );
-        System.out.println("xxxxxxxxxxxx");
         setTitle( pageName );
         setMessage( DEFAULT_MESSAGE );
 
@@ -73,7 +72,6 @@ public class SpagoBIDataSetWizardPage extends DataSetWizardPage
 			ImageDescriptor titleImage )
 	{
         super( pageName, title, titleImage );
-        System.out.println("xxxxxxxxxxxx");
         setMessage( DEFAULT_MESSAGE );
         setPageComplete( false );
 	}
@@ -83,7 +81,6 @@ public class SpagoBIDataSetWizardPage extends DataSetWizardPage
 	 */
 	public void createPageCustomControl( Composite parent )
 	{
-		System.out.println("xxxxxxxxxxxx");
         setControl( createPageControl( parent ) );
         initializeControl();
 	}
@@ -93,7 +90,6 @@ public class SpagoBIDataSetWizardPage extends DataSetWizardPage
      */
     private Control createPageControl( Composite parent )
     {
-    	System.out.println("xxxxxxxxxxxx");
     	Composite composite = new Composite( parent, SWT.NONE );
         composite.setLayout( new GridLayout( 1, false ) );
         GridData gridData = new GridData( GridData.HORIZONTAL_ALIGN_FILL
@@ -125,7 +121,6 @@ public class SpagoBIDataSetWizardPage extends DataSetWizardPage
 	 */
 	private void initializeControl( )
 	{
-		System.out.println("xxxxxxxxxxxx");
         DataSetDesign dataSetDesign = getInitializationDesign();
         if( dataSetDesign == null )
             return; // nothing to initialize

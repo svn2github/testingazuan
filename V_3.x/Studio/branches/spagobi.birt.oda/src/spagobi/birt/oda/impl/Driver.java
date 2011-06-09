@@ -60,11 +60,9 @@ public class Driver implements IDriver
      * Returns the object that represents this extension's manifest.
      * @throws OdaException
      */
-    static ExtensionManifest getManifest()
-        throws OdaException
+    static ExtensionManifest getManifest() throws OdaException
     {
-        return ManifestExplorer.getInstance()
-                .getExtensionManifest( ODA_DATA_SOURCE_ID );
+        return ManifestExplorer.getInstance().getExtensionManifest( ODA_DATA_SOURCE_ID );
     }
     
     /**

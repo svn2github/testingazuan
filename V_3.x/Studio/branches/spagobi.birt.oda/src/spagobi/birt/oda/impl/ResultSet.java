@@ -67,13 +67,13 @@ public class ResultSet implements IResultSet
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#next()
 	 */
 	public boolean next() throws OdaException
-	{
-		// TODO replace with data source specific implementation
-        
+	{        
+		if(m_currentRowId > 100) return false;
+		
         // simple implementation done below for demo purpose only
         int maxRows = getMaxRows();
         
-        if( maxRows <= 0 || m_currentRowId < maxRows )
+        if( maxRows <= 0 || m_currentRowId < maxRows)
         {
             m_currentRowId++;
             return true;

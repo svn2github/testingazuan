@@ -33,7 +33,6 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import spagobi.birt.oda.impl.util.ProxyDataRetriever;
 
 import com.ibm.icu.util.ULocale;
 
@@ -132,7 +131,7 @@ public class Connection implements IConnection
 		logger.debug("Dataset proxy's endpoint succesfully set to [" + serverUrl + "sdk/DataSetsSDKService" + "]");
 		
 		try {
-			new ProxyDataRetriever().initProxyData(proxy, serverUrl);
+			//new ProxyDataRetriever().initProxyData(proxy, serverUrl);
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize dataset proxy", t);
 		}

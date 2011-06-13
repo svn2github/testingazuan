@@ -93,7 +93,8 @@ INewWizard {
 					File fileSel = null;		
 					fileSel=(File)objSel;
 					try{
-						Model root = emfXmiSerializer.deserialize(fileSel.getContents());
+						// force to avoid failing cause of missing syncronization
+						Model root = emfXmiSerializer.deserialize(fileSel.getContents(true));						
 						logger.debug("Model root is [{}] ",root );
 						BusinessModel businessModel = root.getBusinessModels().get(0);
 						logger.debug("link to model "+businessModel.getName());

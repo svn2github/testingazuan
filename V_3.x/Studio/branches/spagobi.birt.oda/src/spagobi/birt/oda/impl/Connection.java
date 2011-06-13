@@ -123,7 +123,7 @@ public class Connection implements IConnection
 		logger.debug("Dataset proxy created succesfully");
 		
 		try {
-			proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");
+			proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");	
 		} catch(Throwable t) {
 			throw  new RuntimeException("Impossible to set dataset proxy's endpoint", t);
 		}

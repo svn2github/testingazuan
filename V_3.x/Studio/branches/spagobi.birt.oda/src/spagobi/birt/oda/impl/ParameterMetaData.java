@@ -7,6 +7,9 @@
 
 package spagobi.birt.oda.impl;
 
+import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
+
+import org.apache.axis.description.TypeDesc;
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 
@@ -21,16 +24,17 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
  */
 public class ParameterMetaData implements IParameterMetaData 
 {
-
+	SDKDataSetParameter[] sdkParametersMeta;
+	
+	public ParameterMetaData(SDKDataSetParameter[] sdkParametersMeta) {
+		this.sdkParametersMeta = sdkParametersMeta;
+	}
 	/* 
 	 * @see org.eclipse.datatools.connectivity.oda.IParameterMetaData#getParameterCount()
 	 */
 	public int getParameterCount() throws OdaException 
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
-        return 1;
+        return sdkParametersMeta.length;
 	}
 
     /*
@@ -38,7 +42,6 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterMode( int param ) throws OdaException 
 	{
-        // TODO Auto-generated method stub
 		return IParameterMetaData.parameterModeIn;
 	}
 
@@ -47,8 +50,7 @@ public class ParameterMetaData implements IParameterMetaData
      */
     public String getParameterName( int param ) throws OdaException
     {
-        // TODO Auto-generated method stub
-        return null;    // name is not available
+        return sdkParametersMeta[param-1].getName(); 
     }
 
 	/* 
@@ -56,9 +58,8 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterType( int param ) throws OdaException 
 	{
-        // TODO replace with data source specific implementation
-
-        // hard-coded for demo purpose
+		String type = sdkParametersMeta[param-1].getType(); 
+		TypeDesc typeDesc = sdkParametersMeta[param-1].getTypeDesc();
         return java.sql.Types.CHAR;   // as defined in data set extension manifest
 	}
 
@@ -76,7 +77,6 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getPrecision( int param ) throws OdaException 
 	{
-        // TODO Auto-generated method stub
 		return -1;
 	}
 
@@ -85,7 +85,6 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getScale( int param ) throws OdaException 
 	{
-        // TODO Auto-generated method stub
 		return -1;
 	}
 
@@ -94,7 +93,6 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int isNullable( int param ) throws OdaException 
 	{
-        // TODO Auto-generated method stub
 		return IParameterMetaData.parameterNullableUnknown;
 	}
 

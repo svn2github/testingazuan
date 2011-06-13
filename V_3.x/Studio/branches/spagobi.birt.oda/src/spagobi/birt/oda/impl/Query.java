@@ -23,13 +23,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package spagobi.birt.oda.impl;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
+import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
+import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.math.BigDecimal;
+import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.IQuery;
@@ -52,23 +59,23 @@ import org.slf4j.LoggerFactory;
  */
 public class Query implements IQuery
 {
-	private static Logger logger = LoggerFactory.getLogger(Query.class);
-
-	private int m_maxRows;
-	private String queryString;
+	int maxRows;
+	String queryString;
+	Map<String, Integer> parameterNamesToIndexMap;
 	
 	DataSetsSDKServiceProxy dataSetServiceProxy;
+	SDKDataSet dataSetMeta;
+	SDKDataSetParameter[] dataSetParametersMeta;
 	SDKDataStoreMetadata dataStoreMeta;
 	
-	public Query() {
-		m_maxRows = 101;
-		logger.debug("ODA Query created");
-	}
+	private static Logger logger = LoggerFactory.getLogger(Query.class);
 	
 	public Query(DataSetsSDKServiceProxy dataSetServiceProxy) {
+		this.maxRows = -1;
+		this.queryString = null;
+		this.parameterNamesToIndexMap = new HashMap<String, Integer>();
 		this.dataSetServiceProxy = dataSetServiceProxy;
-		m_maxRows = 101;
-		logger.debug("ODA Query created");
+		
 	}
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
@@ -83,13 +90,22 @@ public class Query implements IQuery
 				for(int i =0; i<datasets.length; i++){
 					SDKDataSet datsSet = (SDKDataSet)datasets[i];
 					if(queryText.equals(datsSet.getLabel())){
-						SDKDataStoreMetadata sdkDataStoreMetadata=  dataSetServiceProxy.getDataStoreMetadata(datsSet);
+						SDKDataStoreMetadata sdkDataStoreMetadata =  dataSetServiceProxy.getDataStoreMetadata(datsSet);
+						dataSetMeta = datsSet;
+						dataSetParametersMeta = dataSetMeta.getParameters();
 						dataStoreMeta = sdkDataStoreMetadata;
+						break;
 					}
 				}
-			} catch (Exception e) {
-				throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(e);
+			} catch (Exception t) {
+				throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
 			} 
+			
+			if(dataSetParametersMeta != null) {
+				for(int i = 0; i < dataSetParametersMeta.length; i++) {
+					parameterNamesToIndexMap.put(dataSetParametersMeta[i].getName(), new Integer(i+1));
+				}
+			}
 		}
 	}
 
@@ -123,7 +139,18 @@ public class Query implements IQuery
 	 */
 	public IResultSet executeQuery() throws OdaException
 	{
-		return new ResultSet( dataStoreMeta );
+		String result;
+		
+		try {
+			result = dataSetServiceProxy.executeDataSet( dataSetMeta.getLabel() );
+		} catch (Throwable t) {
+			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
+		}
+		
+		XmlDataReader dataReader = new XmlDataReader();
+		IDataStore dataStore = dataReader.read( result );
+		
+		return new SpagoBIResultSet( dataStore, dataStoreMeta );
 	}
 
 	/*
@@ -139,7 +166,7 @@ public class Query implements IQuery
 	 */
 	public void setMaxRows( int max ) throws OdaException
 	{
-	    m_maxRows = max;
+	    maxRows = max;
 	}
 
 	/*
@@ -147,7 +174,7 @@ public class Query implements IQuery
 	 */
 	public int getMaxRows() throws OdaException
 	{
-		return m_maxRows;
+		return maxRows;
 	}
 
 	/*
@@ -155,8 +182,9 @@ public class Query implements IQuery
 	 */
 	public void clearInParameters() throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+       for(int i = 0; i < dataSetParametersMeta.length; i++) {
+    	   dataSetParametersMeta[i].setValues(new String[]{""});
+       }
 	}
 
 	/*
@@ -164,8 +192,7 @@ public class Query implements IQuery
 	 */
 	public void setInt( String parameterName, int value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setInt ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -173,8 +200,7 @@ public class Query implements IQuery
 	 */
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -182,8 +208,7 @@ public class Query implements IQuery
 	 */
 	public void setDouble( String parameterName, double value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setDouble ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -191,8 +216,7 @@ public class Query implements IQuery
 	 */
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -200,8 +224,7 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( String parameterName, BigDecimal value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setBigDecimal ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -209,8 +232,7 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -218,8 +240,7 @@ public class Query implements IQuery
 	 */
 	public void setString( String parameterName, String value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setString ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -227,8 +248,7 @@ public class Query implements IQuery
 	 */
 	public void setString( int parameterId, String value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+        dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -236,8 +256,7 @@ public class Query implements IQuery
 	 */
 	public void setDate( String parameterName, Date value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setDate ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -245,8 +264,7 @@ public class Query implements IQuery
 	 */
 	public void setDate( int parameterId, Date value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -254,8 +272,7 @@ public class Query implements IQuery
 	 */
 	public void setTime( String parameterName, Time value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setTime ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -263,8 +280,7 @@ public class Query implements IQuery
 	 */
 	public void setTime( int parameterId, Time value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -272,8 +288,7 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( String parameterName, Timestamp value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
+		setTimestamp ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -281,8 +296,7 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( int parameterId, Timestamp value ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to input parameter
+		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
     /* (non-Javadoc)
@@ -291,8 +305,7 @@ public class Query implements IQuery
     public void setBoolean( String parameterName, boolean value )
             throws OdaException
     {
-        // TODO Auto-generated method stub
-        // only applies to named input parameter
+    	setBoolean ( findInParameter( parameterName ), value);
     }
 
     /* (non-Javadoc)
@@ -301,8 +314,7 @@ public class Query implements IQuery
     public void setBoolean( int parameterId, boolean value )
             throws OdaException
     {
-        // TODO Auto-generated method stub       
-        // only applies to input parameter
+    	dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
     }
     
     /* (non-Javadoc)
@@ -310,8 +322,7 @@ public class Query implements IQuery
      */
     public void setNull( String parameterName ) throws OdaException
     {
-        // TODO Auto-generated method stub
-        // only applies to named input parameter
+    	setNull ( findInParameter( parameterName ));
     }
 
     /* (non-Javadoc)
@@ -319,8 +330,7 @@ public class Query implements IQuery
      */
     public void setNull( int parameterId ) throws OdaException
     {
-        // TODO Auto-generated method stub
-        // only applies to input parameter
+    	dataSetParametersMeta[parameterId-1].setValues(new String[]{""});
     }
 
 	/*
@@ -328,9 +338,8 @@ public class Query implements IQuery
 	 */
 	public int findInParameter( String parameterName ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to named input parameter
-		return 0;
+		Integer index = parameterNamesToIndexMap.get(parameterName);
+		return index != null? index.intValue(): -1;
 	}
 
 	/*
@@ -338,11 +347,7 @@ public class Query implements IQuery
 	 */
 	public IParameterMetaData getParameterMetaData() throws OdaException
 	{
-        /* TODO Auto-generated method stub
-         * Replace with implementation to return an instance 
-         * based on this prepared query.
-         */
-		return new ParameterMetaData();
+		return new ParameterMetaData(dataSetParametersMeta);
 	}
 
 	/*
@@ -350,8 +355,6 @@ public class Query implements IQuery
 	 */
 	public void setSortSpec( SortSpec sortBy ) throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to sorting, assumes not supported
         throw new UnsupportedOperationException();
 	}
 
@@ -360,8 +363,6 @@ public class Query implements IQuery
 	 */
 	public SortSpec getSortSpec() throws OdaException
 	{
-        // TODO Auto-generated method stub
-		// only applies to sorting
 		return null;
 	}
 	@Override

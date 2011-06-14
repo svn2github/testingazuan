@@ -60,6 +60,7 @@ public class ResultSet implements IResultSet
     public ResultSet(IDataStore dataStore, SDKDataStoreMetadata dataStoreMeta) {
     	this.dataStore = dataStore;
     	this.dataStoreMeta = dataStoreMeta;
+    	this.currentRowIndex = -1;
     }
     
 	/*
@@ -111,8 +112,7 @@ public class ResultSet implements IResultSet
 	 */
 	public void close() throws OdaException
 	{
-        // TODO Auto-generated method stub       
-        currentRowIndex = 0;     // reset row counter
+        currentRowIndex = -1;     // reset row counter
 	}
 
 	/*

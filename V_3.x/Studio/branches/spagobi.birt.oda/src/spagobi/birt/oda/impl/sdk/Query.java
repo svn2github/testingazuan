@@ -142,6 +142,12 @@ public class Query implements IQuery
 		String result;
 		
 		try {
+			for(int i = 0; i < dataSetParametersMeta.length; i++) {
+				String name = dataSetParametersMeta[i].getName();
+				String value = dataSetParametersMeta[i].getValues() != null ? dataSetParametersMeta[i].getValues()[0]: "NULL";
+				
+				//System.err.println("Input parameter [" + name + "] is equal to [" + value + "]");
+			}
 			result = dataSetServiceProxy.executeDataSet( dataSetMeta.getLabel(), dataSetParametersMeta );
 		} catch (Throwable t) {
 			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
@@ -200,6 +206,7 @@ public class Query implements IQuery
 	 */
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
+		//System.err.println("Paraeter [" + dataSetParametersMeta[parameterId-1].getName() + "] is equal to [" + value + "]");
 		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
@@ -216,6 +223,7 @@ public class Query implements IQuery
 	 */
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
+		//System.err.println("Paraeter [" + dataSetParametersMeta[parameterId-1].getName() + "] is equal to [" + value + "]");
 		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
@@ -232,6 +240,7 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
+		//System.err.println("Paraeter [" + dataSetParametersMeta[parameterId-1].getName() + "] is equal to [" + value + "]");
 		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
@@ -240,6 +249,7 @@ public class Query implements IQuery
 	 */
 	public void setString( String parameterName, String value ) throws OdaException
 	{
+		//System.err.println("Paraeter [" + parameterName + "] is equal to [" + value + "]");
 		setString ( findInParameter( parameterName ), value);
 	}
 
@@ -248,6 +258,7 @@ public class Query implements IQuery
 	 */
 	public void setString( int parameterId, String value ) throws OdaException
 	{
+		//System.err.println("Paraeter [" + dataSetParametersMeta[parameterId-1].getName() + "] is equal to [" + value + "]");
         dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 

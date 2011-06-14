@@ -15,6 +15,8 @@ import org.eclipse.datatools.connectivity.oda.util.manifest.DataTypeMapping;
 import org.eclipse.datatools.connectivity.oda.util.manifest.ExtensionManifest;
 import org.eclipse.datatools.connectivity.oda.util.manifest.ManifestExplorer;
 
+import spagobi.birt.oda.impl.sdk.Connection;
+
 /**
  * Implementation class of IDriver for an ODA runtime driver.
  */
@@ -72,7 +74,7 @@ public class Driver implements IDriver
      * @return                  corresponding native data type name
      * @throws OdaException     if lookup fails
      */
-    static String getNativeDataTypeName( int nativeDataTypeCode ) 
+    public static String getNativeDataTypeName( int nativeDataTypeCode ) 
         throws OdaException
     {
         DataTypeMapping typeMapping = 

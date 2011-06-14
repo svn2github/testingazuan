@@ -5,13 +5,15 @@
  *************************************************************************
  */
 
-package spagobi.birt.oda.impl;
+package spagobi.birt.oda.impl.server;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
 
 import org.apache.axis.description.TypeDesc;
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+
+import spagobi.birt.oda.impl.Driver;
 
 /**
  * Implementation class of IParameterMetaData for an ODA runtime driver.

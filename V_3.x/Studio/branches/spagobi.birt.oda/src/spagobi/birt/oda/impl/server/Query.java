@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package spagobi.birt.oda.impl;
+package spagobi.birt.oda.impl.server;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
@@ -142,7 +142,7 @@ public class Query implements IQuery
 		String result;
 		
 		try {
-			result = dataSetServiceProxy.executeDataSet( dataSetMeta.getLabel() );
+			result = dataSetServiceProxy.executeDataSet( dataSetMeta.getLabel(), dataSetParametersMeta );
 		} catch (Throwable t) {
 			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
 		}
@@ -150,7 +150,7 @@ public class Query implements IQuery
 		XmlDataReader dataReader = new XmlDataReader();
 		IDataStore dataStore = dataReader.read( result );
 		
-		return new SpagoBIResultSet( dataStore, dataStoreMeta );
+		return new ResultSet( dataStore, dataStoreMeta );
 	}
 
 	/*

@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package spagobi.birt.oda.impl;
+package spagobi.birt.oda.impl.server;
 
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
 
@@ -32,6 +32,7 @@ import org.eclipse.datatools.connectivity.oda.IQuery;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 
 import com.ibm.icu.util.ULocale;

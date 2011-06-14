@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 
-package spagobi.birt.oda.impl;
+package spagobi.birt.oda.impl.sdk;
 
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreFieldMetadata;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
@@ -50,14 +50,14 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
  * 
  * @authors  Andrea Gioia (andrea.gioia@eng.it)
  */
-public class SpagoBIResultSet implements IResultSet
+public class ResultSet implements IResultSet
 {
 	private int maxRows;
     private int currentRowIndex;
     private IDataStore dataStore;
     private SDKDataStoreMetadata dataStoreMeta;
 	
-    public SpagoBIResultSet(IDataStore dataStore, SDKDataStoreMetadata dataStoreMeta) {
+    public ResultSet(IDataStore dataStore, SDKDataStoreMetadata dataStoreMeta) {
     	this.dataStore = dataStore;
     	this.dataStoreMeta = dataStoreMeta;
     }

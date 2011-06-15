@@ -87,18 +87,22 @@ public class Query implements IQuery
 	
 		try {
 			logger.debug("Prepare query for dataset [" + queryText + "]");
+			
 			if(queryText == null || queryText.trim().length() == 0) {
 				throw new RuntimeException("Query cannot be null or empty");
 			}
 			this.queryString = queryText;
 			
+			logger.debug("Retriving dataset list from spagobi server...");
 			SDKDataSet[] datasets = null;
 			try {
 				datasets = dataSetServiceProxy.getDataSets();
 			} catch(Throwable t) {
 				throw new RuntimeException("Impossible to retrive spagobi's dataset list", t);
 			}
+			logger.debug("Dataset list from spagobi server retrieved succesfully");
 			
+			logger.debug("Look up dataset list for [" + queryText + "]");
 			dataSetMeta = null;
 			try {
 				for(int i =0; i<datasets.length; i++){
@@ -115,7 +119,9 @@ public class Query implements IQuery
 			if(dataSetMeta == null) {
 				throw new RuntimeException("Impssible to find on server a dataset named [" + queryText + "]");
 			}
+			logger.debug("Dataset [" + queryText + "] succesfully found");
 			
+			logger.debug("Retrieving data store meta for dataset [" + queryText + "]...");
 			dataStoreMeta = null;
 			try {
 				dataStoreMeta =  dataSetServiceProxy.getDataStoreMetadata(dataSetMeta);
@@ -125,15 +131,18 @@ public class Query implements IQuery
 			} catch(Throwable t) {
 				throw new RuntimeException("Impossible to retrive store metadata for dataset [" + dataSetMeta.getName() + "]", t);
 			}
+			logger.debug("Data store meta for dataset [" + queryText + "] retrieved succesfully");
 			
-			
+			logger.debug("Parsing dataset's parameters meta for dataset[" + queryText + "]...");
 			dataSetParametersMeta = dataSetMeta.getParameters();
 			if(dataSetParametersMeta != null) {
 				for(int i = 0; i < dataSetParametersMeta.length; i++) {
 					parameterNamesToIndexMap.put(dataSetParametersMeta[i].getName(), new Integer(i+1));
 				}
 			}
-		
+			logger.debug("Dataset's parameters meta for dataset[" + queryText + "] parsed succesfully");
+			
+			logger.debug("Query for dataset [" + queryText + "] prepared successfully");
 		} catch (Exception t) {
 			throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
 		}  finally {

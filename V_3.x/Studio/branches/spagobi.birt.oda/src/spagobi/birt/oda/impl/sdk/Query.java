@@ -136,7 +136,9 @@ public class Query implements IQuery
 		
 		} catch (Exception t) {
 			throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
-		} 
+		}  finally {
+			logger.debug("OUT");
+		}
 		
 	}
 	
@@ -172,6 +174,9 @@ public class Query implements IQuery
 	public IResultSet executeQuery() throws OdaException
 	{
 		String result;
+		IDataStore dataStore;
+		
+		logger.debug("IN");
 		
 		try {
 			for(int i = 0; i < dataSetParametersMeta.length; i++) {
@@ -185,8 +190,15 @@ public class Query implements IQuery
 			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
 		}
 		
-		XmlDataReader dataReader = new XmlDataReader();
-		IDataStore dataStore = dataReader.read( result );
+		dataStore = null;
+		try {
+			XmlDataReader dataReader = new XmlDataReader();
+			dataStore = dataReader.read( result );
+		} catch (Throwable t) {
+			throw (OdaException) new OdaException("Impossible to parse resultset [" + result + "]").initCause(t);
+		}
+		
+		logger.debug("OUT");
 		
 		return new ResultSet( dataStore, dataStoreMeta );
 	}

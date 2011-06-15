@@ -82,32 +82,64 @@ public class Query implements IQuery
 	 */
 	public void prepare( String queryText ) throws OdaException
 	{		
-		this.queryString = queryText;
-
-		if(queryText != null) {
+		
+		logger.debug("IN");
+	
+		try {
+			logger.debug("Prepare query for dataset [" + queryText + "]");
+			if(queryText == null || queryText.trim().length() == 0) {
+				throw new RuntimeException("Query cannot be null or empty");
+			}
+			this.queryString = queryText;
+			
+			SDKDataSet[] datasets = null;
 			try {
-				SDKDataSet[] datasets = dataSetServiceProxy.getDataSets();
+				datasets = dataSetServiceProxy.getDataSets();
+			} catch(Throwable t) {
+				throw new RuntimeException("Impossible to retrive spagobi's dataset list", t);
+			}
+			
+			dataSetMeta = null;
+			try {
 				for(int i =0; i<datasets.length; i++){
 					SDKDataSet datsSet = (SDKDataSet)datasets[i];
 					if(queryText.equals(datsSet.getLabel())){
-						SDKDataStoreMetadata sdkDataStoreMetadata =  dataSetServiceProxy.getDataStoreMetadata(datsSet);
 						dataSetMeta = datsSet;
-						dataSetParametersMeta = dataSetMeta.getParameters();
-						dataStoreMeta = sdkDataStoreMetadata;
 						break;
 					}
 				}
-			} catch (Exception t) {
-				throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
+			} catch (Throwable t) {
+				throw new RuntimeException("Impossible to retrive store metadata for dataset [" + dataSetMeta.getName() + "]", t);
 			} 
 			
+			if(dataSetMeta == null) {
+				throw new RuntimeException("Impssible to find on server a dataset named [" + queryText + "]");
+			}
+			
+			dataStoreMeta = null;
+			try {
+				dataStoreMeta =  dataSetServiceProxy.getDataStoreMetadata(dataSetMeta);
+				if(dataStoreMeta == null) {
+					throw new RuntimeException("Bad server response [null] for service [getDataStoreMetadata]");
+				}
+			} catch(Throwable t) {
+				throw new RuntimeException("Impossible to retrive store metadata for dataset [" + dataSetMeta.getName() + "]", t);
+			}
+			
+			
+			dataSetParametersMeta = dataSetMeta.getParameters();
 			if(dataSetParametersMeta != null) {
 				for(int i = 0; i < dataSetParametersMeta.length; i++) {
 					parameterNamesToIndexMap.put(dataSetParametersMeta[i].getName(), new Integer(i+1));
 				}
 			}
-		}
+		
+		} catch (Exception t) {
+			throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
+		} 
+		
 	}
+	
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#setAppContext(java.lang.Object)

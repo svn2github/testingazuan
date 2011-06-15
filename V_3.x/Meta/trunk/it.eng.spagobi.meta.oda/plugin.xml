@@ -7,7 +7,7 @@
          point="org.eclipse.datatools.connectivity.oda.dataSource">
       <dataSource
             driverClass="it.eng.spagobi.meta.oda.impl.Driver"
-            defaultDisplayName="SpagoBI Server Data Source"
+            defaultDisplayName="SpagoBI Meta Data Source"
             setThreadContextClassLoader="false"
             odaVersion="3.2"
             id="%oda.data.source.id">

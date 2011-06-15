@@ -89,7 +89,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	public String getDataSourceProductName() throws OdaException
 	{
         // TODO Auto-generated method stub
-		return "SpagoBI Data Source";
+		return "SpagoBI Server Data Source";
 	}
 
 	/*

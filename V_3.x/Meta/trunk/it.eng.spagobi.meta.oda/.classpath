@@ -16,7 +16,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/javassist-3.12.0.GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/jta-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/hibernate3.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar" sourcepath="D:/sviluppo/helios/SpagoBI30/SpagoBIUtils"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar" sourcepath="/it.eng.spagobi.studio.utils/lib/sbiutils.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

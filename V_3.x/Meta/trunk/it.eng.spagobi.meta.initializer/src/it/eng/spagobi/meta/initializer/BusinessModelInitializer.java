@@ -505,10 +505,11 @@ public class BusinessModelInitializer {
 			for(BusinessColumn businessColumn : descriptor.getDestinationColumns()) {
 				businessRelationship.getDestinationColumns().add(businessColumn);
 			}
-			
 			businessModel.getRelationships().add(businessRelationship);
-			
 			getPropertiesInitializer().addProperties(businessRelationship);
+			//set the destinationRole property
+			businessRelationship.setProperty(BusinessModelPropertiesFromFileInitializer.ROLE_DESTINATION, businessRelationship.getDestinationTable().getName());
+
 			
 		
 			
@@ -570,6 +571,59 @@ public class BusinessModelInitializer {
 			//add BusinessView properties(?)
 			getPropertiesInitializer().addProperties(businessView);
 			
+			//destroy Business Table
+			businessModel.getTables().remove(businessTable);
+		}
+		catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize business view", t);
+		}
+		return businessView;
+	}
+	
+	/**
+	 * Upgrade BusinessTable to BusinessView without using Join Paths
+	 */
+	public BusinessView upgradeBusinessTableToBusinessView(BusinessTable businessTable){
+		BusinessView businessView;
+		BusinessModel businessModel = businessTable.getModel();
+		Collection<BusinessColumn> businessColumns = businessTable.getColumns();
+		
+		Collection<BusinessRelationship> businessRelationships = businessTable.getRelationships();
+		BusinessIdentifier businessIdentifier;
+		
+		try {					
+			businessView = FACTORY.createBusinessView();
+			businessView.setModel(businessModel);
+			businessView.setName(businessTable.getName());
+			businessView.setDescription((businessTable.getDescription()));
+
+			//add all the columns of Business Table to the Business View
+			businessView.getColumns().addAll(businessColumns);
+
+			//check Business Table relationships 
+			for( BusinessRelationship relationship : businessRelationships){
+				if (relationship.getDestinationTable() == businessTable){
+					//replace business table with business view
+					relationship.setDestinationTable(businessView);
+				}
+				else if (relationship.getSourceTable() == businessTable){
+					//replace business table with business view
+					relationship.setSourceTable(businessView);
+				}
+			}
+
+			//check Identifier to inherit
+			businessIdentifier = businessTable.getIdentifier();
+			if (businessIdentifier != null){
+				businessIdentifier.setTable(businessView);
+			}
+
+			//add BusinessView to BusinessModel
+			businessModel.getTables().add(businessView);
+
+			//add BusinessView properties
+			getPropertiesInitializer().addProperties(businessView);
+
 			//destroy Business Table
 			businessModel.getTables().remove(businessTable);
 		}

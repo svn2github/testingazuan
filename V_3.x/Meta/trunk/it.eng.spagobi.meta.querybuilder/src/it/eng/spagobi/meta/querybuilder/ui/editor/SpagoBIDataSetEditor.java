@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.querybuilder.ui.editor;
 import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.IQueryDeserializer;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
@@ -105,9 +106,11 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	private QueryBuilder queryBuilder;
 	private SpagoBIDataSetEditPage queryEditPage;
 	private SpagoBIDataSetResultPage queryResultPage;
+	
+	protected boolean dirty;
+	
 	private JSONObject o;
-	protected boolean dirty = false;
-	private String dirtyMapping;
+	
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
 	
@@ -115,14 +118,20 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	public SpagoBIDataSetEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		dirty = false;
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+	
 		String persistenceUnitName;
+		BusinessModel businessModel;
+		IDataSource dataSource;
+		
 		logger.trace("IN");
 		
 		try {
 			super.init(site, editorInput);
+			
 			String inputContents = getInputContents(editorInput);
 			try {
 				o = new JSONObject(inputContents);
@@ -130,45 +139,105 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				throw new SpagoBIPluginException("Impossible to parse editor input [" + inputContents + "]", t);
 			}
 			
-			JSONObject queryMeta = o.optJSONObject("queryMeta");
-			JSONObject queryJSON = o.optJSONObject("query");
-			String modelPath = queryMeta.optString("modelPath");
-			logger.debug("Model path is [{}]",modelPath );
-			//get the value for dirty mapping
-			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
-			IPath location= Path.fromOSString(modelPath); 
-			IFile ifile= workspace.getRoot().getFileForLocation(location);
-			dirtyMapping = ifile.getPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL);
-			  
-			String modelDirectory = new File(modelPath).getParent();
-			BusinessModel businessModel = loadBusinessModel(modelPath);
+			JSONObject queryMetaJSON = o.optJSONObject("queryMeta");
+			logger.debug("query meta is equal to [{}]", queryMetaJSON);
+			
+			JSONObject queryStatementJSON = o.optJSONObject("query");
+			logger.debug("query statement is equal to [{}]", queryStatementJSON);
+			
+			String modelPath = queryMetaJSON.optString("modelPath");
+			logger.debug("Model path is equal to [{}]", modelPath);
+			 
+			
+			businessModel = loadBusinessModel(modelPath);
+			logger.debug("Model [" + businessModel.getName() + "] sucesfully loaded from file [" + modelPath + "]");
+			
 			validateModel(businessModel);
+			logger.debug("Model [" + businessModel.getName() + "] sucesfully valideated");
 			
-			if (dirtyMapping.equals("true")){
-				persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
-				generateMapping(businessModel, modelDirectory, persistenceUnitName);
-				//set the dirty property to false cause the mapping has just been created
-				ifile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
-			}
-			else {
-				persistenceUnitName = discoverPersistenceUnitName(modelDirectory, businessModel.getName());
-			}
-			IDataSource dataSource = createDataSource(modelPath, businessModel, persistenceUnitName);
+			persistenceUnitName = getPersistenceUnitName(modelPath, businessModel);	
+			logger.debug("Persistence unit name for the mapping for model [" + businessModel.getName() + "] will be equal to [" + persistenceUnitName + "]");
+			
+			dataSource = createDataSource(modelPath, businessModel, persistenceUnitName);
+			logger.debug("Data Source [" + dataSource.getName() + "] succesfully created");
+			
 			queryBuilder = new QueryBuilder(dataSource);
+			logger.debug("Query buider class succesfully created");
 			
-		    if(queryJSON == null) {
-				logger.debug("No previously saved query to load");
+			logger.debug("Loading query statement...");
+		    if(queryStatementJSON == null) {
+				logger.debug("No previously saved query statement to load");
 			} else {
-				queryBuilder.setQuery( SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, queryBuilder.getDataSource()) );
+				IQueryDeserializer queryDeserializer = SerializerFactory.getDeserializer("application/json");
+				if(queryDeserializer == null) {
+					throw new SpagoBIPluginException("Impossible to load a query deserializeer for query encoded in [application/json] format");
+				}
+				Query query = queryDeserializer.deserializeQuery(queryStatementJSON, queryBuilder.getDataSource());
+				queryBuilder.setQuery( query );
+				
+				logger.debug("Query statement succesfully loaded");
 			}
+		    
 		} catch(Throwable t) {
 			showInformation("Impossible to open Query editor","Query editor cannot be opened: " + t.getMessage());
 			throw new PartInitException("Impossible to initialize editor [" + this.getClass().getName()+ "]: " + t.getCause().getMessage());
 		} finally {
 			logger.trace("OUT");
 		}
-
-
+	}
+	
+	private IFile getModelFile(String path) {
+		IFile file;
+		
+		file = null;
+		
+		try {
+			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+			IPath location = Path.fromOSString(path); 
+			file = workspace.getRoot().getFileForLocation(location);
+		} catch (Throwable t) {
+			throw new SpagoBIPluginException("Impossible to locate model file [" + path + "]");
+		}
+		return file;
+	}
+	
+	private String getPersistenceUnitName(String modelPath, BusinessModel businessModel) {
+		String persistenceUnitName;
+		
+		persistenceUnitName = null;
+		try {
+			IFile modelFile = getModelFile(modelPath);
+			String modelDirectory = new File(modelPath).getParent();
+			if ( isMappingDirty( modelFile ) ){
+				persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
+				generateMapping(businessModel, modelDirectory, persistenceUnitName);
+				//set the dirty property to false cause the mapping has just been created
+				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
+			}
+			else {
+				persistenceUnitName = discoverPersistenceUnitName(modelDirectory, businessModel.getName());
+			}
+		} catch (Throwable t) {
+			throw new SpagoBIPluginException("Impossible to locate model file [" + "" + "]");
+		}
+		
+		return persistenceUnitName;
+	}
+	
+	private boolean isMappingDirty(IFile modelFile) {
+		boolean isDirty;
+		String isDirtyPropertyValue;
+		
+		isDirty = true;
+		
+		try {
+			isDirtyPropertyValue = modelFile.getPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL);
+			isDirty = "true".equalsIgnoreCase(isDirtyPropertyValue);
+		} catch (Throwable t) {
+			throw new SpagoBIPluginException("Impossible read the value of property [" + SpagoBIMetaConstants.DIRTY_MODEL + "]");
+		}
+		
+		return isDirty;
 	}
 	
 	public String discoverPersistenceUnitName(String modelDirectory, String modelName) {

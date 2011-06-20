@@ -86,6 +86,7 @@ public class QueryBuilder {
 	private static Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 	
 	public QueryBuilder(IDataSource dataSource){
+		
 		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
 		this.dataSource = dataSource;
 		labelProvider = new ModelLabelProvider(this.dataSource);

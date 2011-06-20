@@ -156,7 +156,8 @@ public class DataStoreReader {
 						continue;
 					}
 	
-					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
+					//field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
+					field = record.getFieldAt( i );
 	
 					String fieldValue = "";
 					if(field.getValue() != null && field.getValue() != "") {

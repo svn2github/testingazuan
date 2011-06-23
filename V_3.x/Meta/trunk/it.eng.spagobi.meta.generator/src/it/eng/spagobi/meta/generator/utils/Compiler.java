@@ -22,17 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.generator.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +112,8 @@ public class Compiler {
 		String classPath = ".";
 		for (File lib: libs){
 			//Assert.assertTrue("Impossible to locate lib [" + libFile + "]", libFile.exists() && libFile.isFile());
-			classPath = classPath + ";" + lib;
+			//classPath = classPath + ";" + lib;
+			classPath = classPath + java.io.File.pathSeparator + lib;
 		}
 		
 		logger.debug("Classpath is equal to [{}]", classPath);

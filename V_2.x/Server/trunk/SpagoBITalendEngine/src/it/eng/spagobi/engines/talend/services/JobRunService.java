@@ -31,8 +31,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.services;
 
-import org.apache.log4j.Logger;
-
 import it.eng.spagobi.engines.talend.TalendEngine;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
@@ -42,6 +40,8 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
 import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+
+import org.apache.log4j.Logger;
 
 public class JobRunService extends AbstractEngineStartServlet {
 	
@@ -96,8 +96,7 @@ public class JobRunService extends AbstractEngineStartServlet {
 						"job.exectuion.error");
 			}
 
-			
-			servletIOManager.tryToWriteBackToClient("etl.process.started");
+			servletIOManager.tryToWriteBackToClient(servletIOManager.getLocalizedMessage("etl.process.started"));
 			
 		} finally {
 			logger.debug("OUT");

@@ -581,7 +581,36 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		logger.debug("Datasource connection url is [{}]",connectionUrl);
 		logger.debug("Datasource connection username is [{}]",connectionUsername);
 		logger.debug("Datasource connection password is [{}]",connectionPassword);
-
+		
+		String dbname = physicalModel.getDatabaseName();
+		logger.debug("Datasource database name is [{}]",dbname);
+		
+		// TODO read driver class from configuration file
+		String dialect = null;
+		String driver = null;
+		if(dbname.toLowerCase().contains("oracle")) {
+			dialect = "org.hibernate.dialect.OracleDialect";
+			driver = "oracle.jdbc.OracleDriver";
+		} else if(dbname.toLowerCase().contains("postgres")) {
+			dialect = "org.hibernate.dialect.PostgreSQLDialect";
+			driver = "org.postgresql.Driver";
+		} else if(dbname.toLowerCase().contains("ingres")) {
+			dialect = "org.hibernate.dialect.IngresDialect";
+			driver = "com.ingres.jdbc.IngresDriver";
+		} else if(dbname.toLowerCase().contains("microsoft")) {
+			dialect = "org.hibernate.dialect.SQLServerDialect";
+			driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+		} else if(dbname.toLowerCase().contains("hsql")) {
+			dialect = "org.hibernate.dialect.HSQLDialect";
+			driver = "org.hsqldb.jdbcDriver";
+		} else if(dbname.toLowerCase().contains("mysql")) {
+			dialect = "org.hibernate.dialect.MySQLDialect";
+			driver = "com.mysql.jdbc.Driver";
+		} else {
+			showInformation("Connection error", "impossible to find a suitable driver for [" + dbname + "] database");
+		}
+		
+		
 		Map<String,Object> dataSourceProperties = new HashMap<String,Object>();
 		String modelName =  businessModel.getName();
 		logger.debug("Datasource model name is [{}]",modelName);
@@ -589,8 +618,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		//Create Connection
 		ConnectionDescriptor connectionDescriptor = new ConnectionDescriptor();			
 		connectionDescriptor.setName( businessModel.getName());
-		connectionDescriptor.setDialect( "org.hibernate.dialect.MySQLDialect" );			
-		connectionDescriptor.setDriverClass( "com.mysql.jdbc.Driver");			
+		connectionDescriptor.setDialect( dialect );			
+		connectionDescriptor.setDriverClass( driver );			
 		connectionDescriptor.setPassword( connectionPassword );
 		connectionDescriptor.setUrl( connectionUrl);
 		connectionDescriptor.setUsername( connectionUsername );

@@ -228,8 +228,7 @@ public class SelectionConnectionPage extends WizardPage {
 				populateSchemaCombo(connection,null);				
 			}
 			//release result set resources
-			if (rs != null)
-				rs.close();
+			//if (rs != null) rs.close();
 		}
 		catch(Throwable t) {
 			throw new RuntimeException("Impossible to check catalog", t);
@@ -261,9 +260,9 @@ public class SelectionConnectionPage extends WizardPage {
 				schemaCombo.setEnabled(false);
 			}
 			//release result set resources
-			rs.close();
+			//rs.close();
 			//close connection
-			connection.close();
+			//connection.close();
 		}
 		catch(Throwable t) {
 			throw new RuntimeException("Impossible to check schema", t);
@@ -319,7 +318,9 @@ public class SelectionConnectionPage extends WizardPage {
 	//Set next page data
 	public IWizardPage getNextPage() {
     	IWizardPage nextPage = super.getNextPage();
-    	if (getConnectionName() != null){
+    	String schemaName = getSchemaName();
+    	String catalogName = getCatalogName();
+    	if (getConnectionName() != null && (schemaName != null || catalogName != null) ){
         	if (nextPage instanceof PhysicalTableSelectionPage) {
         		physicalTableSelectionPageRef.addTableItems(getConnectionName(), getCatalogName(), getSchemaName());
         	}

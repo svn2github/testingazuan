@@ -61,7 +61,62 @@
 		}
 #end
 		]
-	}
+		, outbound: [
+## outbound relationships			
+#foreach ($relationship in $jpaView.relationships)
+#if ($relationship.isOutboundRelationship())		
+		{
+			destinationTable: {
+				package: ${relationship.package}
+				, name: ${relationship.destinationTable}				
+			}
+			, sourceColumns: [
+#foreach ($sourceColumn in $relationship.sourceColumns)
+## column name				
+				${sourceColumn},
+## column name	
+#end				
+			] 
+			, destinationColumns: [
+#foreach ($destinationColumn in $relationship.destinationColumns)
+## column name				
+				${destinationColumn},
+## column name				
+#end				
+			]			
+		},
+#end	
+#end	
+		]
+## outbound relationships		
+## inbound relationships	
+		,inbound: [
+#foreach ($relationship in $jpaView.relationships)
+#if (!$relationship.isOutboundRelationship())			
+		{
+				sourceTable: {
+					package: ${relationship.package}
+					, name: ${relationship.sourceTable}
+				}
+				, sourceColumns: [
+#foreach ($sourceColumn in $relationship.sourceColumns)
+## column name				
+				${sourceColumn},
+## column name	
+#end				
+				] 
+				, destinationColumns: [
+#foreach ($destinationColumn in $relationship.destinationColumns)
+## column name				
+				${destinationColumn},
+## column name				
+#end				
+				]
+		},
+#end
+#end							
+		]
+	},
 ###################################################################################
 #####                           VIEWS
 ###################################################################################

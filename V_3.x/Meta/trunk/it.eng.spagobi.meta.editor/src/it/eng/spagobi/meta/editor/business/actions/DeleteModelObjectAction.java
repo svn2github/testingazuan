@@ -29,7 +29,10 @@ import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTabl
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.view.DeleteBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.DeleteBusinessViewPhysicalTableCommand;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,6 +109,12 @@ public class DeleteModelObjectAction extends DeleteAction {
 					CommandParameter parameter = new CommandParameter(businessColumnSet, null, physicalColumns, null);
 					removeCommand = new RemoveColumnsFromBusinessTable(domain, parameter);
 					removeColumnCommands.add( removeCommand );
+				} else if (o instanceof BusinessViewPhysicalTableItemProvider){
+					PhysicalTable physicalTable = ((BusinessViewPhysicalTableItemProvider)o).getPhysicalTable();
+					BusinessView businessView = (BusinessView)((BusinessViewPhysicalTableItemProvider)o).getParentObject();
+					CommandParameter parameter = new CommandParameter(businessView, null, physicalTable, null);
+					removeCommand = new DeleteBusinessViewPhysicalTableCommand(domain, parameter);
+					removeTableCommands.add( removeCommand );
 				}
 			}
 			

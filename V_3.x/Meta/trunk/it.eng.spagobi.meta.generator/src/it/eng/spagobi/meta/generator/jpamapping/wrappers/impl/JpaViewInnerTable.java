@@ -278,5 +278,11 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		return subEntities;
 	}
+
+
+	@Override
+	public boolean isInnerTable() {
+		return true;
+	}
 	
 }

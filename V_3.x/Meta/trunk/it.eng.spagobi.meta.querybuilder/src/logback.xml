@@ -31,19 +31,19 @@
   <!-- LOGGERS  																		-->
   <!-- ===============================================================================  -->
   
-  <root level="ERROR">
+  <root level="DEBUG">
     <appender-ref ref="FILE"/>
   </root>
   
-  <logger name="org.hibernate" additivity="false" level="ERROR">
+  <logger name="org.hibernate" additivity="false" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
   
-  <logger name="it.eng.qbe" additivity="false" level="ERROR">
+  <logger name="it.eng.qbe" additivity="false" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
 
-  <logger name="it.eng.spagobi" additivity="false" level="ERROR">
+  <logger name="it.eng.spagobi" additivity="false" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
   

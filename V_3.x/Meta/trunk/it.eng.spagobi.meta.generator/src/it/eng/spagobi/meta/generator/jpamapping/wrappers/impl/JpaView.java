@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
@@ -154,6 +155,36 @@ public class JpaView implements IJpaView {
 	
 		return jpaViewInnerJoinRelatioships;
 	}
+	
+	public List<JpaViewOuterRelationship> getRelationships() {
+
+//		logger.trace("IN");
+//		logger.debug("Business view [{}] have  [{}] relationships", businessView.getName(), businessView.getRelationships().size());
+//        
+//		for(BusinessRelationship relationship : businessView.getRelationships()) {
+//			logger.debug("Business view [{}] contains relationship  [{}] ", businessView.getName(), relationship.getName());
+//
+//		}
+//		
+//		logger.trace("OUT");		
+//		return businessView.getRelationships();		
+		
+		List<JpaViewOuterRelationship> viewRelationships = new ArrayList<JpaViewOuterRelationship>();
+		
+		for(BusinessRelationship relationship : businessView.getRelationships()) {
+		logger.debug("Business view [{}] contains relationship  [{}] ", businessView.getName(), relationship.getName());
+			boolean isOutbound = false;
+			//check if this is an outbound relationship from businessView to another businessColumnSet
+			if (relationship.getSourceTable().equals(businessView)){
+				isOutbound = true;
+			}
+			JpaViewOuterRelationship viewRelationship = new JpaViewOuterRelationship(this,relationship,isOutbound);
+			viewRelationships.add(viewRelationship);	
+		}
+		return viewRelationships;
+		
+	}
+
 	
 	public String getQualifiedClassName() {
 		return getPackage() + "."  + getClassName();

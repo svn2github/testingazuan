@@ -33,6 +33,7 @@ import it.eng.spagobi.meta.editor.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.editor.business.actions.CreateQueryAction;
 import it.eng.spagobi.meta.editor.business.actions.DeleteBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
+import it.eng.spagobi.meta.editor.business.actions.EditBusinessViewInnerJoinRelationshipsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.editor.business.actions.RemovePhysicalTableToBusinessViewAction;
 import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
@@ -79,7 +80,7 @@ public class BusinessModelMenuActionFactory {
 				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 				 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 				 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
-				 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+				 //editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
 			 }
 			 else {
 				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
@@ -91,8 +92,9 @@ public class BusinessModelMenuActionFactory {
 			 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 			 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 			 //editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
-			 editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
-			 editActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+			 //editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+			 //editActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
+			 editActions.add(new EditBusinessViewInnerJoinRelationshipsAction(activeEditorPart, selection));
 			 actions.put("Edit", editActions);
 			 
 //			 List removeActions = new ArrayList();

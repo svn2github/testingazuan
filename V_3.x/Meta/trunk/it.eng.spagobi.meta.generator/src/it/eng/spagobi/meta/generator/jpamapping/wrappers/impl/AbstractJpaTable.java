@@ -196,11 +196,27 @@ public abstract class AbstractJpaTable implements IJpaTable{
 					continue;
 				}
 			} else if (column.isColumnInRelationship()) {
-				continue;
+					continue;
 			}
-			
+
 			result.add(column);
 		}
+		
+		//add columns in relationship with BusinessView
+		for (int i = 0, n = columns.size(); i < n; ++i) {
+			IJpaColumn column = columns.get(i);
+			if( hasFakePrimaryKey() ) {
+				continue;
+			} else if (column.isIdentifier()) {
+				continue;
+			}
+			else if (column.isColumnInRelationshipWithView()){
+				if(!result.contains(column))
+					result.add(column);
+			}
+		}
+			
+		
 		return result;
 	}
 	

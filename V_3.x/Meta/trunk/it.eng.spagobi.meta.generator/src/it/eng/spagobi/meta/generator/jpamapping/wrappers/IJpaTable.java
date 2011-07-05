@@ -152,4 +152,9 @@ public interface IJpaTable {
 	 * @return the value of the specified table attribute
 	 */
 	public String getAttribute(String name);
+	
+	/**
+	 * @return true only if the table if this table is used inside a BusinessView
+	 */
+	public boolean isInnerTable();
 }

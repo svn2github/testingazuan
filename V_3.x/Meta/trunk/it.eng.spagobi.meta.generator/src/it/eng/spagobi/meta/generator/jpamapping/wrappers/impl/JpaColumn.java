@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
@@ -164,6 +165,54 @@ public class JpaColumn implements IJpaColumn {
 		if(!isColumnInRelationship) logger.debug("Column [{}] doesn't belong to any relationship", getSqlName());
 		
 		return isColumnInRelationship;
+	}
+	
+	public boolean isColumnInRelationshipWithView(){
+		boolean isColumnInRelationshipWithView = false;
+		try {
+			
+			
+			List<BusinessRelationship> relationships;
+			List<BusinessColumn> columns = null; 
+			
+			relationships = jpaTable.getBusinessRelationships();
+			
+			if (jpaTable instanceof JpaViewInnerTable){
+				return false;
+			}
+			else {
+				for(BusinessRelationship relationship : relationships) {
+					if ((relationship.getDestinationTable() instanceof BusinessView) || 
+					   (relationship.getSourceTable() instanceof BusinessView) ){
+						if(relationship.getSourceTable().equals( ((JpaTable)jpaTable).getBusinessTable() )) {
+							//outbound
+							columns =  relationship.getSourceColumns();
+						} else {
+							//inbound
+							columns =  relationship.getDestinationColumns();
+						}
+					}
+				}
+			}
+			
+			//scan columns
+			if (columns!=null){
+				for(BusinessColumn column : columns) {
+					if(column.equals(businessColumn)) {
+						isColumnInRelationshipWithView = true;
+						logger.debug("Column [{}] belong to a relationship", getSqlName());
+					}
+				}
+			}else {
+				logger.error("The Columns are null");
+			}
+			
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return isColumnInRelationshipWithView;
+
+		
 	}
 	
 	/*

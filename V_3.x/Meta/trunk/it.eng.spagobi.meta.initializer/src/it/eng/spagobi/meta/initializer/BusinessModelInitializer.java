@@ -651,7 +651,8 @@ public class BusinessModelInitializer {
 		
 		try {
 			//get the only PhysicalTable to mantain
-			physicalTable = businessView.getJoinRelationships().get(0).getSourceTable();
+			//physicalTable = businessView.getJoinRelationships().get(0).getSourceTable();
+			physicalTable = businessView.getPhysicalTables().get(0);
 			
 			for(BusinessColumn bc: businessView.getColumns()) {
 				if(bc.getPhysicalColumn().getTable().equals(physicalTable)) {

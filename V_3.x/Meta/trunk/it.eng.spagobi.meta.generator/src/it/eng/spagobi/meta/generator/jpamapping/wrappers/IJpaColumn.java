@@ -115,5 +115,10 @@ public interface IJpaColumn {
 	String getMapTemporalType();
 
 	String getUnqualifiedUniqueName();
+
+	/**
+	 * @return
+	 */
+	boolean isColumnInRelationshipWithView();
 	
 }

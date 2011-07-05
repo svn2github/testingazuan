@@ -240,4 +240,9 @@ public class JpaTable extends AbstractJpaTable {
 		return subEntities;
 	}
 
+	@Override
+	public boolean isInnerTable() {
+		return false;
+	}
+
 }

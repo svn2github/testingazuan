@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.initializer.descriptor;
 
 
+import java.util.ArrayList;
+
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -39,8 +41,10 @@ public class BusinessViewInnerJoinRelationshipDescriptor {
 	public BusinessViewInnerJoinRelationshipDescriptor(PhysicalTable source, PhysicalTable destination, java.util.List<PhysicalColumn> sourceCol, java.util.List<PhysicalColumn> destinationCol, int cardinality, String relationshipName){
 		sourceTable = source;
 		destinationTable = destination;
-		sourceColumns = sourceCol;
-		destinationColumns = destinationCol;
+		sourceColumns = new ArrayList<PhysicalColumn>();
+		sourceColumns.addAll(sourceCol);
+		destinationColumns = new ArrayList<PhysicalColumn>();
+		destinationColumns.addAll(destinationCol);
 		relationCardinality = cardinality;
 		this.relationshipName = relationshipName;
 	}

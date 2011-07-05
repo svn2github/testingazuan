@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddBusinessTableWizard;
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddPhysicalTableWizard;
+import it.eng.spagobi.meta.editor.business.wizards.inline.EditBusinessViewInnerJoinWizard;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -39,6 +40,7 @@ import it.eng.spagobi.meta.model.business.commands.edit.model.SortBusinessModelT
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddColumnsToBusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.EditBusinessViewInnerJoinRelationshipsCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -174,9 +176,15 @@ public class BusinessModelDropFromPhysicalModelHandler {
 	
 	public boolean executeAddPhysicalTableToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, PhysicalTable sourcePhysicalTable) {
 		boolean isBusinessView = false;
+		BusinessView businessView = null;
 		if (businessColumnSet instanceof BusinessView){
 			isBusinessView = true;
+			businessView = (BusinessView)businessColumnSet;
 		}
+		else
+		
+		/*
+		//OLD IMPLEMENTATION - DO NOT REMOVE
 		//add PhysicalTable to BusinessTable or BusinessView
 		Command addPhysicalTableCommand = editingDomain.createCommand
 		(AddPhysicalTableToBusinessViewCommand.class, 
@@ -185,7 +193,39 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 		dialog.create();
 		dialog.open();
+		*/
+		
+		if (!isBusinessView){
+			//Upgrade BusinessTable to BusinessView
+			BusinessTable businessTable = (BusinessTable)businessColumnSet;
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			businessView = initializer.upgradeBusinessTableToBusinessView(businessTable);
+		}
+		
+		//check if the physicalTable is already in the BusinessView
+		if ( businessView.getPhysicalTables().contains(sourcePhysicalTable) ){
+			//Do nothing
+			//TODO: check what to do in this case
 
+		} else {
+			//Add All Physical Columns to the BusinessView
+			List<PhysicalColumn> physicalColumns = sourcePhysicalTable.getColumns();
+			for(PhysicalColumn physicalColumn : physicalColumns){
+				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+			}
+		}
+		
+		Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
+		(EditBusinessViewInnerJoinRelationshipsCommand.class,
+				new CommandParameter(businessView, null, null, new ArrayList<Object>()));
+
+		//Open the Edit Join Paths Wizard
+		EditBusinessViewInnerJoinWizard wizard = new EditBusinessViewInnerJoinWizard(businessView, editingDomain, (ISpagoBIModelCommand)editBusinessViewInnerJoinWizard);
+		WizardDialog dialog = new WizardDialog(new Shell(), wizard);
+		dialog.create();
+		dialog.open();
+		
+		
 		//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
 		businessColumnSet = ((BusinessModel)model).getTable(businessColumnSet.getName());
 		
@@ -238,19 +278,33 @@ public class BusinessModelDropFromPhysicalModelHandler {
 			//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
 			else {
 				//upgrade BusinessTable to BusinessView
+				
+				/*
+				//Old Implementation DO NOT REMOVE
 				Command addPhysicalTableCommand = editingDomain.createCommand
 				(AddPhysicalTableToBusinessViewCommand.class, 
 						new CommandParameter(businessTable, null, null, new ArrayList<Object>()));
 				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessTable,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
+				*/
+				
+				BusinessModelInitializer initializer = new BusinessModelInitializer();
+				BusinessView businessView = initializer.upgradeBusinessTableToBusinessView(businessTable);
+				Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
+					(EditBusinessViewInnerJoinRelationshipsCommand.class,
+							new CommandParameter(businessView, null, null, new ArrayList<Object>()));
+
+				//add the column
+				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+				
+				EditBusinessViewInnerJoinWizard wizard = new EditBusinessViewInnerJoinWizard(businessView, editingDomain, (ISpagoBIModelCommand)editBusinessViewInnerJoinWizard);
 				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 				dialog.create();
 				dialog.open();
 
 				//re-set businessColumnSet reference to point to BusinessView
-				BusinessView businessView = (BusinessView)((BusinessModel)model).getTable(businessTable.getName());
+				//BusinessView businessView = (BusinessView)((BusinessModel)model).getTable(businessTable.getName());
 
-				//add the column
-				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+
 				//initializer.addColumn(physicalColumn, businessView);
 			}
 		}

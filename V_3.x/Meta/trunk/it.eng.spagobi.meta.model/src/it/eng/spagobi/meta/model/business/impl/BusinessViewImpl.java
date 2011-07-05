@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.impl;
 
 import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
@@ -163,6 +164,22 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 	
 	@Override
 	public List<PhysicalTable> getPhysicalTables(){
+		
+		Set<PhysicalTable> physicalTableSet = new HashSet<PhysicalTable>();
+		List<PhysicalTable> physicalTables = new ArrayList<PhysicalTable>();
+		
+		EList<BusinessColumn> businessColumns = this.getColumns();
+		for (BusinessColumn businessColumn : businessColumns){
+			physicalTableSet.add(businessColumn.getPhysicalColumn().getTable());
+			
+		}
+		physicalTables.addAll(physicalTableSet);
+		
+		return physicalTables;
+		
+		
+		//Old Implementation, DO NOT REMOVE
+		/*
 		EList<BusinessViewInnerJoinRelationship> joinRelationships = this.getJoinRelationships();
 		Set<PhysicalTable> physicalTableSet = new HashSet<PhysicalTable>();
 		List<PhysicalTable> physicalTables;
@@ -172,6 +189,7 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 		}
 		physicalTables = new ArrayList<PhysicalTable>(physicalTableSet);
 		return physicalTables;
+		*/
 	}
 	
 	@Override

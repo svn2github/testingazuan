@@ -30,9 +30,11 @@ import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentif
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.view.EditBusinessViewInnerJoinRelationshipsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTableFromBusinessViewCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableFolderItemProvider;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
@@ -164,9 +166,9 @@ public class BusinessViewItemProvider
 			//getting Physical Table
 			physicalTables = businessView.getPhysicalTables();
 			//create physical table item provider
-			Collection<FolderItemProvider> itemProvidersPhysicalTables = new ArrayList<FolderItemProvider>();
+			Collection<BusinessViewPhysicalTableItemProvider> itemProvidersPhysicalTables = new ArrayList<BusinessViewPhysicalTableItemProvider>();
 			for (PhysicalTable physicalTable:physicalTables){
-				FolderItemProvider itemProviderPhysicalTable = new FolderItemProvider(adapterFactory, businessView,null);
+				BusinessViewPhysicalTableItemProvider itemProviderPhysicalTable = new BusinessViewPhysicalTableItemProvider(adapterFactory, businessView,null,physicalTable);
 				itemProviderPhysicalTable.setText(physicalTable.getName());
 				itemProviderPhysicalTable.setImage("full/obj16/PhysicalTable");
 				itemProvidersPhysicalTables.add(itemProviderPhysicalTable);
@@ -266,6 +268,8 @@ public class BusinessViewItemProvider
 		    	result = new AddPhysicalTableToBusinessViewCommand(domain, commandParameter);
 		    } else if(commandClass == RemovePhysicalTableFromBusinessViewCommand.class) {
 		    	result = new RemovePhysicalTableFromBusinessViewCommand(domain, commandParameter);
+		    } else if(commandClass == EditBusinessViewInnerJoinRelationshipsCommand.class) {
+		    	result = new EditBusinessViewInnerJoinRelationshipsCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

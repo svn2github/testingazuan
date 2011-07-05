@@ -61,7 +61,11 @@ public void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaCol
 }
 #end
 
+#if (!($jpaTable.isInnerTable()))
 #foreach ($jpaRelationship in $jpaTable.relationships)
+
+#if( !($jpaRelationship.getReferencedTable().isInnerTable()))
+
 ###################################################################################
 #####                           field annotations
 ###################################################################################
@@ -80,10 +84,21 @@ private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable()
 #end
 
 #end
+
+#end
+
+
+#end
 ###################################################################################
 #####                              GET & SET
 ###################################################################################
+
+
+#if( !($jpaTable.isInnerTable()) )
+
 #foreach ($jpaRelationship in $jpaTable.relationships)
+#if( !($jpaRelationship.getReferencedTable().isInnerTable()) )
+
 #if ($jpaRelationship.cardinality == "many-to-one")
 		#set ($propertyType = ${jpaRelationship.getReferencedTable().className})
 		#set ($propertyN = ${jpaRelationship.propertyName})
@@ -102,6 +117,14 @@ public $propertyType $getMethod () {
 
 public void $setMethod ($propertyType $propertyN) {
 	this.$propertyN = $propertyN;
-} 
+}
+
 #end
+
+ 
+#end
+
+#end
+
+
 }

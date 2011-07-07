@@ -180,6 +180,8 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getSimpleColumns(boolean, boolean, boolean)
 	 */
 	public List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited) {
+		logger.debug("Executing getSimpleColumns");
+
 		List<IJpaColumn> result = new ArrayList<IJpaColumn>();
 		List<IJpaColumn> columns = getColumns();
 	
@@ -193,12 +195,13 @@ public abstract class AbstractJpaTable implements IJpaTable{
 					continue;
 				} else {
 					result.add(0, column);
+					logger.debug("Added column(PK) "+column.getName()+" in getSimpleColumns for table "+this.getName());
 					continue;
 				}
 			} else if (column.isColumnInRelationship()) {
 					continue;
 			}
-
+			logger.debug("Added column "+column.getName()+" in getSimpleColumns for table "+this.getName());
 			result.add(column);
 		}
 		
@@ -208,11 +211,13 @@ public abstract class AbstractJpaTable implements IJpaTable{
 			if( hasFakePrimaryKey() ) {
 				continue;
 			} else if (column.isIdentifier()) {
-				continue;
+				if (!includePk || hasCompositeKey())
+					continue;
 			}
 			else if (column.isColumnInRelationshipWithView()){
 				if(!result.contains(column))
 					result.add(column);
+					logger.debug("Added column "+column.getName()+" in relation with BV, in getSimpleColumns");
 			}
 		}
 			

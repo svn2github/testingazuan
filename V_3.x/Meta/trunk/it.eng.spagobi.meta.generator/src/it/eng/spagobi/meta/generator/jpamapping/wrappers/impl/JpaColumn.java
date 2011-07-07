@@ -184,6 +184,7 @@ public class JpaColumn implements IJpaColumn {
 				for(BusinessRelationship relationship : relationships) {
 					if ((relationship.getDestinationTable() instanceof BusinessView) || 
 					   (relationship.getSourceTable() instanceof BusinessView) ){
+						logger.debug("Found relationship with BusinessView for table: "+jpaTable.getName());
 						if(relationship.getSourceTable().equals( ((JpaTable)jpaTable).getBusinessTable() )) {
 							//outbound
 							columns =  relationship.getSourceColumns();
@@ -200,10 +201,11 @@ public class JpaColumn implements IJpaColumn {
 				for(BusinessColumn column : columns) {
 					if(column.equals(businessColumn)) {
 						isColumnInRelationshipWithView = true;
-						logger.debug("Column [{}] belong to a relationship", getSqlName());
+						logger.debug("Column [{}] belong to a business view relationship", getSqlName());
 					}
 				}
 			}else {
+				isColumnInRelationshipWithView = false;
 				logger.error("The Columns are null");
 			}
 			

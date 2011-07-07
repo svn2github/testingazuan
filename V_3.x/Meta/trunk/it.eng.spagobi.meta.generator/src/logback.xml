@@ -31,11 +31,11 @@
   <!-- LOGGERS  																		-->
   <!-- ===============================================================================  -->
   
-  <root level="ERROR">
+  <root level="DEBUG">
     <appender-ref ref="FILE"/>
   </root>
   
-  <logger name="it.eng.spagobi" additivity="false" level="ERROR">
+  <logger name="it.eng.spagobi" additivity="false" level="DEBUG">
     <appender-ref ref="FILE"/>
     
   </logger>

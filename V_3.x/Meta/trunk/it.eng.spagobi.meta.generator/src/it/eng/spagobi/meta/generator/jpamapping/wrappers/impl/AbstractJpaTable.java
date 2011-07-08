@@ -194,13 +194,14 @@ public abstract class AbstractJpaTable implements IJpaTable{
 				if (!includePk || hasCompositeKey()) {
 					continue;
 				} else {
-					 if (column.isColumnInRelationship()){
-						 continue;
-					 } else {
+					//check if to mantain or delete this condition 
+					//if (column.isColumnInRelationship()){
+					//	 continue;
+					// } else {
 						result.add(0, column);
 						logger.debug("Added column(PK) "+column.getName()+" in getSimpleColumns for table "+this.getName());
 						continue; 
-					 }
+					// }
 				}
 			} else if (column.isColumnInRelationship()) {
 					continue;

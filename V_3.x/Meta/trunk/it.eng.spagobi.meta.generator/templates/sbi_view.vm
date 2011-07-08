@@ -58,7 +58,7 @@
 ## column name	
 #end
 			]
-		}
+		},
 #end
 		]
 		, outbound: [

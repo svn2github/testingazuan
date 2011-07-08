@@ -49,20 +49,16 @@ public class JpaViewOuterRelationship {
 	JpaView jpaView;
 	boolean isOutbound;
 	private static Logger logger = LoggerFactory.getLogger(JpaViewOuterRelationship.class);
+	boolean isSourceTableView = false;
+	boolean isDestinationTableView = false;
+
 
 	protected JpaViewOuterRelationship(JpaView jpaView, BusinessRelationship businessRelationship, boolean isOutbound){
 		this.jpaView = jpaView;
 		this.businessRelationship = businessRelationship;
 		this.isOutbound = isOutbound;
 	}
-	
-	/*
-	public String getSourceTable() {
-		String name = StringUtils.tableNameToVarName(businessRelationship.getSourceTable().getName());
-		name = StringUtils.initUpper(name);
-		return name;
-	}
-	*/
+
 	public String getSourceTable() {
 		IJpaTable jpaTable = null;
 		String name = null;
@@ -74,6 +70,7 @@ public class JpaViewOuterRelationship {
 			BusinessView businessView = (BusinessView)businessColumnSet;
 			name = StringUtils.tableNameToVarName(businessView.getName());
 			name = StringUtils.initUpper(name);	
+			isSourceTableView = true;
 		}
 		return name;
 
@@ -90,27 +87,11 @@ public class JpaViewOuterRelationship {
 			BusinessView businessView = (BusinessView)businessColumnSet;
 			name = StringUtils.tableNameToVarName(businessView.getName());
 			name = StringUtils.initUpper(name);	
+			isDestinationTableView = true;
 		}
 		return name;
 	}
 	
-	/*
-	public String getDestinationTable() {
-		String name = StringUtils.tableNameToVarName(businessRelationship.getDestinationTable().getName());
-		name = StringUtils.initUpper(name);
-		return name;
-	}
-	*/
-	
-	/*
-	public List<String> getSourceColumns(){
-		List<String> sourceColumnsNames = new ArrayList<String>();
-		for (BusinessColumn sourceColumn : businessRelationship.getSourceColumns()){
-			sourceColumnsNames.add(StringUtils.columnNameToVarName(sourceColumn.getName()));
-		}
-		return sourceColumnsNames;
-	}
-	*/
 	
 	public List<String> getSourceColumns() {
 		List<IJpaColumn> sourceColumns;
@@ -129,17 +110,6 @@ public class JpaViewOuterRelationship {
 		
 		//check if is a outbound relationship
 		if(isOutboundRelationship()){
-			/*
-			for(PhysicalColumn physicalColumn: columns) {
-				for (IJpaTable innerTable : innerTables){
-					BusinessColumn businessColumn = ((JpaViewInnerTable)innerTable).findColumnInBusinessView(physicalColumn);
-					if(businessColumn != null){
-						JpaColumn jpaColumn = new JpaColumn((JpaViewInnerTable)innerTable, businessColumn);
-						if (!sourceColumns.contains(jpaColumn))
-							sourceColumns.add( jpaColumn );
-					}
-				}
-				*/
 			for (BusinessColumn businessColumn : businessColumns){
 				columnsNames.add(StringUtils.columnNameToVarName(businessColumn.getName()));
 			}
@@ -177,17 +147,6 @@ public class JpaViewOuterRelationship {
 	}
 	
 	
-	/*
-	public List<String> getDestinationColumns(){
-		List<String> destinationColumnsNames = new ArrayList<String>();
-		for (BusinessColumn destinationColumn : businessRelationship.getDestinationColumns()){
-			destinationColumnsNames.add(StringUtils.columnNameToVarName(destinationColumn.getName()));
-		}
-		return destinationColumnsNames;		
-	}
-	*/
-	
-	
 	public List<String> getDestinationColumns(){
 		List<IJpaColumn> destinationColumns;
 		List<PhysicalColumn> columns = new ArrayList();
@@ -206,18 +165,6 @@ public class JpaViewOuterRelationship {
 		
 		//check if is a inbound relationship
 		if(!isOutboundRelationship()){
-			/*
-			for(PhysicalColumn physicalColumn: columns) {
-				for (IJpaTable innerTable : innerTables){
-					BusinessColumn businessColumn = ((JpaViewInnerTable)innerTable).findColumnInBusinessView(physicalColumn);
-					if(businessColumn != null){
-						JpaColumn jpaColumn = new JpaColumn((JpaViewInnerTable)innerTable, businessColumn);
-						if (!destinationColumns.contains(jpaColumn))
-							destinationColumns.add( jpaColumn );
-					}
-				}
-			}
-			*/
 			for (BusinessColumn businessColumn : businessColumns){
 				columnsNames.add(StringUtils.columnNameToVarName(businessColumn.getName()));
 			}
@@ -260,32 +207,34 @@ public class JpaViewOuterRelationship {
 	
 	//check if is a outbound relationship
 	public boolean isOutboundRelationship(){
-		/*
-		List<IJpaTable> innerTables;
-		innerTables = jpaView.getInnerTables();
-
-		for (IJpaTable innerTable : innerTables){
-			
-			if (businessRelationship.getSourceTable() instanceof BusinessTable){
-				PhysicalTable physicalTable = ((BusinessTable)(businessRelationship.getSourceTable())).getPhysicalTable();
-				if (((JpaViewInnerTable)innerTable).getPhysicalTable().equals(physicalTable)){
-					return true;
-				}
-			}
-			else if (businessRelationship.getSourceTable() instanceof BusinessView){
-				List<PhysicalTable> physicalTables = ((BusinessView)(businessRelationship.getSourceTable())).getPhysicalTables();
-				for(PhysicalTable physicalTable:physicalTables){
-					if (((JpaViewInnerTable)innerTable).getPhysicalTable().equals(physicalTable)){
-						return true;
-					}
-				}
-			}
-
-		}
-		return false;
-		*/
 		return isOutbound;
 	}
+	
+	/**
+	 * @return the isSourceTableView
+	 */
+	public boolean isSourceTableView() {
+		return isSourceTableView;
+	}
+	
+	public String getSourceTableView(){
+		return new Boolean(isSourceTableView).toString();
+	}
+	
+	/**
+	 * @return the isDestinationTableView
+	 */
+	public boolean isDestinationTableView() {
+		return isDestinationTableView;
+	}
+	
+	public String getDestinationTableView(){
+		return new Boolean(isDestinationTableView).toString();
+	}
+	
+	
+	
+	
 
 	private PhysicalTable findPhysicalTable(BusinessView bv,List<BusinessColumn> columns){
 		// the destination physical tables

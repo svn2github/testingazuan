@@ -68,7 +68,8 @@
 		{
 			destinationTable: {
 				package: ${relationship.package}
-				, name: ${relationship.destinationTable}				
+				, name: ${relationship.destinationTable}
+				, isBusinessView: ${relationship.destinationTableView}				
 			}
 			, sourceColumns: [
 #foreach ($sourceColumn in $relationship.sourceColumns)
@@ -97,6 +98,7 @@
 				sourceTable: {
 					package: ${relationship.package}
 					, name: ${relationship.sourceTable}
+					, isBusinessView: ${relationship.sourceTableView}
 				}
 				, sourceColumns: [
 #foreach ($sourceColumn in $relationship.sourceColumns)

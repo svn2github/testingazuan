@@ -395,7 +395,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	}
 	
 	private void populateDestinationTableCombo(){
-		for(BusinessColumnSet table : model.getBusinessTables()){
+		for(BusinessColumnSet table : model.getTables()){
 			destinationTableCombo.add(table.getName());
 		}
 	}

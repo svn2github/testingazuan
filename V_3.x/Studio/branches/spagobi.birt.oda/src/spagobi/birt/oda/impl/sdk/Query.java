@@ -27,6 +27,7 @@ import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
 import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.tools.dataset.common.datareader.JSONDataReader;
 import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
@@ -199,9 +200,11 @@ public class Query implements IQuery
 			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
 		}
 		
+
 		dataStore = null;
 		try {
-			XmlDataReader dataReader = new XmlDataReader();
+			//XmlDataReader dataReader = new XmlDataReader();
+			JSONDataReader dataReader = new JSONDataReader ();
 			dataStore = dataReader.read( result );
 		} catch (Throwable t) {
 			throw (OdaException) new OdaException("Impossible to parse resultset [" + result + "]").initCause(t);

@@ -22,9 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package spagobi.birt.oda.impl.server;
 
-import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreFieldMetadata;
-import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
@@ -55,9 +54,9 @@ public class ResultSet implements IResultSet
 	private int maxRows;
     private int currentRowIndex;
     private IDataStore dataStore;
-    private SDKDataStoreMetadata dataStoreMeta;
+    private IDataStoreMetaData dataStoreMeta;
 	
-    public ResultSet(IDataStore dataStore, SDKDataStoreMetadata dataStoreMeta) {
+    public ResultSet(IDataStore dataStore, IDataStoreMetaData dataStoreMeta) {
     	this.dataStore = dataStore;
     	this.dataStoreMeta = dataStoreMeta;
     }
@@ -133,9 +132,7 @@ public class ResultSet implements IResultSet
 			throw (OdaException) new OdaException("Impossible to read row [" + getRow() + "]. The resultset contains [" + dataStore.getRecordsCount() + "] rows");
 		}
 		
-		SDKDataStoreFieldMetadata[] sdkFieldsMeta = dataStoreMeta.getFieldsMetadata();
-		SDKDataStoreFieldMetadata sdkFieldMeta = sdkFieldsMeta[index-1];
-		String fieldName = sdkFieldMeta.getName();
+		String fieldName = dataStoreMeta.getFieldName(index-1);
 		int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);	
 		IField field = record.getFieldAt(fieldIndex);
         
@@ -158,10 +155,8 @@ public class ResultSet implements IResultSet
 		if(record == null){
 			throw (OdaException) new OdaException("Impossible to read row [" + getRow() + "]. The resultset contains [" + dataStore.getRecordsCount() + "] rows");
 		}
-		
-		SDKDataStoreFieldMetadata[] sdkFieldsMeta = dataStoreMeta.getFieldsMetadata();
-		SDKDataStoreFieldMetadata sdkFieldMeta = sdkFieldsMeta[index-1];
-		String fieldName = sdkFieldMeta.getName();
+
+		String fieldName = dataStoreMeta.getFieldName(index-1);
 		int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);	
 		IField field = record.getFieldAt(fieldIndex);
 		

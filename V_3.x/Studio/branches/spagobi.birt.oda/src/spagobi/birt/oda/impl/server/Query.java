@@ -22,16 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package spagobi.birt.oda.impl.server;
 
-import it.eng.spagobi.sdk.datasets.bo.SDKDataSet;
-import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
-import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
-import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
-import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
-import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 
 import java.math.BigDecimal;
-import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -60,20 +56,19 @@ import org.slf4j.LoggerFactory;
 public class Query implements IQuery
 {
 	int maxRows;
-	String queryString;
-	Map<String, Integer> parameterNamesToIndexMap;
+	String dsLabel;
 	
-	DataSetsSDKServiceProxy dataSetServiceProxy;
-	SDKDataSet dataSetMeta;
-	SDKDataSetParameter[] dataSetParametersMeta;
-	SDKDataStoreMetadata dataStoreMeta;
-	
+	DataSetServiceProxy dataSetServiceProxy;
+	IDataSet ds;
+	IDataStoreMetaData dataStoreMeta;
+	Map params;
+
 	private static Logger logger = LoggerFactory.getLogger(Query.class);
 	
-	public Query(DataSetsSDKServiceProxy dataSetServiceProxy) {
+	public Query(DataSetServiceProxy dataSetServiceProxy, Map pars) {
 		this.maxRows = -1;
-		this.queryString = null;
-		this.parameterNamesToIndexMap = new HashMap<String, Integer>();
+		this.dsLabel = null;
+		this.params = pars;
 		this.dataSetServiceProxy = dataSetServiceProxy;
 		
 	}
@@ -82,30 +77,31 @@ public class Query implements IQuery
 	 */
 	public void prepare( String queryText ) throws OdaException
 	{		
-		this.queryString = queryText;
+		this.dsLabel = queryText;
+		logger.debug("Preparing DS with label "+queryText);
 
-		if(queryText != null) {
-			try {
-				SDKDataSet[] datasets = dataSetServiceProxy.getDataSets();
-				for(int i =0; i<datasets.length; i++){
-					SDKDataSet datsSet = (SDKDataSet)datasets[i];
-					if(queryText.equals(datsSet.getLabel())){
-						SDKDataStoreMetadata sdkDataStoreMetadata =  dataSetServiceProxy.getDataStoreMetadata(datsSet);
-						dataSetMeta = datsSet;
-						dataSetParametersMeta = dataSetMeta.getParameters();
-						dataStoreMeta = sdkDataStoreMetadata;
-						break;
-					}
-				}
-			} catch (Exception t) {
-				throw (OdaException) new OdaException("Impossible to prepare query [" + queryText +"]").initCause(t);
-			} 
-			
-			if(dataSetParametersMeta != null) {
-				for(int i = 0; i < dataSetParametersMeta.length; i++) {
-					parameterNamesToIndexMap.put(dataSetParametersMeta[i].getName(), new Integer(i+1));
-				}
+		if(this.dsLabel != null) {
+			try{
+				ds = dataSetServiceProxy.getDataSetByLabel(this.dsLabel);
+			}catch(Throwable e){
+				logger.error("Eccezione",e);
 			}
+			logger.debug("Loaded DS by label");
+			
+			logger.debug("Executing DS");
+			if(params != null && params.entrySet().size()>0){
+				ds.setParamsMap(params);
+				logger.debug("Has params associated");
+			}			
+			try{
+				ds.loadData();
+			}catch(Throwable e){
+				logger.error("Eccezione",e);
+			}
+			logger.debug("Loaded Datastore");
+			IDataStore dataStore = ds.getDataStore();
+			dataStoreMeta = dataStore.getMetaData();
+			logger.debug("Loaded Datastore Metadata");
 		}
 	}
 
@@ -139,17 +135,21 @@ public class Query implements IQuery
 	 */
 	public IResultSet executeQuery() throws OdaException
 	{
-		String result;
-		
-		try {
-			result = dataSetServiceProxy.executeDataSet( dataSetMeta.getLabel(), dataSetParametersMeta );
-		} catch (Throwable t) {
-			throw (OdaException) new OdaException("Impossible to execute dataset [" + dataSetMeta.getLabel() + "]").initCause(t);
+		/*logger.debug("Executing DS");
+		ds.setParamsMap(params);
+		logger.debug("Setted Params");
+		try{
+			ds.loadData();
+		}catch(Throwable e){
+			logger.error("Eccezione",e);
 		}
-		
-		XmlDataReader dataReader = new XmlDataReader();
-		IDataStore dataStore = dataReader.read( result );
-		
+		logger.debug("Loaded Datastore");
+		IDataStore dataStore = ds.getDataStore();
+		dataStoreMeta = dataStore.getMetaData();
+		logger.debug("Loaded Datastore Metadata");*/
+		logger.debug("Getting Datastore");
+		IDataStore dataStore = ds.getDataStore();
+		logger.debug("Finished Getting Datastore");
 		return new ResultSet( dataStore, dataStoreMeta );
 	}
 
@@ -182,9 +182,6 @@ public class Query implements IQuery
 	 */
 	public void clearInParameters() throws OdaException
 	{
-       for(int i = 0; i < dataSetParametersMeta.length; i++) {
-    	   dataSetParametersMeta[i].setValues(new String[]{""});
-       }
 	}
 
 	/*
@@ -192,7 +189,11 @@ public class Query implements IQuery
 	 */
 	public void setInt( String parameterName, int value ) throws OdaException
 	{
-		setInt ( findInParameter( parameterName ), value);
+		logger.debug("setInt() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setInt() OUT");
+		//setInt ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -200,7 +201,6 @@ public class Query implements IQuery
 	 */
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -208,7 +208,11 @@ public class Query implements IQuery
 	 */
 	public void setDouble( String parameterName, double value ) throws OdaException
 	{
-		setDouble ( findInParameter( parameterName ), value);
+		logger.debug("setDouble() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setDouble() OUT");
+		//setDouble ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -216,7 +220,6 @@ public class Query implements IQuery
 	 */
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -224,7 +227,11 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( String parameterName, BigDecimal value ) throws OdaException
 	{
-		setBigDecimal ( findInParameter( parameterName ), value);
+		logger.debug("setBigDecimal() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setBigDecimal() OUT");
+		//setBigDecimal ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -232,7 +239,6 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -240,7 +246,11 @@ public class Query implements IQuery
 	 */
 	public void setString( String parameterName, String value ) throws OdaException
 	{
-		setString ( findInParameter( parameterName ), value);
+		logger.debug("setString() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setString() OUT");
+		//setString ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -248,7 +258,6 @@ public class Query implements IQuery
 	 */
 	public void setString( int parameterId, String value ) throws OdaException
 	{
-        dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -256,7 +265,11 @@ public class Query implements IQuery
 	 */
 	public void setDate( String parameterName, Date value ) throws OdaException
 	{
-		setDate ( findInParameter( parameterName ), value);
+		logger.debug("setDate() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setDate() OUT");
+		//setDate ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -264,7 +277,6 @@ public class Query implements IQuery
 	 */
 	public void setDate( int parameterId, Date value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -272,7 +284,11 @@ public class Query implements IQuery
 	 */
 	public void setTime( String parameterName, Time value ) throws OdaException
 	{
-		setTime ( findInParameter( parameterName ), value);
+		logger.debug("setTime() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setTime() OUT");
+		//setTime ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -280,7 +296,6 @@ public class Query implements IQuery
 	 */
 	public void setTime( int parameterId, Time value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
 	/*
@@ -288,7 +303,11 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( String parameterName, Timestamp value ) throws OdaException
 	{
-		setTimestamp ( findInParameter( parameterName ), value);
+		logger.debug("setTimestamp() IN: par Name: "+parameterName+" ; value: "+value);
+		params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setTimestamp() OUT");
+		//setTimestamp ( findInParameter( parameterName ), value);
 	}
 
 	/*
@@ -296,7 +315,6 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( int parameterId, Timestamp value ) throws OdaException
 	{
-		dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
 	}
 
     /* (non-Javadoc)
@@ -305,7 +323,11 @@ public class Query implements IQuery
     public void setBoolean( String parameterName, boolean value )
             throws OdaException
     {
-    	setBoolean ( findInParameter( parameterName ), value);
+    	logger.debug("setBoolean() IN: par Name: "+parameterName+" ; value: "+value);
+    	params.remove(parameterName);
+		params.put(parameterName,  new String[]{"" + value});
+		logger.debug("setBoolean() OUT");
+    	//setBoolean ( findInParameter( parameterName ), value);
     }
 
     /* (non-Javadoc)
@@ -314,7 +336,6 @@ public class Query implements IQuery
     public void setBoolean( int parameterId, boolean value )
             throws OdaException
     {
-    	dataSetParametersMeta[parameterId-1].setValues(new String[]{"" + value});
     }
     
     /* (non-Javadoc)
@@ -322,7 +343,11 @@ public class Query implements IQuery
      */
     public void setNull( String parameterName ) throws OdaException
     {
-    	setNull ( findInParameter( parameterName ));
+    	logger.debug("setNull() IN: par Name: "+parameterName);
+    	//setNull ( findInParameter( parameterName ));
+		params.remove(parameterName);
+		params.put(parameterName, new String[]{""});
+		logger.debug("setNull() OUT");
     }
 
     /* (non-Javadoc)
@@ -330,7 +355,6 @@ public class Query implements IQuery
      */
     public void setNull( int parameterId ) throws OdaException
     {
-    	dataSetParametersMeta[parameterId-1].setValues(new String[]{""});
     }
 
 	/*
@@ -338,8 +362,7 @@ public class Query implements IQuery
 	 */
 	public int findInParameter( String parameterName ) throws OdaException
 	{
-		Integer index = parameterNamesToIndexMap.get(parameterName);
-		return index != null? index.intValue(): -1;
+		return 0;
 	}
 
 	/*
@@ -347,7 +370,7 @@ public class Query implements IQuery
 	 */
 	public IParameterMetaData getParameterMetaData() throws OdaException
 	{
-		return new ParameterMetaData(dataSetParametersMeta);
+		return new ParameterMetaData(params);
 	}
 
 	/*

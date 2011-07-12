@@ -7,11 +7,12 @@
 
 package spagobi.birt.oda.impl.server;
 
-import it.eng.spagobi.sdk.datasets.bo.SDKDataStoreMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 
 import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import spagobi.birt.oda.impl.Driver;
 
@@ -26,9 +27,11 @@ import spagobi.birt.oda.impl.Driver;
  */
 public class ResultSetMetaData implements IResultSetMetaData
 {
-	SDKDataStoreMetadata dataStoreMeta;
+	IDataStoreMetaData dataStoreMeta;
 	
-	public ResultSetMetaData(SDKDataStoreMetadata dataStoreMeta) {
+	private static Logger logger = LoggerFactory.getLogger(ResultSetMetaData.class);
+	
+	public ResultSetMetaData(IDataStoreMetaData dataStoreMeta) {
 		
 		this.dataStoreMeta = dataStoreMeta;
 	}
@@ -40,7 +43,10 @@ public class ResultSetMetaData implements IResultSetMetaData
         int columnCount = 0;
 		
         try {
-			columnCount = dataStoreMeta.getFieldsMetadata().length;
+        	if(dataStoreMeta!=null){
+        		columnCount = dataStoreMeta.getFieldCount();
+        		logger.debug("Numero colonne: "+columnCount);
+        	}
 		} catch(Throwable t) {
 			throw (OdaException) new OdaException("Impossible to extract column count from data store meta").initCause(t);
 		}
@@ -56,7 +62,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 		String name = "undefined";
 		
 		 try {
-			 name = dataStoreMeta.getFieldsMetadata()[index-1].getName();
+			 name = dataStoreMeta.getFieldName(index-1);
 		} catch(Throwable t) {
 			throw (OdaException) new OdaException("Impossible to extract column-" + index + "'s name from data store meta").initCause(t);
 		}
@@ -77,7 +83,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnType( int index ) throws OdaException
 	{
-		String className =  dataStoreMeta.getFieldsMetadata()[index-1].getClassName();
+		String className =  dataStoreMeta.getFieldType(index-1).getName();
 		
         if( className.endsWith("Integer") ) {
             return java.sql.Types.INTEGER;   

@@ -22,9 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package spagobi.birt.oda.impl.server;
 
-import it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDataSetMetaData;
@@ -32,8 +37,6 @@ import org.eclipse.datatools.connectivity.oda.IQuery;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 import com.ibm.icu.util.ULocale;
 
@@ -44,11 +47,23 @@ public class Connection implements IConnection
 {
 	
 	boolean isOpen;
-	DataSetsSDKServiceProxy dataSetServiceProxy;
+	DataSetServiceProxy dataSetServiceProxy = null;
+	Map pars;
 	
 	public static final String CONN_PROP_SERVER_URL = "ServerUrl";
 	public static final String CONN_PROP_USER = "Username";
 	public static final String CONN_PROP_PASSWORD = "Password";
+	
+	public static String SBI_BIRT_RUNTIME_IS_RUNTIME = "SBI_BIRT_RUNTIME_IS_RUNTIME";
+    public static String SBI_BIRT_RUNTIME_USER_ID = "SBI_BIRT_RUNTIME_USER_ID";
+    public static String SBI_BIRT_RUNTIME_SECURE_ATTRS = "SBI_BIRT_RUNTIME_SECURE_ATTRS";
+    public static String SBI_BIRT_RUNTIME_SERVICE_URL = "SBI_BIRT_RUNTIME_SERVICE_URL";
+    public static String SBI_BIRT_RUNTIME_SERVER_URL = "SBI_BIRT_RUNTIME_SERVER_URL";
+    public static String SBI_BIRT_RUNTIME_TOKEN = "SBI_BIRT_RUNTIME_TOKEN";
+    public static String SBI_BIRT_RUNTIME_PASS = "SBI_BIRT_RUNTIME_PASS";
+    public static String SBI_BIRT_RUNTIME_PARS_MAP = "SBI_BIRT_RUNTIME_PARS_MAP"; 
+    
+    private Object context = null;
 	
 	private static Logger logger = LoggerFactory.getLogger(Connection.class);
 	
@@ -63,87 +78,127 @@ public class Connection implements IConnection
 	 */
 	public void open( Properties connProperties ) throws OdaException
 	{
-		String serverUrl;
-		String username;
-		String password;
-		
 		logger.trace("IN");
-		
 		try {
-			
-			serverUrl = connProperties.getProperty( CONN_PROP_SERVER_URL );
-			logger.debug("Connection properties [" + CONN_PROP_SERVER_URL + "] is equal to [" + serverUrl + "]");
-			
-			username = connProperties.getProperty( CONN_PROP_USER );
-			logger.debug("Connection properties [" + CONN_PROP_USER + "] is equal to [" + username + "]");
-			
-			password = connProperties.getProperty( CONN_PROP_PASSWORD);
-			logger.debug("Connection properties [" + CONN_PROP_PASSWORD + "] is equal to [" + password + "]");
-					
-			if(serverUrl == null || username == null || password == null) {
-				throw new RuntimeException("Connection paramters (["+CONN_PROP_SERVER_URL+"],["+CONN_PROP_USER+"],["+CONN_PROP_PASSWORD+"]) cannot be null");
-			}
-			
-			dataSetServiceProxy = createDataSetServiceProxy(serverUrl, username, password);
-			
-			logger.info("Connection sucesfully opened");
-			
-		} catch (Throwable t) {
-			throw (OdaException) new OdaException("Impossible to open connection").initCause(t);
+			logger.debug("Trying to get the DataSetServiceProxy ...");
+			dataSetServiceProxy = getDataSetProxy();
+			logger.debug("DataSetServiceProxy obtained correctly");
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw (OdaException) new OdaException("Impossible to open connection").initCause(e);
 		}
-		
-
 		logger.debug("Data source initialized");
-
-		logger.debug("Connection opened");
-		isOpen = true;    
-		
+		logger.debug("Connection succesfully opened");
+		isOpen = true;    	
 		logger.trace("OUT");
  	}
 	
-	private DataSetsSDKServiceProxy createDataSetServiceProxy(String serverUrl, String username, String password) {
-		
-		DataSetsSDKServiceProxy proxy;
-		
-		Properties props = System.getProperties();
-		props.put("http.proxyHost", "proxy.eng.it");
-		props.put("http.proxyPort", 3128);
-		
-		proxy = null;
-		
+	private DataSetServiceProxy getDataSetProxy() {
+		if (!isBirtRuntimeContext()) {
+			throw new RuntimeException(
+					"This method must be invoked in Birt runtime context!!!");
+		}
 		try {
-			proxy = new DataSetsSDKServiceProxy(username, password);
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to create dataset proxy", t);
+			HashMap map = (HashMap) context;
+			String userId = getUserId();
+			String secureAttributes = getSecureAttrs();
+			String serviceUrlStr = getServiceUrl();
+			String spagoBiServerURL = getSpagoBIServerUrl();
+			String token = getToken();
+			String pass = getPass();
+			pars = getParsMap();
+			DataSetServiceProxy proxy = new DataSetServiceProxy(userId, secureAttributes, serviceUrlStr, spagoBiServerURL, token, pass);
+			return proxy;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting DataSetServiceProxy from Birt runtime context", e);
 		}
-		
-		if (serverUrl != null && !serverUrl.endsWith("/")) {
-			serverUrl += "/";
-		}
-		
-		logger.debug("Dataset proxy created succesfully");
-		
+	}
+	
+	private Map getParsMap() {
 		try {
-			proxy.setEndpoint(serverUrl + "sdk/DataSetsSDKService");	
-		} catch(Throwable t) {
-			throw  new RuntimeException("Impossible to set dataset proxy's endpoint", t);
+		    HashMap map = (HashMap) context;
+		    Map pars = (Map) map.get(SBI_BIRT_RUNTIME_PARS_MAP);
+		    return pars;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
 		}
-		
-		logger.debug("Dataset proxy's endpoint succesfully set to [" + serverUrl + "sdk/DataSetsSDKService" + "]");
-		
+	}
+	
+	private String getUserId() {
 		try {
-			//new ProxyDataRetriever().initProxyData(proxy, serverUrl);
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize dataset proxy", t);
+		    HashMap map = (HashMap) context;
+		    String userId = (String) map.get(SBI_BIRT_RUNTIME_USER_ID);
+		    return userId;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
 		}
-		
-		logger.debug("Dataset proxy initialized succesfully");
-		
-		return proxy;
+	}
+	
+	private String getSecureAttrs() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String secureAttributes = (String) map.get(SBI_BIRT_RUNTIME_SECURE_ATTRS);
+		    return secureAttributes;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getServiceUrl() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String serviceUrlStr = (String) map.get(SBI_BIRT_RUNTIME_SERVICE_URL);
+		    return serviceUrlStr;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getSpagoBIServerUrl() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String spagoBiServerURL = (String) map.get(SBI_BIRT_RUNTIME_SERVER_URL);
+		    return spagoBiServerURL;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getToken() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String token = (String) map.get(SBI_BIRT_RUNTIME_TOKEN);
+		    return token;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getPass() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String pass = (String) map.get(SBI_BIRT_RUNTIME_PASS);
+		    return pass;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
 	}
 
-	
-	
+	private boolean isBirtRuntimeContext() {
+		logger.debug("Entering isBirtRuntimeContext method");
+	    if (context != null && context instanceof HashMap) {
+	    	HashMap map = (HashMap) context;
+	    	String isRuntime = (String) map.get(SBI_BIRT_RUNTIME_IS_RUNTIME);
+	    	if(isRuntime!=null && isRuntime.equals("true")){
+	    		logger.debug("Ok runtime");
+	    		return true;	
+	    	}else{
+	    		logger.debug("NOT runtime");
+	    		return false;
+	    	}
+	    }
+	    return false;
+	}
 	
 	
 	/*
@@ -151,7 +206,21 @@ public class Connection implements IConnection
 	 */
 	public void setAppContext( Object context ) throws OdaException
 	{
-	    // do nothing; assumes no support for pass-through context
+		this.context = context;
+		logger.debug("Driver: start setAppContext");
+	    if (context != null && context instanceof HashMap) {
+	    	HashMap map = (HashMap) context;
+	    	EngineConstants d = null;
+	    	Set<Map.Entry> entries = map.entrySet();
+	    	Iterator<Map.Entry> it = entries.iterator();
+	    	while (it.hasNext()) {
+	    		Map.Entry entry = it.next();
+	    		Object key = entry.getKey();
+	    		Object value = entry.getValue();
+	    		logger.debug("Entry key [" + key + "], value [" + value + "]");
+	    	}
+	    }
+	    logger.debug("Driver: end setAppContext");
 	}
 
 	/*
@@ -188,7 +257,7 @@ public class Connection implements IConnection
 	{
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
-		return new Query(dataSetServiceProxy);
+		return new Query(dataSetServiceProxy, pars);
 	}
 
 	/*

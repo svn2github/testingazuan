@@ -7,9 +7,9 @@
 
 package spagobi.birt.oda.impl.server;
 
-import it.eng.spagobi.sdk.datasets.bo.SDKDataSetParameter;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.axis.description.TypeDesc;
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 
@@ -26,17 +26,26 @@ import spagobi.birt.oda.impl.Driver;
  */
 public class ParameterMetaData implements IParameterMetaData 
 {
-	SDKDataSetParameter[] sdkParametersMeta;
+	Map params;
 	
-	public ParameterMetaData(SDKDataSetParameter[] sdkParametersMeta) {
-		this.sdkParametersMeta = sdkParametersMeta;
+	public ParameterMetaData(Map params) {
+		this.params = params;
 	}
 	/* 
 	 * @see org.eclipse.datatools.connectivity.oda.IParameterMetaData#getParameterCount()
 	 */
 	public int getParameterCount() throws OdaException 
 	{
-        return sdkParametersMeta.length;
+		System.out.println("getParameterCount");
+		Set s =  params.entrySet();
+		if(s!=null){
+			System.out.println("Number of pars: "+params.entrySet().size());
+			return params.entrySet().size();
+		}else{
+			System.out.println("Number of pars: 0");
+			return 0;
+		}
+        
 	}
 
     /*
@@ -52,7 +61,8 @@ public class ParameterMetaData implements IParameterMetaData
      */
     public String getParameterName( int param ) throws OdaException
     {
-        return sdkParametersMeta[param-1].getName(); 
+       // return sdkParametersMeta[param-1].getName(); 
+    	return "temp";
     }
 
 	/* 
@@ -60,9 +70,10 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterType( int param ) throws OdaException 
 	{
-		String type = sdkParametersMeta[param-1].getType(); 
-		TypeDesc typeDesc = sdkParametersMeta[param-1].getTypeDesc();
-        return java.sql.Types.CHAR;   // as defined in data set extension manifest
+		//String type = sdkParametersMeta[param-1].getType(); 
+		//TypeDesc typeDesc = sdkParametersMeta[param-1].getTypeDesc();
+		return 0;
+       // return java.sql.Types.CHAR;   // as defined in data set extension manifest
 	}
 
 	/* 

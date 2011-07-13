@@ -49,6 +49,7 @@ public class Connection implements IConnection
 	boolean isOpen;
 	DataSetServiceProxy dataSetServiceProxy = null;
 	Map pars;
+	String resourcePath;
 	
 	public static final String CONN_PROP_SERVER_URL = "ServerUrl";
 	public static final String CONN_PROP_USER = "Username";
@@ -62,6 +63,8 @@ public class Connection implements IConnection
     public static String SBI_BIRT_RUNTIME_TOKEN = "SBI_BIRT_RUNTIME_TOKEN";
     public static String SBI_BIRT_RUNTIME_PASS = "SBI_BIRT_RUNTIME_PASS";
     public static String SBI_BIRT_RUNTIME_PARS_MAP = "SBI_BIRT_RUNTIME_PARS_MAP"; 
+    
+    public static String RESOURCE_PATH_JNDI_NAME = "RESOURCE_PATH_JNDI_NAME";
     
     private Object context = null;
 	
@@ -106,6 +109,7 @@ public class Connection implements IConnection
 			String spagoBiServerURL = getSpagoBIServerUrl();
 			String token = getToken();
 			String pass = getPass();
+			resourcePath = getResPath();
 			pars = getParsMap();
 			DataSetServiceProxy proxy = new DataSetServiceProxy(userId, secureAttributes, serviceUrlStr, spagoBiServerURL, token, pass);
 			return proxy;
@@ -119,6 +123,16 @@ public class Connection implements IConnection
 		    HashMap map = (HashMap) context;
 		    Map pars = (Map) map.get(SBI_BIRT_RUNTIME_PARS_MAP);
 		    return pars;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getResPath() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String resPath = (String) map.get(RESOURCE_PATH_JNDI_NAME);
+		    return resPath;
 		} catch (Exception e) {
 			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
 		}
@@ -257,7 +271,7 @@ public class Connection implements IConnection
 	{
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
-		return new Query(dataSetServiceProxy, pars);
+		return new Query(dataSetServiceProxy, pars, resourcePath);
 	}
 
 	/*

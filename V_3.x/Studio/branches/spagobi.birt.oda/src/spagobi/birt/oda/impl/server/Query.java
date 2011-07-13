@@ -61,16 +61,18 @@ public class Query implements IQuery
 	DataSetServiceProxy dataSetServiceProxy;
 	IDataSet ds;
 	IDataStoreMetaData dataStoreMeta;
+	IDataStore dataStore;
 	Map params;
+	String resourcePath;
 
 	private static Logger logger = LoggerFactory.getLogger(Query.class);
 	
-	public Query(DataSetServiceProxy dataSetServiceProxy, Map pars) {
+	public Query(DataSetServiceProxy dataSetServiceProxy, Map pars, String resourcePath) {
 		this.maxRows = -1;
 		this.dsLabel = null;
 		this.params = pars;
 		this.dataSetServiceProxy = dataSetServiceProxy;
-		
+		this.resourcePath = resourcePath;		
 	}
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
@@ -91,17 +93,24 @@ public class Query implements IQuery
 			logger.debug("Executing DS");
 			if(params != null && params.entrySet().size()>0){
 				ds.setParamsMap(params);
+				ds.setParameters(null);
 				logger.debug("Has params associated");
 			}			
 			try{
+				ds.setResourcePath(resourcePath);
 				ds.loadData();
 			}catch(Throwable e){
 				logger.error("Eccezione",e);
 			}
 			logger.debug("Loaded Datastore");
-			IDataStore dataStore = ds.getDataStore();
-			dataStoreMeta = dataStore.getMetaData();
-			logger.debug("Loaded Datastore Metadata");
+			logger.debug("Method prepare");
+			IDataStore dataStoreTemp = ds.getDataStore();
+			if(dataStoreTemp!=null){
+				long numRec = dataStoreTemp.getRecordsCount();
+				logger.debug("Number of record retrieved: "+numRec);
+				dataStoreMeta = dataStoreTemp.getMetaData();
+				logger.debug("Loaded Datastore Metadata");
+			}
 		}
 	}
 
@@ -134,22 +143,16 @@ public class Query implements IQuery
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#executeQuery()
 	 */
 	public IResultSet executeQuery() throws OdaException
-	{
-		/*logger.debug("Executing DS");
-		ds.setParamsMap(params);
-		logger.debug("Setted Params");
-		try{
-			ds.loadData();
-		}catch(Throwable e){
-			logger.error("Eccezione",e);
+	{		
+		logger.debug("Method executeQuery");
+		dataStore = ds.getDataStore();
+		if(dataStore!=null){
+			long numRec = dataStore.getRecordsCount();
+			logger.debug("Number of record retrieved: "+numRec);
+			/*dataStoreMeta = dataStore.getMetaData();
+			logger.debug("Loaded Datastore Metadata");*/
 		}
-		logger.debug("Loaded Datastore");
-		IDataStore dataStore = ds.getDataStore();
-		dataStoreMeta = dataStore.getMetaData();
-		logger.debug("Loaded Datastore Metadata");*/
-		logger.debug("Getting Datastore");
-		IDataStore dataStore = ds.getDataStore();
-		logger.debug("Finished Getting Datastore");
+		
 		return new ResultSet( dataStore, dataStoreMeta );
 	}
 

@@ -227,8 +227,6 @@ public class SelectionConnectionPage extends WizardPage {
 				catalogCombo.setEnabled(false);
 				populateSchemaCombo(connection,null);				
 			}
-			//release result set resources
-			//if (rs != null) rs.close();
 		}
 		catch(Throwable t) {
 			throw new RuntimeException("Impossible to check catalog", t);
@@ -246,7 +244,8 @@ public class SelectionConnectionPage extends WizardPage {
 				rs = dbMeta.getSchemas();
 			}	
 			else {
-				rs = dbMeta.getSchemas(catalog,null);				
+				rs = dbMeta.getSchemas();
+				//rs = dbMeta.getSchemas(catalog,null);				
 			}
 			while (rs.next()) {
 				schemaCombo.add(rs.getString(1));

@@ -46,7 +46,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorLauncher;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.junit.Assert;
@@ -144,7 +149,13 @@ public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try {
 			logger.debug("Open editor on model [{}]", editorInput.getName());
-			page.openEditor( editorInput , SpagoBIModelEditor.EDITOR_ID);
+			IEditorPart editor = page.openEditor( editorInput , SpagoBIModelEditor.EDITOR_ID);
+			
+			SpagoBIModelEditor modelEditor = (SpagoBIModelEditor)editor;
+			modelEditor.setFocus();
+			IEditorPart[] innerEditors = modelEditor.getInnerEditors();
+			innerEditors[0].setFocus();
+			
 		} catch (PartInitException exception) {
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
 		}

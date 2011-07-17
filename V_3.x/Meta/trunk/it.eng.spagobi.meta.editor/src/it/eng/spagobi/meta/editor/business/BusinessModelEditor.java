@@ -271,6 +271,7 @@ public class BusinessModelEditor
 		partListener = new BusinessModelPartListener(this, logger);
 		
 		site.setSelectionProvider(selectionProvider);
+		
 		//site.getPage().addPartListener(partListener);
 		
 		loadModel();

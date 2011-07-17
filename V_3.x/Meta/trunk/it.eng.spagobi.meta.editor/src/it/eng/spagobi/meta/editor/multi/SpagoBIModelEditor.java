@@ -55,8 +55,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheet;
@@ -87,7 +90,10 @@ public class SpagoBIModelEditor extends MultiEditor {
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	private static final Logger logger = LoggerFactory.getLogger(SpagoBIModelEditor.class);
 	
-	private boolean needActivation = true;
+	
+	public SpagoBIModelEditor() {
+		super();
+	}
 	
 	@Override
 	public void createPartControl(Composite parentContainer) {
@@ -139,15 +145,6 @@ public class SpagoBIModelEditor extends MultiEditor {
 			RL.getPropertyAsInteger("model.presentation.righteditor.width", 20)
 		});
 		
-		/*
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener(){
-			public void resourceChanged(IResourceChangeEvent event) {
-				logger.debug("resourceChanged");
-				logger.debug("Change type is equal to REMOVE [{}]", event.getDelta().getKind() == IResourceDelta.REMOVED);
-				
-			}
-		}, IResourceChangeEvent.POST_CHANGE);
-		*/
 		
 		BusinessModelEditorSelectionProvider selectionProvider = new BusinessModelEditorSelectionProvider(businessModelEditor);
 		getSite().setSelectionProvider(selectionProvider);
@@ -159,10 +156,16 @@ public class SpagoBIModelEditor extends MultiEditor {
 			public void partDeactivated(IWorkbenchPart p) {
 				if(p.getClass() == SpagoBIModelEditor.class /*|| p.getClass() == BusinessModelEditor.class ||  p.getClass() == PhysicalModelEditor.class*/ ) {
 					//logger.debug("> Deactivated part [{}]", p.getClass().getName());
-					needActivation = true;
 				}
 			}
 		});
+
+		
+		// WORKAROUNF : in SpagoBIModelEditorAdapterLauncher the focus is set on innerEditors[0] in order to properly get all the components activated
+		this.activateEditor(innerEditors[1]);
+		
+		
+		
 	}
 	
 	/**
@@ -197,40 +200,76 @@ public class SpagoBIModelEditor extends MultiEditor {
 		
 		class InnerEditorListener implements Listener {
 			IEditorPart editor;
+			MultiEditor parentEditor;
+			
 			boolean notSet = true;
-			InnerEditorListener(IEditorPart editor) {
+			
+			InnerEditorListener(IEditorPart editor, MultiEditor parentEditor) {
 				this.editor = editor;
+				this.parentEditor = parentEditor;
+				
 			}
+			
+			private IViewReference getPropertyReferenceById(String id) {
+				IViewReference viewReference = null;
+				
+				IEditorPart e = getActiveEditor();
+		    	IViewReference[] viewReferences = e.getSite().getPage().getViewReferences();
+				for(int i = 0; i < viewReferences.length; i++) {
+					if(viewReferences[i].getId().equalsIgnoreCase(id)) {
+						viewReference = viewReferences[i];
+						break;
+					}
+				}
+				
+				return viewReference;
+			}
+			
+			private IViewReference getPropertyViewReference() {
+				return getPropertyReferenceById( "org.eclipse.ui.views.PropertySheet" );
+			}
+			
+			private IViewReference getProjectExplorerViewReference() {
+				return getPropertyReferenceById( "org.eclipse.ui.navigator.ProjectExplorer" );
+			}
+			
+			
+			private void refreshView(IViewReference viewReference) {
+				IEditorPart e = getActiveEditor();
+				//try { Thread.sleep(1000); } catch (InterruptedException e2) {e2.printStackTrace();}
+				e.getSite().getPage().hideView(viewReference);
+				try {
+					IViewPart viewp = e.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+				} catch (PartInitException e1) {
+					e1.printStackTrace();
+				}	
+			}
+			
 			public void handleEvent(Event event) {
+				
 			     if (event.type == SWT.Activate) {
-			    	 needActivation = false;
-			    	 logger.debug("ACTIVATE editor [{}]", editor);
-			    	 IEditorPart e = getActiveEditor();
-			    	 IViewReference[] viewReferences = e.getSite().getPage().getViewReferences();
-						IViewReference viewReference = null;
-						for(int i = 0; i < viewReferences.length; i++) {
-							if(viewReferences[i].getId().equalsIgnoreCase("org.eclipse.ui.views.PropertySheet")) {
-								viewReference = viewReferences[i];
-								break;
-							}
-						}
-						if(viewReference != null) {
-							PropertySheet propertySheet = (PropertySheet)viewReference.getView(true);
-							Object o = propertySheet.getCurrentPage();
-							if((editor instanceof BusinessModelEditor && !(o instanceof CustomizedBusinessPropertySheetPage))
-								|| (editor instanceof PhysicalModelEditor && !(o instanceof CustomizedPhysicalPropertySheetPage))) {
-								e.getSite().getPage().hideView(viewReference);
-								try {
-									IViewPart viewp = e.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
-								} catch (PartInitException e1) {
-									e1.printStackTrace();
-								}
-							} else {
-								logger.debug("d1");
-							}
+			    	logger.debug("ACTIVATE editor [{}]", editor);
+			    	IEditorPart e = getActiveEditor();
+			    	
+					IViewReference viewReference = getPropertyViewReference();
+					if(viewReference != null) {
+						PropertySheet propertySheet = (PropertySheet)viewReference.getView(true);
+						IPage propertyViewCurrentPage = propertySheet.getCurrentPage();
+						if(editor instanceof BusinessModelEditor && !(propertyViewCurrentPage instanceof CustomizedBusinessPropertySheetPage)) {	
+							refreshView(viewReference);
+							//editor.getSite().getWorkbenchWindow().setActivePage(otherEditor.getSite().getPage());
+							//otherEditor.setFocus();
+							//editor.setFocus();
+							
+							//parentEditor.activateEditor(editor);
+						} else if (editor instanceof PhysicalModelEditor && !(propertyViewCurrentPage instanceof CustomizedPhysicalPropertySheetPage)) {
+							refreshView(viewReference);
 						} else {
-							logger.debug("d2");
+							logger.debug("Property view is open but it is already configured");
 						}
+					} else {
+						logger.debug("Property view is not open");
+					}
 						
 			     } else if(event.type == SWT.Deactivate) {
 			    	 //logger.debug("DEACTIVATE editor [{}]", editor);
@@ -240,7 +279,7 @@ public class SpagoBIModelEditor extends MultiEditor {
 			
 		}
 
-		InnerEditorListener innerEditorListener = new InnerEditorListener(innerEditor);
+		InnerEditorListener innerEditorListener = new InnerEditorListener(innerEditor, this);
 		innerEditorWrapperContainer.addListener(SWT.Activate, innerEditorListener);
 		innerEditorWrapperContainer.addListener(SWT.Deactivate, innerEditorListener);
 		

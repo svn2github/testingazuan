@@ -49,7 +49,10 @@ public class Connection implements IConnection
 	boolean isOpen;
 	DataSetServiceProxy dataSetServiceProxy = null;
 	Map pars;
+	Map userProfAttrs;
 	String resourcePath;
+	String groovyFileName;
+	String jsFileName;
 	
 	public static final String CONN_PROP_SERVER_URL = "ServerUrl";
 	public static final String CONN_PROP_USER = "Username";
@@ -63,6 +66,10 @@ public class Connection implements IConnection
     public static String SBI_BIRT_RUNTIME_TOKEN = "SBI_BIRT_RUNTIME_TOKEN";
     public static String SBI_BIRT_RUNTIME_PASS = "SBI_BIRT_RUNTIME_PASS";
     public static String SBI_BIRT_RUNTIME_PARS_MAP = "SBI_BIRT_RUNTIME_PARS_MAP"; 
+    public static String SBI_BIRT_RUNTIME_PROFILE_USER_ATTRS = "SBI_BIRT_RUNTIME_PROFILE_USER_ATTRS";
+    
+    public static String SBI_BIRT_RUNTIME_GROOVY_SCRIPT_FILE_NAME = "SBI_BIRT_RUNTIME_GROOVY_SCRIPT_FILE_NAME";
+    public static String SBI_BIRT_RUNTIME_JS_SCRIPT_FILE_NAME = "SBI_BIRT_RUNTIME_JS_SCRIPT_FILE_NAME";
     
     public static String RESOURCE_PATH_JNDI_NAME = "RESOURCE_PATH_JNDI_NAME";
     
@@ -81,7 +88,7 @@ public class Connection implements IConnection
 	 */
 	public void open( Properties connProperties ) throws OdaException
 	{
-		logger.trace("IN");
+		logger.trace("IN open");
 		try {
 			logger.debug("Trying to get the DataSetServiceProxy ...");
 			dataSetServiceProxy = getDataSetProxy();
@@ -93,10 +100,12 @@ public class Connection implements IConnection
 		logger.debug("Data source initialized");
 		logger.debug("Connection succesfully opened");
 		isOpen = true;    	
-		logger.trace("OUT");
+		logger.trace("OUT open");
  	}
 	
 	private DataSetServiceProxy getDataSetProxy() {
+		logger.trace("IN getDataSetProxy");
+		DataSetServiceProxy proxy = null;
 		if (!isBirtRuntimeContext()) {
 			throw new RuntimeException(
 					"This method must be invoked in Birt runtime context!!!");
@@ -111,11 +120,16 @@ public class Connection implements IConnection
 			String pass = getPass();
 			resourcePath = getResPath();
 			pars = getParsMap();
-			DataSetServiceProxy proxy = new DataSetServiceProxy(userId, secureAttributes, serviceUrlStr, spagoBiServerURL, token, pass);
-			return proxy;
+			userProfAttrs = getUserProfileMap();
+			groovyFileName = getGroovyFileName();
+			jsFileName = getJsFileName();
+			proxy = new DataSetServiceProxy(userId, secureAttributes, serviceUrlStr, spagoBiServerURL, token, pass);
+			
 		} catch (Exception e) {
 			throw new RuntimeException("Error while getting DataSetServiceProxy from Birt runtime context", e);
 		}
+		logger.trace("OUT getDataSetProxy");
+		return proxy;
 	}
 	
 	private Map getParsMap() {
@@ -123,6 +137,36 @@ public class Connection implements IConnection
 		    HashMap map = (HashMap) context;
 		    Map pars = (Map) map.get(SBI_BIRT_RUNTIME_PARS_MAP);
 		    return pars;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private Map getUserProfileMap() {
+		try {
+		    HashMap map = (HashMap) context;
+		    Map userProfAttrs = (Map) map.get(SBI_BIRT_RUNTIME_PROFILE_USER_ATTRS);
+		    return userProfAttrs;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getGroovyFileName() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String groovyFileName = (String) map.get(SBI_BIRT_RUNTIME_GROOVY_SCRIPT_FILE_NAME);
+		    return groovyFileName;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
+		}
+	}
+	
+	private String getJsFileName() {
+		try {
+		    HashMap map = (HashMap) context;
+		    String jsFileName = (String) map.get(SBI_BIRT_RUNTIME_JS_SCRIPT_FILE_NAME);
+		    return jsFileName;
 		} catch (Exception e) {
 			throw new RuntimeException("Error while getting user id from Birt runtime context", e);
 		}
@@ -199,6 +243,7 @@ public class Connection implements IConnection
 	}
 
 	private boolean isBirtRuntimeContext() {
+		logger.trace("IN open");
 		logger.debug("Entering isBirtRuntimeContext method");
 	    if (context != null && context instanceof HashMap) {
 	    	HashMap map = (HashMap) context;
@@ -211,6 +256,7 @@ public class Connection implements IConnection
 	    		return false;
 	    	}
 	    }
+	    logger.trace("OUT open");
 	    return false;
 	}
 	
@@ -220,6 +266,7 @@ public class Connection implements IConnection
 	 */
 	public void setAppContext( Object context ) throws OdaException
 	{
+		logger.trace("IN setAppContext");
 		this.context = context;
 		logger.debug("Driver: start setAppContext");
 	    if (context != null && context instanceof HashMap) {
@@ -235,6 +282,7 @@ public class Connection implements IConnection
 	    	}
 	    }
 	    logger.debug("Driver: end setAppContext");
+	    logger.trace("OUT setAppContext");
 	}
 
 	/*
@@ -242,8 +290,10 @@ public class Connection implements IConnection
 	 */
 	public void close() throws OdaException
 	{
+		logger.debug("IN close");
 	    isOpen = false;
 	    dataSetServiceProxy = null;
+	    logger.debug("OUT close");
 	}
 
 	/*
@@ -251,6 +301,7 @@ public class Connection implements IConnection
 	 */
 	public boolean isOpen() throws OdaException
 	{
+		logger.debug("IN-OUT isOpen");
 		return isOpen;
 	}
 
@@ -259,6 +310,7 @@ public class Connection implements IConnection
 	 */
 	public IDataSetMetaData getMetaData( String dataSetType ) throws OdaException
 	{
+		logger.debug("IN-OUT getMetaData");
 	    // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
 		return new DataSetMetaData( this );
@@ -269,9 +321,10 @@ public class Connection implements IConnection
 	 */
 	public IQuery newQuery( String dataSetType ) throws OdaException
 	{
+		logger.debug("IN-OUT newQuery");
         // assumes that this driver supports only one type of data set,
         // ignores the specified dataSetType
-		return new Query(dataSetServiceProxy, pars, resourcePath);
+		return new Query(dataSetServiceProxy, pars, resourcePath, userProfAttrs, groovyFileName, jsFileName);
 	}
 
 	/*
@@ -279,6 +332,7 @@ public class Connection implements IConnection
 	 */
 	public int getMaxQueries() throws OdaException
 	{
+		logger.debug("IN-OUT getMaxQueries");
 		return 0;	// no limit
 	}
 
@@ -287,6 +341,7 @@ public class Connection implements IConnection
 	 */
 	public void commit() throws OdaException
 	{
+		logger.debug("IN-OUT commit");
 	    // do nothing; assumes no transaction support needed
 	}
 
@@ -295,10 +350,12 @@ public class Connection implements IConnection
 	 */
 	public void rollback() throws OdaException
 	{
+		logger.debug("IN-OUT rollback");
         // do nothing; assumes no transaction support needed
 	}
 	@Override
 	public void setLocale(ULocale arg0) throws OdaException {
+		logger.debug("IN-OUT setLocale");
 		// TODO Auto-generated method stub
 		
 	}

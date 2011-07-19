@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import spagobi.birt.oda.impl.Driver;
 
@@ -28,6 +30,8 @@ public class ParameterMetaData implements IParameterMetaData
 {
 	Map params;
 	
+	private static Logger logger = LoggerFactory.getLogger(ParameterMetaData.class);
+	
 	public ParameterMetaData(Map params) {
 		this.params = params;
 	}
@@ -36,6 +40,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterCount() throws OdaException 
 	{
+		logger.debug("IN");
 		System.out.println("getParameterCount");
 		Set s =  params.entrySet();
 		if(s!=null){
@@ -53,6 +58,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterMode( int param ) throws OdaException 
 	{
+		logger.debug("IN");
 		return IParameterMetaData.parameterModeIn;
 	}
 
@@ -61,6 +67,7 @@ public class ParameterMetaData implements IParameterMetaData
      */
     public String getParameterName( int param ) throws OdaException
     {
+    	logger.debug("IN");
        // return sdkParametersMeta[param-1].getName(); 
     	return "temp";
     }
@@ -70,6 +77,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getParameterType( int param ) throws OdaException 
 	{
+		logger.debug("IN");
 		//String type = sdkParametersMeta[param-1].getType(); 
 		//TypeDesc typeDesc = sdkParametersMeta[param-1].getTypeDesc();
 		return 0;
@@ -81,6 +89,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public String getParameterTypeName( int param ) throws OdaException 
 	{
+		logger.debug("IN");
         int nativeTypeCode = getParameterType( param );
         return Driver.getNativeDataTypeName( nativeTypeCode );
 	}
@@ -90,6 +99,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getPrecision( int param ) throws OdaException 
 	{
+		logger.debug("IN");
 		return -1;
 	}
 
@@ -98,6 +108,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int getScale( int param ) throws OdaException 
 	{
+		logger.debug("IN");
 		return -1;
 	}
 
@@ -106,6 +117,7 @@ public class ParameterMetaData implements IParameterMetaData
 	 */
 	public int isNullable( int param ) throws OdaException 
 	{
+		logger.debug("IN");
 		return IParameterMetaData.parameterNullableUnknown;
 	}
 

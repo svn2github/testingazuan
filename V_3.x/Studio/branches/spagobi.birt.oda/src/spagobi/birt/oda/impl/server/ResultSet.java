@@ -37,6 +37,8 @@ import org.eclipse.datatools.connectivity.oda.IClob;
 import org.eclipse.datatools.connectivity.oda.IResultSet;
 import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation class of IResultSet for an ODA runtime driver.
@@ -55,10 +57,13 @@ public class ResultSet implements IResultSet
     private int currentRowIndex;
     private IDataStore dataStore;
     private IDataStoreMetaData dataStoreMeta;
+    
+    private static Logger logger = LoggerFactory.getLogger(ResultSet.class);
 	
     public ResultSet(IDataStore dataStore, IDataStoreMetaData dataStoreMeta) {
     	this.dataStore = dataStore;
     	this.dataStoreMeta = dataStoreMeta;
+    	this.currentRowIndex = -1;
     }
     
 	/*
@@ -66,6 +71,7 @@ public class ResultSet implements IResultSet
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException
 	{
+		logger.debug("IN getMetaData");
 		return new ResultSetMetaData(dataStoreMeta);
 	}
 
@@ -74,6 +80,7 @@ public class ResultSet implements IResultSet
 	 */
 	public void setMaxRows( int max ) throws OdaException
 	{
+		logger.debug("IN setMaxRows");
 		maxRows = max;
 	}
 	
@@ -83,6 +90,7 @@ public class ResultSet implements IResultSet
 	 */
 	protected int getMaxRows()
 	{
+		logger.debug("IN-OUT getMaxRows");
 		return maxRows;
 	}
 
@@ -91,17 +99,24 @@ public class ResultSet implements IResultSet
 	 */
 	public boolean next() throws OdaException
 	{
+		logger.debug("IN next");
         int maxRows = getMaxRows();
-        if( maxRows <= 0 )  maxRows = (int)dataStore.getRecordsCount();
+        int recCount = (int)dataStore.getRecordsCount();
+        logger.debug("CurrentRowIndex: "+currentRowIndex);
+        logger.debug("MaxRows: "+maxRows);
+        logger.debug("recCount: "+recCount);
+        if( maxRows <= 0 )  maxRows = recCount;
         
-        maxRows = Math.min(maxRows,  (int)dataStore.getRecordsCount());
+        maxRows = Math.min(maxRows,  recCount);
         
         currentRowIndex++;
+       
         if( currentRowIndex < maxRows )
-        {            
+        {   
+        	logger.debug("Ancora Righe");
             return true;
         }
-        
+        logger.debug("OUT next");
         return false;        
 	}
 
@@ -110,8 +125,9 @@ public class ResultSet implements IResultSet
 	 */
 	public void close() throws OdaException
 	{
+		logger.debug("IN close");
         // TODO Auto-generated method stub       
-        currentRowIndex = 0;     // reset row counter
+		currentRowIndex = -1;     // reset row counter
 	}
 
 	/*
@@ -119,6 +135,7 @@ public class ResultSet implements IResultSet
 	 */
 	public int getRow() throws OdaException
 	{
+		logger.debug("IN-OUT getRow "+currentRowIndex);
 		return currentRowIndex;
 	}
 
@@ -126,23 +143,29 @@ public class ResultSet implements IResultSet
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getString(int)
 	 */
 	public String getString( int index ) throws OdaException {
+		logger.debug("IN getString");
 		IRecord record = dataStore.getRecordAt(getRow());
 		
 		if(record == null){
+			logger.debug("ODA Exception Record null");
 			throw (OdaException) new OdaException("Impossible to read row [" + getRow() + "]. The resultset contains [" + dataStore.getRecordsCount() + "] rows");
 		}
-		
 		String fieldName = dataStoreMeta.getFieldName(index-1);
-		int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);	
+		logger.debug("fieldName: "+fieldName);
+		int fieldIndex = dataStoreMeta.getFieldIndex(fieldName);	
+		logger.debug("fieldIndex: "+fieldIndex);
 		IField field = record.getFieldAt(fieldIndex);
         
-		return "" + field.getValue();
+		String toReturn = "" + field.getValue();
+		logger.debug("OUT getString: "+toReturn);
+		return toReturn;
 	}
 
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getString(java.lang.String)
 	 */
 	public String getString( String columnName ) throws OdaException {
+		logger.debug("IN getString");
 	    return getString( findColumn( columnName ) );
 	}
 
@@ -150,6 +173,7 @@ public class ResultSet implements IResultSet
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getInt(int)
 	 */
 	public int getInt( int index ) throws OdaException {
+		logger.debug("IN getInt");
 		IRecord record = dataStore.getRecordAt(getRow());
 		
 		if(record == null){
@@ -178,6 +202,7 @@ public class ResultSet implements IResultSet
 	 * @see org.eclipse.datatools.connectivity.oda.IResultSet#getInt(java.lang.String)
 	 */
 	public int getInt( String columnName ) throws OdaException {
+		logger.debug("IN getInt");
 		int value = -1;
 		try {
 			value = getInt( findColumn( columnName ) );
@@ -193,6 +218,7 @@ public class ResultSet implements IResultSet
 	 */
 	public double getDouble( int index ) throws OdaException
 	{
+		logger.debug("IN getDouble");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 	}
@@ -202,6 +228,7 @@ public class ResultSet implements IResultSet
 	 */
 	public double getDouble( String columnName ) throws OdaException
 	{
+		logger.debug("IN getDouble");
 	    return getDouble( findColumn( columnName ) );
 	}
 
@@ -210,6 +237,7 @@ public class ResultSet implements IResultSet
 	 */
 	public BigDecimal getBigDecimal( int index ) throws OdaException
 	{
+		logger.debug("IN getBigDecimal");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 	}
@@ -219,6 +247,7 @@ public class ResultSet implements IResultSet
 	 */
 	public BigDecimal getBigDecimal( String columnName ) throws OdaException
 	{
+		logger.debug("IN getBigDecimal");
 	    return getBigDecimal( findColumn( columnName ) );
 	}
 
@@ -227,6 +256,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Date getDate( int index ) throws OdaException
 	{
+		logger.debug("IN getDate");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 	}
@@ -236,6 +266,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Date getDate( String columnName ) throws OdaException
 	{
+		logger.debug("IN getDate");
 	    return getDate( findColumn( columnName ) );
 	}
 
@@ -244,6 +275,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Time getTime( int index ) throws OdaException
 	{
+		logger.debug("IN getTime");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 	}
@@ -253,6 +285,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Time getTime( String columnName ) throws OdaException
 	{
+		logger.debug("IN getTime");
 	    return getTime( findColumn( columnName ) );
 	}
 
@@ -261,6 +294,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Timestamp getTimestamp( int index ) throws OdaException
 	{
+		logger.debug("IN getTimestamp");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
 	}
@@ -270,6 +304,7 @@ public class ResultSet implements IResultSet
 	 */
 	public Timestamp getTimestamp( String columnName ) throws OdaException
 	{
+		logger.debug("IN getTimestamp");
 	    return getTimestamp( findColumn( columnName ) );
 	}
 
@@ -278,6 +313,7 @@ public class ResultSet implements IResultSet
      */
     public IBlob getBlob( int index ) throws OdaException
     {
+    	logger.debug("IN getBlob");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -287,6 +323,7 @@ public class ResultSet implements IResultSet
      */
     public IBlob getBlob( String columnName ) throws OdaException
     {
+    	logger.debug("IN getBlob");
         return getBlob( findColumn( columnName ) );
     }
 
@@ -295,6 +332,7 @@ public class ResultSet implements IResultSet
      */
     public IClob getClob( int index ) throws OdaException
     {
+    	logger.debug("IN getClob");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -304,6 +342,7 @@ public class ResultSet implements IResultSet
      */
     public IClob getClob( String columnName ) throws OdaException
     {
+    	logger.debug("IN getClob");
         return getClob( findColumn( columnName ) );
     }
 
@@ -312,6 +351,7 @@ public class ResultSet implements IResultSet
      */
     public boolean getBoolean( int index ) throws OdaException
     {
+    	logger.debug("IN getBoolean");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -321,6 +361,7 @@ public class ResultSet implements IResultSet
      */
     public boolean getBoolean( String columnName ) throws OdaException
     {
+    	logger.debug("IN getBoolean");
         return getBoolean( findColumn( columnName ) );
     }
     
@@ -329,6 +370,7 @@ public class ResultSet implements IResultSet
      */
     public Object getObject( int index ) throws OdaException
     {
+    	logger.debug("IN getObject");
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -338,6 +380,7 @@ public class ResultSet implements IResultSet
      */
     public Object getObject( String columnName ) throws OdaException
     {
+    	logger.debug("IN getObject");
         return getObject( findColumn( columnName ) );
     }
 
@@ -346,6 +389,7 @@ public class ResultSet implements IResultSet
      */
     public boolean wasNull() throws OdaException
     {
+    	logger.debug("IN wasNull");
         // TODO Auto-generated method stub
         
         // hard-coded for demo purpose
@@ -357,6 +401,7 @@ public class ResultSet implements IResultSet
      */
     public int findColumn( String columnName ) throws OdaException
     {
+    	logger.debug("IN findColumn");
         // TODO replace with data source specific implementation
         
         // hard-coded for demo purpose

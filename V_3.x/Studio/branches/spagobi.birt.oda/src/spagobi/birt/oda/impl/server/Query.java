@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.datatools.connectivity.oda.IParameterMetaData;
@@ -63,22 +62,30 @@ public class Query implements IQuery
 	IDataStoreMetaData dataStoreMeta;
 	IDataStore dataStore;
 	Map params;
+	Map userProfAttrs;
 	String resourcePath;
+	String groovyFileName;
+	String jsFileName;
 
 	private static Logger logger = LoggerFactory.getLogger(Query.class);
 	
-	public Query(DataSetServiceProxy dataSetServiceProxy, Map pars, String resourcePath) {
+	public Query(DataSetServiceProxy dataSetServiceProxy, Map pars, String resourcePath, Map userProfAttrs,
+			String groovyFileName, String jsFileName) {
 		this.maxRows = -1;
 		this.dsLabel = null;
 		this.params = pars;
 		this.dataSetServiceProxy = dataSetServiceProxy;
 		this.resourcePath = resourcePath;		
+		this.userProfAttrs = userProfAttrs;
+		this.groovyFileName = groovyFileName;		
+		this.jsFileName = jsFileName;
 	}
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#prepare(java.lang.String)
 	 */
 	public void prepare( String queryText ) throws OdaException
 	{		
+		logger.debug("IN prepare");
 		this.dsLabel = queryText;
 		logger.debug("Preparing DS with label "+queryText);
 
@@ -96,12 +103,21 @@ public class Query implements IQuery
 				ds.setParameters(null);
 				logger.debug("Has params associated");
 			}			
+			
 			try{
-				ds.setResourcePath(resourcePath);
+				ds.setUserProfileAttributes(userProfAttrs);
+				logger.debug("Setted User Profile Attrs");
+				ds.setResourcePath(resourcePath);		
+				logger.debug("Setted Resource Path: "+resourcePath);
+				ds.setJsFileName(jsFileName);
+				logger.debug("Setted Js File Name: "+jsFileName);
+				ds.setGroovyFileName(groovyFileName);
+				logger.debug("Setted Groovy File Name: "+groovyFileName);
 				ds.loadData();
 			}catch(Throwable e){
 				logger.error("Eccezione",e);
 			}
+			
 			logger.debug("Loaded Datastore");
 			logger.debug("Method prepare");
 			IDataStore dataStoreTemp = ds.getDataStore();
@@ -112,6 +128,7 @@ public class Query implements IQuery
 				logger.debug("Loaded Datastore Metadata");
 			}
 		}
+		logger.debug("OUT prepare");
 	}
 
 	/*
@@ -119,6 +136,7 @@ public class Query implements IQuery
 	 */
 	public void setAppContext( Object context ) throws OdaException
 	{
+		logger.debug("IN setAppContext");
 	    // do nothing; assumes no support for pass-through context
 	}
 
@@ -127,6 +145,7 @@ public class Query implements IQuery
 	 */
 	public void close() throws OdaException
 	{
+		logger.debug("IN close");
 		dataSetServiceProxy = null;
 		dataStoreMeta = null;
 	}
@@ -136,6 +155,7 @@ public class Query implements IQuery
 	 */
 	public IResultSetMetaData getMetaData() throws OdaException
 	{
+		logger.debug("IN getMetaData");
 		return new ResultSetMetaData( dataStoreMeta );
 	}
 
@@ -143,8 +163,8 @@ public class Query implements IQuery
 	 * @see org.eclipse.datatools.connectivity.oda.IQuery#executeQuery()
 	 */
 	public IResultSet executeQuery() throws OdaException
-	{		
-		logger.debug("Method executeQuery");
+	{
+		logger.debug("IN executeQuery");
 		dataStore = ds.getDataStore();
 		if(dataStore!=null){
 			long numRec = dataStore.getRecordsCount();
@@ -152,7 +172,7 @@ public class Query implements IQuery
 			/*dataStoreMeta = dataStore.getMetaData();
 			logger.debug("Loaded Datastore Metadata");*/
 		}
-		
+		logger.debug("OUT executeQuery");
 		return new ResultSet( dataStore, dataStoreMeta );
 	}
 
@@ -161,6 +181,7 @@ public class Query implements IQuery
 	 */
 	public void setProperty( String name, String value ) throws OdaException
 	{
+		logger.debug("IN setProperty");
 		// do nothing; assumes no data set query property
 	}
 
@@ -169,6 +190,7 @@ public class Query implements IQuery
 	 */
 	public void setMaxRows( int max ) throws OdaException
 	{
+		logger.debug("IN setMaxRows");
 	    maxRows = max;
 	}
 
@@ -177,6 +199,7 @@ public class Query implements IQuery
 	 */
 	public int getMaxRows() throws OdaException
 	{
+		logger.debug("IN getMaxRows");
 		return maxRows;
 	}
 
@@ -185,6 +208,7 @@ public class Query implements IQuery
 	 */
 	public void clearInParameters() throws OdaException
 	{
+		logger.debug("IN clearInParameters");
 	}
 
 	/*
@@ -192,6 +216,7 @@ public class Query implements IQuery
 	 */
 	public void setInt( String parameterName, int value ) throws OdaException
 	{
+		logger.debug("IN setInt");
 		logger.debug("setInt() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -204,6 +229,7 @@ public class Query implements IQuery
 	 */
 	public void setInt( int parameterId, int value ) throws OdaException
 	{
+		logger.debug("IN setInt");
 	}
 
 	/*
@@ -211,6 +237,7 @@ public class Query implements IQuery
 	 */
 	public void setDouble( String parameterName, double value ) throws OdaException
 	{
+		logger.debug("IN setDouble");
 		logger.debug("setDouble() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -223,6 +250,7 @@ public class Query implements IQuery
 	 */
 	public void setDouble( int parameterId, double value ) throws OdaException
 	{
+		logger.debug("IN setDouble");
 	}
 
 	/*
@@ -230,6 +258,7 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( String parameterName, BigDecimal value ) throws OdaException
 	{
+		logger.debug("IN setBigDecimal");
 		logger.debug("setBigDecimal() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -242,6 +271,7 @@ public class Query implements IQuery
 	 */
 	public void setBigDecimal( int parameterId, BigDecimal value ) throws OdaException
 	{
+		logger.debug("IN setBigDecimal");
 	}
 
 	/*
@@ -249,6 +279,7 @@ public class Query implements IQuery
 	 */
 	public void setString( String parameterName, String value ) throws OdaException
 	{
+		logger.debug("IN setString");
 		logger.debug("setString() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -261,6 +292,7 @@ public class Query implements IQuery
 	 */
 	public void setString( int parameterId, String value ) throws OdaException
 	{
+		logger.debug("IN setString");
 	}
 
 	/*
@@ -268,6 +300,7 @@ public class Query implements IQuery
 	 */
 	public void setDate( String parameterName, Date value ) throws OdaException
 	{
+		logger.debug("IN setDate");
 		logger.debug("setDate() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -280,6 +313,7 @@ public class Query implements IQuery
 	 */
 	public void setDate( int parameterId, Date value ) throws OdaException
 	{
+		logger.debug("IN setDate");
 	}
 
 	/*
@@ -287,6 +321,7 @@ public class Query implements IQuery
 	 */
 	public void setTime( String parameterName, Time value ) throws OdaException
 	{
+		logger.debug("IN setTime");
 		logger.debug("setTime() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -299,6 +334,7 @@ public class Query implements IQuery
 	 */
 	public void setTime( int parameterId, Time value ) throws OdaException
 	{
+		logger.debug("IN setTime");
 	}
 
 	/*
@@ -306,6 +342,7 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( String parameterName, Timestamp value ) throws OdaException
 	{
+		logger.debug("IN setTimestamp");
 		logger.debug("setTimestamp() IN: par Name: "+parameterName+" ; value: "+value);
 		params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -318,6 +355,7 @@ public class Query implements IQuery
 	 */
 	public void setTimestamp( int parameterId, Timestamp value ) throws OdaException
 	{
+		logger.debug("IN setTimestamp");
 	}
 
     /* (non-Javadoc)
@@ -326,6 +364,7 @@ public class Query implements IQuery
     public void setBoolean( String parameterName, boolean value )
             throws OdaException
     {
+    	logger.debug("IN setBoolean");
     	logger.debug("setBoolean() IN: par Name: "+parameterName+" ; value: "+value);
     	params.remove(parameterName);
 		params.put(parameterName,  new String[]{"" + value});
@@ -339,6 +378,7 @@ public class Query implements IQuery
     public void setBoolean( int parameterId, boolean value )
             throws OdaException
     {
+    	logger.debug("IN setBoolean");
     }
     
     /* (non-Javadoc)
@@ -346,6 +386,7 @@ public class Query implements IQuery
      */
     public void setNull( String parameterName ) throws OdaException
     {
+    	logger.debug("IN setNull");
     	logger.debug("setNull() IN: par Name: "+parameterName);
     	//setNull ( findInParameter( parameterName ));
 		params.remove(parameterName);
@@ -358,6 +399,7 @@ public class Query implements IQuery
      */
     public void setNull( int parameterId ) throws OdaException
     {
+    	logger.debug("IN setNull");
     }
 
 	/*
@@ -365,6 +407,7 @@ public class Query implements IQuery
 	 */
 	public int findInParameter( String parameterName ) throws OdaException
 	{
+		logger.debug("IN findInParameter");
 		return 0;
 	}
 
@@ -373,6 +416,7 @@ public class Query implements IQuery
 	 */
 	public IParameterMetaData getParameterMetaData() throws OdaException
 	{
+		logger.debug("IN getParameterMetaData");
 		return new ParameterMetaData(params);
 	}
 
@@ -381,6 +425,7 @@ public class Query implements IQuery
 	 */
 	public void setSortSpec( SortSpec sortBy ) throws OdaException
 	{
+		logger.debug("IN setSortSpec");
         throw new UnsupportedOperationException();
 	}
 
@@ -389,38 +434,42 @@ public class Query implements IQuery
 	 */
 	public SortSpec getSortSpec() throws OdaException
 	{
+		logger.debug("IN getSortSpec");
 		return null;
 	}
 	@Override
 	public void cancel() throws OdaException, UnsupportedOperationException {
 		// TODO Auto-generated method stub
-		
+		logger.debug("IN cancel");
 	}
 	@Override
 	public String getEffectiveQueryText() {
 		// TODO Auto-generated method stub
+		logger.debug("IN getEffectiveQueryText");
 		return null;
 	}
 	@Override
 	public QuerySpecification getSpecification() {
 		// TODO Auto-generated method stub
+		logger.debug("IN getSpecification");
 		return null;
 	}
 	@Override
 	public void setObject(String arg0, Object arg1) throws OdaException {
 		// TODO Auto-generated method stub
+		logger.debug("IN setObject");
 		
 	}
 	@Override
 	public void setObject(int arg0, Object arg1) throws OdaException {
 		// TODO Auto-generated method stub
-		
+		logger.debug("IN setObject");
 	}
 	@Override
 	public void setSpecification(QuerySpecification arg0) throws OdaException,
 			UnsupportedOperationException {
 		// TODO Auto-generated method stub
-		
+		logger.debug("IN setSpecification");
 	}
     
 }

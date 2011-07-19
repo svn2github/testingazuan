@@ -11,6 +11,8 @@ import org.eclipse.datatools.connectivity.oda.IConnection;
 import org.eclipse.datatools.connectivity.oda.IDataSetMetaData;
 import org.eclipse.datatools.connectivity.oda.IResultSet;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation class of IDataSetMetaData for an ODA runtime driver.
@@ -26,6 +28,8 @@ public class DataSetMetaData implements IDataSetMetaData
 {
 	private IConnection m_connection;
 	
+	private static Logger logger = LoggerFactory.getLogger(DataSetMetaData.class);
+		
 	DataSetMetaData( IConnection connection )
 	{
 		m_connection = connection;
@@ -36,6 +40,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public IConnection getConnection() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return m_connection;
 	}
@@ -45,6 +50,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public IResultSet getDataSourceObjects( String catalog, String schema, String object, String version ) throws OdaException
 	{
+		logger.debug("IN");
 	    throw new UnsupportedOperationException();
 	}
 
@@ -53,6 +59,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public int getDataSourceMajorVersion() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return 1;
 	}
@@ -62,6 +69,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public int getDataSourceMinorVersion() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return 0;
 	}
@@ -71,6 +79,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public String getDataSourceProductName() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return "SpagoBI Data Source";
 	}
@@ -80,6 +89,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public String getDataSourceProductVersion() throws OdaException
 	{
+		logger.debug("IN");
 		return Integer.toString( getDataSourceMajorVersion() ) + "." +   //$NON-NLS-1$
 			   Integer.toString( getDataSourceMinorVersion() );
 	}
@@ -89,6 +99,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public int getSQLStateType() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return IDataSetMetaData.sqlStateSQL99;
 	}
@@ -98,6 +109,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsMultipleResultSets() throws OdaException
 	{
+		logger.debug("IN");
 		return false;
 	}
 
@@ -106,6 +118,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsMultipleOpenResults() throws OdaException
 	{
+		logger.debug("IN");
 		return false;
 	}
 
@@ -114,6 +127,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsNamedResultSets() throws OdaException
 	{
+		logger.debug("IN");
 		return false;
 	}
 
@@ -122,6 +136,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsNamedParameters() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return false;
 	}
@@ -131,6 +146,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsInParameters() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return true;
 	}
@@ -140,6 +156,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public boolean supportsOutParameters() throws OdaException
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return false;
 	}
@@ -149,6 +166,7 @@ public class DataSetMetaData implements IDataSetMetaData
 	 */
 	public int getSortMode()
 	{
+		logger.debug("IN");
         // TODO Auto-generated method stub
 		return IDataSetMetaData.sortModeNone;
 	}

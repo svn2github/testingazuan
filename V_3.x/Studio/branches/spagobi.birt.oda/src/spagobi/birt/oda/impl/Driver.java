@@ -14,8 +14,11 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.util.manifest.DataTypeMapping;
 import org.eclipse.datatools.connectivity.oda.util.manifest.ExtensionManifest;
 import org.eclipse.datatools.connectivity.oda.util.manifest.ManifestExplorer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import spagobi.birt.oda.impl.server.Connection;
+import spagobi.birt.oda.impl.server.DataSetMetaData;
 
 
 /**
@@ -24,6 +27,7 @@ import spagobi.birt.oda.impl.server.Connection;
 public class Driver implements IDriver
 {
     static String ODA_DATA_SOURCE_ID = "spagobi.birt.oda";  //$NON-NLS-1$
+	private static Logger logger = LoggerFactory.getLogger(Driver.class);
     
 	/*
 	 * @see org.eclipse.datatools.connectivity.oda.IDriver#getConnection(java.lang.String)
@@ -78,12 +82,17 @@ public class Driver implements IDriver
     public static String getNativeDataTypeName( int nativeDataTypeCode ) 
         throws OdaException
     {
+    	logger.debug("IN getNativeDataTypeName ");
+    	String nativeDType = "Non-defined";
         DataTypeMapping typeMapping = 
                             getManifest().getDataSetType( null )
                                 .getDataTypeMapping( nativeDataTypeCode );
-        if( typeMapping != null )
-            return typeMapping.getNativeType();
-        return "Non-defined"; 
+        if( typeMapping != null ){   	
+        	nativeDType = typeMapping.getNativeType();
+        }            
+           
+        logger.debug("OUT getNativeDataTypeName "+nativeDType);
+        return nativeDType; 
     }
 
 }

@@ -32,7 +32,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	private static Logger logger = LoggerFactory.getLogger(ResultSetMetaData.class);
 	
 	public ResultSetMetaData(IDataStoreMetaData dataStoreMeta) {
-		
+
 		this.dataStoreMeta = dataStoreMeta;
 	}
 	/*
@@ -40,17 +40,18 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnCount() throws OdaException
 	{
+		logger.debug("IN getColumnCount");
         int columnCount = 0;
 		
         try {
         	if(dataStoreMeta!=null){
         		columnCount = dataStoreMeta.getFieldCount();
-        		logger.debug("Numero colonne: "+columnCount);
+        		
         	}
 		} catch(Throwable t) {
 			throw (OdaException) new OdaException("Impossible to extract column count from data store meta").initCause(t);
 		}
-		
+		logger.debug("OUT getColumnCount Numero colonne: "+columnCount);
 		return columnCount;
 	}
 
@@ -59,6 +60,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnName( int index ) throws OdaException
 	{
+		logger.debug("IN getColumnName");
 		String name = "undefined";
 		
 		 try {
@@ -66,7 +68,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 		} catch(Throwable t) {
 			throw (OdaException) new OdaException("Impossible to extract column-" + index + "'s name from data store meta").initCause(t);
 		}
-      
+		logger.debug("OUT getColumnName "+name);
         return name;
 	}
 
@@ -75,7 +77,10 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnLabel( int index ) throws OdaException
 	{
-		return getColumnName( index );		// default
+		logger.debug("IN getColumnLabel");
+		String label = getColumnName( index );	
+		logger.debug("OUT getColumnLabel "+ label);
+		return label;		// default
 	}
 
 	/*
@@ -83,11 +88,13 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnType( int index ) throws OdaException
 	{
+		logger.debug("IN getColumnType");
 		String className =  dataStoreMeta.getFieldType(index-1).getName();
 		
         if( className.endsWith("Integer") ) {
             return java.sql.Types.INTEGER;   
         }
+        logger.debug("OUT getColumnType "+className);
         return java.sql.Types.CHAR;          
 	}
 
@@ -96,8 +103,11 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public String getColumnTypeName( int index ) throws OdaException
 	{
+		logger.debug("IN getColumnTypeName");
         int nativeTypeCode = getColumnType( index );
-        return Driver.getNativeDataTypeName( nativeTypeCode );
+        String toReturn =  Driver.getNativeDataTypeName( nativeTypeCode );
+        logger.debug("OUT getColumnTypeName "+toReturn);
+        return toReturn;
 	}
 
 	/*
@@ -105,6 +115,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getColumnDisplayLength( int index ) throws OdaException
 	{
+		logger.debug("IN getColumnDisplayLength");
         // hard-coded for demo purpose
 		return 8;
 	}
@@ -114,6 +125,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getPrecision( int index ) throws OdaException
 	{
+		logger.debug("IN getPrecision");
         // TODO Auto-generated method stub
 		return -1;
 	}
@@ -123,6 +135,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int getScale( int index ) throws OdaException
 	{
+		logger.debug("IN getScale");
         // TODO Auto-generated method stub
 		return -1;
 	}
@@ -132,6 +145,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 	 */
 	public int isNullable( int index ) throws OdaException
 	{
+		logger.debug("IN isNullable");
         // TODO Auto-generated method stub
 		return IResultSetMetaData.columnNullableUnknown;
 	}

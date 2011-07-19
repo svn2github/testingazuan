@@ -150,9 +150,10 @@ public class ResultSet implements IResultSet
 			logger.debug("ODA Exception Record null");
 			throw (OdaException) new OdaException("Impossible to read row [" + getRow() + "]. The resultset contains [" + dataStore.getRecordsCount() + "] rows");
 		}
-		String fieldName = dataStoreMeta.getFieldName(index-1);
+		/*String fieldName = dataStoreMeta.getFieldName(index-1);
 		logger.debug("fieldName: "+fieldName);
-		int fieldIndex = dataStoreMeta.getFieldIndex(fieldName);	
+		int fieldIndex = dataStoreMeta.getFieldIndex(fieldName);	*/
+		int fieldIndex = index-1;
 		logger.debug("fieldIndex: "+fieldIndex);
 		IField field = record.getFieldAt(fieldIndex);
         
@@ -180,8 +181,9 @@ public class ResultSet implements IResultSet
 			throw (OdaException) new OdaException("Impossible to read row [" + getRow() + "]. The resultset contains [" + dataStore.getRecordsCount() + "] rows");
 		}
 
-		String fieldName = dataStoreMeta.getFieldName(index-1);
-		int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);	
+		/*String fieldName = dataStoreMeta.getFieldName(index-1);
+		int fieldIndex = dataStore.getMetaData().getFieldIndex(fieldName);	*/
+		int fieldIndex = index-1;
 		IField field = record.getFieldAt(fieldIndex);
 		
 		if(field == null){

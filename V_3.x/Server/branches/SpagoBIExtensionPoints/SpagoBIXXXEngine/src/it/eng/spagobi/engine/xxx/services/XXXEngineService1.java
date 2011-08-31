@@ -38,18 +38,20 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
  */
 public class XXXEngineService1 extends AbstractEngineStartServlet {
 	
+	private static final String ENGINE_NAME = "XXXEngine";
+	private static final String REQUEST_DISPATCHER_URL = "/WEB-INF/jsp/result.jsp";
+	
 	public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {
-		 
-         String destination = "/WEB-INF/jsp/result.jsp";
-         
-         RequestDispatcher rd = getServletContext().getRequestDispatcher(destination);
-         try {
-			rd.forward(servletIOManager.getRequest(), servletIOManager.getResponse());
-		} catch (ServletException e) {
-			throw new SpagoBIServiceException("XXXEngineService1", e);
-		} catch (IOException e) {
-			throw new SpagoBIServiceException("XXXEngineService1", e);
-		}
+	
+		RequestDispatcher requestDispatcher;
+		
+		// dispatch the request to the presentation layer
+     	requestDispatcher = getServletContext().getRequestDispatcher( REQUEST_DISPATCHER_URL );
+        try {
+         	requestDispatcher.forward(servletIOManager.getRequest(), servletIOManager.getResponse());
+ 		} catch (Throwable t) {
+ 			throw new SpagoBIServiceException(ENGINE_NAME, "An error occurred while dispatching request to [" + REQUEST_DISPATCHER_URL + "]", t);
+ 		} 
 
 	}
 

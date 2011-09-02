@@ -10,4 +10,4 @@
 #else
 @ManyToOne
 #end
-@JoinColumn( name=$jpaRelationship.getSimpleSourceColumnName(), insertable = false, updatable = false)
+@JoinColumn( name=$jpaRelationship.getSimpleSourceColumnName(), insertable = true, updatable = true)

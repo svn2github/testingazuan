@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.CreateIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.relationship.AddBusinessRelationshipCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
@@ -292,6 +293,8 @@ public class BusinessTableItemProvider
 		    	result = new AddPhysicalTableToBusinessViewCommand(domain, commandParameter);
 		    }  else if(commandClass == DeleteBusinessTableCommand.class) {
 		    	result = new DeleteBusinessTableCommand(domain, commandParameter);
+		    }  else if(commandClass == AddCalculatedFieldCommand.class) {
+		    	result = new AddCalculatedFieldCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

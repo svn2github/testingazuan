@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.editor.business.menu;
 import it.eng.spagobi.meta.editor.business.actions.AbstractSpagoBIModelAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessTableAction;
+import it.eng.spagobi.meta.editor.business.actions.AddCalculatedFieldAction;
 import it.eng.spagobi.meta.editor.business.actions.AddEmptyBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIdentifierAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIncomeBusinessRelationshipAction;
@@ -81,6 +82,7 @@ public class BusinessModelMenuActionFactory {
 				 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 				 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 				 //editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
+				 editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));	
 			 }
 			 else {
 				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
@@ -95,6 +97,7 @@ public class BusinessModelMenuActionFactory {
 			 //editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
 			 //editActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
 			 editActions.add(new EditBusinessViewInnerJoinRelationshipsAction(activeEditorPart, selection));
+			 editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));	
 			 actions.put("Edit", editActions);
 			 
 //			 List removeActions = new ArrayList();

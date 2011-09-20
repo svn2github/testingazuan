@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.meta.oda.impl;
 
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 
 import org.eclipse.datatools.connectivity.oda.IResultSetMetaData;
 import org.eclipse.datatools.connectivity.oda.OdaException;
@@ -40,9 +40,9 @@ import org.eclipse.datatools.connectivity.oda.OdaException;
  */
 public class ResultSetMetaData implements IResultSetMetaData
 {
-	IDataStoreMetaData metadata;
+	IMetaData metadata;
 	
-	public ResultSetMetaData(IDataStoreMetaData metadata) {
+	public ResultSetMetaData(IMetaData metadata) {
 		
 		this.metadata = metadata;
 	}

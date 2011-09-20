@@ -228,5 +228,9 @@ public class StringUtils
 		
 		return buffer.toString();
 	}
+	
+	public final static void main(String args[]) {
+		System.out.println( dbNameToVarName("C_CAUSALE") );
+	}
 }
 

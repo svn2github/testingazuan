@@ -23,8 +23,8 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.result;
 
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

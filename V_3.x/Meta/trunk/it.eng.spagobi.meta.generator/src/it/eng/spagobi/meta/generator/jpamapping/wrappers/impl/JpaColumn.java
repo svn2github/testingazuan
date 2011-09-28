@@ -266,7 +266,8 @@ public class JpaColumn implements IJpaColumn {
 		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 		String modelType = property.getValue();
 		
-		type = JDBCTypeMapper.getJavaTypeName(modelType);	
+		//type = JDBCTypeMapper.getJavaTypeName(modelType);	
+		type = JDBCTypeMapper.getJavaSimpleTypeName(modelType);
 		return type;
 	}
 	

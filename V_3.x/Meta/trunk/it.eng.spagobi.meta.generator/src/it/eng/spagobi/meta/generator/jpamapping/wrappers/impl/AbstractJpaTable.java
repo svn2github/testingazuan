@@ -81,7 +81,8 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		for (BusinessColumn column :businessColumns) {
 			columnDataTypeProperty = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
 			columnDataType = columnDataTypeProperty.getValue();
-			columnJavaDataType = JDBCTypeMapper.getJavaTypeName(columnDataType);
+			//columnJavaDataType = JDBCTypeMapper.getJavaTypeName(columnDataType);
+			columnJavaDataType = JDBCTypeMapper.getJavaQualifiedName(columnDataType);
 			if ( !columnJavaDataType.startsWith("java.lang") && columnJavaDataType.indexOf('.') > 0) {
 				String simpleJavaType = columnJavaDataType.substring(columnJavaDataType.lastIndexOf('.') + 1);
 				columnTypesMap.put(columnJavaDataType, simpleJavaType);

@@ -28,6 +28,8 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDragSourceListener;
+import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDropTargetListener;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -41,12 +43,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+
 
 
 /**
@@ -140,6 +150,14 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 
 		compositeTree.setContent(treeItems);
 		compositeTree.setMinSize(treeItems.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		//set dragSource 
+		DragSourceListener dragSourceListener = new CalculatedFieldDragSourceListener(treeItems);
+	    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+	    int operations = DND.DROP_MOVE;
+	    DragSource source = new DragSource(treeItems, operations);
+	    source.setTransfer(types);
+	    source.addDragListener(dragSourceListener);
 	}
 	
 	public void createFieldsNodes(TreeItem parentNode, int style){
@@ -247,6 +265,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		btnClearAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				textCalculatedField.setText("");
 			}
 		});
 		btnClearAll.setText("Clear All");
@@ -256,8 +275,17 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	}
 	
 	public void createCalculateFieldTextPanel(Composite composite, int style){
-		textCalculatedField = new Text(composite,style );
+		textCalculatedField = new Text(composite,SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI );
 		textCalculatedField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		
+		//set dropTarget
+		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+	    int operations = DND.DROP_MOVE ;
+		DropTarget target = new DropTarget(textCalculatedField, operations);
+	    DropTargetAdapter dropTargetAdapter =  new CalculatedFieldDropTargetListener(textCalculatedField);
+	    target.setTransfer(types);
+	    target.addDropListener(dropTargetAdapter);	
 	}
 	
 	public String getTextCalculatedField(){

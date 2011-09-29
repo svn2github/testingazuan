@@ -26,6 +26,9 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
 
 /**
@@ -35,13 +38,9 @@ import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEdit
 public class AddCalculatedFieldCommand extends
 		AbstractSpagoBIModelEditCompoundCommand {
 
-	/**
-	 * @param commandLabel
-	 * @param commandDescription
-	 * @param commandImage
-	 * @param domain
-	 * @param parameter
-	 */
+	// input objects
+	BusinessColumnSet businessColumnSet;
+	CalculatedFieldDescriptor calculatedFieldDesc;
 	
 	private static Logger logger = LoggerFactory.getLogger(AddCalculatedFieldCommand.class);
 	
@@ -61,7 +60,10 @@ public class AddCalculatedFieldCommand extends
 	}
 	
 	public void execute() {
-		
+		// read input
+		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
+		calculatedFieldDesc = (CalculatedFieldDescriptor)parameter.getValue();
+
 	}
 
 }

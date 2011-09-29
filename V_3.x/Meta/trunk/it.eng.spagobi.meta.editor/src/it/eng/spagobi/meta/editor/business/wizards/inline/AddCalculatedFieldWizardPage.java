@@ -28,6 +28,8 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDropTargetListener;
 
@@ -56,6 +58,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 
 
@@ -94,6 +100,8 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		createGroupHeader(composite, SWT.NONE);
 		createGroupCreation(composite, SWT.NONE);
 		
+		checkPageComplete();
+		
 	}
 	
 	public void createGroupHeader(Composite composite, int style){
@@ -106,6 +114,13 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		lblName.setText("Name:");
 		
 		txtName = new Text(groupHeader, SWT.BORDER);
+		txtName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+				checkPageComplete();
+			}
+		});
+
+
 		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblType = new Label(groupHeader, SWT.NONE);
@@ -276,6 +291,11 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	
 	public void createCalculateFieldTextPanel(Composite composite, int style){
 		textCalculatedField = new Text(composite,SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI );
+		textCalculatedField.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+				checkPageComplete();
+			}
+		});
 		textCalculatedField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		
@@ -290,6 +310,20 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	
 	public String getTextCalculatedField(){
 		return textCalculatedField.getText();
+	}
+
+	public String getTxtName() {
+		return txtName.getText();
+	}
+	
+	//check if the right conditions to go forward occurred
+	public void checkPageComplete(){
+		if( (!getTxtName().isEmpty()) && (!getTextCalculatedField().isEmpty()) ){
+			setPageComplete(true);
+		}
+		else{			
+			setPageComplete(false);
+		}		
 	}
 	
 }

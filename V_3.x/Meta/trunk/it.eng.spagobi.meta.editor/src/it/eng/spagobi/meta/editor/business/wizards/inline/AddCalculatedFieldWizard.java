@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
+import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
@@ -70,8 +71,10 @@ public class AddCalculatedFieldWizard extends AbstractSpagoBIModelWizard {
 	@Override
 	public CommandParameter getCommandInputParameter() {
 		AddCalculatedFieldWizardPage wizardPage = (AddCalculatedFieldWizardPage)this.getStartingPage();
-
-		return new CommandParameter(sourceTable, null, wizardPage.getTextCalculatedField(), new ArrayList<Object>());
+		CalculatedFieldDescriptor calculatedFieldDescriptor = new CalculatedFieldDescriptor
+															(wizardPage.getName(),wizardPage.getTextCalculatedField(),sourceTable );
+		
+		return new CommandParameter(sourceTable, null, calculatedFieldDescriptor, new ArrayList<Object>());
 	}
 
 

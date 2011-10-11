@@ -78,7 +78,7 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 						editor.refreshViewer();
 					}
 					
-					if (editor.getPropertySheetPage() != null && !editor.getPropertySheetPage().getControl().isDisposed()) {
+					if (editor.getPropertySheetPage() != null && editor.getPropertySheetPage().getControl()!=null && !editor.getPropertySheetPage().getControl().isDisposed()) {
 					  editor.getPropertySheetPage().refresh();
 					}
 				}

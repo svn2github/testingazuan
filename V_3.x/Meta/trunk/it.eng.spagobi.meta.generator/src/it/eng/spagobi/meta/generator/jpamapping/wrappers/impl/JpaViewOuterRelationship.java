@@ -36,6 +36,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -96,14 +97,14 @@ public class JpaViewOuterRelationship {
 	public List<String> getSourceColumns() {
 		List<IJpaColumn> sourceColumns;
 		List<PhysicalColumn> columns = new ArrayList();
-		List<BusinessColumn> businessColumns;
+		List<SimpleBusinessColumn> businessColumns;
 		List<IJpaTable> innerTables;
 		
  		List<String> columnsNames = new ArrayList<String>();
 		
 		sourceColumns = new ArrayList<IJpaColumn>();
-		businessColumns = businessRelationship.getSourceColumns();
-		for (BusinessColumn businessColumn : businessColumns){
+		businessColumns = businessRelationship.getSourceSimpleBusinessColumns();
+		for (SimpleBusinessColumn businessColumn : businessColumns){
 			columns.add(businessColumn.getPhysicalColumn());
 		}
 		innerTables = jpaView.getInnerTables();
@@ -120,11 +121,11 @@ public class JpaViewOuterRelationship {
 			if(businessRelationship.getSourceTable() instanceof BusinessTable) {
 				jpaTable = new JpaTable((BusinessTable)businessRelationship.getSourceTable());
 			}else if (businessRelationship.getSourceTable() instanceof BusinessView){
-				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceColumns());
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceSimpleBusinessColumns());
 				jpaTable = new JpaViewInnerTable((BusinessView)businessRelationship.getSourceTable(),physicalTMP); 
 			}
 			
-			for(BusinessColumn businessColumn: businessColumns) {
+			for(SimpleBusinessColumn businessColumn: businessColumns) {
 				JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);
 				if (!sourceColumns.contains(jpaColumn))
 					sourceColumns.add( jpaColumn );
@@ -150,15 +151,15 @@ public class JpaViewOuterRelationship {
 	public List<String> getDestinationColumns(){
 		List<IJpaColumn> destinationColumns;
 		List<PhysicalColumn> columns = new ArrayList();
-		List<BusinessColumn> businessColumns;
+		List<SimpleBusinessColumn> businessColumns;
 		List<IJpaTable> innerTables;
  		List<String> columnsNames = new ArrayList<String>();
 
 		
  		
 		destinationColumns = new ArrayList<IJpaColumn>();
-		businessColumns = businessRelationship.getDestinationColumns();
-		for (BusinessColumn businessColumn : businessColumns){
+		businessColumns = businessRelationship.getDestinationSimpleBusinessColumns();
+		for (SimpleBusinessColumn businessColumn : businessColumns){
 			columns.add(businessColumn.getPhysicalColumn());
 		}
 		innerTables = jpaView.getInnerTables();
@@ -174,11 +175,11 @@ public class JpaViewOuterRelationship {
 			if(businessRelationship.getDestinationTable() instanceof BusinessTable) {
 				jpaTable = new JpaTable((BusinessTable)businessRelationship.getDestinationTable());
 			}else if (businessRelationship.getDestinationTable() instanceof BusinessView){
-				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationColumns());
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationSimpleBusinessColumns());
 				jpaTable = new JpaViewInnerTable((BusinessView)businessRelationship.getDestinationTable(),physicalTMP); 
 			}
 			
-			for(BusinessColumn businessColumn: businessColumns) {
+			for(SimpleBusinessColumn businessColumn: businessColumns) {
 				JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);
 				if (!destinationColumns.contains(jpaColumn))
 					destinationColumns.add( jpaColumn );
@@ -236,13 +237,13 @@ public class JpaViewOuterRelationship {
 	
 	
 
-	private PhysicalTable findPhysicalTable(BusinessView bv,List<BusinessColumn> columns){
+	private PhysicalTable findPhysicalTable(BusinessView bv,List<SimpleBusinessColumn> columns){
 		// the destination physical tables
 		List<PhysicalTable> physicaltables=bv.getPhysicalTables();
 		PhysicalTable result=null;
 		for (PhysicalTable phyt : physicaltables){
 			boolean found=false;
-			for (BusinessColumn bc : columns){
+			for (SimpleBusinessColumn bc : columns){
 				PhysicalColumn fc=findPhysicalColumn(phyt.getColumns(),bc);
 				if (fc != null){
 					logger.info("Physical Column FOUND "+bc.getName());
@@ -261,7 +262,7 @@ public class JpaViewOuterRelationship {
 	 * @param column
 	 * @return
 	 */
-	protected PhysicalColumn findPhysicalColumn (List<PhysicalColumn> fColumn,BusinessColumn bColumn){
+	protected PhysicalColumn findPhysicalColumn (List<PhysicalColumn> fColumn,SimpleBusinessColumn bColumn){
 		for (PhysicalColumn fc : fColumn){
 			if (bColumn.getPhysicalColumn().getName().equals(fc.getName())){
 				logger.info("FOUND the "+fc.getName()+" Physical Column");

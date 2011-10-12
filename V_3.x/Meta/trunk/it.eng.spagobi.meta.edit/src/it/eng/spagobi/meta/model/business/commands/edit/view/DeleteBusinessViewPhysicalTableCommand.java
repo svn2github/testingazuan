@@ -30,6 +30,7 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.DeleteIdentifierCommand;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
@@ -99,9 +100,9 @@ public class DeleteBusinessViewPhysicalTableCommand extends AbstractSpagoBIModel
 			removedJoinRelationships = new ArrayList<BusinessViewInnerJoinRelationship>();
 			removedRelationships = new ArrayList<BusinessRelationship>();
 			
-			List<BusinessColumn> businessColumns = getBusinessView().getColumns();
+			List<SimpleBusinessColumn> businessColumns = getBusinessView().getSimpleBusinessColumns();
 			//search columns to remove
-			for (BusinessColumn businessColumn : businessColumns){
+			for (SimpleBusinessColumn businessColumn : businessColumns){
 				if (businessColumn.getPhysicalColumn().getTable().equals(removedPhysicalTable)){
 					removedBusinessColumns.add(businessColumn);
 					if ( (businessColumn.isIdentifier()) || (businessColumn.isPartOfCompositeIdentifier()) ){

@@ -103,8 +103,14 @@ public interface BusinessColumnSet extends ModelObject {
 	 */
 	List<BusinessRelationship> getRelationships();
 	
-	BusinessColumn getColumn(String name);
+	SimpleBusinessColumn getSimpleBusinessColumn(String name);
 	
-	BusinessColumn getColumn(PhysicalColumn physicalColumn);
+	SimpleBusinessColumn getSimpleBusinessColumn(PhysicalColumn physicalColumn);
+	
+	List<SimpleBusinessColumn> getSimpleBusinessColumns();
+	
+	CalculatedBusinessColumn getCalculatedBusinessColumn(String name);
+	
+	List<CalculatedBusinessColumn> getCalculatedBusinessColumns();
 
 } // BusinessColumnSet

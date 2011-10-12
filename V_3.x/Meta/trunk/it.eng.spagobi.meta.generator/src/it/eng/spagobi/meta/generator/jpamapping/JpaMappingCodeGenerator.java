@@ -59,6 +59,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	protected File srcDir;
 	
+	protected File distDir;
+	
+	
+	
 	/**
 	 *   The velocity template directory
 	 */
@@ -88,12 +92,13 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	
 	private File propertiesTemplate;
 	
+	private File cfieldsTemplate;
+	
 	private String persistenceUnitName;
 	
 	public static final String DEFAULT_SRC_DIR = "src";
 	
-	
-	
+	public static final String DEFAULT_DIST_DIR = "dist";
 
 	
 	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
@@ -137,6 +142,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			propertiesTemplate  = new File(templateDir, "sbi_properties.vm");
 			logger.trace("[Properties] template file is equal to [{}]", propertiesTemplate);
 			Assert.assertTrue("[Properties] template file [" + propertiesTemplate + "] does not exist", propertiesTemplate.exists());
+		
+			cfieldsTemplate  = new File(templateDir, "sbi_cfields.vm");
+			logger.trace("[Calculated Fields] template file is equal to [{}]", cfieldsTemplate);
+			Assert.assertTrue("[Calculated Fields] template file [" + cfieldsTemplate + "] does not exist", cfieldsTemplate.exists());
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -161,6 +170,14 @@ public class JpaMappingCodeGenerator implements IGenerator {
 				
 				srcDir = (srcDir == null)? new File(baseOutputDir, DEFAULT_SRC_DIR): srcDir;
 				logger.debug("src dir is equal to [{}]", srcDir);
+				
+				distDir = (distDir == null)? new File(baseOutputDir, DEFAULT_DIST_DIR): distDir;
+				logger.debug("dist dir is equal to [{}]", distDir);
+				
+				if (distDir.mkdirs())
+				{
+					logger.debug("Created directory [{}]", distDir);
+				}  
 				
 				generateJpaMapping(model);
 				
@@ -223,6 +240,9 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		
 		generatePersistenceUnitMapping(jpaModel);
 		logger.info("Persistence unit for model [{}] succesfully created", model.getName());
+		
+		createCfieldsFile(cfieldsTemplate, jpaModel);
+		logger.info("Properties file for model [{}] succesfully created", model.getName());
 		
 		logger.trace("OUT");		
 	}
@@ -399,6 +419,29 @@ public class JpaMappingCodeGenerator implements IGenerator {
         	logger.trace("OUT");
         }
 	}
+	
+	private void createCfieldsFile(File templateFile, JpaModel model){
+		VelocityContext context;
+		
+		logger.trace("IN");
+		
+		try {
+			logger.debug("Create cfields.xml");
+			
+		    context = new VelocityContext();
+	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+	        context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
+			
+			File outputFile = new File(distDir, "cfields.xml");
+			
+	        createFile(templateFile, outputFile, context);
+		} catch(Throwable t) {
+        	logger.error("Impossible to create cfields.xml", t);
+        } finally {
+        	logger.trace("OUT");
+        }
+	}	
+	
 	
 	private void createFile(File templateFile, File outputFile, VelocityContext context) {
 		Template template;

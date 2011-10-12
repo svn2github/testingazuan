@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.util;
 
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.*;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
@@ -129,6 +130,14 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseBusinessViewInnerJoinRelationship(BusinessViewInnerJoinRelationship object) {
 				return createBusinessViewInnerJoinRelationshipAdapter();
+			}
+			@Override
+			public Adapter caseSimpleBusinessColumn(SimpleBusinessColumn object) {
+				return createSimpleBusinessColumnAdapter();
+			}
+			@Override
+			public Adapter caseCalculatedBusinessColumn(CalculatedBusinessColumn object) {
+				return createCalculatedBusinessColumnAdapter();
 			}
 			@Override
 			public Adapter caseModelObject(ModelObject object) {
@@ -277,6 +286,34 @@ public class BusinessModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createBusinessViewInnerJoinRelationshipAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.SimpleBusinessColumn <em>Simple Business Column</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.business.SimpleBusinessColumn
+	 * @generated
+	 */
+	public Adapter createSimpleBusinessColumnAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.business.CalculatedBusinessColumn <em>Calculated Business Column</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.business.CalculatedBusinessColumn
+	 * @generated
+	 */
+	public Adapter createCalculatedBusinessColumnAdapter() {
 		return null;
 	}
 

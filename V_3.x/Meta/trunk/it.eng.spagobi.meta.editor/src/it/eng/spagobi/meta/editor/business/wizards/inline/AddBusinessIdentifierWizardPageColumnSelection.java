@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
 import java.net.URL;
+import java.util.List;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
@@ -30,6 +31,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -306,10 +308,10 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		columnsIdentifier.removeAll();
 		if (tableName != null) {
 			//retrieve the Business Table Columns
-			int numCols = businessColumnSet.getColumns().size();
+			int numCols = businessColumnSet.getSimpleBusinessColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(columns, 0);
-				BusinessColumn bColumn = businessColumnSet.getColumns().get(i);
+				BusinessColumn bColumn = businessColumnSet.getSimpleBusinessColumns().get(i);
 				//associate table item with the object It represents
 				ti.setData(bColumn);
 				ti.setText(bColumn.getName());
@@ -320,7 +322,7 @@ public class AddBusinessIdentifierWizardPageColumnSelection extends WizardPage {
 		BusinessModel businessModel = businessColumnSet.getModel();	
 		BusinessIdentifier bizIdentifier = businessModel.getIdentifier(businessColumnSet);
 		if (bizIdentifier != null){
-			EList<BusinessColumn> bizColumns = bizIdentifier.getColumns();
+			List<SimpleBusinessColumn> bizColumns = bizIdentifier.getSimpleBusinessColumns();
 			for (BusinessColumn col : bizColumns){
 				TableItem[] items = columns.getItems();
 				if (items != null){

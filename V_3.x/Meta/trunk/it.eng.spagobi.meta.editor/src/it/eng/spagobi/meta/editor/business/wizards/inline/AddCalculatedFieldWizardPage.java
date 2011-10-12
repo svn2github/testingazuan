@@ -28,6 +28,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDragSourceListener;
@@ -74,6 +75,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	private Text textCalculatedField;
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	private BusinessColumnSet sourceTable;
+	private Combo comboType;
 
 	/**
 	 * @param pageName
@@ -127,7 +129,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Type:");
 		
-		Combo comboType = new Combo(groupHeader, SWT.READ_ONLY);
+		comboType = new Combo(groupHeader, SWT.READ_ONLY);
 		comboType.setItems(new String[] {"String", "Number"});
 		comboType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboType.select(0);
@@ -187,8 +189,8 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	}
 	
 	public void createFieldsFromColumns(TreeItem parentNode, int style){
-		List<BusinessColumn> businessColumns = sourceTable.getColumns();
-		for (BusinessColumn businessColumn : businessColumns ){
+		List<SimpleBusinessColumn> businessColumns = sourceTable.getSimpleBusinessColumns();
+		for (SimpleBusinessColumn businessColumn : businessColumns ){
 			TreeItem treeItem = new TreeItem(parentNode, style);
 			ImageDescriptor imageDescriptorFolder = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.calculatedField.tree.field") );
 			treeItem.setImage(imageDescriptorFolder.createImage() );
@@ -314,6 +316,10 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 
 	public String getTxtName() {
 		return txtName.getText();
+	}
+	
+	public String getDataType(){
+		return comboType.getText();
 	}
 	
 	//check if the right conditions to go forward occurred

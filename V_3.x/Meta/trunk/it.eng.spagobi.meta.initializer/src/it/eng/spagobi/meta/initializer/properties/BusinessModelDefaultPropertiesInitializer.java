@@ -32,6 +32,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 /**
  * @deprecated
@@ -69,7 +70,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		} else if(o instanceof BusinessTable) {
 			initTableProperties((BusinessTable)o);
 		} else if(o instanceof BusinessColumn) {
-			initColumnProperties((BusinessColumn)o);
+			initColumnProperties((SimpleBusinessColumn)o);
 		} else if(o instanceof BusinessIdentifier) {
 			initIdentifierProperties((BusinessIdentifier)o);
 		} else if(o instanceof BusinessRelationship) {
@@ -123,7 +124,7 @@ public class BusinessModelDefaultPropertiesInitializer implements IPropertiesIni
 		
 	}
 	
-	private void initColumnProperties(BusinessColumn o) {
+	private void initColumnProperties(SimpleBusinessColumn o) {
 		Model rootModel;
 		ModelPropertyType propertyType;
 		ModelProperty property;

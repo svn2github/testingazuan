@@ -106,14 +106,14 @@ public class AddColumnsToBusinessTable extends AbstractSpagoBIModelEditCommand {
 		
 		
 		for(PhysicalColumn column: columnsToAdd) {
-			if(businessTable.getColumn(column) == null) { // avoid columns duplication
+			if(businessTable.getSimpleBusinessColumn(column) == null) { // avoid columns duplication
 				initializer.addColumn(column, businessTable);
 				if (isEmptyBusinessTable){
 					addedPhysicalTable = column.getTable();
 					((BusinessTable)businessTable).setPhysicalTable(addedPhysicalTable);
 					isEmptyBusinessTable = false;
 				}
-				addedColumns.add( businessTable.getColumn(column) );
+				addedColumns.add( businessTable.getSimpleBusinessColumn(column) );
 			}
 			
 		}

@@ -35,6 +35,8 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +72,8 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	
 	public static final String COLUMN_PHYSICAL_TABLE = "physical.physicaltable";
 	public static final String ROLE_DESTINATION = "structural.destinationRole";
+	public static final String CALCULATED_COLUMN_EXPRESSION = "structural.expression";
+	public static final String CALCULATED_COLUMN_DATATYPE = "structural.datatype";
 	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	static public IResourceLocator RL = SpagoBIMetaInitializerPlugin.getInstance().getResourceLocator();
@@ -98,8 +102,10 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 			initModelProperties((BusinessModel)o);
 		} else if(o instanceof BusinessTable) {
 			initTableProperties((BusinessTable)o);
-		} else if(o instanceof BusinessColumn) {
-			initColumnProperties((BusinessColumn)o);
+		} else if(o instanceof SimpleBusinessColumn) {
+			initColumnProperties((SimpleBusinessColumn)o);
+		} else if(o instanceof CalculatedBusinessColumn) {
+			initCalculatedColumnProperties((CalculatedBusinessColumn)o);
 		} else if(o instanceof BusinessIdentifier) {
 			initIdentifierProperties((BusinessIdentifier)o);
 		} else if(o instanceof BusinessRelationship) {
@@ -152,7 +158,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	}
 	
 
-	private void initColumnProperties(BusinessColumn o) {
+	private void initColumnProperties(SimpleBusinessColumn o) {
         NodeList nodes;
         Model rootModel = null;
 		
@@ -215,6 +221,35 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		}
 		
 	}
+	
+	private void initCalculatedColumnProperties(CalculatedBusinessColumn o) {
+        NodeList nodes;
+        Model rootModel = null;
+		
+        int nodesLength;
+		try {
+			if(o.getTable() != null && o.getTable().getModel() != null) {
+				rootModel = o.getTable().getModel().getParentModel();
+			}
+			//1- Search column categories definitions
+			nodes = readXMLNodes(document, "/properties/calculatedcolumn/categories/category");
+			initeModelPropertyCategories(nodes, rootModel);
+	        
+	      	//2- Search column types definitions
+			nodes = readXMLNodes(document, "/properties/calculatedcolumn/types/type");
+			nodesLength = nodes.getLength();
+			initModelPropertyTypes(nodes, rootModel, o);
+	        
+	        //3- Search column admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/calculatedcolumn/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, rootModel);
+	        			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}		
 	
 	private void initIdentifierProperties(BusinessIdentifier o) {
 		
@@ -347,8 +382,11 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		else if (o instanceof BusinessTable){
 			categories = ((BusinessTable)o).getModel().getParentModel().getPropertyCategories();
 		} 
-		else if (o instanceof BusinessColumn){
-			categories = ((BusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
+		else if (o instanceof SimpleBusinessColumn){
+			categories = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
+		}
+		else if (o instanceof CalculatedBusinessColumn){
+			categories = ((CalculatedBusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
 		}
 		else if (o instanceof BusinessIdentifier){
 			categories = ((BusinessIdentifier)o).getModel().getParentModel().getPropertyCategories();				
@@ -378,8 +416,11 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		else if (o instanceof BusinessTable){
 			types = ((BusinessTable)o).getModel().getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof BusinessColumn){
-			types = ((BusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();
+		else if (o instanceof SimpleBusinessColumn){
+			types = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();
+		}
+		else if (o instanceof CalculatedBusinessColumn){
+			types = ((CalculatedBusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();
 		}
 		else if (o instanceof BusinessIdentifier){
 			types = ((BusinessIdentifier)o).getModel().getParentModel().getPropertyTypes();

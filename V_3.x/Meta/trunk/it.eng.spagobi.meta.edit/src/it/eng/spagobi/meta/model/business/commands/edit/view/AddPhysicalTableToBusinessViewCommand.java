@@ -82,7 +82,7 @@ public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelE
 			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
 			for (PhysicalColumn physicalColumn : addedColumns){
 				//check if column is already present
-				if (addedBusinessView.getColumn(physicalColumn) == null){
+				if (addedBusinessView.getSimpleBusinessColumn(physicalColumn) == null){
 					initializer.addColumn(physicalColumn, addedBusinessView);
 				}
 			}
@@ -99,7 +99,7 @@ public class AddPhysicalTableToBusinessViewCommand extends AbstractSpagoBIModelE
 			addedColumns.addAll(joinRelationshipDescriptor.getDestinationColumns());
 			for (PhysicalColumn physicalColumn : addedColumns){
 				//check if column is already present
-				if (businessView.getColumn(physicalColumn) == null){
+				if (businessView.getSimpleBusinessColumn(physicalColumn) == null){
 					initializer.addColumn(physicalColumn, businessView);					
 				}
 			}

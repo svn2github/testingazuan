@@ -31,12 +31,14 @@ public class CalculatedFieldDescriptor {
 	
 	private String name;
 	private String expression;
+	private String dataType;
 	private BusinessColumnSet businessColumnSet;
 	
-	public CalculatedFieldDescriptor(String name, String expression, BusinessColumnSet businessColumnSet){
+	public CalculatedFieldDescriptor(String name, String expression, String dataType, BusinessColumnSet businessColumnSet){
 		this.name = name;
 		this.expression = expression;
 		this.businessColumnSet = businessColumnSet;
+		this.dataType = dataType;
 	}
 	
 	
@@ -65,6 +67,22 @@ public class CalculatedFieldDescriptor {
 		this.expression = expression;
 	}
 	
+	/**
+	 * @return the dataType
+	 */
+	public String getDataType() {
+		return dataType;
+	}
+
+
+	/**
+	 * @param dataType the dataType to set
+	 */
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+
 	/**
 	 * @return the businessColumnSet
 	 */

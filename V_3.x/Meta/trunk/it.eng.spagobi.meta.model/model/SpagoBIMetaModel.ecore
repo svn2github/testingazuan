@@ -131,8 +131,6 @@
           eOpposite="#//business/BusinessViewInnerJoinRelationship/model"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BusinessColumn" eSuperTypes="#//ModelObject">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalColumn" lowerBound="1"
-          eType="#//physical/PhysicalColumn"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
           eType="#//business/BusinessColumnSet" eOpposite="#//business/BusinessColumnSet/columns"/>
     </eClassifiers>
@@ -193,6 +191,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="destinationColumns" upperBound="-1"
           eType="#//physical/PhysicalColumn"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SimpleBusinessColumn" eSuperTypes="#//business/BusinessColumn">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="physicalColumn" lowerBound="1"
+          eType="#//physical/PhysicalColumn"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CalculatedBusinessColumn" eSuperTypes="#//business/BusinessColumn"/>
   </eSubpackages>
   <eSubpackages name="olap" nsURI="http:///it/eng/spagobi/meta/model/olapl.ecore"
       nsPrefix="it.eng.spagobi.meta.model.olap">

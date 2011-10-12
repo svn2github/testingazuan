@@ -30,6 +30,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class JpaColumn implements IJpaColumn {
-	BusinessColumn businessColumn;
+	SimpleBusinessColumn businessColumn;
 	AbstractJpaTable jpaTable;
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
@@ -53,7 +54,7 @@ public class JpaColumn implements IJpaColumn {
 	 * @param parentTable the jpaTable that contains this column
 	 * @param businessColumn the wrapped business column
 	 */
-	protected JpaColumn(AbstractJpaTable parentTable, BusinessColumn businessColumn) {
+	protected JpaColumn(AbstractJpaTable parentTable, SimpleBusinessColumn businessColumn) {
 		this.jpaTable = parentTable;
 		this.businessColumn = businessColumn;
 	}

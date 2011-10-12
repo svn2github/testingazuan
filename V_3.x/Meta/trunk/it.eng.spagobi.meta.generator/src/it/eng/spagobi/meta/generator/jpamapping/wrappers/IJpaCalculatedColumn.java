@@ -21,39 +21,37 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerJoinRelatioship;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewOuterRelationship;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+public interface IJpaCalculatedColumn {
 
-import java.util.List;
+	public static final String PUBLIC_SCOPE = "public"; //$NON-NLS-1$
+	public static final String PROTECTED_SCOPE = "protected"; //$NON-NLS-1$
+	public static final String PRIVATE_SCOPE = "private"; //$NON-NLS-1$
 
-public interface IJpaView {
+	/**
+	 * 
+	 * @return the parent table
+	 */
+	IJpaTable getJpaTable();
 	
-	String getPackage();
+	String getName();
+	
+	String getDescription();
+	
+	String getDataType();
+	
+    String getExpression();
 
-	public String getName();
+
 	
-	public String getDescription();
 	
-	String getClassName();
-	
-	String getQualifiedClassName();
-	
-	String getUniqueName();
-	
+	/**
+	 * @return the value of the specified column attribute
+	 */
+	public String getAttribute(String name);
 	
 	
 
-	List<IJpaTable> getInnerTables();
 
-	List<IJpaColumn> getColumns(JpaViewInnerTable table);
-	
-	List<JpaViewInnerJoinRelatioship> getJoinRelationships();
-	
-	List<JpaViewOuterRelationship> getRelationships();
-	
-	List<IJpaSubEntity> getSubEntities();
 
+	
 }

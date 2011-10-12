@@ -27,10 +27,13 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalPrimaryKey;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -381,5 +384,19 @@ public class BusinessIdentifierImpl extends ModelObjectImpl implements BusinessI
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getModel().getParentModel().getPropertyTypes();
 	}
+	
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumns(){
+		EList<BusinessColumn> businessColumns = getColumns();
+		List<SimpleBusinessColumn> simpleColumns = new ArrayList<SimpleBusinessColumn>();
+		
+		for(BusinessColumn column : businessColumns){
+			if (column instanceof SimpleBusinessColumn){
+				simpleColumns.add((SimpleBusinessColumn)column);
+			}
+		}
+		return simpleColumns;
+	}
+
 
 } //BusinessIdentifierImpl

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.business.*;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
@@ -92,6 +93,8 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 			case BusinessModelPackage.BUSINESS_DOMAIN: return createBusinessDomain();
 			case BusinessModelPackage.BUSINESS_IDENTIFIER: return createBusinessIdentifier();
 			case BusinessModelPackage.BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP: return createBusinessViewInnerJoinRelationship();
+			case BusinessModelPackage.SIMPLE_BUSINESS_COLUMN: return createSimpleBusinessColumn();
+			case BusinessModelPackage.CALCULATED_BUSINESS_COLUMN: return createCalculatedBusinessColumn();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -185,6 +188,26 @@ public class BusinessModelFactoryImpl extends EFactoryImpl implements BusinessMo
 	public BusinessViewInnerJoinRelationship createBusinessViewInnerJoinRelationship() {
 		BusinessViewInnerJoinRelationshipImpl businessViewInnerJoinRelationship = new BusinessViewInnerJoinRelationshipImpl();
 		return businessViewInnerJoinRelationship;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SimpleBusinessColumn createSimpleBusinessColumn() {
+		SimpleBusinessColumnImpl simpleBusinessColumn = new SimpleBusinessColumnImpl();
+		return simpleBusinessColumn;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CalculatedBusinessColumn createCalculatedBusinessColumn() {
+		CalculatedBusinessColumnImpl calculatedBusinessColumn = new CalculatedBusinessColumnImpl();
+		return calculatedBusinessColumn;
 	}
 
 	/**

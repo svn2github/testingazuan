@@ -72,7 +72,7 @@ public class AddCalculatedFieldWizard extends AbstractSpagoBIModelWizard {
 	public CommandParameter getCommandInputParameter() {
 		AddCalculatedFieldWizardPage wizardPage = (AddCalculatedFieldWizardPage)this.getStartingPage();
 		CalculatedFieldDescriptor calculatedFieldDescriptor = new CalculatedFieldDescriptor
-															(wizardPage.getName(),wizardPage.getTextCalculatedField(),sourceTable );
+															(wizardPage.getTxtName(),wizardPage.getTextCalculatedField(), wizardPage.getDataType(), sourceTable );
 		
 		return new CommandParameter(sourceTable, null, calculatedFieldDescriptor, new ArrayList<Object>());
 	}

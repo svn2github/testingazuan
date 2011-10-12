@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
@@ -32,6 +33,8 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -54,7 +57,8 @@ import org.slf4j.LoggerFactory;
 public class JpaViewInnerTable extends AbstractJpaTable {
 
 	private BusinessView businessView;
-	
+	private List<IJpaCalculatedColumn> jpaCalculatedColumns;
+
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
 
@@ -77,14 +81,15 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	}
 	
 	public List<BusinessColumn> getBusinessColumns() {
-		return businessView.getColumns();
+		List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+		businessColumns.addAll(businessView.getSimpleBusinessColumns());
+		return businessColumns;
 	}
 	
 	
 	public List<BusinessRelationship> getBusinessRelationships() {
 		return businessView.getRelationships();
 	}
-	
 	
 	
 	protected BusinessModel getModel(){
@@ -109,9 +114,11 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
 				// if the colums belong to the BusinessView
 				if (businessColumn!=null){
-						JpaColumn jpaColumn = new JpaColumn(this, businessColumn);
-						jpaColumns.add(jpaColumn);
-						logger.info("Add "+jpaColumn.getSqlName()+" Column to the BV "+businessView.getName());
+						if (businessColumn instanceof SimpleBusinessColumn){
+							JpaColumn jpaColumn = new JpaColumn(this, (SimpleBusinessColumn)businessColumn);
+							jpaColumns.add(jpaColumn);
+							logger.info("Add "+jpaColumn.getSqlName()+" Column to the BV "+businessView.getName());
+						}
 					}					
 				}	
 		}
@@ -120,6 +127,20 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		return jpaColumns;
 	}
+	
+	public List<IJpaCalculatedColumn> getCalculatedColumns(){
+		if (jpaCalculatedColumns == null) {
+			jpaCalculatedColumns = new ArrayList<IJpaCalculatedColumn>();
+			for (CalculatedBusinessColumn calculatedBusinessColumn : businessView.getCalculatedBusinessColumns()) {
+				JpaCalculatedColumn jpaCalculatedColumn = new JpaCalculatedColumn(this, calculatedBusinessColumn);
+				jpaCalculatedColumns.add(jpaCalculatedColumn);
+				logger.debug("Business table [{}] contains calculated column [{}]", businessView.getName(), calculatedBusinessColumn.getName());
+			        
+			}
+		}
+		return jpaCalculatedColumns;
+	}
+	
 	/**
 	 * Check if the physical column belong to the view
 	 * 
@@ -129,7 +150,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 */
 	protected BusinessColumn findColumnInBusinessView(PhysicalColumn physicalColumn){
 		
-		for (BusinessColumn businessColumn : businessView.getColumns()) {
+		for (SimpleBusinessColumn businessColumn : businessView.getSimpleBusinessColumns()) {
 			if (physicalColumn.equals(businessColumn.getPhysicalColumn())){
 					return businessColumn;
 			}					
@@ -202,7 +223,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		for(BusinessRelationship relationship : getBusinessRelationships()) {
 			PhysicalTable sourceTable;
 			
-			sourceTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
+			sourceTable = relationship.getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getTable();
 			
 			if(sourceTable.equals(physicalTable)) {
 				jpaRelationship = new JpaRelationship(this, relationship);		
@@ -223,18 +244,18 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	 */
 	private boolean isBelongToRelationship(PhysicalTable t,BusinessRelationship r ){
 		if (r!=null &&  r.getSourceTable()!=null && t.getName()!=null){
-			List<BusinessColumn>  source=r.getSourceColumns();
+			List<SimpleBusinessColumn> source=r.getSourceSimpleBusinessColumns();
 			
-			for (BusinessColumn bc:source){
+			for (SimpleBusinessColumn bc:source){
 				PhysicalTable fTable=bc.getPhysicalColumn().getTable();
 				if (t.getName().equals(fTable.getName()))return true;	
 			}
 
 		}
 		if (r!=null &&  r.getDestinationTable()!=null && t.getName()!=null){
-			List<BusinessColumn>  source=r.getDestinationColumns();
+			List<SimpleBusinessColumn> source=r.getDestinationSimpleBusinessColumns();
 			
-			for (BusinessColumn bc:source){
+			for (SimpleBusinessColumn bc:source){
 				PhysicalTable fTable=bc.getPhysicalColumn().getTable();
 				if (t.getName().equals(fTable.getName()))return true;	
 			}

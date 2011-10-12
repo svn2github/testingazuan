@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -402,7 +403,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void populateSourceColumnList(BusinessColumnSet businessTable){
 		sourceColumnList.removeAll();
-		EList<BusinessColumn> businessColumns = businessTable.getColumns();
+		java.util.List<SimpleBusinessColumn> businessColumns = businessTable.getSimpleBusinessColumns();
 		for (BusinessColumn column : businessColumns ){
 			sourceColumnList.add(column.getName());
 		}
@@ -410,7 +411,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private void populateDestinationColumnList(BusinessColumnSet businessTable){
 		destinationColumnList.removeAll();
-		EList<BusinessColumn> businessColumns = businessTable.getColumns();
+		java.util.List<SimpleBusinessColumn> businessColumns = businessTable.getSimpleBusinessColumns();
 		for (BusinessColumn column : businessColumns ){
 			destinationColumnList.add(column.getName());
 		}
@@ -445,11 +446,11 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	}
 	
 	private BusinessColumn getSourceColumn() {
-		return getSourceTable().getColumn(sourceColumnList.getSelection()[0]);
+		return getSourceTable().getSimpleBusinessColumn(sourceColumnList.getSelection()[0]);
 	}
 	
 	private BusinessColumn getDestinationColumn() {
-		return getDestinationTable().getColumn(destinationColumnList.getSelection()[0]);
+		return getDestinationTable().getSimpleBusinessColumn(destinationColumnList.getSelection()[0]);
 	}
 
 	

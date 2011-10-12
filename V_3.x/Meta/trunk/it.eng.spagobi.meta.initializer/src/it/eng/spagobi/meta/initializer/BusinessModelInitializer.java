@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.initializer;
 
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.initializer.properties.IPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -34,6 +35,8 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
@@ -261,10 +264,10 @@ public class BusinessModelInitializer {
 	}
 	
 	public void addColumn(PhysicalColumn physicalColumn, BusinessColumnSet businessColumnSet) {
-		BusinessColumn businessColumn;
+		SimpleBusinessColumn businessColumn;
 		
 		try {
-			businessColumn = FACTORY.createBusinessColumn();
+			businessColumn = FACTORY.createSimpleBusinessColumn();
 			
 			businessColumn.setPhysicalColumn(physicalColumn);
 			businessColumn.setName( beutfyName(physicalColumn.getName()) );
@@ -279,6 +282,36 @@ public class BusinessModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business column from physical column [" + physicalColumn.getName() + "]", t);
 		}
+	}
+	
+	public void addCalculatedColumn(CalculatedFieldDescriptor calculatedColumnDescriptor){
+		CalculatedBusinessColumn calculatedBusinessColumn;
+		BusinessColumnSet businessColumnSet = calculatedColumnDescriptor.getBusinessColumnSet();
+		
+		try {
+			calculatedBusinessColumn = FACTORY.createCalculatedBusinessColumn();
+			
+			calculatedBusinessColumn.setName( calculatedColumnDescriptor.getName() );
+			calculatedBusinessColumn.setDescription("Calculated Column "+calculatedColumnDescriptor.getName());
+			calculatedBusinessColumn.setTable(businessColumnSet);
+			
+			businessColumnSet.getColumns().add(calculatedBusinessColumn);
+			
+			getPropertiesInitializer().addProperties(calculatedBusinessColumn);
+			
+			//set calculated column expression text
+			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_EXPRESSION,calculatedColumnDescriptor.getExpression());
+
+			//set calculated column dataType
+			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE,calculatedColumnDescriptor.getDataType());
+			
+			//set column type
+			calculatedBusinessColumn.setProperty("structural.columntype","calculation");
+
+
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to initialize calculted business column ", t);
+		}	
 	}
 
 	
@@ -355,7 +388,7 @@ public class BusinessModelInitializer {
 		
 		businessColumns = new ArrayList<BusinessColumn>();
 		for(int j = 0; j < physicalColumns.size(); j++) {
-			BusinessColumn businessColumn = businessTable.getColumn(physicalColumns.get(j));
+			BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumns.get(j));
 			if (businessColumn != null){
 				businessColumns.add(businessColumn);
 			} 
@@ -453,14 +486,14 @@ public class BusinessModelInitializer {
 				// add source columns
 				businessRelationship.setSourceTable(sourceBusinessTable);
 				for(int j = 0; j < physicalForeignKey.getSourceColumns().size(); j++) {
-					businessColumn = sourceBusinessTable.getColumn(physicalForeignKey.getSourceColumns().get(j));
+					businessColumn = sourceBusinessTable.getSimpleBusinessColumn(physicalForeignKey.getSourceColumns().get(j));
 					businessRelationship.getSourceColumns().add(businessColumn);
 				}
 				
 				// add destination columns
 				businessRelationship.setDestinationTable(destinationBusinessTable);
 				for(int j = 0; j < physicalForeignKey.getDestinationColumns().size(); j++) {
-					businessColumn = destinationBusinessTable.getColumn(physicalForeignKey.getDestinationColumns().get(j));
+					businessColumn = destinationBusinessTable.getSimpleBusinessColumn(physicalForeignKey.getDestinationColumns().get(j));
 					businessRelationship.getDestinationColumns().add(businessColumn);
 				}
 					
@@ -654,7 +687,7 @@ public class BusinessModelInitializer {
 			//physicalTable = businessView.getJoinRelationships().get(0).getSourceTable();
 			physicalTable = businessView.getPhysicalTables().get(0);
 			
-			for(BusinessColumn bc: businessView.getColumns()) {
+			for(SimpleBusinessColumn bc: businessView.getSimpleBusinessColumns()) {
 				if(bc.getPhysicalColumn().getTable().equals(physicalTable)) {
 					businessColumns.add( bc );
 				}				
@@ -748,8 +781,8 @@ public class BusinessModelInitializer {
 			businessView.getJoinRelationships().remove(innerJoinRelationship);
 		
 			//remove physical table's columns
-			EList<BusinessColumn> businessColumns = businessView.getColumns();
-			for (BusinessColumn businessColumn : businessColumns){
+			List<SimpleBusinessColumn> businessColumns = businessView.getSimpleBusinessColumns();
+			for (SimpleBusinessColumn businessColumn : businessColumns){
 				if (businessColumn.getPhysicalColumn().getTable() == innerJoinRelationship.getDestinationTable()){
 					businessView.getColumns().remove(businessColumn);
 				}

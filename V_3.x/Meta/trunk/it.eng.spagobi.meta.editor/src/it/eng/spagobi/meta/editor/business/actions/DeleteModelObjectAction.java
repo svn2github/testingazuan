@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
@@ -99,8 +100,8 @@ public class DeleteModelObjectAction extends DeleteAction {
 					CommandParameter parameter = new CommandParameter(o);
 					removeCommand = new DeleteBusinessViewCommand(domain, parameter);
 					removeTableCommands.add( removeCommand );
-				} else if(o instanceof BusinessColumn) {
-					BusinessColumn businessColumn = (BusinessColumn)o;
+				} else if(o instanceof SimpleBusinessColumn) {
+					SimpleBusinessColumn businessColumn = (SimpleBusinessColumn)o;
 					BusinessColumnSet businessColumnSet = businessColumn.getTable();
 					//Collection<PhysicalColumn> physicalColumns = extractPhysicalColumns(businessColumnSet);
 					//physicalColumns.remove(businessColumn.getPhysicalColumn());
@@ -154,7 +155,7 @@ public class DeleteModelObjectAction extends DeleteAction {
 	
 	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {
 		List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
-		for(BusinessColumn businessColumn: businessColumnSet.getColumns()) {
+		for(SimpleBusinessColumn businessColumn: businessColumnSet.getSimpleBusinessColumns()) {
 			physicalColumns.add(businessColumn.getPhysicalColumn());
 		}
 		return physicalColumns;

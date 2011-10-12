@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -79,8 +80,8 @@ public class EditBusinessColumnsWizard extends AbstractSpagoBIModelWizard {
 			if ( columnsToImport[i].getData() instanceof PhysicalColumn ){
 				pc = ((PhysicalColumn)columnsToImport[i].getData());
 			}
-			else if ( columnsToImport[i].getData() instanceof BusinessColumn ){
-				pc = ((BusinessColumn)columnsToImport[i].getData()).getPhysicalColumn();
+			else if ( columnsToImport[i].getData() instanceof SimpleBusinessColumn ){
+				pc = ((SimpleBusinessColumn)columnsToImport[i].getData()).getPhysicalColumn();
 			}
 			colList.add(pc);
 		}

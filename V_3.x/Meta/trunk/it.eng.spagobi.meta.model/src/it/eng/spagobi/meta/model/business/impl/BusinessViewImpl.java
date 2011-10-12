@@ -26,6 +26,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
@@ -168,8 +169,8 @@ public class BusinessViewImpl extends BusinessColumnSetImpl implements BusinessV
 		Set<PhysicalTable> physicalTableSet = new HashSet<PhysicalTable>();
 		List<PhysicalTable> physicalTables = new ArrayList<PhysicalTable>();
 		
-		EList<BusinessColumn> businessColumns = this.getColumns();
-		for (BusinessColumn businessColumn : businessColumns){
+		List<SimpleBusinessColumn> businessColumns = this.getSimpleBusinessColumns();
+		for (SimpleBusinessColumn businessColumn : businessColumns){
 			physicalTableSet.add(businessColumn.getPhysicalColumn().getTable());
 			
 		}

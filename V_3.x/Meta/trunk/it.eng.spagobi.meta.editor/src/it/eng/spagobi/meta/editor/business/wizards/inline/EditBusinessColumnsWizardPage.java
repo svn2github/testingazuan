@@ -278,7 +278,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 				for (int i=0; i<numCols; i++){
 					PhysicalColumn pColumn = pTable.getColumns().get(i);
 					//check if a corresponding Business Column already exist in the Business Table
-					if ( businessTable.getColumn(pColumn) == null ){
+					if ( businessTable.getSimpleBusinessColumn(pColumn) == null ){
 						TableItem ti = new TableItem(columns, 0);
 						//associate table item with the object It represents
 						ti.setData(pColumn);
@@ -288,10 +288,10 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			}
 
 						//retrieve Business Table Columns
-			numCols = businessTable.getColumns().size();
+			numCols = businessTable.getSimpleBusinessColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(fields, 0);
-				BusinessColumn bColumn = businessTable.getColumns().get(i);
+				BusinessColumn bColumn = businessTable.getSimpleBusinessColumns().get(i);
 				//associate table item with the object It represents
 				ti.setData(bColumn);
 				ti.setText(bColumn.getName());
@@ -309,7 +309,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 				for (int i=0; i<numCols; i++){
 					PhysicalColumn pColumn = physicalTable.getColumns().get(i);
 					//check if a corresponding Business Column already exist in the Business View
-					if ( businessView.getColumn(pColumn) == null ){
+					if ( businessView.getSimpleBusinessColumn(pColumn) == null ){
 						TableItem ti = new TableItem(columns, 0);
 						//associate table item with the object It represents
 						ti.setData(pColumn);
@@ -319,10 +319,10 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			}
 			
 			//retrieve Business View Columns
-			numCols = businessView.getColumns().size();
+			numCols = businessView.getSimpleBusinessColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(fields, 0);
-				BusinessColumn bColumn = businessView.getColumns().get(i);
+				BusinessColumn bColumn = businessView.getSimpleBusinessColumns().get(i);
 				//associate table item with the object It represents
 				ti.setData(bColumn);
 				ti.setText(bColumn.getName());
@@ -346,7 +346,7 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 				for (int i=0; i<numCols; i++){
 					PhysicalColumn pColumn = pTable.getColumns().get(i);
 					//check if a corresponding Business Column already exist in the Business Table
-					if ( businessTable.getColumn(pColumn) == null ){
+					if ( businessTable.getSimpleBusinessColumn(pColumn) == null ){
 						TableItem ti = new TableItem(columns, 0);
 						//associate table item with the object It represents
 						ti.setData(pColumn);
@@ -356,10 +356,10 @@ public class EditBusinessColumnsWizardPage extends WizardPage {
 			}
 
 			//retrieve Business Table Columns
-			numCols = businessTable.getColumns().size();
+			numCols = businessTable.getSimpleBusinessColumns().size();
 			for (int i=0; i<numCols; i++){
 				TableItem ti = new TableItem(fields, 0);
-				BusinessColumn bColumn = businessTable.getColumns().get(i);
+				BusinessColumn bColumn = businessTable.getSimpleBusinessColumns().get(i);
 				//associate table item with the object It represents
 				ti.setData(bColumn);
 				ti.setText(bColumn.getName());

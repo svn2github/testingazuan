@@ -28,6 +28,8 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -272,24 +274,34 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 	}
 	
 	@Override
-	public BusinessColumn getColumn(String name) {
-		for(int i = 0; i < getColumns().size(); i++) {
-			if(getColumns().get(i).getName().equals(name)) {
-				return getColumns().get(i);
+	public SimpleBusinessColumn getSimpleBusinessColumn(String name) {
+		for(int i = 0; i < getSimpleBusinessColumns().size(); i++) {
+			if(getSimpleBusinessColumns().get(i).getName().equals(name)) {
+				return getSimpleBusinessColumns().get(i);
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public BusinessColumn getColumn(PhysicalColumn physicalColumn) {
-		for(int i = 0; i < getColumns().size(); i++) {
-			if(getColumns().get(i).getPhysicalColumn().equals(physicalColumn)) {
-				return getColumns().get(i);
+	public SimpleBusinessColumn getSimpleBusinessColumn(PhysicalColumn physicalColumn) {
+		for(int i = 0; i < getSimpleBusinessColumns().size(); i++) {
+			if(getSimpleBusinessColumns().get(i).getPhysicalColumn().equals(physicalColumn)) {
+				return getSimpleBusinessColumns().get(i);
 			} 
 		}
 		return null;
 	}
+	
+	public CalculatedBusinessColumn getCalculatedBusinessColumn(String name){
+		for(int i = 0; i < getCalculatedBusinessColumns().size(); i++) {
+			if(getCalculatedBusinessColumns().get(i).getName().equals(name)) {
+				return getCalculatedBusinessColumns().get(i);
+			}
+		}
+		return null;
+	}
+
 	
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
@@ -315,6 +327,32 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 			}
 		}
 		return relationships;
+	}
+
+
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumns() {
+		EList<BusinessColumn> businessColumns = getColumns();
+		List<SimpleBusinessColumn> simpleColumns = new ArrayList<SimpleBusinessColumn>();
+		for (BusinessColumn column:businessColumns){
+			if (column instanceof SimpleBusinessColumn){
+				simpleColumns.add((SimpleBusinessColumn)column);
+			}
+		}
+		return simpleColumns;
+	}
+
+
+	@Override
+	public List<CalculatedBusinessColumn> getCalculatedBusinessColumns() {
+		EList<BusinessColumn> businessColumns = getColumns();
+		List<CalculatedBusinessColumn> calculatedColumns = new ArrayList<CalculatedBusinessColumn>();
+		for (BusinessColumn column:businessColumns){
+			if (column instanceof CalculatedBusinessColumn){
+				calculatedColumns.add((CalculatedBusinessColumn)column);
+			}
+		}
+		return calculatedColumns;
 	}
 
 } //BusinessColumnSetImpl

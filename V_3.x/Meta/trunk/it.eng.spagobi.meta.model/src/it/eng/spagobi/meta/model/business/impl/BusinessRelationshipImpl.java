@@ -27,10 +27,14 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -473,6 +477,30 @@ public class BusinessRelationshipImpl extends ModelObjectImpl implements Busines
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getModel().getParentModel().getPropertyTypes();
+	}
+
+	@Override
+	public List<SimpleBusinessColumn> getDestinationSimpleBusinessColumns() {
+		EList<BusinessColumn> destinationColumns = getDestinationColumns();
+		List<SimpleBusinessColumn> destinationSimpleColumns = new ArrayList<SimpleBusinessColumn>();
+		for(BusinessColumn column : destinationColumns){
+			if (column instanceof SimpleBusinessColumn){
+				destinationSimpleColumns.add((SimpleBusinessColumn)column);
+			}
+		}
+		return destinationSimpleColumns;
+	}
+
+	@Override
+	public List<SimpleBusinessColumn> getSourceSimpleBusinessColumns() {
+		EList<BusinessColumn> sourceColumns = getSourceColumns();
+		List<SimpleBusinessColumn> sourceSimpleColumns = new ArrayList<SimpleBusinessColumn>();
+		for(BusinessColumn column : sourceColumns){
+			if (column instanceof SimpleBusinessColumn){
+				sourceSimpleColumns.add((SimpleBusinessColumn)column);
+			}
+		}
+		return sourceSimpleColumns;
 	}
 	
 } //BusinessRelationshipImpl

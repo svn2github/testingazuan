@@ -38,6 +38,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import org.junit.Assert;
@@ -126,8 +127,8 @@ public class JpaView implements IJpaView {
 	@Override
 	public List<IJpaColumn> getColumns(JpaViewInnerTable table) {
 		List<IJpaColumn> jpaColumns = new ArrayList<IJpaColumn>();
-		List<BusinessColumn> businessColumns = businessView.getColumns();
-		for (BusinessColumn businessColumn :businessColumns) {
+		List<SimpleBusinessColumn> businessColumns = businessView.getSimpleBusinessColumns();
+		for (SimpleBusinessColumn businessColumn :businessColumns) {
 			if(businessColumn.getPhysicalColumn().getTable()== table.getPhysicalTable()) {
 				JpaViewInnerTable jpaTable = new JpaViewInnerTable(businessView, businessColumn.getPhysicalColumn().getTable());
 				JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);

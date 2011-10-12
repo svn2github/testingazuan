@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
@@ -176,6 +177,10 @@ public abstract class AbstractJpaTable implements IJpaTable{
 		return getQualifiedClassName() + "//" + getClassName();
 	}
 	
+	public String getUniqueNameWithDoubleDots(){
+		return getUniqueName().replaceAll("/",":");
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getSimpleColumns(boolean, boolean, boolean)
@@ -238,6 +243,7 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	public List<IJpaColumn> getSimpleColumns() {
 		return getSimpleColumns(true/* genOnly */, true/* includePk */, true/* includeInherited */);
 	}
+	
 
 	/*
 	 * (non-Javadoc)

@@ -32,7 +32,6 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.BusinessColumn#getPhysicalColumn <em>Physical Column</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.BusinessColumn#getTable <em>Table</em>}</li>
  * </ul>
  * </p>
@@ -42,32 +41,6 @@ import it.eng.spagobi.meta.model.physical.PhysicalColumn;
  * @generated
  */
 public interface BusinessColumn extends ModelObject {
-	/**
-	 * Returns the value of the '<em><b>Physical Column</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Physical Column</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Physical Column</em>' reference.
-	 * @see #setPhysicalColumn(PhysicalColumn)
-	 * @see it.eng.spagobi.meta.model.business.BusinessModelPackage#getBusinessColumn_PhysicalColumn()
-	 * @model required="true"
-	 * @generated
-	 */
-	PhysicalColumn getPhysicalColumn();
-
-	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.business.BusinessColumn#getPhysicalColumn <em>Physical Column</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Physical Column</em>' reference.
-	 * @see #getPhysicalColumn()
-	 * @generated
-	 */
-	void setPhysicalColumn(PhysicalColumn value);
-
 	/**
 	 * Returns the value of the '<em><b>Table</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.business.BusinessColumnSet#getColumns <em>Columns</em>}'.

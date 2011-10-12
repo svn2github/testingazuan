@@ -83,7 +83,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 			parentTable = new JpaTable((BusinessTable)parentColumnSet);
 		} else if(parentColumnSet instanceof BusinessView) {
 			BusinessView businessView = (BusinessView)parentColumnSet;
-			PhysicalTable physicalTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
+			PhysicalTable physicalTable = relationship.getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getTable();
 			parentTable = new JpaViewInnerTable(businessView, physicalTable);
 		}
 		
@@ -96,13 +96,13 @@ public class JpaSubEntity implements IJpaSubEntity {
 		BusinessColumnSet businessColumnSet = relationship.getSourceColumns().get(0).getTable();
 		if (businessColumnSet instanceof BusinessTable){
 			sourceTable = new JpaTable( (BusinessTable)relationship.getSourceColumns().get(0).getTable() );
-			sourceColumn = new JpaColumn(sourceTable, relationship.getSourceColumns().get(0));
+			sourceColumn = new JpaColumn(sourceTable, relationship.getSourceSimpleBusinessColumns().get(0));
 		} else if (businessColumnSet instanceof BusinessView){
 			//TODO: check this cases
 			BusinessView businessView = (BusinessView)relationship.getSourceColumns().get(0).getTable() ;
-			PhysicalTable physicalTable = relationship.getSourceColumns().get(0).getPhysicalColumn().getTable();
+			PhysicalTable physicalTable = relationship.getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getTable();
 			JpaViewInnerTable sourceView = new JpaViewInnerTable(businessView, physicalTable);
-			sourceColumn = new JpaColumn(sourceView, relationship.getSourceColumns().get(0));
+			sourceColumn = new JpaColumn(sourceView, relationship.getSourceSimpleBusinessColumns().get(0));
 			//***********
 		}
 		
@@ -116,7 +116,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 			table = new JpaTable((BusinessTable)columnSet);
 		} else if(columnSet instanceof BusinessView) {
 			BusinessView businessView = (BusinessView)columnSet;
-			PhysicalTable physicalTable = relationship.getDestinationColumns().get(0).getPhysicalColumn().getTable();
+			PhysicalTable physicalTable = relationship.getDestinationSimpleBusinessColumns().get(0).getPhysicalColumn().getTable();
 			table = new JpaViewInnerTable(businessView, physicalTable);
 		}
 		

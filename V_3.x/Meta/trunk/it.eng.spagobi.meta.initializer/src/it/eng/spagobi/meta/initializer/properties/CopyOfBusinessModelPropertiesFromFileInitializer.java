@@ -35,6 +35,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +106,7 @@ public class CopyOfBusinessModelPropertiesFromFileInitializer implements IProper
 		} else if(o instanceof BusinessTable) {
 			initTableProperties((BusinessTable)o);
 		} else if(o instanceof BusinessColumn) {
-			initColumnProperties((BusinessColumn)o);
+			initColumnProperties((SimpleBusinessColumn)o);
 		} else if(o instanceof BusinessIdentifier) {
 			initIdentifierProperties((BusinessIdentifier)o);
 		} else if(o instanceof BusinessRelationship) {
@@ -239,7 +240,7 @@ public class CopyOfBusinessModelPropertiesFromFileInitializer implements IProper
 	}
 	
 
-	private void initColumnProperties(BusinessColumn o) {
+	private void initColumnProperties(SimpleBusinessColumn o) {
         NodeList nodes;
         Model rootModel = null;
 		

@@ -130,6 +130,78 @@
   </column>
   
   <!--  ===================================================================================================== -->
+  <!--  CALCULATED COLUMN																				      -->
+  <!--  ===================================================================================================== -->
+  <calculatedcolumn>
+    <categories>
+      <category name="Structural"
+      description="Structural properties" />
+      <category name="Style" description="Style properties" />
+    </categories>
+    
+    <types>
+     <type id="structural.visible" name="Visible"
+      description="Specify if this column is visible in the query editor"
+      category="Structural" defaultValue="true" />
+      
+      <type id="structural.columntype" name="Type"
+      description="The role played by this column in the data model (calculation or measure)"
+      category="Structural" defaultValue="calculation" />
+      
+      <type id="structural.aggtype" name="Aggregation Type"
+      description="The preferred aggregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
+      category="Structural" defaultValue="COUNT" />
+      
+      <type id="structural.datatype" name="Data Type"
+      description="The data type of the given column (STRING, NUMBER)"
+      category="Structural" defaultValue="NUMBER" />
+      
+      <type id="structural.expression" name="Calculated Column expression"
+      description="The text of the expression that is used for this calculated column"
+      category="Structural" defaultValue="2+2" />
+      
+	  <type id="style.alignment" name="Alignment Type"
+      description="The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)"
+      category="Style" defaultValue="LEFT" />
+    </types>
+    
+    <typesValues>
+      <admissibleValuesOf typeId="structural.visible">
+        <value>true</value>
+        <value>false</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.columntype">
+        <value>calculation</value>
+        <value>measure</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.aggtype">
+        <value>COUNT</value>
+        <value>SUM</value>
+        <value>AVG</value>
+        <value>MAX</value>
+        <value>MIN</value>
+        <value>NONE</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="structural.datatype">
+        <value>STRING</value>
+        <value>NUMBER</value>
+      </admissibleValuesOf>
+      
+      <admissibleValuesOf typeId="style.alignment">
+        <value>LEFT</value>
+        <value>CENTER</value>
+        <value>RIGHT</value>
+        <value>JUSTIFIED</value>
+      </admissibleValuesOf>	  
+      
+    </typesValues>
+  </calculatedcolumn>  
+  
+  
+  <!--  ===================================================================================================== -->
   <!--  IDENTIFIER																							  -->
   <!--  ===================================================================================================== -->
   <identifier></identifier>

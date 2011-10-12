@@ -26,9 +26,11 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -98,13 +100,13 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	 * @param columns ...
 	 * @return
 	 */
-	private PhysicalTable findPhysicalTable(BusinessView bv,List<BusinessColumn> columns){
+	private PhysicalTable findPhysicalTable(BusinessView bv,List<SimpleBusinessColumn> columns){
 		// the destination physical tables
 		List<PhysicalTable> physicaltables=bv.getPhysicalTables();
 		PhysicalTable result=null;
 		for (PhysicalTable phyt : physicaltables){
 			boolean found=false;
-			for (BusinessColumn bc : columns){
+			for (SimpleBusinessColumn bc : columns){
 				PhysicalColumn fc=findPhysicalColumn(phyt.getColumns(),bc);
 				if (fc != null){
 					logger.info("Physical Column FOUND "+bc.getName());
@@ -122,7 +124,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	 * @param column
 	 * @return
 	 */
-	protected PhysicalColumn findPhysicalColumn (List<PhysicalColumn> fColumn,BusinessColumn bColumn){
+	protected PhysicalColumn findPhysicalColumn (List<PhysicalColumn> fColumn,SimpleBusinessColumn bColumn){
 		for (PhysicalColumn fc : fColumn){
 			if (bColumn.getPhysicalColumn().getName().equals(fc.getName())){
 				logger.info("FOUND the "+fc.getName()+" Physical Column");
@@ -140,14 +142,14 @@ public class JpaRelationship extends AbstractJpaRelationship {
 			if(businessRelationship.getDestinationTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getDestinationTable());
 			}else if (businessRelationship.getDestinationTable() instanceof BusinessView){
-				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationColumns());
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getDestinationTable(),businessRelationship.getDestinationSimpleBusinessColumns());
 				return new JpaViewInnerTable((BusinessView)businessRelationship.getDestinationTable(),physicalTMP); 
 			}
 		} else {
 			if(businessRelationship.getSourceTable() instanceof BusinessTable) {
 				return new JpaTable((BusinessTable)businessRelationship.getSourceTable());
 			}else if (businessRelationship.getSourceTable() instanceof BusinessView){
-				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceColumns());
+				PhysicalTable physicalTMP=findPhysicalTable((BusinessView)businessRelationship.getSourceTable(),businessRelationship.getSourceSimpleBusinessColumns());
 				return new JpaViewInnerTable((BusinessView)businessRelationship.getSourceTable(),physicalTMP); 
 
 			}
@@ -173,7 +175,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	}	
 	
 	public String getSimpleSourceColumnName(){
-		return StringUtils.doubleQuote(getBusinessRelationship().getSourceColumns().get(0).getPhysicalColumn().getName());
+		return StringUtils.doubleQuote(getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName());
 	}
 	/**
 	 * TODO .. da verificare

@@ -142,6 +142,8 @@ public interface IJpaTable {
 	 */
 	List<IJpaColumn> getSimpleColumns(boolean genOnly, boolean includePk, boolean includeInherited);
 	
+	List<IJpaCalculatedColumn> getCalculatedColumns();
+	
 	/**
 	 * 
 	 * @return all the relationships defined upon this table

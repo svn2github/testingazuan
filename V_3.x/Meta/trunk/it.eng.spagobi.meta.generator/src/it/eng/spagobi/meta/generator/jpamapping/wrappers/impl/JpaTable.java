@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
@@ -31,6 +32,8 @@ import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
@@ -52,6 +55,7 @@ public class JpaTable extends AbstractJpaTable {
 	BusinessTable businessTable;
 	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
 	List<BusinessColumnSet> parents;
+	List<IJpaCalculatedColumn> jpaCalculatedColumns;
 
 	private static Logger logger = LoggerFactory.getLogger(JpaTable.class);
 
@@ -62,7 +66,9 @@ public class JpaTable extends AbstractJpaTable {
 	}
 	
 	List<BusinessColumn> getBusinessColumns() {
-		return businessTable.getColumns();
+		List<BusinessColumn> businessColumns = new ArrayList<BusinessColumn>();
+		businessColumns.addAll(businessTable.getSimpleBusinessColumns());
+		return businessColumns;
 	}
 	
 	public List<BusinessRelationship> getBusinessRelationships() {
@@ -88,7 +94,7 @@ public class JpaTable extends AbstractJpaTable {
 	public List<IJpaColumn> getColumns() {
 		if (jpaColumns == null) {
 			jpaColumns = new ArrayList<IJpaColumn>();
-			for (BusinessColumn businessColumn : businessTable.getColumns()) {
+			for (SimpleBusinessColumn businessColumn : businessTable.getSimpleBusinessColumns()) {
 				JpaColumn jpaColumn = new JpaColumn(this, businessColumn);
 				jpaColumns.add(jpaColumn);
 				logger.debug("Business table [{}] contains column [{}]", businessTable.getName(), businessColumn.getName());
@@ -96,6 +102,19 @@ public class JpaTable extends AbstractJpaTable {
 			}
 		}
 		return jpaColumns;
+	}
+	
+	public List<IJpaCalculatedColumn> getCalculatedColumns(){
+		if (jpaCalculatedColumns == null) {
+			jpaCalculatedColumns = new ArrayList<IJpaCalculatedColumn>();
+			for (CalculatedBusinessColumn calculatedBusinessColumn : businessTable.getCalculatedBusinessColumns()) {
+				JpaCalculatedColumn jpaCalculatedColumn = new JpaCalculatedColumn(this, calculatedBusinessColumn);
+				jpaCalculatedColumns.add(jpaCalculatedColumn);
+				logger.debug("Business table [{}] contains calculated column [{}]", businessTable.getName(), calculatedBusinessColumn.getName());
+			        
+			}
+		}
+		return jpaCalculatedColumns;
 	}
 
 	

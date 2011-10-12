@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -69,8 +70,10 @@ public class JpaViewInnerJoinRelatioship {
 		for(PhysicalColumn physicalColumn: columns) {
 			BusinessColumn businessColumn = innerSourceTable.findColumnInBusinessView(physicalColumn);
 			if(businessColumn != null){
-				JpaColumn jpaColumn = new JpaColumn(innerSourceTable, businessColumn);
-				sourceColumns.add( jpaColumn );
+				if (businessColumn instanceof SimpleBusinessColumn){
+					JpaColumn jpaColumn = new JpaColumn(innerSourceTable, (SimpleBusinessColumn)businessColumn);
+					sourceColumns.add( jpaColumn );
+				}
 			}
 		}
 		
@@ -88,8 +91,10 @@ public class JpaViewInnerJoinRelatioship {
 		for(PhysicalColumn physicalColumn: columns) {
 			BusinessColumn businessColumn = innerDestinationTable.findColumnInBusinessView(physicalColumn);
 			if(businessColumn != null){
-				JpaColumn jpaColumn = new JpaColumn(innerDestinationTable, businessColumn);
-				destinationColumns.add( jpaColumn );
+				if (businessColumn instanceof SimpleBusinessColumn){
+					JpaColumn jpaColumn = new JpaColumn(innerDestinationTable, (SimpleBusinessColumn)businessColumn);
+					destinationColumns.add( jpaColumn );
+				}
 			}
 		}
 		

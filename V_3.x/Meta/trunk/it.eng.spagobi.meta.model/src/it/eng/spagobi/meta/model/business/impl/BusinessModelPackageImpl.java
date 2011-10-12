@@ -37,6 +37,8 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelPackageImpl;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 import it.eng.spagobi.meta.model.olap.impl.OlapModelPackageImpl;
@@ -117,6 +119,20 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * @generated
 	 */
 	private EClass businessViewInnerJoinRelationshipEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass simpleBusinessColumnEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass calculatedBusinessColumnEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -300,17 +316,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getBusinessColumn_PhysicalColumn() {
-		return (EReference)businessColumnEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getBusinessColumn_Table() {
-		return (EReference)businessColumnEClass.getEStructuralFeatures().get(1);
+		return (EReference)businessColumnEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -561,6 +568,33 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getSimpleBusinessColumn() {
+		return simpleBusinessColumnEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSimpleBusinessColumn_PhysicalColumn() {
+		return (EReference)simpleBusinessColumnEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getCalculatedBusinessColumn() {
+		return calculatedBusinessColumnEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public BusinessModelFactory getBusinessModelFactory() {
 		return (BusinessModelFactory)getEFactoryInstance();
 	}
@@ -594,7 +628,6 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		createEReference(businessModelEClass, BUSINESS_MODEL__JOIN_RELATIONSHIPS);
 
 		businessColumnEClass = createEClass(BUSINESS_COLUMN);
-		createEReference(businessColumnEClass, BUSINESS_COLUMN__PHYSICAL_COLUMN);
 		createEReference(businessColumnEClass, BUSINESS_COLUMN__TABLE);
 
 		businessColumnSetEClass = createEClass(BUSINESS_COLUMN_SET);
@@ -632,6 +665,11 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_TABLE);
 		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__SOURCE_COLUMNS);
 		createEReference(businessViewInnerJoinRelationshipEClass, BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__DESTINATION_COLUMNS);
+
+		simpleBusinessColumnEClass = createEClass(SIMPLE_BUSINESS_COLUMN);
+		createEReference(simpleBusinessColumnEClass, SIMPLE_BUSINESS_COLUMN__PHYSICAL_COLUMN);
+
+		calculatedBusinessColumnEClass = createEClass(CALCULATED_BUSINESS_COLUMN);
 	}
 
 	/**
@@ -675,6 +713,8 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		businessDomainEClass.getESuperTypes().add(theModelPackage.getModelObject());
 		businessIdentifierEClass.getESuperTypes().add(theModelPackage.getModelObject());
 		businessViewInnerJoinRelationshipEClass.getESuperTypes().add(theModelPackage.getModelObject());
+		simpleBusinessColumnEClass.getESuperTypes().add(this.getBusinessColumn());
+		calculatedBusinessColumnEClass.getESuperTypes().add(this.getBusinessColumn());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(businessModelEClass, BusinessModel.class, "BusinessModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -687,7 +727,6 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		initEReference(getBusinessModel_JoinRelationships(), this.getBusinessViewInnerJoinRelationship(), this.getBusinessViewInnerJoinRelationship_Model(), "joinRelationships", null, 0, -1, BusinessModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessColumnEClass, BusinessColumn.class, "BusinessColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getBusinessColumn_PhysicalColumn(), thePhysicalModelPackage.getPhysicalColumn(), null, "physicalColumn", null, 1, 1, BusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessColumn_Table(), this.getBusinessColumnSet(), this.getBusinessColumnSet_Columns(), "table", null, 1, 1, BusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(businessColumnSetEClass, BusinessColumnSet.class, "BusinessColumnSet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -725,6 +764,11 @@ public class BusinessModelPackageImpl extends EPackageImpl implements BusinessMo
 		initEReference(getBusinessViewInnerJoinRelationship_DestinationTable(), thePhysicalModelPackage.getPhysicalTable(), null, "destinationTable", null, 1, 1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessViewInnerJoinRelationship_SourceColumns(), thePhysicalModelPackage.getPhysicalColumn(), null, "sourceColumns", null, 0, -1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBusinessViewInnerJoinRelationship_DestinationColumns(), thePhysicalModelPackage.getPhysicalColumn(), null, "destinationColumns", null, 0, -1, BusinessViewInnerJoinRelationship.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(simpleBusinessColumnEClass, SimpleBusinessColumn.class, "SimpleBusinessColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSimpleBusinessColumn_PhysicalColumn(), thePhysicalModelPackage.getPhysicalColumn(), null, "physicalColumn", null, 1, 1, SimpleBusinessColumn.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(calculatedBusinessColumnEClass, CalculatedBusinessColumn.class, "CalculatedBusinessColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 	}
 
 } //BusinessModelPackageImpl

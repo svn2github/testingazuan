@@ -1,6 +1,6 @@
 /**
 
-SpagoBI - The Business Intelligence Free Platform
+RSpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
 

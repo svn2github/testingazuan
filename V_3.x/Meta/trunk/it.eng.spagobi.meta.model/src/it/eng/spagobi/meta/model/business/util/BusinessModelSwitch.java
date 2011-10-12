@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.util;
 
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.*;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessDomain;
@@ -177,6 +178,22 @@ public class BusinessModelSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case BusinessModelPackage.SIMPLE_BUSINESS_COLUMN: {
+				SimpleBusinessColumn simpleBusinessColumn = (SimpleBusinessColumn)theEObject;
+				T result = caseSimpleBusinessColumn(simpleBusinessColumn);
+				if (result == null) result = caseBusinessColumn(simpleBusinessColumn);
+				if (result == null) result = caseModelObject(simpleBusinessColumn);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case BusinessModelPackage.CALCULATED_BUSINESS_COLUMN: {
+				CalculatedBusinessColumn calculatedBusinessColumn = (CalculatedBusinessColumn)theEObject;
+				T result = caseCalculatedBusinessColumn(calculatedBusinessColumn);
+				if (result == null) result = caseBusinessColumn(calculatedBusinessColumn);
+				if (result == null) result = caseModelObject(calculatedBusinessColumn);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -313,6 +330,36 @@ public class BusinessModelSwitch<T> {
 	 * @generated
 	 */
 	public T caseBusinessViewInnerJoinRelationship(BusinessViewInnerJoinRelationship object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Simple Business Column</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Simple Business Column</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSimpleBusinessColumn(SimpleBusinessColumn object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Calculated Business Column</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Calculated Business Column</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCalculatedBusinessColumn(CalculatedBusinessColumn object) {
 		return null;
 	}
 

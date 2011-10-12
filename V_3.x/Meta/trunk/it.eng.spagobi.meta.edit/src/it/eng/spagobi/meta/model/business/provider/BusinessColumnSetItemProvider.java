@@ -172,6 +172,16 @@ public class BusinessColumnSetItemProvider
 			(createChildParameter
 				(BusinessModelPackage.Literals.BUSINESS_COLUMN_SET__COLUMNS,
 				 BusinessModelFactory.eINSTANCE.createBusinessColumn()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_COLUMN_SET__COLUMNS,
+				 BusinessModelFactory.eINSTANCE.createSimpleBusinessColumn()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(BusinessModelPackage.Literals.BUSINESS_COLUMN_SET__COLUMNS,
+				 BusinessModelFactory.eINSTANCE.createCalculatedBusinessColumn()));
 	}
 
 	/**

@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
@@ -112,7 +113,7 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		
 		
 		for(PhysicalColumn column: columnsToRemove) {
-			BusinessColumn businessColumnToRemove = businessTable.getColumn(column);
+			SimpleBusinessColumn businessColumnToRemove = businessTable.getSimpleBusinessColumn(column);
 			
 			boolean canBeDeleted = true;
 			if(businessTable instanceof BusinessView) {

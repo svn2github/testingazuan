@@ -299,6 +299,52 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.SimpleBusinessColumn} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected SimpleBusinessColumnItemProvider simpleBusinessColumnItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.business.SimpleBusinessColumn}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createSimpleBusinessColumnAdapter() {
+		if (simpleBusinessColumnItemProvider == null) {
+			simpleBusinessColumnItemProvider = new SimpleBusinessColumnItemProvider(this);
+		}
+
+		return simpleBusinessColumnItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.business.CalculatedBusinessColumn} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected CalculatedBusinessColumnItemProvider calculatedBusinessColumnItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.business.CalculatedBusinessColumn}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createCalculatedBusinessColumnAdapter() {
+		if (calculatedBusinessColumnItemProvider == null) {
+			calculatedBusinessColumnItemProvider = new CalculatedBusinessColumnItemProvider(this);
+		}
+
+		return calculatedBusinessColumnItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -406,6 +452,8 @@ public class BusinessModelItemProviderAdapterFactory extends BusinessModelAdapte
 		if (businessDomainItemProvider != null) businessDomainItemProvider.dispose();
 		if (businessIdentifierItemProvider != null) businessIdentifierItemProvider.dispose();
 		if (businessViewInnerJoinRelationshipItemProvider != null) businessViewInnerJoinRelationshipItemProvider.dispose();
+		if (simpleBusinessColumnItemProvider != null) simpleBusinessColumnItemProvider.dispose();
+		if (calculatedBusinessColumnItemProvider != null) calculatedBusinessColumnItemProvider.dispose();
 	}
 
 }

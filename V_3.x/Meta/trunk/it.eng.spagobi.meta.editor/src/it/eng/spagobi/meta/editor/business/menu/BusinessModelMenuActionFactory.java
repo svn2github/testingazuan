@@ -41,6 +41,8 @@ import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
@@ -103,7 +105,7 @@ public class BusinessModelMenuActionFactory {
 //			 List removeActions = new ArrayList();
 //			 removeActions.add(new RemovePhysicalTableToBusinessViewAction(activeEditorPart, selection));
 //			 actions.put("Remove", removeActions);
-		} else if(target instanceof BusinessColumn){
+		} else if(target instanceof SimpleBusinessColumn){
 			List editActions = new ArrayList();
 			List removeActions = new ArrayList();
 			BusinessColumn businessColumn = (BusinessColumn)target;
@@ -124,6 +126,11 @@ public class BusinessModelMenuActionFactory {
 				}
 				actions.put("Edit", editActions);
 			}
+	    } else if(target instanceof CalculatedBusinessColumn){
+			List editActions = new ArrayList();
+			List removeActions = new ArrayList();
+			CalculatedBusinessColumn businessColumn = (CalculatedBusinessColumn)target;
+
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();
 	    	editActions.add(new AddBusinessTableAction(activeEditorPart, selection, null));

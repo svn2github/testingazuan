@@ -44,7 +44,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl#getPhysicalColumn <em>Physical Column</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.business.impl.BusinessColumnImpl#getTable <em>Table</em>}</li>
  * </ul>
  * </p>
@@ -52,16 +51,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @generated
  */
 public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColumn {
-	/**
-	 * The cached value of the '{@link #getPhysicalColumn() <em>Physical Column</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getPhysicalColumn()
-	 * @generated
-	 * @ordered
-	 */
-	protected PhysicalColumn physicalColumn;
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,44 +68,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	@Override
 	protected EClass eStaticClass() {
 		return BusinessModelPackage.Literals.BUSINESS_COLUMN;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalColumn getPhysicalColumn() {
-		if (physicalColumn != null && physicalColumn.eIsProxy()) {
-			InternalEObject oldPhysicalColumn = (InternalEObject)physicalColumn;
-			physicalColumn = (PhysicalColumn)eResolveProxy(oldPhysicalColumn);
-			if (physicalColumn != oldPhysicalColumn) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN, oldPhysicalColumn, physicalColumn));
-			}
-		}
-		return physicalColumn;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PhysicalColumn basicGetPhysicalColumn() {
-		return physicalColumn;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPhysicalColumn(PhysicalColumn newPhysicalColumn) {
-		PhysicalColumn oldPhysicalColumn = physicalColumn;
-		physicalColumn = newPhysicalColumn;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN, oldPhysicalColumn, physicalColumn));
 	}
 
 	/**
@@ -212,9 +163,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
-				if (resolve) return getPhysicalColumn();
-				return basicGetPhysicalColumn();
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
 				return getTable();
 		}
@@ -229,9 +177,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
-				setPhysicalColumn((PhysicalColumn)newValue);
-				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
 				setTable((BusinessColumnSet)newValue);
 				return;
@@ -247,9 +192,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
-				setPhysicalColumn((PhysicalColumn)null);
-				return;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
 				setTable((BusinessColumnSet)null);
 				return;
@@ -265,8 +207,6 @@ public class BusinessColumnImpl extends ModelObjectImpl implements BusinessColum
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case BusinessModelPackage.BUSINESS_COLUMN__PHYSICAL_COLUMN:
-				return physicalColumn != null;
 			case BusinessModelPackage.BUSINESS_COLUMN__TABLE:
 				return getTable() != null;
 		}

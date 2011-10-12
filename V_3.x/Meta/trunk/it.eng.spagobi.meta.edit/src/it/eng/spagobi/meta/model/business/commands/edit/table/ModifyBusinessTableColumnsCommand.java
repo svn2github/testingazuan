@@ -28,6 +28,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -115,7 +116,7 @@ public class ModifyBusinessTableColumnsCommand extends AbstractSpagoBIModelEditC
 	
 	private Collection<PhysicalColumn> extractPhysicalColumns(BusinessColumnSet businessColumnSet) {
 		List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
-		for(BusinessColumn businessColumn: businessColumnSet.getColumns()) {
+		for(SimpleBusinessColumn businessColumn: businessColumnSet.getSimpleBusinessColumns()) {
 			physicalColumns.add(businessColumn.getPhysicalColumn());
 		}
 		return physicalColumns;

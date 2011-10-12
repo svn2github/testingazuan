@@ -122,6 +122,24 @@ public interface BusinessModelFactory extends EFactory {
 	BusinessViewInnerJoinRelationship createBusinessViewInnerJoinRelationship();
 
 	/**
+	 * Returns a new object of class '<em>Simple Business Column</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Simple Business Column</em>'.
+	 * @generated
+	 */
+	SimpleBusinessColumn createSimpleBusinessColumn();
+
+	/**
+	 * Returns a new object of class '<em>Calculated Business Column</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Calculated Business Column</em>'.
+	 * @generated
+	 */
+	CalculatedBusinessColumn createCalculatedBusinessColumn();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -34,6 +34,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -145,7 +146,7 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 						if (businessView.getJoinRelationships().size() == 1){
 							//downgrade to BusinessTable
 							
-							for(BusinessColumn bc: businessView.getColumns()) {
+							for(SimpleBusinessColumn bc: businessView.getSimpleBusinessColumns()) {
 								if(bc.getPhysicalColumn().getTable().equals(physicalTable)) {
 									removedBusinessColumns.add( bc );
 								}				
@@ -159,8 +160,8 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 							businessModel.getJoinRelationships().remove(joinRelationship);
 							
 							//remove physical table's columns
-							EList<BusinessColumn> businessColumns = businessView.getColumns();
-							for (BusinessColumn businessColumn : businessColumns){
+							List<SimpleBusinessColumn> businessColumns = businessView.getSimpleBusinessColumns();
+							for (SimpleBusinessColumn businessColumn : businessColumns){
 								if (businessColumn.getPhysicalColumn().getTable() == physicalTable){
 									businessView.getColumns().remove(businessColumn);
 								}

@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
@@ -68,8 +69,15 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 	@Override
 	protected Object getValue(Object element) {
 //		SelectField selectField = (SelectField) element;
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-		String function = selectField.getFunction().getName();
+		String function = null;
+		if (element instanceof DataMartSelectField){
+			DataMartSelectField selectField = ((DataMartSelectField) element);		
+			function = selectField.getFunction().getName();
+
+		} else if (element instanceof InLineCalculatedSelectField){
+			InLineCalculatedSelectField selectField = ((InLineCalculatedSelectField) element);		
+			function = selectField.getFunction().getName();
+		}
 		if (function.equals("NONE")) {
 			return 0;
 		} else if (function.equals("SUM")){
@@ -92,23 +100,41 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {
 //		SelectField selectField = (SelectField) element;
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-
-		if (((Integer) value) == 0) {
-			selectField.setFunction(AggregationFunctions.NONE_FUNCTION);
-		} else if (((Integer) value) == 1) {
-			selectField.setFunction(AggregationFunctions.SUM_FUNCTION);
-		} else if (((Integer) value) == 2) {
-			selectField.setFunction(AggregationFunctions.AVG_FUNCTION);
-		} else if (((Integer) value) == 3) {
-			selectField.setFunction(AggregationFunctions.MAX_FUNCTION);
-		} else if (((Integer) value) == 4) {
-			selectField.setFunction(AggregationFunctions.MIN_FUNCTION);
-		} else if (((Integer) value) == 5) {
-			selectField.setFunction(AggregationFunctions.COUNT_FUNCTION);
-		} else if (((Integer) value) == 6) {
-			selectField.setFunction(AggregationFunctions.COUNT_DISTINCT_FUNCTION);
-		}
+		if (element instanceof DataMartSelectField){
+			DataMartSelectField selectField = ((DataMartSelectField) element);
+			if (((Integer) value) == 0) {
+				selectField.setFunction(AggregationFunctions.NONE_FUNCTION);
+			} else if (((Integer) value) == 1) {
+				selectField.setFunction(AggregationFunctions.SUM_FUNCTION);
+			} else if (((Integer) value) == 2) {
+				selectField.setFunction(AggregationFunctions.AVG_FUNCTION);
+			} else if (((Integer) value) == 3) {
+				selectField.setFunction(AggregationFunctions.MAX_FUNCTION);
+			} else if (((Integer) value) == 4) {
+				selectField.setFunction(AggregationFunctions.MIN_FUNCTION);
+			} else if (((Integer) value) == 5) {
+				selectField.setFunction(AggregationFunctions.COUNT_FUNCTION);
+			} else if (((Integer) value) == 6) {
+				selectField.setFunction(AggregationFunctions.COUNT_DISTINCT_FUNCTION);
+			}
+		} else if (element instanceof InLineCalculatedSelectField){
+			InLineCalculatedSelectField selectField = ((InLineCalculatedSelectField) element);	
+			if (((Integer) value) == 0) {
+				selectField.setFunction(AggregationFunctions.NONE_FUNCTION);
+			} else if (((Integer) value) == 1) {
+				selectField.setFunction(AggregationFunctions.SUM_FUNCTION);
+			} else if (((Integer) value) == 2) {
+				selectField.setFunction(AggregationFunctions.AVG_FUNCTION);
+			} else if (((Integer) value) == 3) {
+				selectField.setFunction(AggregationFunctions.MAX_FUNCTION);
+			} else if (((Integer) value) == 4) {
+				selectField.setFunction(AggregationFunctions.MIN_FUNCTION);
+			} else if (((Integer) value) == 5) {
+				selectField.setFunction(AggregationFunctions.COUNT_FUNCTION);
+			} else if (((Integer) value) == 6) {
+				selectField.setFunction(AggregationFunctions.COUNT_DISTINCT_FUNCTION);
+			}
+		} 
 
 		viewer.refresh();
 		

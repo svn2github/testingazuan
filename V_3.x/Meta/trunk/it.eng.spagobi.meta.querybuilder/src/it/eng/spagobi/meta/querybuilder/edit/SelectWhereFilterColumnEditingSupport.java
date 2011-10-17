@@ -65,14 +65,16 @@ public class SelectWhereFilterColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-		IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
-		String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
-		Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName);
-		if(whereViewer!=null){
-			whereViewer.setInput(query.getWhereFields());
-			whereViewer.refresh();	
-			queryBuilder.setDirtyEditor();
+		if (element instanceof DataMartSelectField){
+			DataMartSelectField selectField = ((DataMartSelectField) element);
+			IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
+			String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
+			Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName);
+			if(whereViewer!=null){
+				whereViewer.setInput(query.getWhereFields());
+				whereViewer.refresh();	
+				queryBuilder.setDirtyEditor();
+			}			
 		}
 	}
 

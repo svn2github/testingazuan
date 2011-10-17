@@ -130,7 +130,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		lblType.setText("Type:");
 		
 		comboType = new Combo(groupHeader, SWT.READ_ONLY);
-		comboType.setItems(new String[] {"String", "Number"});
+		comboType.setItems(new String[] {"STRING", "NUMBER"});
 		comboType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboType.select(0);
 	}

@@ -65,15 +65,18 @@ public class SelectHavingFilterColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-		IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
-		String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
-		Query query = queryBuilder.addHavingField(selectField.getUniqueName(), fieldName, selectField.getFunction());
-		if(havingViewer!=null){
-			havingViewer.setInput(query.getHavingFields());
-			havingViewer.refresh();
-			queryBuilder.setDirtyEditor();
+		if (element instanceof DataMartSelectField) {
+			DataMartSelectField selectField = ((DataMartSelectField) element);
+			IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
+			String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
+			Query query = queryBuilder.addHavingField(selectField.getUniqueName(), fieldName, selectField.getFunction());
+			if(havingViewer!=null){
+				havingViewer.setInput(query.getHavingFields());
+				havingViewer.refresh();
+				queryBuilder.setDirtyEditor();
+			}			
 		}
+
 	}
 
 }

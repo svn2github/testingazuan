@@ -30,6 +30,7 @@ import it.eng.qbe.model.structure.FilteredModelStructure;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelCalculatedField;
 import it.eng.qbe.model.structure.filter.IQbeTreeEntityFilter;
 import it.eng.qbe.model.structure.filter.IQbeTreeFieldFilter;
 import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityEntityFilter;
@@ -264,10 +265,19 @@ public class QueryBuilder {
 			for (IModelField dataMartField : dataMartFields){
 				addField(dataMartField);
 			}        	
-        } else if(selectionData instanceof IModelField){
+        } 
+		else if(selectionData instanceof ModelCalculatedField){       	
+        	addField((ModelCalculatedField)selectionData);
+        }
+		else if(selectionData instanceof IModelField){       	
         	addField((IModelField)selectionData);
         }
 		return query;
+	}
+	
+	public void addField(ModelCalculatedField dataMartCalculatedField){
+		String alias = labelProvider.getLabel(dataMartCalculatedField);
+		query.addInLineCalculatedFiled(alias, dataMartCalculatedField.getExpression(),dataMartCalculatedField.getType(), true, true, false, null, "NONE");
 	}
 	
 	public void addField(IModelField dataMartField) {

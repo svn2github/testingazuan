@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
+import it.eng.qbe.query.AbstractSelectField;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -58,14 +59,20 @@ public class IncludeColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-		return selectField.isIncluded();
+		if (element instanceof AbstractSelectField){
+			AbstractSelectField selectField = ((AbstractSelectField) element);
+			return selectField.isIncluded();
+		}
+		return null;
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		DataMartSelectField selectField = ((DataMartSelectField) element);
-		selectField.setIncluded((Boolean) value);
+		if (element instanceof AbstractSelectField){
+			AbstractSelectField selectField = ((AbstractSelectField) element);
+			selectField.setIncluded((Boolean) value);	
+		}
+
 		viewer.refresh();
 		
 		queryBuilder.setDirtyEditor();

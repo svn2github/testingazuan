@@ -23,6 +23,7 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
@@ -137,9 +138,16 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				DataMartSelectField field = (DataMartSelectField) element;
-				IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
-				return modelField.getParent().getName();
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
+					return modelField.getParent().getName();
+				}
+				else if (element instanceof InLineCalculatedSelectField){
+					return "";
+				}
+				return "";
+
 			}
 		});		
 		
@@ -150,9 +158,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getField();
-				DataMartSelectField field = (DataMartSelectField) element;
-				IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
-				return modelField.getName();
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
+					return modelField.getName();					
+				} else if (element instanceof InLineCalculatedSelectField){
+					return "";
+				}
+				return "";
+
 			}
 		});		
 		
@@ -163,8 +177,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getAlias();
-				DataMartSelectField field = (DataMartSelectField) element;
-				return field.getAlias();
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					return field.getAlias();					
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					return field.getAlias();	
+				}
+				return "";
+
 			}
 		});		
 		col.setEditingSupport(new AliasColumnEditingSupport(viewer,queryBuilder));
@@ -176,8 +197,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getFunction();
-				DataMartSelectField field = (DataMartSelectField) element;
-				return field.getFunction().getName();
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					return field.getFunction().getName();					
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					return field.getFunction().getName();		
+				}
+				return "";
+
 			}
 		});		
 		col.setEditingSupport(new FunctionColumnEditingSupport(viewer,queryBuilder));
@@ -190,8 +218,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getOrder();
-				DataMartSelectField field = (DataMartSelectField) element;
-				return field.getOrderType();
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					return field.getOrderType();	
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					return field.getOrderType();		
+				}
+				return "";
+
 			}
 		});	
 		col.setEditingSupport(new OrderColumnEditingSupport(viewer,queryBuilder));
@@ -211,8 +246,16 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				} else {
 //					return UNCHECKED;
 //				}
-				DataMartSelectField field = (DataMartSelectField) element;
-				boolean isGroupBy = field.isGroupByField();
+				boolean isGroupBy = false;
+				
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					isGroupBy = field.isGroupByField();
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					isGroupBy = field.isGroupByField();
+				}
+				
 				if (isGroupBy){
 					return CHECKED;
 				} else {
@@ -238,8 +281,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				} else {
 //					return UNCHECKED;
 //				}
-				DataMartSelectField field = (DataMartSelectField) element;
-				boolean isIncluded = field.isIncluded();
+				boolean isIncluded = false;
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					isIncluded = field.isIncluded();					
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					isIncluded = field.isIncluded();	
+				}
+
 				if (isIncluded){
 					return CHECKED;
 				} else {
@@ -265,8 +315,15 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				} else {
 //					return UNCHECKED;
 //				}
-				DataMartSelectField field = (DataMartSelectField) element;
-				boolean isVisible = field.isVisible();
+				boolean isVisible = false;
+				if (element instanceof DataMartSelectField){
+					DataMartSelectField field = (DataMartSelectField) element;
+					isVisible = field.isVisible();
+				} else if (element instanceof InLineCalculatedSelectField){
+					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
+					isVisible = field.isVisible();	
+				}
+
 				if (isVisible){
 					return CHECKED;
 				} else {

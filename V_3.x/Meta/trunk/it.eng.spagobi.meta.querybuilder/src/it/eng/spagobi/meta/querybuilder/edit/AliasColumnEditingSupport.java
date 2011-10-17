@@ -22,7 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 
+import it.eng.qbe.query.AbstractSelectField;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -60,12 +62,17 @@ public class AliasColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		return ((DataMartSelectField) element).getAlias();
+		if (element instanceof AbstractSelectField){
+			return ((AbstractSelectField) element).getAlias();
+		}
+		return null;
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {	
-		((DataMartSelectField) element).setAlias(String.valueOf(value));
+		if (element instanceof AbstractSelectField){
+			((AbstractSelectField) element).setAlias(String.valueOf(value));
+		}
 		viewer.refresh();
 		
 		queryBuilder.setDirtyEditor();

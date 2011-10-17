@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
+import it.eng.qbe.query.SimpleSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 
@@ -70,8 +70,8 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 	protected Object getValue(Object element) {
 //		SelectField selectField = (SelectField) element;
 		String function = null;
-		if (element instanceof DataMartSelectField){
-			DataMartSelectField selectField = ((DataMartSelectField) element);		
+		if (element instanceof SimpleSelectField){
+			SimpleSelectField selectField = ((SimpleSelectField) element);		
 			function = selectField.getFunction().getName();
 
 		} else if (element instanceof InLineCalculatedSelectField){
@@ -100,8 +100,8 @@ public class FunctionColumnEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {
 //		SelectField selectField = (SelectField) element;
-		if (element instanceof DataMartSelectField){
-			DataMartSelectField selectField = ((DataMartSelectField) element);
+		if (element instanceof SimpleSelectField){
+			SimpleSelectField selectField = ((SimpleSelectField) element);
 			if (((Integer) value) == 0) {
 				selectField.setFunction(AggregationFunctions.NONE_FUNCTION);
 			} else if (((Integer) value) == 1) {

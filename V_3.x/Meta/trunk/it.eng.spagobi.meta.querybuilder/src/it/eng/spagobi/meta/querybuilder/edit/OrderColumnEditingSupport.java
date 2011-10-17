@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
+import it.eng.qbe.query.SimpleSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -63,8 +63,8 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		if (element instanceof DataMartSelectField) {
-			DataMartSelectField selectField = ((DataMartSelectField) element);	
+		if (element instanceof SimpleSelectField) {
+			SimpleSelectField selectField = ((SimpleSelectField) element);	
 			if (selectField.getOrderType().equals("NONE")) {
 				return 0;
 			} else if (selectField.getOrderType().equals("ASC")){
@@ -88,8 +88,8 @@ public class OrderColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		if (element instanceof DataMartSelectField){
-			DataMartSelectField selectField = ((DataMartSelectField) element);
+		if (element instanceof SimpleSelectField){
+			SimpleSelectField selectField = ((SimpleSelectField) element);
 			if (((Integer) value) == 0) {
 				selectField.setOrderType("NONE");
 			} else if (((Integer) value) == 1) {

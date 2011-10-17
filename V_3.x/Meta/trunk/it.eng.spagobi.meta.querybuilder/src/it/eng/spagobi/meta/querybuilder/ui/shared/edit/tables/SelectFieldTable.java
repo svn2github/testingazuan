@@ -22,9 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.SimpleSelectField;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 import it.eng.spagobi.meta.querybuilder.dnd.QueryBuilderDropSelectListener;
@@ -138,8 +138,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
 					return modelField.getParent().getName();
 				}
@@ -158,8 +158,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getField();
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					IModelField modelField = queryBuilder.getBaseModelStructure().getField(field.getUniqueName());
 					return modelField.getName();					
 				} else if (element instanceof InLineCalculatedSelectField){
@@ -177,8 +177,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getAlias();
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					return field.getAlias();					
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
@@ -197,8 +197,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getFunction();
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					return field.getFunction().getName();					
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
@@ -218,8 +218,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 			public String getText(Object element) {
 //				SelectField field = (SelectField) element;
 //				return field.getOrder();
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					return field.getOrderType();	
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
@@ -248,8 +248,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				}
 				boolean isGroupBy = false;
 				
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					isGroupBy = field.isGroupByField();
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
@@ -282,8 +282,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //					return UNCHECKED;
 //				}
 				boolean isIncluded = false;
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					isIncluded = field.isIncluded();					
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
@@ -316,8 +316,8 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //					return UNCHECKED;
 //				}
 				boolean isVisible = false;
-				if (element instanceof DataMartSelectField){
-					DataMartSelectField field = (DataMartSelectField) element;
+				if (element instanceof SimpleSelectField){
+					SimpleSelectField field = (SimpleSelectField) element;
 					isVisible = field.isVisible();
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;

@@ -144,16 +144,17 @@ public class JpaCalculatedColumn implements IJpaCalculatedColumn {
 			}
 		}
 		
-		/* FOR FUTURE IMPLEMENTATION, DO NOT REMOVE
 		for (int i = 0; i<operands.size(); i++){
 			System.out.println("Replacing "+operands.get(i)+" with "+jpaColumns.get(i).getUniqueName());
 			expression = expression.replace(operands.get(i),jpaColumns.get(i).getUniqueName());
 		}
-		*/
+		expression = expression.replaceAll("/", ":");
+		
+		/*
 		for (int i = 0; i<operands.size(); i++){
 			System.out.println("Replacing "+operands.get(i)+" with "+jpaColumns.get(i).getName());
 			expression = expression.replace(operands.get(i),jpaColumns.get(i).getName());
-		}
+		}*/
 		
 		
 		return expression;

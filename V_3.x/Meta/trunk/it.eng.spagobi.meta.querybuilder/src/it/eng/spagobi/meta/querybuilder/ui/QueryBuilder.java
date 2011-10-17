@@ -218,7 +218,7 @@ public class QueryBuilder {
 		String[] values = new String[1];
 		values[0] = uniqueName;
 
-		Operand leftOperand = new Operand(values,fieldName, AbstractStatement.OPERAND_TYPE_FIELD, values,values);
+		Operand leftOperand = new Operand(values,fieldName, AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD, values,values);
 		query.addWhereField("Filter"+whereFilterCount, "Filter"+whereFilterCount, true, leftOperand, "NONE", null, "AND");
 		ExpressionNode node = query.getWhereClauseStructure();
 		if(node==null){
@@ -247,7 +247,7 @@ public class QueryBuilder {
 		String[] values = new String[1];
 		values[0] = uniqueName;
 
-		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_FIELD, values, values,aggregation);
+		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD , values, values,aggregation);
 		query = getQuery();
 		query.addHavingField("Having"+havingFilterCount, "Having"+havingFilterCount, false, leftOperand, "NONE", null, "AND");
 
@@ -277,7 +277,7 @@ public class QueryBuilder {
 	
 	public void addField(ModelCalculatedField dataMartCalculatedField){
 		String alias = labelProvider.getLabel(dataMartCalculatedField);
-		query.addInLineCalculatedFiled(alias, dataMartCalculatedField.getExpression(),dataMartCalculatedField.getType(), true, true, false, null, "NONE");
+		query.addInLineCalculatedFiled(alias, dataMartCalculatedField.getExpression(), null, dataMartCalculatedField.getType(), true, true, false, null, "NONE");
 	}
 	
 	public void addField(IModelField dataMartField) {

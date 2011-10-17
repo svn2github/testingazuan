@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.edit;
 
-import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.InLineCalculatedSelectField;
+import it.eng.qbe.query.SimpleSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -59,8 +59,8 @@ public class GroupColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		if (element instanceof DataMartSelectField) {
-			DataMartSelectField selectField = ((DataMartSelectField) element);
+		if (element instanceof SimpleSelectField) {
+			SimpleSelectField selectField = ((SimpleSelectField) element);
 			return selectField.isGroupByField();
 		} else if (element instanceof InLineCalculatedSelectField){
 			InLineCalculatedSelectField selectField = ((InLineCalculatedSelectField) element);
@@ -72,8 +72,8 @@ public class GroupColumnEditingSupport extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		if (element instanceof DataMartSelectField) {
-			DataMartSelectField selectField = ((DataMartSelectField) element);
+		if (element instanceof SimpleSelectField) {
+			SimpleSelectField selectField = ((SimpleSelectField) element);
 			selectField.setGroupByField((Boolean) value);
 		} else if (element instanceof InLineCalculatedSelectField){
 			InLineCalculatedSelectField selectField = ((InLineCalculatedSelectField) element);

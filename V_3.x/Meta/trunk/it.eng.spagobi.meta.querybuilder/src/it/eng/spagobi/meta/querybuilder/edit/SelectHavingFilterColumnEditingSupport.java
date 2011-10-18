@@ -69,7 +69,7 @@ public class SelectHavingFilterColumnEditingSupport extends EditingSupport {
 			SimpleSelectField selectField = ((SimpleSelectField) element);
 			IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
 			String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
-			Query query = queryBuilder.addHavingField(selectField.getUniqueName(), fieldName, selectField.getFunction());
+			Query query = queryBuilder.addHavingField(selectField.getUniqueName(), fieldName, selectField.getFunction(),false);
 			if(havingViewer!=null){
 				havingViewer.setInput(query.getHavingFields());
 				havingViewer.refresh();

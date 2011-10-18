@@ -69,7 +69,7 @@ public class SelectWhereFilterColumnEditingSupport extends EditingSupport {
 			SimpleSelectField selectField = ((SimpleSelectField) element);
 			IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
 			String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
-			Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName);
+			Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName, false);
 			if(whereViewer!=null){
 				whereViewer.setInput(query.getWhereFields());
 				whereViewer.refresh();	

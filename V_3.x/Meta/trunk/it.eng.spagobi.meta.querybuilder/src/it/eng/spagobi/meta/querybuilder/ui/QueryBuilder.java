@@ -209,16 +209,26 @@ public class QueryBuilder {
 	}
 
 	public Query addWhereField(IModelField dataMartField){
+		boolean isCalculatedField = false;
 		String fieldName = dataMartField.getParent().getName()+" : "+dataMartField.getName();
-		return addWhereField(dataMartField.getUniqueName(), fieldName);
+		if (dataMartField instanceof ModelCalculatedField){
+			isCalculatedField = true;
+		}		
+		return addWhereField(dataMartField.getUniqueName(), fieldName, isCalculatedField);
 	}
 
-	public Query addWhereField(String uniqueName, String fieldName){
-
+	public Query addWhereField(String uniqueName, String fieldName, boolean isCalculatedField){
 		String[] values = new String[1];
 		values[0] = uniqueName;
+		String operandType;
+		if (isCalculatedField){
+			operandType = AbstractStatement.OPERAND_TYPE_INLINE_CALCULATED_FIELD;
+		} else {
+			operandType = AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD;
+		}
+			
 
-		Operand leftOperand = new Operand(values,fieldName, AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD, values,values);
+		Operand leftOperand = new Operand(values,fieldName, operandType, values,values);
 		query.addWhereField("Filter"+whereFilterCount, "Filter"+whereFilterCount, true, leftOperand, "NONE", null, "AND");
 		ExpressionNode node = query.getWhereClauseStructure();
 		if(node==null){
@@ -238,16 +248,27 @@ public class QueryBuilder {
 	}
 
 	public Query addHavingField(IModelField dataMartField){	
+		boolean isCalculatedField = false;
 		String fieldName = dataMartField.getParent().getName()+" : "+dataMartField.getName();
-		return addHavingField(dataMartField.getUniqueName(),fieldName, AggregationFunctions.NONE_FUNCTION);
+		if (dataMartField instanceof ModelCalculatedField){
+			isCalculatedField = true;
+		}	
+		return addHavingField(dataMartField.getUniqueName(),fieldName, AggregationFunctions.NONE_FUNCTION, isCalculatedField);
 	}
 
-	public Query addHavingField(String uniqueName, String fieldName,IAggregationFunction aggregation){
+	public Query addHavingField(String uniqueName, String fieldName,IAggregationFunction aggregation, boolean isCalculatedField){
 
 		String[] values = new String[1];
 		values[0] = uniqueName;
+		String operandType;
+		
+		if (isCalculatedField){
+			operandType = AbstractStatement.OPERAND_TYPE_INLINE_CALCULATED_FIELD;
+		} else {
+			operandType = AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD;
+		}
 
-		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD , values, values,aggregation);
+		it.eng.qbe.query.HavingField.Operand leftOperand = new it.eng.qbe.query.HavingField.Operand(values, fieldName, operandType , values, values,aggregation);
 		query = getQuery();
 		query.addHavingField("Having"+havingFilterCount, "Having"+havingFilterCount, false, leftOperand, "NONE", null, "AND");
 

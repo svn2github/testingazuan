@@ -58,6 +58,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 
 	private BusinessView businessView;
 	private List<IJpaCalculatedColumn> jpaCalculatedColumns;
+	private List<BusinessColumn> businessColumnOfInnerTable;
 
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
@@ -126,6 +127,30 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		logger.trace("OUT");
 		
 		return jpaColumns;
+	}
+	
+	public List<BusinessColumn> getBusinessColumnsOfInnerTable() {
+		
+		logger.trace("IN");
+		
+		if (businessColumnOfInnerTable == null) {
+			businessColumnOfInnerTable = new ArrayList<BusinessColumn>();
+			
+			for (PhysicalColumn physicalColumn : physicalTable.getColumns()){
+				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
+				// if the colums belong to the BusinessView
+				if (businessColumn!=null){
+						if (businessColumn instanceof SimpleBusinessColumn){
+							businessColumnOfInnerTable.add((SimpleBusinessColumn)businessColumn);
+							logger.info("Found "+businessColumn.getName()+" of this Inner Table"+this.getName());
+						}
+					}					
+				}	
+		}
+		
+		logger.trace("OUT");
+		
+		return businessColumnOfInnerTable;
 	}
 	
 	public List<IJpaCalculatedColumn> getCalculatedColumns(){

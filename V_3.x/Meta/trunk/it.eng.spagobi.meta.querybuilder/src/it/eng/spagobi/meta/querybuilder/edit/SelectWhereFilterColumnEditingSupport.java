@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.edit;
 
 import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SimpleSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
@@ -69,12 +70,20 @@ public class SelectWhereFilterColumnEditingSupport extends EditingSupport {
 			SimpleSelectField selectField = ((SimpleSelectField) element);
 			IModelField modelField = queryBuilder.getBaseModelStructure().getField(selectField.getUniqueName());
 			String fieldName = modelField.getParent().getName()+" : "+modelField.getName();
-			Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName, false);
+			Query query = queryBuilder.addWhereField(selectField.getUniqueName(), fieldName, false,null);
 			if(whereViewer!=null){
 				whereViewer.setInput(query.getWhereFields());
 				whereViewer.refresh();	
 				queryBuilder.setDirtyEditor();
 			}			
+		} else if (element instanceof InLineCalculatedSelectField){
+			InLineCalculatedSelectField selectField = ((InLineCalculatedSelectField) element);
+			Query query = queryBuilder.addWhereField(null, selectField.getName(), true,selectField.getExpression());
+			if(whereViewer!=null){
+				whereViewer.setInput(query.getWhereFields());
+				whereViewer.refresh();	
+				queryBuilder.setDirtyEditor();
+			}
 		}
 	}
 

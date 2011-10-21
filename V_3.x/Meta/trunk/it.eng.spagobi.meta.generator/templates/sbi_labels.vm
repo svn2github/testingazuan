@@ -22,8 +22,8 @@ ${jpaSubEntity.uniqueName}.label = $jpaSubEntity.label
 ${jpaSubEntity.uniqueName}.tooltip = $jpaSubEntity.tooltip
 
 #foreach ($jpaColumn in $jpaSubEntity.getColumns())
-${jpaColumn.uniqueName}.label = $jpaColumn.name
-${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
+${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.label = $jpaColumn.name
+${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.tooltip = $jpaColumn.description
 #end
 #end
 

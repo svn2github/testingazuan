@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaSubEntity;
+
 import java.util.List;
 
 /**
@@ -56,5 +58,7 @@ public interface IJpaSubEntity {
 	 * @return the unique columns names of the sub entity
 	 */
 	public List<String> getColumnUniqueNames();
+	
+	public JpaSubEntity getParent();
 	
 }

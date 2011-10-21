@@ -26,6 +26,7 @@ import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.generator.SpagoBIMetaGeneratorPlugin;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
@@ -381,6 +382,27 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		    for( IJpaView jpaView : model.getViews()) {
 		    	tables.addAll(jpaView.getInnerTables());
 		    }
+		    
+		    //ONLY FOR TESTING
+		    for (IJpaTable table : tables){
+		    	List<IJpaSubEntity> subEntities = table.getSubEntities();
+		    	for (IJpaSubEntity subEntity : subEntities){
+		    		/*
+		    		subEntity.getUniqueName();
+		    		if (subEntity.getParent() == null ){
+		    			System.out.println(subEntity.getUniqueName()+" has null parent");
+		    		}
+		    		*/
+		    		System.out.println("Sub entity: "+subEntity.getUniqueName());
+		    		List<String> columnsNames = subEntity.getColumnUniqueNames();
+		    		for (String columnName : columnsNames){
+		    			System.out.println("  Sub entity column: "+columnName);
+		    		}
+		    	}
+		    	
+		    }
+		    //END THIS FOR TEST
+		    
 	        context.put("jpaTables", tables ); //$NON-NLS-1$
 	        context.put("jpaViews", model.getViews() );
 	      

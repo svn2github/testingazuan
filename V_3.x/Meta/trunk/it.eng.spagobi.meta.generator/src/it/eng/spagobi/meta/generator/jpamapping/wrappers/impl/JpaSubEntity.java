@@ -192,6 +192,18 @@ public class JpaSubEntity implements IJpaSubEntity {
 		return uniqueNames;
 	}
 	
+	public List<String> getColumnsNameWithPath()  {
+		String subEntityUniqueName = this.getUniqueName();
+		List<IJpaColumn> columns = getColumns();
+		List<String> columnsNameWithPath = new ArrayList<String>();
+		
+		for(IJpaColumn column : columns) {
+			columnsNameWithPath.add(subEntityUniqueName  + "/" + column.getUnqualifiedUniqueName());
+		}
+		
+		return columnsNameWithPath;
+	}
+	
 	@Override
 	public List<String> getColumnNames() {
 		List<String> columnsNames = new ArrayList<String>();

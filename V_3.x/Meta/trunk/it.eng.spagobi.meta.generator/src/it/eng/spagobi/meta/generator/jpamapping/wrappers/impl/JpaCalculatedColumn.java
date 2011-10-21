@@ -96,6 +96,10 @@ public class JpaCalculatedColumn implements IJpaCalculatedColumn {
 	public IJpaTable getJpaTable() {
 		return jpaTable;
 	}
+	
+	public String getParentUniqueNameWithDoubleDots(){
+		return jpaTable.getUniqueNameWithDoubleDots();
+	}
 
 
 	@Override

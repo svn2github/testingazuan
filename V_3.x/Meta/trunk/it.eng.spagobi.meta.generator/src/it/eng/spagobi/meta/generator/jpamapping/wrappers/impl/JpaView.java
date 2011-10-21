@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
@@ -38,6 +39,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
@@ -54,6 +56,7 @@ public class JpaView implements IJpaView {
 	List<BusinessColumnSet> parents;
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
 	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
+	List<IJpaCalculatedColumn> jpaCalculatedColumns;
 
 	
 	protected JpaView(BusinessView businessView) {
@@ -138,6 +141,38 @@ public class JpaView implements IJpaView {
 		
 		return jpaColumns;	
 	}
+	
+	public List<IJpaCalculatedColumn> getCalculatedColumns(){
+		if (jpaCalculatedColumns == null) {
+			jpaCalculatedColumns = new ArrayList<IJpaCalculatedColumn>();
+			for (CalculatedBusinessColumn calculatedBusinessColumn : businessView.getCalculatedBusinessColumns()) {
+				IJpaTable foundTable = null;
+				List<SimpleBusinessColumn> referencedColumns = calculatedBusinessColumn.getReferencedColumns();
+				List<IJpaTable> innerTables = this.getInnerTables();
+				//check if all the referenced columns are contained in an inner table
+				for (IJpaTable innerTable : innerTables){
+					System.out.println("Checking table: "+innerTable.getName());
+					if (((JpaViewInnerTable)innerTable).getBusinessColumnsOfInnerTable().containsAll(referencedColumns)){
+						foundTable = innerTable;
+						System.out.println("Found table: "+foundTable.getName());
+						break;						
+					}
+				}
+				if (foundTable != null){
+					JpaCalculatedColumn jpaCalculatedColumn = new JpaCalculatedColumn((AbstractJpaTable)foundTable, calculatedBusinessColumn);
+					jpaCalculatedColumns.add(jpaCalculatedColumn);
+					logger.debug("Business table [{}] contains calculated column [{}]", businessView.getName(), calculatedBusinessColumn.getName());					
+				}
+				
+			}
+		}
+		return jpaCalculatedColumns;
+	}
+	
+	public String getUniqueNameWithDoubleDots(){
+		return getUniqueName().replaceAll("/",":");
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaView#getJoinRelationships()

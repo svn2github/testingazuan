@@ -64,6 +64,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,18 +213,28 @@ public class QueryBuilder {
 	public Query addWhereField(IModelField dataMartField){
 		boolean isCalculatedField = false;
 		String fieldName = dataMartField.getParent().getName()+" : "+dataMartField.getName();
+		String expression = null;
 		if (dataMartField instanceof ModelCalculatedField){
 			isCalculatedField = true;
+			expression = ((ModelCalculatedField)dataMartField).getExpression();
 		}		
-		return addWhereField(dataMartField.getUniqueName(), fieldName, isCalculatedField);
+		return addWhereField(dataMartField.getUniqueName(), fieldName, isCalculatedField, expression);
 	}
 
-	public Query addWhereField(String uniqueName, String fieldName, boolean isCalculatedField){
+	public Query addWhereField(String uniqueName, String fieldName, boolean isCalculatedField, String expression){
 		String[] values = new String[1];
 		values[0] = uniqueName;
 		String operandType;
 		if (isCalculatedField){
 			operandType = AbstractStatement.OPERAND_TYPE_INLINE_CALCULATED_FIELD;
+			JSONObject jsonobject = new JSONObject();
+			try {
+				jsonobject.put("expression",expression );
+			} catch (JSONException e) {
+				e.printStackTrace();
+				logger.debug("Json Object error in addWhereField: "+e);
+			}
+			values[0] = jsonobject.toString();
 		} else {
 			operandType = AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD;
 		}
@@ -250,20 +262,29 @@ public class QueryBuilder {
 	public Query addHavingField(IModelField dataMartField){	
 		boolean isCalculatedField = false;
 		String fieldName = dataMartField.getParent().getName()+" : "+dataMartField.getName();
+		String expression = null;
 		if (dataMartField instanceof ModelCalculatedField){
 			isCalculatedField = true;
+			expression = ((ModelCalculatedField)dataMartField).getExpression();
 		}	
-		return addHavingField(dataMartField.getUniqueName(),fieldName, AggregationFunctions.NONE_FUNCTION, isCalculatedField);
+		return addHavingField(dataMartField.getUniqueName(),fieldName, AggregationFunctions.NONE_FUNCTION, isCalculatedField, expression);
 	}
 
-	public Query addHavingField(String uniqueName, String fieldName,IAggregationFunction aggregation, boolean isCalculatedField){
+	public Query addHavingField(String uniqueName, String fieldName,IAggregationFunction aggregation, boolean isCalculatedField, String expression){
 
 		String[] values = new String[1];
 		values[0] = uniqueName;
 		String operandType;
-		
 		if (isCalculatedField){
 			operandType = AbstractStatement.OPERAND_TYPE_INLINE_CALCULATED_FIELD;
+			JSONObject jsonobject = new JSONObject();
+			try {
+				jsonobject.put("expression",expression );
+			} catch (JSONException e) {
+				e.printStackTrace();
+				logger.debug("Json Object error in addHavingField: "+e);
+			}
+			values[0] = jsonobject.toString();
 		} else {
 			operandType = AbstractStatement.OPERAND_TYPE_SIMPLE_FIELD;
 		}

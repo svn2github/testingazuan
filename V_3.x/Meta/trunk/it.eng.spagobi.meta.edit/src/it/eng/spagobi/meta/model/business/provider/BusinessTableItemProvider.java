@@ -69,11 +69,7 @@ import org.eclipse.emf.edit.provider.IUpdateableItemText;
 public class BusinessTableItemProvider
 	extends BusinessColumnSetItemProvider
 	implements
-		IEditingDomainItemProvider,
-		IStructuredItemContentProvider,
-		ITreeItemContentProvider,
-		IItemLabelProvider,
-		IItemPropertySource,
+		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IUpdateableItemText {
 	/**
 	 * This constructs an instance from a factory and a notifier.

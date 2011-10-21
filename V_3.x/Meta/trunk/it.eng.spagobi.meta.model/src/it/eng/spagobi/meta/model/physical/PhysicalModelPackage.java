@@ -125,6 +125,15 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_MODEL__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_MODEL__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -262,6 +271,15 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_TABLE__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_TABLE__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -341,6 +359,15 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int PHYSICAL_COLUMN__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_COLUMN__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -487,6 +514,15 @@ public interface PhysicalModelPackage extends EPackage {
 	int PHYSICAL_PRIMARY_KEY__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_PRIMARY_KEY__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -557,6 +593,15 @@ public interface PhysicalModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int PHYSICAL_FOREIGN_KEY__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHYSICAL_FOREIGN_KEY__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.

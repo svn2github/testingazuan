@@ -49,6 +49,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelObjectImpl#getId <em>Id</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelObjectImpl#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.impl.ModelObjectImpl#getUniqueName <em>Unique Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelObjectImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelObjectImpl#getProperties <em>Properties</em>}</li>
  * </ul>
@@ -94,6 +95,24 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
+	/**
+	 * The default value of the '{@link #getUniqueName() <em>Unique Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getUniqueName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String UNIQUE_NAME_EDEFAULT = null;
+	/**
+	 * The cached value of the '{@link #getUniqueName() <em>Unique Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getUniqueName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String uniqueName = UNIQUE_NAME_EDEFAULT;
 	/**
 	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -187,6 +206,27 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getUniqueName() {
+		return uniqueName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setUniqueName(String newUniqueName) {
+		String oldUniqueName = uniqueName;
+		uniqueName = newUniqueName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MODEL_OBJECT__UNIQUE_NAME, oldUniqueName, uniqueName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getDescription() {
 		return description;
 	}
@@ -243,6 +283,8 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 				return getId();
 			case ModelPackage.MODEL_OBJECT__NAME:
 				return getName();
+			case ModelPackage.MODEL_OBJECT__UNIQUE_NAME:
+				return getUniqueName();
 			case ModelPackage.MODEL_OBJECT__DESCRIPTION:
 				return getDescription();
 			case ModelPackage.MODEL_OBJECT__PROPERTIES:
@@ -266,6 +308,9 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 				return;
 			case ModelPackage.MODEL_OBJECT__NAME:
 				setName((String)newValue);
+				return;
+			case ModelPackage.MODEL_OBJECT__UNIQUE_NAME:
+				setUniqueName((String)newValue);
 				return;
 			case ModelPackage.MODEL_OBJECT__DESCRIPTION:
 				setDescription((String)newValue);
@@ -291,6 +336,9 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 			case ModelPackage.MODEL_OBJECT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
+			case ModelPackage.MODEL_OBJECT__UNIQUE_NAME:
+				setUniqueName(UNIQUE_NAME_EDEFAULT);
+				return;
 			case ModelPackage.MODEL_OBJECT__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
 				return;
@@ -313,6 +361,8 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 			case ModelPackage.MODEL_OBJECT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case ModelPackage.MODEL_OBJECT__UNIQUE_NAME:
+				return UNIQUE_NAME_EDEFAULT == null ? uniqueName != null : !UNIQUE_NAME_EDEFAULT.equals(uniqueName);
 			case ModelPackage.MODEL_OBJECT__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 			case ModelPackage.MODEL_OBJECT__PROPERTIES:
@@ -335,6 +385,8 @@ public abstract class ModelObjectImpl extends EObjectImpl implements ModelObject
 		result.append(id);
 		result.append(", name: ");
 		result.append(name);
+		result.append(", uniqueName: ");
+		result.append(uniqueName);
 		result.append(", description: ");
 		result.append(description);
 		result.append(')');

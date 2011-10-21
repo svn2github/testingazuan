@@ -206,7 +206,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getModelObject_Description() {
+	public EAttribute getModelObject_UniqueName() {
 		return (EAttribute)modelObjectEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -215,8 +215,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getModelObject_Description() {
+		return (EAttribute)modelObjectEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getModelObject_Properties() {
-		return (EReference)modelObjectEClass.getEStructuralFeatures().get(3);
+		return (EReference)modelObjectEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -489,6 +498,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		modelObjectEClass = createEClass(MODEL_OBJECT);
 		createEAttribute(modelObjectEClass, MODEL_OBJECT__ID);
 		createEAttribute(modelObjectEClass, MODEL_OBJECT__NAME);
+		createEAttribute(modelObjectEClass, MODEL_OBJECT__UNIQUE_NAME);
 		createEAttribute(modelObjectEClass, MODEL_OBJECT__DESCRIPTION);
 		createEReference(modelObjectEClass, MODEL_OBJECT__PROPERTIES);
 
@@ -570,6 +580,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(modelObjectEClass, ModelObject.class, "ModelObject", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getModelObject_Id(), ecorePackage.getEString(), "id", null, 1, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelObject_Name(), ecorePackage.getEString(), "name", null, 0, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModelObject_UniqueName(), ecorePackage.getEString(), "uniqueName", null, 0, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModelObject_Description(), ecorePackage.getEString(), "description", null, 0, 1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModelObject_Properties(), this.getModelPropertyMapEntry(), null, "properties", null, 0, -1, ModelObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

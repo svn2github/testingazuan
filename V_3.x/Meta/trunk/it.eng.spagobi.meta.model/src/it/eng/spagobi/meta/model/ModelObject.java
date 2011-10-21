@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.ModelObject#getId <em>Id</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelObject#getName <em>Name</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.ModelObject#getUniqueName <em>Unique Name</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelObject#getDescription <em>Description</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.ModelObject#getProperties <em>Properties</em>}</li>
  * </ul>
@@ -97,6 +98,32 @@ public interface ModelObject extends EObject {
 	 * @generated
 	 */
 	void setName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Unique Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Unique Name</em>' attribute.
+	 * @see #setUniqueName(String)
+	 * @see it.eng.spagobi.meta.model.ModelPackage#getModelObject_UniqueName()
+	 * @model
+	 * @generated
+	 */
+	String getUniqueName();
+
+	/**
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.ModelObject#getUniqueName <em>Unique Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Unique Name</em>' attribute.
+	 * @see #getUniqueName()
+	 * @generated
+	 */
+	void setUniqueName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Description</b></em>' attribute.

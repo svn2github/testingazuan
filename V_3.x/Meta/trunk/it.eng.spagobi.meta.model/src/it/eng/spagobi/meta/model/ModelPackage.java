@@ -314,13 +314,22 @@ public interface ModelPackage extends EPackage {
 	int MODEL_OBJECT__NAME = 1;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL_OBJECT__UNIQUE_NAME = 2;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_OBJECT__DESCRIPTION = 2;
+	int MODEL_OBJECT__DESCRIPTION = 3;
 
 	/**
 	 * The feature id for the '<em><b>Properties</b></em>' map.
@@ -329,7 +338,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_OBJECT__PROPERTIES = 3;
+	int MODEL_OBJECT__PROPERTIES = 4;
 
 	/**
 	 * The number of structural features of the '<em>Object</em>' class.
@@ -338,7 +347,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_OBJECT_FEATURE_COUNT = 4;
+	int MODEL_OBJECT_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link it.eng.spagobi.meta.model.impl.ModelImpl <em>Model</em>}' class.
@@ -367,6 +376,15 @@ public interface ModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int MODEL__NAME = MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__UNIQUE_NAME = MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -463,6 +481,17 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getModelObject_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelObject#getUniqueName <em>Unique Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Unique Name</em>'.
+	 * @see it.eng.spagobi.meta.model.ModelObject#getUniqueName()
+	 * @see #getModelObject()
+	 * @generated
+	 */
+	EAttribute getModelObject_UniqueName();
 
 	/**
 	 * Returns the meta object for the attribute '{@link it.eng.spagobi.meta.model.ModelObject#getDescription <em>Description</em>}'.
@@ -794,6 +823,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute MODEL_OBJECT__NAME = eINSTANCE.getModelObject_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Unique Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL_OBJECT__UNIQUE_NAME = eINSTANCE.getModelObject_UniqueName();
 
 		/**
 		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.

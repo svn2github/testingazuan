@@ -174,6 +174,28 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
+	 * This adds a property descriptor for the Unique Name feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addUniqueNamePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ModelObject_uniqueName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ModelObject_uniqueName_feature", "_UI_ModelObject_type"),
+				 ModelPackage.Literals.MODEL_OBJECT__UNIQUE_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This adds a property descriptor for the Description feature. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -243,6 +265,7 @@ public class ModelObjectItemProvider extends ItemProviderAdapter implements
 		switch (notification.getFeatureID(ModelObject.class)) {
 			case ModelPackage.MODEL_OBJECT__ID:
 			case ModelPackage.MODEL_OBJECT__NAME:
+			case ModelPackage.MODEL_OBJECT__UNIQUE_NAME:
 			case ModelPackage.MODEL_OBJECT__DESCRIPTION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

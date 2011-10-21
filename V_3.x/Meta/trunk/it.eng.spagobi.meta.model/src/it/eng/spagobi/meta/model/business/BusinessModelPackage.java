@@ -104,6 +104,15 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_MODEL__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_MODEL__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -232,6 +241,15 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_COLUMN__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -296,6 +314,15 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_COLUMN_SET__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_COLUMN_SET__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -357,6 +384,15 @@ public interface BusinessModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int BUSINESS_TABLE__NAME = BUSINESS_COLUMN_SET__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_TABLE__UNIQUE_NAME = BUSINESS_COLUMN_SET__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -451,6 +487,15 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_VIEW__NAME = BUSINESS_COLUMN_SET__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW__UNIQUE_NAME = BUSINESS_COLUMN_SET__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -521,6 +566,15 @@ public interface BusinessModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int BUSINESS_RELATIONSHIP__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_RELATIONSHIP__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -632,6 +686,15 @@ public interface BusinessModelPackage extends EPackage {
 	int BUSINESS_DOMAIN__NAME = ModelPackage.MODEL_OBJECT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_DOMAIN__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -713,6 +776,15 @@ public interface BusinessModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int BUSINESS_IDENTIFIER__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_IDENTIFIER__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -805,6 +877,15 @@ public interface BusinessModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__NAME = ModelPackage.MODEL_OBJECT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUSINESS_VIEW_INNER_JOIN_RELATIONSHIP__UNIQUE_NAME = ModelPackage.MODEL_OBJECT__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
@@ -908,6 +989,15 @@ public interface BusinessModelPackage extends EPackage {
 	int SIMPLE_BUSINESS_COLUMN__NAME = BUSINESS_COLUMN__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SIMPLE_BUSINESS_COLUMN__UNIQUE_NAME = BUSINESS_COLUMN__UNIQUE_NAME;
+
+	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -979,6 +1069,15 @@ public interface BusinessModelPackage extends EPackage {
 	 * @ordered
 	 */
 	int CALCULATED_BUSINESS_COLUMN__NAME = BUSINESS_COLUMN__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Unique Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CALCULATED_BUSINESS_COLUMN__UNIQUE_NAME = BUSINESS_COLUMN__UNIQUE_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.

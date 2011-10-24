@@ -319,7 +319,7 @@ public class QueryBuilder {
 	
 	public void addField(ModelCalculatedField dataMartCalculatedField){
 		String alias = labelProvider.getLabel(dataMartCalculatedField);
-		query.addInLineCalculatedFiled(alias, dataMartCalculatedField.getExpression(), null, dataMartCalculatedField.getType(), true, true, false, null, "NONE");
+		query.addInLineCalculatedFiled(alias, dataMartCalculatedField.getExpression(), null, dataMartCalculatedField.getType(), null, true, true, false, null, "NONE");
 	}
 	
 	public void addField(IModelField dataMartField) {

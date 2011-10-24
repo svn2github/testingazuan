@@ -288,7 +288,7 @@ public class BusinessModelInitializer {
 			businessColumnSet.getColumns().add(businessColumn);
 			
 			getPropertiesInitializer().addProperties(businessColumn);
-			//businessColumn.setProperty(BusinessModelDefaultPropertiesInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());
+			businessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.COLUMN_DATATYPE, physicalColumn.getDataType());
 			businessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.COLUMN_PHYSICAL_TABLE, businessColumn.getPhysicalColumn().getTable().getName());
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business column from physical column [" + physicalColumn.getName() + "]", t);

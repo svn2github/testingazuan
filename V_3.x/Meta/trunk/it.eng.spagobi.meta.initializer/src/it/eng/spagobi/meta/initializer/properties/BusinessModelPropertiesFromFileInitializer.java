@@ -74,6 +74,7 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 	public static final String ROLE_DESTINATION = "structural.destinationRole";
 	public static final String CALCULATED_COLUMN_EXPRESSION = "structural.expression";
 	public static final String CALCULATED_COLUMN_DATATYPE = "structural.datatype";
+	public static final String COLUMN_DATATYPE = "structural.datatype";
 	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	static public IResourceLocator RL = SpagoBIMetaInitializerPlugin.getInstance().getResourceLocator();

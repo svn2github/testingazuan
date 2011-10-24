@@ -451,17 +451,17 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		logger.trace("IN");
 		
 		try {
-			logger.debug("Create cfields.xml");
+			logger.debug("Create cfields_meta.xml");
 			
 		    context = new VelocityContext();
 	        context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
 	        context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
 			
-			File outputFile = new File(distDir, "cfields.xml");
+			File outputFile = new File(distDir, "cfields_meta.xml");
 			
 	        createFile(templateFile, outputFile, context);
 		} catch(Throwable t) {
-        	logger.error("Impossible to create cfields.xml", t);
+        	logger.error("Impossible to create cfields_meta.xml", t);
         } finally {
         	logger.trace("OUT");
         }

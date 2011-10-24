@@ -146,12 +146,13 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	}
 	
 	public void createTree(Composite composite, int style){
-		ScrolledComposite compositeTree = new ScrolledComposite(composite, style);
-		GridData gd_compositeTree = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
-		gd_compositeTree.widthHint = 130;
-		compositeTree.setLayoutData(gd_compositeTree);
-		compositeTree.setExpandHorizontal(true);
+		ScrolledComposite compositeTree = new ScrolledComposite(composite, SWT.BORDER | SWT.V_SCROLL);
+		compositeTree.setMinWidth(150);
 		compositeTree.setExpandVertical(true);
+		compositeTree.setExpandHorizontal(true);
+		GridData gd_compositeTree = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
+		gd_compositeTree.widthHint = 150;
+		compositeTree.setLayoutData(gd_compositeTree);
 		
 		Tree treeItems = new Tree(compositeTree, SWT.NONE);
 		
@@ -166,7 +167,6 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		treeRoot.setExpanded(true);
 
 		compositeTree.setContent(treeItems);
-		compositeTree.setMinSize(treeItems.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 		//set dragSource 
 		DragSourceListener dragSourceListener = new CalculatedFieldDragSourceListener(treeItems);

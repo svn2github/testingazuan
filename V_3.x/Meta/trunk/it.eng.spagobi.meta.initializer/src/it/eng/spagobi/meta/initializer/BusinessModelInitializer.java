@@ -319,7 +319,7 @@ public class BusinessModelInitializer {
 			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE,calculatedColumnDescriptor.getDataType());
 			
 			//set column type
-			calculatedBusinessColumn.setProperty("structural.columntype","calculation");
+			calculatedBusinessColumn.setProperty("structural.columntype","attribute");
 
 
 		} catch(Throwable t) {

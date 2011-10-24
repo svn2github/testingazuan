@@ -145,8 +145,8 @@
       category="Structural" defaultValue="true" />
       
       <type id="structural.columntype" name="Type"
-      description="The role played by this column in the data model (calculation or measure)"
-      category="Structural" defaultValue="calculation" />
+      description="The role played by this column in the data model (attribute or measure)"
+      category="Structural" defaultValue="attribute" />
       
       <type id="structural.aggtype" name="Aggregation Type"
       description="The preferred aggregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
@@ -172,7 +172,7 @@
       </admissibleValuesOf>
       
       <admissibleValuesOf typeId="structural.columntype">
-        <value>calculation</value>
+        <value>attribute</value>
         <value>measure</value>
       </admissibleValuesOf>
       

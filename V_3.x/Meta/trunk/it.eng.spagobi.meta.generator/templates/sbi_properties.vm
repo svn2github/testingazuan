@@ -25,9 +25,9 @@ ${jpaSubEntity.uniqueName}.type = $jpaSubEntity.getAttribute("structural.tablety
 ${jpaSubEntity.uniqueName}.position = $velocityCount
 
 #foreach ($jpaColumn in $jpaSubEntity.getColumns())
-${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
-${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
-${jpaColumn.uniqueName}.position = $velocityCount
+${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
+${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
+${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.position = $velocityCount
 
 #end
 #end

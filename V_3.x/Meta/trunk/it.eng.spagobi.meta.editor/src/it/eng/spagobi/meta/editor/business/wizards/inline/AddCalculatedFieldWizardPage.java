@@ -233,33 +233,33 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.calculatedField.tree.folder") );	
 		
 		treeItemAggregationFunction.setImage(imageDescriptor.createImage() );
-		treeItemAggregationFunction.setText("Aggregation");
+		treeItemAggregationFunction.setText("Date Functions");
 		
 		ImageDescriptor imageDescriptorOperator = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.calculatedField.tree.operator") );
 		
 		TreeItem treeItemSum = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemSum.setImage(imageDescriptorOperator.createImage() );
-		treeItemSum.setText("SUM");
+		treeItemSum.setText("GG_between_dates");
 		
 		TreeItem treeItemMin = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemMin.setImage(imageDescriptorOperator.createImage() );
-		treeItemMin.setText("MIN");
+		treeItemMin.setText("MM_between_dates");
 		
 		TreeItem treeItemMax = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemMax.setImage(imageDescriptorOperator.createImage() );
-		treeItemMax.setText("MAX");
+		treeItemMax.setText("AA_between_dates");
 		
 		TreeItem treeItemCount = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemCount.setImage(imageDescriptorOperator.createImage() );
-		treeItemCount.setText("COUNT");
+		treeItemCount.setText("GG_up_today");
 		
 		TreeItem treeItemCountDistinct = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemCountDistinct.setImage(imageDescriptorOperator.createImage() );
-		treeItemCountDistinct.setText("COUNT_DISTINCT");
+		treeItemCountDistinct.setText("MM_up_today");
 		
 		TreeItem treeItemAvg = new TreeItem(treeItemAggregationFunction, SWT.NONE);
 		treeItemAvg.setImage(imageDescriptorOperator.createImage() );
-		treeItemAvg.setText("AVG");
+		treeItemAvg.setText("AA_up_today");
 
 	}
 	
@@ -276,7 +276,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	public void createCalculateFieldTextButtons(Composite composite, int style){
 		Composite compositeButtons = new Composite(composite, style);
 		compositeButtons.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		compositeButtons.setLayout(new GridLayout(2, false));
+		compositeButtons.setLayout(new GridLayout(1, false));
 		
 		Button btnClearAll = new Button(compositeButtons, SWT.NONE);
 		btnClearAll.addSelectionListener(new SelectionAdapter() {
@@ -286,9 +286,6 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 			}
 		});
 		btnClearAll.setText("Clear All");
-		
-		Button btnValidate = new Button(compositeButtons, SWT.NONE);
-		btnValidate.setText("Validate");
 	}
 	
 	public void createCalculateFieldTextPanel(Composite composite, int style){

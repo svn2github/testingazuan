@@ -70,7 +70,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		for(BusinessRelationship r : relationship.getDestinationTable().getRelationships()) {
 			if(r.getSourceTable() != relationship.getDestinationTable()) continue;
 			
-			JpaSubEntity subEntity = new JpaSubEntity(root, this, relationship);
+			JpaSubEntity subEntity = new JpaSubEntity(root, this, r);
 			subEntities.add(subEntity);
 		}
 		return subEntities;
@@ -171,7 +171,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		
 		JpaSubEntity targetEntity = this;
 		while(targetEntity != null) {
-			uniqueName = "//" + getName() + uniqueName;
+			uniqueName = "//" + targetEntity.getName() + uniqueName;
 			targetEntity = targetEntity.getParent();
 		}
 		

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/sqljdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/ojdbc14.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/postgresql-8.2-505.jdbc2ee.jar"/>

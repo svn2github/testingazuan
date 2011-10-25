@@ -34,8 +34,18 @@ ${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.tooltip = $jpaColu
 # ==================================================================
 
 #foreach ($jpaView in $jpaViews)
-${jpaView.uniqueName}.label = $jpaView.name
-${jpaView.uniqueName}.tooltip = $jpaView.description
+
+#foreach ($jpaTable in $jpaView.innerTables)
+
+${jpaTable.uniqueName}.label = $jpaView.name
+${jpaTable.uniqueName}.tooltip = $jpaView.description
+
+#foreach ($jpaColumn in $jpaTable.columns)
+${jpaColumn.uniqueName}.label = $jpaColumn.name
+${jpaColumn.uniqueName}.tooltip = $jpaColumn.description
 #end
 
+#end
+
+#end
 

@@ -63,6 +63,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 
 
@@ -76,6 +78,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 	private BusinessColumnSet sourceTable;
 	private Combo comboType;
+	private Tree treeItems;
 
 	/**
 	 * @param pageName
@@ -154,7 +157,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		gd_compositeTree.widthHint = 150;
 		compositeTree.setLayoutData(gd_compositeTree);
 		
-		Tree treeItems = new Tree(compositeTree, SWT.NONE);
+		treeItems = new Tree(compositeTree, SWT.NONE);
 		
 		TreeItem treeRoot = new TreeItem(treeItems, SWT.NONE);
 		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.calculatedField.tree.root") );
@@ -165,6 +168,17 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		createFunctionsNodes(treeRoot, SWT.NONE);
 		createAggregationFunctionsNodes(treeRoot, SWT.NONE);
 		treeRoot.setExpanded(true);
+		
+		//Single Click Listener to add text to the expression
+		treeItems.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TreeItem[] selection = treeItems.getSelection();
+				 if (selection.length > 0 && selection[0].getItemCount() == 0) {
+					 textCalculatedField.append(selection[0].getText());
+				 } 
+			}
+		});
 
 		compositeTree.setContent(treeItems);
 		

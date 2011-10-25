@@ -21,13 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddCalculatedFieldWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
+import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
@@ -38,8 +43,10 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class AddCalculatedFieldAction extends AbstractSpagoBIModelAction {
 
+	Object target;
 	public AddCalculatedFieldAction(IWorkbenchPart workbenchPart, ISelection selection) {
 		super(AddCalculatedFieldCommand.class, workbenchPart, selection);
+		
 	}
 	
 	/**
@@ -47,9 +54,28 @@ public class AddCalculatedFieldAction extends AbstractSpagoBIModelAction {
 	 */
 	@Override
 	public void run() {
-		BusinessColumnSet businessColumnSet = (BusinessColumnSet)owner;
-		BusinessModel businessModel = businessColumnSet.getModel();
-		AddCalculatedFieldWizard wizard = new AddCalculatedFieldWizard( businessModel, businessColumnSet, editingDomain, (ISpagoBIModelCommand)command );
+		BusinessColumnSet businessColumnSet;
+		AddCalculatedFieldWizard wizard;
+		CalculatedBusinessColumn calculatedBusinessColumn;
+		BusinessModel businessModel;
+
+		if (owner instanceof CalculatedBusinessColumn){
+			calculatedBusinessColumn = (CalculatedBusinessColumn)owner;
+			businessColumnSet = calculatedBusinessColumn.getTable();
+			businessModel = businessColumnSet.getModel();
+
+		} else  {
+			businessColumnSet = (BusinessColumnSet)owner;
+			businessModel = businessColumnSet.getModel();
+		}
+			
+
+		if (owner instanceof CalculatedBusinessColumn){
+			wizard = new AddCalculatedFieldWizard( businessModel, businessColumnSet, editingDomain, (ISpagoBIModelCommand)command, (CalculatedBusinessColumn)owner );
+		} else{
+			wizard = new AddCalculatedFieldWizard( businessModel, businessColumnSet, editingDomain, (ISpagoBIModelCommand)command, null );
+		}
+			
     	WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 		dialog.create();
     	dialog.open();

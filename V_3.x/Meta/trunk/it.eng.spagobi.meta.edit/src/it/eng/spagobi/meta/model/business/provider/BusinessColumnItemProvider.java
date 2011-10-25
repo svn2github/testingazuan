@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.AddColumnToIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.RemoveColumnFromIdentifierCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
@@ -202,6 +203,9 @@ public class BusinessColumnItemProvider
 		 }
 		 else if(commandClass == RemoveColumnFromIdentifierCommand.class) {
 			 result = new RemoveColumnFromIdentifierCommand(domain, commandParameter);
+		 }
+		 else if(commandClass == AddCalculatedFieldCommand.class) {
+			 result = new AddCalculatedFieldCommand(domain, commandParameter);
 		 }
 		 
 		 return result;

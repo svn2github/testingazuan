@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -56,9 +58,13 @@ public class AddCalculatedFieldCommand extends
 	BusinessColumnSet businessColumnSet;
 	CalculatedFieldDescriptor calculatedColumnDesc;
 	String calculatedColumnName;
+	CalculatedBusinessColumn existingCalculatedField;
 	
 	// cache edited columns (added and removed) for undo e redo
 	List<CalculatedBusinessColumn> addedColumns  = new ArrayList<CalculatedBusinessColumn>();
+	
+	//cache edited existing CalculatedBusinessColumn with corrisponding descriptor
+	CalculatedFieldDescriptor existingCalculatedFieldDescriptor; 
 	
 	//check if Business Table has empty Physical Table reference
 	boolean isEmptyBusinessTable = false;
@@ -90,38 +96,53 @@ public class AddCalculatedFieldCommand extends
 		businessColumnSet = (BusinessColumnSet)parameter.getOwner();
 		calculatedColumnDesc = (CalculatedFieldDescriptor)parameter.getValue();
 		calculatedColumnName = calculatedColumnDesc.getName();
-		
-		//check if BusinessTable has null Physical Table reference
-		if (businessColumnSet instanceof BusinessTable){
-			BusinessTable bTable = (BusinessTable)businessColumnSet;
-			PhysicalTable physicalTable = bTable.getPhysicalTable();
-			if (physicalTable == null){
-				isEmptyBusinessTable = true;
-			}
-			else{
-				isEmptyBusinessTable = false;
-			}				
-		}
-		
-		if (businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName) == null){// avoid columns duplication
-			if (!isEmptyBusinessTable){ //no calculated column for empty business tables
-				initializer.addCalculatedColumn(calculatedColumnDesc);
-				addedColumns.add( businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName) );
-				
-				//Print for test, TO REMOVE
-				CalculatedBusinessColumn calculatedColumn= businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName);
-				List<SimpleBusinessColumn> referencedColumns = calculatedColumn.getReferencedColumns();
-				if ( referencedColumns != null ){
-					for (SimpleBusinessColumn referencedColumn: referencedColumns){
-						System.out.println("Referenced column: "+referencedColumn.getName() + "\n");
-					}
+		//This will modify an existing CalculatedBusinessColumn instead of creating it
+		if (parameter.getFeature() != null){
+			existingCalculatedField = (CalculatedBusinessColumn)parameter.getFeature();
+			//original dataType
+			ModelProperty property = existingCalculatedField.getProperties().get(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE);
+			String dataType = property.getValue();
+			
+			//original expression
+			ModelProperty propertyExp = existingCalculatedField.getProperties().get(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_EXPRESSION);
+			String expression = propertyExp.getValue();
+			
+			//only for backup to use for undo
+			existingCalculatedFieldDescriptor = new CalculatedFieldDescriptor(existingCalculatedField.getName(), expression,dataType,existingCalculatedField.getTable());
+			initializer.editCalculatedColumn(existingCalculatedField, calculatedColumnDesc);
+		} else {
+			//check if BusinessTable has null Physical Table reference
+			if (businessColumnSet instanceof BusinessTable){
+				BusinessTable bTable = (BusinessTable)businessColumnSet;
+				PhysicalTable physicalTable = bTable.getPhysicalTable();
+				if (physicalTable == null){
+					isEmptyBusinessTable = true;
 				}
+				else{
+					isEmptyBusinessTable = false;
+				}				
 			}
+			
+			if (businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName) == null){// avoid columns duplication
+				if (!isEmptyBusinessTable){ //no calculated column for empty business tables
+					initializer.addCalculatedColumn(calculatedColumnDesc);
+					addedColumns.add( businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName) );
+					
+					//Print for test
+					/*
+					CalculatedBusinessColumn calculatedColumn= businessColumnSet.getCalculatedBusinessColumn(calculatedColumnName);
+					List<SimpleBusinessColumn> referencedColumns = calculatedColumn.getReferencedColumns();
+					if ( referencedColumns != null ){
+						for (SimpleBusinessColumn referencedColumn: referencedColumns){
+							System.out.println("Referenced column: "+referencedColumn.getName() + "\n");
+						}
+					}
+					*/
+					
+				}
+			}			
 		}
 
-		
-		
-		
 	}
 	
 	@Override
@@ -137,9 +158,16 @@ public class AddCalculatedFieldCommand extends
 	
 	@Override
 	public void undo() {		
-		for(BusinessColumn column: addedColumns) {
-			businessColumnSet.getColumns().remove(column);
-		}	
+		//undo changes
+		if (existingCalculatedField != null ){
+			initializer.editCalculatedColumn(existingCalculatedField, existingCalculatedFieldDescriptor);
+		} else {
+			//undo creation
+			for(BusinessColumn column: addedColumns) {
+				businessColumnSet.getColumns().remove(column);
+			}	
+		}
+			
 	}
 	
 	@Override

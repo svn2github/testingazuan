@@ -327,6 +327,24 @@ public class BusinessModelInitializer {
 		}	
 	}
 
+	public void editCalculatedColumn(CalculatedBusinessColumn calculatedBusinessColumn, CalculatedFieldDescriptor calculatedColumnDescriptor){
+		BusinessColumnSet businessColumnSet = calculatedBusinessColumn.getTable();
+		
+		try {		
+			calculatedBusinessColumn.setName( calculatedColumnDescriptor.getName() );	
+			
+			//set calculated column expression text
+			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_EXPRESSION,calculatedColumnDescriptor.getExpression());
+
+			//set calculated column dataType
+			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE,calculatedColumnDescriptor.getDataType());
+			
+
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to modify calculted business column ", t);
+		}	
+	}
+	
 	
 	public void addIdentifiers(PhysicalModel physicalModel, BusinessModel businessModel) {
 		PhysicalPrimaryKey physicalPrimaryKey;

@@ -29,6 +29,7 @@ import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -44,23 +45,25 @@ public class AddCalculatedFieldWizard extends AbstractSpagoBIModelWizard {
 	BusinessModel model;
 	BusinessColumnSet sourceTable;
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	CalculatedBusinessColumn existingCalculatedField;
 
 	/**
 	 * @param editingDomain
 	 * @param command
 	 */
-	public AddCalculatedFieldWizard(BusinessModel model, BusinessColumnSet sourceTable, EditingDomain editingDomain, ISpagoBIModelCommand command) {
+	public AddCalculatedFieldWizard(BusinessModel model, BusinessColumnSet sourceTable, EditingDomain editingDomain, ISpagoBIModelCommand command, CalculatedBusinessColumn existingCalculatedField) {
 		super(editingDomain, command);
 		this.setWindowTitle(RL.getString("business.editor.wizard.addcalculatedfield.title"));
 		this.setHelpAvailable(false);	
 		this.model = model;
 		this.sourceTable = sourceTable;
+		this.existingCalculatedField = existingCalculatedField;
 
 	}
 	
 	@Override
 	public void addPages() {
-		IWizardPage pageOne = new AddCalculatedFieldWizardPage("Add calculated field",sourceTable);
+		IWizardPage pageOne = new AddCalculatedFieldWizardPage("Edit calculated field",sourceTable, existingCalculatedField);
 		addPage( pageOne );
 	}
 
@@ -73,6 +76,10 @@ public class AddCalculatedFieldWizard extends AbstractSpagoBIModelWizard {
 		AddCalculatedFieldWizardPage wizardPage = (AddCalculatedFieldWizardPage)this.getStartingPage();
 		CalculatedFieldDescriptor calculatedFieldDescriptor = new CalculatedFieldDescriptor
 															(wizardPage.getTxtName(),wizardPage.getTextCalculatedField(), wizardPage.getDataType(), sourceTable );
+		//Existing Calculated Field to modify
+		if (existingCalculatedField != null){
+			return new CommandParameter(sourceTable, existingCalculatedField, calculatedFieldDescriptor, new ArrayList<Object>());
+		}
 		
 		return new CommandParameter(sourceTable, null, calculatedFieldDescriptor, new ArrayList<Object>());
 	}

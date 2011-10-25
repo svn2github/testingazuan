@@ -130,6 +130,8 @@ public class BusinessModelMenuActionFactory {
 			List editActions = new ArrayList();
 			List removeActions = new ArrayList();
 			CalculatedBusinessColumn businessColumn = (CalculatedBusinessColumn)target;
+			editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));	
+			actions.put("Edit", editActions);
 
 	    } else if(target instanceof BusinessRootItemProvider) {
 	    	List editActions = new ArrayList();

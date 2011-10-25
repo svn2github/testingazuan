@@ -26,13 +26,17 @@ import java.util.List;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDragSourceListener;
 import it.eng.spagobi.meta.editor.dnd.CalculatedFieldDropTargetListener;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
+
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -79,18 +83,19 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 	private BusinessColumnSet sourceTable;
 	private Combo comboType;
 	private Tree treeItems;
+	CalculatedBusinessColumn existingCalculatedField;
 
 	/**
 	 * @param pageName
 	 */
-	protected AddCalculatedFieldWizardPage(String pageName, BusinessColumnSet sourceTable) {
+	protected AddCalculatedFieldWizardPage(String pageName, BusinessColumnSet sourceTable,CalculatedBusinessColumn existingCalculatedField ) {
 		super(pageName);
-		setMessage("Use this wizard to add calculated field.");
-		setTitle("Add Calculated Field");
+		setMessage("Use this wizard to create or edit calculated field.");
+		setTitle("Edit Calculated Field");
 		ImageDescriptor image = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.calculatedField") );
 	    if (image!=null) setImageDescriptor(image);	
 	    this.sourceTable = sourceTable;
-		
+	    this.existingCalculatedField = existingCalculatedField;	
 	}
 
 	@Override
@@ -106,6 +111,29 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		createGroupCreation(composite, SWT.NONE);
 		
 		checkPageComplete();
+		
+		//Only if we are editing an existing Calculated Field
+		if (existingCalculatedField != null){
+			//Type
+			ModelProperty property = existingCalculatedField.getProperties().get(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE);
+			String type = property.getValue();
+			String[] types = comboType.getItems();
+			
+			for (int i = 0; i< types.length; i++ ){
+				if (types[i].equals(type)){
+					comboType.select(i);
+					break;
+				}
+			}
+			//Name
+			txtName.setText(existingCalculatedField.getName());
+			
+			//Expression
+			ModelProperty propertyExpression = existingCalculatedField.getProperties().get(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_EXPRESSION);
+			String expression = propertyExpression.getValue();
+			textCalculatedField.setText(expression);
+		}
+		
 		
 	}
 	
@@ -127,7 +155,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 
 
 		txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+			
 		Label lblType = new Label(groupHeader, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Type:");
@@ -136,6 +164,7 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 		comboType.setItems(new String[] {"STRING", "NUMBER"});
 		comboType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboType.select(0);
+
 	}
 	
 	public void createGroupCreation(Composite composite, int style){
@@ -310,6 +339,13 @@ public class AddCalculatedFieldWizardPage extends WizardPage {
 			}
 		});
 		textCalculatedField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		/*
+		if (existingCalculatedField != null){
+			ModelProperty property = existingCalculatedField.getProperties().get("structural.expression");
+			String expression = property.getValue();
+			textCalculatedField.setText(expression);
+		}*/
 		
 		
 		//set dropTarget

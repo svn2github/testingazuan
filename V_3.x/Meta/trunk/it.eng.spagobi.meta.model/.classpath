@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="libs/misc/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry kind="lib" path="libs/misc/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
 	<classpathentry kind="lib" path="libs/misc/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
+	<classpathentry kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
+	<classpathentry kind="lib" path="libs/jdbc/ojdbc14.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

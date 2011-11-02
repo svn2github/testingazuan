@@ -359,8 +359,8 @@ public class BusinessModelEditor
 		//selectionViewer.setSelection(new StructuredSelection(ro), true);
 		viewerPane.setTitle(editingDomain.getResourceSet());
 
-		new AdapterFactoryTreeEditor(modelTreeViewer.getTree(), adapterFactory);
-
+		//new AdapterFactoryTreeEditor(modelTreeViewer.getTree(), adapterFactory);
+		new CustomAdapterFactoryTreeEditor(modelTreeViewer.getTree(), adapterFactory, this);
 		createContextMenuFor(modelTreeViewer);
 		int pageIndex = addPage(viewerPane.getControl());
 		setPageText(pageIndex, RL.getString("business.editor.selectionpage.label"));

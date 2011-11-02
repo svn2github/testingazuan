@@ -213,8 +213,11 @@ public class BusinessColumnItemProvider
 
 	@Override
 	public void setText(Object object, String text) {
-		ModelObject modelObject = (ModelObject)object;
-		modelObject.setName(text);
+		//ModelObject modelObject = (ModelObject)object;
+		//modelObject.setName(text);
+		setPropertyValue(object, "name", text);
+		
+		
 	}
 
 }

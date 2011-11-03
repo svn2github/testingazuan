@@ -35,6 +35,7 @@ import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
@@ -103,6 +104,8 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 			initModelProperties((BusinessModel)o);
 		} else if(o instanceof BusinessTable) {
 			initTableProperties((BusinessTable)o);
+		} else if(o instanceof BusinessView) {
+			initViewProperties((BusinessView)o);
 		} else if(o instanceof SimpleBusinessColumn) {
 			initColumnProperties((SimpleBusinessColumn)o);
 		} else if(o instanceof CalculatedBusinessColumn) {
@@ -156,6 +159,24 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void initViewProperties(BusinessView o) {
+		try {
+			//1- Search model categories definitions
+			NodeList nodes = readXMLNodes(document, "/properties/table/categories/category");
+			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
+	        
+	      	//2- Search model types definitions
+			nodes = readXMLNodes(document, "/properties/table/types/type");
+			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
+	        
+	        //3- Search model admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/table/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 	
 
@@ -383,6 +404,9 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		else if (o instanceof BusinessTable){
 			categories = ((BusinessTable)o).getModel().getParentModel().getPropertyCategories();
 		} 
+		else if (o instanceof BusinessView){
+			categories = ((BusinessView)o).getModel().getParentModel().getPropertyCategories();
+		} 		
 		else if (o instanceof SimpleBusinessColumn){
 			categories = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
 		}
@@ -416,6 +440,9 @@ public class BusinessModelPropertiesFromFileInitializer implements IPropertiesIn
 		}
 		else if (o instanceof BusinessTable){
 			types = ((BusinessTable)o).getModel().getParentModel().getPropertyTypes();
+		}
+		else if (o instanceof BusinessView){
+			types = ((BusinessView)o).getModel().getParentModel().getPropertyTypes();
 		}
 		else if (o instanceof SimpleBusinessColumn){
 			types = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();

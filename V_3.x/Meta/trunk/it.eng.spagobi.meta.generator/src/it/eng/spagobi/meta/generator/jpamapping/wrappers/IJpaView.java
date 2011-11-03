@@ -43,6 +43,8 @@ public interface IJpaView {
 	
 	String getUniqueName();
 	
+	String getAttribute(String name);
+	
 	
 	
 

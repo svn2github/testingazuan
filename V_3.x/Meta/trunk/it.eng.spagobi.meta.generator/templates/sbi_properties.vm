@@ -39,7 +39,8 @@ ${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.position = $veloci
 # ==================================================================
 
 #foreach ($jpaView in $jpaViews)
-
+${jpaView.uniqueName}.visible = $jpaView.getAttribute("structural.visible")
+${jpaView.uniqueName}.type = $jpaView.getAttribute("structural.tabletype")
 
 # $jpaView.name
 
@@ -49,8 +50,8 @@ ${jpaTable.uniqueName}.visible = false
 ${jpaTable.uniqueName}.type = dimension
 
 #foreach ($jpaColumn in $jpaTable.columns)
-${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
-${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
+${jpaView.uniqueName}/${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
+${jpaView.uniqueName}/${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
 #end
 
 #end

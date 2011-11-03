@@ -239,6 +239,11 @@ public class JpaView implements IJpaView {
 		return businessView.getDescription() != null? businessView.getDescription(): getName();
 	}
 	
+	public String getAttribute(String name) {
+		ModelProperty property = businessView.getProperties().get(name);
+		return property != null? property.getValue(): "";
+	}
+	
 	@Override
 	public List<IJpaSubEntity> getSubEntities() {
 		//List<IJpaSubEntity> subEntities = new ArrayList<IJpaSubEntity>();

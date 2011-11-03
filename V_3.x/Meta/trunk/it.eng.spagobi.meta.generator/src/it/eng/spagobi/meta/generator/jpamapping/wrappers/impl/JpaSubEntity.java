@@ -166,16 +166,22 @@ public class JpaSubEntity implements IJpaSubEntity {
 	@Override
 	public String getUniqueName() {
 		String uniqueName;
-		
+		int counter = 0;
 		uniqueName = "";
 		
 		JpaSubEntity targetEntity = this;
 		while(targetEntity != null) {
 			uniqueName = "//" + targetEntity.getName() + uniqueName;
 			targetEntity = targetEntity.getParent();
+			counter++;
 		}
 		
 		uniqueName = getRootQualifiedClassName() + uniqueName;
+		
+		//Important: for entity of level => 3 we use an uniqueName with single / instead of //
+		if (counter > 1){
+			uniqueName = uniqueName.replace("//", "/");
+		}
 		
 		return uniqueName;
 	}

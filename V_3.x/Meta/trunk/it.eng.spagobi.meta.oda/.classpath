@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/sqljdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/ojdbc14.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/postgresql-8.2-505.jdbc2ee.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
@@ -26,5 +24,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="libs/qbecore/javax.persistence_2.0.1.v201006031150.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jdbc/postgresql-9.0-801.jdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

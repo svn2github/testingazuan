@@ -229,14 +229,14 @@ public class JpaTable extends AbstractJpaTable {
 			JpaSubEntity subEntity = new JpaSubEntity(businessTable, null, relationship);
 			//subEntities.add(subEntity);
 			allSubEntities.add(subEntity);
-			System.out.println("Added "+subEntity.getName()+" to AllSubEntities");
+			//System.out.println("Added "+subEntity.getName()+" to AllSubEntities");
 			parents.add(businessTable);
-			System.out.println("Added "+businessTable.getName()+" to parents");
+			//System.out.println("Added "+businessTable.getName()+" to parents");
 
 
 			List<IJpaSubEntity> levelEntities = new ArrayList<IJpaSubEntity>();
 			levelEntities.addAll(subEntity.getChildren());
-			System.out.println("Added children of "+subEntity.getName()+" to level Entities");
+			//System.out.println("Added children of "+subEntity.getName()+" to level Entities");
 			
 			
 			allSubEntities.addAll(levelEntities);
@@ -252,13 +252,7 @@ public class JpaTable extends AbstractJpaTable {
 			
 		}	
 		
-		//Test, to remove
-		/*
-		for (IJpaSubEntity subEntity: allSubEntities){
-			JpaSubEntity jpaSubEntity = ((JpaSubEntity)subEntity);
-			System.out.println("- subentity: "+jpaSubEntity.getTable().getName());
-		}
-		*/
+
 		return allSubEntities;
 	}
 	

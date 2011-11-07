@@ -382,30 +382,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		    for( IJpaView jpaView : model.getViews()) {
 		    	tables.addAll(jpaView.getInnerTables());
 		    }
-		    
-		    //ONLY FOR TESTING
-		    for (IJpaTable table : tables){
-		    	System.out.println("Sub entities of "+table.getName());
-		    	table.getSubEntities();
-		    	/*
-		    	List<IJpaSubEntity> subEntities = table.getSubEntities();
-		    	for (IJpaSubEntity subEntity : subEntities){
-		    		
-		    		subEntity.getUniqueName();
-		    		if (subEntity.getParent() == null ){
-		    			System.out.println(subEntity.getUniqueName()+" has null parent");
-		    		}
-		    		
-		    		System.out.println("Sub entity: "+subEntity.getUniqueName());
-		    		List<String> columnsNames = subEntity.getColumnUniqueNames();
-		    		for (String columnName : columnsNames){
-		    			System.out.println("  Sub entity column: "+columnName);
-		    		}
-		    	}
-		    	*/
-		    }
-		    //END THIS FOR TEST
-		    
+		    	    
 	        context.put("jpaTables", tables ); //$NON-NLS-1$
 	        context.put("jpaViews", model.getViews() );
 	      

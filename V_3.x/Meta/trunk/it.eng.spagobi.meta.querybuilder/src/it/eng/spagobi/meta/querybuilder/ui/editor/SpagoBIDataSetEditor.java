@@ -603,6 +603,9 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		} else if(dbname.toLowerCase().contains("hsql")) {
 			dialect = "org.hibernate.dialect.HSQLDialect";
 			driver = "org.hsqldb.jdbc.JDBCDriver";
+		} else if(dbname.toLowerCase().contains("teradata")) {
+			dialect = "org.hibernate.dialect.TeradataDialect";
+			driver = "com.teradata.jdbc.TeraDriver";
 		} else if(dbname.toLowerCase().contains("mysql")) {
 			dialect = "org.hibernate.dialect.MySQLDialect";
 			driver = "com.mysql.jdbc.Driver";

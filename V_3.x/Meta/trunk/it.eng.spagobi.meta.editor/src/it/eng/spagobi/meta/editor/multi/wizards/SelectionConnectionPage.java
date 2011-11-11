@@ -219,9 +219,17 @@ public class SelectionConnectionPage extends WizardPage {
 				}				
 			}
 			if (catalogCombo.getItemCount() > 0) {
-				//set first value as default selection
-				catalogCombo.select(0);
-				catalogCombo.setEnabled(true);
+				if (catalogCombo.getItemCount() == 1){
+					//only one catalog found, automatically search schema
+					catalogCombo.select(0);
+					catalogCombo.setEnabled(true);
+					populateSchemaCombo(connection,null);
+				}
+				else{
+					//set first value as default selection
+					catalogCombo.select(0);
+					catalogCombo.setEnabled(true);
+				}
 			}
 			else {
 				catalogCombo.setEnabled(false);

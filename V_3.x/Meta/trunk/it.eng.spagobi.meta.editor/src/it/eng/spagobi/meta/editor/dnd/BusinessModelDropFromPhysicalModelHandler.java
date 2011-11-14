@@ -225,6 +225,12 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		dialog.create();
 		dialog.open();
 		
+		//this will "undo" the operation of upgrade to Business View if the user didn't add any join path in the previuos wizard
+		if ( (!isBusinessView) && ((businessView.getJoinRelationships().size()) < 1) ){
+			BusinessModelInitializer initializer = new BusinessModelInitializer();
+			initializer.downgradeBusinessViewToBusinessTable(businessView);
+		}
+		
 		
 		//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
 		businessColumnSet = ((BusinessModel)model).getTable(businessColumnSet.getName());

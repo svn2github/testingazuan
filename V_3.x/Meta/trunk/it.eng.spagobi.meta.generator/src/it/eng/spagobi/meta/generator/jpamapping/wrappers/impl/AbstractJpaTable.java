@@ -158,11 +158,11 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable#getCompositeKeyClassName()
 	 */
 	public String getCompositeKeyClassName() {
-		return getClassName() + "PK"; //$NON-NLS-1$
+		return getClassName() + "CompositePK"; //$NON-NLS-1$
 	}
 	
 	public String getQualifiedCompositeKeyClassName() {
-		return getPackage() + "." + getClassName() + "PK"; //$NON-NLS-1$
+		return getPackage() + "." + getClassName() + "CompositePK"; //$NON-NLS-1$
 	}
 	
 	/*

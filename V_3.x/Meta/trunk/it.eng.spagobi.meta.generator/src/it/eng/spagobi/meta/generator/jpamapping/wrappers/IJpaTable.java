@@ -74,6 +74,10 @@ public interface IJpaTable {
 	
 	String getUniqueName();
 	
+	String getCatalog();
+	
+	String getSchema();
+	
 	/**
 	 * 
 	 * @return return true if the wrapped table has no key 

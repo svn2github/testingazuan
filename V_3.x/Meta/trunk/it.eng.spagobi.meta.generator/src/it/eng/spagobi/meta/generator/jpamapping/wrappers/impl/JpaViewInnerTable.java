@@ -289,6 +289,14 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		return false;
 	}
+	
+	public String getCatalog(){
+		return getModel().getPhysicalModel().getCatalog();
+	}
+	
+	public String getSchema(){
+		return getModel().getPhysicalModel().getSchema();
+	}
 
 	@Override
 	public String getName() {

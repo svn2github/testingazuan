@@ -82,6 +82,16 @@ public class JpaTable extends AbstractJpaTable {
 	public BusinessTable getBusinessTable() {
 		return businessTable;
 	}
+	
+	public String getCatalog(){
+		logger.debug("Catalog is: "+ getModel().getPhysicalModel().getCatalog());
+		return getModel().getPhysicalModel().getCatalog();
+	}
+	
+	public String getSchema(){
+		logger.debug("Schema is: "+getModel().getPhysicalModel().getSchema());
+		return getModel().getPhysicalModel().getSchema();
+	}
 
 	public PhysicalTable getPhysicalTable() {
 		return businessTable.getPhysicalTable();

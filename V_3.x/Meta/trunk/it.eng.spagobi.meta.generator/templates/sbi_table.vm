@@ -12,8 +12,17 @@ ${jpaTable.importStatements}
  */
 @Entity
 #if( !${table.defaultname} )
-@Table(name="${jpaTable.sqlName}")
+@Table(name="${jpaTable.sqlName}"
+#if( $jpaTable.getSchema() )
+, schema="${jpaTable.schema}"
 #end
+#if( $jpaTable.getCatalog() )
+, catalog="${jpaTable.catalog}"
+#end
+)
+#end
+
+
 public class ${jpaTable.className} implements Serializable {
 
 private static final long serialVersionUID = 1L;

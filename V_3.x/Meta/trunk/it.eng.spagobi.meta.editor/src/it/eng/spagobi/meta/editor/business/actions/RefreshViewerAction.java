@@ -21,10 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
+import java.util.Collection;
+
 import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IEditorPart;
 
@@ -55,7 +59,25 @@ public class RefreshViewerAction extends Action {
 		if (activeEditorPart instanceof IViewerProvider) {
 			Viewer viewer = ((IViewerProvider)activeEditorPart).getViewer();
 			if (viewer != null) {
-				viewer.refresh();
+				if(viewer instanceof TreeViewer) {
+					TreeViewer treeViewer = (TreeViewer)viewer;
+									
+					Object[] elements = treeViewer.getExpandedElements();
+//					for(int i = 0; i < elements.length; i++) {
+//						treeViewer.refresh(elements[i]);
+//						if(elements[i] instanceof BusinessColumnFolderItemProvider) {
+//							BusinessColumnFolderItemProvider bcfip = (BusinessColumnFolderItemProvider)elements[i];
+//							treeViewer.setExpandedState(elements[i], true);							
+//						} else {
+//							treeViewer.setExpandedState(elements[i], true);
+//						}
+//					}
+//					
+					treeViewer.refresh();
+					treeViewer.setExpandedElements(elements);
+				} else {
+					viewer.refresh();
+				}
 			}
 		}
 	}

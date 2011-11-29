@@ -61,6 +61,41 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 		IItemLabelProvider, IItemPropertySource  {
 
 	
+
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((parentObject == null) ? 0 : parentObject.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FolderItemProvider other = (FolderItemProvider) obj;
+		if (parentObject == null) {
+			if (other.parentObject != null)
+				return false;
+		} else if (!parentObject.equals(other.parentObject))
+			return false;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		} else if (!text.equals(other.text))
+			return false;
+		return true;
+	}
+
 	protected Object parentObject;
 
 	protected Collection children;

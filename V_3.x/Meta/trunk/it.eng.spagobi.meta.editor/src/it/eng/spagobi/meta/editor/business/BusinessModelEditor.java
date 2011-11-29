@@ -400,10 +400,20 @@ public class BusinessModelEditor
 	
 	public void refreshViewer() {
 		if (currentViewer != null) {
-			currentViewer.refresh();
+			//currentViewer.refresh();
 			if(currentViewer instanceof TreeViewer) {
 				TreeViewer treeViewer = (TreeViewer)currentViewer;
-				treeViewer.expandToLevel(2);
+				if (treeViewer.getSelection().isEmpty()) {
+					Object[] elements = treeViewer.getExpandedElements();
+					treeViewer.refresh();
+					treeViewer.setExpandedElements(elements);
+				} else {
+				    IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+				    Object selectedDomainObject = selection.getFirstElement();
+				    treeViewer.refresh(selectedDomainObject);
+				}
+			
+				//treeViewer.expandToLevel(4);
 			}
 		}
 	}

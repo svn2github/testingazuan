@@ -87,7 +87,7 @@ public void $jpaColumn.propertyNameSetter ($jpaColumn.simplePropertyType $jpaCol
 #####                                   field declaration
 ###################################################################################
 #if ($jpaRelationship.cardinality == "many-to-one")
-private ${jpaRelationship.getReferencedTable().className} $jpaRelationship.propertyName;
+private ${jpaRelationship.getReferencedTable().className} ${jpaRelationship.propertyName};
 #elseif ($jpaRelationship.cardinality == "one-to-many")
 private ${jpaRelationship.collectionType}<${jpaRelationship.getReferencedTable().className}> $jpaRelationship.getBidirectionalPropertyName();
 #end

@@ -43,6 +43,14 @@ import java.util.List;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,6 +175,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 				baseOutputDir = new File(outputDir);
 				deleteFile(baseOutputDir);
 				baseOutputDir = new File(outputDir);
+						
 				logger.debug("Output dir is equal to [{}]", baseOutputDir);
 				
 				srcDir = (srcDir == null)? new File(baseOutputDir, DEFAULT_SRC_DIR): srcDir;
@@ -181,6 +190,21 @@ public class JpaMappingCodeGenerator implements IGenerator {
 				}  
 				
 				generateJpaMapping(model);
+				
+				//Syncronization with eclipse workspace, hiding mapping directory
+				/*
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
+				IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
+				workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+				IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
+				iFolder.setHidden(true);
+				iFolder.setTeamPrivateMember(true);
+				iFolder.setDerived(true, null);
+				*/
+				//iFolder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
+				//proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+				
 				
 				logger.info("Jpa mapping code generated succesfully");
 			} catch (Exception e) {

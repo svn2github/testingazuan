@@ -28,6 +28,8 @@ import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -65,7 +67,7 @@ public class CreateQueryAction extends AbstractSpagoBIModelAction {
 	    	WizardDialog dialog = new WizardDialog(wizard.getShell(), wizard);
 			dialog.create();
 	    	dialog.open();
-	    	
+
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}

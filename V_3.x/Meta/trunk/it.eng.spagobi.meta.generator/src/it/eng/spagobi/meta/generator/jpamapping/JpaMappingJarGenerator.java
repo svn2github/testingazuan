@@ -30,6 +30,13 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.io.File;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +68,26 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			
 			Zipper zipper = new Zipper();
 			zipper.compressToJar(getBinDir(), getJarFile());
+			
+			//Try force hiding
+			/*
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
+			IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
+			IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
+			iFolder.setHidden(true);
+			iFolder.setTeamPrivateMember(true);
+			iFolder.setDerived(true, null);
+			IFolder iFolderDist = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+distDir.getName()) ;
+			iFolderDist.setHidden(true);
+			iFolderDist.setDerived(true, null);
+			IFolder iFolderSource = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+this.DEFAULT_SRC_DIR) ;
+			iFolderSource.setHidden(true);
+			iFolderSource.setDerived(true, null);
+			*/
+			//workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+			//proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+
 
 		} catch(Throwable t) {
 			logger.error("An error occur while generating JPA jar", t);

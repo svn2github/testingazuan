@@ -136,15 +136,8 @@ public class CreateQueryCommand extends AbstractSpagoBIModelGenerateCommand {
 					}
 				}
 				
-			}
-			/*
-	        try {
-	        	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
-			} catch (CoreException e) {
-				logger.error("Refresh Local workspace error [{}]",e);
-				e.printStackTrace();
-			}
-			*/
+			}		
+			
 		}
 	}
 	
@@ -157,12 +150,14 @@ public class CreateQueryCommand extends AbstractSpagoBIModelGenerateCommand {
 			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
 			IPath location= Path.fromOSString(queryFile.getAbsolutePath()); 
 			IFile ifile= workspace.getRoot().getFileForLocation(location);
-	        try {
+	        
+			try {
 	        	ifile.refreshLocal(IResource.DEPTH_ZERO, null);
 			} catch (CoreException e) {
 				logger.error("Refresh Local workspace error [{}]",e);
 				e.printStackTrace();
 			}
+			
 			//*******
 			
 		    try {

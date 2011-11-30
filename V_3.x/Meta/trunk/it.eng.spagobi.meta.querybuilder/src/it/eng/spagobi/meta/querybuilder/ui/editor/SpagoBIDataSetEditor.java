@@ -66,7 +66,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
@@ -195,6 +197,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			IWorkspace workspace= ResourcesPlugin.getWorkspace();    
 			IPath location = Path.fromOSString(path); 
 			file = workspace.getRoot().getFileForLocation(location);
+						
 		} catch (Throwable t) {
 			throw new SpagoBIPluginException("Impossible to locate model file [" + path + "]");
 		}

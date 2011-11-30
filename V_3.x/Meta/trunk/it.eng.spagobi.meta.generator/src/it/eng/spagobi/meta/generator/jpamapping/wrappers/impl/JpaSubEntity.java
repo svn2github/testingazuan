@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.velocity.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +155,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		IJpaColumn jpaColumn = getParentColumn();
 		if (jpaColumn!=null){
 			//name = table.getClassName() + "(" + getParentColumn().getPropertyName().toLowerCase() + ")";
-			name = getParentColumn().getPropertyName() + "(" + getParentColumn().getPropertyName().toLowerCase() + ")";
+			name = "rel"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName()) + "(rel"+getParentColumn().getPropertyName().toLowerCase() + ")";
 		}
 		else {
 			logger.debug("Cannot retrieve parent column of [{}]",this);

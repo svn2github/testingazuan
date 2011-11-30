@@ -76,6 +76,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 
 	@Override
 	public boolean equals(Object obj) {
+		
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -91,7 +92,7 @@ public class FolderItemProvider extends ItemProviderAdapter implements IEditingD
 		if (text == null) {
 			if (other.text != null)
 				return false;
-		} else if (!text.equals(other.text))
+		} else if (!text.startsWith(other.text.substring(0, 5)))
 			return false;
 		return true;
 	}

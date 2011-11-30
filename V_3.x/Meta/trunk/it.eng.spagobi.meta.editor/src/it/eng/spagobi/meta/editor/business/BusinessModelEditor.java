@@ -38,8 +38,10 @@ import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdap
 import it.eng.spagobi.meta.model.provider.ModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.ui.ViewerPane;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.common.util.URI;
@@ -60,13 +63,17 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IViewerNotification;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
+import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.celleditor.AdapterFactoryTreeEditor;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.emf.edit.ui.provider.NotifyChangedToViewerRefresh;
 import org.eclipse.emf.edit.ui.provider.UnwrappingSelectionProvider;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider.ViewerRefresh;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -78,6 +85,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -324,7 +332,7 @@ public class BusinessModelEditor
 				@Override
 				public Viewer createViewer(Composite composite) {
 					Tree tree = new Tree(composite, SWT.MULTI);
-					TreeViewer newTreeViewer = new TreeViewer(tree);
+					TreeViewer newTreeViewer = new TreeViewer(tree); 
 					return newTreeViewer;
 				}
 				@Override
@@ -336,7 +344,44 @@ public class BusinessModelEditor
 		viewerPane.createControl(getContainer());
 
 		modelTreeViewer = (TreeViewer)viewerPane.getViewer();
-		modelTreeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
+		
+		modelTreeViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory) {
+			public void notifyChanged(Notification notification)
+			  {
+			    if (viewer != null && viewer.getControl() != null && !viewer.getControl().isDisposed())
+			    {
+			      // If the notification is an IViewerNotification, it specifies how ViewerRefresh should behave.  Otherwise fall
+			      // back to NotifyChangedToViewerRefresh, which determines how to refresh the viewer directly from the model
+			      // notification.
+			      //
+			      if (notification instanceof IViewerNotification)
+			      {
+			        if (viewerRefresh == null)
+			        {
+			          viewerRefresh = new CustomViewerRefresh(viewer);
+			        }
+
+			        if (viewerRefresh.addNotification((IViewerNotification)notification))
+			        {
+			          viewer.getControl().getDisplay().asyncExec(viewerRefresh);
+			        }
+			      }
+			      else
+			      {
+			        NotifyChangedToViewerRefresh.handleNotifyChanged(
+			          viewer,
+			          notification.getNotifier(),
+			          notification.getEventType(),
+			          notification.getFeature(),
+			          notification.getOldValue(),
+			          notification.getNewValue(),
+			          notification.getPosition());
+			      }
+			    }
+			  }
+			
+			 
+		});
 		modelTreeViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 		
 		modelTreeViewer.getTree().addKeyListener(new KeyAdapter() {
@@ -403,17 +448,12 @@ public class BusinessModelEditor
 			//currentViewer.refresh();
 			if(currentViewer instanceof TreeViewer) {
 				TreeViewer treeViewer = (TreeViewer)currentViewer;
-				if (treeViewer.getSelection().isEmpty()) {
-					Object[] elements = treeViewer.getExpandedElements();
-					treeViewer.refresh();
-					treeViewer.setExpandedElements(elements);
-				} else {
-				    IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-				    Object selectedDomainObject = selection.getFirstElement();
-				    treeViewer.refresh(selectedDomainObject);
+				Object[] elements = treeViewer.getExpandedElements();
+				treeViewer.refresh();
+				for(Object element : elements) {
+					treeViewer.setExpandedState(element, true);
 				}
-			
-				//treeViewer.expandToLevel(4);
+				//treeViewer.setExpandedElements(elements);
 			}
 		}
 	}
@@ -899,4 +939,235 @@ public class BusinessModelEditor
 	public TreeViewer getSelectionViewer() {
 		return modelTreeViewer;
 	}
+	
+	  public static class CustomViewerRefresh extends AdapterFactoryContentProvider.ViewerRefresh
+	  {
+	    Viewer viewer;
+	    List<IViewerNotification> notifications;
+	    boolean compatibility;
+
+	    /**
+	     * @since 2.2.0
+	     */
+	    public CustomViewerRefresh(Viewer viewer)
+	    {
+	    super(viewer);
+	      this.viewer = viewer;
+	     
+	    }
+
+	  
+
+	    /**
+	     * Adds a viewer notification to the queue that will be processed by this <code>ViewerRefresh</code>.
+	     * Duplicative notifications will not be queued.
+	     * @param notification the notification to add to the queue 
+	     * @return whether the queue has been made non-empty, which would indicate that the <code>ViewerRefresh</code>
+	     *   needs to be {@link Display#asyncExec scheduled} on the event queue 
+	     * @since 2.2.0
+	     */
+	    public synchronized boolean addNotification(IViewerNotification notification)
+	    {
+	      if (notifications == null)
+	      {
+	        notifications = new ArrayList<IViewerNotification>();
+	      }
+
+	      if (notifications.isEmpty())
+	      {
+	        notifications.add(notification);
+	        return true;
+	      }
+
+	      if (viewer instanceof StructuredViewer)
+	      {
+	        for (Iterator<IViewerNotification> i = notifications.iterator(); i.hasNext() && notification != null; )
+	        {
+	          IViewerNotification old = i.next();
+	          IViewerNotification merged = merge(old, notification);
+	          if (merged == old)
+	          {
+	            notification = null;
+	          }
+	          else if (merged != null)
+	          {
+	            notification = merged;
+	            i.remove();
+	          }
+	        }
+	        if (notification != null)
+	        {
+	          notifications.add(notification);
+	        }
+	      }
+	      return false;
+	    }
+
+	    /**
+	     * Compares two notifications and, if duplicative, returns a single notification that does the work of
+	     * both.  Note: this gives priority to a content refresh on the whole viewer over a content refresh or
+	     * label update on a specific element; however, it doesn't use parent-child relationships to determine
+	     * if refreshes on non-equal elements are duplicative.
+	     * @return a single notification that is equivalent to the two parameters, or null if they are non-duplicative
+	     * @since 2.2.0
+	     */
+	    protected IViewerNotification merge(IViewerNotification n1, IViewerNotification n2)
+	    {
+	      // This implements the following order of preference:
+	      //   1. full refresh and update
+	      //   2. full refresh (add update if necessary)
+	      //   3. refresh element with update
+	      //   4. refresh element (if necessary)
+	      //   5. update element
+	      // 
+	      if (n1.getElement() == null && n1.isLabelUpdate())
+	      {
+	        return n1;
+	      }
+	      else if (n2.getElement() == null && n2.isLabelUpdate())
+	      {
+	        return n2;
+	      }
+	      else if (n1.getElement() == null)
+	      {
+	        if (n2.isLabelUpdate())
+	        {
+	          n1 = new ViewerNotification(n1);
+	        }
+	        return n1;
+	      }
+	      else if (n2.getElement() == null)
+	      {
+	        if (n1.isLabelUpdate())
+	        {
+	          n2 = new ViewerNotification(n2);
+	        }
+	        return n2;
+	      }
+	      else if (n1.getElement() == n2.getElement())
+	      {
+	        if (n1.isContentRefresh() && n1.isLabelUpdate())
+	        {
+	          return n1;
+	        }
+	        else if (n2.isContentRefresh() && n2.isLabelUpdate())
+	        {
+	          return n2;
+	        }
+	        else if (n1.isContentRefresh())
+	        {
+	          if (n2.isLabelUpdate())
+	          {
+	            n1 = new ViewerNotification(n1, n1.getElement(), true, true);
+	          }
+	          return n1;
+	        }
+	        else if (n2.isContentRefresh())
+	        {
+	          if (n1.isLabelUpdate())
+	          {
+	            n2 = new ViewerNotification(n2, n2.getElement(), true, true);
+	          }
+	          return n2;
+	        }
+	        else if (n1.isLabelUpdate())
+	        {
+	          return n1;
+	        }
+	        else // n2.isLabelUpdate()
+	        {
+	          return n2;
+	        }
+	      }
+	      return null;
+	    }
+
+	    public void run()
+	    {
+	      if (viewer != null && viewer.getControl() != null && !viewer.getControl().isDisposed())
+	      {
+	        List<IViewerNotification> current;
+	  
+	        synchronized (this)
+	        {
+	          current = notifications;
+	          notifications = null;
+	        }
+	  
+	        if (current != null)
+	        {
+	          for (IViewerNotification viewerNotification : current)
+	          {
+	            refresh(viewerNotification);
+	          }
+	        }
+	      }
+	    }
+
+	    /**
+	     * @since 2.2.0
+	     */
+	    protected void refresh(IViewerNotification notification)
+	    {
+	      // Previously, we never updated the viewer on a resolve.  Now we post and merge it as appropriate.
+	      //
+	      if (compatibility && notification.getEventType() == Notification.RESOLVE) return;
+
+	      Object element = notification.getElement();
+
+	      if (viewer instanceof StructuredViewer)
+	      {
+	        StructuredViewer structuredViewer = (StructuredViewer)viewer;
+
+	        ISelection selection = structuredViewer.getSelection();
+	        boolean isStaleSelection = AdapterFactoryEditingDomain.isStale(selection);
+	        if (isStaleSelection)
+	        {
+	          viewer.setSelection(StructuredSelection.EMPTY);
+	        }
+
+	        if (element != null)
+	        {
+	          if (notification.isContentRefresh())
+	          {
+	        	//structuredViewer.refresh(element, notification.isLabelUpdate());
+	          }
+	          else if (notification.isLabelUpdate())
+	          {
+	            structuredViewer.update(element, null);
+	          }
+	        }
+	        else
+	        {
+	          structuredViewer.refresh(notification.isLabelUpdate());
+	        }
+
+	        if (isStaleSelection)
+	        {
+	          Object object = structuredViewer.getInput();
+	          EditingDomain editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(object);
+	          if (editingDomain == null)
+	          {
+	            for (Object child : ((IStructuredContentProvider)structuredViewer.getContentProvider()).getElements(object))
+	            {
+	              editingDomain = AdapterFactoryEditingDomain.getEditingDomainFor(child);
+	              if (editingDomain != null)
+	              {
+	                break;
+	              }
+	            }
+	          }
+	          if (editingDomain instanceof AdapterFactoryEditingDomain)
+	          {
+	            structuredViewer.setSelection
+	              (new StructuredSelection(((AdapterFactoryEditingDomain)editingDomain).resolve(((IStructuredSelection)selection).toList())), true);
+	          }
+	        }
+	      }
+	      else
+	      {
+	        viewer.refresh();
+	      }
+	    }
+	  }
 }

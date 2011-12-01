@@ -205,8 +205,9 @@ public class BusinessModelInitializer {
 			businessTable.setDescription( businessTableDescription);
 			businessTable.setModel(businessModel);
 			//setting original name as Unique Name
-			businessTable.setId(beutfyName(physicalTable.getName()));	
-							
+			businessTable.setUniqueName(beutfyName(physicalTable.getName()));
+			
+			
 			addColumns(physicalTable, columnFilter, businessTable);
 			
 			businessModel.getTables().add(businessTable);

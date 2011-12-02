@@ -310,7 +310,8 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 
 	@Override
 	public String getSqlName() {
-		return physicalTable.getName();
+		String name = physicalTable.getName();
+		return "\\\""+name+"\\\"";
 	}
 	
 	@Override

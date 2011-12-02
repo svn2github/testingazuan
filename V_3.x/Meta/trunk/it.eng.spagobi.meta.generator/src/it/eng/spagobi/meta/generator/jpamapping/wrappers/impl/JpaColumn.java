@@ -329,7 +329,8 @@ public class JpaColumn implements IJpaColumn {
 	 */
 	@Override
 	public String getColumnNameDoubleQuoted(){
-		return StringUtils.doubleQuote(businessColumn.getPhysicalColumn().getName());
+		String s = StringUtils.doubleQuote("`"+businessColumn.getPhysicalColumn().getName()+"`");
+		return s;
 	}
 	
 	/* (non-Javadoc)

@@ -205,8 +205,7 @@ public class JpaTable extends AbstractJpaTable {
 
 	@Override
 	public String getName() {
-		String name = businessTable.getName();
-		return name;
+		return businessTable.getName();
 	}
 
 	@Override
@@ -217,6 +216,11 @@ public class JpaTable extends AbstractJpaTable {
 	@Override
 	public String getSqlName() {
 		
+		String name =  businessTable.getPhysicalTable().getName();
+		return name;
+	}
+	
+	public String getQuotedMappingTableName() {
 		String name =  businessTable.getPhysicalTable().getName();
 		return "`"+name+"`";
 	}

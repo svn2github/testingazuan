@@ -117,6 +117,14 @@ public interface IJpaColumn {
 	String getUnqualifiedUniqueName();
 
 	/**
+	 * Gets the name of the column for the jpa mapping file..
+	 * The name is quoted to avoid problems like upper cased
+	 * characters
+	 * @return the name
+	 */
+	String getQuotedMappingColumnName();
+	
+	/**
 	 * @return
 	 */
 	boolean isColumnInRelationshipWithView();

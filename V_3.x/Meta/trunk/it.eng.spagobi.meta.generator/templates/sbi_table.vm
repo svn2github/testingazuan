@@ -12,7 +12,7 @@ ${jpaTable.importStatements}
  */
 @Entity
 #if( !${table.defaultname} )
-@Table(name="${jpaTable.sqlName}"
+@Table(name="${jpaTable.quotedMappingTableName}"
 #if( $jpaTable.getSchema() )
 , schema="${jpaTable.schema}"
 #end

@@ -72,6 +72,14 @@ public interface IJpaTable {
 	
 	String getSqlName();
 	
+	/**
+	 * Gets the name of the table for the jpa mapping file..
+	 * The name is quoted to avoid problems like upper cased
+	 * characters
+	 * @return the name
+	 */
+	String getQuotedMappingTableName();
+	
 	String getUniqueName();
 	
 	String getCatalog();

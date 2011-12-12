@@ -176,7 +176,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	}	
 	
 	public String getSimpleSourceColumnName(){
-		return StringUtils.doubleQuote(getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName());
+		return StringUtils.doubleQuote("`"+getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName()+"`");
 	}
 	
 	public boolean isMultipleRelationship(){

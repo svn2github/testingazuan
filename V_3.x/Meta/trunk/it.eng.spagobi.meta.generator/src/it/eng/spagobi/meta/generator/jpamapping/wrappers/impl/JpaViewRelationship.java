@@ -162,5 +162,23 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 			return StringUtils.pluralise(StringUtils.columnNameToVarName( businessInnerRelationship.getName()));
 		else 
 			return StringUtils.pluralise(StringUtils.columnNameToVarName("innerJoin"));
+	}
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship#isMultipleRelationship()
+	 */
+	@Override
+	public boolean isMultipleRelationship() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship#getRelationshipColumnsNames()
+	 */
+	@Override
+	public List<JpaRelationshipColumnsNames> getRelationshipColumnsNames() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

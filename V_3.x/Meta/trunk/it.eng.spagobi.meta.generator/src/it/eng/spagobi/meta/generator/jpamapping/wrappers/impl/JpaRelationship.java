@@ -34,6 +34,7 @@ import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -177,6 +178,53 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	public String getSimpleSourceColumnName(){
 		return StringUtils.doubleQuote(getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName());
 	}
+	
+	public boolean isMultipleRelationship(){
+		if (getBusinessRelationship().getSourceColumns().size() > 1){
+			return true;
+		} else {
+			return false;
+		}			
+	}
+	
+	public List<String> getSimpleSourceColumnsNames(){
+		List<String> sourceColumnsNames = new ArrayList<String>();
+		if (isMultipleRelationship()){
+			List<SimpleBusinessColumn> sourceColumns = getBusinessRelationship().getSourceSimpleBusinessColumns();
+			for (SimpleBusinessColumn column : sourceColumns ){
+				sourceColumnsNames.add( StringUtils.doubleQuote(column.getPhysicalColumn().getName()));
+			}
+		}
+		return sourceColumnsNames;
+	}
+	
+	public List<String> getSimpleDestinationColumnsNames(){
+		List<String> destinationColumnsNames = new ArrayList<String>();
+		if (isMultipleRelationship()){
+			List<SimpleBusinessColumn> destinationColumns = getBusinessRelationship().getDestinationSimpleBusinessColumns();
+			for (SimpleBusinessColumn column : destinationColumns ){
+				destinationColumnsNames.add( StringUtils.doubleQuote(column.getPhysicalColumn().getName()));
+			}
+		}
+		return destinationColumnsNames;
+	}
+	
+	public List<JpaRelationshipColumnsNames> getRelationshipColumnsNames(){
+		List<JpaRelationshipColumnsNames> relationshipColumnsNames = new ArrayList<JpaRelationshipColumnsNames>();
+		if (isMultipleRelationship()){
+			List<SimpleBusinessColumn> destinationColumns = getBusinessRelationship().getDestinationSimpleBusinessColumns();
+			List<SimpleBusinessColumn> sourceColumns = getBusinessRelationship().getSourceSimpleBusinessColumns();
+
+			for (int i=0; i < sourceColumns.size(); i++){
+				 String sourceColumnName = StringUtils.doubleQuote(sourceColumns.get(i).getPhysicalColumn().getName());
+				 String destinationColumnName =  StringUtils.doubleQuote(destinationColumns.get(i).getPhysicalColumn().getName());
+				 JpaRelationshipColumnsNames relationshipNames = new JpaRelationshipColumnsNames(sourceColumnName,destinationColumnName );
+				 relationshipColumnsNames.add(relationshipNames);
+			}
+		}
+		return relationshipColumnsNames;
+	}
+	
 	/**
 	 * TODO .. da verificare
 	 * @return

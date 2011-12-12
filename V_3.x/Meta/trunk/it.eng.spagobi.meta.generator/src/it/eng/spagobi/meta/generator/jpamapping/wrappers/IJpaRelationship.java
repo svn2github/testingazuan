@@ -21,7 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaRelationshipColumnsNames;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -60,6 +63,10 @@ public interface IJpaRelationship {
 	 * @return the name of the metod SETTER
 	 */
 	String getSetter(String par);
+	
+	boolean isMultipleRelationship();
+	
+	List<JpaRelationshipColumnsNames> getRelationshipColumnsNames();
 	
 	public String getSimpleSourceColumnName();
 	

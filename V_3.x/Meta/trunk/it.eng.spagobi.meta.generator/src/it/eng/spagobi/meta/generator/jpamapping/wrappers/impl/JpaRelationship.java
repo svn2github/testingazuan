@@ -216,8 +216,8 @@ public class JpaRelationship extends AbstractJpaRelationship {
 			List<SimpleBusinessColumn> sourceColumns = getBusinessRelationship().getSourceSimpleBusinessColumns();
 
 			for (int i=0; i < sourceColumns.size(); i++){
-				 String sourceColumnName = StringUtils.doubleQuote(sourceColumns.get(i).getPhysicalColumn().getName());
-				 String destinationColumnName =  StringUtils.doubleQuote(destinationColumns.get(i).getPhysicalColumn().getName());
+				 String sourceColumnName = StringUtils.doubleQuote("`"+sourceColumns.get(i).getPhysicalColumn().getName()+"`");
+				 String destinationColumnName =  StringUtils.doubleQuote("`"+destinationColumns.get(i).getPhysicalColumn().getName()+"`");
 				 JpaRelationshipColumnsNames relationshipNames = new JpaRelationshipColumnsNames(sourceColumnName,destinationColumnName );
 				 relationshipColumnsNames.add(relationshipNames);
 			}

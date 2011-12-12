@@ -3797,7 +3797,7 @@ public class ImportUtilities {
 			newGrant.setLabel(grant.getLabel());
 			newGrant.setName(grant.getName());
 			newGrant.setStartDate(grant.getStartDate());
-
+			newGrant.setIsAvailable(true);
 			// associations
 			entitiesAssociationsOuGrant(grant, newGrant, sessionCurrDB, metaAss, importer);
 
@@ -3875,6 +3875,7 @@ public class ImportUtilities {
 			existingGrant.setLabel(exportedGrant.getLabel());
 			existingGrant.setName(exportedGrant.getName());
 			existingGrant.setStartDate(exportedGrant.getStartDate());
+			existingGrant.setIsAvailable(true);
 		}
 
 		finally {

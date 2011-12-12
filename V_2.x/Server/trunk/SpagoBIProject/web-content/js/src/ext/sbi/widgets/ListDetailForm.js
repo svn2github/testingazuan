@@ -151,6 +151,7 @@ Sbi.widgets.ListDetailForm = function(config) {
 	this.services['manageListService'] = conf.manageListService;
 	this.services['saveItemService'] = conf.saveItemService;
 	this.services['deleteItemService'] = conf.deleteItemService;
+
 	
 	this.emptyRecord = conf.emptyRecToAdd;
 	this.tabItems = conf.tabItems;
@@ -161,6 +162,7 @@ Sbi.widgets.ListDetailForm = function(config) {
 	this.ddGroup = conf.dragndropGroup;
 	this.rowselModel = conf.rowselModel;
 	this.filter = conf.filter;
+	this.filtercolumnName = conf.columnName;
 	if(conf.filterWidth !== undefined){
 		this.filterWidth = conf.filterWidth;
 	}
@@ -168,18 +170,30 @@ Sbi.widgets.ListDetailForm = function(config) {
 	if(conf.tabPanelWidth){
 		this.tabPanelWidth = conf.tabPanelWidth;
     }else{
-    	this.tabPanelWidth = 430;
+    	this.tabPanelWidth = 520;
     }
 	if(conf.gridWidth){
 		this.gridWidth = conf.gridWidth;
     }else{
-    	this.gridWidth = 410;
+    	this.gridWidth = 470;
     }
 	
 	if(config.singleSelection){
 		this.singleSelection = config.singleSelection;
 	}else{
 		this.singleSelection = false;
+	}
+	
+	if(conf.setCloneButton){
+		this.setCloneButton = conf.setCloneButton;
+	}else{
+		this.setCloneButton = false;
+	}
+	if(conf.tbButtonsArray){
+		this.tbButtonsArray = conf.tbButtonsArray;
+	}
+	if(conf.tbListButtonsArray){
+		this.tbListButtonsArray = conf.tbListButtonsArray;
 	}
 
 	this.mainElementsStore = new Ext.data.JsonStore({
@@ -260,7 +274,10 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	, singleSelection: true
 	, tabPanelWidth: null
 	, gridWidth: null
-	, filterWidth: 405
+	, filterWidth: 465
+	, setCloneButton: null
+	, tbButtonsArray: null
+	, tbListButtonsArray: null
 	
 	
 	,initWidget: function(){
@@ -313,10 +330,17 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
  	            scope: this
  	            });
         
+        var buttonsArray = new Array();
+        if(this.tbButtonsArray!=null && this.tbButtonsArray!=undefined){
+        	buttonsArray = this.tbButtonsArray;
+        }
+        
+        buttonsArray.push(this.tbSaveButton);
+        
  	    this.tbSave = new Ext.Toolbar({
  	    	buttonAlign : 'right', 	 
  	    	height: 28,
- 	    	items:[this.tbSaveButton]
+ 	    	items: buttonsArray
  	    });
 
  	   this.tabs = new Ext.TabPanel({
@@ -333,22 +357,36 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
            , scope: this
 		   , items: this.tabItems
 		});
+ 	   
+ 	      var buttonsArray = new Array();
+          if(this.tbListButtonsArray!=null && this.tbListButtonsArray!=undefined){
+        	buttonsArray = this.tbListButtonsArray;
+          }
+
+	 	  buttonsArray.push(new Ext.Toolbar.Button({
+	           text: LN('sbi.generic.add'),
+	            iconCls: 'icon-add',
+	            handler: this.addNewItem,
+	            width: 30,
+	            scope: this
+	            }));
+	 	  if(this.setCloneButton){
+	 		 buttonsArray.push(new Ext.Toolbar.Button({
+	 	            text: LN('sbi.generic.clone'),
+	 	            iconCls: 'icon-clone',
+	 	            handler: this.cloneItem,
+	 	            width: 30,
+	 	            scope: this
+	 	            }));
+	 	  }	 	 
 
  	    this.tb = new Ext.Toolbar({
  	    	buttonAlign : 'right',
- 	    	items:[new Ext.Toolbar.Button({
- 	            text: LN('sbi.generic.add'),
- 	            iconCls: 'icon-add',
- 	            handler: this.addNewItem,
- 	            width: 30,
- 	            scope: this
- 	            })
- 	    	]
+ 	    	items: buttonsArray
  	    });
  	    
- 	  // var filteringToolbar = new Sbi.widgets.FilteringToolbar({store: this.store});
  	   var pagingBar = new Ext.PagingToolbar({
-	        pageSize: 16,
+	        pageSize: 14,
 	        store: this.mainElementsStore,
 	        displayInfo: true,
 	        displayMsg: '', 
@@ -370,8 +408,9 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
           });
        }
  	  
- 	  var filteringToolbar = new Sbi.widgets.FilteringToolbarLight({store: this.mainElementsStore,
-	   			columnName: LN('sbi.generic.name'),
+ 	  var filteringToolbar = new Sbi.widgets.FilteringToolbarLight({
+ 		  		store: this.mainElementsStore,
+	   			columnName: this.filtercolumnName,
 		   		cls: 'no-pad',
 		   		width: this.filterWidth,
 		   		columnValue: this.gridColItems[0].dataIndex});
@@ -393,7 +432,7 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	                  scope: this,
 	                  title: this.listTitle,
 		              bbar: pagingBar,
-	                  tbar: this.tb,
+	                  tbar: [this.tb],
 	                  fbar : [filteringToolbar],
 	                  footerStyle:'background-color: #D0D0D0; padding: 0; margin: 0; border: 0px; empty-cells: hide; ',
 	                  enableDragDrop: true,
@@ -479,5 +518,9 @@ Ext.extend(Sbi.widgets.ListDetailForm, Ext.FormPanel, {
 	,save : function() {		
 		alert('Abstract Method: it needs to be overridden');
     }
-
+	
+	,cloneItem: function() {		
+		alert('Abstract Method: it needs to be overridden');
+    }
+	
 });

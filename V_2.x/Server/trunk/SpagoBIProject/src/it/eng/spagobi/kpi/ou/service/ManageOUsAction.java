@@ -21,14 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.ou.service;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
@@ -49,6 +41,13 @@ import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -83,8 +82,9 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 	
 	//PRIVATE UTILITY COLLECTION FOR GRANT NODES TO INSERT
 	private ArrayList<HashMap<Integer, Integer>> utilityGrantNodesCollection = null;
-	
-	//private HashMap<String, HashMap<String, Array>>
+	private HashMap<Integer, List<OrganizationalUnitNode>> ouChildrenByParentIDMap = new HashMap<Integer,List<OrganizationalUnitNode>>();
+	private ArrayList<Integer> miChildrenToUncheckList = new ArrayList<Integer>();
+		//private HashMap<String, HashMap<String, Array>>
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -398,20 +398,31 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 	private void insertGrant(JSONObject grantJSON,JSONArray grantNodesJSON){
 		try {
 			OrganizationalUnitGrant grant = deserializeOrganizationalUnitGrant(grantJSON);
+			//set unavailable
+			grant.setIsAvailable(false);
+			List<OrganizationalUnitGrantNode> grantNodes = null;
+			logger.debug("start saving");
 			if(grant.getId()!=null){
+				miChildrenToUncheckList = new ArrayList<Integer>();
+				ouChildrenByParentIDMap = new HashMap<Integer,List<OrganizationalUnitNode>>();
+				logger.debug("modify");
 				DAOFactory.getOrganizationalUnitDAO().eraseNodeGrants(grant.getId());
+				logger.debug("erased nodes");
 				DAOFactory.getOrganizationalUnitDAO().modifyGrant(grant);
+				logger.debug("modified grant");
+				grantNodes = deserializeOrganizationalUnitGrantNodesAndUpdateChilds(grantNodesJSON, grant);
+				logger.debug("modify grant");
 			}else{
+				logger.debug("insert");
 				DAOFactory.getOrganizationalUnitDAO().insertGrant(grant);
+				//first time save all
+				logger.debug("inserted grant");
+				grantNodes = getAllNodesToInsert(grant);
 			}
-
-			List<OrganizationalUnitGrantNode> grantNodes = deserializeOrganizationalUnitGrantNodesAndUpdateChilds(grantNodesJSON, grant);
-			DAOFactory.getOrganizationalUnitDAO().insertNodeGrants(grantNodes);
-			
-			//disable grants for unexpanded children tree
-/*			for(int i=0; i<grantNodes.size(); i++){
-				eraseDescendantGrantNodes(grantNodesJSON, grant);
-			}*/
+			grant.setIsAvailable(true);
+			logger.debug("prepared nodes to save of size:"+grantNodes.size());
+			DAOFactory.getOrganizationalUnitDAO().insertNodeGrants(grantNodes, grant.getId());
+			logger.debug("end saving process");
 			writeBackToClient( new JSONAcknowledge() );
 		} catch (IOException e) {
 			throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
@@ -419,7 +430,38 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 			throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to serialize the responce to the client", e);
 		} 
 	}
+	private List <OrganizationalUnitGrantNode> getAllNodesToInsert(OrganizationalUnitGrant grant) throws EMFUserError{		
+		List <OrganizationalUnitGrantNode> allnodestosave = new ArrayList<OrganizationalUnitGrantNode>();
+		Integer hierarchyId = grant.getHierarchy().getId();
+		List<OrganizationalUnitNode> ouNodes = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitNodeList(hierarchyId);
+		//get only once the list of model instance nodes
+		
+		List<ModelInstanceNode> miNodes = getModelInstList(grant.getModelInstance().getId());
+		ModelInstanceNode modelInstNode = DAOFactory.getModelInstanceDAO().loadModelInstanceById(grant.getModelInstance().getId(), null);
+		//adds root 
+		miNodes.add(modelInstNode);
+		
+		for(int i=0; i<ouNodes.size(); i++){
+			//model inst children			
+			allnodestosave.addAll(buildGrantNodesForAll(ouNodes.get(i), miNodes, grant));
+		}
+		return allnodestosave;
+	}
 	
+	private List<OrganizationalUnitGrantNode> buildGrantNodesForAll(OrganizationalUnitNode ouNode, List<ModelInstanceNode> miNodes,  OrganizationalUnitGrant grant) throws EMFUserError{
+		List<OrganizationalUnitGrantNode> nodes = new ArrayList<OrganizationalUnitGrantNode>();
+		OrganizationalUnitGrantNode childNode;
+
+		for(int i=0; i<miNodes.size(); i++){
+
+			childNode = new OrganizationalUnitGrantNode();
+			childNode.setGrant(grant);
+			childNode.setModelInstanceNode(miNodes.get(i));
+			childNode.setOuNode(ouNode);
+			nodes.add(childNode);
+		}
+		return nodes;
+	}
 	/**
 	 * Deserialize a OrganizationalUnitGrant object
 	 * @param JSONGrant the JSON representation of the OrganizationalUnitGrant object
@@ -500,7 +542,7 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 	 */
 	private List<OrganizationalUnitGrantNode> deserializeOrganizationalUnitGrantNodesAndUpdateChilds(JSONArray JSONGrantNodes, OrganizationalUnitGrant grant) throws Exception{
 		
-		//System.out.println(JSONGrantNodes);
+		//logger.debug(JSONGrantNodes);
 		
 		List<OrganizationalUnitGrantNode> nodes = new ArrayList<OrganizationalUnitGrantNode>();
 		
@@ -514,28 +556,34 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 			int modelInstanceId = JSONGrantNode.getInt("modelinstance");
 			try{
 				Integer modelInstancesToUncheck = JSONGrantNode.optInt("childrenToUncheck");
-				if(modelInstancesToUncheck!=null){
+				if(miChildrenToUncheckList.indexOf(modelInstancesToUncheck) == -1){
+					miChildrenToUncheckList.add(modelInstancesToUncheck);				
 				
-					if(-1== modelInstanceId){
-						List<Integer> children = getChildren(modelInstancesToUncheck);
-						for(int o=0; o<children.size(); o++){
-							
-							for(int y=0; y<JSONGrantNodesFiltered.size(); y++){
-								if(
-									JSONGrantNode.getInt("hierarchyId") ==  JSONGrantNodesFiltered.get(y).getInt("hierarchyId") &&
-									JSONGrantNode.getString("ouPath").equals(JSONGrantNodesFiltered.get(y).getString("ouPath")) &&
-									(children.get(o) ==  JSONGrantNodesFiltered.get(y).getInt("modelinstance") ||
-											 JSONGrantNodesFiltered.get(y).getInt("modelinstance")==-1
-											)
-									
-								){
-									JSONGrantNodesFiltered.remove(y);
+					if(modelInstancesToUncheck!=null){
+					
+						if(-1== modelInstanceId){
+							List<Integer> children = getChildren(modelInstancesToUncheck);
+							for(int o=0; o<children.size(); o++){
+								
+								for(int y=0; y<JSONGrantNodesFiltered.size(); y++){
+									if(
+										JSONGrantNode.getInt("hierarchyId") ==  JSONGrantNodesFiltered.get(y).getInt("hierarchyId") &&
+										JSONGrantNode.getString("ouPath").equals(JSONGrantNodesFiltered.get(y).getString("ouPath")) &&
+										(children.get(o) ==  JSONGrantNodesFiltered.get(y).getInt("modelinstance") ||
+												 JSONGrantNodesFiltered.get(y).getInt("modelinstance")==-1
+												)
+										
+									){
+										JSONGrantNodesFiltered.remove(y);
+									}
 								}
 							}
 						}
-					}
-				}  
-			}catch (Throwable e){}
+					}  
+				}
+			}catch (Throwable e){
+				logger.error(e.getMessage());
+			}
 			
 		}	
 		
@@ -624,65 +672,7 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 		}
 		return list;
 	}
-	
-	
-	 
-	
-	/**Loops over JSON nodes array to erase descendants of the nodes with "childrenToUncheck" attribute defined.
-	 * @param JSONGrantNodes
-	 * @param grant
-	 * @throws JSONException
-	 */
-//	private void eraseDescendantGrantNodes(JSONArray JSONGrantNodes, OrganizationalUnitGrant grant) throws JSONException{
-//		Integer uncheckChildren = null;
-//		for (int i= 0; i < JSONGrantNodes.length(); i++) {
-//			JSONObject jsonNode = (JSONObject) JSONGrantNodes.get(i);
-//			try{
-//				uncheckChildren = jsonNode.getInt("childrenToUncheck");
-//				if(uncheckChildren != null){
-//					String ouPath = jsonNode.getString("ouPath");
-//					int hierarchyId = jsonNode.getInt("hierarchyId");
-//					//find model instance to disable for grant
-//					ModelInstanceNode modelInstNodeToDisable = DAOFactory.getModelInstanceDAO().loadModelInstanceById(uncheckChildren, null);
-//					OrganizationalUnitNode ouNode = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitNode(ouPath, hierarchyId);
-//					eraseDescendant(modelInstNodeToDisable, grant, ouNode);				
-//				}
-//			
-//			}catch(Throwable t){
-//				logger.debug("childrenToUncheck not present"); 
-//			}
-//		}
-//	}
-	/**Recursive method that disables grants for modelInstNodeToDisable children for a defined grant and OU node.
-	 * @param modelInstNodeToDisable model instance to erase grant
-	 * @param grant grant
-	 * @param ouNode ou node
-	 * @throws EMFUserError
-	 */
-//	private void eraseDescendant(ModelInstanceNode modelInstNodeToDisable, OrganizationalUnitGrant grant, OrganizationalUnitNode ouNode) throws EMFUserError{
-//		List ids = modelInstNodeToDisable.getChildrenIds();
-//		if(ids != null && !ids.isEmpty()){
-//			for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
-//				Integer modInstId = (Integer) iterator.next();
-//				//find model instance to disable for grant
-//				ModelInstanceNode modelInstChildDisable = DAOFactory.getModelInstanceDAO().loadModelInstanceById(modInstId, null);
-//				List<OrganizationalUnitGrantNode> allGrants = DAOFactory.getOrganizationalUnitDAO().getGrants(modInstId);
-//				for(int i =0; i<allGrants.size(); i++){
-//					OrganizationalUnitGrantNode ounodeGrant = allGrants.get(i);
-//					if(ounodeGrant.getGrant().getId().intValue() == grant.getId().intValue() &&
-//							ounodeGrant.getOuNode().getNodeId().intValue() == ouNode.getNodeId().intValue()){
-//						eraseDescendant(modelInstChildDisable, grant, ouNode);
-//					}
-//				}
-//			}
-//		}
-//		OrganizationalUnitGrantNode grantNode = new OrganizationalUnitGrantNode();
-//		grantNode.setGrant(grant);
-//		grantNode.setModelInstanceNode(modelInstNodeToDisable);
-//		grantNode.setOuNode(ouNode);
-//		
-//		DAOFactory.getOrganizationalUnitDAO().eraseNodeGrant(grantNode);
-//	}
+
 	/**
 	 * For each child of the OrganizationalUnitNode ouNode, build a OrganizationalUnitGrantNode
 	 * with grant grant and model Instance Node modelInstanceNode
@@ -694,7 +684,16 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 	private List<OrganizationalUnitGrantNode> buildGrantForChilds(OrganizationalUnitNode ouNode, ModelInstanceNode modelInstanceNode,  OrganizationalUnitGrant grant){
 		List<OrganizationalUnitGrantNode> nodes = new ArrayList<OrganizationalUnitGrantNode>();
 		OrganizationalUnitGrantNode childNode;
-		List<OrganizationalUnitNode> childOus = DAOFactory.getOrganizationalUnitDAO().getChildrenNodes(ouNode.getNodeId());
+		//System.out.println(ouNode.getNodeId());
+		Integer parentId =ouNode.getNodeId();
+		List<OrganizationalUnitNode> childOus = new ArrayList<OrganizationalUnitNode>();
+		//check if already loaded
+		if(ouChildrenByParentIDMap.get(parentId) == null){
+			childOus = DAOFactory.getOrganizationalUnitDAO().getChildrenNodes(ouNode.getNodeId());
+			ouChildrenByParentIDMap.put(parentId, childOus);
+		}else{
+			childOus = ouChildrenByParentIDMap.get(parentId);
+		}
 		
 		for(int i=0; i<childOus.size(); i++){
 			childNode= new OrganizationalUnitGrantNode();
@@ -737,7 +736,23 @@ public class ManageOUsAction extends AbstractSpagoBIAction {
 		}
 		return nodes;
 	}
-	
+	/**adds recursevly mi children
+	 * @param id
+	 * @return
+	 * @throws EMFUserError
+	 */
+	private List<ModelInstanceNode> getModelInstList(Integer id) throws EMFUserError{
+		List<ModelInstanceNode> nodes = new ArrayList<ModelInstanceNode>();
+		ModelInstanceNode modelInstanceNode = DAOFactory.getModelInstanceDAO().loadModelInstanceById(id, null);
+		
+		List<Integer> childOus = modelInstanceNode.getChildrenIds();
+		for(int i=0; i<childOus.size(); i++){
+			ModelInstanceNode miChildNode = DAOFactory.getModelInstanceDAO().loadModelInstanceById((Integer)childOus.get(i), null);
+			nodes.add(miChildNode);
+			nodes.addAll(getModelInstList(miChildNode.getModelInstanceNodeId()));
+		}
+		return nodes;
+	}
 	public Date toDate(String dateStr, String format) throws Exception {
 		SimpleDateFormat dateFormat = new SimpleDateFormat();
 		Date date = null;

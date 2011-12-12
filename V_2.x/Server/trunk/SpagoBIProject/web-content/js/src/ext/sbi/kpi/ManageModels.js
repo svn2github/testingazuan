@@ -189,11 +189,13 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 
 	 	   this.detailFieldName = new Ext.form.TextField({
 	             fieldLabel: LN('sbi.generic.name'),
+	             enableKeyEvents: true,
 	             name: 'name'
 	         });
 	 			  
 	 	   this.detailFieldCode = new Ext.form.TextField({
 	             fieldLabel:LN('sbi.generic.code'),
+	             enableKeyEvents: true,
 	             name: 'code'
 	         });  
 	 		   
@@ -201,12 +203,14 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	          	 maxLength:400,
 	       	     width : 250,
 	             height : 80,
+	             enableKeyEvents: true,
 	             fieldLabel: LN('sbi.generic.descr'),
 	             name: 'description'
 	         });
 	 	 		   
 	 	   this.detailFieldLabel = new Ext.form.TextField({
 	             fieldLabel:LN('sbi.generic.label'),
+	             enableKeyEvents: true,
 	             name: 'label'
 	         });	  
 	 	 	 			  
@@ -216,6 +220,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 	 		   	 id: 'model-detailFieldKpi',
 	             fieldLabel: LN('sbi.generic.kpi'),
 	             readOnly: true,
+	             enableKeyEvents: true,
 	             width: 30,
 	             style: '{ color: #74B75C; border: 1px solid #74B75C; font-style: italic;}',
 	             name: 'kpi'
@@ -333,9 +338,8 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		if (node !== undefined && node !== null) {
 			node.attributes.toSave = true;
 			//get the array of all attributes (would be better to change only current one but recordId is not very useful
-			var arrayUdps = this.udpValueGrid.saveUdpValues('MODEL');		
+			var arrayUdps = this.udpValueGrid.saveUdpValues('MODEL');
 			node.attributes.udpValues = arrayUdps;
-			//alert(node.attributes.toSource());
 		}
 	}
 	, filterAttributes: function(node){
@@ -347,7 +351,12 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		        if (c) { 
 		        	result += ','; 
 		        }
-		        result += '"' + key + '":"' + node.attributes[key] + '"';
+		        //alert(node.attributes[key]+" of type "+typeof node.attributes[key]);
+		        if(key == 'udpValues'){
+		        	result += '"' + key + '":' + Ext.encode(node.attributes[key]);
+		        }else{
+		        	result += '"' + key + '":"' + node.attributes[key] + '"';
+		        }
 		        c = true;
 		    }
 
@@ -360,7 +369,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		        result += '"children":[';
 		        for(var i = 0; i < clen; i++){
 		            if (i > 0) {result += ',';}
-		            result += this.nodeToString(children[i]);
+		            result += this.filterAttributes(children[i]);
 		        }
 		        result += ']';
 		    }
@@ -370,7 +379,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
     //OVERRIDING save method
 	,save : function() {
     	var jsonStr = '[';
-    	//alert(this.nodesToSave.length);
+
 		Ext.each(this.nodesToSave, function(node, index) {
 			if(node instanceof Ext.tree.TreeNode){
 				jsonStr += this.filterAttributes(node);
@@ -387,15 +396,16 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		Ext.Ajax.request( {
 			url : this.services['saveTreeService'],
 			success : function(response, options) {
-				if(response.responseText !== undefined) {
+				if(response.responseText !== undefined ) {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if(content !== undefined && content !== null){
 	      				var hasErrors = false;
 	      				//alert(content.toSource());
 	      				for (var key in content) {
-		      				  var value = content[key];
-		      				  var nodeSel = this.mainTree.getNodeById(key);
-		      				  //response returns key = guiid, value = 'KO' if operation fails, or modelId if operation succeded
+		      				var value = content[key];
+		      				var nodeSel = this.mainTree.getNodeById(key);
+		      				//alert(key+' '+value+' w/ label :'+content['label']);
+		      				//response returns key = guiid, value = 'KO' if operation fails, or modelId if operation succeded
 		      				if(nodeSel !== undefined && nodeSel != null){
 		      				  if(value  == 'KO'){
 		      					  hasErrors= true;
@@ -405,9 +415,9 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		      				  }else{
 		      					  nodeSel.attributes.error = false; 
 		      					  nodeSel.attributes.modelId = value; 
-		      					  nodeSel.attributes.label = content['label'];
-		      					this.detailFieldLabel.setValue(content['label']);
-		      					this.detailFieldLabel.show();
+		      					  nodeSel.attributes.label = content[value];
+		      					  this.detailFieldLabel.setValue(content[value]);
+		      					  this.detailFieldLabel.show();
 		      					  Ext.fly(nodeSel.getUI().getEl()).applyStyles('{ border: 0; font-weight: normal; font-style: normal; text-decoration: none; }');
 		      					  this.fireEvent('parentsave-complete', nodeSel);
 		      				  }
@@ -531,9 +541,13 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 		});
 		
     }
-	,editNode : function(field, newVal, oldVal) {
+	,editNode : function(field, event) {
+
 		var node = this.selectedNodeToEdit;
+
 		if (node !== undefined) {
+
+
 			var val = node.text;
 			var aPosition = val.indexOf(" - ");
 			var name = "";
@@ -542,9 +556,9 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 				name = val.substr(aPosition + 3);
 				code = val.substr(0, aPosition);
 				if (field.getName() == 'name') {
-					name = newVal;
+					name = field.getValue();
 				} else if (field.getName() == 'code') {
-					code = newVal;
+					code = field.getValue();
 				}
 			}
 			var text = code + " - " + name;
@@ -563,15 +577,15 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 			}
 		}
 	}
-	, editNodeAttribute: function(field, newVal, oldVal) {
+	, editNodeAttribute: function(field, event) {
 		var node = this.selectedNodeToEdit;
 		if (node !== undefined && node !== null) {
 			node.attributes.toSave = true;
 			var fName = field.name;
 			if(fName == 'description'){
-				node.attributes.description = newVal;
+				node.attributes.description = field.getValue();
 			}else if(fName == 'label'){
-				node.attributes.label = newVal;
+				node.attributes.label = field.getValue();
 			}
 		}
 	}
@@ -657,22 +671,22 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 
 			/* form fields editing */
 			this.detailFieldName.addListener('focus', this.selectNode, this);
-			this.detailFieldName.addListener('change', this.editNode, this);
+			this.detailFieldName.addListener('keyup', this.editNode, this);
 
 			this.detailFieldCode.addListener('focus', this.selectNode, this);
-			this.detailFieldCode.addListener('change', this.editNode, this);
+			this.detailFieldCode.addListener('keyup', this.editNode, this);
 
 			this.detailFieldDescr.addListener('focus', this.selectNode, this);
-			this.detailFieldDescr.addListener('change', this.editNodeAttribute, this);
+			this.detailFieldDescr.addListener('keyup', this.editNodeAttribute, this);
 
 			this.detailFieldLabel.addListener('focus', this.selectNode, this);
-			this.detailFieldLabel.addListener('change', this.editNodeAttribute, this);
+			this.detailFieldLabel.addListener('keyup', this.editNodeAttribute, this);
 			
 			this.detailFieldNodeType.addListener('focus', this.selectNode, this);
 			this.detailFieldNodeType.addListener('select', this.setDomainType, this);			
 			
 			this.detailFieldKpi.addListener('focus', this.selectNode, this);
-			this.detailFieldKpi.addListener('change', this.editNodeAttribute, this);			
+			this.detailFieldKpi.addListener('keyup', this.editNodeAttribute, this);			
 			
 			// udp mylisteners
 			this.udpValueGrid.addListener('click', this.selectNode, this);
@@ -756,15 +770,7 @@ Ext.extend(Sbi.kpi.ManageModels, Sbi.widgets.TreeDetailForm, {
 				   }
 				   var idxNodeType = this.typesStore.find('domainCd', 'MODEL_NODE');			
 				   var recDomain = this.typesStore.getAt(idxNodeType);
-/*				   var codeTxt = r.get('code');
-				   if(codeTxt != null && codeTxt.length >12){
-					   codeTxt = codeTxt.substring(0,12)+'.';
-				   }
-				   var nameTxt = r.get('name');
-				   if(nameTxt != null && nameTxt.length >12){
-					   nameTxt = nameTxt.substring(0,12)+'.';
-				   }
-				   var text = codeTxt+' - '+nameTxt;*/
+
 				   var newNode = this.mainTree.getLoader().createNode({
 					   kpi: r.get('name')
 					   , kpiId: r.get('id')

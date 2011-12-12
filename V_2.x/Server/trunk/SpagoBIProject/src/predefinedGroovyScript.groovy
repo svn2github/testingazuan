@@ -58,3 +58,22 @@ public String split(String attrName, String splitter) {
 	strBuf.append("</ROWS>");
 	return strBuf.toString();
 };
+public String roundedDivision(Double a, Double b) {
+	double toReturn = 0;
+	java.text.DecimalFormat f = new java.text.DecimalFormat("#.##");
+	if (b != null && a != null && (b.doubleValue() != 0)){
+		toReturn = (a.doubleValue()/b.doubleValue());
+	}						
+	String roundedValue = f.format(toReturn);
+	return roundedValue;
+};
+
+public String roundedDivisionFactor(Double a, Double b, double factor) {
+	double toReturn = 0;
+	java.text.DecimalFormat f = new java.text.DecimalFormat("#.##");
+	if (b != null && a != null && (b.doubleValue() != 0)){
+		toReturn = (a.doubleValue()/b.doubleValue())* factor;
+	}						
+	String roundedValue = f.format(toReturn);
+	return roundedValue;
+};

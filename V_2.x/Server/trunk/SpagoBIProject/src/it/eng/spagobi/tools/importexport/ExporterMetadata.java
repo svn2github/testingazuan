@@ -2969,6 +2969,7 @@ public class ExporterMetadata {
 			hibGrant.setSbiKpiModelInst(mi);
 			hibGrant.setSbiOrgUnitHierarchies(hier);
 			hibGrant.setStartDate(grant.getStartDate());
+			hibGrant.setIsAvailable(grant.getIsAvailable());
 			
 			Transaction tx = session.beginTransaction();			
 			session.save(hibGrant);

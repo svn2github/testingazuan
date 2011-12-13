@@ -460,8 +460,7 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			SbiOrgUnitNodes hibNode = (SbiOrgUnitNodes) aSession.load(SbiOrgUnitNodes.class, node.getNodeId());
-			aSession.delete(hibNode);
+			eraseOrganizationalUnitNode(node, aSession);
 			
 			tx.commit();
 		} finally {
@@ -469,6 +468,14 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 		}
 		logger.debug("OUT: node removed successfully.");
 	}
+	
+	public void eraseOrganizationalUnitNode(OrganizationalUnitNode node, Session aSession) {
+		logger.debug("IN: node = " + node);
+		SbiOrgUnitNodes hibNode = (SbiOrgUnitNodes) aSession.load(SbiOrgUnitNodes.class, node.getNodeId());
+		aSession.delete(hibNode);
+		logger.debug("OUT: node removed successfully.");
+	}
+	
 
 	public boolean existsNodeInHierarchy(String path, Integer hierarchyId) {
 		logger.debug("IN: path = " + path + ", hierarchy = " + hierarchyId);
@@ -525,37 +532,43 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-
-			SbiOrgUnitNodes hibNode = new SbiOrgUnitNodes();
 			
-			Query hibQuery = aSession.createQuery(" from SbiOrgUnitHierarchies s where s.id = ? ");
-			hibQuery.setInteger(0, aNode.getHierarchy().getId());
-			SbiOrgUnitHierarchies hierarchy = (SbiOrgUnitHierarchies) hibQuery.uniqueResult();
-			hibNode.setSbiOrgUnitHierarchies(hierarchy);
+			insertOrganizationalUnitNode(aNode, aSession);
 			
-			hibNode.setPath(aNode.getPath());
-			
-			hibQuery = aSession.createQuery(" from SbiOrgUnit s where s.id = ? ");
-			hibQuery.setInteger(0, aNode.getOu().getId());
-			SbiOrgUnit ou = (SbiOrgUnit) hibQuery.uniqueResult();
-			hibNode.setSbiOrgUnit(ou);
-			
-			if (aNode.getParentNodeId() != null) {
-				hibQuery = aSession.createQuery(" from SbiOrgUnitNodes s where s.nodeId = ? ");
-				hibQuery.setInteger(0, aNode.getParentNodeId());
-				SbiOrgUnitNodes parentNode = (SbiOrgUnitNodes) hibQuery.uniqueResult();
-				hibNode.setSbiOrgUnitNodes(parentNode);
-			}
-
-			aSession.save(hibNode);
 			tx.commit();
-			
-			aNode.setNodeId(hibNode.getNodeId());
-			
 			
 		} finally {
 			rollbackIfActiveAndClose(tx, aSession);
 		}
+		logger.debug("OUT: OrganizationalUnitNode inserted successfully with id " + aNode.getNodeId());
+	}
+	
+	public void insertOrganizationalUnitNode(OrganizationalUnitNode aNode, Session aSession) {
+		SbiOrgUnitNodes hibNode = new SbiOrgUnitNodes();
+		
+		Query hibQuery = aSession.createQuery(" from SbiOrgUnitHierarchies s where s.id = ? ");
+		hibQuery.setInteger(0, aNode.getHierarchy().getId());
+		SbiOrgUnitHierarchies hierarchy = (SbiOrgUnitHierarchies) hibQuery.uniqueResult();
+		hibNode.setSbiOrgUnitHierarchies(hierarchy);
+		
+		hibNode.setPath(aNode.getPath());
+		
+		hibQuery = aSession.createQuery(" from SbiOrgUnit s where s.id = ? ");
+		hibQuery.setInteger(0, aNode.getOu().getId());
+		SbiOrgUnit ou = (SbiOrgUnit) hibQuery.uniqueResult();
+		hibNode.setSbiOrgUnit(ou);
+		
+		if (aNode.getParentNodeId() != null) {
+			hibQuery = aSession.createQuery(" from SbiOrgUnitNodes s where s.nodeId = ? ");
+			hibQuery.setInteger(0, aNode.getParentNodeId());
+			SbiOrgUnitNodes parentNode = (SbiOrgUnitNodes) hibQuery.uniqueResult();
+			hibNode.setSbiOrgUnitNodes(parentNode);
+		}
+
+		aSession.save(hibNode);
+		
+		aNode.setNodeId(hibNode.getNodeId());
+		
 		logger.debug("OUT: OrganizationalUnitNode inserted successfully with id " + aNode.getNodeId());
 	}
 	
@@ -1027,6 +1040,81 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 			rollbackIfActiveAndClose(tx, aSession);
 		}
 		logger.debug("OUT: OrganizationalUnitGrantNode deleted successfully.");
+	}
+	
+	
+	
+	public boolean hasGrants(OrganizationalUnitNode node) {
+		logger.debug("IN");
+		boolean toReturn = false;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiOrgUnitGrantNodes s where s.id.nodeId = ?");
+			hibQuery.setInteger(0, node.getNodeId());
+			
+			List hibList = hibQuery.list();
+			if (hibList != null && !hibList.isEmpty()) {
+				toReturn = true;
+			}
+		} finally {
+			rollbackIfActiveAndClose(tx, aSession);
+		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
+	
+	
+	
+	public boolean isInAHierarchy(OrganizationalUnit ou) {
+		logger.debug("IN");
+		boolean toReturn = false;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiOrgUnitNodes n where n.sbiOrgUnit.id = ?");
+			hibQuery.setInteger(0, ou.getId());
+			
+			List hibList = hibQuery.list();
+			if (hibList != null && !hibList.isEmpty()) {
+				toReturn = true;
+			}
+		} finally {
+			rollbackIfActiveAndClose(tx, aSession);
+		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
+	
+	
+	
+	public boolean hasGrants(OrganizationalUnitHierarchy h) {
+		logger.debug("IN");
+		boolean toReturn = false;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiOrgUnitGrantNodes s where s.sbiOrgUnitHierarchies.id = ?");
+			hibQuery.setInteger(0, h.getId());
+			
+			List hibList = hibQuery.list();
+			if (hibList != null && !hibList.isEmpty()) {
+				toReturn = true;
+			}
+		} finally {
+			rollbackIfActiveAndClose(tx, aSession);
+		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
 	}
 
 

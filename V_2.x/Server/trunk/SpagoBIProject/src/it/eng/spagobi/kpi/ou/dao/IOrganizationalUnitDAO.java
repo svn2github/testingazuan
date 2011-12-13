@@ -31,6 +31,8 @@ import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitNodeWithGrant;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Session;
+
 
 public interface IOrganizationalUnitDAO {
 
@@ -87,6 +89,9 @@ public interface IOrganizationalUnitDAO {
 	 */
 	public void modifyHierarchy(OrganizationalUnitHierarchy h);
 	
+	
+	public boolean isInAHierarchy(OrganizationalUnit ou);
+	
 	/**
 	 * @return the root node for a single hierarchy
 	 */
@@ -136,6 +141,16 @@ public interface IOrganizationalUnitDAO {
 	public List<OrganizationalUnitGrantNode> getNodeGrants(Integer nodeId, Integer grantId);
 	
 	/**
+	 * @return true if the input node has a grant 
+	 */
+	public boolean hasGrants(OrganizationalUnitNode node);
+	
+	/**
+	 * @return true if the input hierarchy has a grant 
+	 */
+	public boolean hasGrants(OrganizationalUnitHierarchy h);
+	
+	/**
 	 * Inserts a list of grant nodes (a grant node is an association between a hierarchy node and a KPI model instance node 
 	 * in the context of a grant)
 	 * @param grantNodes
@@ -154,6 +169,13 @@ public interface IOrganizationalUnitDAO {
 	 * @param node The node to be removed
 	 */
 	public void eraseOrganizationalUnitNode(OrganizationalUnitNode node);
+	
+	/**
+	 * Removes a node from the structure with its descendants
+	 * @param node The node to be removed
+	 * @param session The Hibernate session
+	 */
+	public void eraseOrganizationalUnitNode(OrganizationalUnitNode node, Session session);
 
 	/**
 	 * Checks if the input path exists in the given hierarchy
@@ -176,6 +198,13 @@ public interface IOrganizationalUnitDAO {
 	 * @param aNode
 	 */
 	public void insertOrganizationalUnitNode(OrganizationalUnitNode aNode);
+	
+	/**
+	 * Inserts the input node in the hierarchy
+	 * @param aNode
+	 * @param session The Hibernate session
+	 */
+	public void insertOrganizationalUnitNode(OrganizationalUnitNode aNode, Session session);
 	
 	/**
 	 * Retrieves the grants associated the KPI model instance node identified by the input integer

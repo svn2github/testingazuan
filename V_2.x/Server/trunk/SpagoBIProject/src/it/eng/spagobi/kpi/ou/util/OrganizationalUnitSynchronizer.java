@@ -24,12 +24,13 @@ package it.eng.spagobi.kpi.ou.util;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnit;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitHierarchy;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitNode;
+import it.eng.spagobi.kpi.ou.dao.IOrganizationalUnitDAO;
 import it.eng.spagobi.kpi.ou.provider.OrganizationalUnitListProvider;
-import it.eng.spagobi.kpi.ou.provider.OrganizationalUnitListProviderMock;
 import it.eng.spagobi.utilities.tree.Node;
 import it.eng.spagobi.utilities.tree.Tree;
 
@@ -38,6 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 
 /**
@@ -57,7 +60,7 @@ public class OrganizationalUnitSynchronizer {
 	
 	static private Logger logger = Logger.getLogger(OrganizationalUnitSynchronizer.class);
 	
-	public void synchronize() {
+	public List<OrganizationalUnitHierarchy> synchronize() {
 		logger.debug("IN");
         try {
         	OrganizationalUnitListProvider provider = getProvider();
@@ -66,12 +69,43 @@ public class OrganizationalUnitSynchronizer {
         	logger.debug("Provider Initialized");
         	adjustHierarchies(provider);
         	logger.debug("Hierarchies' names adjusted");
-        	synchronizeOU(provider);
-        	logger.debug("OU synchronized");
-        	synchronizeHierarchies(provider);
-        	logger.debug("Hierarchies synchronized");
-        	synchronizeHierarchiesStructure(provider);
-        	logger.debug("Hierarchies's structure synchronized");
+        	
+        	// retrieve new and old OU
+    		List<OrganizationalUnit> newOUs = provider.getOrganizationalUnits();
+    		logger.debug("Organizational Units retrieved by the provider:");
+    		logger.debug(newOUs);
+    		List<OrganizationalUnit> oldOUs = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitList();
+    		logger.debug("Current Organizational Units in repository:");
+    		logger.debug(oldOUs);
+    		// retrieve new and old hierarchies
+    		List<OrganizationalUnitHierarchy> newHierarchies = provider.getHierarchies();
+    		logger.debug("Hierarchies retrieved by the provider:");
+    		logger.debug(newHierarchies);
+    		List<OrganizationalUnitHierarchy> oldHierarchies = DAOFactory.getOrganizationalUnitDAO().getHierarchiesList();
+    		logger.debug("Current Hierarchies in repository:");
+    		logger.debug(oldHierarchies);
+    		
+    		modifyExistingOUs(newOUs, oldOUs);
+    		logger.debug("Existing OUs modified");
+    		insertNewOUs(newOUs, oldOUs);
+    		logger.debug("New OUs inserted");
+
+    		modifyExistingHierarchies(newHierarchies, oldHierarchies);
+    		logger.debug("Existing hierarchies modified");
+    		insertNewHierarchies(newHierarchies, oldHierarchies);
+        	logger.debug("New hierarchies inserted");
+        	
+        	List<OrganizationalUnitHierarchy> list = synchronizeHierarchiesStructure(provider);
+        	logger.debug("Hierarchies' structure updated");
+        	if (!list.isEmpty()) {
+        		logger.warn("The following hierarchies were not been updated: " + list);
+        	}
+
+        	removeNoMoreExistingHierarchies(newHierarchies, oldHierarchies);
+        	removeNoMoreExistingOUs(newOUs, oldOUs);
+        	
+        	return list;
+        	
 		} finally {
 			logger.debug("OUT");
 		}
@@ -94,50 +128,79 @@ public class OrganizationalUnitSynchronizer {
 			logger.debug("Hierarchy label = [" + label + "], company = [" + company + "]");
 			if (company != null && !company.trim().equals("") && !label.startsWith(company + " - ")) {
 				h.setLabel(company + " - " + label);
-				logger.info("Hierarchy label modified : new label is [" + label + "]");
+				logger.info("Hierarchy label modified : new label is [" + h.getLabel() + "]");
 			}
 		}
 		logger.debug("OUT");
 	}
 
-	private void synchronizeHierarchiesStructure(
+	private List<OrganizationalUnitHierarchy> synchronizeHierarchiesStructure(
 			OrganizationalUnitListProvider provider) {
 		logger.debug("IN: provider = " + provider);
+		List<OrganizationalUnitHierarchy> toReturn = new ArrayList<OrganizationalUnitHierarchy>();
 		List<OrganizationalUnitHierarchy> hierarchies = DAOFactory.getOrganizationalUnitDAO().getHierarchiesList();
 		Iterator<OrganizationalUnitHierarchy> it = hierarchies.iterator();
 		while (it.hasNext()) {
 			OrganizationalUnitHierarchy hierarchy = it.next();
-			Tree<OrganizationalUnit> tree = provider.getHierarchyStructure(hierarchy);
-			logger.debug("Tree structure for hierarchy " + hierarchy + ":");
-			logger.debug(tree);
-			if(tree != null){
-				synchronizeHierarchyStructure(tree, hierarchy);
-				logger.debug("Structure of hierarchy " + hierarchy + " synchronized");
+			try {
+				synchronizeHierarchyStructure(provider, hierarchy);
+			} catch (OrganizationalUnitNodeInUseException e) {
+				toReturn.add(hierarchy);
 			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+	private void synchronizeHierarchyStructure(
+			OrganizationalUnitListProvider provider,
+			OrganizationalUnitHierarchy hierarchy) throws OrganizationalUnitNodeInUseException {
+		logger.debug("IN");
+		Tree<OrganizationalUnit> tree = provider.getHierarchyStructure(hierarchy);
+		logger.debug("Tree structure for hierarchy " + hierarchy + ":");
+		logger.debug(tree);
+		if (tree != null ) {
+			synchronizeHierarchyStructure(tree, hierarchy);
+			logger.debug("Structure of hierarchy " + hierarchy + " synchronized");
 		}
 		logger.debug("OUT");
 	}
 	
-	private void synchronizeHierarchyStructure(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy) {
+	private void synchronizeHierarchyStructure(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy) throws OrganizationalUnitNodeInUseException {
 		logger.debug("IN");
-		removeNoMoreExistingNodes(tree, hierarchy);
-		insertNewNodes(tree, hierarchy);
+		IOrganizationalUnitDAO dao = DAOFactory.getOrganizationalUnitDAO();
+		String hierarchyName = hierarchy.getName();
+		Session session = null;
+		Transaction tx = null;
+		try  {
+			session = ((AbstractHibernateDAO) dao).getSession();
+			tx = session.beginTransaction();
+			removeNoMoreExistingNodes(tree, hierarchy, session);
+			insertNewNodes(tree, hierarchy, session);
+			((AbstractHibernateDAO) dao).commitIfActiveAndClose(tx, session);
+		} catch (OrganizationalUnitNodeInUseException e) {
+			((AbstractHibernateDAO) dao).rollbackIfActiveAndClose(tx, session);
+			throw e;
+		} catch (Throwable t) {
+			logger.error("Error while synchronizing hierarchy structure for hierarchy " + hierarchyName, t);
+			((AbstractHibernateDAO) dao).rollbackIfActiveAndClose(tx, session);
+		}
 		logger.debug("OUT");
 	}
 
-	private void insertNewNodes(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy) {
+	private void insertNewNodes(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy, Session session) {
 		logger.debug("IN");
 		Node<OrganizationalUnit> root = tree.getRoot();
-		insertNewNodes(root, hierarchy);
+		insertNewNodes(root, hierarchy, session);
 		logger.debug("OUT");
 	}
 	
-	private void insertNewNodes(Node<OrganizationalUnit> node, OrganizationalUnitHierarchy hierarchy) {
+	private void insertNewNodes(Node<OrganizationalUnit> node, OrganizationalUnitHierarchy hierarchy, Session session) {
 		logger.debug("IN: node = " + node + ", hierarchy = " + hierarchy);
 		if (!exists(node, hierarchy)) {
 			logger.debug("Node " + node + " does not exist in hierarchy " + hierarchy + ", it will be inserted.");
 			Node<OrganizationalUnit> parent = node.getParent();
-			insertNode(node, parent, hierarchy);
+			insertNode(node, parent, hierarchy, session);
 			logger.debug("Node " + node + " inserted in hierarchy " + hierarchy + ".");
 		}
 		// recursion on children
@@ -146,7 +209,7 @@ public class OrganizationalUnitSynchronizer {
 			Iterator<Node<OrganizationalUnit>> it = children.iterator();
 			while (it.hasNext()) {
 				Node<OrganizationalUnit> aChild = it.next();
-				insertNewNodes(aChild, hierarchy);
+				insertNewNodes(aChild, hierarchy, session);
 			}
 		}
 		logger.debug("OUT");
@@ -154,13 +217,13 @@ public class OrganizationalUnitSynchronizer {
 	
 	private void insertNode(Node<OrganizationalUnit> node,
 			Node<OrganizationalUnit> parent,
-			OrganizationalUnitHierarchy hierarchy) {
+			OrganizationalUnitHierarchy hierarchy, Session session) {
 		logger.debug("IN: node = " + node + ", parent = " + parent + ", hierarchy = " + hierarchy);
 		OrganizationalUnitNode aNode = new OrganizationalUnitNode();
 		aNode.setHierarchy(hierarchy);
 		OrganizationalUnit content = node.getNodeContent();
 		content = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitByLabelAndName(content.getLabel(), content.getName());
-		if(content == null){
+		if (content == null) {
 			//then insert it!!there could be a misalignment
 			DAOFactory.getOrganizationalUnitDAO().insertOrganizationalUnit(node.getNodeContent());
 			content = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitByLabelAndName(node.getNodeContent().getLabel(), node.getNodeContent().getName());
@@ -172,7 +235,7 @@ public class OrganizationalUnitSynchronizer {
 			Integer parentNodeId = parentNode.getNodeId();
 			aNode.setParentNodeId(parentNodeId);
 		}
-		DAOFactory.getOrganizationalUnitDAO().insertOrganizationalUnitNode(aNode);
+		DAOFactory.getOrganizationalUnitDAO().insertOrganizationalUnitNode(aNode, session);
 		logger.debug("OUT");
 	}
 
@@ -183,31 +246,46 @@ public class OrganizationalUnitSynchronizer {
 		return toReturn;
 	}
 	
-	private void removeNoMoreExistingNodes(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy) {
+	private void removeNoMoreExistingNodes(Tree<OrganizationalUnit> tree, OrganizationalUnitHierarchy hierarchy, Session session) throws OrganizationalUnitNodeInUseException {
 		logger.debug("IN");
 		OrganizationalUnitNode rootNode = DAOFactory.getOrganizationalUnitDAO().getRootNode(hierarchy.getId());
 		if (rootNode != null) {
 			List<OrganizationalUnitNode> nodes = new ArrayList<OrganizationalUnitNode>();
 			nodes.add(rootNode);
-			removeNoMoreExistingNodes(tree, nodes, hierarchy);
+			removeNoMoreExistingNodes(tree, nodes, hierarchy, session);
 		}
 		logger.debug("OUT");
 	}
 	
-	private void removeNoMoreExistingNodes(Tree<OrganizationalUnit> tree, List<OrganizationalUnitNode> nodes, OrganizationalUnitHierarchy hierarchy) {
+	private void removeNoMoreExistingNodes(Tree<OrganizationalUnit> tree,
+			List<OrganizationalUnitNode> nodes,
+			OrganizationalUnitHierarchy hierarchy, Session session)
+			throws OrganizationalUnitNodeInUseException {
 		logger.debug("IN");
 		Iterator<OrganizationalUnitNode> it = nodes.iterator();
 		while (it.hasNext()) {
 			OrganizationalUnitNode aNode = it.next();
 			logger.debug("Examining node " + aNode + " ....");
 			if (tree.containsPath(aNode.getPath())) {
-				logger.debug("Node " + aNode + " exists in hierarchy " + hierarchy + ".");
+				logger.debug("Node " + aNode + " exists in hierarchy "
+						+ hierarchy + ".");
 				// recursion
-				List<OrganizationalUnitNode> children = DAOFactory.getOrganizationalUnitDAO().getChildrenNodes(aNode.getNodeId());
-				removeNoMoreExistingNodes(tree, children, hierarchy);
+				List<OrganizationalUnitNode> children = DAOFactory
+						.getOrganizationalUnitDAO().getChildrenNodes(
+								aNode.getNodeId());
+				removeNoMoreExistingNodes(tree, children, hierarchy, session);
 			} else {
-				logger.debug("Node " + aNode + " does no more exists. Removing it ....");
-				DAOFactory.getOrganizationalUnitDAO().eraseOrganizationalUnitNode(aNode);
+				boolean hasGrants = DAOFactory.getOrganizationalUnitDAO()
+						.hasGrants(aNode);
+				if (hasGrants) {
+					logger.error("Node " + aNode
+							+ " does no more exists but is has grants. Cannot remove it");
+					throw new OrganizationalUnitNodeInUseException();
+				}
+				logger.debug("Node " + aNode
+						+ " does no more exists. Removing it ....");
+				DAOFactory.getOrganizationalUnitDAO()
+						.eraseOrganizationalUnitNode(aNode, session);
 				logger.debug("Node " + aNode + " removed.");
 			}
 		}
@@ -218,37 +296,37 @@ public class OrganizationalUnitSynchronizer {
 	 * Synchronizes hierarchies' list by removing no more existing hierarchies and inserting new ones
 	 * @param provider The Organizational Units info provider
 	 */
-	private void synchronizeHierarchies(OrganizationalUnitListProvider provider) {
-		logger.debug("IN: provider = " + provider);
-		List<OrganizationalUnitHierarchy> newHierarchies = provider.getHierarchies();
-		logger.debug("Hierarchies retrieved by the provider:");
-		logger.debug(newHierarchies);
-		List<OrganizationalUnitHierarchy> oldHierarchies = DAOFactory.getOrganizationalUnitDAO().getHierarchiesList();
-		logger.debug("Current Hierarchies in repository:");
-		logger.debug(oldHierarchies);
-		removeNoMoreExistingHierarchies(newHierarchies, oldHierarchies);
-		modifyExistingHierarchies(newHierarchies, oldHierarchies);
-		insertNewHierarchies(newHierarchies, oldHierarchies);
-		logger.debug("OUT");
-	}
+//	private void synchronizeHierarchies(OrganizationalUnitListProvider provider) {
+//		logger.debug("IN: provider = " + provider);
+//		List<OrganizationalUnitHierarchy> newHierarchies = provider.getHierarchies();
+//		logger.debug("Hierarchies retrieved by the provider:");
+//		logger.debug(newHierarchies);
+//		List<OrganizationalUnitHierarchy> oldHierarchies = DAOFactory.getOrganizationalUnitDAO().getHierarchiesList();
+//		logger.debug("Current Hierarchies in repository:");
+//		logger.debug(oldHierarchies);
+//		removeNoMoreExistingHierarchies(newHierarchies, oldHierarchies);
+//		modifyExistingHierarchies(newHierarchies, oldHierarchies);
+//		insertNewHierarchies(newHierarchies, oldHierarchies);
+//		logger.debug("OUT");
+//	}
 
 	/**
 	 * Synchronizes OU list by removing no more existing OUs and inserting new ones
 	 * @param provider The Organizational Units info provider
 	 */
-	private void synchronizeOU(OrganizationalUnitListProvider provider) {
-		logger.debug("IN: provider = " + provider);
-		List<OrganizationalUnit> newOUs = provider.getOrganizationalUnits();
-		logger.debug("Organizational Units retrieved by the provider:");
-		logger.debug(newOUs);
-		List<OrganizationalUnit> oldOUs = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitList();
-		logger.debug("Current Organizational Units in repository:");
-		logger.debug(oldOUs);
-		removeNoMoreExistingOUs(newOUs, oldOUs);
-		modifyExistingOUs(newOUs, oldOUs);
-		insertNewOUs(newOUs, oldOUs);
-		logger.debug("OUT");
-	}
+//	private void synchronizeOU(OrganizationalUnitListProvider provider) {
+//		logger.debug("IN: provider = " + provider);
+//		List<OrganizationalUnit> newOUs = provider.getOrganizationalUnits();
+//		logger.debug("Organizational Units retrieved by the provider:");
+//		logger.debug(newOUs);
+//		List<OrganizationalUnit> oldOUs = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitList();
+//		logger.debug("Current Organizational Units in repository:");
+//		logger.debug(oldOUs);
+//		removeNoMoreExistingOUs(newOUs, oldOUs);
+//		modifyExistingOUs(newOUs, oldOUs);
+//		insertNewOUs(newOUs, oldOUs);
+//		logger.debug("OUT");
+//	}
 	
 	private void removeNoMoreExistingOUs(List<OrganizationalUnit> newOUs, List<OrganizationalUnit> oldOUs) {
 		logger.debug("IN");
@@ -256,9 +334,14 @@ public class OrganizationalUnitSynchronizer {
 		while (it.hasNext()) {
 			OrganizationalUnit ou = it.next();
 			if (!newOUs.contains(ou)) {
-				logger.debug("OU " + ou + " does no more exists. Removing it ...");
-				DAOFactory.getOrganizationalUnitDAO().eraseOrganizationalUnit(ou.getId());
-				logger.debug("OU " + ou + " removed.");
+				boolean isInHierarchy = DAOFactory.getOrganizationalUnitDAO().isInAHierarchy(ou);
+				if (isInHierarchy) {
+					logger.error("Organizational Unit [" + ou + "] does no more exists but it is used in a hierarchy, cannot remove it!");
+				} else {
+					logger.debug("OU " + ou + " does no more exists. Removing it ...");
+					DAOFactory.getOrganizationalUnitDAO().eraseOrganizationalUnit(ou.getId());
+					logger.debug("OU " + ou + " removed.");
+				}
 			}
 		}
 		logger.debug("OUT");
@@ -306,9 +389,14 @@ public class OrganizationalUnitSynchronizer {
 		while (it.hasNext()) {
 			OrganizationalUnitHierarchy h = it.next();
 			if (!newHierarchies.contains(h)) {
-				logger.debug("Hierarchy " + h + " does no more exists. Removing it ...");
-				DAOFactory.getOrganizationalUnitDAO().eraseHierarchy(h.getId());
-				logger.debug("Hierarchy " + h + " removed.");
+				boolean hasGrant = DAOFactory.getOrganizationalUnitDAO().hasGrants(h);
+				if (hasGrant) {
+					logger.error("Hierarchy [" + h + "] does no more exists but it has some grants, cannot remove it!");
+				} else {
+					logger.debug("Hierarchy " + h + " does no more exists. Removing it ...");
+					DAOFactory.getOrganizationalUnitDAO().eraseHierarchy(h.getId());
+					logger.debug("Hierarchy " + h + " removed.");
+				}
 			}
 		}
 		logger.debug("OUT");
@@ -356,9 +444,11 @@ public class OrganizationalUnitSynchronizer {
 		logger.debug("IN");
 		OrganizationalUnitListProvider o = null;
 		try {
+			logger.debug("Instantiating provider ...");
 			SourceBean ouConfig = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.ORGANIZATIONAL-UNIT");
 			String prodiverClassName = (String) ouConfig.getAttribute("provider");
 			o = (OrganizationalUnitListProvider) Class.forName(prodiverClassName).newInstance();
+			logger.debug("Provider instantiated succesfully");
 			logger.debug("OUT");
 		} catch (Exception e) {
 			logger.error("Cannot get Organizational Unit list provider class", e);
@@ -367,6 +457,8 @@ public class OrganizationalUnitSynchronizer {
 		return o;
 	}
 
-	
+	public class OrganizationalUnitNodeInUseException extends Exception {
+		
+	}
 	
 }

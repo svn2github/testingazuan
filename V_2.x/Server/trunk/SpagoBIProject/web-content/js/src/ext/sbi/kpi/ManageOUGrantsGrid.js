@@ -212,15 +212,24 @@ Ext.extend(Sbi.kpi.ManageOUGrantsGrid, Sbi.widgets.ListGridPanel, {
 		Ext.Ajax.request({
 			url: this.configurationObject.synchronizeOUsService
 			, success: function(response, options) {
-				Ext.MessageBox.show({
-					title: LN('sbi.grants.synchronize.ous.performed.title')
-					, msg: LN('sbi.grants.synchronize.ous.performed.msg')
-					, icon: Ext.MessageBox.INFO
-					, buttons: Ext.MessageBox.OK
-				});
+				if ( response !== undefined && response.responseText !== undefined) {
+					var content = Ext.util.JSON.decode( response.responseText );
+					if (content.message == '') {
+						Ext.MessageBox.show({
+							title: LN('sbi.grants.synchronize.ous.performed.title')
+							, msg: LN('sbi.grants.synchronize.ous.performed.msg')
+							, icon: Ext.MessageBox.INFO
+							, buttons: Ext.MessageBox.OK
+						});
+					} else {
+						Sbi.exception.ExceptionHandler.showWarningMessage(content.message, LN('sbi.grants.synchronize.ous.performed.title'));
+					}
+				} else {
+					Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+				}
 			}
-		, scope: this
-		, failure: Sbi.exception.ExceptionHandler.handleFailure      
+			, scope: this
+			, failure: Sbi.exception.ExceptionHandler.handleFailure      
 		});
 	}
 

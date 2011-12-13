@@ -197,7 +197,7 @@ public class OrganizationalUnitSynchronizer {
 	
 	private void insertNewNodes(Node<OrganizationalUnit> node, OrganizationalUnitHierarchy hierarchy, Session session) {
 		logger.debug("IN: node = " + node + ", hierarchy = " + hierarchy);
-		if (!exists(node, hierarchy)) {
+		if (!exists(node, hierarchy, session)) {
 			logger.debug("Node " + node + " does not exist in hierarchy " + hierarchy + ", it will be inserted.");
 			Node<OrganizationalUnit> parent = node.getParent();
 			insertNode(node, parent, hierarchy, session);
@@ -239,9 +239,9 @@ public class OrganizationalUnitSynchronizer {
 		logger.debug("OUT");
 	}
 
-	private boolean exists(Node<OrganizationalUnit> node, OrganizationalUnitHierarchy hierarchy) {
+	private boolean exists(Node<OrganizationalUnit> node, OrganizationalUnitHierarchy hierarchy, Session session) {
 		logger.debug("IN: node = " + node + ", hierarchy = " + hierarchy);
-		boolean toReturn = DAOFactory.getOrganizationalUnitDAO().existsNodeInHierarchy(node.getPath(), hierarchy.getId());
+		boolean toReturn = DAOFactory.getOrganizationalUnitDAO().existsNodeInHierarchy(node.getPath(), hierarchy.getId(), session);
 		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}

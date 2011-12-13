@@ -186,6 +186,15 @@ public interface IOrganizationalUnitDAO {
 	public boolean existsNodeInHierarchy(String path, Integer hierarchyId);
 	
 	/**
+	 * Checks if the input path exists in the given hierarchy
+	 * @param path
+	 * @param hierarchyId The hierarchy identifier
+	 * @param session The Hibernate session
+	 * @return true if the path exists in the given hierarchy, false otherwise
+	 */
+	public boolean existsNodeInHierarchy(String path, Integer hierarchyId, Session session);
+	
+	/**
 	 * Retrieve the node with the input path in the given hierarchy
 	 * @param path
 	 * @param hierarchyId The hierarchy identifier

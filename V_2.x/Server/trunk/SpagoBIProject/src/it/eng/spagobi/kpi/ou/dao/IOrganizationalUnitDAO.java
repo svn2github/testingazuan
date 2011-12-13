@@ -192,6 +192,14 @@ public interface IOrganizationalUnitDAO {
 	 * @return the node with the input path in the given hierarchy
 	 */
 	public OrganizationalUnitNode getOrganizationalUnitNode(String path, Integer hierarchyId);
+	/**
+	 * Retrieve the node with the input path in the given hierarchy
+	 * @param path
+	 * @param hierarchyId The hierarchy identifier
+	 * @param session The Hibernate session
+	 * @return the node with the input path in the given hierarchy
+	 */
+	public OrganizationalUnitNode getOrganizationalUnitNode(String path, Integer hierarchyId, Session session);
 
 	/**
 	 * Inserts the input node in the hierarchy

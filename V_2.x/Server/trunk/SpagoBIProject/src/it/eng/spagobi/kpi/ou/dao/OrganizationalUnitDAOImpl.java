@@ -510,17 +510,26 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			Query hibQuery = aSession.createQuery(" from SbiOrgUnitNodes n where n.sbiOrgUnitHierarchies.id = ? " +
-					" and n.path = ? ");
-			hibQuery.setInteger(0, hierarchyId);
-			hibQuery.setString(1, path);
-			
-			SbiOrgUnitNodes hibNode = (SbiOrgUnitNodes) hibQuery.uniqueResult();
-			toReturn = toOrganizationalUnitNode(hibNode);
+			toReturn = getOrganizationalUnitNode(path, hierarchyId, aSession);
 			
 		} finally {
 			rollbackIfActiveAndClose(tx, aSession);
 		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
+	
+	public OrganizationalUnitNode getOrganizationalUnitNode(String path, Integer hierarchyId, Session aSession) {
+		logger.debug("IN: path = " + path + ", hierarchy = " + hierarchyId);
+		OrganizationalUnitNode toReturn = null;
+		Query hibQuery = aSession.createQuery(" from SbiOrgUnitNodes n where n.sbiOrgUnitHierarchies.id = ? " +
+				" and n.path = ? ");
+		hibQuery.setInteger(0, hierarchyId);
+		hibQuery.setString(1, path);
+		
+		SbiOrgUnitNodes hibNode = (SbiOrgUnitNodes) hibQuery.uniqueResult();
+		toReturn = toOrganizationalUnitNode(hibNode);
+		
 		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}

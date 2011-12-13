@@ -231,7 +231,7 @@ public class OrganizationalUnitSynchronizer {
 		aNode.setOu(content);
 		aNode.setPath(node.getPath());
 		if (parent != null) {
-			OrganizationalUnitNode parentNode = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitNode(parent.getPath(), hierarchy.getId());
+			OrganizationalUnitNode parentNode = DAOFactory.getOrganizationalUnitDAO().getOrganizationalUnitNode(parent.getPath(), hierarchy.getId(), session);
 			Integer parentNodeId = parentNode.getNodeId();
 			aNode.setParentNodeId(parentNodeId);
 		}

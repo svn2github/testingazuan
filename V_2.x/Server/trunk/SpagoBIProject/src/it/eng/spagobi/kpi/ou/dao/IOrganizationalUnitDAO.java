@@ -245,6 +245,14 @@ public interface IOrganizationalUnitDAO {
 	 */
 	public OrganizationalUnitGrant getGrant(Integer grantId);
 	
+	
+	/**
+	 * Retrieves the grant by its label
+	 * @param label the label of the grant
+	 * @return the grant
+	 */
+	public OrganizationalUnitGrant loadGrantByLabel(String label);
+	
 	/**
 	 * Retrieves the grants associated the KPI model instance node identified by the input integer,
 	 * valid in the real time

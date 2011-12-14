@@ -1134,6 +1134,31 @@ public class OrganizationalUnitDAOImpl extends AbstractHibernateDAO implements I
 		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}
+	
+	
+	public OrganizationalUnitGrant loadGrantByLabel(String label) {
+		logger.debug("IN");
+		OrganizationalUnitGrant toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			Query hibQuery = aSession.createQuery(" from SbiOrgUnitGrant s where s.label = ? ");
+			hibQuery.setString(0, label);
+			SbiOrgUnitGrant hibGrant = (SbiOrgUnitGrant) hibQuery.uniqueResult();
+
+			if (hibGrant != null) {
+				toReturn = toOrganizationalUnitGrant(hibGrant, aSession);
+			}
+			
+		} finally {
+			rollbackIfActiveAndClose(tx, aSession);
+		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
 
 
 

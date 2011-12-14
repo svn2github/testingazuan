@@ -127,9 +127,8 @@ Ext.extend(Sbi.kpi.ManageOUGrantsGrid, Sbi.widgets.ListGridPanel, {
 	
 	, deleteSelectedItem: function(itemId) {
 		var deleteRow = this.rowselModel.getSelected();
-		if(deleteRow.data.id.length==0){
+		if(deleteRow.data.id == -1){
 			this.mainElementsStore.remove(deleteRow);
-			this.mainElementsStore.commitChanges();
 			if(this.mainElementsStore.getCount()>0){
 				this.rowselModel.selectRow(0);
 			}else{
@@ -191,8 +190,17 @@ Ext.extend(Sbi.kpi.ManageOUGrantsGrid, Sbi.widgets.ListGridPanel, {
 	}
 	
 	, addNewItem : function(){
+		// if a new grant exists, but it was not saved yet, do not create a new item, but focus on the new grant
+		var newRecordIndex = this.mainElementsStore.findExact('id', -1);
+		if (newRecordIndex != -1) {
+			this.rowselModel.selectRow(newRecordIndex);
+			var rec = this.mainElementsStore.getAt(newRecordIndex);
+			this.fireEvent('rowclick', rec, this);
+			return;
+		}
+		
 		var record = {
-				id:'', 
+				id:-1, 
 				label: '', 
 				name:'',
 				description:'',
@@ -233,4 +241,15 @@ Ext.extend(Sbi.kpi.ManageOUGrantsGrid, Sbi.widgets.ListGridPanel, {
 		});
 	}
 
+	, updateRecord : function (record, newData) {
+		record.set('id', newData.id);
+		record.set('label', newData.label);
+		record.set('name', newData.name);
+		record.set('description', newData.description);
+		record.set('startdate', newData.startdate);
+		record.set('enddate', newData.enddate);
+		record.set('hierarchy', newData.hierarchy);
+		record.set('modelinstance', newData.modelinstance);
+	}
+	
 });

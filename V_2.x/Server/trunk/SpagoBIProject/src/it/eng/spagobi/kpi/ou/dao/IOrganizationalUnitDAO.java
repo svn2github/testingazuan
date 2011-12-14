@@ -31,8 +31,6 @@ import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitNodeWithGrant;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
-
 
 public interface IOrganizationalUnitDAO {
 
@@ -169,13 +167,6 @@ public interface IOrganizationalUnitDAO {
 	 * @param node The node to be removed
 	 */
 	public void eraseOrganizationalUnitNode(OrganizationalUnitNode node);
-	
-	/**
-	 * Removes a node from the structure with its descendants
-	 * @param node The node to be removed
-	 * @param session The Hibernate session
-	 */
-	public void eraseOrganizationalUnitNode(OrganizationalUnitNode node, Session session);
 
 	/**
 	 * Checks if the input path exists in the given hierarchy
@@ -186,42 +177,18 @@ public interface IOrganizationalUnitDAO {
 	public boolean existsNodeInHierarchy(String path, Integer hierarchyId);
 	
 	/**
-	 * Checks if the input path exists in the given hierarchy
-	 * @param path
-	 * @param hierarchyId The hierarchy identifier
-	 * @param session The Hibernate session
-	 * @return true if the path exists in the given hierarchy, false otherwise
-	 */
-	public boolean existsNodeInHierarchy(String path, Integer hierarchyId, Session session);
-	
-	/**
 	 * Retrieve the node with the input path in the given hierarchy
 	 * @param path
 	 * @param hierarchyId The hierarchy identifier
 	 * @return the node with the input path in the given hierarchy
 	 */
 	public OrganizationalUnitNode getOrganizationalUnitNode(String path, Integer hierarchyId);
-	/**
-	 * Retrieve the node with the input path in the given hierarchy
-	 * @param path
-	 * @param hierarchyId The hierarchy identifier
-	 * @param session The Hibernate session
-	 * @return the node with the input path in the given hierarchy
-	 */
-	public OrganizationalUnitNode getOrganizationalUnitNode(String path, Integer hierarchyId, Session session);
 
 	/**
 	 * Inserts the input node in the hierarchy
 	 * @param aNode
 	 */
 	public void insertOrganizationalUnitNode(OrganizationalUnitNode aNode);
-	
-	/**
-	 * Inserts the input node in the hierarchy
-	 * @param aNode
-	 * @param session The Hibernate session
-	 */
-	public void insertOrganizationalUnitNode(OrganizationalUnitNode aNode, Session session);
 	
 	/**
 	 * Retrieves the grants associated the KPI model instance node identified by the input integer

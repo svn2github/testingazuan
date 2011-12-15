@@ -36,7 +36,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
-import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
+import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.io.BufferedInputStream;

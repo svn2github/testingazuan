@@ -28,7 +28,6 @@ import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.oda.impl.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
 
 import java.io.File;

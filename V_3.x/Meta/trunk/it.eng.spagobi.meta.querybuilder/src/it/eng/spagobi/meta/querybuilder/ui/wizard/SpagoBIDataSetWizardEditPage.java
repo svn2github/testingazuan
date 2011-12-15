@@ -242,7 +242,7 @@ public class SpagoBIDataSetWizardEditPage extends DataSetWizardPage {
             /* Note: You may need to manually update your ODA runtime extension's
              * plug-in manifest to export its package for visibility here.
              */
-            IDriver customDriver = new it.eng.spagobi.meta.oda.impl.Driver();
+            IDriver customDriver = new it.eng.spagobi.meta.querybuilder.oda.Driver();
             
             // obtain and open a live connection
             customConn = customDriver.getConnection( null );

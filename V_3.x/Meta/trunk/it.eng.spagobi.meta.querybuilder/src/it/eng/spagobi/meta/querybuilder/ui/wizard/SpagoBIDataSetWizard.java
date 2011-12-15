@@ -24,11 +24,11 @@ package it.eng.spagobi.meta.querybuilder.ui.wizard;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
-import it.eng.spagobi.meta.oda.impl.Connection;
+import it.eng.spagobi.meta.querybuilder.oda.Connection;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import org.eclipse.datatools.connectivity.oda.IDriver;
+
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.design.DataSetDesign;
 import org.eclipse.datatools.connectivity.oda.design.ui.designsession.DesignSessionUtil;
@@ -75,7 +75,7 @@ public class SpagoBIDataSetWizard extends DataSetWizard {
 		Connection connection = null;
 		if(dataSetDesign!=null){
 			try {
-				IDriver customDriver = new it.eng.spagobi.meta.oda.impl.Driver();
+				it.eng.spagobi.meta.querybuilder.oda.Driver customDriver = new it.eng.spagobi.meta.querybuilder.oda.Driver();
 				connection = (Connection)customDriver.getConnection( null );
 				java.util.Properties connProps =  DesignSessionUtil.getEffectiveDataSourceProperties( dataSetDesign.getDataSourceDesign() );
 				connection.open( connProps );

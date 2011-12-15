@@ -101,6 +101,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 	protected String catalogName = null;
 	protected String schemaName = null;
 	protected String connectionName = null; 
+	protected String connectionDriver = null; 	
 	protected String connectionUrl = null;
 	protected String connectionUsername = null;
 	protected String connectionPassword = null;
@@ -265,6 +266,10 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 
 				connectionName = selectionConnectionPage.getConnectionName();
 				logger.debug("Connection name is [{}]",connectionName);
+				
+				connectionDriver = selectionConnectionPage.getConnectionDriver();
+				logger.debug("Connection Driver is [{}]",connectionDriver);
+				
 				connectionUrl = selectionConnectionPage.getConnectionUrl();
 				logger.debug("Connection URL is [{}]",connectionUrl);
 				connectionUsername = selectionConnectionPage.getConnectionUsername();
@@ -317,6 +322,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 										modelName, 
 										connection,
 										connectionName, 
+										connectionDriver,
 										connectionUrl,
 										connectionUsername,
 										connectionPassword,
@@ -331,6 +337,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 										modelName, 
 										connection,
 										connectionName,
+										connectionDriver,
 										connectionUrl,
 										connectionUsername,
 										connectionPassword,

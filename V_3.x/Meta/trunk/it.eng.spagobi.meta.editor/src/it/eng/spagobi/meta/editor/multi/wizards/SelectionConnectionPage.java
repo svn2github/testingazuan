@@ -306,6 +306,10 @@ public class SelectionConnectionPage extends WizardPage {
 	}
 	
 	//must be invoked after getConnection
+	public String getConnectionDriver(){
+		return dseBridge.getConnectionDriver();
+	}
+	//must be invoked after getConnection
 	public String getConnectionUrl(){
 		return dseBridge.getConnectionUrl();
 	}

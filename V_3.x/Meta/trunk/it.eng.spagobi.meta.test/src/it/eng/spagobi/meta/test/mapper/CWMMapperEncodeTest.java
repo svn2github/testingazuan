@@ -53,6 +53,7 @@ public class CWMMapperEncodeTest {
         		"physicalModelDemo", 
         		TestConnectionFactory.createConnection(dbType),
         		"Test Connection",
+        		TestConnectionFactory.MYSQL_DRIVER,
         		TestConnectionFactory.MYSQL_URL,
         		TestConnectionFactory.MYSQL_USER,
         		TestConnectionFactory.MYSQL_PWD,

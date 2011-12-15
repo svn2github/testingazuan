@@ -102,6 +102,7 @@
       <plugin id="it.eng.spagobi.meta.oda"/>
       <plugin id="it.eng.spagobi.meta.oda.ui"/>
       <plugin id="it.eng.spagobi.meta.querybuilder"/>
+      <plugin id="it.eng.spagobi.meta.queryengine"/>
       <plugin id="it.eng.spagobi.server.services.api"/>
       <plugin id="java_cup.runtime"/>
       <plugin id="javax.activation"/>

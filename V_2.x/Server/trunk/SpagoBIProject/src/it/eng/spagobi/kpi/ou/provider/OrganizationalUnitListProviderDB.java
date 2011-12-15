@@ -23,7 +23,6 @@ package it.eng.spagobi.kpi.ou.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnit;
 import it.eng.spagobi.kpi.ou.bo.OrganizationalUnitHierarchy;
 import it.eng.spagobi.utilities.tree.Node;
@@ -35,7 +34,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -129,11 +127,7 @@ public class OrganizationalUnitListProviderDB extends
 		for(int i= 1; i<= 15 ; i++){
 			try {
 				String replacedQuery = getOUsQuery.replaceAll("\\!", Integer.toString(i));
-				boolean isToBreak = executeQuery(replacedQuery, OU, toReturn);
-				if(isToBreak){
-					continue;
-					
-				}
+				executeQuery(replacedQuery, OU, toReturn);
 			} catch (Exception e) {
 				logger.error("Error getting OU list");
 			}
@@ -186,9 +180,8 @@ public class OrganizationalUnitListProviderDB extends
 		
 	}
 
-	private boolean executeQuery(String sqlQuery, String type, List toReturn) throws Exception {
+	private void executeQuery(String sqlQuery, String type, List toReturn) throws Exception {
 		Connection con = null;
-		boolean isToBreak = false;
 		try {
 
 			con = getJNDIConnection();
@@ -209,12 +202,9 @@ public class OrganizationalUnitListProviderDB extends
 
 					String ouName =  rs.getString("NAME");
 					String ouCode =  rs.getString("CODE");
-					if(ouCode != null){
+					if (ouCode != null) {
 						OrganizationalUnit item = new OrganizationalUnit(null, ouCode, ouName, null);
 						toReturn.add(item);
-					}else{
-						isToBreak = true;
-						break;
 					}
 				}
 
@@ -227,7 +217,6 @@ public class OrganizationalUnitListProviderDB extends
 		}finally{
 			if(con != null)
 				con.close();
-			return isToBreak;
 		}
 	}	
 	private boolean getChildrenByLevel (String hierarchy, String company, Node<OrganizationalUnit> parent){

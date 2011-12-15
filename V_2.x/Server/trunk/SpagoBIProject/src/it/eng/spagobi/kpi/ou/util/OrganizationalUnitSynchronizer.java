@@ -90,20 +90,26 @@ public class OrganizationalUnitSynchronizer {
     		logger.debug("Existing OUs modified");
     		insertNewOUs(newOUs, oldOUs);
     		logger.debug("New OUs inserted");
+    		List<OrganizationalUnit> updatedOUs = dao.getOrganizationalUnitList();
+    		logger.debug("Updated Organizational Units in repository:");
+    		logger.debug(updatedOUs);
 
     		modifyExistingHierarchies(newHierarchies, oldHierarchies);
     		logger.debug("Existing hierarchies modified");
     		insertNewHierarchies(newHierarchies, oldHierarchies);
         	logger.debug("New hierarchies inserted");
+    		List<OrganizationalUnitHierarchy> updatedHierarchies = dao.getHierarchiesList();
+    		logger.debug("Updated hierarchies in repository:");
+    		logger.debug(updatedHierarchies);
         	
         	List<OrganizationalUnitHierarchy> list = synchronizeHierarchiesStructure(provider);
         	logger.debug("Hierarchies' structure updated");
         	if (!list.isEmpty()) {
-        		logger.warn("The following hierarchies were not been updated: " + list);
+        		logger.error("The following hierarchies were not been updated: " + list);
         	}
 
-        	removeNoMoreExistingHierarchies(newHierarchies, oldHierarchies);
-        	removeNoMoreExistingOUs(newOUs, oldOUs);
+        	removeNoMoreExistingHierarchies(newHierarchies, updatedHierarchies);
+        	removeNoMoreExistingOUs(newOUs, updatedOUs);
         	
         	return list;
         	

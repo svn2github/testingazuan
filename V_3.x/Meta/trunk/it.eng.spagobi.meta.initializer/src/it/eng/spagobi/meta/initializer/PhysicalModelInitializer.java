@@ -63,7 +63,7 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize PhysicalModel with table filter
-	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionUrl, 
+	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionDriver, String connectionUrl, 
 									String connectionUsername, String connectionPassword, String connectionDatabaseName,
 									String defaultCatalog, String defaultSchema, List<String> selectedTables){
 		PhysicalModel model;
@@ -95,6 +95,12 @@ public class PhysicalModelInitializer {
 			//Setting Connection properties values
 			model.getPropertyType("connection.name").setDefaultValue(connectionName);
 			logger.debug("PhysicalModel Property: Connection name is [{}]",model.getPropertyType("connection.name").getDefaultValue());
+			
+			// TODO add property connection.driver into PhysicalModelDefaultPropertiesInitializer
+			//model.getPropertyType("connection.driver").setDefaultValue(connectionDriver);
+			//logger.debug("PhysicalModel Property: Connection driver is [{}]",model.getPropertyType("connection.driver").getDefaultValue());
+			
+			
 			model.getPropertyType("connection.url").setDefaultValue(connectionUrl);
 			logger.debug("PhysicalModel Property: Connection url is [{}]",model.getPropertyType("connection.url").getDefaultValue());
 			model.getPropertyType("connection.username").setDefaultValue(connectionUsername);
@@ -112,43 +118,9 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize Physical Model with ALL original Database Tables
-	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionUrl, 
+	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionDriver, String connectionUrl, 
 			String connectionUsername, String connectionPassword, String connectionDatabaseName, String defaultCatalog, String defaultSchema) {
-		return initialize(modelName,conn, connectionName, connectionUrl, connectionUsername, connectionPassword, connectionDatabaseName, defaultCatalog,defaultSchema, null );
-		
-		/*
-		PhysicalModel model;
-		DatabaseMetaData dbMeta;
-		
-		try {
-			model = FACTORY.createPhysicalModel();
-			model.setName(modelName);
-			
-			if(getRootModel() != null) {
-				model.setParentModel(getRootModel());
-			}
-			
-			dbMeta = conn.getMetaData();
-			
-			addDatabase(dbMeta, model);			
-			addCatalog(conn, model, defaultCatalog);
-			addSchema(dbMeta, model, defaultSchema);
-			
-			addTables(dbMeta, model);
-			
-			for(int i = 0; i < model.getTables().size(); i++) {
-				addPrimaryKey(dbMeta, model, model.getTables().get(i));
-				addForeignKeys(dbMeta, model, model.getTables().get(i));
-			}
-			
-			getPropertiesInitializer().addProperties(model);
-			
-		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to initialize physical model", t);
-		}
-		
-		return model;
-		*/
+		return initialize(modelName,conn, connectionName, connectionDriver, connectionUrl, connectionUsername, connectionPassword, connectionDatabaseName, defaultCatalog,defaultSchema, null );
 	}
 	
 	

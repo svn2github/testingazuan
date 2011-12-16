@@ -315,8 +315,8 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	
 	@Override
 	public String getQuotedMappingTableName() {
-		
-		return  getSqlName();
+		String name =  physicalTable.getName();
+		return "`"+name+"`";
 	}
 	
 	@Override

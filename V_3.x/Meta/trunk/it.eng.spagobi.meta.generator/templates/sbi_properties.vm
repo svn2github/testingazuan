@@ -10,7 +10,7 @@ ${jpaTable.uniqueName}.visible = $jpaTable.getAttribute("structural.visible")
 ${jpaTable.uniqueName}.type = $jpaTable.getAttribute("structural.tabletype")
 ${jpaTable.uniqueName}.position = $velocityCount
 
-#foreach ($jpaColumn in $jpaTable.getSimpleColumns(true, true, false))
+#foreach ($jpaColumn in $jpaTable.getColumns())
 ${jpaColumn.uniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
 ${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
 ${jpaColumn.uniqueName}.position = $velocityCount

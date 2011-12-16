@@ -166,9 +166,17 @@ public class JpaRelationship extends AbstractJpaRelationship {
 
 	public String getPropertyName(){
 		if (getBusinessRelationship().getSourceColumns()!=null){
-			return StringUtils.columnNameToVarName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getName());
+			return StringUtils.columnNameToVarName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getUniqueName());
 		}
 		else return "";
+	}
+	
+	/**
+	 * TODO .. da verificare
+	 * @return
+	 */
+	protected String getOppositeRoleName(){
+		return StringUtils.columnNameToVarName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getUniqueName());	
 	}
 	
 	public String getBidirectionalPropertyName(){
@@ -225,11 +233,5 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		return relationshipColumnsNames;
 	}
 	
-	/**
-	 * TODO .. da verificare
-	 * @return
-	 */
-	protected String getOppositeRoleName(){
-		return StringUtils.columnNameToVarName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getName());	
-	}
+	
 }

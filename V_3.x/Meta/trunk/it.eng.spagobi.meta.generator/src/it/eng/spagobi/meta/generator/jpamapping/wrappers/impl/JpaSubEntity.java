@@ -154,7 +154,6 @@ public class JpaSubEntity implements IJpaSubEntity {
 		IJpaTable table = getTable();
 		IJpaColumn jpaColumn = getParentColumn();
 		if (jpaColumn!=null){
-			//name = table.getClassName() + "(" + getParentColumn().getPropertyName().toLowerCase() + ")";
 			name = "rel"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName()) + "(rel"+getParentColumn().getPropertyName().toLowerCase() + ")";
 		}
 		else {
@@ -171,6 +170,16 @@ public class JpaSubEntity implements IJpaSubEntity {
 		uniqueName = "";
 		
 		JpaSubEntity targetEntity = this;
+		
+		IJpaTable table = getTable();
+		if(table instanceof JpaViewInnerTable) {
+			JpaViewInnerTable innerTable = (JpaViewInnerTable)table;
+			JpaView jpaView = new JpaView(innerTable.getBusinessView());
+			uniqueName = "/" + innerTable.getBusinessView().getUniqueName() + "/" + innerTable.getBusinessView().getUniqueName();
+			targetEntity = targetEntity.getParent();
+		}
+		
+		
 		while(targetEntity != null) {
 			uniqueName = "//" + targetEntity.getName() + uniqueName;
 			targetEntity = targetEntity.getParent();

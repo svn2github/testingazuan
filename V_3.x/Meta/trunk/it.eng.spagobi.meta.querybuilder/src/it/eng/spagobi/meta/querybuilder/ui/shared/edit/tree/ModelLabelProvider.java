@@ -66,9 +66,12 @@ public class ModelLabelProvider {
 				}
 			} else if(modelObject instanceof IModelEntity) {
 				IModelEntity entity = (IModelEntity)modelObject;
-				IModelEntity rootEntity = entity.getStructure().getRootEntity(entity);
-				if(rootEntity != null) {
-					label = modelI18NProperties.getProperty(rootEntity, "label");
+//				IModelEntity rootEntity = entity.getStructure().getRootEntity(entity);
+//				if(rootEntity != null) {
+//					label = modelI18NProperties.getProperty(rootEntity, "label");
+//				}
+				if(entity != null) {
+					label = modelI18NProperties.getProperty(entity, "label");
 				}
 			}
 		}

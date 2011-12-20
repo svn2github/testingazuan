@@ -85,12 +85,20 @@ public class JpaTable extends AbstractJpaTable {
 	
 	public String getCatalog(){
 		logger.debug("Catalog is: "+ getModel().getPhysicalModel().getCatalog());
-		return getModel().getPhysicalModel().getCatalog();
+		String catalog =  getModel().getPhysicalModel().getCatalog();
+		if(catalog!=null && !catalog.equals("")){
+			catalog = "`"+catalog+"`";
+		}
+		return catalog;
 	}
 	
 	public String getSchema(){
 		logger.debug("Schema is: "+getModel().getPhysicalModel().getSchema());
-		return getModel().getPhysicalModel().getSchema();
+		String schema = getModel().getPhysicalModel().getSchema();
+		if(schema!=null && !schema.equals("")){
+			schema = "`"+schema+"`";
+		}
+		return schema;
 	}
 
 	public PhysicalTable getPhysicalTable() {

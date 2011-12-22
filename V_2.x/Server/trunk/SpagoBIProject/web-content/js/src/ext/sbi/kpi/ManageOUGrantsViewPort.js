@@ -1,7 +1,7 @@
 /**
  * SpagoBI - The Business Intelligence Free Platform
  *
- * Copyright (C) 2004 - 2008 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2004 - 2011 Engineering Ingegneria Informatica S.p.A.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -93,6 +93,12 @@ Sbi.kpi.ManageOUGrantsViewPort = function(config) {
 			}
 			rec.commit();
 		}
+		
+		//enable the second tab if the grant is new and the grant has been saved
+		if(this.ManageOUGrants.tabItems[1].disabled){
+			this.ManageOUGrants.tabItems[1].enable();
+		}
+		
 	}, this);
 
 	conf.readonlyStrict = true;
@@ -196,6 +202,14 @@ Ext.extend(Sbi.kpi.ManageOUGrantsViewPort, Ext.Viewport, {
 		this.ManageOUGrants.detailFieldKpiHierarchy.setRawValue(rec.data.modelinstance.modelText);
 		this.ManageOUGrants.selectedGrantId = rec.data.id;
 		this.ManageOUGrants.loadTrees();
+		this.ManageOUGrants.setActiveTab(0);
+		//disable the second tab if the grant is new..
+		//this because we need to save the grant before add the grant nodes
+		if( rec.data.id=='' ){
+			this.ManageOUGrants.tabItems[1].disable();
+		}else if (this.ManageOUGrants.tabItems[1].disabled){
+			this.ManageOUGrants.tabItems[1].enable();
+		}
 	}
 	
 	, displayTree: function(kpi, ou){
@@ -203,6 +217,17 @@ Ext.extend(Sbi.kpi.ManageOUGrantsViewPort, Ext.Viewport, {
 		var newKpiRoot = this.displayKpiTree(kpi);
 		this.ManageOUGrants.treePanel.doLayout();
 
+		//disable the root and select the first child
+		newOURoot.on('expand', function(node){
+			if(node.childNodes !=undefined && node.childNodes !=null && node.childNodes.length>0){
+				this.ManageOUGrants.leftTree.getSelectionModel().select(node.childNodes[0]);
+				this.ManageOUGrants.updateKpisCheck(node.childNodes[0]);	
+				node.disable();
+			}else{
+				this.ManageOUGrants.leftTree.getSelectionModel().select(node);
+				this.ManageOUGrants.updateKpisCheck(node);				
+			}	
+		}, this); 
 		
 //		if(ou.modelinstancenodes == undefined 
 //			|| ou.modelinstancenodes == null 

@@ -38,6 +38,6 @@ public abstract class OrganizationalUnitListProvider {
 	
 	public abstract List<OrganizationalUnitHierarchy> getHierarchies();
 	
-	public abstract Tree<OrganizationalUnit> getHierarchyStructure(OrganizationalUnitHierarchy hierarchy);
+	public abstract List<Tree<OrganizationalUnit>> getHierarchyStructure(OrganizationalUnitHierarchy hierarchy);
 	
 }

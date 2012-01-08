@@ -24,12 +24,15 @@ package it.eng.spagobi.meta.model.business.commands.generate;
 
 import java.io.File;
 
+import it.eng.spagobi.meta.generator.GeneratorDescriptor;
+import it.eng.spagobi.meta.generator.GeneratorFactory;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -72,9 +75,11 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelGenerateComma
 
 		//Call JPA Mapping generator
 		executed = true;
-		JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
-		generator.setLibDir(new File("plugins"));
+		GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
+		
 		try {
+			JpaMappingJarGenerator generator =(JpaMappingJarGenerator)descriptor.getGenerator();
+			generator.setLibDir(new File("plugins"));
 			generator.generate(businessModel, directory);
 		} catch (Exception e) {
 			logger.error("An error occurred while executing command [{}]:", ModifyBusinessTableColumnsCommand.class.getName(), e);

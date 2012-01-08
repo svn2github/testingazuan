@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.generator
-Bundle-SymbolicName: it.eng.spagobi.meta.generator
+Bundle-SymbolicName: it.eng.spagobi.meta.generator;singleton:=true
 Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
@@ -15,7 +15,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: it.eng.spagobi.commons.utilities,
  org.eclipse.jdt.core.compiler.batch
-Export-Package: it.eng.spagobi.meta.generator.jpamapping,
+Export-Package: it.eng.spagobi.meta.generator,
+ it.eng.spagobi.meta.generator.jpamapping,
  it.eng.spagobi.meta.generator.utils
 Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/velocity/commons-lang-2.4.jar,

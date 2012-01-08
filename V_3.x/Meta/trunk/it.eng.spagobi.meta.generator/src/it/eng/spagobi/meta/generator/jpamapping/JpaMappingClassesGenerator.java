@@ -61,7 +61,7 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingClassesGenerator.class);
 	
 	public JpaMappingClassesGenerator() {
-		//libs = new ArrayList<File>();
+		super();
 	}
 	
 	

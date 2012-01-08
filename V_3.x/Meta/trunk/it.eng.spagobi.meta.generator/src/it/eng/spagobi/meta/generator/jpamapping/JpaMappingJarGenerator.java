@@ -54,6 +54,10 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingJarGenerator.class);
 
+	public JpaMappingJarGenerator() {
+		super();
+	}
+	
 	@Override
 	public void generate(ModelObject o, String outputDir)  {
 		logger.trace("IN");

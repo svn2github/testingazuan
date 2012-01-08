@@ -25,7 +25,6 @@ import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 

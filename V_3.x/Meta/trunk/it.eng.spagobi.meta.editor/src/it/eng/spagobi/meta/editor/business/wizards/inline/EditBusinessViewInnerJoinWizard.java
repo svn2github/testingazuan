@@ -21,18 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.wizards.inline;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.emf.edit.command.CommandParameter;
-import org.eclipse.emf.edit.domain.EditingDomain;
-
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.wizards.AbstractSpagoBIModelWizard;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.edit.command.CommandParameter;
+import org.eclipse.emf.edit.domain.EditingDomain;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it)

@@ -24,7 +24,7 @@ package it.eng.spagobi.meta.editor.business.wizards;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
@@ -47,7 +47,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -83,6 +85,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ISetSelectionTarget;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 
 /**
@@ -101,7 +104,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 	 * @generated
 	 */
 	public static final List<String> FILE_EXTENSIONS =
-		Collections.unmodifiableList(Arrays.asList(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameExtensions").split("\\s*,\\s*")));
+		Collections.unmodifiableList(Arrays.asList(RL.getString("_UI_BusinessModelEditorFilenameExtensions").split("\\s*,\\s*")));
 
 	/**
 	 * A formatted list of supported file extensions, suitable for display.
@@ -110,7 +113,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 	 * @generated
 	 */
 	public static final String FORMATTED_FILE_EXTENSIONS =
-		SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
+		RL.getString("_UI_BusinessModelEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
 
 	/**
 	 * This caches an instance of the model package.
@@ -177,7 +180,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
-		setWindowTitle(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_Wizard_label"));
+		setWindowTitle(RL.getString("_UI_Wizard_label"));
 		setDefaultPageImageDescriptor(ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.NewBusinessModel") ));
 	}
 
@@ -260,8 +263,9 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 							options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
 							resource.save(options);
 						}
-						catch (Exception exception) {
-							SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+						catch (Exception e) {
+							IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+						    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 						}
 						finally {
 							progressMonitor.done();
@@ -294,14 +298,15 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 					 workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString()).getId());					 	 
 			}
 			catch (PartInitException exception) {
-				MessageDialog.openError(workbenchWindow.getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
+				MessageDialog.openError(workbenchWindow.getShell(), RL.getString("_UI_OpenEditorError_label"), exception.getMessage());
 				return false;
 			}
 
 			return true;
 		}
-		catch (Exception exception) {
-			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+		catch (Exception e) {
+			IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+		    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 			return false;
 		}
 	}
@@ -335,7 +340,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 				String extension = new Path(getFileName()).getFileExtension();
 				if (extension == null || !FILE_EXTENSIONS.contains(extension)) {
 					String key = FILE_EXTENSIONS.size() > 1 ? "_WARN_FilenameExtensions" : "_WARN_FilenameExtension";
-					setErrorMessage(SpagoBIMetaModelEditorPlugin.INSTANCE.getString(key, new Object [] { FORMATTED_FILE_EXTENSIONS }));
+					setErrorMessage(RL.getString(key, new Object [] { FORMATTED_FILE_EXTENSIONS }));
 					return false;
 				}
 				return true;
@@ -412,7 +417,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 
 			Label containerLabel = new Label(composite, SWT.LEFT);
 			{
-				containerLabel.setText(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_ModelObject"));
+				containerLabel.setText(RL.getString("_UI_ModelObject"));
 
 				GridData data = new GridData();
 				data.horizontalAlignment = GridData.FILL;
@@ -438,7 +443,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 
 			Label encodingLabel = new Label(composite, SWT.LEFT);
 			{
-				encodingLabel.setText(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_XMLEncoding"));
+				encodingLabel.setText(RL.getString("_UI_XMLEncoding"));
 
 				GridData data = new GridData();
 				data.horizontalAlignment = GridData.FILL;
@@ -539,8 +544,9 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 			try {
 				return SpagoBIMetaModelEditPlugin.INSTANCE.getString("_UI_" + typeName + "_type");
 			}
-			catch(MissingResourceException mre) {
-				SpagoBIMetaModelEditorPlugin.INSTANCE.log(mre);
+			catch(MissingResourceException e) {
+				IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+			    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 			}
 			return typeName;
 		}
@@ -553,7 +559,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 		protected Collection<String> getEncodings() {
 			if (encodings == null) {
 				encodings = new ArrayList<String>();
-				for (StringTokenizer stringTokenizer = new StringTokenizer(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_XMLEncodingChoices")); stringTokenizer.hasMoreTokens(); ) {
+				for (StringTokenizer stringTokenizer = new StringTokenizer(RL.getString("_UI_XMLEncodingChoices")); stringTokenizer.hasMoreTokens(); ) {
 					encodings.add(stringTokenizer.nextToken());
 				}
 			}
@@ -572,9 +578,9 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 		// Create a page, set the title, and the initial model file name.
 		//
 		newFileCreationPage = new BusinessModelModelWizardNewFileCreationPage("Whatever", selection);
-		newFileCreationPage.setTitle(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelModelWizard_label"));
-		newFileCreationPage.setDescription(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelModelWizard_description"));
-		newFileCreationPage.setFileName(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameDefaultBase") + "." + FILE_EXTENSIONS.get(0));
+		newFileCreationPage.setTitle(RL.getString("_UI_BusinessModelModelWizard_label"));
+		newFileCreationPage.setDescription(RL.getString("_UI_BusinessModelModelWizard_description"));
+		newFileCreationPage.setFileName(RL.getString("_UI_BusinessModelEditorFilenameDefaultBase") + "." + FILE_EXTENSIONS.get(0));
 		addPage(newFileCreationPage);
 
 		// Try and get the resource selection to determine a current directory for the file dialog.
@@ -600,7 +606,7 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 
 					// Make up a unique new name here.
 					//
-					String defaultModelBaseFilename = SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameDefaultBase");
+					String defaultModelBaseFilename = RL.getString("_UI_BusinessModelEditorFilenameDefaultBase");
 					String defaultModelFilenameExtension = FILE_EXTENSIONS.get(0);
 					String modelFilename = defaultModelBaseFilename + "." + defaultModelFilenameExtension;
 					for (int i = 1; ((IContainer)selectedResource).findMember(modelFilename) != null; ++i) {
@@ -611,8 +617,8 @@ public class BusinessModelWizard extends Wizard implements INewWizard {
 			}
 		}
 		initialObjectCreationPage = new BusinessModelModelWizardInitialObjectCreationPage("Whatever2");
-		initialObjectCreationPage.setTitle(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelModelWizard_label"));
-		initialObjectCreationPage.setDescription(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_Wizard_initial_object_description"));
+		initialObjectCreationPage.setTitle(RL.getString("_UI_BusinessModelModelWizard_label"));
+		initialObjectCreationPage.setDescription(RL.getString("_UI_Wizard_initial_object_description"));
 		addPage(initialObjectCreationPage);
 	}
 

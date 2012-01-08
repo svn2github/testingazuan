@@ -21,11 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.physical;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -55,6 +59,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * This is the action bar contributor for the PhysicalModel model editor.
@@ -65,6 +70,10 @@ import org.eclipse.ui.PartInitException;
 public class PhysicalModelEditorWorkbenchContributor
 	extends EditingDomainActionBarContributor
 	implements ISelectionChangedListener {
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+	
+	
 	/**
 	 * This keeps track of the active editor.
 	 * <!-- begin-user-doc -->
@@ -88,14 +97,15 @@ public class PhysicalModelEditorWorkbenchContributor
 	 * @generated
 	 */
 	protected IAction showPropertiesViewAction =
-		new Action(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_ShowPropertiesView_menu_item")) {
+		new Action(RL.getString("_UI_ShowPropertiesView_menu_item")) {
 			@Override
 			public void run() {
 				try {
 					getPage().showView("org.eclipse.ui.views.PropertySheet");
 				}
-				catch (PartInitException exception) {
-					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+				catch (PartInitException e) {
+					IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "An unexpected error occurred", e);
+				    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 				}
 			}
 		};
@@ -108,7 +118,7 @@ public class PhysicalModelEditorWorkbenchContributor
 	 * @generated
 	 */
 	protected IAction refreshViewerAction =
-		new Action(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_RefreshViewer_menu_item")) {
+		new Action(RL.getString("_UI_RefreshViewer_menu_item")) {
 			@Override
 			public boolean isEnabled() {
 				return activeEditorPart instanceof IViewerProvider;
@@ -195,7 +205,7 @@ public class PhysicalModelEditorWorkbenchContributor
 	public void contributeToMenu(IMenuManager menuManager) {
 		super.contributeToMenu(menuManager);
 
-		IMenuManager submenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_PhysicalModelEditor_menu"), "it.eng.spagobi.meta.model.physicalMenuID");
+		IMenuManager submenuManager = new MenuManager(RL.getString("_UI_PhysicalModelEditor_menu"), "it.eng.spagobi.meta.model.physicalMenuID");
 		menuManager.insertAfter("additions", submenuManager);
 		submenuManager.add(new Separator("settings"));
 		submenuManager.add(new Separator("actions"));
@@ -204,12 +214,12 @@ public class PhysicalModelEditorWorkbenchContributor
 
 		// Prepare for CreateChild item addition or removal.
 		//
-		createChildMenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_CreateChild_menu_item"));
+		createChildMenuManager = new MenuManager(RL.getString("_UI_CreateChild_menu_item"));
 		submenuManager.insertBefore("additions", createChildMenuManager);
 
 		// Prepare for CreateSibling item addition or removal.
 		//
-		createSiblingMenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
+		createSiblingMenuManager = new MenuManager(RL.getString("_UI_CreateSibling_menu_item"));
 		submenuManager.insertBefore("additions", createSiblingMenuManager);
 
 		// Force an update because Eclipse hides empty menus now.
@@ -402,11 +412,11 @@ public class PhysicalModelEditorWorkbenchContributor
 		super.menuAboutToShow(menuManager);
 		MenuManager submenuManager = null;
 
-		submenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_CreateChild_menu_item"));
+		submenuManager = new MenuManager(RL.getString("_UI_CreateChild_menu_item"));
 		populateManager(submenuManager, createChildActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 
-		submenuManager = new MenuManager(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_CreateSibling_menu_item"));
+		submenuManager = new MenuManager(RL.getString("_UI_CreateSibling_menu_item"));
 		populateManager(submenuManager, createSiblingActions, null);
 		menuManager.insertBefore("edit", submenuManager);
 	}

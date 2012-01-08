@@ -21,13 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.views.properties.PropertySheet;
 
 /**
@@ -37,10 +41,12 @@ import org.eclipse.ui.views.properties.PropertySheet;
 public class ShowPropertiesViewAction extends Action {
 	
 	IEditorPart activeEditorPart;
-
+	
+	private static IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator();
+	
 
 	public ShowPropertiesViewAction() {
-		super( SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_ShowPropertiesView_menu_item") );
+		super( RL.getString("business.action.show.properties.label") );
 	}
 
 	public void setActiveEditorPart(IEditorPart activeEditorPart) {
@@ -67,8 +73,9 @@ public class ShowPropertiesViewAction extends Action {
 			if(view != null) activeEditorPart.getSite().getPage().hideView(view);
 			IViewPart viewp = activeEditorPart.getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
 		}
-		catch (PartInitException exception) {
-			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+		catch (PartInitException e) {
+		    IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Impossible to open Property Sheet View", e);
+		    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 		}
 	}
 }

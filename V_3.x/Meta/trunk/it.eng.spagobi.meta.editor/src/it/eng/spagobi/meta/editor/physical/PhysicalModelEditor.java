@@ -24,7 +24,6 @@ package it.eng.spagobi.meta.editor.physical;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.dnd.PhysicalObjectDragListener;
@@ -61,7 +60,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CommandStack;
@@ -140,6 +141,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -508,8 +510,9 @@ public class PhysicalModelEditor
 							 });
 					}
 				}
-				catch (CoreException exception) {
-					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+				catch (CoreException e) {
+					IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+				    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 				}
 			}
 		};
@@ -624,8 +627,9 @@ public class PhysicalModelEditor
 					setActivePage(lastEditorPage);
 					showTabs();
 				}
-				catch (PartInitException exception) {
-					SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+				catch (PartInitException e) {
+					IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+				    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 				}
 			}
 
@@ -635,8 +639,9 @@ public class PhysicalModelEditor
 					try {
 						markerHelper.createMarkers(diagnostic);
 					}
-					catch (CoreException exception) {
-						SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+					catch (CoreException e) {
+						IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+					    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 					}
 				}
 			}
@@ -1640,8 +1645,9 @@ public class PhysicalModelEditor
 				}
 			}
 		}
-		catch (CoreException exception) {
-			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+		catch (CoreException e) {
+			IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Unexpected error occurred", e);
+		    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 		}
 	}
 

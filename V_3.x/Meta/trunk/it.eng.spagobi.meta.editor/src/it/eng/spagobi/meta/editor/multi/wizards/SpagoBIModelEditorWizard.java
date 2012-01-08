@@ -24,7 +24,6 @@ package it.eng.spagobi.meta.editor.multi.wizards;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorInput;
@@ -54,6 +53,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -80,6 +81,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.part.ISetSelectionTarget;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +121,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 	 * @generated
 	 */
 	public static final List<String> FILE_EXTENSIONS =
-		Collections.unmodifiableList(Arrays.asList(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameExtensions").split("\\s*,\\s*")));
+		Collections.unmodifiableList(Arrays.asList(RL.getString("_UI_BusinessModelEditorFilenameExtensions").split("\\s*,\\s*")));
 
 	/**
 	 * A formatted list of supported file extensions, suitable for display.
@@ -128,7 +130,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 	 * @generated
 	 */
 	public static final String FORMATTED_FILE_EXTENSIONS =
-		SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_BusinessModelEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
+		RL.getString("_UI_BusinessModelEditorFilenameExtensions").replaceAll("\\s*,\\s*", ", ");
 
 	/**
 	 * This caches an instance of the model package.
@@ -180,7 +182,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
-		setWindowTitle(SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_Wizard_label"));
+		setWindowTitle(RL.getString("_UI_Wizard_label"));
 		setDefaultPageImageDescriptor(ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.business.wizards.inline.NewBusinessModel") ));
 	}
 
@@ -455,8 +457,9 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 						//options.put(XMLResource.OPTION_ENCODING, initialObjectCreationPage.getEncoding());
 						resource.save(options);
 					}
-					catch (Exception exception) {
-						SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+					catch (Exception e) {
+						IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Impossible to load the model", e);
+					    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 					}
 					finally {
 						progressMonitor.done();
@@ -492,15 +495,17 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 						new SpagoBIModelEditorInput(modelFile, spagobiModel) , SpagoBIModelEditor.EDITOR_ID					     
 				);
 			}
-			catch (PartInitException exception) {
-				MessageDialog.openError(workbenchWindow.getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
+			catch (PartInitException e) {
+				IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Impossible to open editor", e);
+			    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 				return false;
 			}
 
 			return true;
 		}
-		catch (Exception exception) {
-			SpagoBIMetaModelEditorPlugin.INSTANCE.log(exception);
+		catch (Exception e) {
+			IStatus status = new Status(IStatus.ERROR, SpagoBIMetaEditorPlugin.PLUGIN_ID, IStatus.OK, "Impossible to open editor", e);
+		    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 			return false;
 		}
 	}

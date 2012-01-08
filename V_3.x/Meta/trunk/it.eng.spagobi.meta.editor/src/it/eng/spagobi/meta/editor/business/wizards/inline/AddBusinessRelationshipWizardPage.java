@@ -27,7 +27,6 @@ import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
 import java.net.URL;

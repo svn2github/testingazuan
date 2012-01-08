@@ -23,7 +23,8 @@ package it.eng.spagobi.meta.editor.business.actions;
 
 import java.util.Collection;
 
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
@@ -40,9 +41,11 @@ public class RefreshViewerAction extends Action {
 	
 	IEditorPart activeEditorPart;
 
+	private static IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator();
+	
 
 	public RefreshViewerAction() {
-		super( SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_RefreshViewer_menu_item") );
+		super( RL.getString("business.action.refresh.label") );
 	}
 
 	public void setActiveEditorPart(IEditorPart activeEditorPart) {

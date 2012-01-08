@@ -25,7 +25,6 @@ package it.eng.spagobi.meta.editor.multi.wizards;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
 import it.eng.spagobi.meta.editor.multi.DSEBridge;
 
 import java.lang.reflect.InvocationTargetException;

@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.multi;
 
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.editor.SpagoBIMetaModelEditorPlugin;
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
 
@@ -64,6 +65,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 
+	private static IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator();
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIModelEditorAdapterLauncher.class);
 		
 	@Override
@@ -157,7 +159,8 @@ public class SpagoBIModelEditorAdapterLauncher implements IEditorLauncher {
 			innerEditors[0].setFocus();
 			
 		} catch (PartInitException exception) {
-			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SpagoBIMetaModelEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+					RL.getString("business.editor.error.open"), exception.getMessage());
 		}
 		
 	}

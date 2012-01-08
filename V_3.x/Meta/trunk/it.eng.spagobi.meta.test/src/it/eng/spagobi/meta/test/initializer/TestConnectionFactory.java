@@ -12,7 +12,7 @@ import java.sql.DriverManager;
 public class TestConnectionFactory {
 	
 	public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/spagobi_local";
+	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/foodmart_key";
 	public static String MYSQL_USER = "root";
 	public static String MYSQL_PWD = "mysql";
 	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		
@@ -79,7 +79,8 @@ public class TestConnectionFactory {
 		
 		connection = null;
 		try {
-			Class.forName(MYSQL_DRIVER).newInstance();			  
+			com.mysql.jdbc.Driver o = (com.mysql.jdbc.Driver)Class.forName(MYSQL_DRIVER).newInstance();			  
+			boolean b = o.acceptsURL(MYSQL_URL);
 			connection = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PWD);
 		} catch (Throwable t){
 			throw new RuntimeException("Impossible to create connection [url: " + url

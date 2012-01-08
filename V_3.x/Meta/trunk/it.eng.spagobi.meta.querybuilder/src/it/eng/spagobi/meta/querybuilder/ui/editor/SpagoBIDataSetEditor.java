@@ -29,6 +29,8 @@ import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
+import it.eng.spagobi.meta.generator.GeneratorDescriptor;
+import it.eng.spagobi.meta.generator.GeneratorFactory;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPackage;
@@ -563,7 +565,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		logger.trace("IN");
 	
 		try {
-			JpaMappingJarGenerator generator = new JpaMappingJarGenerator();
+			GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
+			JpaMappingJarGenerator generator = (JpaMappingJarGenerator)descriptor.getGenerator();
 			generator.setLibDir(new File("plugins"));
 			generator.setPersistenceUnitName(persistenceUnitName);
 			generator.generate(businessModel, outputFolder);

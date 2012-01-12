@@ -445,61 +445,73 @@ public class PhysicalModelInitializer {
 				sourceTable = model.getTable( rs.getString("FKTABLE_NAME") );
 				destinationTable = model.getTable( rs.getString("PKTABLE_NAME") );
 				
-				if(foreignKey == null) { // OK it's the first iteration
+				if (destinationTable == null || sourceTable == null){
+					//skip this foreign key because table is not found in the physical model
+					log("Foreign Key skipped because table was not found in the physical model");
+				}
+				else {
+					if(foreignKey == null) { // OK it's the first iteration
+						
+						foreignKey = FACTORY.createPhysicalForeignKey();
+						getPropertiesInitializer().addProperties(foreignKey);
+						
+						foreignKey.setSourceName(fkName);
+						foreignKey.setSourceTable( sourceTable );					
+						foreignKey.setDestinationName(rs.getString("PK_NAME"));
+						foreignKey.setDestinationTable( destinationTable );
+						
+						pkName = rs.getString("PK_NAME");
 					
-					foreignKey = FACTORY.createPhysicalForeignKey();
-					getPropertiesInitializer().addProperties(foreignKey);
-					
-					foreignKey.setSourceName(fkName);
-					foreignKey.setSourceTable( sourceTable );					
-					foreignKey.setDestinationName(rs.getString("PK_NAME"));
-					foreignKey.setDestinationTable( destinationTable );
-					
-					pkName = rs.getString("PK_NAME");
-				
-				} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
+					} else if (!foreignKey.getSourceName().equals(fkName)) { // we have finished with the previous fk
 
-					//table.getForeignKeys().add(foreignKey);
+						//table.getForeignKeys().add(foreignKey);
+						model.getForeignKeys().add(foreignKey);
+						foreignKey = FACTORY.createPhysicalForeignKey();
+						getPropertiesInitializer().addProperties(foreignKey);
+						foreignKey.setSourceName(fkName);
+						foreignKey.setSourceTable( sourceTable );					
+						foreignKey.setDestinationName(rs.getString("PK_NAME"));
+						foreignKey.setDestinationTable( destinationTable );
+						
+						pkName = rs.getString("PK_NAME");
+					}
+					
+					PhysicalColumn c = sourceTable.getColumn(rs.getString("FKCOLUMN_NAME"));
+					if(c == null) {
+						System.out.println( sourceTable.getName() + "!>" +  rs.getString("FKCOLUMN_NAME") );
+						System.out.println(destinationTable.getName() + "!>" +  rs.getString("PKCOLUMN_NAME") );
+						
+						System.out.println("--------------------------" );
+						for(int n = 0; n < sourceTable.getColumns().size(); n++) {
+							System.out.println(" - " + sourceTable.getColumns().get(n).getName() );
+						}
+					}
+					foreignKey.getSourceColumns().add( sourceTable.getColumn(rs.getString("FKCOLUMN_NAME")) );
+					
+					c = destinationTable.getColumn(rs.getString("PKCOLUMN_NAME"));
+					if(c == null) {
+						System.out.println( sourceTable.getName() + "->" +  rs.getString("FKCOLUMN_NAME") );
+						System.out.println(destinationTable.getName() + "->" +  rs.getString("PKCOLUMN_NAME") );
+					}
+					foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );					
+				}
+
+				
+			}
+			//add the last or the only foreign key found
+			if(foreignKey != null){
+				if (destinationTable == null || sourceTable == null){
+					//skip this foreign key because table was not found in the physical model
+					log("Foreign Key skipped because table was not found in the physical model");
+				} else {
 					model.getForeignKeys().add(foreignKey);
 					foreignKey = FACTORY.createPhysicalForeignKey();
 					getPropertiesInitializer().addProperties(foreignKey);
 					foreignKey.setSourceName(fkName);
 					foreignKey.setSourceTable( sourceTable );					
-					foreignKey.setDestinationName(rs.getString("PK_NAME"));
+					foreignKey.setDestinationName(pkName);
 					foreignKey.setDestinationTable( destinationTable );
-					
-					pkName = rs.getString("PK_NAME");
 				}
-				
-				PhysicalColumn c = sourceTable.getColumn(rs.getString("FKCOLUMN_NAME"));
-				if(c == null) {
-					System.out.println( sourceTable.getName() + "!>" +  rs.getString("FKCOLUMN_NAME") );
-					System.out.println(destinationTable.getName() + "!>" +  rs.getString("PKCOLUMN_NAME") );
-					
-					System.out.println("--------------------------" );
-					for(int n = 0; n < sourceTable.getColumns().size(); n++) {
-						System.out.println(" - " + sourceTable.getColumns().get(n).getName() );
-					}
-				}
-				foreignKey.getSourceColumns().add( sourceTable.getColumn(rs.getString("FKCOLUMN_NAME")) );
-				
-				c = destinationTable.getColumn(rs.getString("PKCOLUMN_NAME"));
-				if(c == null) {
-					System.out.println( sourceTable.getName() + "->" +  rs.getString("FKCOLUMN_NAME") );
-					System.out.println(destinationTable.getName() + "->" +  rs.getString("PKCOLUMN_NAME") );
-				}
-				foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );
-				
-			}
-			//add the last or the only foreign key found
-			if(foreignKey != null){
-				model.getForeignKeys().add(foreignKey);
-				foreignKey = FACTORY.createPhysicalForeignKey();
-				getPropertiesInitializer().addProperties(foreignKey);
-				foreignKey.setSourceName(fkName);
-				foreignKey.setSourceTable( sourceTable );					
-				foreignKey.setDestinationName(pkName);
-				foreignKey.setDestinationTable( destinationTable );
 			}
 			
 			rs.close();

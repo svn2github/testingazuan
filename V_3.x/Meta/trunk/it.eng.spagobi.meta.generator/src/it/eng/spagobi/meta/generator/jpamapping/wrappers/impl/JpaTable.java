@@ -86,9 +86,9 @@ public class JpaTable extends AbstractJpaTable {
 	public String getCatalog(){
 		logger.debug("Catalog is: "+ getModel().getPhysicalModel().getCatalog());
 		String catalog =  getModel().getPhysicalModel().getCatalog();
-		if(catalog!=null && !catalog.equals("")){
-			catalog = "`"+catalog+"`";
-		}
+//		if(catalog!=null && !catalog.equals("") &&  getModel().getPhysicalModel().getDatabaseName().contains("PostgreSQL")){
+//			catalog = "\\\""+catalog+"\\\"";
+//		}
 		return catalog;
 	}
 	

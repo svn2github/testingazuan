@@ -25,7 +25,7 @@ package spagobi.birt.oda.impl.server;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -59,7 +59,7 @@ public class Query implements IQuery
 	
 	DataSetServiceProxy dataSetServiceProxy;
 	IDataSet ds;
-	IDataStoreMetaData dataStoreMeta;
+	IMetaData dataStoreMeta;
 	IDataStore dataStore;
 	Map params;
 	Map userProfAttrs;

@@ -498,6 +498,36 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	}
 	
 	@Override
+	public BusinessTable getBusinessTable(String name) {
+		for(int i = 0; i < getTables().size(); i++) {
+			if( (getTables().get(i) instanceof BusinessTable) 
+					&& name.equals( getTables().get(i).getName() ) ) {
+				return (BusinessTable)getTables().get(i);
+			}
+		}
+		return null;
+	}
+	
+	public boolean deleteBusinessTable(String name) {
+		BusinessTable targetTabe = getBusinessTable(name);
+		if(targetTabe != null) {
+			// remove the idetifier of the business table
+			BusinessIdentifier removedIdentifier = targetTabe.getIdentifier();
+			if(removedIdentifier != null) {
+				getIdentifiers().remove(removedIdentifier);
+			}
+			
+			//remove relationships of this business table
+			List<BusinessRelationship> removedRelationships = targetTabe.getRelationships();
+			getRelationships().removeAll(removedRelationships);
+			
+			getTables().remove(targetTabe);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public List<BusinessView> getBusinessViews() {
 		List<BusinessView> businessViews;
 		
@@ -510,16 +540,7 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 		return businessViews;
 	}
 	
-	@Override
-	public BusinessTable getBusinessTable(String name) {
-		for(int i = 0; i < getTables().size(); i++) {
-			if( (getTables().get(i) instanceof BusinessTable) 
-					&& name.equals( getTables().get(i).getName() ) ) {
-				return (BusinessTable)getTables().get(i);
-			}
-		}
-		return null;
-	}
+	
 
 	@Override
 	public BusinessTable getBusinessTable(PhysicalTable physicalTable) {
@@ -560,15 +581,6 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getParentModel().getPropertyTypes();
-	}
-
-	@Override
-	public BusinessIdentifier getIdentifier(String name) {
-		// assert name not null
-		for(BusinessIdentifier identifier: getIdentifiers() ) {
-			name.equals(identifier.getName());
-		}
-		return null;
 	}
 
 	@Override

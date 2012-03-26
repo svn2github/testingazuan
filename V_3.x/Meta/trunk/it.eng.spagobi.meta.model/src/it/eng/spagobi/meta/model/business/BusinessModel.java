@@ -201,9 +201,6 @@ public interface BusinessModel extends ModelObject {
 	// Utility methods
 	// =========================================================================
 	
-	
-	BusinessIdentifier getIdentifier(String name);
-	
 	BusinessIdentifier getIdentifier(BusinessColumnSet table);
 	
 	/**
@@ -222,6 +219,8 @@ public interface BusinessModel extends ModelObject {
 	 */
 	BusinessTable getBusinessTable(String name);
 	
+	boolean deleteBusinessTable(String name);
+	
 	/**
 	 * @deprecated need a fix. To one physicalTable can be associated multiple businessTables
 	 * 
@@ -234,5 +233,7 @@ public interface BusinessModel extends ModelObject {
 	 * @return the the business column set(table or view) set with the given name.
 	 */
 	BusinessColumnSet getTable(String name);
+	
+	
 
 } // BusinessModel

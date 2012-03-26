@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 public class JpaTable extends AbstractJpaTable {
 	
 	BusinessTable businessTable;
+	String quoteString ;
 	List<IJpaSubEntity> allSubEntities = new ArrayList<IJpaSubEntity>();
 	List<BusinessColumnSet> parents;
 	List<IJpaCalculatedColumn> jpaCalculatedColumns;
@@ -62,6 +63,7 @@ public class JpaTable extends AbstractJpaTable {
 	protected JpaTable(BusinessTable businessTable) {
 		super(businessTable.getPhysicalTable());
 		this.businessTable = businessTable;
+		quoteString = businessTable.getModel().getPhysicalModel().getPropertyType("connection.databasequotestring").getDefaultValue();
 		initColumnTypesMap();
 	}
 	
@@ -86,6 +88,12 @@ public class JpaTable extends AbstractJpaTable {
 	public String getCatalog(){
 		logger.debug("Catalog is: "+ getModel().getPhysicalModel().getCatalog());
 		String catalog =  getModel().getPhysicalModel().getCatalog();
+		if (catalog != null){
+			if (!quoteString.equals(" ")){
+				catalog = quoteString+catalog+quoteString;
+			}
+		}
+
 //		if(catalog!=null && !catalog.equals("") &&  getModel().getPhysicalModel().getDatabaseName().contains("PostgreSQL")){
 //			catalog = "\\\""+catalog+"\\\"";
 //		}
@@ -96,7 +104,9 @@ public class JpaTable extends AbstractJpaTable {
 		logger.debug("Schema is: "+getModel().getPhysicalModel().getSchema());
 		String schema = getModel().getPhysicalModel().getSchema();
 		if(schema!=null && !schema.equals("")){
-			schema = "`"+schema+"`";
+			if (!quoteString.equals(" ")){
+				schema = quoteString+schema+quoteString;
+			}
 		}
 		return schema;
 	}
@@ -230,7 +240,10 @@ public class JpaTable extends AbstractJpaTable {
 	
 	public String getQuotedMappingTableName() {
 		String name =  businessTable.getPhysicalTable().getName();
-		return "`"+name+"`";
+		if (!quoteString.equals(" ")){
+			name = quoteString+name+quoteString;
+		}
+		return name;
 	}
 	
 	@Override

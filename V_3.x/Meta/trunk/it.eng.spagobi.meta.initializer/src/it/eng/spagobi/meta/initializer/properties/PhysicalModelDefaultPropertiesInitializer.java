@@ -43,6 +43,8 @@ public class PhysicalModelDefaultPropertiesInitializer implements IPropertiesIni
 	public static final String MODEL_CONNECTION_USERNAME = "connection.username";
 	public static final String MODEL_CONNECTION_PASSWORD = "connection.password";
 	public static final String MODEL_CONNECTION_DATABASENAME = "connection.databasename";
+	public static final String MODEL_CONNECTION_DATABASEQUOTESTRING = "connection.databasequotestring";
+
 
 
 
@@ -198,6 +200,30 @@ public class PhysicalModelDefaultPropertiesInitializer implements IPropertiesIni
 		}
 
 		// add a property of type MODEL_CONNECTION_DATABASENAME to the model object
+		property = FACTORY.createModelProperty();
+		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getId(), property);		
+		
+		// **** Model Connection Database Quote String
+		propertyType = null;
+
+		if(o.getParentModel() != null) {
+			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_DATABASEQUOTESTRING);
+		}
+		if(propertyType == null) {
+			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId( MODEL_CONNECTION_DATABASEQUOTESTRING );
+			propertyType.setName("Connection DatabaseQuoteString");
+			propertyType.setDescription("Data Source Connection Database Quote String");
+			propertyType.setCategory(connectionCategory);
+			propertyType.setDefaultValue(" ");
+
+			if(o.getParentModel() != null) {
+				o.getParentModel().getPropertyTypes().add(propertyType);
+			}
+		}
+
+		// add a property of type MODEL_CONNECTION_DATABASEQUOTESTRING to the model object
 		property = FACTORY.createModelProperty();
 		property.setPropertyType(propertyType);
 		o.getProperties().put(property.getPropertyType().getId(), property);			

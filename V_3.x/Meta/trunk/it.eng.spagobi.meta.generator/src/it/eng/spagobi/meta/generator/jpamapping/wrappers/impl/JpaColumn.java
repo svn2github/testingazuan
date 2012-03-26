@@ -46,7 +46,8 @@ import org.slf4j.LoggerFactory;
 public class JpaColumn implements IJpaColumn {
 	SimpleBusinessColumn businessColumn;
 	AbstractJpaTable jpaTable;
-	
+	String quoteString ;
+
 	private static Logger logger = LoggerFactory.getLogger(JpaColumn.class);
 	
 	/**
@@ -57,6 +58,8 @@ public class JpaColumn implements IJpaColumn {
 	protected JpaColumn(AbstractJpaTable parentTable, SimpleBusinessColumn businessColumn) {
 		this.jpaTable = parentTable;
 		this.businessColumn = businessColumn;
+		quoteString = businessColumn.getTable().getModel().getPhysicalModel().getPropertyType("connection.databasequotestring").getDefaultValue();
+
 	}
 	
 	/* (non-Javadoc)
@@ -333,7 +336,8 @@ public class JpaColumn implements IJpaColumn {
 	}
 
 	public String getQuotedMappingColumnName(){
-		return StringUtils.doubleQuote("`"+businessColumn.getPhysicalColumn().getName()+"`");
+		return StringUtils.doubleQuote(quoteString+businessColumn.getPhysicalColumn().getName()+quoteString);
+		//return StringUtils.doubleQuote("`"+businessColumn.getPhysicalColumn().getName()+"`");
 	}
 	
 	/* (non-Javadoc)

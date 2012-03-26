@@ -79,6 +79,9 @@ public class PhysicalModelInitializer {
 			
 			dbMeta = conn.getMetaData();
 			
+
+
+			
 			addDatabase(dbMeta, model);			
 			addCatalog(conn, model, defaultCatalog);
 			addSchema(dbMeta, model, defaultSchema);
@@ -109,6 +112,21 @@ public class PhysicalModelInitializer {
 			logger.debug("PhysicalModel Property: Connection password is [{}]",model.getPropertyType("connection.password").getDefaultValue());
 			model.getPropertyType("connection.databasename").setDefaultValue(connectionDatabaseName);
 			logger.debug("PhysicalModel Property: Connection databasename is [{}]",model.getPropertyType("connection.databasename").getDefaultValue());
+		
+			//Quote string identification
+			String quote = dbMeta.getIdentifierQuoteString();
+			System.out.println("Quote string: "+quote);
+			System.out.println("Quote string length: "+quote.length());
+			//check if escaping is needed
+			if (quote.equals("\""))
+			{
+				quote = "\\\"";
+			}
+			model.getPropertyType("connection.databasequotestring").setDefaultValue(quote);
+			logger.debug("PhysicalModel Property: Connection databasequotestring is [{}]",model.getPropertyType("connection.databasequotestring").getDefaultValue());
+			System.out.println("connection.databasequotestring = "+model.getPropertyType("connection.databasequotestring").getDefaultValue());
+
+		
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize physical model", t);
 		}

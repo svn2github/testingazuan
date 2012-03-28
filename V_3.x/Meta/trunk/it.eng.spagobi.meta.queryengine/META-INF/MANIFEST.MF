@@ -32,7 +32,8 @@ Bundle-ClassPath: libs/qbecore/eclipselink/eclipselink.jar,
  libs/jdbc/sqljdbc4.jar,
  libs/jdbc/tdgssconfig.jar,
  libs/jdbc/terajdbc4.jar,
- libs/jdbc/hsqldb1_8_0_2.jar
+ libs/jdbc/hsqldb1_8_0_2.jar,
+ libs/jdbc/jtds-1.2.5.jar
 Export-Package: it.eng.qbe,
  it.eng.qbe.classloader,
  it.eng.qbe.datasource,

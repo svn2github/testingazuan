@@ -98,8 +98,9 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 			
 			boolean compiled = compiler.compile();
 			
+			
 			if(!compiled) {
-				throw new GenerationException("Impossible to compile mapping code");
+				throw new GenerationException("Impossible to compile mapping code. Please check compilation errors in file [/log/spagobi/metacompiler_errors.log]");
 			}
 			
 			copyFile( new File(srcDir, "views.json"),  binDir);

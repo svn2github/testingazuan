@@ -213,17 +213,19 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		try {
 			IFile modelFile = getModelFile(modelPath);
 			String modelDirectory = new File(modelPath).getParent();
+			
 			if ( isMappingDirty( modelFile ) ){
+				logger.debug("Mappings are not uptodate with the model. The will be regenerated");
 				persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
 				generateMapping(businessModel, modelDirectory, persistenceUnitName);
 				//set the dirty property to false cause the mapping has just been created
 				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
-			}
-			else {
+			} else {
+				logger.debug("Mappings are uptodate with the model. The wont be regenerated");
 				persistenceUnitName = discoverPersistenceUnitName(modelDirectory, businessModel.getName());
 			}
 		} catch (Throwable t) {
-			throw new SpagoBIPluginException("Impossible to locate model file [" + "" + "]");
+			throw new SpagoBIPluginException("Impossible get persistence unit name used in mappings for model [" + businessModel.getName() + "]", t);
 		}
 		
 		return persistenceUnitName;
@@ -606,11 +608,11 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		} else if(dbname.toLowerCase().contains("microsoft")) {
 			dialect = "org.hibernate.dialect.SQLServerDialect";
 			driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+			//driver = "net.sourceforge.jtds.jdbc.Driver";
 		} else if(dbname.toLowerCase().contains("hsql")) {
 			dialect = "org.hibernate.dialect.HSQLDialect";
 			//driver = "org.hsqldb.jdbc.JDBCDriver";
 			driver = "org.hsqldb.jdbcDriver";
-			
 		} else if(dbname.toLowerCase().contains("teradata")) {
 			dialect = "org.hibernate.dialect.TeradataDialect";
 			driver = "com.teradata.jdbc.TeraDriver";

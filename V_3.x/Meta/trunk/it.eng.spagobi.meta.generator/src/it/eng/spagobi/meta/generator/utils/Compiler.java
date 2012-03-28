@@ -92,9 +92,7 @@ public class Compiler {
 		PrintWriter out;
 		try {
 			error = new PrintWriter(new FileWriter("./log/spagobi/metacompiler_errors.log", true));
-			//error=new PrintWriter(System.err);
 			out=new PrintWriter(new FileWriter("./log/spagobi/metacompiler_out.log", true));
-			//out=new PrintWriter(System.out);
 			result = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(command, out,error , null);
 		} catch (IOException e) {
 			e.printStackTrace();

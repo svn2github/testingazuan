@@ -36,11 +36,15 @@ import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,7 +289,7 @@ public class PhysicalModelInitializer {
 					getPropertiesInitializer().addProperties(table);
 					
 					table.setName( tableRs.getString("TABLE_NAME") );
-					table.setComment( tableRs.getString("REMARKS") );
+					table.setComment( getEscapedMetadataPropertyValue(tableRs, "REMARKS") );
 					table.setType( tableRs.getString("TABLE_TYPE") );
 					
 					log("Table: " + table.getName() + "[" + table.getType() + "]");
@@ -349,7 +353,11 @@ public class PhysicalModelInitializer {
 					column.setDefaultValue( null);
 				}
 				column.setName(rs.getString("COLUMN_NAME"));
-				column.setComment( rs.getString("REMARKS") );
+				
+			
+
+				column.setComment( getEscapedMetadataPropertyValue(rs, "REMARKS") );
+				
 				column.setDataType( JDBCTypeMapper.getModelType(rs.getShort("DATA_TYPE") ) );
 				column.setTypeName( rs.getString("TYPE_NAME") );
 				column.setSize(rs.getInt("COLUMN_SIZE") );
@@ -367,6 +375,22 @@ public class PhysicalModelInitializer {
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize primaryKeys metadata", t);
 		}
+	}
+	
+	private String getEscapedMetadataPropertyValue(ResultSet rs, String propertyName) throws SQLException {
+		String propertyValue;
+		
+		propertyValue = rs.getString(propertyName);
+		if(propertyValue!= null) {
+			propertyValue = StringEscapeUtils.escapeXml(propertyValue);
+			
+			Pattern pattern = Pattern.compile("[\\000]*");
+			Matcher matcher = pattern.matcher(propertyValue);
+			if (matcher.find()) {
+				propertyValue = matcher.replaceAll("");
+			}
+		}
+		return propertyValue;
 	}
 	
 	
@@ -495,22 +519,9 @@ public class PhysicalModelInitializer {
 					}
 					
 					PhysicalColumn c = sourceTable.getColumn(rs.getString("FKCOLUMN_NAME"));
-					if(c == null) {
-						System.out.println( sourceTable.getName() + "!>" +  rs.getString("FKCOLUMN_NAME") );
-						System.out.println(destinationTable.getName() + "!>" +  rs.getString("PKCOLUMN_NAME") );
-						
-						System.out.println("--------------------------" );
-						for(int n = 0; n < sourceTable.getColumns().size(); n++) {
-							System.out.println(" - " + sourceTable.getColumns().get(n).getName() );
-						}
-					}
 					foreignKey.getSourceColumns().add( sourceTable.getColumn(rs.getString("FKCOLUMN_NAME")) );
 					
 					c = destinationTable.getColumn(rs.getString("PKCOLUMN_NAME"));
-					if(c == null) {
-						System.out.println( sourceTable.getName() + "->" +  rs.getString("FKCOLUMN_NAME") );
-						System.out.println(destinationTable.getName() + "->" +  rs.getString("PKCOLUMN_NAME") );
-					}
 					foreignKey.getDestinationColumns().add( destinationTable.getColumn(rs.getString("PKCOLUMN_NAME")) );					
 				}
 

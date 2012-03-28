@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/jdbc/jtds-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/mysql-connector-java-3.1.13-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/ojdbc14.jar"/>
@@ -17,7 +18,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/log4j-over-slf4j-1.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar" sourcepath="/QbeCore"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/hibernate3.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/hibernate3.6.jar" sourcepath="/hibernate"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/commons-collections-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/dom4j-1.6.1.jar"/>

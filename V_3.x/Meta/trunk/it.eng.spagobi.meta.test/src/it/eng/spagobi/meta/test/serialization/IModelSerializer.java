@@ -1,5 +1,5 @@
 
-package it.eng.spagobi.meta.test;
+package it.eng.spagobi.meta.test.serialization;
 
 import it.eng.spagobi.meta.model.Model;
 

@@ -11,7 +11,8 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.test.initializer.TestConnectionFactory;
+import it.eng.spagobi.meta.test.TestConnectionFactory;
+import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.util.ModelPrinter;
 
 
@@ -30,7 +31,7 @@ public class CWMMapperEncodeTest {
 	 */
 	public static void main(String[] args) throws Exception {
 	
-		TestConnectionFactory.DatabaseType dbType;
+		TestCostants.DatabaseType dbType;
 		Model rootModel;
 		PhysicalModel physicalModel;
 		PhysicalModelInitializer modelInitializer;
@@ -40,7 +41,7 @@ public class CWMMapperEncodeTest {
 		ICWMMapper modelMapper;
 		ICWM cwm;
 		        
-		dbType = TestConnectionFactory.DatabaseType.MYSQL;
+		dbType = TestCostants.DatabaseType.MYSQL;
 		
         // db schema -> spagobi model -> cwm (jmi) -> xmi
 		       
@@ -53,10 +54,10 @@ public class CWMMapperEncodeTest {
         		"physicalModelDemo", 
         		TestConnectionFactory.createConnection(dbType),
         		"Test Connection",
-        		TestConnectionFactory.MYSQL_DRIVER,
-        		TestConnectionFactory.MYSQL_URL,
-        		TestConnectionFactory.MYSQL_USER,
-        		TestConnectionFactory.MYSQL_PWD,
+        		TestCostants.MYSQL_DRIVER,
+        		TestCostants.MYSQL_URL,
+        		TestCostants.MYSQL_USER,
+        		TestCostants.MYSQL_PWD,
         		"DB Name",
         		TestConnectionFactory.getDefaultCatalogue(dbType), 
         		TestConnectionFactory.getDefaultSchema(dbType));

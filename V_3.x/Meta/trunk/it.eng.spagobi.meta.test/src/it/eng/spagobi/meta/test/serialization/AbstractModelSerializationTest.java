@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.test.initializer;
+package it.eng.spagobi.meta.test.serialization;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
@@ -9,7 +9,7 @@ import it.eng.spagobi.meta.test.TestCostants;
 import junit.framework.TestCase;
 
 
-public class AbstractModelInizializtaionTest extends TestCase {
+public class AbstractModelSerializationTest extends TestCase {
 
 	protected static TestCostants.DatabaseType dbType;
 	protected static Model rootModel;
@@ -20,7 +20,7 @@ public class AbstractModelInizializtaionTest extends TestCase {
 	
 	protected boolean tearDown = false;
     
-	public AbstractModelInizializtaionTest() {
+	public AbstractModelSerializationTest() {
 		super();
 	}
 	

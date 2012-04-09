@@ -1,7 +1,5 @@
 package it.eng.spagobi.meta.test.generator;
 
-import java.io.File;
-
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
@@ -9,16 +7,15 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.test.initializer.TestConnectionFactory;
+import it.eng.spagobi.meta.test.TestConnectionFactory;
+import it.eng.spagobi.meta.test.TestCostants;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 public class JpaMappingGeneratorTest {
 
-	TestConnectionFactory.DatabaseType dbType=TestConnectionFactory.DatabaseType.MYSQL;
+	TestCostants.DatabaseType dbType=TestCostants.DatabaseType.MYSQL;
 	Model rootModel=null;
 	PhysicalModel physicalModel=null;
 	PhysicalModelInitializer modelInitializer=null;
@@ -40,10 +37,10 @@ public class JpaMappingGeneratorTest {
         		"physicalModelDemo", 
         		TestConnectionFactory.createConnection(dbType),
         		"Test Connection",
-        		TestConnectionFactory.MYSQL_DRIVER,
-        		TestConnectionFactory.MYSQL_URL,
-        		TestConnectionFactory.MYSQL_USER,
-        		TestConnectionFactory.MYSQL_PWD,
+        		TestCostants.MYSQL_DRIVER,
+        		TestCostants.MYSQL_URL,
+        		TestCostants.MYSQL_USER,
+        		TestCostants.MYSQL_PWD,
         		"DB Name",
         		TestConnectionFactory.getDefaultCatalogue(dbType), 
         		TestConnectionFactory.getDefaultSchema(dbType));

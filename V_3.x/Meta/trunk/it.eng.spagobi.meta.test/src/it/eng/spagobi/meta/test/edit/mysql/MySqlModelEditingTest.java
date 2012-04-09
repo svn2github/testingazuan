@@ -1,38 +1,40 @@
-package it.eng.spagobi.meta.test.edit;
+package it.eng.spagobi.meta.test.edit.mysql;
 
-import it.eng.spagobi.meta.model.ModelFactory;
+import java.io.File;
+import java.util.List;
+
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.test.TestConnectionFactory;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
+import it.eng.spagobi.meta.test.TestModelFactory;
+import it.eng.spagobi.meta.test.edit.AbstractModelEditingTest;
+import it.eng.spagobi.meta.test.initializer.AbstractBusinessModelInizializtaionTest;
+import it.eng.spagobi.meta.test.serialization.AbstractModelSerializationTest;
+import it.eng.spagobi.meta.test.serialization.EmfXmiSerializer;
+import it.eng.spagobi.meta.test.serialization.IModelSerializer;
 
-import java.util.List;
+import org.junit.Assert;
 
 
-public class MySQLModelEditingTest extends AbstractModelEditingTest2{
+public class MySqlModelEditingTest extends AbstractModelEditingTest {
 
 	public void setUp() throws Exception {
 		super.setUp();
 		try {
-			rootModel = ModelFactory.eINSTANCE.createModel();
-			rootModel.setName("modelDemo");
+			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
 			
-			physicalModelInitializer.setRootModel(rootModel);		
-			physicalModel = physicalModelInitializer.initialize( 
-	        		"physicalModelDemo", 
-	        		TestConnectionFactory.createConnection(dbType),
-	        		"Test Connection",
-	        		TestCostants.MYSQL_DRIVER,
-	        		TestCostants.MYSQL_URL,
-	        		TestCostants.MYSQL_USER,
-	        		TestCostants.MYSQL_PWD,
-	        		"DB Name",
-	        		TestConnectionFactory.getDefaultCatalogue(dbType), 
-	        		TestConnectionFactory.getDefaultSchema(dbType));
-			
-	        
-	        businessModel = businessModelInitializer.initialize("businessModelDemo", physicalModel);
+			if(rootModel == null) {
+				rootModel = TestModelFactory.createModel( dbType );
+				if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {
+					physicalModel = rootModel.getPhysicalModels().get(0);
+				}
+				if(rootModel != null && rootModel.getBusinessModels() != null && rootModel.getBusinessModels().size() > 0) {
+					businessModel = rootModel.getBusinessModels().get(0);
+				}
+			}
 		} catch(Exception t) {
 			System.err.println("An unespected error occurred during setUp: ");
 			t.printStackTrace();
@@ -40,8 +42,17 @@ public class MySQLModelEditingTest extends AbstractModelEditingTest2{
 		}
 	}
 	
-	// add specific test here
+	public void testModelInitializationSmoke() {
+		super.testModelInitializationSmoke();
+	}
 	
+	public void testPhysicalModelInitializationSmoke() {
+		super.testPhysicalModelInitializationSmoke();
+	}
+	
+	public void testBusinessModelInitializationSmoke() {
+		super.testBusinessModelInitializationSmoke();	
+	}
 	
 	public void testBusinessModelEditing() {
 		BusinessTable businessTable = businessModel.getBusinessTables().get(0);
@@ -72,4 +83,5 @@ public class MySQLModelEditingTest extends AbstractModelEditingTest2{
 			}
 		}
 	}
+	
 }

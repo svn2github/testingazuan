@@ -1,5 +1,6 @@
-package it.eng.spagobi.meta.test.initializer;
+package it.eng.spagobi.meta.test.generator;
 
+import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -9,7 +10,7 @@ import it.eng.spagobi.meta.test.TestCostants;
 import junit.framework.TestCase;
 
 
-public class AbstractModelInizializtaionTest extends TestCase {
+public class AbstractMappingGenerationTest extends TestCase {
 
 	protected static TestCostants.DatabaseType dbType;
 	protected static Model rootModel;
@@ -17,15 +18,17 @@ public class AbstractModelInizializtaionTest extends TestCase {
 	protected static BusinessModel businessModel;
 	protected static PhysicalModelInitializer physicalModelInitializer;
 	protected static BusinessModelInitializer businessModelInitializer;
+	protected static IGenerator generator = null;
 	
 	protected boolean tearDown = false;
     
-	public AbstractModelInizializtaionTest() {
+	public AbstractMappingGenerationTest() {
 		super();
 	}
 	
 	public void setUp() throws Exception {
 		try {
+			
 			if(physicalModelInitializer == null)  physicalModelInitializer = new PhysicalModelInitializer();
 			if(businessModelInitializer == null)  businessModelInitializer = new BusinessModelInitializer();
 			tearDown = false;
@@ -44,20 +47,7 @@ public class AbstractModelInizializtaionTest extends TestCase {
 			businessModel=null;
 			physicalModelInitializer=null;
 			businessModelInitializer=null;
+			generator = null;
 		}
-	}
-	
-	// add generic tests related to model here ...
-	
-	public void testModelInitializationSmoke() {
-		assertNotNull("Metamodel cannot be null", rootModel);
-	}
-	
-	public void testPhysicalModelInitializationSmoke() {
-		assertTrue("Metamodel must have one physical model ", rootModel.getPhysicalModels().size() == 1);
-	}
-	
-	public void testBusinessModelInitializationSmoke() {
-		assertTrue("Metamodel must have one business model ", rootModel.getBusinessModels().size() == 1);	
 	}
 }

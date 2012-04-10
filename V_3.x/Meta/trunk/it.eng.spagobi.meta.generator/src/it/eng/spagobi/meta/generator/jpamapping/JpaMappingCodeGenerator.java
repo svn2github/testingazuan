@@ -110,6 +110,8 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
 
+	public static String defaultTemplateFolderPath = "templates";
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingCodeGenerator.class);
 
 
@@ -120,7 +122,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 		templatesDirRelativePath = null;
 		try {
-			templatesDirRelativePath = RL.getPropertyAsString("jpamapping.templates.dir", "templates");
+			templatesDirRelativePath = RL.getPropertyAsString("jpamapping.templates.dir", defaultTemplateFolderPath);
 
 			templateDir = RL.getFile(templatesDirRelativePath);
 			logger.debug("Template dir is equal to [{}]", templateDir);
@@ -191,17 +193,21 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 				//Syncronization with eclipse workspace, hiding mapping directory
 
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
-				IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
-				workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-				IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
-				if(iFolder.exists()){
-					iFolder.setHidden(true);
-					iFolder.setTeamPrivateMember(true);
-					iFolder.setDerived(true, null);
-					iFolder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
-					proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+				try {
+					IWorkspace workspace = ResourcesPlugin.getWorkspace();
+					IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
+					IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
+					workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+					IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
+					if(iFolder.exists()){
+						iFolder.setHidden(true);
+						iFolder.setTeamPrivateMember(true);
+						iFolder.setDerived(true, null);
+						iFolder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
+						proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+					}
+				} catch (Exception e) {
+					
 				}
 
 

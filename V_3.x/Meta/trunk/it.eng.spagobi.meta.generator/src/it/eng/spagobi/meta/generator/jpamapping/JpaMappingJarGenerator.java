@@ -74,7 +74,7 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			zipper.compressToJar(getBinDir(), getJarFile());
 
 			//Try force hiding
-
+			try {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
 			IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
@@ -95,6 +95,9 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			if(iFolder.exists() || iFolderDist.exists()){
 				workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
 				proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+			} catch(Throwable t) {
+				
 			}
 
 		} catch(Throwable t) {

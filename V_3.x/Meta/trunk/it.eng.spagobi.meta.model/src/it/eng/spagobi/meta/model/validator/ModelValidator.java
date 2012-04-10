@@ -156,7 +156,7 @@ public class ModelValidator {
 		}
 		
 		for(BusinessColumn column : identifier.getColumns()) {
-			if(table.getSimpleBusinessColumn(column.getName()) == null) {
+			if(table.getSimpleBusinessColumnByUniqueName(column.getUniqueName()) == null) {
 				diagnosticMessages.add("Column [" + column.getName() + "] of identifier [" + identifier.getName() + "] does not belong to to table [" + table.getName() + "]");
 				return false;
 			}

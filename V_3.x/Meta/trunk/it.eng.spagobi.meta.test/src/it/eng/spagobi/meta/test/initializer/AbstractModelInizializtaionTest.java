@@ -19,6 +19,36 @@ public class AbstractModelInizializtaionTest extends TestCase {
 	protected static BusinessModelInitializer businessModelInitializer;
 	
 	protected boolean tearDown = false;
+	
+	public static String[] tableNames = new String[]{
+		"_product_class_"
+		, "currency"
+		, "currency_view"
+		, "customer"
+		, "days"
+		, "department"
+		, "employee"
+		, "employee_closure"
+		, "inventory_fact_1998"
+		, "position"
+		, "product"
+		, "product_class"
+		, "promotion"
+		, "region"
+		, "reserve_employee"
+		, "salary"
+		, "sales_fact_1998"
+		, "sales_region"
+		, "store"
+		, "store_ragged"
+		, "test_names"
+		, "time_by_day"
+		//, "tmpsbiqbe_bi"
+		//, "tmpsbiqbe_biadmin"
+		, "warehouse"
+		, "warehouse_class"
+	};
+
     
 	public AbstractModelInizializtaionTest() {
 		super();

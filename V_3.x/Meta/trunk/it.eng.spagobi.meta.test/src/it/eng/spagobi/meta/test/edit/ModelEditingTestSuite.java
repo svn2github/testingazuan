@@ -19,15 +19,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.test;
+package it.eng.spagobi.meta.test.edit;
 
-import it.eng.spagobi.meta.test.edit.ModelEditingTestSuite;
-import it.eng.spagobi.meta.test.generator.JpaMappingGenerationTestSuite;
-import it.eng.spagobi.meta.test.initializer.ModelInitializationTestSuite;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLBusinessModelInizializtaionTest;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLPhysicalModelInizializtaionTest;
-import it.eng.spagobi.meta.test.serialization.ModelSerializationTestSuite;
-import it.eng.spagobi.meta.test.serialization.mysql.MySqlBusinessModelSerializationTest;
+import it.eng.spagobi.meta.test.edit.mysql.MySqlModelEditingTestSuite;
+import it.eng.spagobi.meta.test.generator.mysql.MySqlJpaMappingTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -36,13 +31,11 @@ import junit.framework.TestSuite;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class MetaTestSuite extends TestCase {
+public class ModelEditingTestSuite extends TestCase {
 	static public Test suite() {
-		TestSuite suite = new TestSuite("One test suite to bring them all");
-		suite.addTest(ModelInitializationTestSuite.suite());  
-		suite.addTest(ModelEditingTestSuite.suite());  		
-		suite.addTest(ModelSerializationTestSuite.suite());
-		suite.addTest(JpaMappingGenerationTestSuite.suite());
+		TestSuite suite = new TestSuite("Editing tests");
+		suite.addTest(MySqlModelEditingTestSuite.suite());
+		// add here test suites of other databases ...
 		return suite;
 	}
 }

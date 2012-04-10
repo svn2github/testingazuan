@@ -112,7 +112,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPhysicalModelCatalog() {
 		Assert.assertNotNull("If the source database is MySql the catalog property cannot be null", physicalModel.getCatalog());
-		Assert.assertEquals("foodmart_key", physicalModel.getCatalog());
+		Assert.assertEquals("meta_test", physicalModel.getCatalog());
 	}
 	
 	public void testPhysicalModelSchema() {
@@ -124,32 +124,6 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	// =======================================================
 	
 	public void testPhysicalModelTables() {
-		String[] tableNames = new String[]{
-			"currency"
-			, "currency_view"
-			, "customer"
-			, "days"
-			, "department"
-			, "employee"
-			, "employee_closure"
-			, "inventory_fact_1998"
-			, "position"
-			, "product"
-			, "product_class"
-			, "promotion"
-			, "region"
-			, "reserve_employee"
-			, "salary"
-			, "sales_fact_1998"
-			, "sales_region"
-			, "store"
-			, "store_ragged"
-			, "time_by_day"
-			, "tmpsbiqbe_bi"
-			, "tmpsbiqbe_biadmin"
-			, "warehouse"
-			, "warehouse_class"
-		};
 		
 		Assert.assertEquals(tableNames.length, physicalModel.getTables().size());
 		
@@ -355,7 +329,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	// =======================================================
 	
 	public void testPhysicalModelNoPK() {
-		PhysicalTable table = physicalModel.getTable("tmpsbiqbe_bi");
+		PhysicalTable table = physicalModel.getTable("currency_view");
 		PhysicalPrimaryKey pk = table.getPrimaryKey();
 		Assert.assertNull("PrimaryKey of table [tmpsbiqbe_bi] must be null", pk);
 		

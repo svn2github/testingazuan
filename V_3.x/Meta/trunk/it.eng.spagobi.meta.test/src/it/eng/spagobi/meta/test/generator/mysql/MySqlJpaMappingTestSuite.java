@@ -32,6 +32,8 @@ import junit.framework.TestSuite;
 public class MySqlJpaMappingTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Generation tests on MySql");
+		
+		suite.addTestSuite(MySqlJpaModelTest.class);
 		suite.addTestSuite(MySqlJpaMappingCodeGenerationTest.class);
 		suite.addTestSuite(MySqlJpaMappingClassesGenerationTest.class);
 		suite.addTestSuite(MySqlJpaMappingJarGenerationTest.class);

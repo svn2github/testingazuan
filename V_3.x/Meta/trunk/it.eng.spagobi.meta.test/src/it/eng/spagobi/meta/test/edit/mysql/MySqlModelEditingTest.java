@@ -1,20 +1,12 @@
 package it.eng.spagobi.meta.test.edit.mysql;
 
-import java.io.File;
-import java.util.List;
-
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessIdentifier;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.edit.AbstractModelEditingTest;
-import it.eng.spagobi.meta.test.initializer.AbstractBusinessModelInizializtaionTest;
-import it.eng.spagobi.meta.test.serialization.AbstractModelSerializationTest;
-import it.eng.spagobi.meta.test.serialization.EmfXmiSerializer;
-import it.eng.spagobi.meta.test.serialization.IModelSerializer;
 
 import org.junit.Assert;
 
@@ -54,34 +46,69 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 		super.testBusinessModelInitializationSmoke();	
 	}
 	
-	public void testBusinessModelEditing() {
-		BusinessTable businessTable = businessModel.getBusinessTables().get(0);
-		BusinessIdentifier  businessIdentifier = businessTable.getIdentifier();
-		List<BusinessRelationship> businessRelationships = businessTable.getRelationships();
-		String businessTableName = businessTable.getName(); 
-		
-		assertNotNull("Business table cannot be null", businessModel.getBusinessTable(businessTableName));
-		if(businessIdentifier != null) {
-			assertNotNull("Business identifier cannot be null", businessModel.getIdentifier(businessTable));
-		}
-		if(businessRelationships != null && businessRelationships.size() > 0) {
-			for(BusinessRelationship r : businessRelationships) {
-				assertNotNull("Business identifier cannot be null", businessModel.getRelationships().contains(r));
-			}
-		}
-		
-		assertTrue("Impossible to delete table", businessModel.deleteBusinessTable(businessTableName));
-		
-		assertTrue( "Business Tabele has not been removes properly", businessModel.getBusinessTable(businessTableName) == null);
-		
-		if(businessIdentifier != null) {
-			assertTrue("Business identifier cannot be null", businessModel.getIdentifier(businessTable) == null);
-		}
-		if(businessRelationships != null && businessRelationships.size() > 0) {
-			for(BusinessRelationship r : businessRelationships) {
-				assertTrue("Business identifier cannot be null", businessModel.getRelationships().contains(r) == false);
-			}
-		}
+	
+	public void testBusinessTableGetByPhysicalTable() {
+		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+	
+		Assert.assertNotNull(businessTable);
 	}
+	
+	public void testBusinessColumnGetByPhysicalColumn() {
+		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
+		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		
+		Assert.assertNotNull(businessColumn);
+		Assert.assertTrue( businessTable.getColumns().contains(businessColumn) );
+	}
+	
+	public void testBusinessColumnGetByIndex() {
+		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
+		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		
+		int columnIndex = businessTable.getColumns().indexOf(businessColumn);
+		Assert.assertTrue( columnIndex != -1 );
+		BusinessColumn column = businessTable.getColumns().get(columnIndex);
+		Assert.assertNotNull( column );
+		Assert.assertTrue( column.equals(businessColumn) );
+		Assert.assertTrue( column ==  businessColumn);
+	}
+	
+	public void testBusinessColumnGetByName() {
+		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
+		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		
+		String businessColumnName = businessColumn.getName();
+		Assert.assertNotNull(businessColumnName);
+		BusinessColumn column = businessTable.getSimpleBusinessColumn( businessColumnName );
+		Assert.assertNotNull(column);
+		Assert.assertTrue( column.equals(businessColumn) );
+		Assert.assertTrue( column ==  businessColumn);
+	}
+	
+	public void testBusinessColumnDeletion() {
+		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
+		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		String businessColumnName = businessColumn.getName();
+		
+		Assert.assertEquals(4, businessTable.getColumns().size());
+		Assert.assertTrue(businessTable.getColumns().remove(businessColumn));
+		Assert.assertEquals(3, businessTable.getColumns().size());
+		Assert.assertNull( businessTable.getSimpleBusinessColumn(physicalColumn) );
+		Assert.assertNull( businessTable.getSimpleBusinessColumn( businessColumnName ) );	
+	}
+	
+
+	
+	
+	
 	
 }

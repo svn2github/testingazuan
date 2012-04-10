@@ -1,13 +1,26 @@
 package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
+import it.eng.spagobi.meta.model.ModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModelFactory;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
+import it.eng.spagobi.meta.util.ModelManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 
 
@@ -59,7 +72,7 @@ public class MySqlJpaMappingJarGenerationTest extends AbstractMappingGenerationT
 		assertTrue("Impossible to find datamart.jar file in [" + jarFile.getParent() + "]", jarFile.exists());
 	}
 	
-	public void doTestJarFileContent() {
+	public void testJarFileContent() {
 		try {
 			JarFile jarFile = new JarFile( jpaMappingJarGenerator.getJarFile() );
 			assertNotNull("Impossible to find file persistence.xml in jar file [" + jpaMappingJarGenerator.getJarFile() + "]", jarFile.getJarEntry("META-INF/persistence.xml"));

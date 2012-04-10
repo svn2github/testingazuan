@@ -1,6 +1,11 @@
 package it.eng.spagobi.meta.test.initializer.mysql;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestModelFactory;
@@ -62,32 +67,6 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	// =======================================================
 	
 	public void testBusinessModelTables() {
-		String[] tableNames = new String[]{
-			"currency"
-			, "currency_view"
-			, "customer"
-			, "days"
-			, "department"
-			, "employee"
-			, "employee_closure"
-			, "inventory_fact_1998"
-			, "position"
-			, "product"
-			, "product_class"
-			, "promotion"
-			, "region"
-			, "reserve_employee"
-			, "salary"
-			, "sales_fact_1998"
-			, "sales_region"
-			, "store"
-			, "store_ragged"
-			, "time_by_day"
-			, "tmpsbiqbe_bi"
-			, "tmpsbiqbe_biadmin"
-			, "warehouse"
-			, "warehouse_class"
-		};
 		
 		Assert.assertEquals(tableNames.length, businessModel.getTables().size());
 		
@@ -98,6 +77,37 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 		}	
 	}
 	
+	public void testBusinessModelTableUniqueNames() {
+		Map<String, String> tableUniqueNames = new HashMap<String, String>();
+		for(BusinessTable table: businessModel.getBusinessTables()) {
+			String tableUniqueName = table.getUniqueName();
+			String physicalTableName = table.getPhysicalTable().getName();
+			Assert.assertFalse("Unique name [] of table [" + physicalTableName + "] is equal to unique name of table [" + tableUniqueNames.get(tableUniqueName)+ "]"
+					, tableUniqueNames.containsKey(tableUniqueName));
+			tableUniqueNames.put(tableUniqueName, physicalTableName);
+		}
+	}
+	
+	public void testBusinessModelColumnUniqueNames() {
+		for(BusinessTable table: businessModel.getBusinessTables()) {
+			String physicalTableName = table.getPhysicalTable().getName();
+			Map<String, String> columnUniqueNames = new HashMap<String, String>();
+			for(BusinessColumn column: table.getColumns()) {
+				String columnUniqueName = column.getUniqueName();
+				String physicalColumnName = column.getName();
+				if(column instanceof SimpleBusinessColumn) {
+					physicalColumnName = ((SimpleBusinessColumn)column).getPhysicalColumn().getName();
+				}
+				
+				Assert.assertFalse("Column [" + physicalColumnName + "] and column [" + columnUniqueNames.get(columnUniqueName) + "] of table [" + physicalTableName + "] have the same unique name [" + columnUniqueName + "]"
+						, columnUniqueNames.containsKey(columnUniqueName));
+				
+				columnUniqueNames.put(columnUniqueName, physicalColumnName);
+			}
+		}
+		
+	}
+	
 	
 	
 	// =======================================================
@@ -105,13 +115,14 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	// =======================================================
 	
 	
+	
 	// =======================================================
-	// P-KEYS
+	// IDENTIFIERS
 	// =======================================================
 	
 	
 	
 	// =======================================================
-	// F-KEYS
+	// RELATIONSHIPS
 	// =======================================================
 }

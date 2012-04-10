@@ -33,7 +33,7 @@ public class TestCostants {
 	public static File outputFolder = new File("D:/Documenti/Sviluppo/workspaces/unit-test");
 	
 	public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/foodmart_key";
+	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/meta_test";
 	public static String MYSQL_USER = "root";
 	public static String MYSQL_PWD = "mysql";
 	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		

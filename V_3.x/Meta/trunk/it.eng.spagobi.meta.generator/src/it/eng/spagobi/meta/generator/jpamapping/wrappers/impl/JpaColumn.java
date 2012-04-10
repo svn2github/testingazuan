@@ -246,9 +246,9 @@ public class JpaColumn implements IJpaColumn {
 	public String getPropertyName() {
 		String name;
 		
-		name = businessColumn.getPhysicalColumn().getName().trim().replaceAll(" ", "_");
-		
 		//name = StringUtils.tableNameToVarName(businessColumn.getPhysicalColumn().getName());	
+		name = businessColumn.getPhysicalColumn().getName().trim().replaceAll(" ", "_");
+
 		return name;
 	}
 	

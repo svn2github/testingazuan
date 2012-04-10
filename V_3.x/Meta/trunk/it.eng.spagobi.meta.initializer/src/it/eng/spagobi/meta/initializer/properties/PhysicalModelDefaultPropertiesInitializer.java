@@ -37,12 +37,15 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
  *
  */
 public class PhysicalModelDefaultPropertiesInitializer implements IPropertiesInitializer {
+	
 	// Model property names
 	public static final String MODEL_CONNECTION_NAME = "connection.name";
 	public static final String MODEL_CONNECTION_URL = "connection.url";
 	public static final String MODEL_CONNECTION_USERNAME = "connection.username";
 	public static final String MODEL_CONNECTION_PASSWORD = "connection.password";
 	public static final String MODEL_CONNECTION_DATABASENAME = "connection.databasename";
+	public static final String MODEL_CONNECTION_DRIVER = "connection.driver";
+	
 	public static final String MODEL_CONNECTION_DATABASEQUOTESTRING = "connection.databasequotestring";
 
 
@@ -68,165 +71,97 @@ public class PhysicalModelDefaultPropertiesInitializer implements IPropertiesIni
 		}
 	}
 	
+	
+	private ModelPropertyCategory createPropertyCategoryIfNotExist(PhysicalModel o, String id, String name, String description) {
+		ModelPropertyCategory connectionCategory;
+		
+		connectionCategory =  o.getParentModel().getPropertyCategory( id );
+		if(connectionCategory == null) {
+			connectionCategory = FACTORY.createModelPropertyCategory();
+			connectionCategory.setName( name );
+			connectionCategory.setDescription( description );
+			o.getParentModel().getPropertyCategories().add(connectionCategory);	
+		}   
+		
+		return connectionCategory;
+	}
+	
+	private ModelPropertyType createPropertyTypeIfNotExist(PhysicalModel o, ModelPropertyCategory category, String id, String name, String description, String defaultValue) {
+		ModelPropertyType propertyType;
+		
+		propertyType = null;
+		
+		if(o.getParentModel() != null) {
+			propertyType = o.getParentModel().getPropertyType( id );
+		}
+		if(propertyType == null) {
+			propertyType = FACTORY.createModelPropertyType();
+			propertyType.setId( id );
+			propertyType.setName( name );
+			propertyType.setDescription( description );
+			propertyType.setCategory( category );
+			propertyType.setDefaultValue( defaultValue );
+
+			if(o.getParentModel() != null) {
+				o.getParentModel().getPropertyTypes().add(propertyType);
+			}
+		}
+		
+		return propertyType;
+	}
+	
+	private ModelProperty createProperty(PhysicalModel o, ModelPropertyType propertyType) {
+		ModelProperty property;
+		
+		property = FACTORY.createModelProperty();
+		property.setPropertyType(propertyType);
+		o.getProperties().put(property.getPropertyType().getId(), property);
+		
+		return property;
+	}
+	
 	private void initModelProperties(PhysicalModel o) {
 		ModelPropertyCategory connectionCategory;
 		ModelPropertyType propertyType;
 		ModelProperty property;
-
-		// if doesn't exist create 'connection' category
-		connectionCategory =  o.getParentModel().getPropertyCategory("Connection");
-		if(connectionCategory == null) {
-			connectionCategory = FACTORY.createModelPropertyCategory();
-			connectionCategory.setName("Connection");
-			connectionCategory.setDescription("Connection properties");
-			o.getParentModel().getPropertyCategories().add(connectionCategory);	
-		}    
-
-		// Create the new property type and add it to the connection category
 		
-		// **** Model Connection Name
-		propertyType = null;
-
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_NAME);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_NAME );
-			propertyType.setName("Connection Name");
-			propertyType.setDescription("Data Source Connection Name");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue("connection name");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_NAME to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);
-
-		// **** Model Connection Url
-		propertyType = null;
-
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_URL);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_URL );
-			propertyType.setName("Connection Url");
-			propertyType.setDescription("Data Source Connection Url");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue("url");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_URL to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);
-
-		// **** Model Connection Username
-		propertyType = null;
-
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_USERNAME);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_USERNAME );
-			propertyType.setName("Connection Username");
-			propertyType.setDescription("Data Source Connection Username");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue("username");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_USERNAME to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);		
-
-		// **** Model Connection Password
-		propertyType = null;
-
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_PASSWORD);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_PASSWORD );
-			propertyType.setName("Connection Password");
-			propertyType.setDescription("Data Source Connection Password");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue("password");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_PASSWORD to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);	
-
-		// **** Model Connection DatabaseName
-		propertyType = null;
-
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_DATABASENAME);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_DATABASENAME );
-			propertyType.setName("Connection DatabaseName");
-			propertyType.setDescription("Data Source Connection Database Name");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue("databasename");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_DATABASENAME to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);		
+		// create connection category
+		connectionCategory =  createPropertyCategoryIfNotExist(o, "Connection", "Connection", "Connection properties");
 		
-		// **** Model Connection Database Quote String
-		propertyType = null;
+		// create connection name property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_NAME
+				, "Connection Name", "Data Source Connection Name", "connection name");
+		createProperty(o, propertyType);
+	
+		// create connection url property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_URL
+				, "Connection Url", "Data Source Connection Url", "url");
+		createProperty(o, propertyType);
+		
+		// create connection username property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_USERNAME
+				, "Connection Username", "Data Source Connection Username", "username");
+		createProperty(o, propertyType);
+		
+		// create connection password property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_PASSWORD
+				, "Connection Password", "Data Source Connection Password", "password");
+		createProperty(o, propertyType);
+		
+		// create connection database name property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_DATABASENAME
+				, "Connection DatabaseName", "Data Source Connection Database Name", "databasename");
+		createProperty(o, propertyType);
+		
+		// create connection driver property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_DRIVER
+				, "Connection driver", "Data Source Connection driver", "driver");
+		createProperty(o, propertyType);
 
-		if(o.getParentModel() != null) {
-			propertyType = o.getParentModel().getPropertyType(MODEL_CONNECTION_DATABASEQUOTESTRING);
-		}
-		if(propertyType == null) {
-			propertyType = FACTORY.createModelPropertyType();
-			propertyType.setId( MODEL_CONNECTION_DATABASEQUOTESTRING );
-			propertyType.setName("Connection DatabaseQuoteString");
-			propertyType.setDescription("Data Source Connection Database Quote String");
-			propertyType.setCategory(connectionCategory);
-			propertyType.setDefaultValue(" ");
-
-			if(o.getParentModel() != null) {
-				o.getParentModel().getPropertyTypes().add(propertyType);
-			}
-		}
-
-		// add a property of type MODEL_CONNECTION_DATABASEQUOTESTRING to the model object
-		property = FACTORY.createModelProperty();
-		property.setPropertyType(propertyType);
-		o.getProperties().put(property.getPropertyType().getId(), property);			
+		// create connection password property
+		propertyType = this.createPropertyTypeIfNotExist(o, connectionCategory, MODEL_CONNECTION_DATABASEQUOTESTRING
+				, "Connection DatabaseQuoteString", "Data Source Connection Database Quote String", " ");
+		createProperty(o, propertyType);
 	}
 
 	private void initTableProperties(PhysicalTable o) {

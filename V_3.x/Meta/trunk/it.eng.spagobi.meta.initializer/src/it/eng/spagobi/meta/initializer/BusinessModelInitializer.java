@@ -284,7 +284,9 @@ public class BusinessModelInitializer {
 			businessColumn.setDescription( physicalColumn.getDescription() );
 			businessColumn.setTable(businessColumnSet);
 			//setting original name as Unique Name
-			businessColumn.setUniqueName(beutfyName(physicalColumn.getName()));
+			String columnUniqueName = beutfyName(physicalColumn.getName());
+			//businessColumnSet.getSimpleBusinessColumn(name)
+			businessColumn.setUniqueName(columnUniqueName);
 			
 			businessColumnSet.getColumns().add(businessColumn);
 			

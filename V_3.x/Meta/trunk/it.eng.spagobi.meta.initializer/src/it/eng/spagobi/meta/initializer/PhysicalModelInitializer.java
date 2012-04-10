@@ -36,6 +36,7 @@ import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -103,24 +104,23 @@ public class PhysicalModelInitializer {
 			model.getPropertyType("connection.name").setDefaultValue(connectionName);
 			logger.debug("PhysicalModel Property: Connection name is [{}]",model.getPropertyType("connection.name").getDefaultValue());
 			
-			// TODO add property connection.driver into PhysicalModelDefaultPropertiesInitializer
-			//model.getPropertyType("connection.driver").setDefaultValue(connectionDriver);
-			//logger.debug("PhysicalModel Property: Connection driver is [{}]",model.getPropertyType("connection.driver").getDefaultValue());
-			
-			
+			model.getPropertyType("connection.driver").setDefaultValue(connectionDriver);
+			logger.debug("PhysicalModel Property: Connection driver is [{}]", model.getPropertyType("connection.driver").getDefaultValue());
+
 			model.getPropertyType("connection.url").setDefaultValue(connectionUrl);
 			logger.debug("PhysicalModel Property: Connection url is [{}]",model.getPropertyType("connection.url").getDefaultValue());
+			
 			model.getPropertyType("connection.username").setDefaultValue(connectionUsername);
 			logger.debug("PhysicalModel Property: Connection username is [{}]",model.getPropertyType("connection.username").getDefaultValue());
+			
 			model.getPropertyType("connection.password").setDefaultValue(connectionPassword);
 			logger.debug("PhysicalModel Property: Connection password is [{}]",model.getPropertyType("connection.password").getDefaultValue());
+			
 			model.getPropertyType("connection.databasename").setDefaultValue(connectionDatabaseName);
 			logger.debug("PhysicalModel Property: Connection databasename is [{}]",model.getPropertyType("connection.databasename").getDefaultValue());
 		
 			//Quote string identification
 			String quote = dbMeta.getIdentifierQuoteString();
-			System.out.println("Quote string: "+quote);
-			System.out.println("Quote string length: "+quote.length());
 			//check if escaping is needed
 			if (quote.equals("\""))
 			{
@@ -128,9 +128,6 @@ public class PhysicalModelInitializer {
 			}
 			model.getPropertyType("connection.databasequotestring").setDefaultValue(quote);
 			logger.debug("PhysicalModel Property: Connection databasequotestring is [{}]",model.getPropertyType("connection.databasequotestring").getDefaultValue());
-			System.out.println("connection.databasequotestring = "+model.getPropertyType("connection.databasequotestring").getDefaultValue());
-
-		
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize physical model", t);
 		}

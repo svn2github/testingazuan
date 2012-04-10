@@ -97,13 +97,14 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
 		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
 		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
-		String businessColumnName = businessColumn.getName();
+		String businessColumnUniqueName = businessColumn.getUniqueName();
 		
 		Assert.assertEquals(4, businessTable.getColumns().size());
 		Assert.assertTrue(businessTable.getColumns().remove(businessColumn));
 		Assert.assertEquals(3, businessTable.getColumns().size());
-		Assert.assertNull( businessTable.getSimpleBusinessColumn(physicalColumn) );
-		Assert.assertNull( businessTable.getSimpleBusinessColumn( businessColumnName ) );	
+		Assert.assertNull( businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn) );
+		Assert.assertEquals( 1, businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).size());
+		Assert.assertNull( businessTable.getSimpleBusinessColumnByUniqueName( businessColumnUniqueName ) );	
 	}
 	
 

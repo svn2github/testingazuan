@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  it.eng.spagobi.meta.generator;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: it.eng.spagobi.meta.querybuilder.ui,
+Export-Package: it.eng.spagobi.meta.querybuilder.model,
+ it.eng.spagobi.meta.querybuilder.ui,
  it.eng.spagobi.meta.querybuilder.ui.editor,
  it.eng.spagobi.meta.querybuilder.ui.wizard
 Import-Package: javax.persistence

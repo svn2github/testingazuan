@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.querybuilder.oda;
 import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,9 +79,10 @@ public class Connection implements IConnection
 			dataSourceProperties.put("connection", connection);
 			dataSourceProperties.put("dblinkMap", new HashMap());
 			
-			String resourceFolder = connProperties.getProperty("resource_folder");
+			String resourceFolderName = connProperties.getProperty("resource_folder");
+			File resourceFolder = new File(resourceFolderName);
 			
-			datasource = OdaStructureBuilder.getDataSourceSingleModel(modelNames, dataSourceProperties, resourceFolder);
+			datasource = OdaStructureBuilder.getDataSourceSingleModel(modelNames, dataSourceProperties, new File(resourceFolder, "datamart.jar"));
 			logger.debug("Data source initialized");
 		}
 		logger.debug("Connection opened");

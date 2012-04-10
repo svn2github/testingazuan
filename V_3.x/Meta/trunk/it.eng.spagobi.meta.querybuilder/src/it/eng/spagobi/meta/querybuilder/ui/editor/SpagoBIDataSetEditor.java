@@ -33,12 +33,17 @@ import it.eng.spagobi.meta.generator.GeneratorDescriptor;
 import it.eng.spagobi.meta.generator.GeneratorFactory;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelPackage;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
+import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
+import it.eng.spagobi.meta.querybuilder.model.ModelManager;
+import it.eng.spagobi.meta.querybuilder.model.dao.IModelDAO;
+import it.eng.spagobi.meta.querybuilder.model.dao.ModelDAOFileImpl;
 import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
+import it.eng.spagobi.meta.querybuilder.query.dao.QueryDAOFileImpl;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import java.io.BufferedInputStream;
@@ -47,7 +52,6 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -68,9 +72,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
@@ -78,8 +80,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -90,12 +93,12 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -105,7 +108,7 @@ import org.xml.sax.SAXException;
  *  - First Page is for editing the query
  *  - Second Page is for showing query results
  */
-public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResourceChangeListener{
+public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResourceChangeListener {
 
 	private QueryBuilder queryBuilder;
 	private SpagoBIDataSetEditPage queryEditPage;
@@ -113,7 +116,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	
 	protected boolean dirty;
 	
-	private JSONObject o;
+	private JSONObject inputContentsJSON;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(SpagoBIDataSetEditor.class);
@@ -138,31 +141,40 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			
 			String inputContents = getInputContents(editorInput);
 			try {
-				o = new JSONObject(inputContents);
+				inputContentsJSON = new JSONObject(inputContents);
 			} catch (Throwable t) {
 				throw new SpagoBIPluginException("Impossible to parse editor input [" + inputContents + "]", t);
 			}
 			
-			JSONObject queryMetaJSON = o.optJSONObject("queryMeta");
+			JSONObject queryMetaJSON = inputContentsJSON.optJSONObject("queryMeta");
 			logger.debug("query meta is equal to [{}]", queryMetaJSON);
 			
-			JSONObject queryStatementJSON = o.optJSONObject("query");
+			JSONObject queryStatementJSON = inputContentsJSON.optJSONObject("query");
 			logger.debug("query statement is equal to [{}]", queryStatementJSON);
 			
 			String modelPath = queryMetaJSON.optString("modelPath");
 			logger.debug("Model path is equal to [{}]", modelPath);
-			 
 			
-			businessModel = loadBusinessModel(modelPath);
-			logger.debug("Model [" + businessModel.getName() + "] sucesfully loaded from file [" + modelPath + "]");
+			ModelManager modelManager = new ModelManager( new File(modelPath) );
+			modelManager.loadModel();
+			logger.debug("Model [" + modelManager.getBusinessModel().getName() + "] sucesfully loaded from file [" + modelPath + "]");
 			
-			validateModel(businessModel);
-			logger.debug("Model [" + businessModel.getName() + "] sucesfully valideated");
+			modelManager.validateModel();
+			logger.debug("Model [" + modelManager.getBusinessModel().getName() + "] sucesfully valideated");
 			
-			persistenceUnitName = getPersistenceUnitName(modelPath, businessModel);	
-			logger.debug("Persistence unit name for the mapping for model [" + businessModel.getName() + "] will be equal to [" + persistenceUnitName + "]");
 			
-			dataSource = createDataSource(modelPath, businessModel, persistenceUnitName);
+			IFile modelFile = getModelFile(modelPath);
+			if ( isMappingDirty( modelFile ) ){
+				logger.debug("Mappings are not uptodate with the model. The will be regenerated");
+				persistenceUnitName = modelManager.generateMapping();
+				dataSource = modelManager.createDataSource(persistenceUnitName);
+				//set the dirty property to false cause the mapping has just been created
+				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
+			} else {
+				logger.debug("Mappings are uptodate with the model. The wont be regenerated");
+				dataSource = modelManager.createDataSource();
+			}
+		
 			logger.debug("Data Source [" + dataSource.getName() + "] succesfully created");
 			
 			queryBuilder = new QueryBuilder(dataSource);
@@ -183,7 +195,8 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			}
 		    
 		} catch(Throwable t) {
-			showInformation("Impossible to open Query editor","Query editor cannot be opened: " + t.getMessage());
+			IStatus status = new Status(IStatus.ERROR, SpagoBIMetaQueryBuilderPlugin.PLUGIN_ID, IStatus.ERROR, "Query editor cannot be opened", t);
+		    StatusManager.getManager().handle(status, StatusManager.LOG|StatusManager.SHOW);
 			throw new PartInitException("Impossible to initialize editor [" + this.getClass().getName()+ "]: " + t.getCause().getMessage());
 		} finally {
 			logger.trace("OUT");
@@ -206,30 +219,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		return file;
 	}
 	
-	private String getPersistenceUnitName(String modelPath, BusinessModel businessModel) {
-		String persistenceUnitName;
-		
-		persistenceUnitName = null;
-		try {
-			IFile modelFile = getModelFile(modelPath);
-			String modelDirectory = new File(modelPath).getParent();
-			
-			if ( isMappingDirty( modelFile ) ){
-				logger.debug("Mappings are not uptodate with the model. The will be regenerated");
-				persistenceUnitName = businessModel.getName() + "_" + System.currentTimeMillis();
-				generateMapping(businessModel, modelDirectory, persistenceUnitName);
-				//set the dirty property to false cause the mapping has just been created
-				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
-			} else {
-				logger.debug("Mappings are uptodate with the model. The wont be regenerated");
-				persistenceUnitName = discoverPersistenceUnitName(modelDirectory, businessModel.getName());
-			}
-		} catch (Throwable t) {
-			throw new SpagoBIPluginException("Impossible get persistence unit name used in mappings for model [" + businessModel.getName() + "]", t);
-		}
-		
-		return persistenceUnitName;
-	}
+
 	
 	private boolean isMappingDirty(IFile modelFile) {
 		boolean isDirty;
@@ -247,37 +237,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		return isDirty;
 	}
 	
-	public String discoverPersistenceUnitName(String modelDirectory, String modelName) {
-		File persistenceFile = new File(modelDirectory+File.separatorChar+modelName+File.separatorChar+"src"+File.separatorChar+"META-INF","persistence.xml");
-		String persistenceName = null;
-		if (persistenceFile.exists()) {
-			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder builder;
-			try {
-				builder = domFactory.newDocumentBuilder();
-		        Document document = builder.parse(persistenceFile);
-				
-				XPath xpath = XPathFactory.newInstance().newXPath();
-		        XPathExpression expr = xpath.compile("/persistence/persistence-unit/@name");
-		 
-		        Object result = expr.evaluate(document, XPathConstants.STRING);
-		        persistenceName = (String) result;
-			} catch (ParserConfigurationException e) {
-				logger.error("Impossible to retrieve Persistence Unit Name - ParserConfigurationException : [{}]",e);
-				e.printStackTrace();
-			} catch (SAXException e) {
-				logger.error("Impossible to retrieve Persistence Unit Name - SAXException : [{}]",e);
-				e.printStackTrace();
-			} catch (IOException e) {
-				logger.error("Impossible to retrieve Persistence Unit Name - IOException : [{}]",e);
-				e.printStackTrace();
-			} catch (XPathExpressionException e) {
-				logger.error("Impossible to retrieve Persistence Unit Name - XPathExpressionException : [{}]",e);
-				e.printStackTrace();
-			}
-		}
-		return persistenceName;
-	}
+
 	
 	public String getInputContents(IEditorInput editorInput) {
 		String contents;
@@ -382,11 +342,44 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		logger.debug("fireDirty executed");
 	}
 	
-	
+	public void doSave(IProgressMonitor monitor) {
+		Query query;
+		IDataSource dataSource;
+		FileEditorInput fileEditorInput;
+		
+		logger.trace("IN");
+		
+		query = queryBuilder.getQuery();
+		dataSource = queryBuilder.getDataSource();
+		fileEditorInput = (FileEditorInput)getEditorInput();
+		InputStream inputStream = null;
+		try {
+			inputStream = fileEditorInput.getFile().getContents();
+		} catch (CoreException e) {
+			throw new RuntimeException("Impossible to save query, CoreException", e);
+		}
+		
+		QueryDAOFileImpl queryDAO = new QueryDAOFileImpl();
+		inputContentsJSON = queryDAO.getContentToSave(query, inputStream, dataSource);
+		
+		ByteArrayInputStream in = null;
+		try {
+			
+			in = new ByteArrayInputStream(inputContentsJSON.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
+			fileEditorInput.getFile().setContents(in, true, true, monitor);
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		//reset Dirty state
+		setDirty(false);
+		fireDirty();
+	}
 	/**
 	 * Saves the multi-page editor's document.
 	 */
-	public void doSave(IProgressMonitor monitor) {
+	public void _doSave(IProgressMonitor monitor) {
 		Query query;
 		JSONObject queryJSON;
 		FileEditorInput fileEditorInput;
@@ -416,9 +409,9 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				reader.close();
 				inputStream.close();
 				String queryString = stringBuffer.toString();
-				o = new JSONObject(queryString);
+				inputContentsJSON = new JSONObject(queryString);
 
-				JSONObject queryMeta = o.optJSONObject("queryMeta");
+				JSONObject queryMeta = inputContentsJSON.optJSONObject("queryMeta");
 				modelPath = queryMeta.optString("modelPath");
 				//******
 
@@ -457,17 +450,14 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		BufferedWriter out = null;
 		ByteArrayInputStream in = null;
 		try {
-//			FileWriter fstream = new FileWriter(file);
-//			out = new BufferedWriter(fstream);
-//			out.write(queryJSON.toString(3));
-			o.put("query", queryJSON);
+			inputContentsJSON.put("query", queryJSON);
 		
 			//Write model path inside query file
 			JSONObject queryMeta = new JSONObject(); 
-			o.put("queryMeta", queryMeta);
+			inputContentsJSON.put("queryMeta", queryMeta);
 			queryMeta.put("modelPath",modelPath);
 			
-			in = new ByteArrayInputStream(o.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
+			in = new ByteArrayInputStream(inputContentsJSON.toString(3).getBytes(fileEditorInput.getFile().getCharset()));
 			fileEditorInput.getFile().setContents(in, true, true, monitor);
 			in.close();
 		} catch (Exception e) {
@@ -524,127 +514,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 		if (newPageIndex == 1) {
 			queryResultPage.refresh();
 		}
-	}
-	
-	protected BusinessModel loadBusinessModel(String modelPath) {
-		BusinessModel businessModel;
-		
-		logger.trace("IN");
-		
-		businessModel = null;
-		try {
-			File modelFile = new File(modelPath);
-			EmfXmiSerializer emfXmiSerializer = new EmfXmiSerializer();
-			Model root = emfXmiSerializer.deserialize(modelFile);
-			logger.debug("Model root is [{}] ",root );
-
-			businessModel = root.getBusinessModels().get(0);
-			logger.debug("Business Model name is [{}] ", businessModel.getName() );
-		} catch(Throwable t) {
-			throw new SpagoBIPluginException("Impossible to load model from file [" + modelPath + "]", t);
-		} finally {
-			logger.trace("OUT");
-		}
-		
-		return businessModel;
-	}
-	
-	
-	protected void validateModel(BusinessModel businessModel) {
-		ModelValidator modelValidator = new ModelValidator();
-		if(modelValidator.validate(businessModel.getParentModel()) == false) {
-			String message = "Model [" + businessModel.getName() + "] contains the following structural errors: ";
-			for(String diagnosticMessage : modelValidator.getDiagnosticMessages()) {
-				message += "\n - " + diagnosticMessage;
-			}
-			throw new SpagoBIPluginException(message);
-			
-		}
 	}	
-	
-	public void generateMapping(BusinessModel businessModel, String outputFolder, String persistenceUnitName) {
-	
-		logger.trace("IN");
-	
-		try {
-			GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
-			JpaMappingJarGenerator generator = (JpaMappingJarGenerator)descriptor.getGenerator();
-			generator.setLibDir(new File("plugins"));
-			generator.setPersistenceUnitName(persistenceUnitName);
-			generator.generate(businessModel, outputFolder);
-		} catch(Throwable t) {
-			throw new SpagoBIPluginException("Impossible to generate mapping for business model [" + businessModel.getName() + "] into folder [" + outputFolder + "]", t);
-		} finally {
-			logger.trace("OUT");
-		}
-	}	
-	
-	public IDataSource createDataSource(String modelPath, BusinessModel businessModel, String persistenceUnitName){
-		logger.debug("Creating datasource of [{}]",modelPath);
-		
-		PhysicalModel physicalModel = businessModel.getPhysicalModel();
-		String connectionUrl = physicalModel.getProperties().get("connection.url").getValue();
-		String connectionUsername = physicalModel.getProperties().get("connection.username").getValue();
-		String connectionPassword = physicalModel.getProperties().get("connection.password").getValue();
-		logger.debug("Datasource connection url is [{}]",connectionUrl);
-		logger.debug("Datasource connection username is [{}]",connectionUsername);
-		logger.debug("Datasource connection password is [{}]",connectionPassword);
-		
-		String dbname = physicalModel.getDatabaseName();
-		logger.debug("Datasource database name is [{}]",dbname);
-		
-		// TODO read driver class from configuration file
-		String dialect = null;
-		String driver = null;
-		if(dbname.toLowerCase().contains("oracle")) {
-			dialect = "org.hibernate.dialect.OracleDialect";
-			driver = "oracle.jdbc.OracleDriver";
-		} else if(dbname.toLowerCase().contains("postgres")) {
-			dialect = "org.hibernate.dialect.PostgreSQLDialect";
-			driver = "org.postgresql.Driver";
-		} else if(dbname.toLowerCase().contains("ingres")) {
-			dialect = "org.hibernate.dialect.IngresDialect";
-			driver = "com.ingres.jdbc.IngresDriver";
-		} else if(dbname.toLowerCase().contains("microsoft")) {
-			dialect = "org.hibernate.dialect.SQLServerDialect";
-			driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-			//driver = "net.sourceforge.jtds.jdbc.Driver";
-		} else if(dbname.toLowerCase().contains("hsql")) {
-			dialect = "org.hibernate.dialect.HSQLDialect";
-			//driver = "org.hsqldb.jdbc.JDBCDriver";
-			driver = "org.hsqldb.jdbcDriver";
-		} else if(dbname.toLowerCase().contains("teradata")) {
-			dialect = "org.hibernate.dialect.TeradataDialect";
-			driver = "com.teradata.jdbc.TeraDriver";
-		} else if(dbname.toLowerCase().contains("mysql")) {
-			dialect = "org.hibernate.dialect.MySQLDialect";
-			driver = "com.mysql.jdbc.Driver";
-		} else {
-			showInformation("Connection error", "impossible to find a suitable driver for [" + dbname + "] database");
-		}
-		
-		
-		Map<String,Object> dataSourceProperties = new HashMap<String,Object>();
-		String modelName =  businessModel.getName();
-		logger.debug("Datasource model name is [{}]",modelName);
-		
-		//Create Connection
-		ConnectionDescriptor connectionDescriptor = new ConnectionDescriptor();			
-		connectionDescriptor.setName( businessModel.getName());
-		connectionDescriptor.setDialect( dialect );			
-		connectionDescriptor.setDriverClass( driver );			
-		connectionDescriptor.setPassword( connectionPassword );
-		connectionDescriptor.setUrl( connectionUrl);
-		connectionDescriptor.setUsername( connectionUsername );
-		
-		dataSourceProperties.put("connection", connectionDescriptor);
-		
-		String modelDirectory = new File(modelPath).getParent();
-		List modelNames = new ArrayList();
-		
-		modelNames.add( persistenceUnitName );
-		return OdaStructureBuilder.getDataSourceSingleModel(modelNames, dataSourceProperties,modelDirectory+File.separatorChar+"dist"+File.separatorChar);
-	}
 	
 	/**
 	 * Show an information dialog box.
@@ -663,24 +533,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 	 * Closes all project files on project close.
 	 */
 	public void resourceChanged(final IResourceChangeEvent event){
-//		if(event.getType() == IResourceChangeEvent.PRE_CLOSE){
-//			Display.getDefault().asyncExec(new Runnable(){
-//				public void run(){
-//					IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
-//					for (int i = 0; i<pages.length; i++){
-//						if(((FileEditorInput)editor.getEditorInput()).getFile().getProject().equals(event.getResource())){
-//							IEditorPart editorPart = pages[i].findEditor(editor.getEditorInput());
-//							pages[i].closeEditor(editorPart,true);
-//						}
-//					}
-//				}            
-//			});
-//		}
+
 	}
 
-
-
-
-
-	
 }

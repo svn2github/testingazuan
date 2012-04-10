@@ -50,24 +50,27 @@ public class OdaStructureBuilder {
 	 * Get the data source: for each model name, create a file configuration.. Get the driver name (jpa or hibernate)
 	 * @param persistenceUnitNames the name of the models
 	 * @param dataSourceProperties the data source properties
-	 * @param path path to the of the jar files
+	 * @param mappingDistFolder path to the folder that contains te metamodel (i.e. xmi file)
+	 * 
 	 * @return The IDataSource
 	 */
-	public static IDataSource getDataSourceSingleModel(List<String> persistenceUnitNames, Map<String, Object> dataSourceProperties, String path) {
-		logger.debug("IN: Getting the data source for the model names "+persistenceUnitNames+"..");
+	public static IDataSource getDataSourceSingleModel(List<String> persistenceUnitNames
+			, Map<String, Object> dataSourceProperties, File modelJarFile) {
+		
+		logger.debug("IN: Getting the data source for the model names " + persistenceUnitNames + "..");
+		
+		// Use the first persistenceUnit in input to create this single model datasource (composite are not supported yet)
 		String modelName = persistenceUnitNames.get(0);
+		
+		// remove timestamp suffix from persistenceUnitName in order to obtain the model name
 		if(modelName.lastIndexOf("_") != -1) {
 			modelName = modelName.substring(0, modelName.lastIndexOf("_"));
 		}
-		String f = path.substring(0, path.indexOf("dist"))+modelName+File.separator+"dist"+File.separator+"datamart.jar";
-
-		File modelJarFile = null;
+		
 		List<File> modelJarFiles = new ArrayList<File>();
 		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
 		compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
 
-
-		modelJarFile = new File(f);
 		modelJarFiles.add(modelJarFile);
 		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(persistenceUnitNames.get(0), modelJarFile));
 

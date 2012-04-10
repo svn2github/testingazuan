@@ -39,6 +39,7 @@ import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.model.SortBusinessModelTablesCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddColumnsToBusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.EditBusinessViewInnerJoinRelationshipsCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
@@ -51,6 +52,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.widgets.Shell;
@@ -136,16 +138,27 @@ public class BusinessModelDropFromPhysicalModelHandler {
 
 
 		List<EObject> droppedObjects = getDroppedObjects(data);
+		List<PhysicalColumn> droppedPhysicalColumns = new ArrayList<PhysicalColumn>();
+		List<PhysicalTable> droppedPhysicalTables = new ArrayList<PhysicalTable>();
 
 		for (EObject eObject : droppedObjects) 
 		{
 			if (eObject instanceof PhysicalColumn){
-				executeAddPhysicalColumnToBusinessColumnSetAction( businessColumnSet, (PhysicalColumn)eObject );	
+				droppedPhysicalColumns.add((PhysicalColumn)eObject);
+				//executeAddPhysicalColumnToBusinessColumnSetAction( businessColumnSet, (PhysicalColumn)eObject );	
 			}
 			else if (eObject instanceof PhysicalTable){
-				executeAddPhysicalTableToBusinessColumnSetAction( businessColumnSet, (PhysicalTable)eObject );
+				droppedPhysicalTables.add((PhysicalTable)eObject);
+				//executeAddPhysicalTableToBusinessColumnSetAction( businessColumnSet, (PhysicalTable)eObject );
 			}
 		}
+		
+		if (!droppedPhysicalColumns.isEmpty()){
+			executeAddPhysicalColumnToBusinessColumnSetAction( businessColumnSet,droppedPhysicalColumns  );	
+		} else if (!droppedPhysicalTables.isEmpty()){
+			executeAddPhysicalTableToBusinessColumnSetAction( businessColumnSet, droppedPhysicalTables );
+		}
+			
 		return true;
 	}
 
@@ -174,7 +187,7 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		return true;
 	}
 	
-	public boolean executeAddPhysicalTableToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, PhysicalTable sourcePhysicalTable) {
+	public boolean executeAddPhysicalTableToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, List<PhysicalTable> sourcePhysicalTables) {
 		boolean isBusinessView = false;
 		BusinessView businessView = null;
 		if (businessColumnSet instanceof BusinessView){
@@ -203,16 +216,20 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		}
 		
 		//check if the physicalTable is already in the BusinessView
-		if ( businessView.getPhysicalTables().contains(sourcePhysicalTable) ){
+		if ( businessView.getPhysicalTables().containsAll(sourcePhysicalTables) ){
 			//Do nothing
 			//TODO: check what to do in this case
 
 		} else {
 			//Add All Physical Columns to the BusinessView
-			List<PhysicalColumn> physicalColumns = sourcePhysicalTable.getColumns();
-			for(PhysicalColumn physicalColumn : physicalColumns){
-				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+			List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
+			for  (PhysicalTable sourcePhysicalTable : sourcePhysicalTables){
+				physicalColumns.addAll(sourcePhysicalTable.getColumns());
 			}
+			if (!physicalColumns.isEmpty()){
+				executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
+			}
+			
 		}
 		
 		Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
@@ -238,8 +255,42 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		return true;
 	}
 	
+	public boolean executeAddPhysicalTableToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, List<PhysicalTable> sourcePhysicalTables, List<PhysicalColumn> physicalColumns) {
+		BusinessView businessView = null;
+		if (businessColumnSet instanceof BusinessView){
+			businessView = (BusinessView)businessColumnSet;
+			
+			//check if the physicalTable is already in the BusinessView
+			if ( businessView.getPhysicalTables().containsAll(sourcePhysicalTables) ){
+				//only add columns
+				if (!physicalColumns.isEmpty()){
+					executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
+				}
+			} else {
+				if (!physicalColumns.isEmpty()){
+					executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
+				}
+				Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
+				(EditBusinessViewInnerJoinRelationshipsCommand.class,
+						new CommandParameter(businessView, null, null, new ArrayList<Object>()));
+
+				//Open the Edit Join Paths Wizard
+				EditBusinessViewInnerJoinWizard wizard = new EditBusinessViewInnerJoinWizard(businessView, editingDomain, (ISpagoBIModelCommand)editBusinessViewInnerJoinWizard);
+				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
+				dialog.create();
+				dialog.open();
+				if (dialog.getReturnCode()== Window.CANCEL){
+					if (!physicalColumns.isEmpty()){
+						executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
+					}
+				}
+			}
+		}
+		return true;
+	}
 	
-	public boolean executeAddPhysicalColumnToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, PhysicalColumn physicalColumn) {
+	
+	public boolean executeAddPhysicalColumnToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, List<PhysicalColumn> physicalColumn) {
 		if (physicalColumn == null) return false;
 		
 		//check if target is a BusinessView or BusinessTable
@@ -247,52 +298,55 @@ public class BusinessModelDropFromPhysicalModelHandler {
 			executeAddPhysicalColumnToBusinessViewAction((BusinessView)businessColumnSet, physicalColumn);
 		}
 		else if ( businessColumnSet instanceof BusinessTable ){
-			executeAddPhysicalColumnToBusinessTableAction((BusinessTable)businessColumnSet, physicalColumn);
+			executeAddPhysicalColumnToBusinessTableAction(businessColumnSet, physicalColumn);
 		}
 		
 		return true;
 	}
 	
-	public boolean executeAddPhysicalColumnToBusinessViewAction(BusinessView businessView, PhysicalColumn physicalColumn) {
+	public boolean executeAddPhysicalColumnToBusinessViewAction(BusinessView businessView, List<PhysicalColumn> physicalColumns) {
 		
 		// check if column's source PhysicalTable is inside target Physical Tables
 		List<PhysicalTable> targetPhysicalTables = businessView.getPhysicalTables();
-		PhysicalTable sourcePhysicalTable = physicalColumn.getTable();
+		List<PhysicalTable> sourcePhysicalTables = new ArrayList<PhysicalTable>();
+		for (PhysicalColumn physicalColumn : physicalColumns){
+			sourcePhysicalTables.add(physicalColumn.getTable());	
+		}
 
-		if (targetPhysicalTables.contains(sourcePhysicalTable)){
+		if (targetPhysicalTables.containsAll(sourcePhysicalTables)){
 			//initializer.addColumn(physicalColumn, businessView);
-			executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+			executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
 		} else {
-			executeAddPhysicalTableToBusinessColumnSetAction(businessView, sourcePhysicalTable);
+			executeAddPhysicalTableToBusinessColumnSetAction(businessView, sourcePhysicalTables,physicalColumns);
 			//initializer.addColumn(physicalColumn, businessView);
-			executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+			//executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
 		}
 		
 		return true;
 	} 
 	
-	public void executeAddPhysicalColumnToBusinessTableAction(BusinessTable businessTable, PhysicalColumn physicalColumn) {
+	public void executeAddPhysicalColumnToBusinessTableAction(BusinessColumnSet businessColumnSet, List<PhysicalColumn> physicalColumns) {
 		
-		PhysicalTable sourcePhysicalTable = physicalColumn.getTable();
+		BusinessTable businessTable = (BusinessTable)businessColumnSet;
 		PhysicalTable targetPhysicalTable = businessTable.getPhysicalTable();
+		List <PhysicalTable> sourcePhysicalTables = new ArrayList<PhysicalTable>();
+		for (PhysicalColumn physicalColumn : physicalColumns){
+			sourcePhysicalTables.add(physicalColumn.getTable());
+		}
+		
+		
+		
 		if (targetPhysicalTable != null){
 			//if target table has the same PhysicalTable of the added columns, then perform the addColumn
-			if (sourcePhysicalTable.equals(targetPhysicalTable)){
-				executeAddColumnsToBusinessTableAction(businessTable, physicalColumn);
+			if (sourcePhysicalTables.contains(targetPhysicalTable)){
+				executeAddColumnsToBusinessTableAction(businessTable, physicalColumns);
 				//initializer.addColumn(physicalColumn, businessTable);
 			}
 			//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
 			else {
 				//upgrade BusinessTable to BusinessView
 				
-				/*
-				//Old Implementation DO NOT REMOVE
-				Command addPhysicalTableCommand = editingDomain.createCommand
-				(AddPhysicalTableToBusinessViewCommand.class, 
-						new CommandParameter(businessTable, null, null, new ArrayList<Object>()));
-				AddPhysicalTableWizard wizard = new AddPhysicalTableWizard(businessTable,editingDomain, (ISpagoBIModelCommand)addPhysicalTableCommand, false, sourcePhysicalTable.getName());
-				*/
-				
+			
 				BusinessModelInitializer initializer = new BusinessModelInitializer();
 				BusinessView businessView = initializer.upgradeBusinessTableToBusinessView(businessTable);
 				Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
@@ -300,39 +354,47 @@ public class BusinessModelDropFromPhysicalModelHandler {
 							new CommandParameter(businessView, null, null, new ArrayList<Object>()));
 
 				//add the column
-				executeAddColumnsToBusinessTableAction(businessView, physicalColumn);
+				executeAddColumnsToBusinessTableAction(businessView, physicalColumns);
 				
 				EditBusinessViewInnerJoinWizard wizard = new EditBusinessViewInnerJoinWizard(businessView, editingDomain, (ISpagoBIModelCommand)editBusinessViewInnerJoinWizard);
 				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 				dialog.create();
 				dialog.open();
+				if (dialog.getReturnCode()== Window.CANCEL){
+					executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
+				}
+				
+				businessColumnSet = businessView;
 
-				//re-set businessColumnSet reference to point to BusinessView
-				//BusinessView businessView = (BusinessView)((BusinessModel)model).getTable(businessTable.getName());
-
-
-				//initializer.addColumn(physicalColumn, businessView);
 			}
 		}
 		else {
 			//target is an empty Business Table
-			executeAddColumnsToBusinessTableAction(businessTable, physicalColumn);
+			executeAddColumnsToBusinessTableAction(businessTable, physicalColumns);
 		}
 			
 
 	}
 	
-	public boolean executeAddColumnsToBusinessTableAction(BusinessColumnSet businessColumnSet, PhysicalColumn physicalColumn) {
-		List<PhysicalColumn> columnsToAdd = new ArrayList();
-		columnsToAdd.add(physicalColumn);
-//		Command addColumnsToBusinessTableCommand = editingDomain.createCommand(
-//				AddColumnsToBusinessTable.class, 
-//				new CommandParameter(businessColumnSet, null, columnsToAdd, null)
-//		);
+	public boolean executeAddColumnsToBusinessTableAction(BusinessColumnSet businessColumnSet, List<PhysicalColumn> physicalColumns) {
+		List<PhysicalColumn> columnsToAdd = new ArrayList<PhysicalColumn>();
+		columnsToAdd.addAll(physicalColumns);
+
 		
 		Command addColumnsToBusinessTableCommand = new AddColumnsToBusinessTable(editingDomain, new CommandParameter(businessColumnSet, null, columnsToAdd, null));
 		
 		editingDomain.getCommandStack().execute( addColumnsToBusinessTableCommand );
+		return true;
+	}
+	
+	public boolean executeRemoveColumnsToBusinessTableAction(BusinessColumnSet businessColumnSet, List<PhysicalColumn> physicalColumns) {
+		List<PhysicalColumn> columnsToRemove = new ArrayList<PhysicalColumn>();
+		columnsToRemove.addAll(physicalColumns);
+
+		
+		Command removeColumnsToBusinessTableCommand = new RemoveColumnsFromBusinessTable(editingDomain, new CommandParameter(businessColumnSet, null, columnsToRemove, null));
+		
+		editingDomain.getCommandStack().execute( removeColumnsToBusinessTableCommand );
 		return true;
 	}
 

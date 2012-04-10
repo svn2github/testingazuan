@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -32,6 +33,8 @@ import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -273,6 +276,93 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 		return (getModel() != null)? getModel().getIdentifier(this): null;
 	}
 	
+	
+	@Override
+	public SimpleBusinessColumn getSimpleBusinessColumnByUniqueName(String uniqueName) {
+		
+		if(uniqueName == null) {
+			return null;
+		}
+		
+		for(SimpleBusinessColumn column :  getSimpleBusinessColumns()) {
+			if(uniqueName.equals( column.getUniqueName() )) {
+				return column;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumnsByName(String name) {
+		
+		List<SimpleBusinessColumn> columns = new ArrayList<SimpleBusinessColumn>();
+		
+		if(name == null) {
+			return columns;
+		}
+		
+		for(SimpleBusinessColumn column :  getSimpleBusinessColumns()) {
+			if(name.equals( column.getName() )) {
+				columns.add(column);
+			}
+		}
+		
+		return columns;
+	}
+	
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumnsByPhysicalColumn(String physicalTableName, String physicalColumnName) {
+		
+		List<SimpleBusinessColumn> columns = new ArrayList<SimpleBusinessColumn>();
+		
+		BusinessModel businessModel = getModel();
+		if(businessModel == null) return columns;
+		
+		PhysicalModel physicalModel = businessModel.getPhysicalModel();
+		if(physicalModel == null) return columns;
+		
+		PhysicalTable physicalTable = physicalModel.getTable(physicalTableName);
+		if(physicalTable == null) return columns;
+		
+		PhysicalColumn physicalColumn = physicalTable.getColumn(physicalColumnName);
+		if(physicalColumn == null) return columns;
+		
+		return getSimpleBusinessColumnsByPhysicalColumn(physicalColumn);
+	}
+	
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumnsByPhysicalColumn(PhysicalColumn physicalColumn) {
+		
+		List<SimpleBusinessColumn> columns = new ArrayList<SimpleBusinessColumn>();
+		
+		if(physicalColumn == null) {
+			return columns;
+		}
+		
+		for(SimpleBusinessColumn column :  getSimpleBusinessColumns()) {
+			if(column.getPhysicalColumn().equals(physicalColumn)) {
+				columns.add(column);
+			} 
+		}
+		return columns;
+	}
+	
+	@Override
+	public List<SimpleBusinessColumn> getSimpleBusinessColumns() {
+		EList<BusinessColumn> businessColumns = getColumns();
+		List<SimpleBusinessColumn> simpleColumns = new ArrayList<SimpleBusinessColumn>();
+		for (BusinessColumn column:businessColumns){
+			if (column instanceof SimpleBusinessColumn){
+				simpleColumns.add((SimpleBusinessColumn)column);
+			}
+		}
+		return simpleColumns;
+	}
+	
+	
+	
+	// -- deprecated  ---------
+	
 	@Override
 	public SimpleBusinessColumn getSimpleBusinessColumn(String name) {
 		for(int i = 0; i < getSimpleBusinessColumns().size(); i++) {
@@ -292,6 +382,8 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 		}
 		return null;
 	}
+	// -- deprecated  ---------
+	
 	
 	public CalculatedBusinessColumn getCalculatedBusinessColumn(String name){
 		for(int i = 0; i < getCalculatedBusinessColumns().size(); i++) {
@@ -327,19 +419,6 @@ public class BusinessColumnSetImpl extends ModelObjectImpl implements BusinessCo
 			}
 		}
 		return relationships;
-	}
-
-
-	@Override
-	public List<SimpleBusinessColumn> getSimpleBusinessColumns() {
-		EList<BusinessColumn> businessColumns = getColumns();
-		List<SimpleBusinessColumn> simpleColumns = new ArrayList<SimpleBusinessColumn>();
-		for (BusinessColumn column:businessColumns){
-			if (column instanceof SimpleBusinessColumn){
-				simpleColumns.add((SimpleBusinessColumn)column);
-			}
-		}
-		return simpleColumns;
 	}
 
 

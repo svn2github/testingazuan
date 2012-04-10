@@ -103,14 +103,28 @@ public interface BusinessColumnSet extends ModelObject {
 	 */
 	List<BusinessRelationship> getRelationships();
 	
+	SimpleBusinessColumn getSimpleBusinessColumnByUniqueName(String name);
+	List<SimpleBusinessColumn> getSimpleBusinessColumnsByName(String name);
+	List<SimpleBusinessColumn> getSimpleBusinessColumnsByPhysicalColumn(String physicalTableName, String physicalColumnName);
+	List<SimpleBusinessColumn> getSimpleBusinessColumnsByPhysicalColumn(PhysicalColumn physicalColumn);
+	
+	/**
+	 * @deprecated more than one column can have the same name
+	 * @param name
+	 * @return
+	 */
 	SimpleBusinessColumn getSimpleBusinessColumn(String name);
 	
+	/**
+	 * @deprecated more than one column can be associated with the same physicalColumn
+	 * @param name
+	 * @return
+	 */
 	SimpleBusinessColumn getSimpleBusinessColumn(PhysicalColumn physicalColumn);
-	
-	List<SimpleBusinessColumn> getSimpleBusinessColumns();
 	
 	CalculatedBusinessColumn getCalculatedBusinessColumn(String name);
 	
+	List<SimpleBusinessColumn> getSimpleBusinessColumns();
 	List<CalculatedBusinessColumn> getCalculatedBusinessColumns();
 
 } // BusinessColumnSet

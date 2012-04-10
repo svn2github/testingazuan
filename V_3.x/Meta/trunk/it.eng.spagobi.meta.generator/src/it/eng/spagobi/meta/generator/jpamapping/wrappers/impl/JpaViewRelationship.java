@@ -148,20 +148,20 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 	@Override
 	public String getPropertyName(){
 		if (businessInnerRelationship.getSourceColumns()!=null){
-			return StringUtils.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());
+			return StringUtils.nameToJavaVariableName( businessInnerRelationship.getSourceColumns().get(0).getName());
 		}
 		else return "";
 	}
 	@Override
 	protected String getOppositeRoleName(){
-		return StringUtils.columnNameToVarName( businessInnerRelationship.getSourceColumns().get(0).getName());	
+		return StringUtils.nameToJavaVariableName( businessInnerRelationship.getSourceColumns().get(0).getName());	
 	}
 	@Override
 	public String getBidirectionalPropertyName(){
 		if (businessInnerRelationship.getName() != null) 
-			return StringUtils.pluralise(StringUtils.columnNameToVarName( businessInnerRelationship.getName()));
+			return StringUtils.pluralise(StringUtils.nameToJavaVariableName( businessInnerRelationship.getName()));
 		else 
-			return StringUtils.pluralise(StringUtils.columnNameToVarName("innerJoin"));
+			return StringUtils.pluralise(StringUtils.nameToJavaVariableName("innerJoin"));
 	}
 
 	/* (non-Javadoc)

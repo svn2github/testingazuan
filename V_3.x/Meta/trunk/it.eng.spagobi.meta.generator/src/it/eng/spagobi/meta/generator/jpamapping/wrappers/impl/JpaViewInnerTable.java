@@ -223,9 +223,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		name = null;
 		try {
-			//name = StringUtils.tableNameToVarName(businessView.getName() + "_" + physicalTable.getName());
-			name = StringUtils.tableNameToVarName(businessView.getUniqueName() + "_" + physicalTable.getName());
-			name = StringUtils.initUpper(name);
+			name = StringUtils.nameToJavaClassName(businessView.getUniqueName() + "_" + physicalTable.getName());
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
 		}

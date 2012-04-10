@@ -69,8 +69,7 @@ public class JpaViewOuterRelationship {
 			name = jpaTable.getClassName();
 		} else if (businessColumnSet instanceof BusinessView){
 			BusinessView businessView = (BusinessView)businessColumnSet;
-			name = StringUtils.tableNameToVarName(businessView.getName());
-			name = StringUtils.initUpper(name);	
+			name = StringUtils.nameToJavaClassName(businessView.getName());
 			isSourceTableView = true;
 		}
 		return name;
@@ -86,8 +85,7 @@ public class JpaViewOuterRelationship {
 			name = jpaTable.getClassName();
 		} else if (businessColumnSet instanceof BusinessView){			
 			BusinessView businessView = (BusinessView)businessColumnSet;
-			name = StringUtils.tableNameToVarName(businessView.getName());
-			name = StringUtils.initUpper(name);	
+			name = StringUtils.nameToJavaClassName(businessView.getName());
 			isDestinationTableView = true;
 		}
 		return name;
@@ -112,7 +110,7 @@ public class JpaViewOuterRelationship {
 		//check if is a outbound relationship
 		if(isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(StringUtils.columnNameToVarName(businessColumn.getName()));
+				columnsNames.add(StringUtils.nameToJavaVariableName(businessColumn.getName()));
 			}
 
 		} else {
@@ -167,7 +165,7 @@ public class JpaViewOuterRelationship {
 		//check if is a inbound relationship
 		if(!isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(StringUtils.columnNameToVarName(businessColumn.getName()));
+				columnsNames.add(StringUtils.nameToJavaVariableName(businessColumn.getName()));
 			}
 		} else {
 			//outbound relationship

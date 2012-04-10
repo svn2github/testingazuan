@@ -93,12 +93,10 @@ public class JpaView implements IJpaView {
 		
 		name = null;
 		try {
-			//name = StringUtils.tableNameToVarName(businessView.getName());
-			name = StringUtils.tableNameToVarName(businessView.getUniqueName());
-			name = StringUtils.initUpper(name);
+			name = StringUtils.nameToJavaClassName(businessView.getUniqueName());
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
-			name = "pippo";
+			name = "unknown";
 		}
 		return name;
 	}

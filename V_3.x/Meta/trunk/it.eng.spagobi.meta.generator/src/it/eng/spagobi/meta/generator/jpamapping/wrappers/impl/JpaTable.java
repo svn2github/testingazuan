@@ -214,11 +214,7 @@ public class JpaTable extends AbstractJpaTable {
 	 */
 	public String getClassName() {
 		String name;
-		//name = StringUtils.tableNameToVarName(businessTable.getUniqueName());
-		name = businessTable.getUniqueName();
-		name = name.replaceAll(" ", "_");
-		if(name.startsWith("_")) name = "class" + name;
-		name = StringUtils.initUpper(name);
+		name = StringUtils.nameToJavaClassName(businessTable.getUniqueName());
 		return name;
 	}
 	

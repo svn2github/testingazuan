@@ -39,11 +39,59 @@ public class StringUtils
 	private static Logger logger = LoggerFactory.getLogger(StringUtils.class);
 	
 	/**
+	 * Converts a name to a Java variable name (<em>first letter
+	 * not capitalized</em>)
+	 * 
+	 * @param name the name to convert
+	 * @return the generated java variable name
+	 * 
+	 * TODO 1. handle reserved world; 
+	 * TODO 2. handle offending chars.
+	 */
+	public static String nameToJavaClassName(String name) {
+		String className;
+		className = nameToJavaVariableName(name);
+		if(className.startsWith("_")) className = "class" + className;
+		name = StringUtils.initUpper(className);
+		return className;
+	}
+	
+	/**
+	 * Converts a name to a Java variable name (<em>first letter
+	 * not capitalized</em>)
+	 * 
+	 * @param name the name to convert
+	 * @return the generated java variable name
+	 * 
+	 * TODO 1. handle reserved world; 
+	 * TODO 2. handle offending chars.
+	 */
+	public static String nameToJavaVariableName(String name) {
+		String varName;
+		varName = name.replaceAll(" ", "_");
+		return varName;
+	}
+	
+	/**
 	 * Converts a database table name to a Java variable name (<em>first letter
 	 * not capitalized</em>).
+	 * 
+	 * @deprecated use nameToJavaClassName instead
+	 * @see SPAGOBI-831
 	 */
 	public static String tableNameToVarName(String tableName) {
 		return dbNameToVarName(tableName);
+	}
+	
+	/**
+	 * Converts a database column name to a Java variable name (<em>first letter
+	 * not capitalized</em>).
+	 * 
+	 * @deprecated use nameToJavaVariableName instead
+	 * @see SPAGOBI-831
+	 */
+	public static String columnNameToVarName(String columnName) {
+		return dbNameToVarName(columnName);
 	}
 	
 	/**
@@ -154,13 +202,7 @@ public class StringUtils
 	
 		return str;
 	}
-	/**
-	 * Converts a database column name to a Java variable name (<em>first letter
-	 * not capitalized</em>).
-	 */
-	public static String columnNameToVarName(String columnName) {
-		return dbNameToVarName(columnName);
-	}
+	
 	
 	/**
 	 * Utility methods used to convert DB object names to  

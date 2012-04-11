@@ -47,8 +47,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,6 +170,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 		if(o instanceof BusinessModel) {
 			model = (BusinessModel)o;
 			try {
+
 				baseOutputDir = new File(outputDir);
 				deleteFile(baseOutputDir);
 				baseOutputDir = new File(outputDir);
@@ -191,24 +190,6 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 				generateJpaMapping(model);
 
-				//Syncronization with eclipse workspace, hiding mapping directory
-
-				try {
-					IWorkspace workspace = ResourcesPlugin.getWorkspace();
-					IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
-					IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
-					workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-					IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
-					if(iFolder.exists()){
-						iFolder.setHidden(true);
-						iFolder.setTeamPrivateMember(true);
-						iFolder.setDerived(true, null);
-						iFolder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
-						proj.refreshLocal(IResource.DEPTH_INFINITE, null);
-					}
-				} catch (Exception e) {
-					
-				}
 
 
 				logger.info("Jpa mapping code generated succesfully");
@@ -498,10 +479,41 @@ public class JpaMappingCodeGenerator implements IGenerator {
 	}
 
 
+	
+	
+	
 	// =======================================================================
 	// ACCESSOR METHODS
 	// =======================================================================
 
+
+	@Override
+	public void hideTechnicalResources() {
+		logger.debug("IN");
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		try {
+			if(baseOutputDir != null && baseOutputDir.exists()){
+				IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
+				workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+				IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
+				if(iFolder.exists()){
+					iFolder.setHidden(true);
+					iFolder.setTeamPrivateMember(true);
+					iFolder.setDerived(true, null);
+					iFolder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
+					proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+				}
+			}
+			else{
+				logger.warn("Exception occurred before creating baseoutputDir: no resource to hide");
+			}
+		} catch (Exception e) {
+			logger.error("Error in hiding technical model folders ",e);
+			throw new GenerationException("Error in hiding technical model folders", e);
+		}
+		logger.debug("OUT");
+
+	}
 
 	public File getTemplateDir() {
 		return templateDir;
@@ -526,6 +538,22 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 	public void setPersistenceUnitName(String persistenceUnitName) {
 		this.persistenceUnitName = persistenceUnitName;
+	}
+
+	public File getBaseOutputDir() {
+		return baseOutputDir;
+	}
+
+	public void setBaseOutputDir(File baseOutputDir) {
+		this.baseOutputDir = baseOutputDir;
+	}
+
+	public File getDistDir() {
+		return distDir;
+	}
+
+	public void setDistDir(File distDir) {
+		this.distDir = distDir;
 	}
 
 

@@ -48,4 +48,12 @@ public class MondrianSchemaGenerator implements IGenerator {
 		throw new GenerationException("Function generateMondrianSchema not yet implemented");
 	}
 
+	@Override
+	public void hideTechnicalResources() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 }

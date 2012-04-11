@@ -22,11 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.generator.jpamapping;
 
 import it.eng.spagobi.meta.generator.GenerationException;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
-import it.eng.spagobi.meta.generator.utils.Compiler;
 import it.eng.spagobi.meta.generator.utils.Zipper;
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.io.File;
 
@@ -35,8 +32,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,33 +69,6 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			Zipper zipper = new Zipper();
 			zipper.compressToJar(getBinDir(), getJarFile());
 
-			//Try force hiding
-			try {
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IPath location = Path.fromOSString(baseOutputDir.getAbsolutePath());
-			IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
-			IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
-			if(iFolder.exists()){
-				iFolder.setHidden(true);
-				iFolder.setTeamPrivateMember(true);
-				iFolder.setDerived(true, null);
-			}
-			IFolder iFolderDist = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+distDir.getName()) ;
-			if(iFolderDist.exists()){
-				iFolderDist.setHidden(true);
-				iFolderDist.setDerived(true, null);
-				IFolder iFolderSource = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+this.DEFAULT_SRC_DIR) ;
-				iFolderSource.setHidden(true);
-				iFolderSource.setDerived(true, null);
-			}		
-			if(iFolder.exists() || iFolderDist.exists()){
-				workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-				proj.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-			} catch(Throwable t) {
-				
-			}
-
 		} catch(Throwable t) {
 			logger.error("An error occur while generating JPA jar", t);
 			throw new GenerationException("An error occur while generating JPA jar", t);
@@ -109,6 +78,54 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 	}
 
 
+@Override
+public void hideTechnicalResources() {
+	logger.debug("IN");
+	super.hideTechnicalResources();
+
+	File baseOutputDir = getBaseOutputDir();
+	File distDir = getDistDir();
+	IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	try{
+		if(baseOutputDir != null && baseOutputDir.exists()){
+			IProject proj = workspace.getRoot().getProject(baseOutputDir.getParentFile().getParentFile().getName());
+			IFolder iFolder = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()) ;
+			if(iFolder.exists()){
+				iFolder.setHidden(true);
+				iFolder.setTeamPrivateMember(true);
+				iFolder.setDerived(true, null);
+			}
+			if(distDir != null && distDir.exists()){
+				IFolder iFolderDist = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+distDir.getName()) ;
+				if(iFolderDist.exists()){
+					iFolderDist.setHidden(true);
+					iFolderDist.setDerived(true, null);
+					IFolder iFolderSource = proj.getFolder(baseOutputDir.getParentFile().getName()+"\\"+baseOutputDir.getName()+"\\"+JpaMappingCodeGenerator.DEFAULT_SRC_DIR) ;
+					iFolderSource.setHidden(true);
+					iFolderSource.setDerived(true, null);
+				}		
+				if(iFolder.exists() || iFolderDist.exists()){
+					workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+					proj.refreshLocal(IResource.DEPTH_INFINITE, null);
+				}
+			}
+			else{
+				logger.warn("Exception occurred before creating distDir: no resource to hide");
+			}
+
+		}
+		else{
+			logger.warn("Exception occurred before creating baseoutputDir: no resource to hide");
+		}
+		
+	}
+	catch (CoreException e) {
+		logger.error("Error in hiding technical model folders ",e);
+		throw new GenerationException("Error in hiding technical model folders", e);
+	}
+	logger.debug("OUT");
+	
+}
 
 	// =======================================================================
 	// ACCESSOR METHODS

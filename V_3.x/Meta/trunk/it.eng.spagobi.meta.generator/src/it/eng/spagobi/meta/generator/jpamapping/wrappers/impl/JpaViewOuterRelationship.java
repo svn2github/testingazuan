@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -69,7 +70,7 @@ public class JpaViewOuterRelationship {
 			name = jpaTable.getClassName();
 		} else if (businessColumnSet instanceof BusinessView){
 			BusinessView businessView = (BusinessView)businessColumnSet;
-			name = StringUtils.nameToJavaClassName(businessView.getName());
+			name = JavaKeywordsUtils.transformToJavaClassName(businessView.getName());
 			isSourceTableView = true;
 		}
 		return name;
@@ -85,7 +86,7 @@ public class JpaViewOuterRelationship {
 			name = jpaTable.getClassName();
 		} else if (businessColumnSet instanceof BusinessView){			
 			BusinessView businessView = (BusinessView)businessColumnSet;
-			name = StringUtils.nameToJavaClassName(businessView.getName());
+			name = JavaKeywordsUtils.transformToJavaClassName(businessView.getName());
 			isDestinationTableView = true;
 		}
 		return name;
@@ -110,7 +111,7 @@ public class JpaViewOuterRelationship {
 		//check if is a outbound relationship
 		if(isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(StringUtils.nameToJavaVariableName(businessColumn.getName()));
+				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getName()));
 			}
 
 		} else {
@@ -165,7 +166,7 @@ public class JpaViewOuterRelationship {
 		//check if is a inbound relationship
 		if(!isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(StringUtils.nameToJavaVariableName(businessColumn.getName()));
+				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getName()));
 			}
 		} else {
 			//outbound relationship

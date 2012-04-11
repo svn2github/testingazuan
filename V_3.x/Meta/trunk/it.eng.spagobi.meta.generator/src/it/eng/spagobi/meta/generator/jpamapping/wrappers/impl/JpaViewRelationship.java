@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
@@ -148,20 +149,20 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 	@Override
 	public String getPropertyName(){
 		if (businessInnerRelationship.getSourceColumns()!=null){
-			return StringUtils.nameToJavaVariableName( businessInnerRelationship.getSourceColumns().get(0).getName());
+			return JavaKeywordsUtils.transformToJavaPropertyName( businessInnerRelationship.getSourceColumns().get(0).getName());
 		}
 		else return "";
 	}
 	@Override
 	protected String getOppositeRoleName(){
-		return StringUtils.nameToJavaVariableName( businessInnerRelationship.getSourceColumns().get(0).getName());	
+		return JavaKeywordsUtils.transformToJavaPropertyName( businessInnerRelationship.getSourceColumns().get(0).getName());	
 	}
 	@Override
 	public String getBidirectionalPropertyName(){
 		if (businessInnerRelationship.getName() != null) 
-			return StringUtils.pluralise(StringUtils.nameToJavaVariableName( businessInnerRelationship.getName()));
+			return StringUtils.pluralise(JavaKeywordsUtils.transformToJavaPropertyName( businessInnerRelationship.getName()));
 		else 
-			return StringUtils.pluralise(StringUtils.nameToJavaVariableName("innerJoin"));
+			return StringUtils.pluralise(JavaKeywordsUtils.transformToJavaPropertyName("innerJoin"));
 	}
 
 	/* (non-Javadoc)

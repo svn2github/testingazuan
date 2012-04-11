@@ -32,6 +32,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaView;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -94,7 +95,7 @@ public class JpaView implements IJpaView {
 		
 		name = null;
 		try {
-			name = StringUtils.nameToJavaClassName(businessView.getUniqueName());
+			name = JavaKeywordsUtils.transformToJavaClassName(businessView.getUniqueName());
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
 			name = "unknown";

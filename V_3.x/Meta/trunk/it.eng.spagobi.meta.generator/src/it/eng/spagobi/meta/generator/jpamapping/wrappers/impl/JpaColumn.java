@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -246,7 +247,7 @@ public class JpaColumn implements IJpaColumn {
 	public String getPropertyName() {
 		String name;
 		
-		name = StringUtils.nameToJavaVariableName(businessColumn.getUniqueName());	
+		name = JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getUniqueName());	
 		
 		return name;
 	}

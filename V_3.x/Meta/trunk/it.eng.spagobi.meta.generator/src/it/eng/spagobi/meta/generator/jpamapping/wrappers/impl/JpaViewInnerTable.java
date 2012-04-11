@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -223,7 +224,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		name = null;
 		try {
-			name = StringUtils.nameToJavaClassName(businessView.getUniqueName() + "_" + physicalTable.getName());
+			name = JavaKeywordsUtils.transformToJavaClassName(businessView.getUniqueName() + "_" + physicalTable.getName());
 		} catch (Throwable t) {
 			logger.error("Impossible to get class name", t);
 		}

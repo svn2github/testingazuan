@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -214,7 +215,7 @@ public class JpaTable extends AbstractJpaTable {
 	 */
 	public String getClassName() {
 		String name;
-		name = StringUtils.nameToJavaClassName(businessTable.getUniqueName());
+		name = JavaKeywordsUtils.transformToJavaClassName(businessTable.getUniqueName());
 		return name;
 	}
 	

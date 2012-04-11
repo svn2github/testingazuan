@@ -37,126 +37,7 @@ public class StringUtils
 {
 	
 	private static Logger logger = LoggerFactory.getLogger(StringUtils.class);
-	
-	/**
-	 * Converts a name to a Java variable name (<em>first letter
-	 * not capitalized</em>)
-	 * 
-	 * @param name the name to convert
-	 * @return the generated java variable name
-	 * 
-	 * TODO 1. handle reserved world; 
-	 * TODO 2. handle offending chars.
-	 */
-	public static String nameToJavaClassName(String name) {
-		String className;
-		className = nameToJavaVariableName(name);
-		if(className.startsWith("_")) className = "class" + className;
-		className = StringUtils.initUpper(className);
-		return className;
-	}
-	
-	/**
-	 * Converts a name to a Java variable name (<em>first letter
-	 * not capitalized</em>)
-	 * 
-	 * @param name the name to convert
-	 * @return the generated java variable name
-	 * 
-	 * TODO 1. handle reserved world; 
-	 * TODO 2. handle offending chars.
-	 */
-	public static String nameToJavaVariableName(String name) {
-		String varName;
-		varName = name.replaceAll(" ", "_");
-		return varName;
-	}
-	
-	/**
-	 * Converts a database table name to a Java variable name (<em>first letter
-	 * not capitalized</em>).
-	 * 
-	 * @deprecated use nameToJavaClassName instead
-	 * @see SPAGOBI-831
-	 */
-	public static String tableNameToVarName(String tableName) {
-		return dbNameToVarName(tableName);
-	}
-	
-	/**
-	 * Converts a database column name to a Java variable name (<em>first letter
-	 * not capitalized</em>).
-	 * 
-	 * @deprecated use nameToJavaVariableName instead
-	 * @see SPAGOBI-831
-	 */
-	public static String columnNameToVarName(String columnName) {
-		return dbNameToVarName(columnName);
-	}
-	
-	/**
-	 * Converts a database name (table or column) to a java name (<em>first letter
-	 * not capitalized</em>). employee_name or employee-name -> employeeName
-	 */
-	private static String dbNameToVarName(String s) {
-		if (s==null)return "";
-	
-		if ("".equals(s)) {
-			return s;
-		}
-		StringBuffer result = new StringBuffer();
-
-		boolean capitalize = true;
-		boolean lastCapital = false;
-		boolean lastDecapitalized = false;
-		String p = null;
-		for (int i = 0; i < s.length(); i++) {
-			String c = s.substring(i, i + 1);
-			if ("_".equals(c) || " ".equals(c)) {
-				capitalize = true;
-				continue;
-			}
-
-			if (c.toUpperCase().equals(c)) {
-				if (lastDecapitalized && !lastCapital) {
-					capitalize = true;
-				}
-				lastCapital = true;
-			} else {
-				lastCapital = false;
-			}
-
-			if (capitalize) {
-				if (p == null || !p.equals("_")) {
-					result.append(c.toUpperCase());
-					capitalize = false;
-					p = c;
-				} else {
-					result.append(c.toLowerCase());
-					capitalize = false;
-					p = c;
-				}
-			} else {
-				result.append(c.toLowerCase());
-				lastDecapitalized = true;
-				p = c;
-			}
-
-		}
-		/*this was using StringUtil.initLower. Changed to Introspector.decapitalize so that 
-		 * it returns the correct bean property name when called from columnNameToVarName.
-		 * This is necessary because otherwise URL would be uRL which would cause 
-		 * an "The property uRL is undefined for the type xx" error because 
-		 * Introspector.getBeanInfo (used by JavaTypeIntrospector) returns 
-		 * the property name as URL.*/
-		String resultStr = Introspector.decapitalize(result.toString());
-		if (resultStr.equals("class")) {
-			// "class" is illegal becauseOf Object.getClass() clash
-			resultStr = "clazz";
-		}
-	
-		return resultStr;
-	}
+		
 	/**
 	 * Inserts a given character at the beginning and at the end of the specified string.
 	 * For example if the string is <tt>extreme</tt> and the char is <tt>'</tt> then 
@@ -184,6 +65,7 @@ public class StringUtils
 		}
 		return Character.toUpperCase(str.charAt(0)) + str.substring(1);
 	}
+	
 	public static String strReplaceAll(String str, String pattern, String replaceStr)
 	{
 		if(str == null) {
@@ -202,7 +84,6 @@ public class StringUtils
 	
 		return str;
 	}
-	
 	
 	/**
 	 * Utility methods used to convert DB object names to  
@@ -269,10 +150,6 @@ public class StringUtils
 		}
 		
 		return buffer.toString();
-	}
-	
-	public final static void main(String args[]) {
-		System.out.println( dbNameToVarName("C_CAUSALE") );
 	}
 }
 

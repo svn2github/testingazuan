@@ -70,6 +70,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	private Text relationshipNameInputField;
 	private Combo sourceTableCombo, destinationTableCombo;
 	private List sourceColumnList, columnCorrelationList, destinationColumnList ;
+	private java.util.List<String> sourceColumnUniqueNamesList,destinationColumnUniqueNamesList,sourceTableUniqueNamesList,destinationTableUniqueNamesList;
 	private boolean nameInserted;
 	
 	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
@@ -87,6 +88,10 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	    this.destinationTable = destinationTable;
 	    sourceColumns = new ArrayList<BusinessColumn>();
 	    destinationColumns = new ArrayList<BusinessColumn>();
+	    sourceColumnUniqueNamesList = new ArrayList<String>();
+	    destinationColumnUniqueNamesList = new ArrayList<String>();
+	    sourceTableUniqueNamesList = new ArrayList<String>();
+	    destinationTableUniqueNamesList = new ArrayList<String>();
 	}
 
 	@Override
@@ -391,28 +396,34 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		EList<BusinessColumnSet> businessTables = model.getTables();
 		for(BusinessColumnSet table : businessTables){
 			sourceTableCombo.add(table.getName());
+			sourceTableUniqueNamesList.add(table.getUniqueName());
 		}
 	}
 	
 	private void populateDestinationTableCombo(){
 		for(BusinessColumnSet table : model.getTables()){
 			destinationTableCombo.add(table.getName());
+			destinationTableUniqueNamesList.add(table.getUniqueName());
 		}
 	}
 	
 	private void populateSourceColumnList(BusinessColumnSet businessTable){
 		sourceColumnList.removeAll();
+		sourceColumnUniqueNamesList.clear();
 		java.util.List<SimpleBusinessColumn> businessColumns = businessTable.getSimpleBusinessColumns();
 		for (BusinessColumn column : businessColumns ){
 			sourceColumnList.add(column.getName());
+			sourceColumnUniqueNamesList.add(column.getUniqueName());
 		}
 	}
 	
 	private void populateDestinationColumnList(BusinessColumnSet businessTable){
 		destinationColumnList.removeAll();
+		destinationColumnUniqueNamesList.clear();
 		java.util.List<SimpleBusinessColumn> businessColumns = businessTable.getSimpleBusinessColumns();
 		for (BusinessColumn column : businessColumns ){
 			destinationColumnList.add(column.getName());
+			destinationColumnUniqueNamesList.add(column.getUniqueName());
 		}
 	}
 	
@@ -431,7 +442,8 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 			return sourceTable;
 		}
 		else{
-			return model.getTable(sourceTableCombo.getText());
+			String sourceTableUniqueName = sourceTableUniqueNamesList.get(sourceTableCombo.getSelectionIndex());
+			return model.getTableByUniqueName(sourceTableUniqueName);
 		}
 	}
 	
@@ -440,16 +452,19 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 			return destinationTable;
 		}
 		else{
-			return model.getTable(destinationTableCombo.getText());
+			String destinationTableUniqueName = destinationTableUniqueNamesList.get(destinationTableCombo.getSelectionIndex());
+			return model.getTableByUniqueName(destinationTableCombo.getText());
 		}
 	}
 	
 	private BusinessColumn getSourceColumn() {
-		return getSourceTable().getSimpleBusinessColumn(sourceColumnList.getSelection()[0]);
+		String sourceColumnUniqueName = sourceColumnUniqueNamesList.get(sourceColumnList.getSelectionIndex());		
+		return getSourceTable().getSimpleBusinessColumnByUniqueName(sourceColumnUniqueName);
 	}
 	
 	private BusinessColumn getDestinationColumn() {
-		return getDestinationTable().getSimpleBusinessColumn(destinationColumnList.getSelection()[0]);
+		String destinationColumnUniqueName = destinationColumnUniqueNamesList.get(destinationColumnList.getSelectionIndex());		
+		return getDestinationTable().getSimpleBusinessColumnByUniqueName(destinationColumnUniqueName);
 	}
 
 	

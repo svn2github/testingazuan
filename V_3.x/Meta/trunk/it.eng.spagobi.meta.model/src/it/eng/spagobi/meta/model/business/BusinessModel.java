@@ -252,6 +252,15 @@ public interface BusinessModel extends ModelObject {
 	BusinessTable getBusinessTableByUniqueName(String uniqueName);
 	
 	/**
+	 * Return a list of all business tables whose name is equal to '<em>name</em>'.
+	 * 
+	 * @param physicalTable the name to search for 
+	 * @return a list of all business tables whose name is equal to '<em>name</em>'. Never return null. If there 
+	 * are no business tables associated with the given physical '<em>name</em>' an empty list will be returned.
+	 */
+	List<BusinessTable> getBusinessTableByName(String name);
+	
+	/**
 	 * Return a list of all business tables associated with the given physicalTable.
 	 * 
 	 * @param physicalTable a physicalTable 

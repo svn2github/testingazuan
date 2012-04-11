@@ -556,6 +556,20 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	}
 	
 	@Override
+	public List<BusinessTable> getBusinessTableByName(String name) {
+		List<BusinessTable> tables = new ArrayList<BusinessTable>();
+		
+		if(name == null) return tables;
+		for(BusinessTable table : getBusinessTables()) {
+			if( name.equals( table.getName() ) ) {
+				tables.add(table);
+			}
+		}
+		return tables;
+	}		
+
+	
+	@Override
 	public List<BusinessTable> getBusinessTableByPhysicalTable(PhysicalTable physicalTable) {
 		List<BusinessTable> tables = new ArrayList<BusinessTable>();
 		

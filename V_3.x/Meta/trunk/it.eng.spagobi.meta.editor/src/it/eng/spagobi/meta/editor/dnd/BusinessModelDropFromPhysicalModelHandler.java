@@ -250,7 +250,7 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		
 		
 		//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
-		businessColumnSet = ((BusinessModel)model).getTable(businessColumnSet.getName());
+		businessColumnSet = ((BusinessModel)model).getTableByUniqueName(businessColumnSet.getUniqueName());
 		
 		return true;
 	}

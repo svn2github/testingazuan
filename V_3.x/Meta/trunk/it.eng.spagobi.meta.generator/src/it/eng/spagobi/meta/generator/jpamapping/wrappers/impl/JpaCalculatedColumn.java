@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
@@ -121,14 +122,20 @@ public class JpaCalculatedColumn implements IJpaCalculatedColumn {
 	
 	public List<IJpaColumn> getReferencedColumns(){
 		List<IJpaColumn> jpaColumns = new ArrayList<IJpaColumn>();
-		List<SimpleBusinessColumn> businessColumns = businessCalculatedColumn.getReferencedColumns();
-		if (!businessColumns.isEmpty()){
-			for(SimpleBusinessColumn businessColumn : businessColumns ){
-				JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);
-				jpaColumns.add(jpaColumn);
-				System.out.println("Calculated Column "+this.getName()+" references column "+jpaColumn.getUniqueName());
-				logger.debug("Calculated Column [{}] references column [{}]", this.getName(), businessColumn.getName());
+
+		try {
+			List<SimpleBusinessColumn> businessColumns = businessCalculatedColumn.getReferencedColumns();
+			if (!businessColumns.isEmpty()){
+				for(SimpleBusinessColumn businessColumn : businessColumns ){
+					JpaColumn jpaColumn = new JpaColumn(jpaTable, businessColumn);
+					jpaColumns.add(jpaColumn);
+					logger.debug("Calculated Column [{}] references column [{}]", this.getName(), businessColumn.getName());
+				}
 			}
+		}
+		catch (SpagoBIPluginException e){
+			logger.error("Calculated Column in JpaCalculatedColumn error: ");
+			logger.error(e.getMessage());
 		}
 		return jpaColumns;	
 	}

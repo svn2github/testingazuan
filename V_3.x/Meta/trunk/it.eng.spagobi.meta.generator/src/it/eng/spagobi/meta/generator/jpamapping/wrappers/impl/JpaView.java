@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaCalculatedColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
@@ -142,29 +143,36 @@ public class JpaView implements IJpaView {
 	}
 	
 	public List<IJpaCalculatedColumn> getCalculatedColumns(){
-		if (jpaCalculatedColumns == null) {
-			jpaCalculatedColumns = new ArrayList<IJpaCalculatedColumn>();
-			for (CalculatedBusinessColumn calculatedBusinessColumn : businessView.getCalculatedBusinessColumns()) {
-				IJpaTable foundTable = null;
-				List<SimpleBusinessColumn> referencedColumns = calculatedBusinessColumn.getReferencedColumns();
-				List<IJpaTable> innerTables = this.getInnerTables();
-				//check if all the referenced columns are contained in an inner table
-				for (IJpaTable innerTable : innerTables){
-					System.out.println("Checking table: "+innerTable.getName());
-					if (((JpaViewInnerTable)innerTable).getBusinessColumnsOfInnerTable().containsAll(referencedColumns)){
-						foundTable = innerTable;
-						System.out.println("Found table: "+foundTable.getName());
-						break;						
+		try {
+			if (jpaCalculatedColumns == null) {
+				jpaCalculatedColumns = new ArrayList<IJpaCalculatedColumn>();
+				for (CalculatedBusinessColumn calculatedBusinessColumn : businessView.getCalculatedBusinessColumns()) {
+					IJpaTable foundTable = null;
+					List<SimpleBusinessColumn> referencedColumns = calculatedBusinessColumn.getReferencedColumns();
+					List<IJpaTable> innerTables = this.getInnerTables();
+					//check if all the referenced columns are contained in an inner table
+					for (IJpaTable innerTable : innerTables){
+						System.out.println("Checking table: "+innerTable.getName());
+						if (((JpaViewInnerTable)innerTable).getBusinessColumnsOfInnerTable().containsAll(referencedColumns)){
+							foundTable = innerTable;
+							System.out.println("Found table: "+foundTable.getName());
+							break;						
+						}
 					}
+					if (foundTable != null){
+						JpaCalculatedColumn jpaCalculatedColumn = new JpaCalculatedColumn((AbstractJpaTable)foundTable, calculatedBusinessColumn);
+						jpaCalculatedColumns.add(jpaCalculatedColumn);
+						logger.debug("Business table [{}] contains calculated column [{}]", businessView.getName(), calculatedBusinessColumn.getName());					
+					}
+					
 				}
-				if (foundTable != null){
-					JpaCalculatedColumn jpaCalculatedColumn = new JpaCalculatedColumn((AbstractJpaTable)foundTable, calculatedBusinessColumn);
-					jpaCalculatedColumns.add(jpaCalculatedColumn);
-					logger.debug("Business table [{}] contains calculated column [{}]", businessView.getName(), calculatedBusinessColumn.getName());					
-				}
-				
 			}
 		}
+		catch (SpagoBIPluginException e) {
+			logger.error("Calculated Column in JPAView error: ");
+			logger.error(e.getMessage());
+		}
+
 		return jpaCalculatedColumns;
 	}
 	

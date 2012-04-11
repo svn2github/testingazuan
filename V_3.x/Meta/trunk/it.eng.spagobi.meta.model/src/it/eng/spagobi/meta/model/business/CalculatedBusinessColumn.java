@@ -6,6 +6,8 @@
  */
 package it.eng.spagobi.meta.model.business;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+
 import java.util.List;
 
 
@@ -22,5 +24,5 @@ import java.util.List;
 public interface CalculatedBusinessColumn extends BusinessColumn {
 	
 	
-	List<SimpleBusinessColumn> getReferencedColumns();
+	List<SimpleBusinessColumn> getReferencedColumns() throws SpagoBIPluginException;
 } // CalculatedBusinessColumn

@@ -10,13 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EClass;
 
 /**
@@ -31,6 +34,9 @@ import org.eclipse.emf.ecore.EClass;
 public class CalculatedBusinessColumnImpl extends BusinessColumnImpl implements CalculatedBusinessColumn {
 	
 	public static final String CALCULATED_COLUMN_EXPRESSION = "structural.expression";
+    public static transient Logger logger = Logger.getLogger(CalculatedBusinessColumnImpl.class);
+
+	
 	
 	/**
 	 * <!-- begin-user-doc -->
@@ -51,19 +57,31 @@ public class CalculatedBusinessColumnImpl extends BusinessColumnImpl implements 
 		return BusinessModelPackage.Literals.CALCULATED_BUSINESS_COLUMN;
 	}
 	
-	public List<SimpleBusinessColumn> getReferencedColumns(){
+	public List<SimpleBusinessColumn> getReferencedColumns() throws SpagoBIPluginException{
 		List<SimpleBusinessColumn> columnsReferenced = new ArrayList<SimpleBusinessColumn>();
 		BusinessColumnSet businessColumnSet = this.getTable();
-		
+
 		//get Expression String
 		String id = this.getPropertyType(CALCULATED_COLUMN_EXPRESSION).getId();
 		String expression = this.getProperties().get(id).getValue();
-		
+
 		//retrieve columns objects from string
 		StringTokenizer stk = new StringTokenizer(expression, "+-|*/()");
 		while(stk.hasMoreTokens()){
 			String operand = stk.nextToken().trim();
-			SimpleBusinessColumn simpleBusinessColumn = businessColumnSet.getSimpleBusinessColumn(operand);
+			List<SimpleBusinessColumn> businessColumns = businessColumnSet.getSimpleBusinessColumnsByName(operand);
+			if (businessColumns.isEmpty()){
+				//throws exception
+				throw new SpagoBIPluginException("No columns using the name ["+operand+"] are found in the expression of Calculated Field ["+this.getName()+"]");
+			}
+			else{
+				if (businessColumns.size() >1 ){
+					logger.warn("More columns using the name ["+operand+"] are found in the expression of Calculated Field ["+this.getName()+"]");
+				}
+			}
+
+			//always get first SimpleBusinessColumn found with that name (operand)
+			SimpleBusinessColumn simpleBusinessColumn = businessColumns.get(0);
 			if (simpleBusinessColumn != null){
 				columnsReferenced.add(simpleBusinessColumn);
 			}

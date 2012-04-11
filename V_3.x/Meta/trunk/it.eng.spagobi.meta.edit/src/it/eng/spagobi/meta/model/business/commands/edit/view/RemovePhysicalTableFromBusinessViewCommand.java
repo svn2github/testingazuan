@@ -239,7 +239,7 @@ public class RemovePhysicalTableFromBusinessViewCommand extends AbstractSpagoBIM
 			businessView.getJoinRelationships().add(innerJoinRelationship);
 		} else {
 		//undo the downgrade
-			businessTable = (BusinessTable)businessModel.getTable(businessView.getName());
+			businessTable = (BusinessTable)businessModel.getTableByUniqueName(businessView.getUniqueName());
 			BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor = new BusinessViewInnerJoinRelationshipDescriptor(
 					innerJoinRelationship.getSourceTable(),
 					innerJoinRelationship.getDestinationTable(),

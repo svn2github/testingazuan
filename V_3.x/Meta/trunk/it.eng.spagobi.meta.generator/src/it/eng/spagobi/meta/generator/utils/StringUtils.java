@@ -52,7 +52,7 @@ public class StringUtils
 		String className;
 		className = nameToJavaVariableName(name);
 		if(className.startsWith("_")) className = "class" + className;
-		name = StringUtils.initUpper(className);
+		className = StringUtils.initUpper(className);
 		return className;
 	}
 	

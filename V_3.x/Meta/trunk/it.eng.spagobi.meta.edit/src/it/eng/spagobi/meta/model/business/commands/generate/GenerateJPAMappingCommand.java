@@ -22,17 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.model.business.commands.generate;
 
 
-import java.io.File;
-
 import it.eng.spagobi.meta.generator.GeneratorDescriptor;
 import it.eng.spagobi.meta.generator.GeneratorFactory;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.initializer.properties.BusinessModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 
-import org.eclipse.core.runtime.CoreException;
+import java.io.File;
+
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -76,9 +73,9 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelGenerateComma
 		//Call JPA Mapping generator
 		executed = true;
 		GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
-		
+		JpaMappingJarGenerator generator = null;
 		try {
-			JpaMappingJarGenerator generator =(JpaMappingJarGenerator)descriptor.getGenerator();
+			generator =(JpaMappingJarGenerator)descriptor.getGenerator();
 			generator.setLibDir(new File("plugins"));
 			generator.generate(businessModel, directory);
 		} catch (Exception e) {
@@ -86,7 +83,15 @@ public class GenerateJPAMappingCommand extends AbstractSpagoBIModelGenerateComma
 			showInformation("Error in JPAMappingGenerator","Cannot create JPA Mapping classes");
 			executed = false;
 		}
-		
+		finally {
+			// finally block to hide technical folders created during generation
+			if(generator != null){
+				logger.debug("hide techical folders");
+				generator.hideTechnicalResources();
+			}
+		}
+
+
 		if(executed) {
 			//showInformation("Successfull Compilation", "JPA Source Code correctly compiled");
 			logger.debug("Command [{}] executed succesfully", ModifyBusinessTableColumnsCommand.class.getName());

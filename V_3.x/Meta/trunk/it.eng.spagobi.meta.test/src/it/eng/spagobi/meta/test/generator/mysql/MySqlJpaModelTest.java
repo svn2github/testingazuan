@@ -6,6 +6,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
+import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -70,9 +71,10 @@ public class MySqlJpaModelTest extends AbstractMappingGenerationTest {
 			Assert.assertTrue(className.trim().length() > 0);
 			
 			char firstChar = className.charAt(0);
-			Assert.assertTrue("Class name does not start with an letter", Character.isLetter(firstChar));
-			Assert.assertTrue("Class name does not start with an uppercase letter", Character.isUpperCase(firstChar));
+			Assert.assertTrue("The name [" + className + "] of the class associated to table [" + table.getName() + "] does not start with a letter", Character.isLetter(firstChar));
+			Assert.assertTrue("The name [" + className + "] of the class associated to table [" + table.getName() + "] does not start with an uppercase letter", Character.isUpperCase(firstChar));
 			
+			Assert.assertTrue("The name [" + className + "] of the class associated to table [" + table.getName() + "] is not a valid java identifier", JavaKeywordsUtils.isValidJavaIdentifier(className));
 			
 			IJpaTable t = classNames.get(className);
 			String tName = t == null? null: t.getName();
@@ -103,6 +105,9 @@ public class MySqlJpaModelTest extends AbstractMappingGenerationTest {
 			
 			for(IJpaColumn column : table.getSimpleColumns(true, true, false)) {
 				propertyName = column.getPropertyName();
+				
+				Assert.assertTrue("The name [" + propertyName + "] of the property associated to column [" + column.getColumnNameDoubleQuoted() + "] in table [" + table.getName() + "] is not a valid java identifier", JavaKeywordsUtils.isValidJavaIdentifier(propertyName));
+				
 				
 				Assert.assertFalse("In table [" + table.getName() + "] the name [" + propertyName + "] " +
 						"of the property associated to column [" + column.getColumnNameDoubleQuoted() + "] " +

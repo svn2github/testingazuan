@@ -30,6 +30,7 @@ public class AbstractModelInizializtaionTest extends TestCase {
 		, "employee"
 		, "employee_closure"
 		, "inventory_fact_1998"
+		, "object"
 		, "position"
 		, "product"
 		, "product_class"

@@ -129,20 +129,25 @@ public class ModelManager {
 	public String generateMapping(String persistenceUnitName) {
 		
 		logger.trace("IN");
-			
+		JpaMappingJarGenerator generator = null;
 		try {
 			Assert.assertNotNull("Impossible to generate mapping. Mapping folder is not set", getModelMappingFolder() );
 			
 			persistenceUnitName = getBusinessModel().getName() + "_" + System.currentTimeMillis();
 			
 			GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
-			JpaMappingJarGenerator generator = (JpaMappingJarGenerator)descriptor.getGenerator();
+			generator = (JpaMappingJarGenerator)descriptor.getGenerator();
 			generator.setLibDir(new File("plugins"));
 			generator.setPersistenceUnitName(persistenceUnitName);
 			generator.generate(getBusinessModel(), getMappingsFolder().toString());
 		} catch(Throwable t) {
 			throw new SpagoBIPluginException("Impossible to generate mapping for business model [" + getBusinessModel().getName() + "] into folder [" + getMappingsFolder() + "]", t);
 		} finally {
+			// finally block to hide technical folders created during generation
+			if(generator != null){
+				logger.debug("hide techical folders");
+				generator.hideTechnicalResources();
+			}
 			logger.trace("OUT");
 		}
 		

@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.initializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
+import it.eng.spagobi.meta.initializer.name.BusinessModelNamesInitializer;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.initializer.properties.IPropertiesInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -58,12 +59,14 @@ import org.eclipse.emf.common.util.EList;
 public class BusinessModelInitializer {
 	
 	IPropertiesInitializer propertiesInitializer;
-	
+	BusinessModelNamesInitializer namesInitializer;
+
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
 	public BusinessModelInitializer() {
 		//setPropertiesInitializer( new BusinessModelDefaultPropertiesInitializer() );
 		setPropertiesInitializer( new BusinessModelPropertiesFromFileInitializer() );
+		setNamesInitializer( new BusinessModelNamesInitializer() );
 	}
 	public BusinessModel initialize(String modelName, PhysicalModel physicalModel) {
 		return initialize(modelName, null, physicalModel);
@@ -154,12 +157,16 @@ public class BusinessModelInitializer {
 		
 		try {
 			businessTable = FACTORY.createBusinessTable();
-			
 			businessTable.setPhysicalTable(physicalTable);
 			//check if BusinessTable name is already used
-			String businessTableName = beutfyName(physicalTable.getName());
 			//setting original name as Unique Name
+			getNamesInitializer().setName(businessTable);
+			getNamesInitializer().setUniqueName(businessTable);
+			/*
+			String businessTableName = beutfyName(physicalTable.getName());
+			
 			businessTable.setUniqueName(beutfyName(physicalTable.getName()));		
+			
 			
 			boolean nameUsed = checkNameAlreadyUsed(businessModel, businessTableName );
 			if (!nameUsed){
@@ -171,9 +178,12 @@ public class BusinessModelInitializer {
 				}	
 				businessTable.setName( businessTableName );
 			}
+			
+			*/
 			businessTable.setDescription( physicalTable.getDescription() );
 			businessTable.setModel(businessModel);
-							
+			
+			
 			addColumns(physicalTable, columnFilter, businessTable);
 			
 			businessModel.getTables().add(businessTable);
@@ -284,9 +294,8 @@ public class BusinessModelInitializer {
 			businessColumn.setDescription( physicalColumn.getDescription() );
 			businessColumn.setTable(businessColumnSet);
 			//setting original name as Unique Name
-			String columnUniqueName = beutfyName(physicalColumn.getName());
-			//businessColumnSet.getSimpleBusinessColumn(name)
-			businessColumn.setUniqueName(columnUniqueName);
+			
+			getNamesInitializer().setUniqueName(businessColumn);
 			
 			businessColumnSet.getColumns().add(businessColumn);
 			
@@ -365,18 +374,17 @@ public class BusinessModelInitializer {
 	public BusinessIdentifier addIdentifier(PhysicalPrimaryKey physicalPrimaryKey, BusinessModel businessModel) {
 		BusinessIdentifier businessIdentifier;
 		PhysicalTable physicalTable;
-		BusinessTable businessTable;
-		BusinessColumn businessColumn;
+		List<BusinessTable> businessTables;
 		
 		businessIdentifier = null;
 		
 		try {
 			physicalTable = physicalPrimaryKey.getTable();
-			businessTable = businessModel.getBusinessTable( physicalTable );
+			businessTables = businessModel.getBusinessTableByPhysicalTable( physicalTable );
 				
 			
 			//create identifier iff  businessTable is present in businessModel
-			if (businessTable != null){
+			for(BusinessTable businessTable : businessTables) {
 				addIdentifier(businessTable, businessModel);
 			}
 	
@@ -477,21 +485,23 @@ public class BusinessModelInitializer {
 	public BusinessRelationship addRelationship(PhysicalForeignKey physicalForeignKey, BusinessModel businessModel) {
 		BusinessRelationship businessRelationship;
 		PhysicalTable physicalTable;
-		BusinessTable sourceBusinessTable;
-		BusinessTable destinationBusinessTable;
-		BusinessColumn businessColumn;
+		List<BusinessTable> sourceBusinessTables;
+		List<BusinessTable> destinationBusinessTables;
+		
 		
 		businessRelationship = null;
 		try {
 						
 			physicalTable = physicalForeignKey.getSourceTable();
-			sourceBusinessTable = businessModel.getBusinessTable( physicalTable );
+			sourceBusinessTables = businessModel.getBusinessTableByPhysicalTable( physicalTable );
 			
 			physicalTable = physicalForeignKey.getDestinationTable();
-			destinationBusinessTable = businessModel.getBusinessTable( physicalTable );
+			destinationBusinessTables = businessModel.getBusinessTableByPhysicalTable( physicalTable );
 			
-			if(sourceBusinessTable != null && destinationBusinessTable != null ) {
-				businessRelationship = addRelationship(sourceBusinessTable, destinationBusinessTable, physicalForeignKey);
+			for(BusinessTable sourceTable : sourceBusinessTables) {
+				for(BusinessTable destinationTable : destinationBusinessTables) {
+					businessRelationship = addRelationship(sourceTable, destinationTable, physicalForeignKey);
+				}
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business relationship from physical foreign key [" + physicalForeignKey.getSourceName() + "]", t);
@@ -919,13 +929,22 @@ public class BusinessModelInitializer {
 	/*
 	 * Check if business table name is already in use in the Business Model
 	 */
-	public boolean checkNameAlreadyUsed(BusinessModel businessModel, String BusinessTableName){
-		if (businessModel.getTable(BusinessTableName) != null){
+	public boolean checkNameAlreadyUsed(BusinessModel businessModel, String businessTableName){
+		if (businessModel.getTable(businessTableName) != null){
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	public BusinessModelNamesInitializer getNamesInitializer() {
+		return namesInitializer;
+	}
+	public void setNamesInitializer(
+			BusinessModelNamesInitializer namesInitializer) {
+		this.namesInitializer = namesInitializer;
+	}
+
 	
 	/*
 	 * Return the current maximum number used as identifier for InnerJoinRelationship objects

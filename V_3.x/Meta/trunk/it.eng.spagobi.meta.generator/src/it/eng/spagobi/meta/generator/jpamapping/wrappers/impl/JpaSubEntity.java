@@ -154,7 +154,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		IJpaTable table = getTable();
 		IJpaColumn jpaColumn = getParentColumn();
 		if (jpaColumn!=null){
-			name = "rel"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName()) + "(rel"+getParentColumn().getPropertyName().toLowerCase() + ")";
+			name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName())+"_in_"+relationship.getDestinationTable().getName() + "(rel_"+getParentColumn().getPropertyName() + "_in_"+relationship.getDestinationTable().getName()+")";
 		}
 		else {
 			logger.debug("Cannot retrieve parent column of [{}]",this);

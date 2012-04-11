@@ -22,15 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.initializer.name;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
-import it.eng.spagobi.meta.initializer.InitializationException;
 import it.eng.spagobi.meta.initializer.SpagoBIMetaInitializerPlugin;
-import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelObject;
-import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.ModelPropertyCategory;
-import it.eng.spagobi.meta.model.ModelPropertyType;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -39,30 +33,10 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.EList;
-import org.osgi.framework.Bundle;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Andrea Gioia
@@ -78,7 +52,7 @@ public class BusinessModelNamesInitializer {
 	
 	
 
-	public void setUniqueName(ModelObject o) {
+	private void setUniqueName(ModelObject o) {
 
 		if(o instanceof BusinessModel) {
 			setModelUniqueName((BusinessModel)o);
@@ -99,7 +73,7 @@ public class BusinessModelNamesInitializer {
 		}
 	}
 	
-	public void setName(ModelObject o) {
+	private void setName(ModelObject o) {
 
 		if(o instanceof BusinessModel) {
 			setModelName((BusinessModel)o);
@@ -122,7 +96,7 @@ public class BusinessModelNamesInitializer {
 	
 
 	
-	private void setModelName(BusinessModel o) {
+	public void setModelName(BusinessModel o) {
         
 		try {
 
@@ -133,7 +107,7 @@ public class BusinessModelNamesInitializer {
 
 	}
 
-	private void setModelUniqueName(BusinessModel o) {
+	public void setModelUniqueName(BusinessModel o) {
         
 		try {
 
@@ -144,41 +118,59 @@ public class BusinessModelNamesInitializer {
 
 	}
 	
-	private void setTableName(BusinessTable businessTable) {
-		try {
-			String physicalTableName = businessTable.getPhysicalTable().getName();
-			String baseName = StringUtils.capitalize(physicalTableName.replace("_", " "));
-			BusinessModel businessModel = businessTable.getPhysicalTable().getModel().getParentModel().getBusinessModels().get(0);
-			String name = baseName;
-			while(businessModel.getBusinessTableByUniqueName(name) != null) {
-				name += "_copy";
-			}
-			businessTable.setName(name);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	private void setTableUniqueName(BusinessTable businessTable) {
-		try {
-			String physicalTableName = businessTable.getPhysicalTable().getName();
-			String baseUniqueName = StringUtils.capitalize(physicalTableName.replace("_", " "));
-			BusinessModel businessModel = businessTable.getPhysicalTable().getModel().getParentModel().getBusinessModels().get(0);
-			
-			int index = 1;
-			String uniqueName = baseUniqueName;
-			while(businessModel.getBusinessTableByUniqueName(uniqueName) != null) {
-				uniqueName = baseUniqueName + index++;
-			}
-			businessTable.setUniqueName(uniqueName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void setTableName(BusinessTable businessTable) {
+		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
+		Assert.assertNotNull("Input parameter [businessTable] is not associated to any physical table", businessTable.getPhysicalTable());
+		String physicalTableName = businessTable.getPhysicalTable().getName();
+		String baseName = StringUtils.capitalize(physicalTableName.replace("_", " "));
+		setTableName(businessTable, baseName);	
 	}
 	
-	private void setViewName(BusinessView o) {
+	public void setTableName(BusinessTable businessTable, String baseName) {
+		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
+		Assert.assertNotNull("Input parameter [baseName] cannot be null", baseName);
+		BusinessModel businessModel = businessTable.getModel();
+		if(businessModel == null) {
+			businessModel = businessTable.getPhysicalTable().getModel().getParentModel().getBusinessModels().get(0);
+		}
+		
+		String name = baseName;
+		while(businessModel.getBusinessTableByName(name).size() > 0) {
+			name += " - Copy";
+		}
+		businessTable.setName(name);
+	}
+	
+	public void setTableUniqueName(BusinessTable businessTable) {
+		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
+		Assert.assertNotNull("Input parameter [businessTable] is not associated to any physical table", businessTable.getPhysicalTable());
+		
+		String physicalTableName = businessTable.getPhysicalTable().getName();
+		String baseUniqueName = StringUtils.capitalize(physicalTableName.replace("_", " "));
+		setTableUniqueName(businessTable, baseUniqueName);	
 		
 	}
-	private void setViewUniqueName(BusinessView o) {
+	
+	public void setTableUniqueName(BusinessTable businessTable, String baseUniqueName) {
+		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
+		Assert.assertNotNull("Input parameter [baseName] cannot be null", baseUniqueName);
+		BusinessModel businessModel = businessTable.getModel();
+		if(businessModel == null) {
+			businessModel = businessTable.getPhysicalTable().getModel().getParentModel().getBusinessModels().get(0);
+		}
+		
+		int index = 1;
+		String uniqueName = baseUniqueName;
+		while(businessModel.getBusinessTableByUniqueName(uniqueName) != null) {
+			uniqueName = baseUniqueName + index++;
+		}
+		businessTable.setUniqueName(uniqueName);
+	}
+	
+	public void setViewName(BusinessView o) {
+		
+	}
+	public void setViewUniqueName(BusinessView o) {
 		try {
 			
 		} catch (Exception e) {
@@ -187,10 +179,10 @@ public class BusinessModelNamesInitializer {
 	}
 	
 
-	private void setColumnName(SimpleBusinessColumn businessColumn) {
+	public void setColumnName(SimpleBusinessColumn businessColumn) {
 		
 	}
-	private void setColumnUniqueName(SimpleBusinessColumn businessColumn) {
+	public void setColumnUniqueName(SimpleBusinessColumn businessColumn) {
       
 		try {
 			String baseUniqueName;
@@ -209,10 +201,10 @@ public class BusinessModelNamesInitializer {
 		
 	}
 	
-	private void setCalculatedColumnName(CalculatedBusinessColumn o) {
+	public void setCalculatedColumnName(CalculatedBusinessColumn o) {
 		
 	}
-	private void setCalculatedColumnUniqueName(CalculatedBusinessColumn o) {
+	public void setCalculatedColumnUniqueName(CalculatedBusinessColumn o) {
 
 		try {
 		
@@ -222,17 +214,17 @@ public class BusinessModelNamesInitializer {
 		
 	}		
 	
-	private void setIdentifierName(BusinessIdentifier o) {
+	public void setIdentifierName(BusinessIdentifier o) {
 		
 	}
-	private void setIdentifierUniqueName(BusinessIdentifier o) {
+	public void setIdentifierUniqueName(BusinessIdentifier o) {
 		
 	}
 	
-	private void setRelationshipName(BusinessRelationship o) {
+	public void setRelationshipName(BusinessRelationship o) {
 		
 	}
-	private void setRelationshipUniqueName(BusinessRelationship o) {
+	public void setRelationshipUniqueName(BusinessRelationship o) {
 		try {
 			
 		} catch (Exception e) {

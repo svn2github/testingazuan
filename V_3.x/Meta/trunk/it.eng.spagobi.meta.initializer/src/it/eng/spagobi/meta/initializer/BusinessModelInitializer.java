@@ -157,33 +157,13 @@ public class BusinessModelInitializer {
 		
 		try {
 			businessTable = FACTORY.createBusinessTable();
-			businessTable.setPhysicalTable(physicalTable);
-			//check if BusinessTable name is already used
-			//setting original name as Unique Name
-			getNamesInitializer().setName(businessTable);
-			getNamesInitializer().setUniqueName(businessTable);
-			/*
-			String businessTableName = beutfyName(physicalTable.getName());
-			
-			businessTable.setUniqueName(beutfyName(physicalTable.getName()));		
-			
-			
-			boolean nameUsed = checkNameAlreadyUsed(businessModel, businessTableName );
-			if (!nameUsed){
-				businessTable.setName( businessTableName );
-			} else {
-				while(nameUsed){
-					businessTableName = businessTableName + "_copy";
-					nameUsed = checkNameAlreadyUsed(businessModel, businessTableName );
-				}	
-				businessTable.setName( businessTableName );
-			}
-			
-			*/
-			businessTable.setDescription( physicalTable.getDescription() );
 			businessTable.setModel(businessModel);
+			businessTable.setPhysicalTable(physicalTable);
 			
-			
+			getNamesInitializer().setTableUniqueName(businessTable);
+			getNamesInitializer().setTableName(businessTable);
+			businessTable.setDescription( physicalTable.getDescription() );
+						
 			addColumns(physicalTable, columnFilter, businessTable);
 			
 			businessModel.getTables().add(businessTable);
@@ -203,20 +183,19 @@ public class BusinessModelInitializer {
 		return businessTable;
 	}
 	
-	//create a BusinessTable with the name and description passed ad parameter
+	//create a BusinessTable with the name and description passed as parameter
 	public BusinessTable addTable(PhysicalTable physicalTable, IModelObjectFilter columnFilter, String businessTableName, String businessTableDescription, BusinessModel businessModel, boolean addIdentifier) {
 		BusinessTable businessTable;
 		
 		try {
 			businessTable = FACTORY.createBusinessTable();
 			
-			businessTable.setPhysicalTable(physicalTable);
-			businessTable.setName( businessTableName );
-			businessTable.setDescription( businessTableDescription);
 			businessTable.setModel(businessModel);
-			//setting original name as Unique Name
-			businessTable.setUniqueName(beutfyName(physicalTable.getName()));
+			businessTable.setPhysicalTable(physicalTable);
 			
+			getNamesInitializer().setTableName(businessTable, businessTableName);
+			getNamesInitializer().setTableUniqueName(businessTable, businessTableName);
+			businessTable.setDescription( businessTableDescription);
 			
 			addColumns(physicalTable, columnFilter, businessTable);
 			
@@ -242,19 +221,12 @@ public class BusinessModelInitializer {
 		BusinessTable businessTable;
 		try {
 			businessTable = FACTORY.createBusinessTable();
-			//check if name is already used
-			if (businessModel.getTable(tableName) != null){				
-				businessTable.setName(tableName+"_copy");
-				//setting original name as Unique Name
-				businessTable.setUniqueName(tableName+"_copy");	
-			}
-			else{
-				businessTable.setName(tableName);
-				//setting original name as Unique Name
-				businessTable.setUniqueName(tableName);	
-			}		
-			businessTable.setDescription("");
 			businessTable.setModel(businessModel);
+			
+			getNamesInitializer().setTableUniqueName(businessTable, tableName);
+			getNamesInitializer().setTableName(businessTable, tableName);
+			businessTable.setDescription(tableName);
+			
 			businessModel.getTables().add(businessTable);
 
 			getPropertiesInitializer().addProperties(businessTable);	
@@ -290,12 +262,11 @@ public class BusinessModelInitializer {
 			businessColumn = FACTORY.createSimpleBusinessColumn();
 			
 			businessColumn.setPhysicalColumn(physicalColumn);
-			businessColumn.setName( beutfyName(physicalColumn.getName()) );
-			businessColumn.setDescription( physicalColumn.getDescription() );
 			businessColumn.setTable(businessColumnSet);
-			//setting original name as Unique Name
-			
-			getNamesInitializer().setUniqueName(businessColumn);
+		
+			getNamesInitializer().setColumnUniqueName( businessColumn );
+			getNamesInitializer().setColumnName( businessColumn );
+			businessColumn.setDescription( physicalColumn.getDescription() );
 			
 			businessColumnSet.getColumns().add(businessColumn);
 			
@@ -313,23 +284,21 @@ public class BusinessModelInitializer {
 		
 		try {
 			calculatedBusinessColumn = FACTORY.createCalculatedBusinessColumn();
-			
-			calculatedBusinessColumn.setName( calculatedColumnDescriptor.getName() );
-			calculatedBusinessColumn.setDescription("Calculated Column "+calculatedColumnDescriptor.getName());
+	
 			calculatedBusinessColumn.setTable(businessColumnSet);
+			
 			//setting original name as Unique Name
 			calculatedBusinessColumn.setUniqueName(calculatedColumnDescriptor.getName() );
+			calculatedBusinessColumn.setName( calculatedColumnDescriptor.getName() );
+			calculatedBusinessColumn.setDescription("Calculated Column "+calculatedColumnDescriptor.getName());
 			
 			businessColumnSet.getColumns().add(calculatedBusinessColumn);
 			
 			getPropertiesInitializer().addProperties(calculatedBusinessColumn);
-			
 			//set calculated column expression text
 			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_EXPRESSION,calculatedColumnDescriptor.getExpression());
-
 			//set calculated column dataType
 			calculatedBusinessColumn.setProperty(BusinessModelPropertiesFromFileInitializer.CALCULATED_COLUMN_DATATYPE,calculatedColumnDescriptor.getDataType());
-			
 			//set column type
 			calculatedBusinessColumn.setProperty("structural.columntype","attribute");
 
@@ -340,8 +309,6 @@ public class BusinessModelInitializer {
 	}
 
 	public void editCalculatedColumn(CalculatedBusinessColumn calculatedBusinessColumn, CalculatedFieldDescriptor calculatedColumnDescriptor){
-		BusinessColumnSet businessColumnSet = calculatedBusinessColumn.getTable();
-		
 		try {		
 			calculatedBusinessColumn.setName( calculatedColumnDescriptor.getName() );	
 			

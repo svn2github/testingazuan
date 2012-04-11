@@ -118,6 +118,11 @@ public class BusinessModelNamesInitializer {
 
 	}
 	
+	// =======================================================
+	// TABLE
+	// =======================================================
+	
+	// name
 	public void setTableName(BusinessTable businessTable) {
 		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
 		Assert.assertNotNull("Input parameter [businessTable] is not associated to any physical table", businessTable.getPhysicalTable());
@@ -141,12 +146,15 @@ public class BusinessModelNamesInitializer {
 		businessTable.setName(name);
 	}
 	
+	// unique name
 	public void setTableUniqueName(BusinessTable businessTable) {
 		Assert.assertNotNull("Input parameter [businessTable] cannot be null", businessTable);
 		Assert.assertNotNull("Input parameter [businessTable] is not associated to any physical table", businessTable.getPhysicalTable());
 		
 		String physicalTableName = businessTable.getPhysicalTable().getName();
-		String baseUniqueName = StringUtils.capitalize(physicalTableName.replace("_", " "));
+		String baseUniqueName = physicalTableName.replace("_", " ");
+		baseUniqueName = baseUniqueName.trim().replace(" ", "_");
+		baseUniqueName = baseUniqueName.toLowerCase();
 		setTableUniqueName(businessTable, baseUniqueName);	
 		
 	}
@@ -167,6 +175,10 @@ public class BusinessModelNamesInitializer {
 		businessTable.setUniqueName(uniqueName);
 	}
 	
+	// =======================================================
+	// VIEW
+	// =======================================================
+	
 	public void setViewName(BusinessView o) {
 		
 	}
@@ -179,16 +191,22 @@ public class BusinessModelNamesInitializer {
 	}
 	
 
+	// =======================================================
+	// COLUMN
+	// =======================================================
 	public void setColumnName(SimpleBusinessColumn businessColumn) {
-		
+		String baseName = StringUtils.capitalize(businessColumn.getPhysicalColumn().getName().replace("_", " "));
+		businessColumn.setName(baseName);
 	}
+	
 	public void setColumnUniqueName(SimpleBusinessColumn businessColumn) {
       
 		try {
 			String baseUniqueName;
 			String physicalColumnName = businessColumn.getPhysicalColumn().getName();
-			baseUniqueName = StringUtils.capitalize(physicalColumnName.replace("_", " "));
+			baseUniqueName = physicalColumnName.replace("_", " ");
 			baseUniqueName = baseUniqueName.trim().replace(" ", "_");
+			baseUniqueName.toLowerCase();
 			int index = 1;
 			String uniqueName = baseUniqueName;
 			while(businessColumn.getTable().getSimpleBusinessColumnByUniqueName(uniqueName) != null) {
@@ -200,6 +218,10 @@ public class BusinessModelNamesInitializer {
 		}
 		
 	}
+	
+	// =======================================================
+	// CALCULATED COLUMN
+	// =======================================================
 	
 	public void setCalculatedColumnName(CalculatedBusinessColumn o) {
 		

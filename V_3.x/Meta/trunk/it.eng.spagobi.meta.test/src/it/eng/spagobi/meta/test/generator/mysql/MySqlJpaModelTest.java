@@ -61,8 +61,18 @@ public class MySqlJpaModelTest extends AbstractMappingGenerationTest {
 	// @see SPAGOBI-831
 	public void testTableClassNames() {
 		Map<String, IJpaTable> classNames = new HashMap<String, IJpaTable>();
+		Assert.assertEquals(businessModel.getBusinessTables().size(), jpaModel.getTables().size());
+		
 		for(IJpaTable table : jpaModel.getTables()) {
 			String className = table.getClassName();
+			
+			Assert.assertNotNull(className);
+			Assert.assertTrue(className.trim().length() > 0);
+			
+			char firstChar = className.charAt(0);
+			Assert.assertTrue("Class name does not start with an letter", Character.isLetter(firstChar));
+			Assert.assertTrue("Class name does not start with an uppercase letter", Character.isUpperCase(firstChar));
+			
 			
 			IJpaTable t = classNames.get(className);
 			String tName = t == null? null: t.getName();

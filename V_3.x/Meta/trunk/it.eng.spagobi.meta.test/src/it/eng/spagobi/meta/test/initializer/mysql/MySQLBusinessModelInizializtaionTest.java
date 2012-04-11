@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
@@ -60,8 +62,20 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	// =======================================================
 	// PROPERTIES
 	// =======================================================
-	
-	// TODO ...
+	public void testBusinessModelPakageProperty() {
+		ModelProperty packageProperty =  businessModel.getProperties().get(JpaProperties.MODEL_PACKAGE);
+	    Assert.assertNotNull("Property [" + JpaProperties.MODEL_PACKAGE + "] is not defined in business model", packageProperty);
+		
+		String packageName = null;
+		//check if property is setted, else get default value
+	    if (packageProperty.getValue() != null){
+	    	packageName = packageProperty.getValue();
+	    } else {
+	    	packageName = packageProperty.getPropertyType().getDefaultValue();
+	    }
+	    Assert.assertNotNull("Property [" + JpaProperties.MODEL_PACKAGE + "] have no value", packageName);
+    }
+    
 	
 	// =======================================================
 	// TABLES
@@ -81,42 +95,64 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	
 	public void testBusinessModelTableUniqueNames() {
 		Map<String, String> tableUniqueNames = new HashMap<String, String>();
+		
 		for(BusinessTable table: businessModel.getBusinessTables()) {
 			String tableUniqueName = table.getUniqueName();
 			String physicalTableName = table.getPhysicalTable().getName();
-			Assert.assertFalse("Unique name [] of table [" + physicalTableName + "] is equal to unique name of table [" + tableUniqueNames.get(tableUniqueName)+ "]"
-					, tableUniqueNames.containsKey(tableUniqueName));
-			tableUniqueNames.put(tableUniqueName, physicalTableName);
+			
+			Assert.assertNotNull("Business table associated with physical table [" + physicalTableName + "] have no unique name", tableUniqueName);
+			Assert.assertNotNull("Business table associated with physical table [" + physicalTableName + "] have an empty unique name", physicalTableName.trim().length() > 0 );
+			
+			char firstChar = tableUniqueName.charAt(0);
+			Assert.assertTrue("The unique name [" + tableUniqueName + "] of business table associated with physical table [" + physicalTableName + "] does not start with a letter", Character.isLetter(firstChar));
+						
+			Assert.assertFalse("Unique name [" + tableUniqueName + "] of table [" + physicalTableName + "] is equal to unique name of table [" + tableUniqueNames.get(tableUniqueName.toLowerCase())+ "]"
+					, tableUniqueNames.containsKey(tableUniqueName.toLowerCase()));
+			
+			// note: name must be unique in a case unsensitive way: !name1.equalsIgnoreCase(name2)
+			tableUniqueNames.put(tableUniqueName.toLowerCase(), physicalTableName);
 		}
 	}
 	
+	public void testBusinessModelTableNames() {
+		for(BusinessTable table: businessModel.getBusinessTables()) {
+			String tableUniqueName = table.getName();
+			Assert.assertNotNull("Business table associated with physical table [" + table.getPhysicalTable().getName() + "] have no name", tableUniqueName);
+		}
+	}
+
+	
+	// =======================================================
+	// COLUMNS
+	// =======================================================
+	
+
 	public void testBusinessModelColumnUniqueNames() {
 		for(BusinessTable table: businessModel.getBusinessTables()) {
 			String physicalTableName = table.getPhysicalTable().getName();
 			Map<String, String> columnUniqueNames = new HashMap<String, String>();
-			for(BusinessColumn column: table.getColumns()) {
+			for(SimpleBusinessColumn column: table.getSimpleBusinessColumns()) {
 				String columnUniqueName = column.getUniqueName();
-				String physicalColumnName = column.getName();
-				if(column instanceof SimpleBusinessColumn) {
-					physicalColumnName = ((SimpleBusinessColumn)column).getPhysicalColumn().getName();
-				}
+				String physicalColumnName = column.getPhysicalColumn().getName();				
 				
+				Assert.assertNotNull("Business column associated to column [" + physicalColumnName + "] of physical table [" + physicalTableName + "] have no  unique name", columnUniqueName);
 				Assert.assertFalse("Column [" + physicalColumnName + "] and column [" + columnUniqueNames.get(columnUniqueName) + "] of table [" + physicalTableName + "] have the same unique name [" + columnUniqueName + "]"
 						, columnUniqueNames.containsKey(columnUniqueName));
 				
 				columnUniqueNames.put(columnUniqueName, physicalColumnName);
 			}
 		}
-		
 	}
 	
-	
-	
-	// =======================================================
-	// COLUMNS
-	// =======================================================
-	
-	
+	public void testBusinessModelColumnNames() {
+		for(BusinessTable table: businessModel.getBusinessTables()) {
+			String physicalTableName = table.getPhysicalTable().getName();
+			for(SimpleBusinessColumn column: table.getSimpleBusinessColumns()) {
+				String columnName = column.getName();
+				Assert.assertNotNull("Business column associated with physical column [" + column.getPhysicalColumn().getName() + "] of table [" + physicalTableName + "] have no name ", columnName);
+			}
+		}
+	}
 	
 	// =======================================================
 	// IDENTIFIERS

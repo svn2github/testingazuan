@@ -1,7 +1,11 @@
 package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
@@ -9,12 +13,17 @@ import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Properties;
+
+import org.junit.Assert;
 
 
 public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGenerationTest {
 
 	static JpaMappingCodeGenerator jpaMappingCodeGenerator;
+	static JpaModel jpaModel;
 	
 	public void setUp() throws Exception {
 		super.setUp();
@@ -33,6 +42,7 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGeneration
 			
 			if(jpaMappingCodeGenerator == null)  {
 				jpaMappingCodeGenerator = TestGeneratorFactory.createCodeGeneraor();
+				jpaModel = new JpaModel(businessModel);
 				generator = jpaMappingCodeGenerator;
 			}
 		} catch(Exception t) {
@@ -42,14 +52,7 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGeneration
 		}
 	}
 	
-	public void doTestGeneratorState() {
-		File srcFolder = jpaMappingCodeGenerator.getSrcDir();
-		assertNotNull("src folder cannot be null", srcFolder);
-		assertTrue("src folder [" + srcFolder +"] does not exist", srcFolder.exists());
-		assertTrue("src folder [" + srcFolder +"] is a file not a folder as expected", srcFolder.isDirectory());
-		assertTrue("src folder [" + srcFolder +"] cannot be read", srcFolder.canRead());
-		assertTrue("src folder [" + srcFolder +"] cannot be write", srcFolder.canWrite());
-		
+	public void testGeneratorState() {
 		File templateFolder = jpaMappingCodeGenerator.getTemplateDir();
 		assertNotNull("bin folder cannot be null", templateFolder);
 		assertTrue("src folder [" + templateFolder +"] does not exist", templateFolder.exists());
@@ -97,6 +100,16 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGeneration
 		assertTrue("Impossible to find view.json file in folder [" + jpaMappingCodeGenerator.getSrcDir() + "]", viewFile.exists());
 	}	
 	
+	public void testJavaFilesExistence() {
+		for(IJpaTable jpaTable : jpaModel.getTables()) {
+			File outputDir = new File(jpaMappingCodeGenerator.getSrcDir(), StringUtils.strReplaceAll(jpaTable.getPackage(), ".", "/") );
+			Assert.assertTrue("Output folder [" + outputDir + "] for table [" + jpaTable.getName() + "] does not exist", outputDir.exists());
+			File outputFile = new File(outputDir, jpaTable.getClassName()+".java");
+			Assert.assertTrue("Output file [" + outputFile +"] for table [" + jpaTable.getName() + "] does not exist", outputFile.exists());
+		}
+	}	
+	
+	
 	public void testPersistenceUnitBaseContent() {
 		String fileContents;
 		
@@ -119,5 +132,22 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGeneration
 		assertTrue(fileContents.contains("<class>it.eng.spagobi.meta.Position</class>"));
 		
 		assertTrue(fileContents.contains("<property name=\"eclipselink.session.customizer\" value=\"it.eng.qbe.datasource.jpa.JNDICustomizer\"/>"));
+	}
+	
+	public void testLabelFileContent() {
+		Properties properties = new Properties();
+		File labelsFile = new File(jpaMappingCodeGenerator.getSrcDir(), "label.properties");
+		try {
+			FileInputStream in = new FileInputStream(labelsFile);
+			properties.load(in);
+			in.close();
+		} catch (Throwable e) {
+			fail(e.getMessage());
+		}
+		
+		for(Object key : properties.keySet()) {
+			String value = properties.getProperty(key.toString());
+			Assert.assertFalse("The value [" + value + "] of property [" + key.toString() + "] contains char $", value.contains("$"));
+		}
 	}
 }

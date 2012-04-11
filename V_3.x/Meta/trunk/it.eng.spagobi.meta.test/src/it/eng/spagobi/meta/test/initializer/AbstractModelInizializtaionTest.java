@@ -43,8 +43,6 @@ public class AbstractModelInizializtaionTest extends TestCase {
 		, "store_ragged"
 		, "test_names"
 		, "time_by_day"
-		//, "tmpsbiqbe_bi"
-		//, "tmpsbiqbe_biadmin"
 		, "warehouse"
 		, "warehouse_class"
 	};

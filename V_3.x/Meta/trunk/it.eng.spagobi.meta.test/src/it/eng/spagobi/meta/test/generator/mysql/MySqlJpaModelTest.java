@@ -95,10 +95,10 @@ public class MySqlJpaModelTest extends AbstractMappingGenerationTest {
 				propertyName = column.getPropertyName();
 				
 				Assert.assertFalse("In table [" + table.getName() + "] the name [" + propertyName + "] " +
-						"of the property associated to column [" + column.getName() + "] " +
+						"of the property associated to column [" + column.getColumnNameDoubleQuoted() + "] " +
 						"is already used by property associated to column [" + propertyNames.get(propertyName) + "]"
 						, propertyNames.containsKey(propertyName));
-				propertyNames.put(propertyName, column.getName());
+				propertyNames.put(propertyName, column.getColumnNameDoubleQuoted());
 			}
 			
 			// test composed key property name

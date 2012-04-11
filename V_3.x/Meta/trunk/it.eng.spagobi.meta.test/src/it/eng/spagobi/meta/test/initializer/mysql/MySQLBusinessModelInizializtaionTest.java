@@ -1,6 +1,7 @@
 package it.eng.spagobi.meta.test.initializer.mysql;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -71,9 +72,10 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 		Assert.assertEquals(tableNames.length, businessModel.getTables().size());
 		
 		for(int i = 0; i < tableNames.length; i++) {
-			PhysicalTable physicalTable = physicalModel.getTable(tableNames[i]);
-			BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
-			Assert.assertNotNull("Business model does not contain table [" + tableNames[i] + "]", businessTable);
+			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(tableNames[i]);
+			Assert.assertNotNull(businessTables);
+			Assert.assertFalse("Business model does not contain table [" + tableNames[i] + "]", businessTables.size() == 0);
+			Assert.assertFalse("Business model contains table [" + tableNames[i] + "] more than one time", businessTables.size() > 1);
 		}	
 	}
 	

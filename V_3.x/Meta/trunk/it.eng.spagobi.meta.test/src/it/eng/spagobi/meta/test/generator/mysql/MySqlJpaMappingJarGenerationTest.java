@@ -85,4 +85,15 @@ public class MySqlJpaMappingJarGenerationTest extends AbstractMappingGenerationT
 			fail();
 		}
 	}
+	
+	/**
+	 * Test the model generation when to the business model the same physical 
+	 * table is added more than one time.
+	 * 
+	 * @see BusinessModelInitializer row 374 for identifier problems
+	 * @see BusinessModelInitializer row 492 for relationship problems
+	 */
+	public void _testDoubleImportedTableModelGeneration() {
+		fail();
+	}
 }

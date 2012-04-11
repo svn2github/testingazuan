@@ -57,6 +57,7 @@ public class ModelManager {
 		businessModel = model.getBusinessModels().get(0);
 	}
 	
+	/*
 	// TODO move to an utility class
 	public BusinessTable getBusinessTableByPhysicalTableName(String physicalTableName) {
 		PhysicalTable physicalTable =  physicalModel.getTable(physicalTableName);
@@ -105,4 +106,5 @@ public class ModelManager {
 //		}
 		
 	}
+	*/
 }

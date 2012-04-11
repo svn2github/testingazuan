@@ -1,7 +1,10 @@
 package it.eng.spagobi.meta.test.edit.mysql;
 
+import java.util.List;
+
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
@@ -49,26 +52,34 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 	
 	public void testBusinessTableGetByPhysicalTable() {
 		PhysicalTable physicalTable =  physicalModel.getTable("currency");
-		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
+		List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(physicalTable);
+		Assert.assertNotNull( businessTables );
+		Assert.assertEquals( 1, businessTables.size());		
+		BusinessTable businessTable = businessTables.get(0);
 	
 		Assert.assertNotNull(businessTable);
 	}
 	
 	public void testBusinessColumnGetByPhysicalColumn() {
 		PhysicalTable physicalTable =  physicalModel.getTable("currency");
-		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
-		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
-		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		BusinessTable businessTable = businessModel.getBusinessTableByPhysicalTable(physicalTable).get(0);
 		
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");		
+		List<SimpleBusinessColumn> businessColumns = businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn);
+		Assert.assertNotNull( businessColumns );
+		Assert.assertEquals( 1, businessColumns.size());	
+		
+		BusinessColumn businessColumn = businessColumns.get(0);
 		Assert.assertNotNull(businessColumn);
 		Assert.assertTrue( businessTable.getColumns().contains(businessColumn) );
 	}
 	
 	public void testBusinessColumnGetByIndex() {
 		PhysicalTable physicalTable =  physicalModel.getTable("currency");
+		BusinessTable businessTable = businessModel.getBusinessTableByPhysicalTable(physicalTable).get(0);
+		
 		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
-		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
-		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).get(0);
 		
 		int columnIndex = businessTable.getColumns().indexOf(businessColumn);
 		Assert.assertTrue( columnIndex != -1 );
@@ -80,13 +91,15 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 	
 	public void testBusinessColumnGetByName() {
 		PhysicalTable physicalTable =  physicalModel.getTable("currency");
-		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
-		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
-		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		BusinessTable businessTable = businessModel.getBusinessTableByPhysicalTable(physicalTable).get(0);
 		
-		String businessColumnName = businessColumn.getName();
-		Assert.assertNotNull(businessColumnName);
-		BusinessColumn column = businessTable.getSimpleBusinessColumn( businessColumnName );
+		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).get(0);
+		
+		
+		String businessColumnUniqueName = businessColumn.getUniqueName();
+		Assert.assertNotNull(businessColumnUniqueName);
+		BusinessColumn column = businessTable.getSimpleBusinessColumnByUniqueName( businessColumnUniqueName );
 		Assert.assertNotNull(column);
 		Assert.assertTrue( column.equals(businessColumn) );
 		Assert.assertTrue( column ==  businessColumn);
@@ -95,15 +108,18 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 	public void testBusinessColumnDeletion() {
 		PhysicalTable physicalTable =  physicalModel.getTable("currency");
 		PhysicalColumn physicalColumn = physicalTable.getColumn("currency");
-		BusinessTable businessTable = businessModel.getBusinessTable(physicalTable);
-		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumn(physicalColumn);
+		
+		
+		BusinessTable businessTable = businessModel.getBusinessTableByPhysicalTable(physicalTable).get(0);
+		BusinessColumn businessColumn = businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).get(0);
+		
 		String businessColumnUniqueName = businessColumn.getUniqueName();
 		
 		Assert.assertEquals(4, businessTable.getColumns().size());
 		Assert.assertTrue(businessTable.getColumns().remove(businessColumn));
 		Assert.assertEquals(3, businessTable.getColumns().size());
-		Assert.assertNull( businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn) );
-		Assert.assertEquals( 1, businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).size());
+		Assert.assertNotNull( businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn) );
+		Assert.assertEquals( 0, businessTable.getSimpleBusinessColumnsByPhysicalColumn(physicalColumn).size());
 		Assert.assertNull( businessTable.getSimpleBusinessColumnByUniqueName( businessColumnUniqueName ) );	
 	}
 	

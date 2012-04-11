@@ -92,16 +92,16 @@ public class SerializationTestCase extends AbtractModelTestCase {
 		
 		BusinessModel businessModel = model.getBusinessModels().get(0);
 		BusinessTable table = (BusinessTable)businessModel.getTables().get(0);
-		String tableName = table.getName();
+		String tableUniqueName = table.getUniqueName();
 		
-		Assert.assertNotNull("Impossible to get table [" + tableName+ "]", businessModel.getBusinessTable(tableName));
-		Assert.assertTrue("Ipossible to remove table [" + tableName+ "]", businessModel.getTables().remove(table) );
-		Assert.assertNull("Table [" + tableName+ "] has not been removed porperly", businessModel.getBusinessTable(tableName));
+		Assert.assertNotNull("Impossible to get table [" + tableUniqueName+ "]", businessModel.getBusinessTableByUniqueName(tableUniqueName));
+		Assert.assertTrue("Ipossible to remove table [" + tableUniqueName+ "]", businessModel.getTables().remove(table) );
+		Assert.assertNull("Table [" + tableUniqueName+ "] has not been removed porperly", businessModel.getBusinessTableByUniqueName(tableUniqueName));
 		
 		serializer.serialize(model, outFile);
 		testModel = serializer.deserialize(outFile);
 		businessModel = testModel.getBusinessModels().get(0);
-		Assert.assertNull("Table [" + tableName+ "] has not been removed porperly", businessModel.getBusinessTable(tableName));
+		Assert.assertNull("Table [" + tableUniqueName+ "] has not been removed porperly", businessModel.getBusinessTableByUniqueName(tableUniqueName));
 		
 	}
 }

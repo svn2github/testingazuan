@@ -196,44 +196,95 @@ public interface BusinessModel extends ModelObject {
 	 * @generated
 	 */
 	EList<BusinessViewInnerJoinRelationship> getJoinRelationships();
+	
+	
+	
 
 	// =========================================================================
 	// Utility methods
 	// =========================================================================
 	
+	/**
+	 * @return the identifier of the given column set (BusinessTable or BusinessView)
+	 */
 	BusinessIdentifier getIdentifier(BusinessColumnSet table);
+	
+	// =========================================
+	// TABLES (BUSINESS TABLES + BUSINESS VIEWS)
+	// =========================================
+	
+	/**
+	 * Returns the tables (business table or business view) whose unique name is 
+	 * equal to uniqueName if any, null otherwise.
+	 * 
+	 * @param uniqueName the unique name of the table to look for
+	 * @return the table whose unique name is equal to uniqueName if any, null otherwise.
+	 */
+	BusinessColumnSet getTableByUniqueName(String uniqueName);
+	
+	/**
+	 * @deprecated This method is conceptually wrong because to one table name can be associated 
+	 * multiple Tables. This method implementation return only the first table whose name
+	 * match the name parameter. Use getTableByUniqueName instead.
+	 * 
+	 * @param name the name of the table to look for
+	 * @return the first table whose name is equal to parameter name
+	 */
+	BusinessColumnSet getTable(String name);
+	
+	// =========================================
+	// BUSINESS TABLES
+	// =========================================
 	
 	/**
 	 * @return all the the business tables contained in the model
 	 */
 	List<BusinessTable> getBusinessTables();
+
+	
+	/**
+	 * Returns the business table (business view are not included in the search) whose unique name is 
+	 * equal to uniqueName if any, null otherwise.
+	 * 
+	 * @param uniqueName the unique name of the business table to look for
+	 * @return the business table whose unique name is equal to uniqueName if any, null otherwise.
+	 */
+	BusinessTable getBusinessTableByUniqueName(String uniqueName);
+	
+	/**
+	 * Return a list of all business tables associated with the given physicalTable.
+	 * 
+	 * @param physicalTable a physicalTable 
+	 * @return a list of all business tables associated with the given physicalTable. Never return null. If there 
+	 * are no business tables associated with the given physical table an empty list will be returned.
+	 */
+	List<BusinessTable> getBusinessTableByPhysicalTable(PhysicalTable physicalTable);
+	
+	/**
+	 * Return a list of all business tables associated with the the physical table whose name is equal to name.
+	 * 
+	 * @param name the name of the target physical table
+	 * @return a list of all business tables associated with the the physical table whose name is equal to name. 
+	 * Never return null. If there are no business tables associated with the given physical table an empty list will be returned.
+	 */
+	List<BusinessTable> getBusinessTableByPhysicalTable(String name);
+	
+	/**
+	 * Delete the businessTable whose unique name is equal to parameter uniqueName.
+	 * 
+	 * @param uniqueName the unique name of the business table to delete
+	 * @return true if a table with the given unique name exists false otherwise
+	 */
+	boolean deleteBusinessTableByUniqueName(String uniqueName);
+
+	
+	// =========================================
+	// BUSINESS TABLES
+	// =========================================
 	
 	/**
 	 * @return all the the business views contained in the model
 	 */
 	List<BusinessView> getBusinessViews();
-	
-	
-	/**
-	 * @return the business table with the given name
-	 */
-	BusinessTable getBusinessTable(String name);
-	
-	boolean deleteBusinessTable(String name);
-	
-	/**
-	 * @deprecated need a fix. To one physicalTable can be associated multiple businessTables
-	 * 
-	 * @return the business table associated to the given physical table
-	 */
-	BusinessTable getBusinessTable(PhysicalTable physicalTable);
-	
-	/**
-	 * Precondition: Note that name must be unique!
-	 * @return the the business column set(table or view) set with the given name.
-	 */
-	BusinessColumnSet getTable(String name);
-	
-	
 
 } // BusinessModel

@@ -485,6 +485,50 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 	// =========================================================================
 	
 	@Override
+	public BusinessIdentifier getIdentifier(BusinessColumnSet table) {
+		// assert table not null
+		for(BusinessIdentifier identifier: getIdentifiers() ) {
+			if( table.equals(identifier.getTable()) ) {
+				return identifier;
+			}
+		}
+		
+		return null;
+	}
+	
+	// =========================================
+	// TABLES (BUSINESS TABLES + BUSINESS VIEWS)
+	// =========================================
+	@Override
+	public BusinessColumnSet getTableByUniqueName(String uniqueName) {
+		if(uniqueName == null) {
+			return null;
+		}
+		for(BusinessColumnSet table : getTables()) {
+			if( uniqueName.equals( table.getUniqueName() ) ) {
+				return table;
+			}
+		}
+		return null;	
+	}
+	
+	// -- deprecated ---
+	
+	@Override
+	public BusinessColumnSet getTable(String name){
+		for(int i = 0; i < getTables().size(); i++) {
+			if( name.equals( getTables().get(i).getName() ) ) {
+				return getTables().get(i);
+			}
+		}
+		return null;		
+	}
+	
+	// =========================================
+	// BUSINESS TABLES
+	// =========================================
+	
+	@Override
 	public List<BusinessTable> getBusinessTables() {
 		List<BusinessTable> businessTables;
 		
@@ -497,21 +541,48 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 		return businessTables;
 	}
 	
+	
 	@Override
-	public BusinessTable getBusinessTable(String name) {
-		for(int i = 0; i < getTables().size(); i++) {
-			if( (getTables().get(i) instanceof BusinessTable) 
-					&& name.equals( getTables().get(i).getName() ) ) {
-				return (BusinessTable)getTables().get(i);
+	public BusinessTable getBusinessTableByUniqueName(String uniqueName) {
+		
+		if(uniqueName == null) return null;
+		
+		for(BusinessTable table : getBusinessTables()) {
+			if( uniqueName.equals( table.getUniqueName() ) ) {
+				return table;
 			}
 		}
-		return null;
+		return null;		
 	}
 	
-	public boolean deleteBusinessTable(String name) {
-		BusinessTable targetTabe = getBusinessTable(name);
+	@Override
+	public List<BusinessTable> getBusinessTableByPhysicalTable(PhysicalTable physicalTable) {
+		List<BusinessTable> tables = new ArrayList<BusinessTable>();
+		
+		if(physicalTable == null) return tables;
+		for(BusinessTable table : getBusinessTables()) {
+			if( table.getPhysicalTable().equals( physicalTable ) ) {
+				tables.add(table);
+			}
+		}
+		return tables;
+	}
+	
+	@Override
+	public List<BusinessTable> getBusinessTableByPhysicalTable(String name) {
+		List<BusinessTable> tables = new ArrayList<BusinessTable>();
+		PhysicalModel physicalModel = this.getPhysicalModel();
+		if(physicalModel == null) return tables; 
+		PhysicalTable physicalTable = physicalModel.getTable(name);
+		if(physicalTable == null) return tables; 
+		return getBusinessTableByPhysicalTable(physicalTable);
+	}
+	
+	@Override
+	public boolean deleteBusinessTableByUniqueName(String uniqueName) {
+		BusinessTable targetTabe = getBusinessTableByUniqueName(uniqueName);
 		if(targetTabe != null) {
-			// remove the idetifier of the business table
+			// remove the identifier of the business table
 			BusinessIdentifier removedIdentifier = targetTabe.getIdentifier();
 			if(removedIdentifier != null) {
 				getIdentifiers().remove(removedIdentifier);
@@ -525,7 +596,12 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 			return true;
 		}
 		return false;
+		
 	}
+	
+	// =========================================
+	// BUSINESS VIEWS
+	// =========================================
 	
 	@Override
 	public List<BusinessView> getBusinessViews() {
@@ -539,60 +615,10 @@ public class BusinessModelImpl extends ModelObjectImpl implements BusinessModel 
 		}
 		return businessViews;
 	}
-	
-	
-
-	@Override
-	public BusinessTable getBusinessTable(PhysicalTable physicalTable) {
-		
-		BusinessTable businessTable = null;
-		
-		try {
-			
-			assert physicalTable != null : "Input parameter [physicalTable] cannot be null";
-			
-			for(int i = 0; i < getTables().size(); i++) {
-				if( !(getTables().get(i) instanceof BusinessTable) )  continue;
-				
-				businessTable = (BusinessTable)getTables().get(i);
-				assert businessTable.getPhysicalTable() != null : "attribute [physicalTable] of business table [" + businessTable.getName() + "] cannot be null";
-				
-				if( physicalTable.equals( businessTable.getPhysicalTable() ) ) {
-					return businessTable;
-				}
-			}
-		} catch(Throwable t) {
-			throw new ModelObjectNotFoundException("Impossible to get business table", t);
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public BusinessColumnSet getTable(String name){
-		for(int i = 0; i < getTables().size(); i++) {
-			if( name.equals( getTables().get(i).getName() ) ) {
-				return getTables().get(i);
-			}
-		}
-		return null;		
-	}
 
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getParentModel().getPropertyTypes();
-	}
-
-	@Override
-	public BusinessIdentifier getIdentifier(BusinessColumnSet table) {
-		// assert table not null
-		for(BusinessIdentifier identifier: getIdentifiers() ) {
-			if( table.equals(identifier.getTable()) ) {
-				return identifier;
-			}
-		}
-		
-		return null;
 	}
 
 } //BusinessModelImpl

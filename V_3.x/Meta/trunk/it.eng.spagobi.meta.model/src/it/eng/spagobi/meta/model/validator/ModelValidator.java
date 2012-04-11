@@ -144,8 +144,8 @@ public class ModelValidator {
 		}
 		BusinessColumnSet table = identifier.getTable();
 		
-		String tableName = table.getName();
-		if(model.getTable(tableName) == null) {
+		String tableUniqueName = table.getUniqueName();
+		if(model.getTableByUniqueName(tableUniqueName) == null) {
 			diagnosticMessages.add("Business identifier  [" + identifier.getName() + "] is defined on table [" + table.getName() + "] that does not belong to the model");
 			return false;
 		}

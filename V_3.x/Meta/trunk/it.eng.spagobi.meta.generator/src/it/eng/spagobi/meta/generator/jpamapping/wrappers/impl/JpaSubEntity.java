@@ -38,6 +38,7 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -59,6 +60,12 @@ public class JpaSubEntity implements IJpaSubEntity {
 		this.parent = parent;
 		this.relationship = relationship;
 		this.children = new ArrayList<JpaSubEntity>();
+	}
+	
+	public static String nameToJavaVariableName(String name) {
+		String varName;
+		varName = name.replaceAll(" ", "_");
+		return varName;
 	}
 
 	public JpaSubEntity getParent() {
@@ -154,7 +161,8 @@ public class JpaSubEntity implements IJpaSubEntity {
 		IJpaTable table = getTable();
 		IJpaColumn jpaColumn = getParentColumn();
 		if (jpaColumn!=null){
-			name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName())+"_in_"+relationship.getDestinationTable().getName() + "(rel_"+getParentColumn().getPropertyName() + "_in_"+relationship.getDestinationTable().getName()+")";
+			name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName())+"_in_"+relationship.getDestinationTable().getName() + "(rel_"+getParentColumn().getPropertyName() + "_in_"+relationship.getDestinationTable().getUniqueName()+")";
+			name = nameToJavaVariableName(name);
 		}
 		else {
 			logger.debug("Cannot retrieve parent column of [{}]",this);

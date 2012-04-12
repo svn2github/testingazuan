@@ -25,6 +25,7 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
@@ -105,10 +106,12 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 								}
 							}
 						} else {
-							showError("Strange behaviour from command " + mostRecentCommand.getLabel(), "Impossible to resolve root model from edit command affected object [" + modelObject + "]");
+							if ((!(mostRecentCommand instanceof RemoveColumnsFromBusinessTable) ) && (!(modelObject instanceof BusinessView))) {
+								showError("Strange behaviour from command " + mostRecentCommand.getLabel(), "Impossible to resolve root model from edit command affected object [" + modelObject + "]");
+							}
 						}
 					} else {
-						showError("Starnge behaviour from command " + mostRecentCommand.getLabel(), "Edit command does not specify any affected object");
+						showError("Strange behaviour from command " + mostRecentCommand.getLabel(), "Edit command does not specify any affected object");
 					}
 				}
 			});

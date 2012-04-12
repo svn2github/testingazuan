@@ -95,6 +95,8 @@ public class JpaViewInnerJoinRelatioship {
 					JpaColumn jpaColumn = new JpaColumn(innerDestinationTable, (SimpleBusinessColumn)businessColumn);
 					destinationColumns.add( jpaColumn );
 				}
+			} else {
+				
 			}
 		}
 		

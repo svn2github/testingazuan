@@ -190,6 +190,7 @@ public class BusinessModelDropFromPhysicalModelHandler {
 	public boolean executeAddPhysicalTableToBusinessColumnSetAction(BusinessColumnSet businessColumnSet, List<PhysicalTable> sourcePhysicalTables) {
 		boolean isBusinessView = false;
 		BusinessView businessView = null;
+		List<PhysicalColumn> physicalColumns = null;
 		if (businessColumnSet instanceof BusinessView){
 			isBusinessView = true;
 			businessView = (BusinessView)businessColumnSet;
@@ -222,7 +223,7 @@ public class BusinessModelDropFromPhysicalModelHandler {
 
 		} else {
 			//Add All Physical Columns to the BusinessView
-			List<PhysicalColumn> physicalColumns = new ArrayList<PhysicalColumn>();
+			physicalColumns = new ArrayList<PhysicalColumn>();
 			for  (PhysicalTable sourcePhysicalTable : sourcePhysicalTables){
 				physicalColumns.addAll(sourcePhysicalTable.getColumns());
 			}
@@ -244,14 +245,23 @@ public class BusinessModelDropFromPhysicalModelHandler {
 		
 		//this will "undo" the operation of upgrade to Business View if the user didn't add any join path in the previous wizard
 		if ( (!isBusinessView) && ((businessView.getJoinRelationships().size()) < 1) ){
+			if ((physicalColumns != null) && (!physicalColumns.isEmpty())){
+				executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
+			}
 			BusinessModelInitializer initializer = new BusinessModelInitializer();
-			initializer.downgradeBusinessViewToBusinessTable(businessView);
+			businessColumnSet = initializer.downgradeBusinessViewToBusinessTable(businessView);
 		}
-		
-		
-		//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
-		businessColumnSet = ((BusinessModel)model).getTableByUniqueName(businessColumnSet.getUniqueName());
-		
+		else {
+			//Operation cancelled 
+			if (dialog.getReturnCode()== Window.CANCEL){
+				if ((physicalColumns != null) && (!physicalColumns.isEmpty())){
+					executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
+				}
+			}
+			//update businessColumnSet reference in case that BusinessTable upgraded to BusinessView
+			businessColumnSet = ((BusinessModel)model).getTableByUniqueName(businessColumnSet.getUniqueName());
+		}
+
 		return true;
 	}
 	
@@ -279,6 +289,7 @@ public class BusinessModelDropFromPhysicalModelHandler {
 				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 				dialog.create();
 				dialog.open();
+				//Operation cancelled then remove added columns
 				if (dialog.getReturnCode()== Window.CANCEL){
 					if (!physicalColumns.isEmpty()){
 						executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
@@ -345,8 +356,6 @@ public class BusinessModelDropFromPhysicalModelHandler {
 			//if target table has a different PhysicalTable, then upgrade to BusinessView is necessary
 			else {
 				//upgrade BusinessTable to BusinessView
-				
-			
 				BusinessModelInitializer initializer = new BusinessModelInitializer();
 				BusinessView businessView = initializer.upgradeBusinessTableToBusinessView(businessTable);
 				Command editBusinessViewInnerJoinWizard =  editingDomain.createCommand
@@ -360,12 +369,13 @@ public class BusinessModelDropFromPhysicalModelHandler {
 				WizardDialog dialog = new WizardDialog(new Shell(), wizard);
 				dialog.create();
 				dialog.open();
-				if (dialog.getReturnCode()== Window.CANCEL){
+				//Operation cancelled OR no join path specified then downgrade
+				if ((dialog.getReturnCode()== Window.CANCEL) || ( (businessView.getJoinRelationships().size()) < 1) ){
 					executeRemoveColumnsToBusinessTableAction(businessView, physicalColumns);
+					businessColumnSet = initializer.downgradeBusinessViewToBusinessTable(businessView);					
+				} else {
+					businessColumnSet = businessView;
 				}
-				
-				businessColumnSet = businessView;
-
 			}
 		}
 		else {

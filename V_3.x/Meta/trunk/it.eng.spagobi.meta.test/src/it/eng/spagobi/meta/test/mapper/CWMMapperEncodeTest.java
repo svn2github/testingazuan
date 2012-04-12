@@ -13,7 +13,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.test.TestConnectionFactory;
 import it.eng.spagobi.meta.test.TestCostants;
-import it.eng.spagobi.meta.util.ModelPrinter;
+import it.eng.spagobi.meta.test.utils.ModelPrinter;
 
 
 

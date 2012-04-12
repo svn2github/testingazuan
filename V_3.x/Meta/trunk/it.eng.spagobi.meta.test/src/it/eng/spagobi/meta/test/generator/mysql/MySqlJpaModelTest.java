@@ -15,7 +15,7 @@ import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
-import it.eng.spagobi.meta.util.ModelManager;
+import it.eng.spagobi.meta.test.utils.ModelManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

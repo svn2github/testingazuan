@@ -163,6 +163,7 @@ public class JpaSubEntity implements IJpaSubEntity {
 		if (jpaColumn!=null){
 			name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName())+"_in_"+relationship.getDestinationTable().getName() + "(rel_"+getParentColumn().getPropertyName() + "_in_"+relationship.getDestinationTable().getUniqueName()+")";
 			name = nameToJavaVariableName(name);
+			name = name.toLowerCase();
 		}
 		else {
 			logger.debug("Cannot retrieve parent column of [{}]",this);

@@ -16,7 +16,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	// add generic tests related to physical model here ...
 	
 	public void testPropertyConnectionName() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.name";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);
@@ -24,7 +24,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	}
 	
 	public void testPropertyConnectionDriver() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.driver";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);
@@ -32,7 +32,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	}
 	
 	public void testPropertyConnectionUrl() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.url";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);
@@ -40,7 +40,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	}
 	
 	public void testPropertyConnectionUser() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.username";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);
@@ -48,7 +48,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	}
 	
 	public void testPropertyConnectionPassword() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.password";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);
@@ -56,7 +56,7 @@ public class AbstractPhysicalModelInizializtaionTest extends AbstractModelInizia
 	}
 	
 	public void testPropertyConnectionDatabaseName() {
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.databasename";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertNotNull("Property type [" + modelPropertyTypeName + "] must be defined", modelPropertyType);

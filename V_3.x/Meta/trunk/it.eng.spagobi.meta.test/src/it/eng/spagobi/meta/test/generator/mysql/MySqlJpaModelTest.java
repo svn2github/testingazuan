@@ -14,7 +14,7 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
+import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
 import it.eng.spagobi.meta.util.ModelManager;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.Set;
 import org.junit.Assert;
 
 
-public class MySqlJpaModelTest extends AbstractMappingGenerationTest {
+public class MySqlJpaModelTest extends AbstractJpaMappingGenerationTest {
 
 	static JpaModel jpaModel;
 	static JpaMappingCodeGenerator jpaMappingCodeGenerator;

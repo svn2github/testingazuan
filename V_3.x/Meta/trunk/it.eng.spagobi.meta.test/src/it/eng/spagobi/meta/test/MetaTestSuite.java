@@ -24,10 +24,8 @@ package it.eng.spagobi.meta.test;
 import it.eng.spagobi.meta.test.edit.ModelEditingTestSuite;
 import it.eng.spagobi.meta.test.generator.JpaMappingGenerationTestSuite;
 import it.eng.spagobi.meta.test.initializer.ModelInitializationTestSuite;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLBusinessModelInizializtaionTest;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLPhysicalModelInizializtaionTest;
+import it.eng.spagobi.meta.test.query.ModelQueryTestSuite;
 import it.eng.spagobi.meta.test.serialization.ModelSerializationTestSuite;
-import it.eng.spagobi.meta.test.serialization.mysql.MySqlBusinessModelSerializationTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -43,6 +41,8 @@ public class MetaTestSuite extends TestCase {
 		suite.addTest(ModelEditingTestSuite.suite());  		
 		suite.addTest(ModelSerializationTestSuite.suite());
 		suite.addTest(JpaMappingGenerationTestSuite.suite());
+		suite.addTest(ModelQueryTestSuite.suite());
+		
 		return suite;
 	}
 }

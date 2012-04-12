@@ -5,12 +5,12 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
+import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
 
 import java.io.File;
 
 
-public class MySqlJpaMappingClassesGenerationTest extends AbstractMappingGenerationTest {
+public class MySqlJpaMappingClassesGenerationTest extends AbstractJpaMappingGenerationTest {
 
 	static JpaMappingClassesGenerator jpaMappingClassesGenerator;
 	

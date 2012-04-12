@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.test.generator;
+package it.eng.spagobi.meta.test.query;
 
 import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
@@ -10,7 +10,7 @@ import it.eng.spagobi.meta.test.TestCostants;
 import junit.framework.TestCase;
 
 
-public class AbstractMappingGenerationTest extends TestCase {
+public class AbstractModelQueryTest extends TestCase {
 
 	protected static TestCostants.DatabaseType dbType;
 	protected static Model rootModel;
@@ -22,7 +22,7 @@ public class AbstractMappingGenerationTest extends TestCase {
 	
 	protected boolean tearDown = false;
     
-	public AbstractMappingGenerationTest() {
+	public AbstractModelQueryTest() {
 		super();
 	}
 	

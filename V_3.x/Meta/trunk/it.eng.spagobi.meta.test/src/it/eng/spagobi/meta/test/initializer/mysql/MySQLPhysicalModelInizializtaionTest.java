@@ -25,14 +25,14 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		try {
 			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
 			
-			if(rootModel == null) {
-				if(rootModel == null) {
-					rootModel = TestModelFactory.createModel( dbType );
-					if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {
-						physicalModel = rootModel.getPhysicalModels().get(0);
+			if(model == null) {
+				if(model == null) {
+					model = TestModelFactory.createModel( dbType );
+					if(model != null && model.getPhysicalModels() != null && model.getPhysicalModels().size() > 0) {
+						physicalModel = model.getPhysicalModels().get(0);
 					}
-					if(rootModel != null && rootModel.getBusinessModels() != null && rootModel.getBusinessModels().size() > 0) {
-						businessModel = rootModel.getBusinessModels().get(0);
+					if(model != null && model.getBusinessModels() != null && model.getBusinessModels().size() > 0) {
+						businessModel = model.getBusinessModels().get(0);
 					}
 				}
 			}
@@ -59,15 +59,15 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPropertyConnectionName() {
 		super.testPropertyConnectionName();
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.name";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals("Test Connection", modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestModelFactory.CONNECTION_NAME, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPropertyConnectionDriver() {
 		super.testPropertyConnectionName();
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.driver";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertEquals(TestCostants.MYSQL_DRIVER, modelPropertyType.getDefaultValue());
@@ -75,7 +75,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPropertyConnectionUrl() {
 		super.testPropertyConnectionName();
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.url";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertEquals(TestCostants.MYSQL_URL, modelPropertyType.getDefaultValue());
@@ -83,7 +83,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPropertyConnectionUser() {
 		super.testPropertyConnectionName();
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.username";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertEquals(TestCostants.MYSQL_USER, modelPropertyType.getDefaultValue());
@@ -91,7 +91,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPropertyConnectionPassword() {
 		super.testPropertyConnectionName();
-		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
+		PhysicalModel physicalModel = model.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.password";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
 		Assert.assertEquals(TestCostants.MYSQL_PWD, modelPropertyType.getDefaultValue());
@@ -101,7 +101,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		super.testPropertyConnectionDatabaseName();
 		String modelPropertyTypeName = "connection.databasename";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals("DB Name", modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestModelFactory.DATABASE_NAME, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPhysicalModelSourceDatabase() {
@@ -125,11 +125,11 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPhysicalModelTables() {
 		
-		Assert.assertEquals(tableNames.length, physicalModel.getTables().size());
+		Assert.assertEquals(TestCostants.MYSQL_TABLE_NAMES.length, physicalModel.getTables().size());
 		
-		for(int i = 0; i < tableNames.length; i++) {
-			PhysicalTable table = physicalModel.getTable(tableNames[i]);
-			Assert.assertNotNull("Physical model does not contain table [" + tableNames[i] + "]", table);
+		for(int i = 0; i < TestCostants.MYSQL_TABLE_NAMES.length; i++) {
+			PhysicalTable table = physicalModel.getTable(TestCostants.MYSQL_TABLE_NAMES[i]);
+			Assert.assertNotNull("Physical model does not contain table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "]", table);
 		}	
 	}
 	

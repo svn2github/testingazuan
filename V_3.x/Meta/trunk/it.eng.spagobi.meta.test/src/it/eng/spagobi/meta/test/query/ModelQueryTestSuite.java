@@ -19,10 +19,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.test.initializer.mysql;
+package it.eng.spagobi.meta.test.query;
 
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLBusinessModelInizializtaionTest;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLPhysicalModelInizializtaionTest;
+import it.eng.spagobi.meta.test.generator.mysql.MySqlJpaMappingTestSuite;
+import it.eng.spagobi.meta.test.query.mysql.MySqlModelQueryTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -31,12 +31,11 @@ import junit.framework.TestSuite;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class MySqlInitializationTestSuite extends TestCase {
+public class ModelQueryTestSuite extends TestCase {
 	static public Test suite() {
-		TestSuite suite = new TestSuite("Initialization tests on MySql");
-		suite.addTestSuite(MySQLPhysicalModelInizializtaionTest.class);
-		suite.addTestSuite(MySQLBusinessModelInizializtaionTest.class);
-		suite.addTestSuite(MySQLFilteredModelInizializtaionTest.class);
+		TestSuite suite = new TestSuite("Query tests");
+		suite.addTestSuite(MySqlModelQueryTest.class);
+		// add here test suites of other databases ...
 		return suite;
 	}
 }

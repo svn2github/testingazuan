@@ -14,7 +14,7 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
+import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
 import it.eng.spagobi.meta.util.ModelManager;
 
 import java.io.File;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.jar.JarFile;
 
 
-public class MySqlJpaMappingJarGenerationTest extends AbstractMappingGenerationTest {
+public class MySqlJpaMappingJarGenerationTest extends AbstractJpaMappingGenerationTest {
 	
 	static JpaMappingJarGenerator jpaMappingJarGenerator;
 

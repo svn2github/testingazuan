@@ -10,5 +10,7 @@ Require-Bundle: it.eng.spagobi.meta.edit;bundle-version="1.0.0",
  it.eng.spagobi.meta.generator;bundle-version="1.0.0",
  it.eng.spagobi.meta.initializer;bundle-version="1.0.0",
  it.eng.spagobi.meta.mapper;bundle-version="1.0.0",
- it.eng.spagobi.meta.model;bundle-version="1.0.0"
+ it.eng.spagobi.meta.model;bundle-version="1.0.0",
+ it.eng.spagobi.meta.querybuilder;bundle-version="1.0.0",
+ it.eng.spagobi.meta.queryengine;bundle-version="1.0.0"
 Import-Package: org.junit

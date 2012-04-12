@@ -28,13 +28,13 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 		try {
 			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
 			
-			if(rootModel == null) {
-				rootModel = TestModelFactory.createModel( dbType );
-				if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {
-					physicalModel = rootModel.getPhysicalModels().get(0);
+			if(model == null) {
+				model = TestModelFactory.createModel( dbType );
+				if(model != null && model.getPhysicalModels() != null && model.getPhysicalModels().size() > 0) {
+					physicalModel = model.getPhysicalModels().get(0);
 				}
-				if(rootModel != null && rootModel.getBusinessModels() != null && rootModel.getBusinessModels().size() > 0) {
-					businessModel = rootModel.getBusinessModels().get(0);
+				if(model != null && model.getBusinessModels() != null && model.getBusinessModels().size() > 0) {
+					businessModel = model.getBusinessModels().get(0);
 				}
 			}
 		} catch(Exception t) {
@@ -83,13 +83,13 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	
 	public void testBusinessModelTables() {
 		
-		Assert.assertEquals(tableNames.length, businessModel.getTables().size());
+		Assert.assertEquals(TestCostants.MYSQL_TABLE_NAMES.length, businessModel.getTables().size());
 		
-		for(int i = 0; i < tableNames.length; i++) {
-			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(tableNames[i]);
+		for(int i = 0; i < TestCostants.MYSQL_TABLE_NAMES.length; i++) {
+			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(TestCostants.MYSQL_TABLE_NAMES[i]);
 			Assert.assertNotNull(businessTables);
-			Assert.assertFalse("Business model does not contain table [" + tableNames[i] + "]", businessTables.size() == 0);
-			Assert.assertFalse("Business model contains table [" + tableNames[i] + "] more than one time", businessTables.size() > 1);
+			Assert.assertFalse("Business model does not contain table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "]", businessTables.size() == 0);
+			Assert.assertFalse("Business model contains table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "] more than one time", businessTables.size() > 1);
 		}	
 	}
 	

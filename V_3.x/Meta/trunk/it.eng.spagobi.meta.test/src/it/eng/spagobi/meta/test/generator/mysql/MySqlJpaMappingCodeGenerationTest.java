@@ -9,7 +9,7 @@ import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.generator.AbstractMappingGenerationTest;
+import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +20,7 @@ import java.util.Properties;
 import org.junit.Assert;
 
 
-public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGenerationTest {
+public class MySqlJpaMappingCodeGenerationTest extends AbstractJpaMappingGenerationTest {
 
 	static JpaMappingCodeGenerator jpaMappingCodeGenerator;
 	static JpaModel jpaModel;
@@ -150,4 +150,23 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractMappingGeneration
 			Assert.assertFalse("The value [" + value + "] of property [" + key.toString() + "] contains char $", value.contains("$"));
 		}
 	}
+	
+	// =============================================
+	// TESTS ON VIEW MODEL
+	// =============================================
+	
+	public void testViewGenerationSmoke() {
+		viewModel = TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" );
+		if(viewModel != null && viewModel.getPhysicalModels() != null && viewModel.getPhysicalModels().size() > 0) {
+			viewPhysicalModel = viewModel.getPhysicalModels().get(0);
+		}
+		if(viewModel != null && viewModel.getBusinessModels() != null && viewModel.getBusinessModels().size() > 0) {
+			viewBusinessModel = viewModel.getBusinessModels().get(0);
+		}
+		 
+		// create view here....
+		
+		generator.generate(viewBusinessModel, TestCostants.outputFolder.toString());
+	}
+	
 }

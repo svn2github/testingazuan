@@ -68,9 +68,11 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize PhysicalModel with table filter
-	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionDriver, String connectionUrl, 
-									String connectionUsername, String connectionPassword, String connectionDatabaseName,
-									String defaultCatalog, String defaultSchema, List<String> selectedTables){
+	public PhysicalModel initialize(String modelName, Connection conn, String connectionName
+									, String connectionDriver, String connectionUrl
+									, String connectionUsername, String connectionPassword
+									, String connectionDatabaseName, String defaultCatalog
+									, String defaultSchema, List<String> selectedTables){
 		PhysicalModel model;
 		DatabaseMetaData dbMeta;
 		
@@ -137,8 +139,10 @@ public class PhysicalModelInitializer {
 	}
 	
 	//Initialize Physical Model with ALL original Database Tables
-	public PhysicalModel initialize(String modelName, Connection conn, String connectionName, String connectionDriver, String connectionUrl, 
-			String connectionUsername, String connectionPassword, String connectionDatabaseName, String defaultCatalog, String defaultSchema) {
+	public PhysicalModel initialize(String modelName
+			, Connection conn, String connectionName, String connectionDriver, String connectionUrl
+			, String connectionUsername, String connectionPassword, String connectionDatabaseName
+			, String defaultCatalog, String defaultSchema) {
 		return initialize(modelName,conn, connectionName, connectionDriver, connectionUrl, connectionUsername, connectionPassword, connectionDatabaseName, defaultCatalog,defaultSchema, null );
 	}
 	

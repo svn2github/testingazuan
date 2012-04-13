@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Intro
 Bundle-SymbolicName: it.eng.spagobi.meta.intro; singleton:=true
-Bundle-Version: 3.0.0
+Bundle-Version: 3.4.0
 Bundle-Activator: it.eng.spagobi.meta.intro.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.intro;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Engineering Group

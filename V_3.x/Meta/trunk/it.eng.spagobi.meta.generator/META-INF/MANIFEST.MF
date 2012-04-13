@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.generator
 Bundle-SymbolicName: it.eng.spagobi.meta.generator;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 3.4.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
@@ -32,3 +32,4 @@ Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
  libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar
+Bundle-Vendor: Engineering Group

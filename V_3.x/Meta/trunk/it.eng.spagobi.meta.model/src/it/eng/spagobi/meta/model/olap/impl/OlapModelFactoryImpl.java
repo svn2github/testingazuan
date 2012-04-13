@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.olap.impl;
 
-import it.eng.spagobi.meta.model.olap.*;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelFactory;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;

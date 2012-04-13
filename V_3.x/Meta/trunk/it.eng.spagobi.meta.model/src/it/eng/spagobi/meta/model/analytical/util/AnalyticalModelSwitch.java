@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.analytical.util;
 
-import it.eng.spagobi.meta.model.analytical.*;
 import it.eng.spagobi.meta.model.analytical.AnalyticalModel;
 import it.eng.spagobi.meta.model.analytical.AnalyticalModelPackage;
 

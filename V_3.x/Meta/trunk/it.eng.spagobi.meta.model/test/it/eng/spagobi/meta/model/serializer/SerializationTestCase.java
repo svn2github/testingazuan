@@ -21,19 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.serializer;
 
-import java.io.File;
-
-import org.junit.Assert;
-
 import it.eng.spagobi.meta.model.AbtractModelTestCase;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.TestCaseConstants;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
-import junit.framework.TestCase;
+
+import java.io.File;
+
+import org.junit.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

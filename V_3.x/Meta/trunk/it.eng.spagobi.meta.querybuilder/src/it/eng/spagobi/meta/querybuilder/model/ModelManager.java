@@ -116,24 +116,24 @@ public class ModelManager {
 		}
 	}	
 	
-	public void generateMapping(File outputFolder) {
-		setMappingsFolder(outputFolder);
-		generateMapping();
-	}
 	
-	public String generateMapping() {
-		String persistenceUnitName = getBusinessModel().getName() + "_" + System.currentTimeMillis();
+	public String generateMapping(boolean appendTimestampToPersistenceUnitName) {
+		String persistenceUnitName = getBusinessModel().getName();
+		if(appendTimestampToPersistenceUnitName) {
+			persistenceUnitName += "_" + System.currentTimeMillis();
+		}
+		
 		return generateMapping(persistenceUnitName);
 	}
 	
-	public String generateMapping(String persistenceUnitName) {
+	private String generateMapping(String persistenceUnitName) {
 		
 		logger.trace("IN");
 		JpaMappingJarGenerator generator = null;
 		try {
 			Assert.assertNotNull("Impossible to generate mapping. Mapping folder is not set", getModelMappingFolder() );
 			
-			persistenceUnitName = getBusinessModel().getName() + "_" + System.currentTimeMillis();
+			
 			
 			GeneratorDescriptor descriptor = GeneratorFactory.getGeneratorDescriptorById("it.eng.spagobi.meta.generator.jpamapping");
 			generator = (JpaMappingJarGenerator)descriptor.getGenerator();

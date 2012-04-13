@@ -139,7 +139,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 			IFile modelFile = getModelFile(modelPath);
 			if ( isMappingDirty( modelFile ) ){
 				logger.debug("Mappings are not uptodate with the model. The will be regenerated");
-				persistenceUnitName = modelManager.generateMapping();
+				persistenceUnitName = modelManager.generateMapping(true);
 				dataSource = modelManager.createDataSource(persistenceUnitName);
 				//set the dirty property to false cause the mapping has just been created
 				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");

@@ -9,7 +9,7 @@ Bundle-ClassPath: .,
  lib/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
  lib/org.slf4j.api_1.5.11.v20100519-1910.jar,
  lib/json.jar
-Bundle-Vendor: it.eng
+Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime,

@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.initializer;
 
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLBusinessModelInizializtaionTest;
-import it.eng.spagobi.meta.test.initializer.mysql.MySQLPhysicalModelInizializtaionTest;
 import it.eng.spagobi.meta.test.initializer.mysql.MySqlInitializationTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;

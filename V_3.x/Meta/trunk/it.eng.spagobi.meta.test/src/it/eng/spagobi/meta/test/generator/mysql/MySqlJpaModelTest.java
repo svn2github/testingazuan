@@ -5,24 +5,14 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
-import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
-import it.eng.spagobi.meta.test.utils.ModelManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Assert;
 

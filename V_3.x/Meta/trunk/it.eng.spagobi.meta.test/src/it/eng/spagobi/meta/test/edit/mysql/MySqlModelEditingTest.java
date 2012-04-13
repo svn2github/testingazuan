@@ -1,7 +1,5 @@
 package it.eng.spagobi.meta.test.edit.mysql;
 
-import java.util.List;
-
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
@@ -10,6 +8,8 @@ import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.edit.AbstractModelEditingTest;
+
+import java.util.List;
 
 import org.junit.Assert;
 

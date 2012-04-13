@@ -1,7 +1,6 @@
 package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingClassesGenerator;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;

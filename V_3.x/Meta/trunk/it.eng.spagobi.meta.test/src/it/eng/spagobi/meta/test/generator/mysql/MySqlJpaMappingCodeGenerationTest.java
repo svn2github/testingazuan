@@ -2,12 +2,9 @@ package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingCodeGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -20,7 +17,6 @@ import it.eng.spagobi.meta.test.utils.ModelManager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;

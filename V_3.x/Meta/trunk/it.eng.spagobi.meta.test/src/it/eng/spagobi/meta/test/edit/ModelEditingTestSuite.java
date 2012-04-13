@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.test.edit;
 
 import it.eng.spagobi.meta.test.edit.mysql.MySqlModelEditingTestSuite;
-import it.eng.spagobi.meta.test.generator.mysql.MySqlJpaMappingTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -21,24 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Assert;
-
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;

@@ -1,6 +1,5 @@
 package it.eng.spagobi.meta.test.query;
 
-import it.eng.spagobi.meta.generator.IGenerator;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;

@@ -2,13 +2,7 @@ package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
-import it.eng.spagobi.meta.model.ModelFactory;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessModelFactory;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;

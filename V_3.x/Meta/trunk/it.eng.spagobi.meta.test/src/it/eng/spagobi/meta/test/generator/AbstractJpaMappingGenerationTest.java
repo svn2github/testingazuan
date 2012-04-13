@@ -7,8 +7,6 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.test.TestCostants;
-import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.utils.ModelManager;
 import junit.framework.TestCase;
 
 

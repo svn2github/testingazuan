@@ -1,16 +1,13 @@
 package it.eng.spagobi.meta.test.serialization.mysql;
 
-import java.io.File;
-
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestModelFactory;
-import it.eng.spagobi.meta.test.initializer.AbstractBusinessModelInizializtaionTest;
 import it.eng.spagobi.meta.test.serialization.AbstractModelSerializationTest;
 import it.eng.spagobi.meta.test.serialization.EmfXmiSerializer;
 import it.eng.spagobi.meta.test.serialization.IModelSerializer;
+
+import java.io.File;
 
 import org.junit.Assert;
 

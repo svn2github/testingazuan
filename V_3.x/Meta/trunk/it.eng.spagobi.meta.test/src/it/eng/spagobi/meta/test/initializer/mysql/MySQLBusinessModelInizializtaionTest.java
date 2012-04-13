@@ -1,18 +1,16 @@
 package it.eng.spagobi.meta.test.initializer.mysql;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
-import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.initializer.AbstractBusinessModelInizializtaionTest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 

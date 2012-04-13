@@ -11,9 +11,7 @@ import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
-
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;

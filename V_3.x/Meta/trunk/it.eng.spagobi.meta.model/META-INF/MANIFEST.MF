@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.model
 Bundle-SymbolicName: it.eng.spagobi.meta.model;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 3.4.0
 Bundle-ClassPath: .,
  libs/misc/commons-lang-2.5.jar,
  libs/misc/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
@@ -43,4 +43,4 @@ Import-Package: org.apache.log4j,
  org.eclipse.jface.dialogs,
  org.eclipse.swt.widgets,
  org.eclipse.ui.handlers
-Bundle-Vendor: eng.it
+Bundle-Vendor: Engineering Group

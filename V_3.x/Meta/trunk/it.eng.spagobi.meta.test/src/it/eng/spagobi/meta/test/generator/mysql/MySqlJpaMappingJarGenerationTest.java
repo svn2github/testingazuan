@@ -3,12 +3,14 @@ package it.eng.spagobi.meta.test.generator.mysql;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModelFactory;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
@@ -34,13 +36,7 @@ public class MySqlJpaMappingJarGenerationTest extends AbstractJpaMappingGenerati
 			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
 			
 			if(rootModel == null) {
-				rootModel = TestModelFactory.createModel( dbType );
-				if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {
-					physicalModel = rootModel.getPhysicalModels().get(0);
-				}
-				if(rootModel != null && rootModel.getBusinessModels() != null && rootModel.getBusinessModels().size() > 0) {
-					businessModel = rootModel.getBusinessModels().get(0);
-				}
+				setRootModel(TestModelFactory.createModel( dbType ));
 			}
 			
 			if(jpaMappingJarGenerator == null)  {
@@ -93,7 +89,60 @@ public class MySqlJpaMappingJarGenerationTest extends AbstractJpaMappingGenerati
 	 * @see BusinessModelInitializer row 374 for identifier problems
 	 * @see BusinessModelInitializer row 492 for relationship problems
 	 */
-	public void _testDoubleImportedTableModelGeneration() {
-		fail();
+	public void testDoubleImportedTableModelGeneration() {
+		ModelManager modelManager = new ModelManager(rootModel);
+		PhysicalTable physicalTable = physicalModel.getTable("currency");
+		modelManager.addBusinessTable(physicalTable);
+		modelManager.addBusinessTable(physicalTable);
+		
+		List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(physicalTable);
+		assertEquals(3, businessTables.size());
+		
+		BusinessTable businessTable1 = businessTables.get(0);
+		BusinessTable businessTable2 = businessTables.get(1);
+		BusinessTable businessTable3 = businessTables.get(2);
+		
+		assertTrue(businessTable1.getName() != businessTable2.getName() && businessTable1.getName() != businessTable3.getName());
+		assertTrue(businessTable2.getName() != businessTable3.getName() && businessTable2.getName() != businessTable1.getName());
+		assertTrue(businessTable3.getName() != businessTable2.getName() && businessTable3.getName() != businessTable1.getName());
+		
+		assertTrue(businessTable1.getUniqueName() != businessTable2.getUniqueName() && businessTable1.getUniqueName() != businessTable3.getUniqueName());
+		assertTrue(businessTable2.getUniqueName() != businessTable3.getUniqueName() && businessTable2.getUniqueName() != businessTable1.getUniqueName());
+		assertTrue(businessTable3.getUniqueName() != businessTable1.getUniqueName() && businessTable3.getUniqueName() != businessTable2.getUniqueName());
+	
+		assertTrue(!businessTable1.equals(businessTable2) && !businessTable1.equals(businessTable3));
+		assertTrue(!businessTable2.equals(businessTable3) && !businessTable2.equals(businessTable1));
+		assertTrue(!businessTable3.equals(businessTable1) && !businessTable3.equals(businessTable2));
+	
+		generator.generate(businessModel, TestCostants.outputFolder.toString());
+	}
+	
+	// =============================================
+	// TESTS ON VIEW MODEL
+	// =============================================
+	public void testViewGenerationSmoke() {
+		setViewModel(TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" ));
+		
+		// create view here....
+		ModelManager modelManager = new ModelManager(viewModel);
+		PhysicalTable source = viewPhysicalModel.getTable("product");
+		PhysicalTable destination = viewPhysicalModel.getTable("product_class");
+		BusinessTable businessTable = viewBusinessModel.getBusinessTableByPhysicalTable( source ).get(0);
+	
+		List<PhysicalColumn> sourceCol = new ArrayList<PhysicalColumn>();
+		sourceCol.add(source.getColumn("product_class_id"));
+		List<PhysicalColumn> destinationCol = new ArrayList<PhysicalColumn>();
+		destinationCol.add(destination.getColumn("product_class_id"));
+		int cardinality = 0;
+		String relationshipName = "inner_join_test";
+		BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor
+			= new BusinessViewInnerJoinRelationshipDescriptor(source, destination, sourceCol, destinationCol, cardinality, relationshipName);
+		
+		BusinessView businessView = modelManager.createView(businessTable, innerJoinRelationshipDescriptor);
+		modelManager.addBusinessColumn(destination.getColumn("product_family"), businessView);
+		
+		jpaMappingJarGenerator = TestGeneratorFactory.createJarGeneraor();
+		generator = jpaMappingJarGenerator;
+		jpaMappingJarGenerator.generate(viewBusinessModel, TestCostants.outputFolder.toString());
 	}
 }

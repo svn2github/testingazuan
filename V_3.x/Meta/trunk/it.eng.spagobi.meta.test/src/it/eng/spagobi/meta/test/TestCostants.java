@@ -42,7 +42,7 @@ public class TestCostants {
 	public static String MYSQL_PWD = "mysql";
 	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		
 	public static String MYSQL_DEFAULT_SCHEMA = null;	
-	public static String MYSQL_DEFAULT_DIALECT = null;
+	public static String MYSQL_DEFAULT_DIALECT = "org.hibernate.dialect.MySQLDialect";
 	public static String[] MYSQL_TABLE_NAMES = new String[]{
 		"_product_class_"
 		, "currency"

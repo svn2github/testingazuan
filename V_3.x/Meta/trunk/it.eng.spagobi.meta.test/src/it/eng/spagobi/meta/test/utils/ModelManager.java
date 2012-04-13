@@ -31,12 +31,16 @@ import org.junit.Assert;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaTable;
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -49,62 +53,25 @@ public class ModelManager {
 	Model model;
 	PhysicalModel physicalModel;
 	BusinessModel businessModel;
+	BusinessModelInitializer initializer;
 	
 	
 	public ModelManager(Model model) {
 		this.model = model;
 		physicalModel = model.getPhysicalModels().get(0);
 		businessModel = model.getBusinessModels().get(0);
+		initializer = new BusinessModelInitializer();
 	}
 	
-	/*
-	// TODO move to an utility class
-	public BusinessTable getBusinessTableByPhysicalTableName(String physicalTableName) {
-		PhysicalTable physicalTable =  physicalModel.getTable(physicalTableName);
-		return  businessModel.getBusinessTable(physicalTable);
+	public BusinessView createView(BusinessTable businessTable, BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor) {
+		return initializer.upgradeBusinessTableToBusinessView(businessTable, innerJoinRelationshipDescriptor);
+	}
+
+	public void addBusinessTable(PhysicalTable physicalTable) {
+		initializer.addTable(physicalTable,  businessModel, false);	
 	}
 	
-	// TODO move to an utility class
-	public BusinessColumn getBusinessColumnByPhysicalColumnName(BusinessTable businessTable, String physicalColumnName) {
-		PhysicalColumn physicalColumn = businessTable.getPhysicalTable().getColumn(physicalColumnName);
-		return  businessTable.getSimpleBusinessColumn(physicalColumn);
+	public void addBusinessColumn(PhysicalColumn physicalColumn, BusinessColumnSet businessColumnSet) {
+		initializer.addColumn(physicalColumn, businessColumnSet);
 	}
-	
-	public void testGenerationMoreForeignKeyOnSameColumn() {
-		BusinessTable sourceBusinessTable =  getBusinessTableByPhysicalTableName("product");
-		BusinessColumn sourceBusinessColumn = getBusinessColumnByPhysicalColumnName(sourceBusinessTable, "product_class_id");		
-		List<BusinessColumn> sourceColumns = new ArrayList<BusinessColumn>();
-		sourceColumns.add(sourceBusinessColumn);
-		
-		BusinessTable destinationBusinessTable =  getBusinessTableByPhysicalTableName("customer");
-		BusinessColumn destinationBusinessColumn = getBusinessColumnByPhysicalColumnName(destinationBusinessTable, "customer_id");
-		List<BusinessColumn> destinationColumns = new ArrayList<BusinessColumn>();
-		destinationColumns.add(destinationBusinessColumn);
-		
-		BusinessRelationshipDescriptor descriptor = new BusinessRelationshipDescriptor(
-				sourceBusinessTable, destinationBusinessTable, 
-				sourceColumns , destinationColumns, 
-				0, "SecondFKOnTheSameColumn");
-			
-//		BusinessRelationship businessRelationship = businessModelInitializer.addRelationship(descriptor);
-//		
-//		JpaTable targetJpaTable = null;
-//		for(IJpaTable table : jpaModel.getTables()) {
-//			if(table instanceof JpaTable) {
-//				JpaTable jpaTable = (JpaTable)table;
-//				if(jpaTable.getBusinessTable().getPhysicalTable().getName().equals("product")) {
-//					targetJpaTable = jpaTable;
-//				}
-//			}
-//		}
-//		
-//		Set<String> relationshispPropertyNames = new HashSet<String>();
-//		for(IJpaRelationship relationship : targetJpaTable.getRelationships()) {
-//			String propertyName = relationship.getPropertyName();
-//			Assert.assertFalse("Duplicate relationship property name [" + propertyName + "] in table [product]", relationshispPropertyNames.contains(propertyName));
-//			relationshispPropertyNames.add(propertyName);
-//		}
-		
-	}
-	*/
 }

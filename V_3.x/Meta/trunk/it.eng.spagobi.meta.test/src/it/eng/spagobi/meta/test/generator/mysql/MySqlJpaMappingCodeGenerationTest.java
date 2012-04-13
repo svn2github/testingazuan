@@ -5,16 +5,25 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
 import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
+import it.eng.spagobi.meta.test.utils.ModelManager;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -62,7 +71,7 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractJpaMappingGenerat
 	}
 	
 	public void testGenerationSmoke() {
-		generator.generate(businessModel, TestCostants.outputFolder.toString());
+		jpaMappingCodeGenerator.generate(businessModel, TestCostants.outputFolder.toString());
 	}
 	
 	public void testSrcFolderExistence() {
@@ -156,17 +165,29 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractJpaMappingGenerat
 	// =============================================
 	
 	public void testViewGenerationSmoke() {
-		viewModel = TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" );
-		if(viewModel != null && viewModel.getPhysicalModels() != null && viewModel.getPhysicalModels().size() > 0) {
-			viewPhysicalModel = viewModel.getPhysicalModels().get(0);
-		}
-		if(viewModel != null && viewModel.getBusinessModels() != null && viewModel.getBusinessModels().size() > 0) {
-			viewBusinessModel = viewModel.getBusinessModels().get(0);
-		}
-		 
-		// create view here....
+		setViewModel(TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" ));
 		
-		generator.generate(viewBusinessModel, TestCostants.outputFolder.toString());
+		// create view here....
+		ModelManager modelManager = new ModelManager(viewModel);
+		PhysicalTable source = viewPhysicalModel.getTable("product");
+		PhysicalTable destination = viewPhysicalModel.getTable("product_class");
+		BusinessTable businessTable = viewBusinessModel.getBusinessTableByPhysicalTable( source ).get(0);
+	
+		List<PhysicalColumn> sourceCol = new ArrayList<PhysicalColumn>();
+		sourceCol.add(source.getColumn("product_class_id"));
+		List<PhysicalColumn> destinationCol = new ArrayList<PhysicalColumn>();
+		destinationCol.add(destination.getColumn("product_class_id"));
+		int cardinality = 0;
+		String relationshipName = "inner_join_test";
+		BusinessViewInnerJoinRelationshipDescriptor innerJoinRelationshipDescriptor
+			= new BusinessViewInnerJoinRelationshipDescriptor(source, destination, sourceCol, destinationCol, cardinality, relationshipName);
+		
+		BusinessView businessView = modelManager.createView(businessTable, innerJoinRelationshipDescriptor);
+		modelManager.addBusinessColumn(destination.getColumn("product_family"), businessView);
+		
+		jpaMappingCodeGenerator = TestGeneratorFactory.createCodeGeneraor();
+		generator = jpaMappingCodeGenerator;
+		jpaMappingCodeGenerator.generate(viewBusinessModel, TestCostants.outputFolder.toString());
 	}
 	
 }

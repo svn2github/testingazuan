@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
@@ -33,6 +34,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.filter.PhysicalTableFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.test.TestCostants.DatabaseType;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -111,5 +113,16 @@ public class TestModelFactory {
 		BusinessModel businessModel = businessModelInitializer.initialize("BUSINESS_" + name, physicalTableFilter, physicalModel);
 		
 		return model;
+	}
+
+	public static ConnectionDescriptor getConnectionDescriptor(DatabaseType dbType) {
+		ConnectionDescriptor connectionDescriptor = new ConnectionDescriptor();			
+		connectionDescriptor.setName( "Test Model" );
+		connectionDescriptor.setDialect( TestCostants.MYSQL_DEFAULT_DIALECT);			
+		connectionDescriptor.setDriverClass( TestCostants.MYSQL_DRIVER);	
+		connectionDescriptor.setUrl( TestCostants.MYSQL_URL );
+		connectionDescriptor.setUsername( TestCostants.MYSQL_USER );		
+		connectionDescriptor.setPassword( TestCostants.MYSQL_PWD );
+		return connectionDescriptor;
 	}
 }

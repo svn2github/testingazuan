@@ -16,6 +16,7 @@ Bundle-ClassPath: libs/misc/commons-lang-2.5.jar,
  libs/misc/org.slf4j.api_1.5.11.v20100519-1910.jar
 Export-Package: it.eng.spagobi.meta.initializer,
  it.eng.spagobi.meta.initializer.descriptor,
+ it.eng.spagobi.meta.initializer.name,
  it.eng.spagobi.meta.initializer.properties
 Import-Package: org.eclipse.core.runtime,
  org.osgi.framework

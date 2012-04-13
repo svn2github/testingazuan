@@ -21,6 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.model.business.commands.edit.view;
 
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessView;
+import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
+import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
+import it.eng.spagobi.meta.model.physical.PhysicalColumn;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,15 +39,6 @@ import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
-import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
-import it.eng.spagobi.meta.model.business.BusinessColumnSet;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessView;
-import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
-import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
-import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it)

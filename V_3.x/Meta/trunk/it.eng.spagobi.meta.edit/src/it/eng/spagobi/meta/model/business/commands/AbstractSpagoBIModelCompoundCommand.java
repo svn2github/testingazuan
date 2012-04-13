@@ -25,9 +25,7 @@ import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
 
 import java.util.ArrayList;
 
-import org.eclipse.emf.common.command.AbstractCommand;
 import org.eclipse.emf.common.command.CompoundCommand;
-import org.eclipse.emf.edit.command.CommandActionDelegate;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 

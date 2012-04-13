@@ -36,7 +36,6 @@ import it.eng.spagobi.meta.model.business.commands.edit.view.RemovePhysicalTable
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessViewPhysicalTableItemProvider;
-import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.OutboundRelationshipFolderItemProvider;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
@@ -58,7 +57,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ViewerNotification;
 
 
 /**

@@ -25,10 +25,8 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
-import it.eng.spagobi.meta.model.business.commands.edit.identifier.DeleteIdentifierCommand;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 

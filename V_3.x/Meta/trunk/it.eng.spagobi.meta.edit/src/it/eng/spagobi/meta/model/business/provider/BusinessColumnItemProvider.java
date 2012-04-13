@@ -24,7 +24,6 @@ package it.eng.spagobi.meta.model.business.provider;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
-import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.AddColumnToIdentifierCommand;

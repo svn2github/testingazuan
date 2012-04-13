@@ -90,9 +90,11 @@ public class NewModelWizardFileCreationPage extends WizardNewFileCreationPage {
 		// Add label and text input
 		new Label(group, SWT.NONE).setText("Model name:");
 		modelNameFieldInput = new Text(group, SWT.BORDER);
+		modelNameFieldInput.setTextLimit(20);
 		modelNameFieldInput.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
 				GridData.HORIZONTAL_ALIGN_FILL));
 		modelNameFieldInput.setText("MyModel");
+		
 
 		error = new Label(group, SWT.NONE);
 		GridData gridData = new GridData();

@@ -23,11 +23,8 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
-import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
-import it.eng.spagobi.meta.initializer.name.BusinessModelNamesInitializer;
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.util.JDBCTypeMapper;
 

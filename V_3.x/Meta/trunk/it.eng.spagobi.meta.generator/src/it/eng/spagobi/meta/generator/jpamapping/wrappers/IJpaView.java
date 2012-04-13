@@ -24,8 +24,6 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerJoinRelatioship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewInnerTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaViewOuterRelationship;
-import it.eng.spagobi.meta.model.business.BusinessRelationship;
-import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 
 import java.util.List;
 

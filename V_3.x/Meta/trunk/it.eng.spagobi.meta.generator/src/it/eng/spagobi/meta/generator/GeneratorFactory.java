@@ -25,7 +25,6 @@ package it.eng.spagobi.meta.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;

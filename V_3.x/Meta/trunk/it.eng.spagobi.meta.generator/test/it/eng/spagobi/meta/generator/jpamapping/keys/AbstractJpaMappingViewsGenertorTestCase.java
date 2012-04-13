@@ -21,16 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.keys;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import it.eng.spagobi.meta.generator.jpamapping.AbstractJpaMappingGeneratorTestCase;
-import it.eng.spagobi.meta.generator.utils.StringUtils;
+
+import java.io.File;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

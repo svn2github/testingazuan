@@ -21,30 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.generator.jpamapping.props;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.zip.ZipFile;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Assert;
-
-import it.eng.spagobi.meta.generator.jpamapping.AbstractJpaMappingGeneratorTestCase;
-import it.eng.spagobi.meta.generator.utils.Compiler;
-import it.eng.spagobi.meta.generator.utils.StringUtils;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.BusinessTable;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.serializer.IModelSerializer;
-import junit.framework.TestCase;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

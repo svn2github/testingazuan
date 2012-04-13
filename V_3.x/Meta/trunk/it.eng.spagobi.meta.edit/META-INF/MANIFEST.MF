@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.edit
 Bundle-SymbolicName: it.eng.spagobi.meta.edit;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 3.4.0
 Bundle-ClassPath: .,
  libs/json.jar,
  libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
@@ -43,4 +43,4 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.eclipse.ui.ide
-Bundle-Vendor: eng.it
+Bundle-Vendor: Engineering Group

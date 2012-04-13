@@ -30,7 +30,7 @@ Bundle-ClassPath: .,
  libs/jdbc/tdgssconfig.jar,
  libs/jdbc/terajdbc4.jar
 Bundle-Activator: it.eng.spagobi.meta.oda.Activator
-Bundle-Vendor: eng.it
+Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.datatools.connectivity.oda,

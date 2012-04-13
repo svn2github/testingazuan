@@ -114,15 +114,19 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 			
 			for (PhysicalColumn physicalColumn : physicalTable.getColumns()){
 				BusinessColumn businessColumn = findColumnInBusinessView(physicalColumn);
-				// if the colums belong to the BusinessView
-				if (businessColumn!=null){
-						if (businessColumn instanceof SimpleBusinessColumn){
-							JpaColumn jpaColumn = new JpaColumn(this, (SimpleBusinessColumn)businessColumn);
-							jpaColumns.add(jpaColumn);
-							logger.info("Add "+jpaColumn.getSqlName()+" Column to the BV "+businessView.getName());
-						}
-					}					
-				}	
+				// if the columns belong to the BusinessView
+				if (businessColumn != null){
+					if (businessColumn instanceof SimpleBusinessColumn){
+						JpaColumn jpaColumn = new JpaColumn(this, (SimpleBusinessColumn)businessColumn);
+						jpaColumns.add(jpaColumn);
+						logger.info("Add " + jpaColumn.getSqlName() + " real column to the BV " + businessView.getName());
+					}
+				} else {
+					JpaFakeColumn fakeColumn = new JpaFakeColumn(this, physicalColumn);
+					jpaColumns.add(fakeColumn);
+					logger.info("Add "+ fakeColumn.getSqlName()+ " fake column to the BV "+businessView.getName());
+				}
+			}
 		}
 		
 		logger.trace("OUT");

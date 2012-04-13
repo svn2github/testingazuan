@@ -39,12 +39,16 @@ ${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.position = $veloci
 # ==================================================================
 
 #foreach ($jpaView in $jpaViews)
+
+# $jpaView.name ----------------------------------------------------
+
 ${jpaView.uniqueName}.visible = $jpaView.getAttribute("structural.visible")
 ${jpaView.uniqueName}.type = $jpaView.getAttribute("structural.tabletype")
 
-# $jpaView.name
 
 #foreach ($jpaTable in $jpaView.innerTables)
+
+# $jpaView.name > $jpaTable.sqlName -----------
 
 ${jpaTable.uniqueName}.visible = false
 ${jpaTable.uniqueName}.type = dimension

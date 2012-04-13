@@ -15,13 +15,13 @@
 		{
 			name: ${jpaTable.className}
 			, package: ${jpaView.package}
-##			, columns: [
-##foreach ($jpaColumn in $jpaView.getColumns($jpaTable))
-##			{
-##				name: ${jpaColumn.propertyName}
-##			},
-##end
-##			]
+			, columns: [
+#foreach ($jpaColumn in $jpaView.getColumns($jpaTable))
+			{
+				name: ${jpaColumn.propertyName}
+			},
+#end
+			]
 		},
 #end
 		]

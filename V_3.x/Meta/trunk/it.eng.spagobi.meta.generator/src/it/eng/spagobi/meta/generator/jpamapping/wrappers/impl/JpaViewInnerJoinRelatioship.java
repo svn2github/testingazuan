@@ -96,7 +96,8 @@ public class JpaViewInnerJoinRelatioship {
 					destinationColumns.add( jpaColumn );
 				}
 			} else {
-				
+				JpaFakeColumn fakeColumn = new JpaFakeColumn(innerDestinationTable, physicalColumn);
+				destinationColumns.add( fakeColumn );
 			}
 		}
 		

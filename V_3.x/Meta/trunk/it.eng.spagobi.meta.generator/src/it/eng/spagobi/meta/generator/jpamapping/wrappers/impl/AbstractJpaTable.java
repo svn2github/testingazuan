@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public abstract class AbstractJpaTable implements IJpaTable{
+public abstract class AbstractJpaTable implements IJpaTable {
 	
 	PhysicalTable physicalTable;
 
@@ -68,21 +68,17 @@ public abstract class AbstractJpaTable implements IJpaTable{
 	 * contained in the java class that map this table
 	 */
 	protected void initColumnTypesMap() {
-		
-		ModelProperty columnDataTypeProperty;
 		String columnDataType;
 		String columnJavaDataType;
-		List<BusinessColumn> businessColumns;
+		List<IJpaColumn> jpaColumns;
 		
 		if(columnTypesMap != null) return;
 		
 		columnTypesMap = new HashMap<String, String>();
 		
-		businessColumns = getBusinessColumns();
-		for (BusinessColumn column :businessColumns) {
-			columnDataTypeProperty = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
-			columnDataType = columnDataTypeProperty.getValue();
-			//columnJavaDataType = JDBCTypeMapper.getJavaTypeName(columnDataType);
+		jpaColumns = getColumns();
+		for (IJpaColumn column :jpaColumns) {
+			columnDataType = column.getSqlDataType();
 			columnJavaDataType = JDBCTypeMapper.getJavaQualifiedName(columnDataType);
 			if ( !columnJavaDataType.startsWith("java.lang") && columnJavaDataType.indexOf('.') > 0) {
 				String simpleJavaType = columnJavaDataType.substring(columnJavaDataType.lastIndexOf('.') + 1);
@@ -90,6 +86,28 @@ public abstract class AbstractJpaTable implements IJpaTable{
 			}
 		}
 	}
+//	protected void initColumnTypesMap() {
+//		
+//		ModelProperty columnDataTypeProperty;
+//		String columnDataType;
+//		String columnJavaDataType;
+//		List<BusinessColumn> businessColumns;
+//		
+//		if(columnTypesMap != null) return;
+//		
+//		columnTypesMap = new HashMap<String, String>();
+//		
+//		businessColumns = getBusinessColumns();
+//		for (BusinessColumn column :businessColumns) {
+//			columnDataTypeProperty = column.getProperties().get(JpaProperties.COLUMN_DATATYPE);
+//			columnDataType = columnDataTypeProperty.getValue();
+//			columnJavaDataType = JDBCTypeMapper.getJavaQualifiedName(columnDataType);
+//			if ( !columnJavaDataType.startsWith("java.lang") && columnJavaDataType.indexOf('.') > 0) {
+//				String simpleJavaType = columnJavaDataType.substring(columnJavaDataType.lastIndexOf('.') + 1);
+//				columnTypesMap.put(columnJavaDataType, simpleJavaType);
+//			}
+//		}
+//	}
 	
 	/*
 	 * (non-Javadoc)

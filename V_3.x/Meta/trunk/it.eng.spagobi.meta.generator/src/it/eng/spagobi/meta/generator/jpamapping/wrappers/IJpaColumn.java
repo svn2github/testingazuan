@@ -76,14 +76,19 @@ public interface IJpaColumn {
 	String getPropertyName();
 
 	/**
+	 * @return the sql type of the associated physical table
+	 */
+	String getSqlDataType();
+	
+	/**
 	 * 
-	 * @return the generated bean property name for the given column (It does not return null)
+	 * @return the generated bean property name for the given column (ex. BigDecimal). It does not return null.
 	 */
 	String getSimplePropertyType();
 
 	/**
 	 * 
-	 * @return the column type as java object (It does not return null)
+	 * @return the column type as java object (ex. java.math.BigDecimal). It does not return null.
 	 */
 	String getPropertyType();
 

@@ -417,7 +417,14 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			logger.debug("Create qbe.properties");
 
 			context = new VelocityContext();
-			context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+			
+			List<IJpaTable> tables = new ArrayList<IJpaTable>();
+			tables.addAll( model.getTables() );
+			for( IJpaView jpaView : model.getViews()) {
+				tables.addAll(jpaView.getInnerTables());
+			}
+			
+			context.put("jpaTables", tables ); //$NON-NLS-1$
 			context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
 
 

@@ -267,14 +267,17 @@ public class JpaColumn implements IJpaColumn {
 	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyType()
 	 */
 	@Override
+	public String getSqlDataType()  {
+		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
+		return property.getValue();
+	}
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.IJpaColumn#getPropertyType()
+	 */
+	@Override
 	public String getPropertyType()  {
 		String type;
-		
-		ModelProperty property = businessColumn.getProperties().get(JpaProperties.COLUMN_DATATYPE);
-		String modelType = property.getValue();
-		
-		//type = JDBCTypeMapper.getJavaTypeName(modelType);	
-		type = JDBCTypeMapper.getJavaSimpleTypeName(modelType);
+		type = JDBCTypeMapper.getJavaSimpleTypeName( getSqlDataType() );
 		return type;
 	}
 	
@@ -358,7 +361,7 @@ public class JpaColumn implements IJpaColumn {
 	@Override
 	public String getMapTemporalType(){
 		if (getPropertyType().equals("java.sql.Date") ) return "DATE";
-		if (getPropertyType().equals("java.tim.Date") ) return "TIME";
+		if (getPropertyType().equals("java.time.Date") ) return "TIME";
 		if (getPropertyType().equals("java.sql.Timestamp") ) return "TIMESTAMP";
 		else return "";
 	}	

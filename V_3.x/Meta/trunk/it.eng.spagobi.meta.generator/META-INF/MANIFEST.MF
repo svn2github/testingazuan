@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="3.8.2",
  it.eng.spagobi.commons;bundle-version="1.0.0",
  org.eclipse.jdt.core,
- org.eclipse.core.resources;bundle-version="3.6.1"
+ org.eclipse.core.resources;bundle-version="3.6.1",
+ it.eng.spagobi.meta.initializer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: it.eng.spagobi.commons.utilities,

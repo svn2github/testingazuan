@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -62,7 +63,14 @@ public class JpaTable extends AbstractJpaTable {
 	protected JpaTable(BusinessTable businessTable) {
 		super(businessTable.getPhysicalTable());
 		this.businessTable = businessTable;
-		quoteString = businessTable.getModel().getPhysicalModel().getPropertyType("connection.databasequotestring").getDefaultValue();
+		
+		ModelPropertyType modelPropertyType = businessTable.getModel().getPhysicalModel().getPropertyType("connection.databasequotestring");
+		if(modelPropertyType != null) {
+			quoteString = modelPropertyType.getDefaultValue();
+		} else {
+			quoteString = "";
+		}
+		
 		initColumnTypesMap();
 	}
 	

@@ -29,7 +29,5 @@ import it.eng.spagobi.meta.model.ModelObject;
  */
 public interface IGenerator {
 	void generate(ModelObject o, String outputFile);
-	
-	void hideTechnicalResources();
-	
+	void hideTechnicalResources();	
 }

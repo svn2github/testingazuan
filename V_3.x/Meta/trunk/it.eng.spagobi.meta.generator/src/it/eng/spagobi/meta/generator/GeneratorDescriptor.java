@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
- * Used for lazy initizlization of the related plugin
+ * Used for lazy initialization of the related plugin
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *

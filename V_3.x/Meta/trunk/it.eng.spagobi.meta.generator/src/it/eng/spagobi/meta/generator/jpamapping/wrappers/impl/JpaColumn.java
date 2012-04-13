@@ -27,6 +27,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -59,8 +60,12 @@ public class JpaColumn implements IJpaColumn {
 	protected JpaColumn(AbstractJpaTable parentTable, SimpleBusinessColumn businessColumn) {
 		this.jpaTable = parentTable;
 		this.businessColumn = businessColumn;
-		quoteString = businessColumn.getTable().getModel().getPhysicalModel().getPropertyType("connection.databasequotestring").getDefaultValue();
-
+		ModelPropertyType modelPropertyType = businessColumn.getTable().getModel().getPhysicalModel().getPropertyType("connection.databasequotestring");
+		if(modelPropertyType != null) {
+			quoteString = modelPropertyType.getDefaultValue();
+		} else {
+			quoteString = "";
+		}
 	}
 	
 	/* (non-Javadoc)

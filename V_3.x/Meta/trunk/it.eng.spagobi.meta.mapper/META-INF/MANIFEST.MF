@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.mapper
 Bundle-SymbolicName: it.eng.spagobi.meta.mapper
-Bundle-Version: 1.0.0
-Bundle-Vendor: it.eng
+Bundle-Version: 3.4.0
+Bundle-Vendor: Engineering Group
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: it.eng.spagobi.meta.model;bundle-version="1.0.0",
  it.eng.spagobi.commons;bundle-version="1.0.0",

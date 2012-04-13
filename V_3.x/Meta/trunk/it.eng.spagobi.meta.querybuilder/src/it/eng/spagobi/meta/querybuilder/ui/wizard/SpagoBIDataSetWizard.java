@@ -28,7 +28,6 @@ import it.eng.spagobi.meta.querybuilder.oda.Connection;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.connectivity.oda.design.DataSetDesign;
 import org.eclipse.datatools.connectivity.oda.design.ui.designsession.DesignSessionUtil;

@@ -22,10 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tables;
 
 
-import java.util.List;
-
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
+
+import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;

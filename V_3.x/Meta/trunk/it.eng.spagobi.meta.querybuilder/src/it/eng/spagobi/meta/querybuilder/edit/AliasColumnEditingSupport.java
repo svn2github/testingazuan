@@ -23,7 +23,6 @@ package it.eng.spagobi.meta.querybuilder.edit;
 
 
 import it.eng.qbe.query.AbstractSelectField;
-import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
 import org.eclipse.jface.viewers.CellEditor;

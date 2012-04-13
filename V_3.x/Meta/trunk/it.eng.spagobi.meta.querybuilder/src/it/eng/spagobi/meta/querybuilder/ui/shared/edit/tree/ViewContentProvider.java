@@ -24,6 +24,7 @@ package it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelNode;
+
 import java.util.ArrayList;
 import java.util.List;
 

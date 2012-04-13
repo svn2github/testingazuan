@@ -22,9 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.querybuilder.ui;
 
 
-import java.util.List;
-import java.util.Set;
-
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.FilteredModelStructure;
 import it.eng.qbe.model.structure.IModelEntity;
@@ -51,6 +48,9 @@ import it.eng.spagobi.meta.querybuilder.ui.shared.edit.tree.ModelTreeViewer;
 import it.eng.spagobi.meta.querybuilder.ui.shared.result.ResultTableViewer;
 import it.eng.spagobi.tools.dataset.common.query.AggregationFunctions;
 import it.eng.spagobi.tools.dataset.common.query.IAggregationFunction;
+
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.SWT;

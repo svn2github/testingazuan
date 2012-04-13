@@ -21,6 +21,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.model;
 
+import it.eng.qbe.datasource.ConnectionDescriptor;
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.meta.generator.GeneratorDescriptor;
+import it.eng.spagobi.meta.generator.GeneratorFactory;
+import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.meta.model.validator.ModelValidator;
+import it.eng.spagobi.meta.querybuilder.model.dao.IModelDAO;
+import it.eng.spagobi.meta.querybuilder.model.dao.ModelDAOFileImpl;
+import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
+import it.eng.spagobi.meta.querybuilder.ui.editor.DatabaseConnectionManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,22 +58,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import it.eng.qbe.datasource.ConnectionDescriptor;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.generator.GeneratorDescriptor;
-import it.eng.spagobi.meta.generator.GeneratorFactory;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.validator.ModelValidator;
-import it.eng.spagobi.meta.querybuilder.model.dao.IModelDAO;
-import it.eng.spagobi.meta.querybuilder.model.dao.ModelDAOFileImpl;
-import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
-import it.eng.spagobi.meta.querybuilder.ui.editor.DatabaseConnectionManager;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

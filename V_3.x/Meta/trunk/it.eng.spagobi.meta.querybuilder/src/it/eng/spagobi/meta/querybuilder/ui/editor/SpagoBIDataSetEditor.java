@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.ui.editor;
 
-import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.IQueryDeserializer;
@@ -29,20 +28,9 @@ import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
-import it.eng.spagobi.meta.generator.GeneratorDescriptor;
-import it.eng.spagobi.meta.generator.GeneratorFactory;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.physical.PhysicalModel;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.model.validator.ModelValidator;
 import it.eng.spagobi.meta.querybuilder.SpagoBIMetaQueryBuilderPlugin;
 import it.eng.spagobi.meta.querybuilder.model.ModelManager;
-import it.eng.spagobi.meta.querybuilder.model.dao.IModelDAO;
-import it.eng.spagobi.meta.querybuilder.model.dao.ModelDAOFileImpl;
-import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.query.dao.QueryDAOFileImpl;
 import it.eng.spagobi.meta.querybuilder.ui.QueryBuilder;
 
@@ -56,20 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -98,8 +73,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 
 

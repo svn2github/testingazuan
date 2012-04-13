@@ -21,17 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.querybuilder.model.dao;
 
+import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
+
 import java.io.File;
 
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.eng.spagobi.commons.exception.SpagoBIPluginException;
-import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
-import it.eng.spagobi.meta.querybuilder.ui.editor.SpagoBIDataSetEditor;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

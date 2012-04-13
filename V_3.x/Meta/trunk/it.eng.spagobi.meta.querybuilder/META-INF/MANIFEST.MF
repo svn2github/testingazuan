@@ -22,6 +22,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: it.eng.spagobi.meta.querybuilder.model,
  it.eng.spagobi.meta.querybuilder.ui,
  it.eng.spagobi.meta.querybuilder.ui.editor,
+ it.eng.spagobi.meta.querybuilder.ui.shared.result,
  it.eng.spagobi.meta.querybuilder.ui.wizard
 Import-Package: javax.persistence
 Bundle-ClassPath: libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,

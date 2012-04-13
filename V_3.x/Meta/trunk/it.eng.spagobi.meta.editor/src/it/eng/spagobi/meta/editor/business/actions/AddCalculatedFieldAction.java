@@ -21,18 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import java.util.List;
-
 import it.eng.spagobi.meta.editor.business.wizards.inline.AddCalculatedFieldWizard;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
-import it.eng.spagobi.meta.initializer.descriptor.CalculatedFieldDescriptor;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;

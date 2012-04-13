@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.menu;
 
-import it.eng.spagobi.meta.editor.business.actions.AbstractSpagoBIModelAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddCalculatedFieldAction;
@@ -29,14 +28,11 @@ import it.eng.spagobi.meta.editor.business.actions.AddEmptyBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIdentifierAction;
 import it.eng.spagobi.meta.editor.business.actions.AddIncomeBusinessRelationshipAction;
 import it.eng.spagobi.meta.editor.business.actions.AddOutcomeBusinessRelationshipAction;
-import it.eng.spagobi.meta.editor.business.actions.AddPhysicalTableToBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.AddToIdentifierAction;
 import it.eng.spagobi.meta.editor.business.actions.CreateQueryAction;
-import it.eng.spagobi.meta.editor.business.actions.DeleteBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessViewInnerJoinRelationshipsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
-import it.eng.spagobi.meta.editor.business.actions.RemovePhysicalTableToBusinessViewAction;
 import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;

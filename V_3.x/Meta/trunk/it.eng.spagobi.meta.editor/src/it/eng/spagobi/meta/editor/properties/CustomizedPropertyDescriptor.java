@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.meta.editor.properties;
 
-import java.util.ArrayList;
-
 import it.eng.spagobi.meta.edit.properties.CustomItemPropertyDescriptor;
+
+import java.util.ArrayList;
 
 import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -31,7 +31,6 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.ui.provider.PropertyDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorPart;
 
 /**
  * @author cortella

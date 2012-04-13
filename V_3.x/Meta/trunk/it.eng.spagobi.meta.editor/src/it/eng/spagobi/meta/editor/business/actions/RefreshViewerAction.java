@@ -21,11 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import java.util.Collection;
-
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
-import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.jface.action.Action;

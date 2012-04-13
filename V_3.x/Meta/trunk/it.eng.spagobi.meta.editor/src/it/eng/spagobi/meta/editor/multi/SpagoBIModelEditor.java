@@ -23,18 +23,17 @@ package it.eng.spagobi.meta.editor.multi;
 
 
 
-import java.net.URL;
-
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.business.BusinessModelEditorSelectionProvider;
-import it.eng.spagobi.meta.editor.business.BusinessModelPartListener;
 import it.eng.spagobi.meta.editor.commons.DiagnosticPartListener;
 import it.eng.spagobi.meta.editor.physical.PhysicalModelEditor;
 import it.eng.spagobi.meta.editor.properties.CustomizedBusinessPropertySheetPage;
 import it.eng.spagobi.meta.editor.properties.CustomizedPhysicalPropertySheetPage;
+
+import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -55,9 +54,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.MultiEditor;

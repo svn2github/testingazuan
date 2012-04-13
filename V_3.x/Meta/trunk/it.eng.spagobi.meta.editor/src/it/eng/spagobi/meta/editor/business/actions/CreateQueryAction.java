@@ -21,19 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business.actions;
 
-import it.eng.spagobi.meta.editor.business.wizards.inline.CreateQueryWizard;
 import it.eng.spagobi.meta.editor.business.wizards.inline.NewQueryFileWizard;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 

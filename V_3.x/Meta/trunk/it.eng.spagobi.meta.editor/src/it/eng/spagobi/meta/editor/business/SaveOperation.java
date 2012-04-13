@@ -24,10 +24,8 @@ package it.eng.spagobi.meta.editor.business;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.commons.utils.SpagoBIMetaConstants;
 import it.eng.spagobi.meta.model.Model;
-import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

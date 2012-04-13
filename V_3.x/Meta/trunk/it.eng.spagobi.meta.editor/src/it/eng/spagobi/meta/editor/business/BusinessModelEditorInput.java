@@ -26,8 +26,6 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.IPath;
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *

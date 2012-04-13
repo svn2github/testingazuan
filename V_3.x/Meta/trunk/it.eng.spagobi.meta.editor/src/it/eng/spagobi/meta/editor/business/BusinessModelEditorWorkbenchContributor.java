@@ -21,28 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.business;
 
-import it.eng.spagobi.meta.editor.business.actions.DeleteBusinessTableAction;
 import it.eng.spagobi.meta.editor.business.actions.DeleteModelObjectAction;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelMenuBarContributor;
 import it.eng.spagobi.meta.editor.business.menu.BusinessModelPopupMenuContributor;
-import it.eng.spagobi.meta.model.business.BusinessTable;
 
 import org.eclipse.emf.edit.ui.action.DeleteAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * This is the action bar contributor for the BusinessModel model editor.

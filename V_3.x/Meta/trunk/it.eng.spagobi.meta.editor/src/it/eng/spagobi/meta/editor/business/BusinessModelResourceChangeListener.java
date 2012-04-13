@@ -38,7 +38,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

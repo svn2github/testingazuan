@@ -48,30 +48,19 @@ public class TestModelFactory {
 	public static final String DATABASE_NAME = "Test Database";
 	
 	public static Model createModel(TestCostants.DatabaseType dbType) {
-		Model model;
+		Model model = null;
+		switch(dbType) {
+        	case MYSQL:   
+        		model = createModelOnMySql();
+        		break;
+        	case POSTGRES:  
+        		model = createModelOnPostgres();
+        		break;
+        	case ORACLE:  
+        		model = createModelOnOracle();
+        		break;
+		}
 		
-
-		model = ModelFactory.eINSTANCE.createModel();
-		model.setName(MODEL_NAME);
-		
-		PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
-		
-		physicalModelInitializer.setRootModel(model);		
-		PhysicalModel physicalModel = physicalModelInitializer.initialize( 
-        		"PHYSICAL" + MODEL_NAME, 
-        		TestConnectionFactory.createConnection(dbType),
-        		CONNECTION_NAME,
-        		TestCostants.MYSQL_DRIVER,
-        		TestCostants.MYSQL_URL,
-        		TestCostants.MYSQL_USER,
-        		TestCostants.MYSQL_PWD,
-        		DATABASE_NAME,
-        		TestConnectionFactory.getDefaultCatalogue(dbType), 
-        		TestConnectionFactory.getDefaultSchema(dbType));
-		
-		BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
-		BusinessModel businessModel = businessModelInitializer.initialize("BUSINESS_" + MODEL_NAME, physicalModel);
-        
 		return model;
 	}
 	
@@ -124,5 +113,101 @@ public class TestModelFactory {
 		connectionDescriptor.setUsername( TestCostants.MYSQL_USER );		
 		connectionDescriptor.setPassword( TestCostants.MYSQL_PWD );
 		return connectionDescriptor;
+	}
+	
+	// =======================================================
+	// MYSQL
+	// =======================================================
+	private static Model createModelOnMySql() {
+		Model model;
+		
+
+		model = ModelFactory.eINSTANCE.createModel();
+		model.setName(MODEL_NAME);
+		
+		PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
+		
+		physicalModelInitializer.setRootModel(model);		
+		PhysicalModel physicalModel = physicalModelInitializer.initialize( 
+        		"PHYSICAL" + MODEL_NAME, 
+        		TestConnectionFactory.createConnection(TestCostants.DatabaseType.MYSQL),
+        		CONNECTION_NAME,
+        		TestCostants.MYSQL_DRIVER,
+        		TestCostants.MYSQL_URL,
+        		TestCostants.MYSQL_USER,
+        		TestCostants.MYSQL_PWD,
+        		DATABASE_NAME,
+        		TestCostants.MYSQL_DEFAULT_CATALOGUE, 
+        		TestCostants.MYSQL_DEFAULT_SCHEMA
+        );
+		
+		BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+		BusinessModel businessModel = businessModelInitializer.initialize("BUSINESS_" + MODEL_NAME, physicalModel);
+        
+		return model;
+	}
+	
+	// =======================================================
+	// POSTGRES
+	// =======================================================
+	private static Model createModelOnPostgres() {
+		Model model;
+		
+
+		model = ModelFactory.eINSTANCE.createModel();
+		model.setName(MODEL_NAME);
+		
+		PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
+		
+		physicalModelInitializer.setRootModel(model);		
+		PhysicalModel physicalModel = physicalModelInitializer.initialize( 
+        		"PHYSICAL" + MODEL_NAME, 
+        		TestConnectionFactory.createConnection(TestCostants.DatabaseType.POSTGRES),
+        		CONNECTION_NAME,
+        		TestCostants.POSTGRES_DRIVER,
+        		TestCostants.POSTGRES_URL,
+        		TestCostants.POSTGRES_USER,
+        		TestCostants.POSTGRES_PWD,
+        		DATABASE_NAME,
+        		TestCostants.POSTGRES_DEFAULT_CATALOGUE, 
+        		TestCostants.POSTGRES_DEFAULT_SCHEMA
+        );
+		
+		BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+		BusinessModel businessModel = businessModelInitializer.initialize("BUSINESS_" + MODEL_NAME, physicalModel);
+        
+		return model;
+	}
+	
+	// =======================================================
+	// ORACLE
+	// =======================================================
+	private static Model createModelOnOracle() {
+		Model model;
+		
+
+		model = ModelFactory.eINSTANCE.createModel();
+		model.setName(MODEL_NAME);
+		
+		PhysicalModelInitializer physicalModelInitializer = new PhysicalModelInitializer();
+		
+		physicalModelInitializer.setRootModel(model);		
+		PhysicalModel physicalModel = physicalModelInitializer.initialize( 
+        		"PHYSICAL" + MODEL_NAME, 
+        		TestConnectionFactory.createConnection(TestCostants.DatabaseType.ORACLE),
+        		CONNECTION_NAME,
+        		TestCostants.ORACLE_DRIVER,
+        		TestCostants.ORACLE_URL,
+        		TestCostants.ORACLE_USER,
+        		TestCostants.ORACLE_PWD,
+        		DATABASE_NAME,
+        		TestCostants.ORACLE_DEFAULT_CATALOGUE, 
+        		TestCostants.ORACLE_DEFAULT_SCHEMA
+        );
+		
+		BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+		BusinessModel businessModel = businessModelInitializer.initialize("BUSINESS_" + MODEL_NAME, physicalModel);
+        
+		return model;
 	}
 }

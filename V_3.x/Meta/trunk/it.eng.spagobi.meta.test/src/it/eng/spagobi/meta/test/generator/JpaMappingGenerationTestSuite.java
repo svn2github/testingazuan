@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.generator;
 
+import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.generator.mysql.MySqlJpaMappingTestSuite;
+import it.eng.spagobi.meta.test.generator.postgres.PostgresJpaMappingTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,8 +35,11 @@ import junit.framework.TestSuite;
 public class JpaMappingGenerationTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Generation tests");
-		suite.addTest(MySqlJpaMappingTestSuite.suite());
+		if(TestCostants.enableTestsOnMySql) suite.addTest(MySqlJpaMappingTestSuite.suite());
+		if(TestCostants.enableTestsOnPostgres) suite.addTest(PostgresJpaMappingTestSuite.suite());
+		
 		// add here test suites of other databases ...
+		
 		return suite;
 	}
 }

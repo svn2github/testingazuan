@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.serialization;
 
+import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.serialization.mysql.MySqlBusinessModelSerializationTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,7 +34,7 @@ import junit.framework.TestSuite;
 public class ModelSerializationTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Seraialization tests");
-		suite.addTestSuite(MySqlBusinessModelSerializationTest.class);
+		if(TestCostants.enableTestsOnMySql) suite.addTestSuite(MySqlBusinessModelSerializationTest.class);
 		return suite;
 	}
 }

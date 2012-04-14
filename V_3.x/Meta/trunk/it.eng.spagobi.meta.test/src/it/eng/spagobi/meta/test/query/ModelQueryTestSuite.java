@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.query;
 
+import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.query.mysql.MySqlModelQueryTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,7 +34,7 @@ import junit.framework.TestSuite;
 public class ModelQueryTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Query tests");
-		suite.addTestSuite(MySqlModelQueryTest.class);
+		if(TestCostants.enableTestsOnMySql) suite.addTestSuite(MySqlModelQueryTest.class);
 		// add here test suites of other databases ...
 		return suite;
 	}

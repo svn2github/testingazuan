@@ -19,9 +19,15 @@ public class TestConnectionFactory {
 		
 		catalogue = null;
 		switch(type) {
-        case MYSQL:   catalogue = TestCostants.MYSQL_DEFAULT_CATALOGUE;
-        case POSTGRES:  catalogue = TestCostants.POSTGRES_DEFAULT_CATALOGUE;
-        case ORACLE:  catalogue = TestCostants.ORACLE_DEFAULT_CATALOGUE;
+	        case MYSQL:   
+	        	catalogue = TestCostants.MYSQL_DEFAULT_CATALOGUE;
+	        	break;
+	        case POSTGRES:  
+	        	catalogue = TestCostants.POSTGRES_DEFAULT_CATALOGUE;
+	        	break;
+	        case ORACLE:  
+	        	catalogue = TestCostants.ORACLE_DEFAULT_CATALOGUE;
+	        	break;
 		}
 		
 		return catalogue;
@@ -32,9 +38,15 @@ public class TestConnectionFactory {
 		
 		schema = null;
 		switch(type) {
-        case MYSQL:   schema = TestCostants.MYSQL_DEFAULT_SCHEMA;
-        case POSTGRES:  schema = TestCostants.POSTGRES_DEFAULT_SCHEMA;
-        case ORACLE:  schema = TestCostants.ORACLE_DEFAULT_SCHEMA;
+        	case MYSQL:   
+        		schema = TestCostants.MYSQL_DEFAULT_SCHEMA;
+        		break;
+        	case POSTGRES:  
+        		schema = TestCostants.POSTGRES_DEFAULT_SCHEMA;
+        		break;
+        	case ORACLE:  
+        		schema = TestCostants.ORACLE_DEFAULT_SCHEMA;
+        		break;
 		}
 		
 		return schema;
@@ -45,9 +57,15 @@ public class TestConnectionFactory {
 		
 		connection = null;
 		switch(type) {
-        case MYSQL:   connection = createConnection(TestCostants.MYSQL_URL, TestCostants.MYSQL_USER, TestCostants.MYSQL_PWD, TestCostants.MYSQL_DRIVER);
-        case POSTGRES:  connection = createConnection(TestCostants.POSTGRES_URL, TestCostants.POSTGRES_USER, TestCostants.POSTGRES_PWD, TestCostants.POSTGRES_DRIVER);
-        case ORACLE:  connection = createConnection(TestCostants.ORACLE_URL, TestCostants.ORACLE_USER, TestCostants.ORACLE_PWD, TestCostants.ORACLE_DRIVER);
+	        case MYSQL:   
+	        	connection = createConnection(TestCostants.MYSQL_URL, TestCostants.MYSQL_USER, TestCostants.MYSQL_PWD, TestCostants.MYSQL_DRIVER);
+	        	break;
+	        case POSTGRES:  
+	        	connection = createConnection(TestCostants.POSTGRES_URL, TestCostants.POSTGRES_USER, TestCostants.POSTGRES_PWD, TestCostants.POSTGRES_DRIVER);
+	        	break;
+	        case ORACLE:  
+	        	connection = createConnection(TestCostants.ORACLE_URL, TestCostants.ORACLE_USER, TestCostants.ORACLE_PWD, TestCostants.ORACLE_DRIVER);
+	        	break;
 		}
 		
 		return connection;
@@ -58,9 +76,9 @@ public class TestConnectionFactory {
 		
 		connection = null;
 		try {
-			com.mysql.jdbc.Driver o = (com.mysql.jdbc.Driver)Class.forName(TestCostants.MYSQL_DRIVER).newInstance();			  
-			boolean b = o.acceptsURL(TestCostants.MYSQL_URL);
-			connection = DriverManager.getConnection(TestCostants.MYSQL_URL, TestCostants.MYSQL_USER, TestCostants.MYSQL_PWD);
+			java.sql.Driver  o = (java.sql.Driver )Class.forName(driver).newInstance();			  
+			boolean b = o.acceptsURL(url);
+			connection = DriverManager.getConnection(url, usr, pwd);
 		} catch (Throwable t){
 			throw new RuntimeException("Impossible to create connection [url: " + url
 					+ "; usr: " + usr

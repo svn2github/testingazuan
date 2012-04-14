@@ -32,6 +32,9 @@ public class TestCostants {
 	public static File workspaceFolder = new File("D:/Documenti/Sviluppo/workspaces/helios/metadata");
 	public static File outputFolder = new File("D:/Documenti/Sviluppo/workspaces/unit-test");
 	
+	public static boolean enableTestsOnMySql = false;
+	public static boolean enableTestsOnPostgres = true;
+	public static boolean enableTestsOracle = false;
 	
 	// =======================================================
 	// MYSQL
@@ -83,14 +86,15 @@ public class TestCostants {
 	};
 
 	// =======================================================
-	// POSTGRESS
+	// POSTGRES
 	// =======================================================
 	public static String POSTGRES_DRIVER = "org.postgresql.Driver";
-	public static String POSTGRES_URL = "jdbc:postgresql://localhost:5432/geodwh";
-	public static String POSTGRES_USER = "geodwh";
-	public static String POSTGRES_PWD = "geodwh";
+	public static String POSTGRES_URL = "jdbc:postgresql://localhost:5434/foodmart";
+	public static String POSTGRES_USER = "postgres";
+	public static String POSTGRES_PWD = "postgres";
 	public static String POSTGRES_DEFAULT_CATALOGUE = null;	
 	public static String POSTGRES_DEFAULT_SCHEMA = "public";	
+	public static String POSTGRES_DEFAULT_DIALECT = "org.hibernate.dialect.MySQLDialect";
 	
 	// =======================================================
 	// ORACLE

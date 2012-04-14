@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.test.edit;
 
+import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.edit.mysql.MySqlModelEditingTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,7 +34,7 @@ import junit.framework.TestSuite;
 public class ModelEditingTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Editing tests");
-		suite.addTest(MySqlModelEditingTestSuite.suite());
+		if(TestCostants.enableTestsOnMySql) suite.addTest(MySqlModelEditingTestSuite.suite());
 		// add here test suites of other databases ...
 		return suite;
 	}

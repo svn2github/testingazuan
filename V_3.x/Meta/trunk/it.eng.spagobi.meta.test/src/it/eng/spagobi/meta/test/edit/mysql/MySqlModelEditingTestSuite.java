@@ -33,7 +33,6 @@ public class MySqlModelEditingTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Editing tests on MySql");
 		suite.addTestSuite(MySqlModelEditingTest.class);
-		// add here test suites of other databases ...
 		return suite;
 	}
 }

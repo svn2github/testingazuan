@@ -37,13 +37,7 @@ public class MySqlJpaMappingCodeGenerationTest extends AbstractSpagoBIMetaTest {
 			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
 			
 			if(rootModel == null) {
-				rootModel = TestModelFactory.createModel( dbType );
-				if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {
-					physicalModel = rootModel.getPhysicalModels().get(0);
-				}
-				if(rootModel != null && rootModel.getBusinessModels() != null && rootModel.getBusinessModels().size() > 0) {
-					businessModel = rootModel.getBusinessModels().get(0);
-				}
+				setRootModel( TestModelFactory.createModel( dbType ) );
 			}
 			
 			if(jpaMappingCodeGenerator == null)  {

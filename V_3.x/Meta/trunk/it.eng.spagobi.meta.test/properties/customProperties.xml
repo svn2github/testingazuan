@@ -20,6 +20,15 @@
       <type id="structural.file" name="File"
       description="File used to store this model"
       category="Structural" defaultValue="model.sbimodel" />
+      
+       <type id="structural.initializer.name" name="Initializer Name"
+      description="The name of the initializer used to build the model"
+      category="Structural" defaultValue="unknown" />
+      
+       <type id="structural.initializer.version" name="Initializer Version"
+      description="The version of the initializer used to build the model"
+      category="Structural" defaultValue="unknown" />
+      
     </types>
   
   </model>

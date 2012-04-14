@@ -1,6 +1,7 @@
 package it.eng.spagobi.meta.test.initializer.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
@@ -62,16 +63,25 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	// =======================================================
 	public void testBusinessModelPakageProperty() {
 		ModelProperty packageProperty =  businessModel.getProperties().get(JpaProperties.MODEL_PACKAGE);
-	    Assert.assertNotNull("Property [" + JpaProperties.MODEL_PACKAGE + "] is not defined in business model", packageProperty);
+	    assertNotNull("Property [" + JpaProperties.MODEL_PACKAGE + "] is not defined in business model", packageProperty);
 		
 		String packageName = null;
-		//check if property is setted, else get default value
+		//check if property is set, else get default value
 	    if (packageProperty.getValue() != null){
 	    	packageName = packageProperty.getValue();
 	    } else {
 	    	packageName = packageProperty.getPropertyType().getDefaultValue();
 	    }
 	    Assert.assertNotNull("Property [" + JpaProperties.MODEL_PACKAGE + "] have no value", packageName);
+	    
+	    ModelProperty initializerNameProperty =  businessModel.getProperties().get(BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_NAME);
+	    assertNotNull("Property [" + BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_NAME + "] is not defined in business model", initializerNameProperty);
+	    assertEquals(this.businessModelInitializer.INITIALIZER_NAME,  initializerNameProperty.getValue());
+	   
+	    ModelProperty initializerVersionProperty =  businessModel.getProperties().get(BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_VERSION);
+	    assertNotNull("Property [" + BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_VERSION + "] is not defined in business model", initializerVersionProperty);
+	    assertEquals(this.businessModelInitializer.INITIALIZER_VERSION,  initializerVersionProperty.getValue());
+		
     }
     
 	

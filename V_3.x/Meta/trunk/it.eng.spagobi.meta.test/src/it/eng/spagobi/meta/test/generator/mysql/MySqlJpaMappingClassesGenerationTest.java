@@ -1,6 +1,7 @@
 package it.eng.spagobi.meta.test.generator.mysql;
 
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingClassesGenerator;
+import it.eng.spagobi.meta.test.AbstractSpagoBIMetaTest;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
@@ -9,7 +10,7 @@ import it.eng.spagobi.meta.test.generator.AbstractJpaMappingGenerationTest;
 import java.io.File;
 
 
-public class MySqlJpaMappingClassesGenerationTest extends AbstractJpaMappingGenerationTest {
+public class MySqlJpaMappingClassesGenerationTest extends AbstractSpagoBIMetaTest {
 
 	static JpaMappingClassesGenerator jpaMappingClassesGenerator;
 	

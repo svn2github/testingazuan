@@ -6,6 +6,7 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaRelationship;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaTable;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaModel;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
+import it.eng.spagobi.meta.test.AbstractSpagoBIMetaTest;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
@@ -17,7 +18,7 @@ import java.util.Map;
 import org.junit.Assert;
 
 
-public class MySqlJpaModelTest extends AbstractJpaMappingGenerationTest {
+public class MySqlJpaModelTest extends AbstractSpagoBIMetaTest {
 
 	static JpaModel jpaModel;
 	static JpaMappingCodeGenerator jpaMappingCodeGenerator;

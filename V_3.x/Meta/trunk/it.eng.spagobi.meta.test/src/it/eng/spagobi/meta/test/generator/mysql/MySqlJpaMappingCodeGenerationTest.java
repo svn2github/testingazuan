@@ -9,6 +9,7 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.meta.test.AbstractSpagoBIMetaTest;
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.TestGeneratorFactory;
 import it.eng.spagobi.meta.test.TestModelFactory;
@@ -25,7 +26,7 @@ import java.util.Properties;
 import org.junit.Assert;
 
 
-public class MySqlJpaMappingCodeGenerationTest extends AbstractJpaMappingGenerationTest {
+public class MySqlJpaMappingCodeGenerationTest extends AbstractSpagoBIMetaTest {
 
 	static JpaMappingCodeGenerator jpaMappingCodeGenerator;
 	static JpaModel jpaModel;

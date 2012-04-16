@@ -1,0 +1,410 @@
+/**
+ * SpagoBI - The Business Intelligence Free Platform
+ *
+ * Copyright (C) 2004 - 2011 Engineering Ingegneria Informatica S.p.A.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ **/
+ 
+/**
+  * Object name 
+  * 
+  * [description]
+  * 
+  * 
+  * Public Properties
+  * 
+  * [list]
+  * 
+  * 
+  * Public Methods
+  * 
+  *  [list]
+  * 
+  * 
+  * Public Events
+  * 
+  *  [list]
+  * 
+  * Authors
+  * 
+  * - Antonella Giachino (antonella.giachino@eng.it)
+  */
+
+Ext.ns("Sbi.console");
+
+Sbi.console.ActionButton = function(config) {
+
+		var defaultSettings = {
+			//id: 'ActionButton'
+			iconCls: config.actionConf.type
+			,tooltip: (config.actionConf.tooltip === undefined)?config.actionConf.type : config.actionConf.tooltip 
+			,hidden: config.actionConf.hidden
+			,scope:this
+		};
+		
+		if(Sbi.settings && Sbi.settings.console && Sbi.settings.console.actionButton) {
+			defaultSettings = Ext.apply(defaultSettings, Sbi.settings.console.actionButton);
+		}
+	
+		var c = Ext.apply(defaultSettings, config || {});
+	
+		Ext.apply(this, c);
+
+	    this.initServices();
+	    
+        c = Ext.apply(c, this);
+      
+      
+	    // constructor
+	    Sbi.console.ActionButton.superclass.constructor.call(this, c);
+	    this.on('click', this.execAction, this);
+	    this.store.on('load', this.initButton, this);
+        this.addEvents('toggleIcons');      
+        // invokes before each ajax request 
+        //Ext.Ajax.on('beforerequest', this.showMask, this);   
+        // invokes after request completed 
+        //Ext.Ajax.on('requestcomplete', this.hideMask, this);            
+        // invokes if exception occured 
+        //Ext.Ajax.on('requestexception', this.hideMask, this);   
+}; 
+
+Ext.extend(Sbi.console.ActionButton, Ext.Button, {
+    
+    services: null
+    , isActive: null
+    , ACTIVE_VALUE: 1
+	, INACTIVE_VALUE: 0
+	, USER_ID: 'userId'
+	, ERRORS: 'errors'
+	, ALARMS: 'alarms'
+	, VIEWS: 'views'
+	, MONITOR: 'monitor'
+	, MONITOR_INACTIVE: 'monitor_inactive'
+	, loadMask: null
+		
+	, FILTERBAR_ACTIONS: {		
+		  monitor: {serviceName: 'UPDATE_ACTION', images: 'monitor'}
+		, monitor_inactive: {serviceName: 'UPDATE_ACTION', images: 'monitor_inactive'}
+		, errors: {serviceName: 'UPDATE_ACTION', images: {active: 'errors', inactive: 'errors_inactive'}} 
+		, alarms: {serviceName: 'UPDATE_ACTION', images: {active: 'alarms', inactive: 'alarms_inactive'}}
+		, views: {serviceName: 'UPDATE_ACTION', images: {active: 'views', inactive: 'views_inactive'}}
+		, refresh: {serviceName: 'REFRESH_ACTION', images: 'refresh'}
+	}
+   
+    // public methods
+
+	//This method search the dynamic parameter value before in the request, if it isn't found it search into filter.
+	//If it isn't found again it shows a message error.
+	, resolveParameters: function(parameters, context) {
+		var results = {};  
+
+		results = Ext.apply(results, parameters.staticParams);
+		
+		var dynamicParams = parameters.dynamicParams;
+	    if(dynamicParams) {        	
+	    	var msgErr = ""; 
+	      	for (var i = 0, l = dynamicParams.length; i < l; i++) {      		     
+	      		var param = dynamicParams[i]; 
+	        	for(p in param) { 
+	        		if(p === 'scope') continue;	        	
+	        			//Searchs into request
+	        			if (param.scope === 'env'){ 
+	        				var tmpNamePar =  param[p];
+			            	  if (p !== this.USER_ID && context[tmpNamePar] === undefined) {
+			            		  // msgErr += 'Parameter "' + tmpNamePar + '" undefined into request. <p>';
+		                      } else {   
+		                    	  results[p] = context[tmpNamePar];
+		                      }
+			            	  /*
+			            	if (p !== this.USER_ID && context[p] === undefined ) {
+			            		//search into filters
+			            		//var paramValue = this.store.filterPlugin.getFilter(this.store.getFieldNameByAlias(p)); 
+			            		alert("p: " + p + " - param[p]: " + param[p]);
+			            		var paramValue = this.store.filterPlugin.getFilter(this.store.getFieldNameByAlias(param[p]));
+			            		if (paramValue !== undefined){
+			            			//results[param[p]] = paramValue;
+			            			results[p] = paramValue;
+			            		}
+			            		else{
+			            			msgErr += 'Parameter "' + p + '" undefined into request or filter. <p>';
+			            		}
+		                    } else {          	 	 		           	 	 		  
+		                    	//results[param[p]] = context[p];
+		                    	results[p] = context[p];
+		                    } 	 	*/	 
+	                }          	 	 		   
+	          		    
+	        	 }          			   
+	      	} 
+	      	
+	      	var metaParams = parameters.metaParams;
+		    if(metaParams) {  
+		    	results['metaParams'] = Ext.util.JSON.encode(metaParams);
+		    }
+	      	
+	        if  (msgErr != ""){
+	        	Sbi.Msg.showError(msgErr, 'Service Error');
+	        }		  
+	    }
+	    
+	    return results;
+	}
+	
+    , execAction: function(){
+    	var flgCheck = null;
+    	var checkCol = null;
+    	
+    	//views a confirm message if it's configurated
+    	if (this.actionConf.msgConfirm !== undefined && this.actionConf.msgConfirm !== ''){
+    		Ext.MessageBox.confirm(
+    				"Confirm",
+    	            this.actionConf.msgConfirm,            
+    	            function(btn, text) {
+    					 if (btn == 'yes') {
+    						 this.execRealAction();
+    					 }
+    				},    	            
+	            this
+			);  
+    	}else{
+    		this.execRealAction();
+    	}
+	}
+ 
+
+    // private methods
+    , initServices: function() {
+    	this.services = this.services || new Array();	
+		this.images = this.images || new Array();	
+				
+		for(var actionName in this.FILTERBAR_ACTIONS) {
+			var actionConfig = this.FILTERBAR_ACTIONS[actionName];
+			this.services[actionName] = this.services[actionName] || Sbi.config.serviceRegistry.getServiceUrl({
+				serviceName: actionConfig.serviceName
+				, baseParams: new Object()
+			});
+		}
+    }
+    
+    , initButton: function(){    	
+    	//icons about monitoring are ever enabled
+    	if (this.actionConf.type === this.MONITOR || this.actionConf.type === this.MONITOR_INACTIVE){
+    		return;
+    	}
+    	
+    	//checks if the button is active (when the action is errors or alarms)
+    	if (this.actionConf.type === this.ERROR || this.actionConf.type === this.ALARMS ||
+    		this.actionConf.type === this.VIEWS && this.actionConf.flagColumn !== undefined	){
+    		var flagCol = this.store.getFieldNameByAlias(this.actionConf.flagColumn);    
+        	if (flagCol === undefined ){
+        		return;
+        	}else{
+        		var flagValue = this.store.findExact(flagCol, this.ACTIVE_VALUE);
+        		if (flagValue === -1) {
+        			this.hide();
+        			return;
+        		}
+        	}    		
+    	}
+
+    	var isCheck = this.store.getFieldNameByAlias(this.actionConf.checkColumn);
+    	if (isCheck !== undefined ){
+    		//checkValue: -1 if all rows are ACTIVE, greater then -1 when ther's almost one active 
+    		var checkValue = this.store.findExact(isCheck,this.INACTIVE_VALUE);
+    		if (checkValue > -1){  //there's any inactive --> enable active actions
+    			if (this.actionConf.imgSrcActive !== undefined){
+    				//creates css dynamically if it's an extra-icon
+    				var tmpImgName = this.actionConf.imgSrcActive.substr(0,this.actionConf.imgSrcActive.indexOf(".") );
+    				if (Ext.util.CSS.getRule('.' + tmpImgName) == null){
+    					Ext.util.CSS.createStyleSheet('.'+tmpImgName+' { background-image: url(../img/'+this.actionConf.imgSrcActive+') !important; }');
+    				}
+    				this.setIconClass(tmpImgName);    				
+    			}else{    			
+    				this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.type ].images[ "active"]);
+    			}
+    			this.isActive = true;
+    			this.setTooltip(this.actionConf.tooltipInactive);
+    		}else{      
+    			if (this.actionConf.imgSrcInactive !== undefined){
+    				var tmpImgName = this.actionConf.imgSrcInactive.substr(0,this.actionConf.imgSrcInactive.indexOf(".") );
+    				if (Ext.util.CSS.getRule('.' + tmpImgName) == null){
+    					Ext.util.CSS.createStyleSheet('.'+tmpImgName+' { background-image: url(../img/'+this.actionConf.imgSrcInactive+') !important; }');
+    				}
+    				this.setIconClass(tmpImgName);
+    			}else{  
+    				this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.type ].images["inactive"]); 
+    			} 
+    			this.isActive = false;
+	    		this.setTooltip(this.actionConf.tooltipActive);    			
+    	    }
+    	}	
+    }
+  
+    //updates checkColumn value in each store's row
+    , setCheckValue: function(columnAlias, value){
+    	for (var i=0, l= this.store.getCount(); i < l; i++){
+            var record = this.store.getAt(i);  
+            record.set (this.store.getFieldNameByAlias(columnAlias), value );
+        } 
+    	if (value === this.ACTIVE_VALUE){
+    		if (this.actionConf.imgSrcInactive !== undefined){
+				//creates css dynamically if it's an extra-icon
+				var tmpImgName = this.actionConf.imgSrcInactive.substr(0,this.actionConf.imgSrcInactive.indexOf(".") );
+				if (Ext.util.CSS.getRule('.' + tmpImgName) == null){
+					Ext.util.CSS.createStyleSheet('.'+tmpImgName+' { background-image: url(../img/'+this.actionConf.imgSrcInactive+') !important; }');
+				}
+				this.setIconClass(tmpImgName);    				
+			}else{    			
+				this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.type ].images[ "inactive"]);
+			}
+    		this.isActive = false;
+    	}else{
+    		if (this.actionConf.imgSrcActive !== undefined){
+				var tmpImgName = this.actionConf.imgSrcActive.substr(0,this.actionConf.imgSrcActive.indexOf(".") );
+				if (Ext.util.CSS.getRule('.' + tmpImgName) == null){
+					Ext.util.CSS.createStyleSheet('.'+tmpImgName+' { background-image: url(../img/'+this.actionConf.imgSrcActive+') !important; }');
+				}
+				this.setIconClass(tmpImgName);
+			}else{  
+				this.setIconClass(this.FILTERBAR_ACTIONS[ this.actionConf.type ].images["active"]); 
+			} 
+    		this.isActive = true;
+    	}
+    }
+
+    , execRealAction: function(){    	
+    	checkCol = this.actionConf.checkColumn;
+    	
+    	if (this.actionConf.type === 'monitor' || this.actionConf.type === 'monitor_inactive'){     		
+    		this.store.filterPlugin.removeFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn));
+    		var newFilter = new Array();
+    		newFilter.push((this.actionConf.type === 'monitor') ? this.ACTIVE_VALUE : this.INACTIVE_VALUE);    	
+    		this.store.filterPlugin.addFilter(this.store.getFieldNameByAlias(this.actionConf.checkColumn), newFilter);    		
+    		this.store.filterPlugin.applyFilters();	   
+    		this.hideMask();
+    		return;
+    	}else if (this.actionConf.type === 'refresh'){    	
+    		if(this.store.pagingParams && this.store.pagingParams.paginator) {
+    			if(this.store.lastParams) {
+    				delete this.store.lastParams;
+    			}
+    			var paginator = this.store.pagingParams.paginator;
+    			paginator.doLoad(paginator.cursor); 
+    		} else {
+    			this.store.loadStore();    
+    		}
+    		this.hideMask();
+    		return;
+    	} else if (this.actionConf.type === 'errors' || this.actionConf.type === 'errors_inactive'){  
+    		if (this.isActive !== undefined && this.isActive == true){
+    			flgCheck = this.ACTIVE_VALUE;
+    		}else if (this.isActive !== undefined && this.isActive == false){
+    			flgCheck = this.INACTIVE_VALUE;
+    		}else{
+    			flgCheck = (this.iconCls === 'errors')? this.ACTIVE_VALUE: this.INACTIVE_VALUE; 
+    		}    		   		    	
+    	} else if (this.actionConf.type === 'alarms' || this.actionConf.type === 'alarms_inactive'){   
+    		if (this.isActive !== undefined && this.isActive == true){
+    			flgCheck = this.ACTIVE_VALUE;
+    		}else if (this.isActive !== undefined && this.isActive == false){
+    			flgCheck = this.INACTIVE_VALUE;
+    		}else{
+    			flgCheck = (this.iconCls === 'alarms')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;    		
+    		}    		
+    	} else if (this.actionConf.type === 'views' || this.actionConf.type === 'views_inactive'){     
+    		if (this.isActive !== undefined && this.isActive == true){
+    			flgCheck = this.ACTIVE_VALUE;
+    		}else if (this.isActive !== undefined && this.isActive == false){
+    			flgCheck = this.INACTIVE_VALUE;
+    		}else{
+    			flgCheck = (this.iconCls === 'views')? this.ACTIVE_VALUE: this.INACTIVE_VALUE;
+    		}
+    	}
+    	
+    	//if in configuration is set that the action is usable only once, it doesn't change the check if it's yet checked
+        if(flgCheck != null  && flgCheck === this.INACTIVE_VALUE &&
+        		this.actionConf.singleExecution !== undefined && this.actionConf.singleExecution == true){
+        	this.hideMask();
+        	return;            	
+        }
+    	
+    	this.executionContext[checkCol] = flgCheck;
+		var params = this.resolveParameters(this.actionConf.config, this.executionContext);
+		params = Ext.apply(params, {
+				message: this.actionConf.type, 
+				userId: Sbi.user.userId 
+			}); 
+		this.showMask();		
+		Ext.Ajax.request({
+		url: this.services[this.actionConf.type]	       
+       	, params: params 			       
+    	, success: function(response, options) {
+    		if(response !== undefined && response.responseText !== undefined) {
+					var content = Ext.util.JSON.decode( response.responseText );
+					if (content !== undefined) {				      			  
+					//	alert(content.toSource());
+					}	
+					//if by configuration is required a refresh of the dataset, it executes the store's load method,
+					//otherwise it changes the icons by the toggle (default)
+					this.hideMask();
+					if (this.refreshDataAfterAction !== undefined && this.refreshDataAfterAction === true ){
+						this.store.loadStore();
+					} else {
+						//fire events to toggle all icons of the same type
+						this.setCheckValue(this.actionConf.checkColumn, flgCheck);    
+						this.fireEvent('toggleIcons', this, flgCheck);
+					}
+			} else {
+				this.hideMask();
+				Sbi.Msg.showError('Server response is empty', 'Service Error');
+			}
+    	}
+    	, failure: function (response, options){
+    		this.hideMask();
+    		Sbi.exception.ExceptionHandler.onServiceRequestFailure(response, options);
+    	}
+    	, scope: this     
+	    });  
+		
+		//this.hideMask.defer(2000, this);
+		
+    }
+    
+    /**
+	 * Opens the loading mask 
+	 */
+    , showMask : function(){
+    	this.un('afterlayout',this.showMask,this);
+    	if (this.loadMask == null) {        		    	    		
+    		this.loadMask = new Ext.LoadMask(Ext.getBody(), {msg: "Loading.."});
+    	}
+    	if (this.loadMask){
+    		this.loadMask.show();
+    	}
+    }
+
+	/**
+	 * Closes the loading mask
+	*/
+	, hideMask: function() {
+    	if (this.loadMask && this.loadMask != null) {	
+    		this.loadMask.hide();
+    	}
+	} 
+	
+});
+    

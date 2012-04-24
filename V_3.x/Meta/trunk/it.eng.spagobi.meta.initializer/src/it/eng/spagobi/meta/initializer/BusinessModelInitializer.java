@@ -61,10 +61,12 @@ public class BusinessModelInitializer {
 	IPropertiesInitializer propertiesInitializer;
 	BusinessModelNamesInitializer namesInitializer;
 
+	static public String INITIALIZER_NAME = "StandardSpagoBIBusinessModelInitializer";
+	static public String INITIALIZER_VERSION = "3.4.0";
+		
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
 	public BusinessModelInitializer() {
-		//setPropertiesInitializer( new BusinessModelDefaultPropertiesInitializer() );
 		setPropertiesInitializer( new BusinessModelPropertiesFromFileInitializer() );
 		setNamesInitializer( new BusinessModelNamesInitializer() );
 	}
@@ -85,20 +87,20 @@ public class BusinessModelInitializer {
 			businessModel.setPhysicalModel(physicalModel);
 			
 			
-			// for each physical model object create a related business object
-			
+			// for each physical model object create a related business object...
 			
 			// tables
 			addTables( physicalModel, tableFilter, businessModel );
 			
-			// idetifiers-primary keys
+			// identifiers - primary keys
 			addIdentifiers( physicalModel, businessModel );
 			
 			// relationships-foreign keys
 			addRelationships( physicalModel, businessModel );
 			
 			getPropertiesInitializer().addProperties(businessModel);
-			
+			businessModel.setProperty(BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_NAME, INITIALIZER_NAME);
+			businessModel.setProperty(BusinessModelPropertiesFromFileInitializer.MODEL_INITIALIZER_VERSION, INITIALIZER_VERSION);			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize business model", t);
 		}

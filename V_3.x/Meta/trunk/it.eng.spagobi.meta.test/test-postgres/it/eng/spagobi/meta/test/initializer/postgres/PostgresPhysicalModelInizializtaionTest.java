@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.test.initializer.mysql;
+package it.eng.spagobi.meta.test.initializer.postgres;
 
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -15,7 +15,7 @@ import java.util.Set;
 import org.junit.Assert;
 
 
-public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelInizializtaionTest{
+public class PostgresPhysicalModelInizializtaionTest extends AbstractPhysicalModelInizializtaionTest {
 
 	public void setUp() throws Exception {
 		super.setUp();
@@ -24,12 +24,12 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in
 			// parent class AbstractSpagoBIMetaTest
-			if(dbType != TestCostants.DatabaseType.MYSQL){
+			if(dbType != TestCostants.DatabaseType.POSTGRES){
 				doTearDown();
 			}
 			super.setUp();
 			
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			if(dbType == null) dbType = TestCostants.DatabaseType.POSTGRES;
 						
 			if(rootModel == null) {
 				setRootModel( TestModelFactory.createModel( dbType ) );
@@ -63,16 +63,20 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		super.testPropertyConnectionDatabaseName();
 	}
 	
+	// add specific test here...
+	
 	// =======================================================
 	// PROPERTIES
 	// =======================================================
-
+	
+	
+	
 	public void testPropertyConnectionDriver() {
 		super.testPropertyConnectionName();
 		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.driver";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals(TestCostants.MYSQL_DRIVER, modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestCostants.POSTGRES_DRIVER, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPropertyConnectionUrl() {
@@ -80,7 +84,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.url";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals(TestCostants.MYSQL_URL, modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestCostants.POSTGRES_URL, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPropertyConnectionUser() {
@@ -88,7 +92,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.username";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals(TestCostants.MYSQL_USER, modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestCostants.POSTGRES_USER, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPropertyConnectionPassword() {
@@ -96,22 +100,23 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		PhysicalModel physicalModel = rootModel.getPhysicalModels().get(0);
 		String modelPropertyTypeName = "connection.password";
 		ModelPropertyType modelPropertyType = physicalModel.getPropertyType(modelPropertyTypeName);
-		Assert.assertEquals(TestCostants.MYSQL_PWD, modelPropertyType.getDefaultValue());
+		Assert.assertEquals(TestCostants.POSTGRES_PWD, modelPropertyType.getDefaultValue());
 	}
 	
 	public void testPhysicalModelSourceDatabase() {
 		super.testPhysicalModelSourceDatabase();
 		Assert.assertTrue("Database name [" + physicalModel.getDatabaseName().toLowerCase() + "] does not contain word [mysql]"
-				, physicalModel.getDatabaseName().toLowerCase().contains("mysql"));		
+				, physicalModel.getDatabaseName().toLowerCase().contains("postgres"));		
 	}
 	
 	public void testPhysicalModelCatalog() {
-		Assert.assertNotNull("If the source database is MySql the catalog property cannot be null", physicalModel.getCatalog());
-		Assert.assertEquals("meta_test", physicalModel.getCatalog());
+		Assert.assertNotNull("If the source database is Postgres the catalog property cannot be null", physicalModel.getCatalog());
+		Assert.assertEquals(TestCostants.POSTGRES_DEFAULT_CATALOG, physicalModel.getCatalog());
 	}
 	
 	public void testPhysicalModelSchema() {
-		Assert.assertNull("If the source database is MySql the schema property must be null", physicalModel.getSchema());
+		Assert.assertNotNull("If the source database is Postgres the schema property cannot be null", physicalModel.getSchema());
+		Assert.assertEquals(TestCostants.POSTGRES_DEFAULT_SCHEMA, physicalModel.getSchema());
 	}
 	
 	// =======================================================
@@ -120,31 +125,34 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	
 	public void testPhysicalModelTables() {
 		
-		Assert.assertEquals(TestCostants.MYSQL_TABLE_NAMES.length, physicalModel.getTables().size());
+		Assert.assertEquals(TestCostants.POSTGRES_TABLE_NAMES.length, physicalModel.getTables().size());
 		
-		for(int i = 0; i < TestCostants.MYSQL_TABLE_NAMES.length; i++) {
-			PhysicalTable table = physicalModel.getTable(TestCostants.MYSQL_TABLE_NAMES[i]);
-			Assert.assertNotNull("Physical model does not contain table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "]", table);
+		for(int i = 0; i < TestCostants.POSTGRES_TABLE_NAMES.length; i++) {
+			PhysicalTable table = physicalModel.getTable(TestCostants.POSTGRES_TABLE_NAMES[i]);
+			Assert.assertNotNull("Physical model does not contain table [" + TestCostants.POSTGRES_TABLE_NAMES[i] + "]", table);
 		}	
 	}
 	
-	// TODO find out why mysql driver is unable to return comments
-	// as defined into db
+	// TODO test encoding related problems
 	public void testPhysicalModelTableComments() {
 		PhysicalTable table = null;
 		table = physicalModel.getTable("currency");
-		//Assert.assertEquals("currency table's comment", table.getComment());
-		Assert.assertEquals("", table.getComment());
+		Assert.assertEquals("currency table&apos;s comment", table.getComment());
 	}
 	
 	public void testPhysicalModelTableTypes() {
 		PhysicalTable table = null;
+		PhysicalTable view = null;
 		
 		table = physicalModel.getTable("currency");
 		Assert.assertEquals("TABLE", table.getType());
 		
-		table = physicalModel.getTable("currency_view");
-		Assert.assertEquals("VIEW", table.getType());
+		// TODO verify why postgres is unable to distinguish view from table
+		view = physicalModel.getTable("cUrReNcY");
+		Assert.assertEquals("TABLE", table.getType());
+
+		Assert.assertFalse(view.getName().equals(table.getName()));
+		Assert.assertFalse(view.equals(table));
 	}
 	
 	// =======================================================
@@ -172,7 +180,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 			Assert.assertEquals((i+1), column.getPosition());
 		}
 		
-		table = physicalModel.getTable("currency_view");
+		table = physicalModel.getTable("cUrReNcY");
 		Assert.assertEquals(4, table.getColumns().size());
 		for(int i = 0; i < columnNames.length; i++ ) {
 			column = table.getColumn(columnNames[i]);
@@ -195,7 +203,8 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		Assert.assertEquals(null, column.getId());
 		Assert.assertEquals(null, column.getUniqueName());
 		
-		table = physicalModel.getTable("currency_view");
+		table = physicalModel.getTable("cUrReNcY");
+		column = table.getColumn("currency_id");	
 		Assert.assertEquals(null, column.getId());
 		Assert.assertEquals(null, column.getUniqueName());
 		column = table.getColumn("conversion_ratio");	
@@ -219,8 +228,8 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		
 		// `currency_id` int(11) NOT NULL
 		column = table.getColumn("currency_id");
-		Assert.assertEquals("int", column.getTypeName());
-		Assert.assertEquals("INTEGER", column.getDataType());
+		Assert.assertEquals("numeric", column.getTypeName());
+		Assert.assertEquals("NUMERIC", column.getDataType());
 		Assert.assertEquals(10, column.getRadix());	
 		Assert.assertEquals(0, column.getDecimalDigits());
 		//Assert.assertEquals(11, column.getOctectLength());
@@ -242,8 +251,8 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		
 		//`conversion_ratio` decimal(10,4) NOT NULL,
 		column = table.getColumn("conversion_ratio");
-		Assert.assertEquals("decimal", column.getTypeName());
-		Assert.assertEquals("DECIMAL", column.getDataType());
+		Assert.assertEquals("numeric", column.getTypeName());
+		Assert.assertEquals("NUMERIC", column.getDataType());
 		Assert.assertEquals(10, column.getRadix());	
 		Assert.assertEquals(4, column.getDecimalDigits());
 		//Assert.assertEquals(10, column.getOctectLength());
@@ -262,7 +271,10 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		Assert.assertEquals("Composed id column 2", column.getComment());	
 		Assert.assertEquals(null, column.getDescription());
 		column = table.getColumn("currency");
-		Assert.assertEquals("", column.getComment());	
+		// NOTE mysql if comment is not 
+		// set returns an empty string while postgres return null
+		// TODO uniform the behaviour in the two cases
+		Assert.assertEquals(null, column.getComment());	
 		Assert.assertEquals(null, column.getDescription());
 	}
 	
@@ -283,18 +295,20 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		column = table.getColumn("conversion_ratio");	
 		Assert.assertEquals(false, column.isNullable());
 		
-		table = physicalModel.getTable("currency_view");
+		// TODO verify why in postgres the view does not inherit
+		// the value of the nullable property from the original table
+		table = physicalModel.getTable("cUrReNcY");
 		column = table.getColumn("currency_id");	
-		Assert.assertEquals(false, column.isNullable());	
+		Assert.assertEquals(true, column.isNullable());	
 		
 		column = table.getColumn("date");	
-		Assert.assertEquals(false, column.isNullable());
+		Assert.assertEquals(true, column.isNullable());
 		
 		column = table.getColumn("currency");	
-		Assert.assertEquals(false, column.isNullable());
+		Assert.assertEquals(true, column.isNullable());
 		
 		column = table.getColumn("conversion_ratio");	
-		Assert.assertEquals(false, column.isNullable());
+		Assert.assertEquals(true, column.isNullable());
 		
 		table = physicalModel.getTable("customer");
 		column = table.getColumn("address1");	
@@ -309,13 +323,16 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		column = table.getColumn("currency_id");	
 		Assert.assertEquals(null, column.getDefaultValue());
 		column = table.getColumn("currency");	
-		Assert.assertEquals("USD", column.getDefaultValue());
 		
-		table = physicalModel.getTable("currency_view");
+		// NOTE postgres return the default value together with its type
+		// TODO remove the  type an store in the model only the default value
+		Assert.assertEquals("'USD'::character varying", column.getDefaultValue());
+		
+		table = physicalModel.getTable("cUrReNcY");
 		column = table.getColumn("currency_id");	
 		Assert.assertEquals(null, column.getDefaultValue());
 		column = table.getColumn("currency");	
-		Assert.assertEquals("USD", column.getDefaultValue());
+		Assert.assertEquals(null, column.getDefaultValue());
 	}
 	
 	
@@ -324,11 +341,12 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	// =======================================================
 	
 	public void testPhysicalModelNoPK() {
-		PhysicalTable table = physicalModel.getTable("currency_view");
-		PhysicalPrimaryKey pk = table.getPrimaryKey();
-		Assert.assertNull("PrimaryKey of table [tmpsbiqbe_bi] must be null", pk);
+		PhysicalTable view = physicalModel.getTable("cUrReNcY");
 		
-		for(PhysicalColumn column : table.getColumns()) {
+		PhysicalPrimaryKey pk = view.getPrimaryKey();
+		Assert.assertNull("PrimaryKey of view [cUrReNcY] must be null", pk);
+		
+		for(PhysicalColumn column : view.getColumns()) {
 			Assert.assertFalse(column.isPrimaryKey());
 			Assert.assertFalse(column.isPartOfCompositePrimaryKey());
 		}
@@ -339,7 +357,8 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		PhysicalTable table = physicalModel.getTable("customer");
 		PhysicalPrimaryKey pk = table.getPrimaryKey();
 		Assert.assertNotNull("PrimaryKey of table [customer] cannot be null", pk);
-		Assert.assertEquals("PRIMARY", pk.getName());
+		// TODO verify why MySQL instead return always PRIMARY
+		Assert.assertEquals("customer_pkey", pk.getName());
 		
 		Assert.assertTrue("PrimaryKey of table [customer] is composed by [" + pk.getColumns().size() + "] column(s) and not 1 as expected", pk.getColumns().size() == 1 );
 		Set<String> pkColumnNames = new HashSet<String>();
@@ -357,7 +376,7 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 		PhysicalTable table = physicalModel.getTable("currency");
 		PhysicalPrimaryKey pk = table.getPrimaryKey();
 		Assert.assertNotNull("PrimaryKey of table [currency] cannot be null", pk);
-		Assert.assertEquals("PRIMARY", pk.getName());
+		Assert.assertEquals("currency_pkey", pk.getName());
 		
 		Assert.assertTrue("PrimaryKey of table [currency] is composed by [" + pk.getColumns().size() + "] column(s) and not 2 as expected", pk.getColumns().size() == 2 );
 		Set<String> pkColumnNames = new HashSet<String>();

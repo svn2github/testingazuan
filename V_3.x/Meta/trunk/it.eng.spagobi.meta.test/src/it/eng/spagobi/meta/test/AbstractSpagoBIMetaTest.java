@@ -23,9 +23,9 @@ public class AbstractSpagoBIMetaTest extends TestCase {
 	protected static PhysicalModel physicalModel;
 	protected static BusinessModel businessModel;
 	
-	protected static Model viewModel;
-	protected static PhysicalModel viewPhysicalModel;
-	protected static BusinessModel viewBusinessModel;
+	protected static Model filteredModel;
+	protected static PhysicalModel filteredPhysicalModel;
+	protected static BusinessModel filteredBusinessModel;
 
 	protected boolean tearDown = false;
         
@@ -56,6 +56,9 @@ public class AbstractSpagoBIMetaTest extends TestCase {
 		rootModel=null;
 		physicalModel=null;
 		businessModel=null;
+		filteredModel=null;
+		filteredPhysicalModel=null;
+		filteredBusinessModel=null;
 		physicalModelInitializer=null;
 		businessModelInitializer=null;
 		generator = null;
@@ -71,13 +74,13 @@ public class AbstractSpagoBIMetaTest extends TestCase {
 		}
 	}
 	
-	public void setViewModel(Model model) {
-		viewModel = model;
-		if(viewModel != null && viewModel.getPhysicalModels() != null && viewModel.getPhysicalModels().size() > 0) {
-			viewPhysicalModel = viewModel.getPhysicalModels().get(0);
+	public void setFilteredModel(Model model) {
+		filteredModel = model;
+		if(filteredModel != null && filteredModel.getPhysicalModels() != null && filteredModel.getPhysicalModels().size() > 0) {
+			filteredPhysicalModel = filteredModel.getPhysicalModels().get(0);
 		}
-		if(viewModel != null && viewModel.getBusinessModels() != null && viewModel.getBusinessModels().size() > 0) {
-			viewBusinessModel = viewModel.getBusinessModels().get(0);
+		if(filteredModel != null && filteredModel.getBusinessModels() != null && filteredModel.getBusinessModels().size() > 0) {
+			filteredBusinessModel = filteredModel.getBusinessModels().get(0);
 		}
 	}
 	

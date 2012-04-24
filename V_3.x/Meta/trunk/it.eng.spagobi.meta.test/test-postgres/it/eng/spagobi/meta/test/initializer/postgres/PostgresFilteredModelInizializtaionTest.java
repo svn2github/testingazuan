@@ -1,6 +1,7 @@
-package it.eng.spagobi.meta.test.initializer.mysql;
+package it.eng.spagobi.meta.test.initializer.postgres;
 
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
@@ -14,24 +15,24 @@ import java.util.List;
 import org.junit.Assert;
 
 
-public class MySQLFilteredModelInizializtaionTest extends AbstractBusinessModelInizializtaionTest {
+public class PostgresFilteredModelInizializtaionTest extends AbstractBusinessModelInizializtaionTest {
 	
 	
 	public void setUp() throws Exception {
 		super.setUp();
 		try {
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			if(dbType == null) dbType = TestCostants.DatabaseType.POSTGRES;
 			
 			// if this is the first test on postgres after the execution
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in
 			// parent class AbstractSpagoBIMetaTest
-			if(dbType != TestCostants.DatabaseType.MYSQL){
+			if(dbType != TestCostants.DatabaseType.POSTGRES){
 				doTearDown();
 			}
 			super.setUp();
 			
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			if(dbType == null) dbType = TestCostants.DatabaseType.POSTGRES;
 						
 			if(filteredModel == null) {
 				setFilteredModel( TestModelFactory.createFilteredModel( dbType ) );
@@ -64,23 +65,37 @@ public class MySQLFilteredModelInizializtaionTest extends AbstractBusinessModelI
 	
 	public void testPhysicalModelTables() {
 		
-		Assert.assertEquals(TestCostants.MYSQL_FILTERED_TABLES_FOR_PMODEL.length, filteredPhysicalModel.getTables().size());
+		// no more tables
+		for(PhysicalTable table: filteredPhysicalModel.getTables()) {
+			String name = table.getName();
+			boolean tableFound = false;
+			for(int i = 0; i < TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL.length; i++) {
+				if(TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL[i].equals(name)) {
+					tableFound = true; 
+					break;
+				}
+			}
+			Assert.assertTrue("Impossible to find table [" + name + "]", tableFound);
+		}
 		
-		for(int i = 0; i < TestCostants.MYSQL_FILTERED_TABLES_FOR_PMODEL.length; i++) {
-			PhysicalTable physicalTable = filteredPhysicalModel.getTable( TestCostants.MYSQL_FILTERED_TABLES_FOR_PMODEL[i] );
-			Assert.assertNotNull(physicalTable);
+		// no less tables
+		for(int i = 0; i < TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL.length; i++) {
+			PhysicalTable physicalTable = filteredPhysicalModel.getTable( TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL[i] );
+			Assert.assertNotNull("Impossible to find table ["+ TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL[i] + "]", physicalTable);
 		}	
+		
+		// exactly the same number of tables
+		Assert.assertEquals(TestCostants.POSTGRES_FILTERED_TABLES_FOR_PMODEL.length, filteredPhysicalModel.getTables().size());
 	}
 	
 	public void testBusinessModelTables() {
+		Assert.assertEquals(TestCostants.POSTGRES_FILTERED_TABLES_FOR_BMODEL.length, filteredBusinessModel.getTables().size());
 		
-		Assert.assertEquals(TestCostants.MYSQL_FILTERED_TABLES_FOR_BMODEL.length, filteredBusinessModel.getTables().size());
-		
-		for(int i = 0; i < TestCostants.MYSQL_FILTERED_TABLES_FOR_BMODEL.length; i++) {
-			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(TestCostants.MYSQL_FILTERED_TABLES_FOR_BMODEL[i]);
+		for(int i = 0; i < TestCostants.POSTGRES_FILTERED_TABLES_FOR_BMODEL.length; i++) {
+			List<BusinessTable> businessTables = filteredBusinessModel.getBusinessTableByPhysicalTable(TestCostants.POSTGRES_FILTERED_TABLES_FOR_BMODEL[i]);
 			Assert.assertNotNull(businessTables);
-			Assert.assertFalse("Business model does not contain table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "]", businessTables.size() == 0);
-			Assert.assertFalse("Business model contains table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "] more than one time", businessTables.size() > 1);
+			Assert.assertFalse("Business model does not contain table [" + TestCostants.POSTGRES_FILTERED_TABLES_FOR_BMODEL[i] + "]", businessTables.size() == 0);
+			Assert.assertFalse("Business model contains table [" + TestCostants.POSTGRES_FILTERED_TABLES_FOR_BMODEL[i] + "] more than one time", businessTables.size() > 1);
 		}	
 	}
 	

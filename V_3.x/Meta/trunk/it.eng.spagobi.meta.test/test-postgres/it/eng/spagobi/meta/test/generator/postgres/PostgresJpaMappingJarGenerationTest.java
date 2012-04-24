@@ -100,6 +100,10 @@ public class PostgresJpaMappingJarGenerationTest extends AbstractSpagoBIMetaTest
 		modelManager.addBusinessTable(physicalTable);
 		
 		List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(physicalTable);
+//		for(BusinessTable table : businessTables) {
+//			String name = table.getPhysicalTable().getName();
+//			name = "" + name;
+//		}
 		assertEquals(3, businessTables.size());
 		
 		BusinessTable businessTable1 = businessTables.get(0);
@@ -125,13 +129,13 @@ public class PostgresJpaMappingJarGenerationTest extends AbstractSpagoBIMetaTest
 	// TESTS ON VIEW MODEL
 	// =============================================
 	public void testViewGenerationSmoke() {
-		setViewModel(TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" ));
+		setFilteredModel(TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" ));
 		
 		// create view here....
-		ModelManager modelManager = new ModelManager(viewModel);
-		PhysicalTable source = viewPhysicalModel.getTable("product");
-		PhysicalTable destination = viewPhysicalModel.getTable("product_class");
-		BusinessTable businessTable = viewBusinessModel.getBusinessTableByPhysicalTable( source ).get(0);
+		ModelManager modelManager = new ModelManager(filteredModel);
+		PhysicalTable source = filteredPhysicalModel.getTable("product");
+		PhysicalTable destination = filteredPhysicalModel.getTable("product_class");
+		BusinessTable businessTable = filteredBusinessModel.getBusinessTableByPhysicalTable( source ).get(0);
 	
 		List<PhysicalColumn> sourceCol = new ArrayList<PhysicalColumn>();
 		sourceCol.add(source.getColumn("product_class_id"));
@@ -147,6 +151,6 @@ public class PostgresJpaMappingJarGenerationTest extends AbstractSpagoBIMetaTest
 		
 		jpaMappingJarGenerator = TestGeneratorFactory.createJarGeneraor();
 		generator = jpaMappingJarGenerator;
-		jpaMappingJarGenerator.generate(viewBusinessModel, TestCostants.outputFolder.toString());
+		jpaMappingJarGenerator.generate(filteredBusinessModel, TestCostants.outputFolder.toString());
 	}
 }

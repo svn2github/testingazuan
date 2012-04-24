@@ -19,11 +19,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.meta.test.initializer;
+package it.eng.spagobi.meta.test.initializer.postgres;
 
-import it.eng.spagobi.meta.test.TestCostants;
-import it.eng.spagobi.meta.test.initializer.mysql.MySqlInitializationTestSuite;
-import it.eng.spagobi.meta.test.initializer.postgres.PostgresInitializationTestSuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -32,13 +29,12 @@ import junit.framework.TestSuite;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ModelInitializationTestSuite extends TestCase {
+public class PostgresInitializationTestSuite extends TestCase {
 	static public Test suite() {
-		TestSuite suite = new TestSuite("Initialization tests");
-		if(TestCostants.enableTestsOnMySql) suite.addTest(MySqlInitializationTestSuite.suite());
-		if(TestCostants.enableTestsOnPostgres) suite.addTest(PostgresInitializationTestSuite.suite());
-		
-		
+		TestSuite suite = new TestSuite("Initialization tests on Postgres");
+		suite.addTestSuite(PostgresPhysicalModelInizializtaionTest.class);
+		suite.addTestSuite(PostgresBusinessModelInizializtaionTest.class);
+		suite.addTestSuite(PostgresFilteredModelInizializtaionTest.class);
 		return suite;
 	}
 }

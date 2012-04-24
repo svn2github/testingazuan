@@ -1,8 +1,10 @@
 package it.eng.spagobi.meta.test.initializer;
 
+import it.eng.spagobi.meta.test.AbstractSpagoBIMetaTest;
 
 
-public class AbstractBusinessModelInizializtaionTest extends AbstractModelInizializtaionTest {
+
+public class AbstractBusinessModelInizializtaionTest extends AbstractSpagoBIMetaTest {
 
 	
 	public AbstractBusinessModelInizializtaionTest() {

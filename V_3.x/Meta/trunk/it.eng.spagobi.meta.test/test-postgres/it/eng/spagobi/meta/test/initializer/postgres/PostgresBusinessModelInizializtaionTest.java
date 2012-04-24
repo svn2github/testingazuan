@@ -1,4 +1,4 @@
-package it.eng.spagobi.meta.test.initializer.mysql;
+package it.eng.spagobi.meta.test.initializer.postgres;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.JpaProperties;
 import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
@@ -16,12 +16,8 @@ import java.util.Map;
 import org.junit.Assert;
 
 
-public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelInizializtaionTest {
+public class PostgresBusinessModelInizializtaionTest extends AbstractBusinessModelInizializtaionTest {
 
-	public MySQLBusinessModelInizializtaionTest() {
-		this.setName("Busienss model initialization tests on MySql");
-	}
-	
 	public void setUp() throws Exception {
 		super.setUp();
 		try {
@@ -29,12 +25,12 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in
 			// parent class AbstractSpagoBIMetaTest
-			if(dbType != TestCostants.DatabaseType.MYSQL){
+			if(dbType != TestCostants.DatabaseType.POSTGRES){
 				doTearDown();
 			}
 			super.setUp();
 			
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			if(dbType == null) dbType = TestCostants.DatabaseType.POSTGRES;
 						
 			if(rootModel == null) {
 				setRootModel( TestModelFactory.createModel( dbType ) );
@@ -95,13 +91,13 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	
 	public void testBusinessModelTables() {
 		
-		Assert.assertEquals(TestCostants.MYSQL_TABLE_NAMES.length, businessModel.getTables().size());
+		Assert.assertEquals(TestCostants.POSTGRES_TABLE_NAMES.length, businessModel.getTables().size());
 		
-		for(int i = 0; i < TestCostants.MYSQL_TABLE_NAMES.length; i++) {
-			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(TestCostants.MYSQL_TABLE_NAMES[i]);
+		for(int i = 0; i < TestCostants.POSTGRES_TABLE_NAMES.length; i++) {
+			List<BusinessTable> businessTables = businessModel.getBusinessTableByPhysicalTable(TestCostants.POSTGRES_TABLE_NAMES[i]);
 			Assert.assertNotNull(businessTables);
-			Assert.assertFalse("Business model does not contain table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "]", businessTables.size() == 0);
-			Assert.assertFalse("Business model contains table [" + TestCostants.MYSQL_TABLE_NAMES[i] + "] more than one time", businessTables.size() > 1);
+			Assert.assertFalse("Business model does not contain table [" + TestCostants.POSTGRES_TABLE_NAMES[i] + "]", businessTables.size() == 0);
+			Assert.assertFalse("Business model contains table [" + TestCostants.POSTGRES_TABLE_NAMES[i] + "] more than one time", businessTables.size() > 1);
 		}	
 	}
 	

@@ -32,6 +32,8 @@ public class TestCostants {
 	public static File workspaceFolder = new File("D:/Documenti/Sviluppo/workspaces/helios/metadata");
 	public static File outputFolder = new File("D:/Documenti/Sviluppo/workspaces/unit-test");
 	
+	public enum DatabaseType { MYSQL, POSTGRES, ORACLE };
+	
 	public static boolean enableTestsOnMySql = false;
 	public static boolean enableTestsOnPostgres = true;
 	public static boolean enableTestsOracle = false;
@@ -43,7 +45,7 @@ public class TestCostants {
 	public static String MYSQL_URL = "jdbc:mysql://localhost:3306/meta_test";
 	public static String MYSQL_USER = "root";
 	public static String MYSQL_PWD = "mysql";
-	public static String MYSQL_DEFAULT_CATALOGUE = null; //"foodmart";		
+	public static String MYSQL_DEFAULT_CATALOGUE = "meta_test";		
 	public static String MYSQL_DEFAULT_SCHEMA = null;	
 	public static String MYSQL_DEFAULT_DIALECT = "org.hibernate.dialect.MySQLDialect";
 	public static String[] MYSQL_TABLE_NAMES = new String[]{
@@ -89,12 +91,51 @@ public class TestCostants {
 	// POSTGRES
 	// =======================================================
 	public static String POSTGRES_DRIVER = "org.postgresql.Driver";
-	public static String POSTGRES_URL = "jdbc:postgresql://localhost:5434/foodmart";
+	public static String POSTGRES_URL = "jdbc:postgresql://localhost:5432/Meta_tesT";
 	public static String POSTGRES_USER = "postgres";
 	public static String POSTGRES_PWD = "postgres";
-	public static String POSTGRES_DEFAULT_CATALOGUE = null;	
+	public static String POSTGRES_DEFAULT_CATALOG = "Meta_tesT";	
 	public static String POSTGRES_DEFAULT_SCHEMA = "public";	
-	public static String POSTGRES_DEFAULT_DIALECT = "org.hibernate.dialect.MySQLDialect";
+	public static String POSTGRES_DEFAULT_DIALECT = "org.hibernate.dialect.PostgreSQLDialect";
+	
+	public static String[] POSTGRES_TABLE_NAMES  = new String[]{
+		"_Product_ClaSS_"
+		, "currency"
+		, "cUrReNcY"
+		, "customer"
+		, "days"
+		, "department"
+		, "employee"
+		, "employee_closure"
+		, "inventory_fact_1998"
+		//, "object"
+		, "position"
+		, "product"
+		, "product_class"
+		, "promotion"
+		, "region"
+		, "reserve_employee"
+		, "salary"
+		, "sales_fact_1998"
+		, "sales_region"
+		, "store"
+		, "store_ragged"
+		//, "test_names"
+		, "time_by_day"
+		, "warehouse"
+		, "warehouse_class"
+	};
+	public static final String[] POSTGRES_FILTERED_TABLES_FOR_PMODEL = {
+		"_Product_ClaSS_", "product" , "product_class", "sales_fact_1998" 
+		, "cUrReNcY", "department" , "employee", "employee_closure"
+		, "position", "reserve_employee", "salary", // "object"
+	};
+	
+	public static final String[] POSTGRES_FILTERED_TABLES_FOR_BMODEL = { 
+		"_Product_ClaSS_", "product" , "product_class", "sales_fact_1998"// , "object" 
+	};
+	
+
 	
 	// =======================================================
 	// ORACLE
@@ -105,6 +146,10 @@ public class TestCostants {
 	public static String ORACLE_PWD = "bispago";	
 	public static String ORACLE_DEFAULT_CATALOGUE = null;	
 	public static String ORACLE_DEFAULT_SCHEMA = "SPAGOBI";	
+	public static String ORACLE_DEFAULT_DIALECT = "org.hibernate.dialect.OracleDialect";
 	
-	public enum DatabaseType { MYSQL, POSTGRES, ORACLE };
+	public static final String[] ORACLE_FILTERED_TABLES_FOR_PMODEL = MYSQL_FILTERED_TABLES_FOR_PMODEL;
+	public static final String[] ORACLE_FILTERED_TABLES_FOR_BMODEL = MYSQL_FILTERED_TABLES_FOR_BMODEL;
+	
+
 }

@@ -23,7 +23,7 @@ public class TestConnectionFactory {
 	        	catalogue = TestCostants.MYSQL_DEFAULT_CATALOGUE;
 	        	break;
 	        case POSTGRES:  
-	        	catalogue = TestCostants.POSTGRES_DEFAULT_CATALOGUE;
+	        	catalogue = TestCostants.POSTGRES_DEFAULT_CATALOG;
 	        	break;
 	        case ORACLE:  
 	        	catalogue = TestCostants.ORACLE_DEFAULT_CATALOGUE;

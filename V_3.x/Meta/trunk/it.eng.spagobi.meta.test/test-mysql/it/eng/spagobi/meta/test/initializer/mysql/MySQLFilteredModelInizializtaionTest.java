@@ -18,10 +18,8 @@ public class MySQLFilteredModelInizializtaionTest extends AbstractBusinessModelI
 	
 	
 	public void setUp() throws Exception {
-		super.setUp();
+		
 		try {
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
-			
 			// if this is the first test on postgres after the execution
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in

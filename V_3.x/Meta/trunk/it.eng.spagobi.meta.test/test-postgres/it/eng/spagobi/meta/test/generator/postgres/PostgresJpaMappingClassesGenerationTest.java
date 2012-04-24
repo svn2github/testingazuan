@@ -15,7 +15,6 @@ public class PostgresJpaMappingClassesGenerationTest extends AbstractSpagoBIMeta
 	static JpaMappingClassesGenerator jpaMappingClassesGenerator;
 	
 	public void setUp() throws Exception {
-		super.setUp();
 		try {
 			// if this is the first test on postgres after the execution
 			// of tests on an other database force a tearDown to clean

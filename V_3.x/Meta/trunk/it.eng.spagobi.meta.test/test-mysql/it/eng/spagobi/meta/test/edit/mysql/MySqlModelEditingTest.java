@@ -19,8 +19,18 @@ public class MySqlModelEditingTest extends AbstractModelEditingTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		try {
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			// if this is the first test on postgres after the execution
+			// of tests on an other database force a tearDown to clean
+			// and regenerate properly all the static variables contained in
+			// parent class AbstractSpagoBIMetaTest
+			if(dbType != TestCostants.DatabaseType.MYSQL){
+				doTearDown();
+			}
+			super.setUp();
 			
+			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+						
+		
 			if(rootModel == null) {
 				rootModel = TestModelFactory.createModel( dbType );
 				if(rootModel != null && rootModel.getPhysicalModels() != null && rootModel.getPhysicalModels().size() > 0) {

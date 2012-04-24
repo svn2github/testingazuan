@@ -29,6 +29,7 @@ public class PostgresJpaModelTest extends AbstractSpagoBIMetaTest {
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in
 			// parent class AbstractSpagoBIMetaTest
+			System.out.println(dbType);
 			if(dbType != TestCostants.DatabaseType.POSTGRES){
 				doTearDown();
 			}

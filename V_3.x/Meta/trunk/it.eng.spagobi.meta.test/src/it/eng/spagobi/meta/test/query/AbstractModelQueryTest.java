@@ -50,14 +50,18 @@ public class AbstractModelQueryTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		if(tearDown) {
-			dbType = null;
-			rootModel=null;
-			physicalModel=null;
-			businessModel=null;
-			physicalModelInitializer=null;
-			businessModelInitializer=null;
-			generator = null;
+			doTearDown();
 		}
+	}
+	
+	protected void doTearDown() throws Exception {
+		dbType = null;
+		rootModel=null;
+		physicalModel=null;
+		businessModel=null;
+		physicalModelInitializer=null;
+		businessModelInitializer=null;
+		generator = null;
 	}
 	
 	public void setRootModel(Model model) {

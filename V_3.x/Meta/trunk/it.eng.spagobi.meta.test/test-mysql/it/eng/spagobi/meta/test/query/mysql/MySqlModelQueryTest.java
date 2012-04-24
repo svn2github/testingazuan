@@ -37,12 +37,20 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 	static IDataSource dataSource;
 	
 	public void setUp() throws Exception {
-		super.setUp();
 		try {
-			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+			// if this is the first test on postgres after the execution
+			// of tests on an other database force a tearDown to clean
+			// and regenerate properly all the static variables contained in
+			// parent class AbstractSpagoBIMetaTest
+			if(dbType != TestCostants.DatabaseType.MYSQL){
+				doTearDown();
+			}
+			super.setUp();
 			
+			if(dbType == null) dbType = TestCostants.DatabaseType.MYSQL;
+						
 			if(rootModel == null) {
-				setRootModel(TestModelFactory.createModel( dbType ));
+				setRootModel( TestModelFactory.createModel( dbType ) );
 			}
 		} catch(Exception t) {
 			System.err.println("An unespected error occurred during setUp: ");

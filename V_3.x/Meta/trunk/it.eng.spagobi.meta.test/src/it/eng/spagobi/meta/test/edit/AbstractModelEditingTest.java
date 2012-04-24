@@ -38,13 +38,17 @@ public class AbstractModelEditingTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		if(tearDown) {
-			dbType = null;
-			rootModel=null;
-			physicalModel=null;
-			businessModel=null;
-			physicalModelInitializer=null;
-			businessModelInitializer=null;
+			doTearDown();
 		}
+	}
+	
+	protected void doTearDown() throws Exception {
+		dbType = null;
+		rootModel=null;
+		physicalModel=null;
+		businessModel=null;
+		physicalModelInitializer=null;
+		businessModelInitializer=null;
 	}
 	
 	// add generic tests related to model here ...

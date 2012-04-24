@@ -588,7 +588,7 @@ public class PhysicalModelImpl extends ModelObjectImpl implements PhysicalModel 
 		Iterator<PhysicalTable> it = getTables().iterator();
 		while(it.hasNext()) {
 			table = it.next();
-			if(name.equalsIgnoreCase(table.getName())) {
+			if(name.equals(table.getName())) {
 				return table;
 			}
 		}

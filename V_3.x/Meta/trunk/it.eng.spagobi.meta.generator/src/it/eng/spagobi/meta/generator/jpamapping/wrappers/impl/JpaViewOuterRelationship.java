@@ -93,9 +93,8 @@ public class JpaViewOuterRelationship {
 	
 	public List<String> getSourceColumns() {
 		List<IJpaColumn> sourceColumns;
-		List<PhysicalColumn> columns = new ArrayList();
+		List<PhysicalColumn> columns = new ArrayList<PhysicalColumn>();
 		List<SimpleBusinessColumn> businessColumns;
-		List<IJpaTable> innerTables;
 		
  		List<String> columnsNames = new ArrayList<String>();
 		
@@ -104,12 +103,11 @@ public class JpaViewOuterRelationship {
 		for (SimpleBusinessColumn businessColumn : businessColumns){
 			columns.add(businessColumn.getPhysicalColumn());
 		}
-		innerTables = jpaView.getInnerTables();
 		
 		//check if is a outbound relationship
 		if(isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getName()));
+				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getUniqueName()));
 			}
 
 		} else {
@@ -164,7 +162,7 @@ public class JpaViewOuterRelationship {
 		//check if is a inbound relationship
 		if(!isOutboundRelationship()){
 			for (BusinessColumn businessColumn : businessColumns){
-				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getName()));
+				columnsNames.add(JavaKeywordsUtils.transformToJavaPropertyName(businessColumn.getUniqueName()));
 			}
 		} else {
 			//outbound relationship

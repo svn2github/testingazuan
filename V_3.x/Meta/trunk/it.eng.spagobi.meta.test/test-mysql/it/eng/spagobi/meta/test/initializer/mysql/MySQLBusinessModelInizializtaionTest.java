@@ -169,9 +169,11 @@ public class MySQLBusinessModelInizializtaionTest extends AbstractBusinessModelI
 	// IDENTIFIERS
 	// =======================================================
 	
-	
+	// TODO
 	
 	// =======================================================
 	// RELATIONSHIPS
 	// =======================================================
+	
+	// TODO
 }

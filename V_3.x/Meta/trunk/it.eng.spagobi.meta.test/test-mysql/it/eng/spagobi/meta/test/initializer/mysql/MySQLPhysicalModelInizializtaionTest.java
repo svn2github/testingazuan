@@ -224,58 +224,349 @@ public class MySQLPhysicalModelInizializtaionTest extends AbstractPhysicalModelI
 	}
 	
 	/**
-	 * Test physical column property related to column type:
+	 * Test numeric column properties related to column type:
+	 * 
 	 *  - Type name
 	 *  - Data type
 	 *  - Radix
 	 *  - Decimal digits
 	 *  - Octect length
 	 *  - Size
+	 *  
+	 *  @see http://dev.mysql.com/doc/refman/5.5/en/numeric-type-overview.html
 	 */
-	public void testPhysicalModelColumnTypes() {
+	public void testPhysicalModelNumericColumnTypes() {
 		PhysicalTable table = null;
 		PhysicalColumn column = null;
 		
-		String[] columnNames = new String[]{
-			"currency_id"
-			, "date"
-			, "currency"
-			, "conversion_ratio"
-		};
+		table = physicalModel.getTable("test_types");
 		
-		table = physicalModel.getTable("currency");
+		/**
+		 * `t_bit` bit(8) NOT NULL 
+		 * 
+		 * COMMENT: A bit-field type. M indicates the number of bits per value, 
+		 * from 1 to 64. The default is 1 if M is omitted.
+		 */
+		column = table.getColumn("t_bit");
+		Assert.assertEquals("bit", column.getTypeName());
+		Assert.assertEquals("BIT", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(8, column.getOctectLength());
+		Assert.assertEquals(8, column.getSize());
 		
-		// `currency_id` int(11) NOT NULL
-		column = table.getColumn("currency_id");
+		/**
+		 * `t_tinyint` tinyint(3) unsigned NOT NULL 
+		 * 
+		 * COMMENT: A very small integer. The signed range is -128 to 127. 
+		 * The unsigned range is 0 to 255.
+		 */
+		column = table.getColumn("t_tinyint");
+		Assert.assertEquals("tinyint unsigned", column.getTypeName());
+		Assert.assertEquals("TINYINT", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(3, column.getOctectLength());
+		Assert.assertEquals(3, column.getSize());
+		
+		/**
+		 *  `t_boolean` tinyint(1) NOT NULL 
+		 *  
+		 *  COMMENT These types are synonyms for TINYINT(1)
+		 */
+		column = table.getColumn("t_boolean");
+		Assert.assertEquals("BIT", column.getTypeName());
+		Assert.assertEquals("BIT", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(1, column.getOctectLength());
+		Assert.assertEquals(1, column.getSize());
+		
+		/**
+		 * `t_smallint` smallint(5) unsigned NOT NULL 
+		 * 
+		 * COMMENT: A small integer. The signed range is -32768 to 32767. 
+		 * The unsigned range is 0 to 65535.
+		 */
+		column = table.getColumn("t_smallint");
+		Assert.assertEquals("smallint unsigned", column.getTypeName());
+		Assert.assertEquals("SMALLINT", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(5, column.getOctectLength());
+		Assert.assertEquals(5, column.getSize());
+		
+		/**
+		 *  `t_mediumint` mediumint(8) unsigned NOT NULL 
+		 *   
+		 *  COMMENT 'A medium-sized integer. The signed range is -8388608 to 8388607. 
+		 *  The unsigned range is 0 to 16777215. ',
+		 */
+		column = table.getColumn("t_mediumint");
+		Assert.assertEquals("mediumint unsigned", column.getTypeName());
+		Assert.assertEquals("INTEGER", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(8, column.getOctectLength());
+		Assert.assertEquals(8, column.getSize());
+		
+		/**
+		 * `t_int` int(10) unsigned NOT NULL 
+		 * 
+		 * COMMENT 'A normal-size integer. The signed range is -2147483648 
+		 * to 2147483647. The unsigned range is 0 to 4294967295.
+		 */
+		column = table.getColumn("t_int");
+		Assert.assertEquals("int unsigned", column.getTypeName());
+		Assert.assertEquals("INTEGER", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(10, column.getOctectLength());
+		Assert.assertEquals(10, column.getSize());
+		
+		/**
+		 * `t_integer` int(11) NOT NULL 
+		 * 
+		 * COMMENT This type is a synonym for INT.
+		 */
+		column = table.getColumn("t_integer");
 		Assert.assertEquals("int", column.getTypeName());
 		Assert.assertEquals("INTEGER", column.getDataType());
 		Assert.assertEquals(10, column.getRadix());	
 		Assert.assertEquals(0, column.getDecimalDigits());
-		//Assert.assertEquals(11, column.getOctectLength());
+		Assert.assertEquals(11, column.getOctectLength());
 		Assert.assertEquals(11, column.getSize());
 		
-		// `date` date NOT NULL,
-		column = table.getColumn("date");
-		Assert.assertEquals("datetime", column.getTypeName());
-		Assert.assertEquals("TIMESTAMP", column.getDataType());
+		/**
+		 * `t_bigint` bigint(20) unsigned NOT NULL 
+		 * 
+		 * COMMENT: A large integer. The signed range is 
+		 * -9223372036854775808 to 9223372036854775807. 
+		 * The unsigned range is 0 to 18446744073709551615.
+		 */
+		column = table.getColumn("t_bigint");
+		Assert.assertEquals("bigint unsigned", column.getTypeName());
+		Assert.assertEquals("BIGINT", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
 		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(20, column.getOctectLength());
+		Assert.assertEquals(20, column.getSize());
 		
-		//`currency` varchar(30) NOT NULL,
-		column = table.getColumn("currency");
-		Assert.assertEquals("varchar", column.getTypeName());
-		Assert.assertEquals("VARCHAR", column.getDataType());
-		Assert.assertEquals(0, column.getDecimalDigits());
-		//Assert.assertEquals(30, column.getOctectLength());
-		Assert.assertEquals(30, column.getSize());
-		
-		//`conversion_ratio` decimal(10,4) NOT NULL,
-		column = table.getColumn("conversion_ratio");
+		/**
+		 * `t_decimal` decimal(12,3) NOT NULL 
+		 * 
+		 * COMMENT A packed “exact” fixed-point number. M is the total 
+		 * number of digits (the precision) and D is the number of 
+		 * digits after the decimal point (the scale). 
+		 */
+		column = table.getColumn("t_decimal");
 		Assert.assertEquals("decimal", column.getTypeName());
 		Assert.assertEquals("DECIMAL", column.getDataType());
 		Assert.assertEquals(10, column.getRadix());	
-		Assert.assertEquals(4, column.getDecimalDigits());
-		//Assert.assertEquals(10, column.getOctectLength());
-		Assert.assertEquals(10, column.getSize());	
+		Assert.assertEquals(3, column.getDecimalDigits());
+		Assert.assertEquals(12, column.getOctectLength());
+		Assert.assertEquals(12, column.getSize());
+		
+		/**
+		 * `t_dec` decimal(9,3) NOT NULL 
+		 * 
+		 * COMMENT These types are synonyms for DECIMAL
+		 */
+		column = table.getColumn("t_dec");
+		Assert.assertEquals("decimal", column.getTypeName());
+		Assert.assertEquals("DECIMAL", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(3, column.getDecimalDigits());
+		Assert.assertEquals(9, column.getOctectLength());
+		Assert.assertEquals(9, column.getSize());
+		
+		/**
+		 * `t_float` float(9,3) NOT NULL 
+		 * 
+		 * COMMENT A small (single-precision) floating-point number 
+		 */
+		column = table.getColumn("t_float");
+		Assert.assertEquals("float", column.getTypeName());
+		Assert.assertEquals("REAL", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(3, column.getDecimalDigits());
+		Assert.assertEquals(9, column.getOctectLength());
+		Assert.assertEquals(9, column.getSize());
+		
+		/**
+		 * `t_double` double(12,3) NOT NULL 
+		 * 
+		 * COMMENT A normal-size (double-precision) floating-point number
+		 */
+		column = table.getColumn("t_double");
+		Assert.assertEquals("double", column.getTypeName());
+		Assert.assertEquals("DOUBLE", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(3, column.getDecimalDigits());
+		Assert.assertEquals(12, column.getOctectLength());
+		Assert.assertEquals(12, column.getSize());
+	}
+	
+	/**
+	 * Test date/time column properties related to column type:
+	 * 
+	 *  - Type name
+	 *  - Data type
+	 *  - Radix
+	 *  - Decimal digits
+	 *  - Octect length
+	 *  - Size
+	 *  
+	 *  @see http://dev.mysql.com/doc/refman/5.5/en/date-and-time-type-overview.html
+	 */
+	public void testPhysicalModelDateTimeColumnTypes() {
+		PhysicalTable table = null;
+		PhysicalColumn column = null;
+		
+		table = physicalModel.getTable("test_types");
+		
+		/**
+		 * `t_date` date NOT NULL 
+		 * 
+		 * COMMENT: A date. The supported range is 
+		 * ''1000-01-01'' to ''9999-12-31''. MySQL displays 
+		 * DATE values in ''YYYY-MM-DD'' format, but permits 
+		 * assignment of values to DATE columns using either 
+		 * strings or numbers.
+		 */
+		column = table.getColumn("t_date");
+		Assert.assertEquals("date", column.getTypeName());
+		Assert.assertEquals("DATE", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(10, column.getOctectLength());
+		Assert.assertEquals(10, column.getSize());
+		
+		/**
+		 * `t_datetime` datetime NOT NULL 
+		 * 
+		 * COMMENT: A date and time combination. The supported range 
+		 * is ''1000-01-01 00:00:00'' to ''9999-12-31 23:59:59''. 
+		 * MySQL displays DATETIME values in ''YYYY-MM-DD HH:MM:SS'' 
+		 * format, but permits assignment of values to DATETIME 
+		 * columns using either strings or numbers.
+		 */
+		column = table.getColumn("t_datetime");
+		Assert.assertEquals("datetime", column.getTypeName());
+		Assert.assertEquals("TIMESTAMP", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(19, column.getOctectLength());
+		Assert.assertEquals(19, column.getSize());
+		
+		/**
+		 * `t_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP 
+		 * 
+		 * COMMENT A timestamp. The range is ''1970-01-01 00:00:01'' UTC 
+		 * to ''2038-01-19 03:14:07'' UTC. TIMESTAMP values are stored 
+		 * as the number of seconds since the epoch (''1970-01-01 00:00:00'' 
+		 * UTC).
+		 */
+		column = table.getColumn("t_timestamp");
+		Assert.assertEquals("timestamp", column.getTypeName());
+		Assert.assertEquals("TIMESTAMP", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(19, column.getOctectLength());
+		Assert.assertEquals(19, column.getSize());
+		
+		/**
+		 *  `t_time` time NOT NULL 
+		 *  
+		 *  COMMENT: 'A time. The range is ''-838:59:59'' to ''838:59:59''. 
+		 *  MySQL displays TIME values in ''HH:MM:SS'' format
+		 */
+		column = table.getColumn("t_time");
+		Assert.assertEquals("time", column.getTypeName());
+		Assert.assertEquals("TIME", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(8, column.getOctectLength());
+		Assert.assertEquals(8, column.getSize());
+		
+		/**
+		 * `t_year` year(4) NOT NULL 
+		 * 
+		 * COMMENT: A year in two-digit or four-digit format. 
+		 * The default is four-digit format.
+		 */
+		column = table.getColumn("t_year");
+		Assert.assertEquals("year", column.getTypeName());
+		Assert.assertEquals("DATE", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(4, column.getOctectLength());
+		Assert.assertEquals(4, column.getSize());		
+	}
+	
+	/**
+	 * Test date/time column properties related to column type:
+	 * 
+	 *  - Type name
+	 *  - Data type
+	 *  - Radix
+	 *  - Decimal digits
+	 *  - Octect length
+	 *  - Size
+	 *  
+	 *  @see http://dev.mysql.com/doc/refman/5.5/en/string-type-overview.html
+	 */
+	public void testPhysicalModelStringColumnTypes() {
+		PhysicalTable table = null;
+		PhysicalColumn column = null;
+		
+		table = physicalModel.getTable("test_types");
+		
+		/**
+		 * `t_char` char(1) NOT NULL 
+		 * 
+		 * COMMENT is shorthand for CHARACTER'
+		 */
+		column = table.getColumn("t_char");
+		Assert.assertEquals("char", column.getTypeName());
+		Assert.assertEquals("CHAR", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(1, column.getOctectLength());
+		Assert.assertEquals(1, column.getSize());	
+		
+		/**
+		 * `t_binary` binary(1) NOT NULL 
+		 * 
+		 * COMMENT:  The BINARY type is similar to the CHAR type, 
+		 * but stores binary byte strings rather than nonbinary 
+		 * character strings. M represents the column length in bytes.
+		 */
+		column = table.getColumn("t_binary");
+		Assert.assertEquals("binary", column.getTypeName());
+		Assert.assertEquals("BINARY", column.getDataType());
+		Assert.assertEquals(10, column.getRadix());	
+		Assert.assertEquals(0, column.getDecimalDigits());
+		Assert.assertEquals(1, column.getOctectLength());
+		Assert.assertEquals(1, column.getSize());	
+		
+		/*
+		  `t_nchar` char(1) character set utf8 NOT NULL COMMENT 'NCHAR is the standard SQL way to define that a CHAR column should use some predefined character set',
+  `t_varchar` varchar(45) NOT NULL COMMENT 'VARCHAR is shorthand for',
+  `t_varbinary` varbinary(45) NOT NULL COMMENT 'The VARBINARY type is similar to the VARCHAR type, but stores binary byte strings rather than nonbinary character strings. M represents the maximum column length in bytes. ',
+  `t_national_varchar` varchar(45) character set utf8 NOT NULL COMMENT 'NATIONAL VARCHAR is the standard SQL way to define that a VARCHAR column should use some predefined character set',
+  `t_tinyblob` tinyblob NOT NULL COMMENT 'A BLOB column with a maximum length of 255 ',
+  `t_blob` blob NOT NULL COMMENT 'A BLOB column with a maximum length of 65,535 ',
+  `t_text` text NOT NULL COMMENT 'A TEXT column with a maximum length of 65,535 ',
+  `t_tinytext` tinytext NOT NULL COMMENT 'A TEXT column with a maximum length of 255 ',
+  `t_mediumblob` mediumblob NOT NULL COMMENT 'A BLOB column with a maximum length of 16,777,215 ',
+  `t_mediumtext` mediumtext NOT NULL COMMENT 'A TEXT column with a maximum length of 16,777,215 ',
+  `t_longblob` longblob NOT NULL COMMENT 'A BLOB column with a maximum length of 4,294,967,295 or 4GB',
+  `t_longtext` longtext NOT NULL COMMENT 'A TEXT column with a maximum length of 4,294,967,295 or 4GB',
+  `t_enum` enum('rosso','bianco','verde') NOT NULL COMMENT 'An enumeration. A string object that can have only one value, chosen from the list of values ''value1'', ''value2'', ..., NULL or the special '''' error value',
+  `t_set` set('sala','pepe','olio') NOT NULL COMMENT 'A set. A string object that can have zero or more values, each of which must be chosen from the list of values ''value1'', ''value2'', ...'
+
+		 */
 	}
 	
 	/**

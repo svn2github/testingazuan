@@ -35,7 +35,7 @@ public class TestCostants {
 	public enum DatabaseType { MYSQL, POSTGRES, ORACLE };
 	
 	public static boolean enableTestsOnMySql = true;
-	public static boolean enableTestsOnPostgres = true;
+	public static boolean enableTestsOnPostgres = false;
 	public static boolean enableTestsOracle = false;
 	
 	// =======================================================
@@ -71,6 +71,7 @@ public class TestCostants {
 		, "store"
 		, "store_ragged"
 		, "test_names"
+		, "test_types"
 		, "time_by_day"
 		, "warehouse"
 		, "warehouse_class"

@@ -453,7 +453,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 		}
 		else{
 			String destinationTableUniqueName = destinationTableUniqueNamesList.get(destinationTableCombo.getSelectionIndex());
-			return model.getTableByUniqueName(destinationTableCombo.getText());
+			return model.getTableByUniqueName(destinationTableUniqueName);
 		}
 	}
 	

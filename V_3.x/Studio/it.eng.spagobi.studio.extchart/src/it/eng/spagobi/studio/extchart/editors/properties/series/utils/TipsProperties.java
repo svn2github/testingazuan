@@ -58,7 +58,7 @@ public class TipsProperties extends PopupPropertiesDialog{
 				tips.getHeight() != null ? tips.getHeight() : null
 						, "Height: ");
 		
-		SWTUtils.drawText(toolkit, dialog, 
+		textText = SWTUtils.drawText(toolkit, dialog, 
 				tips.getText() != null ? tips.getText() : null
 				, labelForText);
 	
@@ -93,6 +93,8 @@ public class TipsProperties extends PopupPropertiesDialog{
 
 		// memorize new Label
 		father.getTipsHolder()[0] = tips;
+
+		//father.getSerie().setTips(tips);
 
 		logger.debug("OUT");
 	}

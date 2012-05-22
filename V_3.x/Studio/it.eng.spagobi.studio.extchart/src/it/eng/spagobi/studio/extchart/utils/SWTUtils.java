@@ -176,15 +176,39 @@ public class SWTUtils {
 			label.setText(title);
 		}
 
-		final Spinner parIntegerSpinner = new Spinner (composite, SWT.BORDER);
-		parIntegerSpinner.setMaximum(1000);
-		parIntegerSpinner.setMinimum(-1000);
+		final Spinner parFloatSpinner = new Spinner (composite, SWT.BORDER);
+		parFloatSpinner.setMaximum(1000);
+		parFloatSpinner.setMinimum(-1000);
+		parFloatSpinner.setDigits(2);
 
+//		if(value != null){
+//			parFloatSpinner.setSelection(value.intValue());
+//		}
+		
 		if(value != null){
-			parIntegerSpinner.setSelection(value.intValue());
+			//parameterNumberValueText.setText(aParameter.getValue().toString());
+			String valueToSet = null;
+			//Double doubleVal=Double.valueOf(value);
+			String doubleString=value.toString();
+			int indexPoint = doubleString.indexOf('.');
+			if(indexPoint != -1){
+				String intPart= doubleString.substring(0, indexPoint); 
+				String decimalPart= doubleString.substring(indexPoint+1, doubleString.length());
+				if(decimalPart.length() == 1){
+					decimalPart+="0";
+				}
+				valueToSet = intPart+decimalPart;
+			}
+			else{
+				valueToSet = doubleString;
+			}
+			//doubleString=removeChar(doubleString, '.');
+			Integer fakeIntVal=Integer.valueOf(valueToSet);
+			parFloatSpinner.setSelection(fakeIntVal);
 		}
+		
 		logger.debug("OUT");
-		return parIntegerSpinner;
+		return parFloatSpinner;
 	}
 
 	public static Combo drawCombo(Composite composite, String[] content, String value, String title){

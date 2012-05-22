@@ -73,6 +73,12 @@ public class MarkerConfigProperties extends PopupPropertiesDialog{
 			logger.debug("create a MarkerConfig definition");
 			markerConfig = new MarkerConfig();
 		}
+		
+		
+		String valueField = typeCombo.getItem(typeCombo.getSelectionIndex());
+		markerConfig.setTyp(valueField);
+		logger.debug("type " +valueField);
+
 
 		int radiusWidth = radiusSpinner.getSelection();
 		markerConfig.setRadius(radiusWidth);
@@ -85,7 +91,7 @@ public class MarkerConfigProperties extends PopupPropertiesDialog{
 		
 		// memorize new Label
 		father.getMarkerConfigHolder()[0] = markerConfig;
-
+		//father.getSerie().setMarkerConfig(markerConfig);
 		logger.debug("OUT");
 	}
 

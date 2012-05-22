@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -34,18 +35,24 @@ public class SeriesProperties extends PopupPropertiesDialog{
 	FormToolkit toolkit;
 	//Shell comp;
 	ExtChartEditor editor;
+	Spinner opacitySpinner;
 
 	Tips[] tipsHolder=  new Tips[1];
 	Label[] labelHolder= new Label[1];
 	MarkerConfig[] markerConfigHolder=  new MarkerConfig[1];
-	
+
+
+	Button useLabelCheck;
+	Button useTipsCheck;
+	Button usemarkerConfigCheck;
+
 	// SWT objects:
-//	Text donutText;
-//	Button smoothButton;
+	//	Text donutText;
+	//	Button smoothButton;
 
 
-//	Combo axisCombo; 
-//	Button showInLegendButton;
+	//	Combo axisCombo; 
+	//	Button showInLegendButton;
 	Combo fieldCombo;
 	Combo xFieldCombo; 
 	Combo yFieldCombo;
@@ -73,8 +80,8 @@ public class SeriesProperties extends PopupPropertiesDialog{
 
 	public void drawProperties(){
 		logger.debug("IN");
-//		GridLayout gridlayout = new GridLayout(2, true);
-//		comp.setLayout(gridlayout);
+		//		GridLayout gridlayout = new GridLayout(2, true);
+		//		comp.setLayout(gridlayout);
 
 		// -----------------------------------------------
 
@@ -82,20 +89,20 @@ public class SeriesProperties extends PopupPropertiesDialog{
 		//		toolkit.createLabel(comp, serie.getType() != null ? serie.getType() : "");
 
 		// -----------------------------------------------
-//		logger.debug("Donut");
-//		toolkit.createLabel(comp, "Donut (number or 'false'): ");
-//		donutText = toolkit.createText(comp, "default value", SWT.NULL);
-//		if(serie.getDonut() != null){
-//			donutText.setText(serie.getDonut());
-//		}
+		//		logger.debug("Donut");
+		//		toolkit.createLabel(comp, "Donut (number or 'false'): ");
+		//		donutText = toolkit.createText(comp, "default value", SWT.NULL);
+		//		if(serie.getDonut() != null){
+		//			donutText.setText(serie.getDonut());
+		//		}
 
 		// -----------------------------------------------
 
-//		logger.debug("Smooth");
-//		smoothButton = toolkit.createButton(comp, "Smooth: : ", SWT.CHECK);
-//		if(serie.getHighlight() != null && serie.getSmooth().booleanValue() == true){
-//			smoothButton.setSelection(true);
-//		}
+		//		logger.debug("Smooth");
+		//		smoothButton = toolkit.createButton(comp, "Smooth: : ", SWT.CHECK);
+		//		if(serie.getHighlight() != null && serie.getSmooth().booleanValue() == true){
+		//			smoothButton.setSelection(true);
+		//		}
 
 
 
@@ -103,16 +110,16 @@ public class SeriesProperties extends PopupPropertiesDialog{
 
 		// -----------------------------------------------
 
-//		logger.debug("Show in legend");
-//		showInLegendButton = toolkit.createButton(comp, "Show In Legend", SWT.CHECK);
-//		if(serie.getShowInLegened() != null && serie.getShowInLegened().booleanValue() == true){
-//			showInLegendButton.setSelection(true);
-//		}
+		//		logger.debug("Show in legend");
+		//		showInLegendButton = toolkit.createButton(comp, "Show In Legend", SWT.CHECK);
+		//		if(serie.getShowInLegened() != null && serie.getShowInLegened().booleanValue() == true){
+		//			showInLegendButton.setSelection(true);
+		//		}
 
 		// -----------------------------------------------
 
-//		String[] axis = new String[]{"left", "top", "right", "bottom"};
-//		axisCombo = SWTUtils.drawCombo(dialog, axis, serie.getAxis(), "Axis: ");
+		//		String[] axis = new String[]{"left", "top", "right", "bottom"};
+		//		axisCombo = SWTUtils.drawCombo(dialog, axis, serie.getAxis(), "Axis: ");
 
 
 		// -----------------------------------------------
@@ -183,28 +190,36 @@ public class SeriesProperties extends PopupPropertiesDialog{
 		// TODO: unblock and let user change fields
 		fieldTable.setEnabled(false);
 
-		
+
 		// Check if define label
-		
-		final Button useLabelCheck = SWTUtils.drawCheck(dialog, serie.getLabel() != null, "Use Label?");
+
+		useLabelCheck = SWTUtils.drawCheck(dialog, serie.getLabel() != null, "Use Label?");
 		final Button labelButton = SWTUtils.drawButton(dialog, "Define Label");
 		final SeriesProperties toPass = this;
+		final Series serieIns = serie;
 		labelButton.addListener(SWT.Selection, 
 				new Listener() {
 			public void handleEvent(Event event) {
 				logger.debug("Open label editor");
-				LabelProperties labelProperties = new LabelProperties(editor, serie.getLabel(), dialog, toPass);
+				Label labelToPass = labelHolder[0] != null ? labelHolder[0] : serieIns.getLabel();
+				LabelProperties labelProperties = new LabelProperties(editor, labelToPass, dialog, toPass);
 				labelProperties.drawProperties();
 				labelProperties.drawButtons();
 				labelProperties.showPopup();
-				
+
 			}
 		}
 		);
-		
-		if(serie.getLabel() != null) labelButton.setEnabled(true);
-		else labelButton.setEnabled(false);
-		
+
+		if(serie.getLabel() != null && serie.getLabel().getField() != null) {
+			labelButton.setEnabled(true);
+			useLabelCheck.setSelection(true);
+		}
+		else {
+			useLabelCheck.setSelection(false);
+			labelButton.setEnabled(false);
+		}
+
 		useLabelCheck.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				boolean selection = useLabelCheck.getSelection();
@@ -215,35 +230,41 @@ public class SeriesProperties extends PopupPropertiesDialog{
 					// deleet from serie the label
 					serie.setLabel(null);
 					labelButton.setEnabled(false);
-					
+
 				}
 			}
 		});
-		
-		
+
+
 		//Check if define Tips
 		tipsHolder[0] = serie.getTips();
-		final Button useTipsCheck = SWTUtils.drawCheck(dialog, serie.getTips() != null, "Use Tips?");
+		useTipsCheck = SWTUtils.drawCheck(dialog, serie.getTips() != null, "Use Tips?");
 		final Button tipsButton = SWTUtils.drawButton(dialog, "Define Tips");
-		
 		tipsButton.addListener(SWT.Selection, 
 				new Listener() {
 			public void handleEvent(Event event) {
 				logger.debug("Open Tips editor");
-				TipsProperties tipsProperties = new TipsProperties(editor, serie.getTips(), dialog, toPass);
+				Tips tipsToPass = tipsHolder[0] != null ? tipsHolder[0] : serieIns.getTips();
+				TipsProperties tipsProperties = new TipsProperties(editor, tipsToPass, dialog, toPass);
 				tipsProperties.setTitle("Define tips");
 				tipsProperties.setLabelForText("Text:\n {CATEGORY} for category \n {SERIE} for serie");
 				tipsProperties.drawProperties();
 				tipsProperties.drawButtons();
 				tipsProperties.showPopup();
-				
+
 			}
 		}
 		);
-		
-		if(serie.getTips() != null) tipsButton.setEnabled(true);
-		else tipsButton.setEnabled(false);
-		
+
+		if(serie.getTips() != null && serie.getTips().getText() != null) {
+			useTipsCheck.setSelection(true);
+			tipsButton.setEnabled(true);
+		}
+		else {
+			useTipsCheck.setSelection(false);
+			tipsButton.setEnabled(false);
+		}
+
 		useTipsCheck.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				boolean selection = useTipsCheck.getSelection();
@@ -254,49 +275,58 @@ public class SeriesProperties extends PopupPropertiesDialog{
 					// deleet from serie the Tips
 					serie.setTips(null);
 					tipsButton.setEnabled(false);
-					
+
 				}
 			}
 		});
-		
+
 		if(drawMarkerConfig){
 			logger.debug("draw marker config designer");
-		markerConfigHolder[0] = serie.getMarkerConfig();
-		final Button usemarkerConfigCheck = SWTUtils.drawCheck(dialog, serie.getMarkerConfig() != null, "Use markerConfig?");
-		final Button markerConfigButton = SWTUtils.drawButton(dialog, "Define MarkerConfig");
-		
-		markerConfigButton.addListener(SWT.Selection, 
-				new Listener() {
-			public void handleEvent(Event event) {
-				logger.debug("Open markerConfig editor");
-				MarkerConfigProperties markerConfigProperties = new MarkerConfigProperties(editor, serie.getMarkerConfig(), dialog, toPass);
-				markerConfigProperties.setTitle("Define Marker Config");
-				markerConfigProperties.drawProperties();
-				markerConfigProperties.drawButtons();
-				markerConfigProperties.showPopup();
-				
-			}
-		}
-		);
-		
-		if(serie.getMarkerConfig() != null) markerConfigButton.setEnabled(true);
-		else markerConfigButton.setEnabled(false);
-		
-		usemarkerConfigCheck.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				boolean selection = usemarkerConfigCheck.getSelection();
-				if(selection == true){
-					markerConfigButton.setEnabled(true);
-				}
-				else{
-					// deleet from serie the markerConfig
-					serie.setMarkerConfig(null);
-					markerConfigButton.setEnabled(false);
-					
+			markerConfigHolder[0] = serie.getMarkerConfig();
+			usemarkerConfigCheck = SWTUtils.drawCheck(dialog, serie.getMarkerConfig() != null, "Use markerConfig?");
+			final Button markerConfigButton = SWTUtils.drawButton(dialog, "Define MarkerConfig");
+
+			markerConfigButton.addListener(SWT.Selection, 
+					new Listener() {
+				public void handleEvent(Event event) {
+					logger.debug("Open markerConfig editor");
+					MarkerConfig markerConfigToPass = markerConfigHolder[0] != null ? markerConfigHolder[0] : serieIns.getMarkerConfig();
+					MarkerConfigProperties markerConfigProperties = new MarkerConfigProperties(editor, markerConfigToPass, dialog, toPass);
+					markerConfigProperties.setTitle("Define Marker Config");
+					markerConfigProperties.drawProperties();
+					markerConfigProperties.drawButtons();
+					markerConfigProperties.showPopup();
+
 				}
 			}
-		});
+			);
+
+			if(serie.getMarkerConfig() != null && serie.getMarkerConfig().getType()!= null) {
+				markerConfigButton.setEnabled(true);
+				usemarkerConfigCheck.setSelection(true);
+			}
+			else {
+				markerConfigButton.setEnabled(false);
+				usemarkerConfigCheck.setSelection(false);
+			}
+
+			usemarkerConfigCheck.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event e) {
+					boolean selection = usemarkerConfigCheck.getSelection();
+					if(selection == true){
+						markerConfigButton.setEnabled(true);
+					}
+					else{
+						// deleet from serie the markerConfig
+						serie.setMarkerConfig(null);
+						markerConfigButton.setEnabled(false);
+
+					}
+				}
+			});
 		}
+
+		opacitySpinner = SWTUtils.drawSpinner(dialog, serie.getStyle().getOpacity(), "Opacity: ");
 
 		logger.debug("OUT");
 	}
@@ -313,9 +343,9 @@ public class SeriesProperties extends PopupPropertiesDialog{
 			serie = new Series();
 		}
 
-//		String valueAxis = axisCombo.getItem(axisCombo.getSelectionIndex());
-//		serie.setAxis(valueAxis);
-//		logger.debug("axis " +valueAxis);
+		//		String valueAxis = axisCombo.getItem(axisCombo.getSelectionIndex());
+		//		serie.setAxis(valueAxis);
+		//		logger.debug("axis " +valueAxis);
 
 		if(drawField){
 			String valueField = fieldCombo.getItem(fieldCombo.getSelectionIndex());
@@ -347,7 +377,41 @@ public class SeriesProperties extends PopupPropertiesDialog{
 			serie.setyFieldList(selections);
 			logger.debug("Yfield List " +selections);
 		}
-		
+
+		if(useLabelCheck.getSelection() == true && labelHolder[0] != null){
+			logger.debug("save label");		
+			serie.setLabel(labelHolder[0]);
+		}
+		else{
+			logger.debug("delete label");		
+			serie.setLabel(null);
+		}
+
+		if(usemarkerConfigCheck.getSelection() == true && markerConfigHolder[0] != null){
+			logger.debug("save marker Config");		
+			serie.setMarkerConfig(markerConfigHolder[0]);
+		}
+		else{
+			logger.debug("delete marker Config");		
+			serie.setMarkerConfig(null);
+		}
+
+		if(useTipsCheck.getSelection() == true && tipsHolder[0] != null){
+			logger.debug("save Tips");		
+			serie.setTips(tipsHolder[0]);
+		}
+		else{
+			logger.debug("delete Tips");		
+			serie.setTips(null);
+		}
+
+
+		double opacityValue  = opacitySpinner.getSelection()/ Math.pow(10, opacitySpinner.getDigits());
+		// check it is a number 
+
+		serie.getStyle().setOpacity((float)opacityValue);
+		logger.debug("opacity " + opacityValue);
+
 		logger.debug("OUT");
 	}
 

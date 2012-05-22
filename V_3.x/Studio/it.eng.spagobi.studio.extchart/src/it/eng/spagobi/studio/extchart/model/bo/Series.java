@@ -97,6 +97,7 @@ public class Series {
 		this.yFieldList = yFieldList;
 	}
 	public StyleSeries getStyle() {
+		if(style == null) style = new StyleSeries();
 		return style;
 	}
 	public void setStyle(StyleSeries style) {

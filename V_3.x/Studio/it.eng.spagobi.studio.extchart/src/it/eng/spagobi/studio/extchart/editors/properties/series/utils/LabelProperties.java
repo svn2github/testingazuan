@@ -66,7 +66,7 @@ public class LabelProperties extends PopupPropertiesDialog{
 		
 		String[] anchors =new String[]{"middle", "top", "bottom"};
 		anchorCombo = SWTUtils.drawCombo(dialog, anchors
-				, label != null && label.getOrientation() != null ? label.getOrientation() : "middle"
+				, label != null && label.getTextAnchor() != null ? label.getTextAnchor() : "middle"
 				, "Text Anchor: ");
 
 		colorButton = SWTUtils.drawColorButton(toolkit, dialog, 
@@ -117,6 +117,7 @@ public class LabelProperties extends PopupPropertiesDialog{
 	
 		// memorize new Label
 		father.getLabelHolder()[0] = label;
+		//father.getSerie().setLabel(label);
 		logger.debug("OUT");
 	}
 	

@@ -223,6 +223,8 @@ public class HibernateDataSource extends AbstractDataSource implements IHibernat
 			cfg.setProperty("hibernate.jdbc.use_scrollable_resultset", "false");
 		}
 		
+		cfg.setProperty("hibernate.validator.apply_to_ddl", "false");
+		cfg.setProperty("hibernate.validator.autoregister_listeners", "false");
 		cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");
 		cfg.setProperty("hibernate.show_sql", "false");
 		

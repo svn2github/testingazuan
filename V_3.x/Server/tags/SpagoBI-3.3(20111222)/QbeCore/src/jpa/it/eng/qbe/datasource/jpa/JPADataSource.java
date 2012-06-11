@@ -34,32 +34,17 @@ import it.eng.qbe.model.accessmodality.AbstractModelAccessModality;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.builder.IModelStructureBuilder;
 import it.eng.qbe.model.structure.builder.jpa.JPAModelStructureBuilder;
-import it.eng.spagobi.engines.qbe.registry.bo.RegistryConfiguration;
-import it.eng.spagobi.engines.qbe.registry.bo.RegistryConfiguration.Column;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FetchType;
 import javax.persistence.Persistence;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.BasicType;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -194,6 +179,10 @@ public class JPADataSource extends AbstractDataSource implements IJpaDataSource{
 			cfg.put("javax.persistence.jdbc.driver", getConnection().getDriverClass());
 			cfg.put("hibernate.dialect", getConnection().getDialect());
 		}
+		
+		cfg.put("hibernate.validator.apply_to_ddl", "false");
+		cfg.put("hibernate.validator.autoregister_listeners", "false");
+		
 		return cfg;
 	}
 	

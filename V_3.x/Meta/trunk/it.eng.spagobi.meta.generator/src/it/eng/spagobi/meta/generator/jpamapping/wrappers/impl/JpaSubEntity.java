@@ -28,6 +28,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * This class represent a sub entity that is an entity within a particular
+ * joining path.
+ *  
+ * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
@@ -35,12 +39,28 @@ public class JpaSubEntity implements IJpaSubEntity {
 	
 	public static final String DESTINATION_ROLE = "structural.destinationRole";
 
-	Object root; // table or view
+	/**
+	 * First level entity = the root of the joining path. It can be a table or
+	 * a view.
+	 */
+	Object root;
+	/**
+	 * The parent entity = the previous entity in the joining path. It's null if
+	 * the previous entity is equal to the root entity
+	 */
+	JpaSubEntity parent; 
+	/**
+	 * It's the relationship that link this entity with the previous one (i.e. the parent)
+	 * in the joining path
+	 */
 	BusinessRelationship relationship;
 
-	JpaSubEntity parent; // null if parent is equal to root
+	/**
+	 * All the sub entity that have this one as parent entity
+	 */
 	List<JpaSubEntity> children;
 
+	
 	private static Logger logger = LoggerFactory.getLogger(JpaSubEntity.class);
 
 	protected JpaSubEntity(Object root, JpaSubEntity parent, BusinessRelationship relationship) {
@@ -146,12 +166,18 @@ public class JpaSubEntity implements IJpaSubEntity {
 		
 		name = null;
 		
-		IJpaTable table = getTable();
 		IJpaColumn jpaColumn = getParentColumn();
 		if (jpaColumn!=null){
-			name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName())+"_in_"+relationship.getDestinationTable().getUniqueName() + "(rel_"+getParentColumn().getPropertyName() + "_in_"+relationship.getDestinationTable().getUniqueName()+")";
+			//name = "rel_"+StringUtils.capitalizeFirstLetter(getParentColumn().getPropertyName());
+			name = "rel_"+ getParentColumn().getPropertyName();
+			name += "_in_" + relationship.getDestinationTable().getUniqueName();
+			
+			// back compatibility
+			String role = name.toLowerCase(); // see ModelEntity getRole()
+			name += "(" + role + ")";
+							
 			name = nameToJavaVariableName(name);
-			name = name.toLowerCase();
+			//name = name.toLowerCase();
 		}
 		else {
 			logger.debug("Cannot retrieve parent column of [{}]",this);

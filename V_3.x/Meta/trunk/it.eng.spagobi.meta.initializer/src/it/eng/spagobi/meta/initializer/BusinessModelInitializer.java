@@ -50,7 +50,7 @@ public class BusinessModelInitializer {
 	BusinessModelNamesInitializer namesInitializer;
 
 	static public String INITIALIZER_NAME = "StandardSpagoBIBusinessModelInitializer";
-	static public String INITIALIZER_VERSION = "3.4.0";
+	static public String INITIALIZER_VERSION = "3.5.0";
 		
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	

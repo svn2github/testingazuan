@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%productName" uid="SpagoBIMeta" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="3.1.0" useFeatures="false" includeLaunchers="true">
+<product name="%productName" uid="SpagoBIMeta" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="3.5.0" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="eclipse_lg.gif"/>
@@ -534,8 +534,8 @@
       <plugin id="org.eclipse.jdt.junit.runtime"/>
       <plugin id="org.eclipse.jdt.junit4.runtime"/>
       <plugin id="org.eclipse.jdt.launching"/>
-      <plugin id="org.eclipse.jdt.launching.macosx"/>
-      <plugin id="org.eclipse.jdt.launching.ui.macosx"/>
+      <plugin id="org.eclipse.jdt.launching.macosx" fragment=""/>
+      <plugin id="org.eclipse.jdt.launching.ui.macosx" fragment=""/>
       <plugin id="org.eclipse.jdt.ui"/>
       <plugin id="org.eclipse.jem"/>
       <plugin id="org.eclipse.jem.beaninfo"/>

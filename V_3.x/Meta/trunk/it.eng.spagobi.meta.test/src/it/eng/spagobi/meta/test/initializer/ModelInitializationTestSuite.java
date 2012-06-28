@@ -26,7 +26,6 @@ public class ModelInitializationTestSuite extends TestCase {
 		if(TestCostants.enableTestsOnMySql) suite.addTest(MySqlInitializationTestSuite.suite());
 		if(TestCostants.enableTestsOnPostgres) suite.addTest(PostgresInitializationTestSuite.suite());
 		
-		
 		return suite;
 	}
 }

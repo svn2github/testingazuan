@@ -484,7 +484,7 @@ public class PostgresPhysicalModelInizializtaionTest extends AbstractPhysicalMod
 	 * also have one foreign key in the physical model
 	 */
 	public void testPhysicalModeSingleFK() {
-		PhysicalTable table = physicalModel.getTable("store");
+		PhysicalTable table = physicalModel.getTable("STORE");
 		
 		List<PhysicalForeignKey> foreignKeys = table.getForeignKeys();
 		assertNotNull(foreignKeys);

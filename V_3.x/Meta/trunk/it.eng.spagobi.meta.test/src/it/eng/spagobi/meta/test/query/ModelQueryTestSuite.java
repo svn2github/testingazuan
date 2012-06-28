@@ -11,6 +11,7 @@ package it.eng.spagobi.meta.test.query;
 
 import it.eng.spagobi.meta.test.TestCostants;
 import it.eng.spagobi.meta.test.query.mysql.MySqlModelQueryTest;
+import it.eng.spagobi.meta.test.query.postgres.PostgresModelQueryTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,6 +24,7 @@ public class ModelQueryTestSuite extends TestCase {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Query tests");
 		if(TestCostants.enableTestsOnMySql) suite.addTestSuite(MySqlModelQueryTest.class);
+		if(TestCostants.enableTestsOnPostgres) suite.addTestSuite(PostgresModelQueryTest.class);
 		// add here test suites of other databases ...
 		return suite;
 	}

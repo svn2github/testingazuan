@@ -22,9 +22,11 @@ public class TestCostants {
 	
 	public enum DatabaseType { MYSQL, POSTGRES, ORACLE };
 	
+	public static boolean enableUITests = true;
+	
 	public static boolean enableTestsOnMySql = true;
 	public static boolean enableTestsOnPostgres = true;
-	public static boolean enableTestsOracle = false;
+	public static boolean enableTestsOnOracle = false;
 	
 	// =======================================================
 	// MYSQL
@@ -107,7 +109,7 @@ public class TestCostants {
 		, "salary"
 		, "sales_fact_1998"
 		, "sales_region"
-		, "store"
+		, "STORE"
 		, "store_ragged"
 		//, "test_names"
 		, "time_by_day"

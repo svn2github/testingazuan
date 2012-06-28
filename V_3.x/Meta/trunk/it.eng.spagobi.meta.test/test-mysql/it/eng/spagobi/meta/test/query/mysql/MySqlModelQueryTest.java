@@ -9,31 +9,23 @@
 **/
 package it.eng.spagobi.meta.test.query.mysql;
 
-import it.eng.qbe.datasource.ConnectionDescriptor;
-import it.eng.qbe.datasource.DriverManager;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
-import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
-import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
+import it.eng.qbe.model.properties.IModelProperties;
+import it.eng.qbe.model.properties.SimpleModelProperties;
 import it.eng.qbe.model.structure.FilteredModelStructure;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ModelEntity;
 import it.eng.qbe.model.structure.ModelViewEntity;
 import it.eng.qbe.model.structure.ModelViewEntity.ViewRelationship;
-import it.eng.qbe.model.structure.filter.IQbeTreeEntityFilter;
-import it.eng.qbe.model.structure.filter.IQbeTreeFieldFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityEntityFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeAccessModalityFieldFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeOrderEntityFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeOrderFieldFilter;
-import it.eng.qbe.model.structure.filter.QbeTreeQueryEntityFilter;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
-import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessViewInnerJoinRelationshipDescriptor;
+import it.eng.spagobi.meta.model.ModelProperty;
+import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
@@ -49,19 +41,16 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
 
 public class MySqlModelQueryTest extends AbstractModelQueryTest {
 	
-	static JpaMappingJarGenerator jpaMappingJarGenerator;
-	static IDataSource dataSource;
 	
 	public void setUp() throws Exception {
 		try {
-			// if this is the first test on postgres after the execution
+			// if this is the first test on mysql after the execution
 			// of tests on an other database force a tearDown to clean
 			// and regenerate properly all the static variables contained in
 			// parent class AbstractSpagoBIMetaTest
@@ -86,27 +75,103 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 			throw t;
 		}
 	}
+
+	// =============================================
+	// TESTS ON STANDARD MODEL
+	// =============================================
 	
-	protected void createDataSource(String modelName, File jarFile) {
-		IDataSourceConfiguration configuration = new FileDataSourceConfiguration(modelName, jarFile);
-		ConnectionDescriptor connectionDescriptor = TestModelFactory.getConnectionDescriptor(dbType);
-		configuration.loadDataSourceProperties().put("connection", connectionDescriptor);
-		dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration, false);
-	}
-	
+	/**
+	 * Test mapping generation over the standard business model
+	 */
 	public void testRootModelGenerationSmoke() {
-		jpaMappingJarGenerator.generate(businessModel, TestCostants.outputFolder.toString());
+		try  {
+			jpaMappingJarGenerator.generate(businessModel, TestCostants.outputFolder.toString());
+		} catch (Throwable t) {
+			fail();
+		}
 	}
 	
+	/**
+	 * Test data source creation over the standard business model
+	 */
 	public void testRootModelDataSourceSmoke() {
+		try {
+			File jarFile = jpaMappingJarGenerator.getJarFile();
+			createDataSource("BUSINESS_MODEL_TEST", jarFile);
+		} catch (Throwable t) {
+			fail();
+		}
+	}
+	
+	
+	
+	public static final  String TABLE_TAG = "TTG";
+	public static final  String COLUMN_TAG = "CTG";
+	public static final  String RELATIONSHIP_TAG = "RTG";
+	
+	/**
+	 * modify the name of all entities, sub-entities and fields than check if the labels
+	 * are ported properly in the qbe
+	 */
+	public void testLabels() {
+		List<BusinessTable> businessTables = businessModel.getBusinessTables();
+		for(BusinessTable businessTable : businessTables) {
+			businessTable.setName( businessTable.getName() + " " + TABLE_TAG);
+			List<BusinessColumn> businessColumns = businessTable.getColumns();
+			for(BusinessColumn businessColumn : businessColumns) {
+				businessColumn.setName( businessColumn.getName() + " " + COLUMN_TAG);
+			}
+			
+			List<BusinessRelationship> relationships = businessTable.getRelationships();
+			for(BusinessRelationship relationship : relationships) {
+				ModelProperty property = relationship.getProperties().get("structural.destinationRole");
+				assertNotNull(property);
+				property.setValue( property.getValue() + " " + RELATIONSHIP_TAG);
+			}
+		}
+		
+		jpaMappingJarGenerator.generate(businessModel, TestCostants.outputFolder.toString());
 		File jarFile = jpaMappingJarGenerator.getJarFile();
 		createDataSource("BUSINESS_MODEL_TEST", jarFile);
+
+		
+		SimpleModelProperties labels = (SimpleModelProperties)dataSource.getModelI18NProperties(null);
+		if( labels == null) {
+			labels = new SimpleModelProperties();
+		}
+		
+		FilteredModelStructure filteredModelStructure = getFilteredDataSource(dataSource);
+		List<IModelEntity> modelEntities = filteredModelStructure.getRootEntities("BUSINESS_MODEL_TEST");
+		for(IModelEntity modelEntity : modelEntities) {
+			String label = labels.getProperty(modelEntity, "label");
+			label =  StringUtilities.isEmpty(label)? modelEntity.getName(): label;
+			assertTrue(label.endsWith( TABLE_TAG ));
+			
+			List<IModelField> fields = modelEntity.getAllFields();
+			for(IModelField field : fields) {
+				label = labels.getProperty(field, "label");
+				label = StringUtilities.isEmpty(label)? field.getName(): label;
+				assertTrue(label.endsWith( COLUMN_TAG ));
+			}
+			
+			List<IModelEntity> subEntities = modelEntity.getSubEntities();
+			for(IModelEntity subEntity : subEntities) {
+				label = labels.getProperty(subEntity, "label");
+				label =  StringUtilities.isEmpty(label)? subEntity.getName(): label;
+				assertTrue("Value [" + label + "] of property [" + labels.getPropertyQualifiedName(subEntity, "label") + "] does not ends with " + RELATIONSHIP_TAG,
+						label.endsWith( RELATIONSHIP_TAG ));
+			}
+		}
 	}
 
 	// =============================================
 	// TESTS ON VIEW MODEL
 	// =============================================
 	
+	/**
+	 * Create a business view PRODUCT that joins product and product_class into the filtered model 
+	 * and test mapping generation
+	 */
 	public void testViewModelGenerationSmoke() {
 		setFilteredModel(TestModelFactory.createFilteredModel( dbType, "VIEW_MODEL_TEST" ));
 		
@@ -132,10 +197,23 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		jpaMappingJarGenerator.generate(filteredBusinessModel, TestCostants.outputFolder.toString());
 	}
 	
+	/**
+	 * Create a business view PRODUCT that joins product and product_class into the filtered model 
+	 * and test data source creation
+	 */
 	public void testViewModelDataSourceSmoke() {
-		File jarFile = jpaMappingJarGenerator.getJarFile();
-		createDataSource("BUSINESS_VIEW_MODEL_TEST", jarFile);
-		
+		try {
+			File jarFile = jpaMappingJarGenerator.getJarFile();
+			createDataSource("BUSINESS_VIEW_MODEL_TEST", jarFile);
+		} catch (Throwable t) {
+			fail();
+		}
+	}
+	
+	/**
+	 * Test the existence of view table
+	 */
+	public void testViewTable() {
 		IModelEntity viewEntity = dataSource.getModelStructure().getRootEntity(
 				"BUSINESS_VIEW_MODEL_TEST", "it.eng.spagobi.meta.Product::Product");
 		assertNotNull(viewEntity);
@@ -143,6 +221,9 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		assertTrue(viewEntity instanceof ModelViewEntity);		
 	}
 	
+	/**
+	 * Test the existence of inner view tables
+	 */
 	public void testViewInnerTables() {
 		
 		IModelEntity innerEntityProduct = dataSource.getModelStructure().getRootEntity(
@@ -166,6 +247,10 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		assertTrue(innerEntities.contains(innerEntityProductClass));
 	}
 	
+	/**
+	 * Test that the number of fields contained in the view table is equal to
+	 * the sum of the fields contained in its inner tables
+	 */
 	public void testViewFields() {
 		
 		IModelEntity innerEntityProduct = dataSource.getModelStructure().getRootEntity(
@@ -181,6 +266,11 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 				, viewEntity.getAllFields().size());		
 	}
 	
+	/**
+	 * Test view sub entities
+	 * 
+	 * TODO add some meaningful assertions
+	 */
 	public void testViewSubEntities() {
 		ModelViewEntity viewEntity = (ModelViewEntity)dataSource.getModelStructure().getRootEntity(
 				"BUSINESS_VIEW_MODEL_TEST", "it.eng.spagobi.meta.Product::Product");
@@ -193,18 +283,9 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		}
 	}
 	
-	public void testViewVisibilityProperty() {
-		IQbeTreeEntityFilter entityFilter = new QbeTreeAccessModalityEntityFilter();
-		entityFilter = new QbeTreeOrderEntityFilter(entityFilter);
-		
-		IQbeTreeFieldFilter fieldFilter = new QbeTreeAccessModalityFieldFilter();
-		fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
-		
-		QbeTreeFilter treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-		
-		FilteredModelStructure filteredModelStructure = new FilteredModelStructure(
-				dataSource.getModelStructure(), dataSource, treeFilter);
-		
+	public void testViewInnerEntitiesVisibilityProperty() {
+		FilteredModelStructure filteredModelStructure = getFilteredDataSource(dataSource);
+			
 		// test inner entities visibility
 		IModelEntity innerEntityProduct = filteredModelStructure.getRootEntity(
 				"BUSINESS_VIEW_MODEL_TEST", "it.eng.spagobi.meta.Product_product::Product_product");
@@ -213,6 +294,12 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		IModelEntity innerEntityProductClass = filteredModelStructure.getRootEntity(
 				"BUSINESS_VIEW_MODEL_TEST", "it.eng.spagobi.meta.Product_product_class::Product_product_class");
 		assertNull(innerEntityProductClass);
+	}
+	
+	public void testViewFieldsVisibilityProperty() {
+		FilteredModelStructure filteredModelStructure = getFilteredDataSource(dataSource);
+	
+		IModelEntity innerEntityProduct = filteredModelStructure.getRootEntity("BUSINESS_VIEW_MODEL_TEST", "it.eng.spagobi.meta.Product_product::Product_product");
 		
 		// test fields visibility
 		innerEntityProduct = dataSource.getModelStructure().getRootEntity(

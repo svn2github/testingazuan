@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.oda
 Bundle-SymbolicName: it.eng.spagobi.meta.oda; singleton:=true
-Bundle-Version: 3.4.0
+Bundle-Version: 3.5.0
 Bundle-ClassPath: .,
  src,
  libs/qbecore/eclipselink/eclipselink.jar,

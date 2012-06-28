@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.generator
 Bundle-SymbolicName: it.eng.spagobi.meta.generator;singleton:=true
-Bundle-Version: 3.4.0
+Bundle-Version: 3.5.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="3.8.2",
  it.eng.spagobi.commons;bundle-version="1.0.0",
  org.eclipse.jdt.core,
- org.eclipse.core.resources;bundle-version="3.6.1",
+ org.eclipse.core.resources,
  it.eng.spagobi.meta.initializer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

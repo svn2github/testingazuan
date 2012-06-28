@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.editor
 Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
-Bundle-Version: 3.4.0
+Bundle-Version: 3.5.0
 Bundle-ClassPath: .,
  lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar,

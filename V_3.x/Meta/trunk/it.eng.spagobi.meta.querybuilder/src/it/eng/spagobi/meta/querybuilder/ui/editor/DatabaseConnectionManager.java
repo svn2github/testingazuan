@@ -29,6 +29,8 @@ public class DatabaseConnectionManager {
 		drivers.put("microsoft", "org.hibernate.dialect.SQLServerDialect");
 		drivers.put("teradata", "com.teradata.jdbc.TeraDriver");
 		drivers.put("mysql", "com.mysql.jdbc.Driver");
+		drivers.put("db2", "com.ibm.db2.jcc.DB2Driver");
+
 		
 		dialects = new HashMap<String, String>();
 		dialects.put("oracle", "org.hibernate.dialect.OracleDialect");
@@ -37,6 +39,8 @@ public class DatabaseConnectionManager {
 		dialects.put("microsoft", "com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		dialects.put("teradata", "org.hibernate.dialect.TeradataDialect");
 		dialects.put("mysql", "org.hibernate.dialect.MySQLDialect");
+		dialects.put("db2", "org.hibernate.dialect.DB2Dialect");
+
 	};
 	
 
@@ -83,6 +87,9 @@ public class DatabaseConnectionManager {
 		} else if(dbname.toLowerCase().contains("mysql")) {
 			dialect = "org.hibernate.dialect.MySQLDialect";
 			driver = "com.mysql.jdbc.Driver";
+		} else if(dbname.toLowerCase().contains("db2")) {
+			dialect = "org.hibernate.dialect.DB2Dialect";
+			driver = "com.ibm.db2.jcc.DB2Driver";
 		} 
 		
 		return dialect;

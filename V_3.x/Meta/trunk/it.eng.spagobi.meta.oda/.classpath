@@ -28,5 +28,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/tdgssconfig.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/terajdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-annotations-2.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-core-2.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-databind-2.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

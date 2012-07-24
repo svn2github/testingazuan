@@ -28,7 +28,10 @@ Bundle-ClassPath: .,
  libs/jdbc/postgresql-9.0-801.jdbc4.jar,
  libs/jdbc/hsqldb.jar,
  libs/jdbc/tdgssconfig.jar,
- libs/jdbc/terajdbc4.jar
+ libs/jdbc/terajdbc4.jar,
+ libs/qbecore/jackson-annotations-2.0.2.jar,
+ libs/qbecore/jackson-core-2.0.2.jar,
+ libs/qbecore/jackson-databind-2.0.2.jar
 Bundle-Activator: it.eng.spagobi.meta.oda.Activator
 Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin

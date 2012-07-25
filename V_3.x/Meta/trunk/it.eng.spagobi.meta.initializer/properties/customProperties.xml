@@ -227,6 +227,18 @@
       description="Role name of the destination table"
       category="Structural" defaultValue="role name" />
       </types>
+      <types>
+      	<type id="structural.forceVisibilityAsSubentity" name="Force visibility as Sub-entity"
+      description="Force visibility of destination Table as Sub-entity"
+      category="Structural" defaultValue="false" />
+      </types>
+      
+      <typesValues>
+     	 <admissibleValuesOf typeId="structural.forceVisibilityAsSubentity">
+      	 	 <value>true</value>
+       		 <value>false</value>
+     	 </admissibleValuesOf>
+      </typesValues>
   </relationship>
 
 </properties>

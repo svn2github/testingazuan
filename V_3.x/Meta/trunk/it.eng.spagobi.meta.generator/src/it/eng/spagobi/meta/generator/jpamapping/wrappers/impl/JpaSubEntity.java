@@ -38,6 +38,10 @@ import org.slf4j.LoggerFactory;
 public class JpaSubEntity implements IJpaSubEntity {
 	
 	public static final String DESTINATION_ROLE = "structural.destinationRole";
+	public static final String FORCE_SUBENTITY_VISIBILITY = "structural.forceVisibilityAsSubentity";
+	public static final String ENTITY_VISIBILITY = "structural.visible";
+
+
 
 	/**
 	 * First level entity = the root of the joining path. It can be a table or
@@ -274,9 +278,21 @@ public class JpaSubEntity implements IJpaSubEntity {
 		if ( (name.equals("label")) || (name.equals("tooltip")) ){
 			return relationship.getProperties().get(DESTINATION_ROLE).getValue();
 		}
+		else if (name.equals(ENTITY_VISIBILITY)){
+			return getVisibility();
+		}
 		else {
 			return this.getTable().getAttribute(name);
 		}
 
+	}
+	
+	public String getVisibility(){
+		String entityVisibility = this.getTable().getAttribute(ENTITY_VISIBILITY);
+		if (entityVisibility.equals("true")){
+			return entityVisibility;
+		} else {
+			return relationship.getProperties().get(FORCE_SUBENTITY_VISIBILITY).getValue();
+		}
 	}
 }

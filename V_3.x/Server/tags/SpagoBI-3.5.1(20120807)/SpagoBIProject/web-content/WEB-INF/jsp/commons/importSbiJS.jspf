@@ -103,3 +103,7 @@ END-PRODUCTION -->
 Ext.Ajax.timeout = 300000;
 </script>
 -->
+
+ <%-- js custom overrides --%>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/customization/custom.js")%>"></script>
+

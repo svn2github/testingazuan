@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry kind="lib" path="libs/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry kind="lib" path="libs/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
-	<classpathentry kind="lib" path="libs/json.jar"/>
+	<classpathentry kind="lib" path="libs/sbi.utils.json-3.5.1.jar"/>
 	<classpathentry kind="lib" path="libs/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-annotations-2.0.2.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-core-2.0.2.jar"/>

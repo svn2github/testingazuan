@@ -4,7 +4,7 @@ Bundle-Name: it.eng.spagobi.meta.edit
 Bundle-SymbolicName: it.eng.spagobi.meta.edit;singleton:=true
 Bundle-Version: 3.5.0
 Bundle-ClassPath: .,
- libs/json.jar,
+ libs/sbi.utils.json-3.5.1.jar,
  libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  libs/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  libs/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,

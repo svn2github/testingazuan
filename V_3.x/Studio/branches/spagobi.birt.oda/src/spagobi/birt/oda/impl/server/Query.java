@@ -109,9 +109,9 @@ public class Query implements IQuery
 				logger.debug("Setted User Profile Attrs");
 				ds.setResourcePath(resourcePath);		
 				logger.debug("Setted Resource Path: "+resourcePath);
-				ds.setJsFileName(jsFileName);
+				//ds.setJsFileName(jsFileName);
 				logger.debug("Setted Js File Name: "+jsFileName);
-				ds.setGroovyFileName(groovyFileName);
+				//ds.setGroovyFileName(groovyFileName);
 				logger.debug("Setted Groovy File Name: "+groovyFileName);
 				ds.loadData();
 			}catch(Throwable e){

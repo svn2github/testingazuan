@@ -64,7 +64,7 @@ public class ResultSetMetaData implements IResultSetMetaData
 		String name = "undefined";
 		
 		 try {
-			 name = dataStoreMeta.getFieldName(index-1);
+			 name = dataStoreMeta.getFieldMeta(index-1).getAlias();
 		} catch(Throwable t) {
 			throw (OdaException) new OdaException("Impossible to extract column-" + index + "'s name from data store meta").initCause(t);
 		}

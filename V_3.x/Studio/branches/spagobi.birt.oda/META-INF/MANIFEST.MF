@@ -5,7 +5,6 @@ Bundle-SymbolicName: spagobi.birt.oda; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  src,
- lib/spagobi-utils-3.0.jar,
  lib/commons-discovery-0.2.jar,
  lib/saaj.jar,
  lib/wsdl4j-1.5.1.jar,
@@ -21,7 +20,6 @@ Bundle-ClassPath: .,
  lib/jaxrpc.jar,
  lib/axis-1.4.jar,
  lib/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
- lib/spagobi-qbecore-3.0.jar,
  lib/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  lib/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
  lib/logback/org.slf4j.api_1.5.11.v20100519-1910.jar,
@@ -52,7 +50,13 @@ Bundle-ClassPath: .,
  lib/jsr223.jar,
  lib/mail-1.4.jar,
  lib/portlet-api-1.0.jar,
- lib/spago-web-2.2.0.jar
+ lib/spago-web-2.2.0.jar,
+ lib/jackson-annotations-2.0.2.jar,
+ lib/jackson-core-2.0.2.jar,
+ lib/jackson-databind-2.0.2.jar,
+ lib/qbe.core-3.5.1.jar,
+ lib/sbi.utils-3.5.1.jar,
+ lib/sbi.utils.json-3.5.1.jar
 Bundle-Activator: spagobi.birt.oda.Activator
 Bundle-Localization: plugin
 Export-Package: it.eng.spagobi.commons.constants,

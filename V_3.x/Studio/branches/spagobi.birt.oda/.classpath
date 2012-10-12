@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/eclipselink-2.1.2.v20101206-r8635.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-annotations-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-databind-2.0.2.jar"/>

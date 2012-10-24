@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<BUSINESS_MAP>
+	<MAP_ACTIONS>
+	    <MAP_ACTION actionName="MANAGE_META_MODELS_CATALOGUE_ACTION" businessProcess="MetaModelsCatalogueManagement" />
+        <MAP_ACTION actionName="GET_META_MODELS_ACTION" businessProcess="MetaModelsCatalogueManagement" />
+        <MAP_ACTION actionName="SAVE_META_MODEL_ACTION" businessProcess="MetaModelsCatalogueManagement" />
+        <MAP_ACTION actionName="DELETE_META_MODEL_ACTION" businessProcess="MetaModelsCatalogueManagement" />
+		<MAP_ACTION actionName="MANAGE_MONDRIAN_CATALOGUE_ACTION" businessProcess="MondrianCatalogueManagement" />
+		<MAP_ACTION actionName="GET_MONDRIAN_SCHEMAS_ACTION" businessProcess="MondrianCatalogueManagement" />
+	</MAP_ACTIONS>
+</BUSINESS_MAP>

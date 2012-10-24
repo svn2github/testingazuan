@@ -37,6 +37,8 @@ Sbi.locale.ln['sbi.generic.advanced'] = 'Advanced';
 Sbi.locale.ln['sbi.generic.select'] = 'Select';
 Sbi.locale.ln['sbi.generic.confirmRestore'] = 'Restore';
 Sbi.locale.ln['sbi.generic.run'] = 'Run';
+Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
+Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.update2'] = 'Update';
 Sbi.locale.ln['sbi.kpi.trend.title'] = 'Trend for resource ';
 Sbi.locale.ln['sbi.kpi.trend.nodata'] = 'No data found! Select the specific node to view the data trend. ';
@@ -57,6 +59,7 @@ Sbi.locale.ln['sbi.generic.nodetype'] = 'Node Type';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Node Description';
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.generic.validation.missingName'] = 'Name not specified';
 Sbi.locale.ln['sbi.generic.info'] = 'Info';
 Sbi.locale.ln['sbi.generic.error'] = 'Error';
 Sbi.locale.ln['sbi.generic.error.msg'] = 'Operation failed';
@@ -747,3 +750,9 @@ Sbi.locale.ln['ext.date.dateformat.error.title']='Date error'
 Sbi.locale.ln['ext.date.dateformat.error.text']='The entered date is not valid. The system will replace it with a correct date.'
 Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation1']=' '
 Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation2']=' '
+
+Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' catalogue';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Saved versions';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteAll']='Clean all';

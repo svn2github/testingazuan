@@ -60,125 +60,130 @@ public class AuditLogUtilities {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public static void updateAudit(HttpServletRequest request,IEngUserProfile profile, String  action_code, HashMap<String, String> parameters, String esito)
-	throws Exception {
+	public static void updateAudit(HttpServletRequest request,IEngUserProfile profile, String  action_code, HashMap<String, String> parameters, String esito) {
 		logger.debug("IN");
 		
-		StringBuffer strbuf = new StringBuffer();
-		
-		String userName = "";
-		String userRoles = "";
-		if(profile!=null){
-			userName = ((UserProfile)profile).getUserId().toString();
-
-			Collection roles = ((UserProfile)profile).getRolesForUse();
-
-			userRoles = createRolesString(roles);
-		}
-		Date now = new Date();
-		String dateString = now.toString();
-		Format formatter;
-		formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		 try {
-			 Date parsed = new Date();
-			 String customDate = formatter.format(parsed);
-			 strbuf.append("'");
-			 strbuf.append(customDate);
-	        }
-	        catch(ParseException pe) {
-	            System.out.println("ERROR: Cannot parse \"" + dateString + "\"");
-	        }
-	        strbuf.append("';'");
-	        strbuf.append(request.getLocalAddr());  // IP GENERATORE
-	        strbuf.append("';'");
-	        strbuf.append(request.getLocalName()); // HOSTNAME GENERATORE
-	        strbuf.append("';'");
-	        strbuf.append(request.getRemoteAddr()); // IP SORGENTE
-	        strbuf.append("';'");
-	        String IpClient = request.getHeader(CLIENT_IP1_KEY);
-	        String hostNameClient = "";
-	        if (IpClient == null) {
-            	IpClient = request.getHeader(CLIENT_IP2_KEY);
-                if (IpClient == null) {
-                	IpClient = "";
-                }else {
-                	InetAddress hostName= InetAddress.getByAddress(IpClient.getBytes());
-                	hostNameClient=hostName.getHostName();
-                }
-	        }
-            strbuf.append(IpClient); // IP CLIENT
-	        strbuf.append("';'");
-	        strbuf.append(hostNameClient); // HOST NAME CLIENT
-	        strbuf.append("';'';'");  // UTENZA CLIENT  lasciato vuoto
-	        String utenzaApplicativa = request.getHeader(OPERATOR1_KEY);
-            if (utenzaApplicativa == null) {
-            	utenzaApplicativa = request.getHeader(OPERATOR2_KEY);
-                if (utenzaApplicativa == null) {
-                	utenzaApplicativa = userName;			// se l'utenza applicativa ÃƒÂ¨ vuota inserisco lo user id di spagobi
-                }
-            }
-            
-	        strbuf.append(utenzaApplicativa);	// UTENZA APPLICATIVA
-	        strbuf.append("';'");
-	        
-	        String profiloApplicativo = request.getHeader(PROFILE1_KEY);
-            if (profiloApplicativo == null) {
-            	profiloApplicativo = request.getHeader(PROFILE2_KEY);
-                if (profiloApplicativo == null) {
-                	profiloApplicativo = userRoles;			// se il profilo applicativo ÃƒÂ¨ vuoto inserisco i ruoli di spagobi
-                }
-            }	        
-	        strbuf.append(profiloApplicativo);					// PROFILO UTENTE
-	        strbuf.append("';'");
-	        strbuf.append(request.getHeader("user-agent"));		// APPLICATIVO CLIENT
-	        strbuf.append("';'");
-	        if (action_code!=null)  strbuf.append(action_code);	// AZIONE
-	        else strbuf.append("");	
-	        strbuf.append("';'");
-	        strbuf.append(userName);							// OGGETTO
-	        strbuf.append("';'");
-	        strbuf.append(request.getRequestURI());				// URI
-	        strbuf.append("';'");								
-	        													// PARAMETRI
-		if(parameters!=null){
-			Set set = parameters.entrySet(); 
-			Iterator i = set.iterator();
-			int separator = 0;
-			// Display elements
+		try {
 			
-			while(i.hasNext()) {
-				Map.Entry par = (Map.Entry)i.next();
-				if(separator == 0){
-					strbuf.append(par.getKey());
-					strbuf.append("=");
-					if (par.getValue()!=null) strbuf.append(par.getValue().toString());
-				}
-				else{
-					strbuf.append("&");
-					strbuf.append(par.getKey());
-					strbuf.append("=");
-					if (par.getValue()!=null) strbuf.append(par.getValue().toString());
-				}
-				separator++;
+			StringBuffer strbuf = new StringBuffer();
+			
+			String userName = "";
+			String userRoles = "";
+			if(profile!=null){
+				userName = ((UserProfile)profile).getUserId().toString();
+	
+				Collection roles = ((UserProfile)profile).getRolesForUse();
+	
+				userRoles = createRolesString(roles);
 			}
+			Date now = new Date();
+			String dateString = now.toString();
+			Format formatter;
+			formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			 try {
+				 Date parsed = new Date();
+				 String customDate = formatter.format(parsed);
+				 strbuf.append("'");
+				 strbuf.append(customDate);
+		        }
+		        catch(ParseException pe) {
+		            logger.error("ERROR: Cannot parse \"" + dateString + "\"");
+		        }
+		        strbuf.append("';'");
+		        strbuf.append(request.getLocalAddr());  // IP GENERATORE
+		        strbuf.append("';'");
+		        strbuf.append(request.getLocalName()); // HOSTNAME GENERATORE
+		        strbuf.append("';'");
+		        strbuf.append(request.getRemoteAddr()); // IP SORGENTE
+		        strbuf.append("';'");
+		        String IpClient = request.getHeader(CLIENT_IP1_KEY);
+		        String hostNameClient = "";
+		        if (IpClient == null) {
+	            	IpClient = request.getHeader(CLIENT_IP2_KEY);
+	                if (IpClient == null) {
+	                	IpClient = "";
+	                }else {
+	                	InetAddress hostName= InetAddress.getByAddress(IpClient.getBytes());
+	                	hostNameClient=hostName.getHostName();
+	                }
+		        }
+	            strbuf.append(IpClient); // IP CLIENT
+		        strbuf.append("';'");
+		        strbuf.append(hostNameClient); // HOST NAME CLIENT
+		        strbuf.append("';'';'");  // UTENZA CLIENT  lasciato vuoto
+		        String utenzaApplicativa = request.getHeader(OPERATOR1_KEY);
+	            if (utenzaApplicativa == null) {
+	            	utenzaApplicativa = request.getHeader(OPERATOR2_KEY);
+	                if (utenzaApplicativa == null) {
+	                	utenzaApplicativa = userName;			// se l'utenza applicativa ÃƒÂ¨ vuota inserisco lo user id di spagobi
+	                }
+	            }
+	            
+		        strbuf.append(utenzaApplicativa);	// UTENZA APPLICATIVA
+		        strbuf.append("';'");
+		        
+		        String profiloApplicativo = request.getHeader(PROFILE1_KEY);
+	            if (profiloApplicativo == null) {
+	            	profiloApplicativo = request.getHeader(PROFILE2_KEY);
+	                if (profiloApplicativo == null) {
+	                	profiloApplicativo = userRoles;			// se il profilo applicativo ÃƒÂ¨ vuoto inserisco i ruoli di spagobi
+	                }
+	            }	        
+		        strbuf.append(profiloApplicativo);					// PROFILO UTENTE
+		        strbuf.append("';'");
+		        strbuf.append(request.getHeader("user-agent"));		// APPLICATIVO CLIENT
+		        strbuf.append("';'");
+		        if (action_code!=null)  strbuf.append(action_code);	// AZIONE
+		        else strbuf.append("");	
+		        strbuf.append("';'");
+		        strbuf.append(userName);							// OGGETTO
+		        strbuf.append("';'");
+		        strbuf.append(request.getRequestURI());				// URI
+		        strbuf.append("';'");								
+		        													// PARAMETRI
+			if(parameters!=null){
+				Set set = parameters.entrySet(); 
+				Iterator i = set.iterator();
+				int separator = 0;
+				// Display elements
+				
+				while(i.hasNext()) {
+					Map.Entry par = (Map.Entry)i.next();
+					if(separator == 0){
+						strbuf.append(par.getKey());
+						strbuf.append("=");
+						if (par.getValue()!=null) strbuf.append(par.getValue().toString());
+					}
+					else{
+						strbuf.append("&");
+						strbuf.append(par.getKey());
+						strbuf.append("=");
+						if (par.getValue()!=null) strbuf.append(par.getValue().toString());
+					}
+					separator++;
+				}
+				strbuf.append("';'");
+			}
+			strbuf.append(esito);						// ESITO
 			strbuf.append("';'");
-		}
-		strbuf.append(esito);						// ESITO
-		strbuf.append("';'");
-		if(esito.equals("OK")){
-			strbuf.append("0';");					// RET CODE
-		}
-		else{
-			strbuf.append("-1';");
-		}
-		String logString = strbuf.toString();
-
-               
-
-        strbuf.append(calculateHash( strbuf));
+			if(esito.equals("OK")){
+				strbuf.append("0';");					// RET CODE
+			}
+			else{
+				strbuf.append("-1';");
+			}
+			String logString = strbuf.toString();
+	
+	               
+	
+	        strbuf.append(calculateHash( strbuf));
+			
+	
+			audit_logger.info(strbuf);
 		
-
-		audit_logger.info(strbuf);
+		} catch (Throwable t) {
+			logger.error("Error while updating audit", t);
+		}
 	}	
 
 	private static String createRolesString(Collection roles){

@@ -37,6 +37,8 @@ Sbi.locale.ln['sbi.generic.type'] = 'Type';
 Sbi.locale.ln['sbi.generic.label'] = 'Label';
 Sbi.locale.ln['sbi.generic.engine'] = 'Engine';
 Sbi.locale.ln['sbi.generic.state'] = 'State';
+Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
+Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.value'] = 'Value';
 Sbi.locale.ln['sbi.generic.udpValues'] = 'Udp Values';
 
@@ -45,6 +47,7 @@ Sbi.locale.ln['sbi.generic.nodetype'] = 'Node Type';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Node Description';
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Validation Error';
+Sbi.locale.ln['sbi.generic.validation.missingName'] = 'Name not specified';
 Sbi.locale.ln['sbi.generic.info'] = 'Info';
 Sbi.locale.ln['sbi.generic.error'] = 'Error';
 Sbi.locale.ln['sbi.generic.error.msg'] = 'Operation failed';
@@ -649,3 +652,8 @@ Sbi.locale.ln['sbi.config.manageconfig.fields.selectCategory'] = 'Select Categor
 Sbi.locale.ln['sbi.config.manageconfig.fields.searchName'] = 'Enter search Name';
 Sbi.locale.ln['sbi.config.manageconfig.fields.searchLabel'] = 'Enter search Label';
 
+Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' catalogue';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Saved versions';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteAll']='Clean all';

@@ -7,10 +7,15 @@ package it.eng.spagobi.tools.catalogue.dao;
 
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.SpagoBIDOAException;
+import it.eng.spagobi.commons.metadata.SbiBinContents;
+import it.eng.spagobi.tools.catalogue.bo.Content;
+import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModel;
+import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModelContent;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,7 +37,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		Transaction transaction = null;
 		
 		try {
-			if(id == null) {
+			if (id == null) {
 				throw new IllegalArgumentException("Input parameter [id] cannot be null");
 			}
 			
@@ -75,7 +80,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		Transaction transaction = null;
 		
 		try {
-			if(name == null) {
+			if (name == null) {
 				throw new IllegalArgumentException("Input parameter [name] cannot be null");
 			}
 			
@@ -297,7 +302,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 	
-	public MetaModel toModel(SbiMetaModel hibModel) {
+	private MetaModel toModel(SbiMetaModel hibModel) {
 		logger.debug("IN");
 		MetaModel toReturn = null;
 		if (hibModel != null) {
@@ -305,6 +310,312 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			toReturn.setId(hibModel.getId());
 			toReturn.setName(hibModel.getName());
 			toReturn.setDescription(hibModel.getDescription());
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+	public void insertMetaModelContent(Integer modelId, Content content) {
+
+		LogMF.debug(logger, "IN: content = [{0}]", content);
+		
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (content == null) {
+				throw new IllegalArgumentException("Input parameter [content] cannot be null");
+			}
+			if (modelId == null) {
+				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			SbiBinContents hibBinContent = new SbiBinContents();
+			byte[] bytes = content.getContent();
+			hibBinContent.setContent(bytes);
+			updateSbiCommonInfo4Insert(hibBinContent);
+			Integer binId = (Integer) session.save(hibBinContent);
+			// recover the saved binary Hibernate object
+			hibBinContent = (SbiBinContents) session.load(SbiBinContents.class, binId);
+			// set to not active the current active template
+			String hql = " update SbiMetaModelContent mmc set mmc.active = false where mmc.active = true and mmc.model.id = ? ";
+			Query query = session.createQuery(hql);
+			query.setInteger(0, modelId.intValue());
+			logger.debug("Updates the current content of model " + modelId + " with active = false.");
+			query.executeUpdate();
+			// get the next prog for the new content
+			Integer maxProg = null;
+			Integer nextProg = null;
+			hql = " select max(mmc.prog) as maxprog from SbiMetaModelContent mmc where mmc.model.id = ? ";
+			query = session.createQuery(hql);
+			query.setInteger(0, modelId.intValue());
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				maxProg = (Integer) it.next();				
+			}
+			logger.debug("Current max prog : " + maxProg);
+			if (maxProg == null) {
+				nextProg = new Integer(1);
+			} else {
+				nextProg = new Integer(maxProg.intValue() + 1);
+			}
+			logger.debug("Next prog: " + nextProg);
+			
+			// store the model content
+			SbiMetaModelContent hibContent = new SbiMetaModelContent();
+			hibContent.setActive(new Boolean(true));
+			hibContent.setCreationDate(new Date());
+			hibContent.setFileName(content.getFileName());
+			hibContent.setProg(nextProg);
+			hibContent.setContent(hibBinContent);
+			SbiMetaModel sbiModel = (SbiMetaModel) session.load(SbiMetaModel.class, modelId);
+			hibContent.setModel(sbiModel);
+			hibContent.setCreationUser(content.getCreationUser());
+			hibContent.setCreationDate(content.getCreationDate());
+			hibContent.setDimension(content.getDimension());
+			updateSbiCommonInfo4Insert(hibContent);
+			session.save(hibContent);
+			transaction.commit();
+			
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while saving model content [" + content + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		logger.debug("OUT");
+		
+	}
+
+	public void eraseMetaModelContent(Content content) {
+		LogMF.debug(logger, "IN: content = [{0}]", content);
+
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (content == null) {
+				throw new IllegalArgumentException("Input parameter [content] cannot be null");
+			}
+			if (content.getId() == null) {
+				throw new IllegalArgumentException("Input content's id cannot be null");
+			}
+			if (content.getModelId() == null) {
+				throw new IllegalArgumentException("Input content's model id cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, content.getId());
+			if (hibContent == null) {
+				logger.warn("Content [" + hibContent + "] not found");
+			} else {
+				SbiBinContents hibBin = hibContent.getContent();
+				session.delete(hibBin);
+				boolean itWasActive = hibContent.getActive();
+				session.delete(hibContent);
+				if (itWasActive) {
+					Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = " 
+									+ content.getModelId() + " order by prog desc");
+					List<SbiMetaModelContent> list = query.list();
+					if (list != null && !list.isEmpty()) {
+						SbiMetaModelContent first = list.get(0);
+						first.setActive(true);
+						session.save(first);
+					}
+				}
+			}
+			
+			transaction.commit();
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while deleting content [" + content + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		logger.debug("OUT");
+		
+	}
+
+	public Content loadMetaModelContentById(Integer contendId) {
+		LogMF.debug(logger, "IN: id = [{0}]", contendId);
+		
+		Content toReturn = null;
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (contendId == null) {
+				throw new IllegalArgumentException("Input parameter [contendId] cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, contendId);
+			logger.debug("Content loaded");
+			
+			toReturn = toContent(hibContent, true);
+			
+			transaction.rollback();
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while loading content with id [" + contendId + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		LogMF.debug(logger, "OUT: returning [{0}]", toReturn);
+		return toReturn;
+	}
+
+	public Content loadActiveMetaModelContent(Integer modelId) {
+		LogMF.debug(logger, "IN: id = [{0}]", modelId);
+		
+		Content toReturn = null;
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (modelId == null) {
+				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? and mmc.active = true ");
+			query.setInteger(0, modelId);
+			SbiMetaModelContent hibContent = (SbiMetaModelContent) query.uniqueResult();
+			logger.debug("Content loaded");
+			
+			toReturn = toContent(hibContent, true);
+			
+			transaction.rollback();
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while loading active content for model with id [" + modelId + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		LogMF.debug(logger, "OUT: returning [{0}]", toReturn);
+		return toReturn;
+	}
+
+	public List<Content> loadMetaModelVersions(Integer modelId) {
+		LogMF.debug(logger, "IN: id = [{0}]", modelId);
+		
+		List<Content> toReturn = new ArrayList<Content>();
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (modelId == null) {
+				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? ");
+			query.setInteger(0, modelId);
+			List<SbiMetaModelContent> list = (List<SbiMetaModelContent>) query.list();
+			Iterator<SbiMetaModelContent> it = list.iterator();
+			while (it.hasNext()) {
+				toReturn.add(toContent(it.next(), false));
+			}
+			logger.debug("Contents loaded");
+			
+			transaction.rollback();
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while loading active content for model with id [" + modelId + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		LogMF.debug(logger, "OUT: returning [{0}]", toReturn);
+		return toReturn;
+	}
+
+	private Content toContent(SbiMetaModelContent hibContent, boolean loadByteContent) {
+		logger.debug("IN");
+		Content toReturn = null;
+		if (hibContent != null) {
+			toReturn = new Content();
+			toReturn.setId(hibContent.getId());
+			toReturn.setCreationUser(hibContent.getCreationUser());
+			toReturn.setCreationDate(hibContent.getCreationDate());
+			toReturn.setActive(hibContent.getActive());
+			toReturn.setFileName(hibContent.getFileName());
+			toReturn.setDimension(hibContent.getDimension());
+			toReturn.setModelId(hibContent.getModel().getId());
+			if (loadByteContent) {
+				toReturn.setContent(hibContent.getContent().getContent());
+			}
 		}
 		logger.debug("OUT");
 		return toReturn;

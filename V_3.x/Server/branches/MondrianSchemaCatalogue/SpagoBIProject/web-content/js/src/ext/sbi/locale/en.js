@@ -755,4 +755,5 @@ Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' cata
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Saved versions';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteAll']='Clean all';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='File name';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Clean non-active versions';

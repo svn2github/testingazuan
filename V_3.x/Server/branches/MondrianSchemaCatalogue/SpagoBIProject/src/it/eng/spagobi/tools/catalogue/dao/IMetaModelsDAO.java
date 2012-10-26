@@ -6,6 +6,8 @@
 package it.eng.spagobi.tools.catalogue.dao;
 
 import it.eng.spagobi.commons.dao.ISpagoBIDao;
+import it.eng.spagobi.tools.catalogue.bo.Content;
+import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 
 import java.util.List;
 
@@ -23,4 +25,14 @@ public interface IMetaModelsDAO extends ISpagoBIDao {
 	
 	public void eraseMetaModel(MetaModel model);
 
+	public void insertMetaModelContent(Integer modelId, Content content);
+	
+	public void eraseMetaModelContent(Content content);
+	
+	public Content loadMetaModelContentById(Integer contendId);
+	
+	public Content loadActiveMetaModelContent(Integer modelId);
+	
+	public List<Content> loadMetaModelVersions(Integer modelId);
+	
 }

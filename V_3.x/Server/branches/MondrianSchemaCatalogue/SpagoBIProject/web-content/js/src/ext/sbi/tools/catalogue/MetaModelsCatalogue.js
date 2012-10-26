@@ -64,6 +64,7 @@ Sbi.tools.catalogue.MetaModelsCatalogue = function(config) {
 	
 	this.rowselModel.addListener('rowselect',function(sm, row, rec) { 
 		this.getForm().loadRecord(rec);
+		this.versionsGridPanel.getStore().load({ params : { id : rec.get('id') } });
      }, this);
 
 };
@@ -197,17 +198,6 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.ListDetailForm, 
 	         }
 	         , scope : this
 	    });
-		
-//		var values = this.getFormState();
-//		
-//		Ext.Ajax.request({
-//			url : this.services['saveItemService']
-//			, params : values
-//			, method : 'POST'
-//			, success : this.doSaveHandler
-//			, failure : Sbi.exception.ExceptionHandler.handleFailure
-//			, scope : this
-//		});
 		
 	}
 	

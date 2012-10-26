@@ -28,6 +28,13 @@
            scope="REQUEST">
        <CONFIG/>
     </ACTION>
+    
+    <ACTION 
+           name="GET_META_MODEL_VERSIONS_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.GetMetaModelVersionsAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
 
 	<ACTION 
 	       name="MANAGE_MONDRIAN_CATALOGUE_ACTION" 

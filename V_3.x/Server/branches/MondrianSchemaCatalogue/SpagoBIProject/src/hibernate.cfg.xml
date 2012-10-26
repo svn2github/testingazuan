@@ -155,6 +155,7 @@
         
         <!-- tools: Meta-models catalogue -->
         <mapping resource="it/eng/spagobi/tools/catalogue/metadata/mapping/SbiMetaModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/catalogue/metadata/mapping/SbiMetaModelContent.hbm.xml" />
         
         <!-- end mapping -->
         

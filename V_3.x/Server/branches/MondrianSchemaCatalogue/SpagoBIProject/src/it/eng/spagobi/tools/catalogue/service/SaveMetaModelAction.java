@@ -5,20 +5,28 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.catalogue.service;
 
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.SpagoBIServiceExceptionHandler;
+import it.eng.spagobi.tools.catalogue.bo.Content;
+import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 import it.eng.spagobi.tools.catalogue.dao.IMetaModelsDAO;
-import it.eng.spagobi.tools.catalogue.dao.MetaModel;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-import it.eng.spagobi.utilities.service.JSONSuccess;
+import it.eng.spagobi.utilities.service.IServiceResponse;
+import it.eng.spagobi.utilities.service.JSONResponse;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SaveMetaModelAction extends AbstractSpagoBIAction {
@@ -43,6 +51,9 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 			MetaModel model = getMetaModelFromRequest();
 			LogMF.debug(logger, "Model read from request : [{0}]", model);
 			
+			Content content = getContentFromRequest();
+			LogMF.debug(logger, "Content read from request : [{0}]", content);
+			
 			HashMap logParameters = new HashMap<String, String>();
 			logParameters.put("MODEL", model.toString());
 			String logOperation = null;
@@ -62,28 +73,95 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 					dao.modifyMetaModel(model);
 					logger.debug("Model [" + model + "] updated");
 				}
+				
+				if (content != null) {
+					dao.insertMetaModelContent(model.getId(), content);
+					logger.debug("Content [" + content + "] inserted");
+				}
+				
 			} catch (SpagoBIServiceException e) {
 				throw e;
 			} catch (Throwable t) {
 				AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "KO");
 				throw new SpagoBIServiceException(this.getActionName(), "Error while saving meta model", t);
-			}
+			}			
 			
 			AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "OK");
 			
 			try {
-				JSONObject response = new JSONObject();
-				response.put("id", model.getId());
-				writeBackToClient( new JSONSuccess(response) );
+				replayToClient( "id:" + model.getId() , null );
 			} catch (Exception e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the response to the client", e);
 			}
 			
+		} catch (Throwable t) {
+			SpagoBIEngineServiceException e = SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
+			replayToClient( null, e );
 		} finally {
 			logger.debug("OUT");
 		}
 		
 	}
+	
+    /*
+     * see Ext.form.BasicForm for file upload
+     */
+	private void replayToClient(final String msg, final SpagoBIEngineServiceException e) {
+		
+		try {
+			
+			writeBackToClient(  new IServiceResponse() {
+				
+				public boolean isInline() {
+					return false;
+				}
+				
+				public int getStatusCode() {
+					if ( e != null) {
+						return JSONResponse.FAILURE;
+					}
+					return JSONResponse.SUCCESS;
+				}
+				
+				public String getFileName() {
+					return null;
+				}
+				
+				public String getContentType() {
+					return "text/html";
+				}
+				
+				public String getContent() throws IOException {
+					try {
+						JSONObject toReturn = new JSONObject();
+						toReturn.put("success", e == null);
+						toReturn.put("msg", e == null ? msg : e.getMessage());
+						return toReturn.toString();
+					} catch (JSONException jSONException) {
+						logger.error(jSONException);
+						return "{success : false, msg : 'Error serializing response object'}";
+					}
+				}
+			});
+			
+		} catch (IOException ioException) {
+			logger.error("Impossible to write back the responce to the client", ioException);
+		}
+	}
+
+	private void checkUploadedFile(FileItem uploaded) {
+		logger.debug("IN");
+		try {
+			// check if the uploaded file exceeds the maximum dimension
+			int maxSize = GeneralUtilities.getTemplateMaxSize();
+			if (uploaded.getSize() > maxSize) {
+				throw new SpagoBIEngineServiceException(getActionName(), "The uploaded file exceeds the maximum size, that is " + maxSize);
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+
 	
 	private boolean isNew(MetaModel model) {
 		return model.getId() == 0;
@@ -97,13 +175,28 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 		model.setId(id);
 		model.setName(name);
 		model.setDescription(description);
-		
-		FileItem uploaded = (FileItem) getAttribute("UPLOADED_FILE");
-		if (uploaded == null) {
-			throw new SpagoBIEngineServiceException(getActionName(), "No file was uploaded");
-		}
-		
 		return model;
+	}
+	
+	private Content getContentFromRequest() {
+		Content content = null;
+		FileItem uploaded = (FileItem) getAttribute("UPLOADED_FILE");
+		if (uploaded != null && uploaded.getSize() > 0) {
+			checkUploadedFile(uploaded);
+			String fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
+			content = new Content();
+			content.setActive(new Boolean(true));
+			UserProfile userProfile = (UserProfile) this.getUserProfile();
+			content.setCreationUser(userProfile.getUserId().toString());
+			content.setCreationDate(new Date());
+			content.setDimension(Long.toString(uploaded.getSize()/1000)+" KByte");
+			content.setFileName(fileName);
+	        byte[] uplCont = uploaded.get();
+	        content.setContent(uplCont);
+		} else {
+			logger.debug("Uploaded file missing or it is empty");
+		}
+		return content;
 	}
 	
 }

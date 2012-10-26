@@ -54,6 +54,10 @@
 	background-image: url('../../../img/erase.png') !important;
 }
 
+.icon-download {
+    background-image: url('../../../img/download.png') !important;
+}
+
 .icon-info {
     background-image:url('../../../img/info16.png') !important;
 }

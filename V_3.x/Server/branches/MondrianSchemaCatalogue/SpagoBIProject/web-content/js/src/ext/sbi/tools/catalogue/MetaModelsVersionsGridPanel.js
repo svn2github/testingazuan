@@ -49,6 +49,11 @@ Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
 	
 	this.services = this.services || new Array(); 
 	
+	this.services['getVersionsService'] = this.services['getVersionsService'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_META_MODEL_VERSIONS_ACTION'
+		, baseParams: baseParams
+	});
+	
 	this.services['deleteAllMetaModelVersions'] = this.services['deleteAllMetaModelVersions'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'DELETE_ALL_META_MODEL_VERSIONS_ACTION'
 		, baseParams: baseParams
@@ -66,13 +71,16 @@ Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
 
 	this.addEvents('verionrestored', 'verionsdeleted');
 
+	this.init();
+	
 	c = Ext.apply(c, {
-        store 			: this.initStore()
-        , cm 			: this.initCm()
-        , sm 			: this.initSm()
+        store 			: this.store
+        , cm 			: this.cm
+        , sm 			: this.sm
         , frame 		: true
         , autoscroll 	: true
-        , tbar			: this.initTb()
+        , tbar			: this.tb
+        , plugins		: [ this.downloadColumn ]
 	}); 
 
     // constructor
@@ -84,66 +92,93 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
   
 	services : null
 
+	,
+	init : function () {
+		this.initStore();
+		this.initCm();
+		this.initSm();
+		this.initTb();
+	}
+	
   	,
   	initCm : function () {
-  		var cm = new Ext.grid.ColumnModel({
+  		
+        this.downloadColumn = new Ext.grid.ButtonColumn({
+			header 					:  ' '
+			, iconCls 				: 'icon-download'
+			, clickHandler 			: this.downloadHandler
+			, scope 				: this  
+			, width 				: 25
+			, renderer : function(v, p, record) {
+			       return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+			}
+        });
+  		
+  		this.cm = new Ext.grid.ColumnModel({
   			columns : [
 	       		{
 	       		    name			: 'id'
 	       		    , hidden		: true
 	       		},{
 	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.userIn')
-	       	    	, width			: 180
-	       			, id			: 'userIn'
-	       			, sortable		: false
-	       			, dataIndex		: 'userIn' 
+	       	    	, width			: 80
+	       			, id			: 'creationUser'
+	       			, sortable		: true
+	       			, dataIndex		: 'creationUser' 
 	       	    },{
 	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn')
-	       	    	, width			: 130
-	       			, id			: 'dateIn'
+	       	    	, width			: 80
+	       			, id			: 'creationDate'
 	       			, sortable		: true
-	       			, dataIndex		: 'dateIn' 
+	       			, dataIndex		: 'creationDate'
+	       			, renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)
+	       	    },{
+	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.fileName')
+	       	    	, width			: 80
+	       			, id			: 'fileName'
+	       			, sortable		: true
+	       			, dataIndex		: 'fileName' 
 	       	    }
+	       	    , this.downloadColumn
   			]
   		});
-  		return cm;
   	}
   	
   	,
   	initStore : function () {
-       	var store = new Ext.data.JsonStore({
-   		    id : 'id'
-   		    , fields : [
-   		       'id'
-   		       , 'userIn'
-   		       , 'dateIn'
-         	]
-       	});
-       	return store;
+  		
+  	    this.store = new Ext.data.JsonStore({
+  	        root: 'results'
+  	        , id : 'id'
+  	        , fields: ['id', 'creationUser', 'fileName', 'dimension', 'modelId', 'active'
+  	                   	, {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}
+  	                   ]
+  			, url: this.services['getVersionsService']
+  	    });
+  	    
   	}
   	
   	,
   	initSm : function () {
-		var sm = new Ext.grid.RowSelectionModel({
+		this.sm = new Ext.grid.CheckboxSelectionModel({
 	         singleSelect: true
 	    });
-		return sm;
   	}
   	
   	,
   	initTb : function () {
-		var tb = new Ext.Toolbar({
+		this.tb = new Ext.Toolbar({
 			items : [
-			    new Ext.Toolbar.Button({
-					text: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.deleteAll')
+			    '->'
+			    , new Ext.Toolbar.Button({
+					text: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive')
 					, iconCls: 'icon-clear'
-					, handler: this.onDeleteAll
+					, handler: this.onDelete
 					, width: 30
 					, scope: this
 				})
 			]
 		});
-  		return tb;
   	}
 
   	,
@@ -162,20 +197,13 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
     }
     
     ,
-    onDeleteAll: function() {
+    onDelete: function() {
     	alert('to be implemented');
     }
     
     ,
-    getCurrentVersions: function() {
-	    var toReturn = new Array();
-		var length = this.getStore().getCount();
-		for (var i = 0 ; i < length ; i++ ) {
-			var item = this.getStore().getAt(i);
-			var data = item.data;
-			toReturn.push(data);
-		}
-		return toReturn;
+    downloadHandler: function(e, t) {
+    	alert('to be implemented');
     }
 
 });

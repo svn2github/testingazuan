@@ -5,6 +5,7 @@
         <MAP_ACTION actionName="GET_META_MODELS_ACTION" businessProcess="MetaModelsCatalogueManagement" />
         <MAP_ACTION actionName="SAVE_META_MODEL_ACTION" businessProcess="MetaModelsCatalogueManagement" />
         <MAP_ACTION actionName="DELETE_META_MODEL_ACTION" businessProcess="MetaModelsCatalogueManagement" />
+        <MAP_ACTION actionName="GET_META_MODEL_VERSIONS_ACTION" businessProcess="MetaModelsCatalogueManagement" />
 		<MAP_ACTION actionName="MANAGE_MONDRIAN_CATALOGUE_ACTION" businessProcess="MondrianCatalogueManagement" />
 		<MAP_ACTION actionName="GET_MONDRIAN_SCHEMAS_ACTION" businessProcess="MondrianCatalogueManagement" />
 	</MAP_ACTIONS>

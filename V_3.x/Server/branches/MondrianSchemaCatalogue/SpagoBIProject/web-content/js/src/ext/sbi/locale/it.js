@@ -762,4 +762,5 @@ Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Catalogo modelli di bu
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Versioni memorizzate';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creatore';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Data di creazione';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteAll']='Elimina tutti';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='Nome del file';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Elimina versioni non attive';

@@ -37,6 +37,7 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 	public static String ID = "id";
 	public static String NAME = "name";
 	public static String DESCRIPTION = "description";
+	public static String ACTIVE_CONTENT_ID = "active_content_id";
 	
 	@Override
 	public void doService() {
@@ -77,6 +78,12 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 				if (content != null) {
 					dao.insertMetaModelContent(model.getId(), content);
 					logger.debug("Content [" + content + "] inserted");
+				} else {
+					if (this.requestContainsAttribute(ACTIVE_CONTENT_ID)) {
+						Integer activeContentId = this.getAttributeAsInteger(ACTIVE_CONTENT_ID);
+						logger.debug("Active content id [" + activeContentId + "]");
+						dao.setActiveVersion(model.getId(), activeContentId);
+					}
 				}
 				
 			} catch (SpagoBIServiceException e) {
@@ -84,7 +91,7 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 			} catch (Throwable t) {
 				AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "KO");
 				throw new SpagoBIServiceException(this.getActionName(), "Error while saving meta model", t);
-			}			
+			}
 			
 			AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "OK");
 			

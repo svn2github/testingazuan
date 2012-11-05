@@ -54,22 +54,15 @@ Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
 		, baseParams: baseParams
 	});
 	
-	this.services['deleteAllMetaModelVersions'] = this.services['deleteAllMetaModelVersions'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DELETE_ALL_META_MODEL_VERSIONS_ACTION'
+	this.services['deleteMetaModelVersions'] = this.services['deleteMetaModelVersions'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'DELETE_META_MODEL_VERSIONS_ACTION'
 		, baseParams: baseParams
 	});
 	
-	this.services['deleteMetaModelVersion'] = this.services['deleteMetaModelVersion'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DELETE_META_MODEL_VERSION_ACTION'
+	this.services['downloadVersionService'] = this.services['downloadVersionService'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'DOWNLOAD_META_MODEL_VERSION_ACTION'
 		, baseParams: baseParams
 	});
-	
-	this.services['restoreDsVersionService'] = this.services['restoreDsVersionService'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'RESTORE_META_MODEL_VERSION_ACTION'
-		, baseParams: baseParams
-	});
-
-	this.addEvents('verionrestored', 'verionsdeleted');
 
 	this.init();
 	
@@ -80,26 +73,49 @@ Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
         , frame 		: true
         , autoscroll 	: true
         , tbar			: this.tb
+        , view			: this.gridView
         , plugins		: [ this.downloadColumn ]
 	}); 
 
     // constructor
     Sbi.tools.catalogue.MetaModelsVersionsGridPanel.superclass.constructor.call(this, c);
+    
+    this.on('rowdblclick', this.rowDbClickHanlder, this);
 
 };
 
 Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, {
   
 	services : null
+	, downloadColumn : null
+	, cm : null
+	, store: null
+	, sm : null
+	, tb : null
 
 	,
 	init : function () {
 		this.initStore();
-		this.initCm();
 		this.initSm();
+		this.initCm();
 		this.initTb();
+		this.initGridView();
 	}
 	
+	,
+	initGridView : function () {
+		this.gridView = new Ext.grid.GridView({
+			getRowClass : function(row, index) {
+				var cls = '';
+				var data = row.data;
+				if (data.active == true) {
+					cls = 'green-row'
+				}
+				return cls;
+			}
+		});
+	}
+
   	,
   	initCm : function () {
   		
@@ -113,6 +129,10 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 			       return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
 			}
         });
+        
+        if (this.sm == null) {
+        	this.initSm();
+        }
   		
   		this.cm = new Ext.grid.ColumnModel({
   			columns : [
@@ -140,6 +160,7 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 	       			, dataIndex		: 'fileName' 
 	       	    }
 	       	    , this.downloadColumn
+	       	    , this.sm
   			]
   		});
   	}
@@ -161,7 +182,8 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
   	,
   	initSm : function () {
 		this.sm = new Ext.grid.CheckboxSelectionModel({
-	         singleSelect: true
+	        singleSelect		: false
+	        , checkOnly			: true
 	    });
   	}
   	
@@ -170,41 +192,111 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 		this.tb = new Ext.Toolbar({
 			items : [
 			    '->'
-			    , new Ext.Toolbar.Button({
+			    /*, new Ext.Toolbar.Button({
 					text: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive')
 					, iconCls: 'icon-clear'
 					, handler: this.onDelete
 					, width: 30
 					, scope: this
+				})*/
+			    , new Ext.Toolbar.Button({
+					text: LN('sbi.generic.delete')
+					, iconCls: 'icon-remove'
+					, handler: this.deleteHandler
+					, width: 30
+					, scope: this
 				})
+
 			]
 		});
   	}
-
-  	,
-  	loadItems: function (versions) {
-		this.getStore().loadData(versions);
-	}
-
-    ,
-    onRestore: function () {
-    	alert('to be implemented');
-    }
-    
-    ,
-    onDelete: function() {   	
-    	alert('to be implemented');
-    }
-    
-    ,
-    onDelete: function() {
-    	alert('to be implemented');
-    }
     
     ,
     downloadHandler: function(e, t) {
-    	alert('to be implemented');
+    	var baseUrl = this.grid.services['downloadVersionService'];
+        var index = this.grid.getView().findRowIndex(t);
+        var selectedRecord = this.grid.store.getAt(index);
+        var versionId = selectedRecord.get('id');
+    	window.location.href = baseUrl + '&id=' + versionId;
+    }
+    
+	,
+	deleteHandler: function() {
+		var recordsSelected = this.getSelectionModel().getSelections();
+		if (recordsSelected && recordsSelected.length > 0) {
+			Ext.MessageBox.confirm(
+				LN('sbi.generic.pleaseConfirm')
+				, LN('sbi.generic.confirmDelete')
+				, function (btn, text) {
+					if ( btn == 'yes' ) {
+						this.doDelete(recordsSelected);
+					}
+				}
+				, this
+			);
+		} else {
+			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.generic.noItemsSelected'), 'Warning');
+		}
+	}
+	
+	, doDelete : function(recordsSelected) {
+		var ids = new Array();
+		for (var count = 0; count < recordsSelected.length; count++) {
+			var aRecord = recordsSelected[count];
+			ids[count] = aRecord.get('id');
+		}
+		var idsJoined = ids.join(',');
+			
+		Ext.Ajax.request({
+	        url: this.services['deleteMetaModelVersions'],
+	        params: { 'id' : idsJoined },
+	        success : function(response, options) {
+	      		if (response && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if (content !== undefined && content.result == 'OK') {
+		  	  			// removes the subobjects from the store
+		  	  			for (var count = 0; count < recordsSelected.length; count++) {
+		  	  				this.store.remove(recordsSelected[count]);
+		  	  			}
+	      			} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting meta model versions', 'Service Error');
+		      		}
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting meta model versions', 'Service Error');
+	      		}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+	}	
+    
+    ,
+    getSelectedVersionId: function() {
+    	var selectedRecord = this.getSelectionModel().getSelected();
+    	return selectedRecord.get('id');
+    }
+    
+    ,
+    rowDbClickHanlder : function ( theGrid, rowIndex, e ) {
+    	e.stopEvent();
+    	
+    	var currentActiveRecord = this.getCurrentActiveRecord();
+    	currentActiveRecord.set('active', false);
+    	
+        var record = this.store.getAt(rowIndex);
+        record.set('active', true);
+        
+        this.getView().refresh();
+    }
+    
+    ,
+    getCurrentActiveRecord : function () {
+    	var currentActiveRecordIndex = this.store.find('active', 'true');
+    	if (currentActiveRecordIndex == -1) {
+    		return null;
+    	}
+    	var currentActiveRecord = this.store.getAt(currentActiveRecordIndex);
+    	return currentActiveRecord;
     }
 
 });
-

@@ -101,6 +101,7 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.ListDetailForm, 
 		var idField = {
 			name				: 'id'
 			, hidden			: true
+			, value				: 0
 		};
 		
 		var nameField = {
@@ -123,14 +124,6 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.ListDetailForm, 
 			inputType				: 'file'
 			, fieldLabel			: LN('sbi.generic.upload')
 			, allowBlank			: true
-		});
-		
-		var downloadButton = new Ext.Toolbar.Button({
-			text					: LN('sbi.generic.download')
-			, handler				: function () {
-				alert('not implemented yet');
-			}
-			, scope: this
 		});
 		
 		this.versionsGridPanel = new Sbi.tools.catalogue.MetaModelsVersionsGridPanel( {} );
@@ -158,7 +151,6 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.ListDetailForm, 
 				}
 				, this.versionsGridPanel 
 			]
-			, buttons: [ downloadButton ]
 		});
 		
 	}
@@ -171,14 +163,21 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.ListDetailForm, 
 	,
 	doSave : function () {
 		
+		var params = {
+			ACTION_NAME : 'SAVE_META_MODEL_ACTION'
+			, LIGHT_NAVIGATOR_DISABLED : 'TRUE'
+		};
+		
+		var activeVersionRecord = this.versionsGridPanel.getCurrentActiveRecord();
+		if (activeVersionRecord != null) {
+			params['active_content_id'] = activeVersionRecord.get('id');
+		}
+		
         var form = this.getForm();
 	    form.submit({
 	         url : Sbi.config.serviceRegistry.getBaseUrlStr({})  // a multipart form cannot contain parameters on its main URL;
 	         												     // they must POST parameters
-	         , params : {
-                 	ACTION_NAME : 'SAVE_META_MODEL_ACTION'
-                 	, LIGHT_NAVIGATOR_DISABLED : 'TRUE'
-             }
+	         , params : params
 	         , waitMsg : 'Saving ...'
 	         , success : function(form, action) {
 		 			Ext.Msg.show({

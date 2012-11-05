@@ -35,6 +35,20 @@
            scope="REQUEST">
        <CONFIG/>
     </ACTION>
+    
+    <ACTION 
+           name="DELETE_META_MODEL_VERSIONS_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.DeleteMetaModelVersionsAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+    
+    <ACTION 
+           name="DOWNLOAD_META_MODEL_VERSION_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.DownloadMetaModelVersionAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
 
 	<ACTION 
 	       name="MANAGE_MONDRIAN_CATALOGUE_ACTION" 

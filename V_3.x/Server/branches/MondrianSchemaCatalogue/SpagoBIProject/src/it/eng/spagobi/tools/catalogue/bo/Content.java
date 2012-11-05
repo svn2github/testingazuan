@@ -25,6 +25,12 @@ public class Content {
 	
 	private String creationUser = null;
 
+	public Content() {}
+	
+	public Content(Integer id) {
+		this.id = id;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

@@ -49,9 +49,9 @@
         <many-to-one name="model" class="it.eng.spagobi.tools.catalogue.metadata.SbiMetaModel">
             <column name="model_id" />
         </many-to-one>
-        <many-to-one name="content" class="it.eng.spagobi.commons.metadata.SbiBinContents">
-            <column name="bin_id" />
-        </many-to-one>
+        <property name="content" type="binary">
+            <column name="CONTENT" sql-type="longvarbinary"/>
+        </property>
         <property name="fileName" type="string">
             <column name="name" />
         </property>

@@ -39,6 +39,7 @@ Sbi.locale.ln['sbi.generic.engine'] = 'Engine';
 Sbi.locale.ln['sbi.generic.state'] = 'State';
 Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
+Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'No items selected';
 Sbi.locale.ln['sbi.generic.value'] = 'Value';
 Sbi.locale.ln['sbi.generic.udpValues'] = 'Udp Values';
 
@@ -658,3 +659,4 @@ Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='File name';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Clean non-active versions';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.isactive'] = 'Active';

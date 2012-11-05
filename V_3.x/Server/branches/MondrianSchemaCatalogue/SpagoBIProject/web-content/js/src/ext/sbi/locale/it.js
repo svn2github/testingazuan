@@ -42,6 +42,7 @@ Sbi.locale.ln['sbi.generic.run'] = 'Esegui';
 Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.update2'] = 'Aggiorna';
+Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'Non \u00e8 stato selezionato alcun elemento';
 Sbi.locale.ln['sbi.kpi.trend.title'] = 'Andamento valori del Kpi ';
 Sbi.locale.ln['sbi.kpi.trend.nodata'] = 'Dati non trovati! Selezionare un nodo specifico per visualizzare lo storico. ';
 //Fields

@@ -23,16 +23,18 @@ public interface IMetaModelsDAO extends ISpagoBIDao {
 	
 	public void insertMetaModel(MetaModel model);
 	
-	public void eraseMetaModel(MetaModel model);
+	public void eraseMetaModel(Integer modelId);
 
 	public void insertMetaModelContent(Integer modelId, Content content);
 	
-	public void eraseMetaModelContent(Content content);
+	public void eraseMetaModelContent(Integer contendId);
 	
 	public Content loadMetaModelContentById(Integer contendId);
 	
 	public Content loadActiveMetaModelContent(Integer modelId);
 	
 	public List<Content> loadMetaModelVersions(Integer modelId);
+	
+	public void setActiveVersion(Integer modelId, Integer contendId);
 	
 }

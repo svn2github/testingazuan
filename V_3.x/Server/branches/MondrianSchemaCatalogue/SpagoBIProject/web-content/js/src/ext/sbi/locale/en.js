@@ -40,6 +40,7 @@ Sbi.locale.ln['sbi.generic.run'] = 'Run';
 Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.update2'] = 'Update';
+Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'No items selected';
 Sbi.locale.ln['sbi.kpi.trend.title'] = 'Trend for resource ';
 Sbi.locale.ln['sbi.kpi.trend.nodata'] = 'No data found! Select the specific node to view the data trend. ';
 
@@ -757,3 +758,4 @@ Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='File name';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Clean non-active versions';
+Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.isactive'] = 'Active';

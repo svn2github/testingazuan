@@ -50,7 +50,7 @@ public class DeleteMetaModelAction extends AbstractSpagoBIAction {
 				String logOperation = "META_MODEL_CATALOGUE.DELETE";
 				
 				try {
-					dao.eraseMetaModel(model);
+					dao.eraseMetaModel(id);
 					logger.debug("Model [" + model + "] deleted");
 				} catch (Throwable t) {
 					AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "KO");

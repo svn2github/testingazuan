@@ -5,7 +5,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.catalogue.metadata;
 
-import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiHibernateModel;
 
 import java.util.Date;
@@ -19,7 +18,7 @@ public class SbiMetaModelContent extends SbiHibernateModel {
 	
 	private SbiMetaModel model;
 	
-	private SbiBinContents content;
+	private byte[] content;
 	
 	private String fileName;
 	
@@ -49,11 +48,11 @@ public class SbiMetaModelContent extends SbiHibernateModel {
 		this.model = model;
 	}
 
-	public SbiBinContents getContent() {
+	public byte[] getContent() {
 		return content;
 	}
 
-	public void setContent(SbiBinContents content) {
+	public void setContent(byte[] content) {
 		this.content = content;
 	}
 

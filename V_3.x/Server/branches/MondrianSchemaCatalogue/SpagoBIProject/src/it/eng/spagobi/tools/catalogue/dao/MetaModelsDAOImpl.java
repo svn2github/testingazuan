@@ -7,7 +7,6 @@ package it.eng.spagobi.tools.catalogue.dao;
 
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.SpagoBIDOAException;
-import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModel;
@@ -255,17 +254,14 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public void eraseMetaModel(MetaModel model) {
-		LogMF.debug(logger, "IN: model = [{0}]", model);
+	public void eraseMetaModel(Integer modelId) {
+		LogMF.debug(logger, "IN: model = [{0}]", modelId);
 
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (model == null) {
-				throw new IllegalArgumentException("Input parameter [model] cannot be null");
-			}
-			if (model.getId() == null) {
+			if (modelId == null) {
 				throw new IllegalArgumentException("Input model's id cannot be null");
 			}
 			
@@ -278,9 +274,9 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModel hibModel = (SbiMetaModel) session.load(SbiMetaModel.class, model.getId());
+			SbiMetaModel hibModel = (SbiMetaModel) session.load(SbiMetaModel.class, modelId);
 			if (hibModel == null) {
-				logger.warn("Model [" + model + "] not found");
+				logger.warn("Model with id [" + modelId + "] not found");
 			} else {
 				session.delete(hibModel);
 			}
@@ -291,7 +287,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while deleting model [" + model + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while deleting model with id [" + modelId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -339,13 +335,6 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiBinContents hibBinContent = new SbiBinContents();
-			byte[] bytes = content.getContent();
-			hibBinContent.setContent(bytes);
-			updateSbiCommonInfo4Insert(hibBinContent);
-			Integer binId = (Integer) session.save(hibBinContent);
-			// recover the saved binary Hibernate object
-			hibBinContent = (SbiBinContents) session.load(SbiBinContents.class, binId);
 			// set to not active the current active template
 			String hql = " update SbiMetaModelContent mmc set mmc.active = false where mmc.active = true and mmc.model.id = ? ";
 			Query query = session.createQuery(hql);
@@ -377,7 +366,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			hibContent.setCreationDate(new Date());
 			hibContent.setFileName(content.getFileName());
 			hibContent.setProg(nextProg);
-			hibContent.setContent(hibBinContent);
+			hibContent.setContent(content.getContent());
 			SbiMetaModel sbiModel = (SbiMetaModel) session.load(SbiMetaModel.class, modelId);
 			hibContent.setModel(sbiModel);
 			hibContent.setCreationUser(content.getCreationUser());
@@ -403,21 +392,15 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public void eraseMetaModelContent(Content content) {
-		LogMF.debug(logger, "IN: content = [{0}]", content);
+	public void eraseMetaModelContent(Integer contentId) {
+		LogMF.debug(logger, "IN: content = [{0}]", contentId);
 
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (content == null) {
-				throw new IllegalArgumentException("Input parameter [content] cannot be null");
-			}
-			if (content.getId() == null) {
+			if (contentId == null) {
 				throw new IllegalArgumentException("Input content's id cannot be null");
-			}
-			if (content.getModelId() == null) {
-				throw new IllegalArgumentException("Input content's model id cannot be null");
 			}
 			
 			try {
@@ -429,17 +412,16 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, content.getId());
+			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, contentId);
 			if (hibContent == null) {
 				logger.warn("Content [" + hibContent + "] not found");
 			} else {
-				SbiBinContents hibBin = hibContent.getContent();
-				session.delete(hibBin);
+				Integer modelId = hibContent.getModel().getId();
 				boolean itWasActive = hibContent.getActive();
 				session.delete(hibContent);
 				if (itWasActive) {
 					Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = " 
-									+ content.getModelId() + " order by prog desc");
+									+ modelId + " order by prog desc");
 					List<SbiMetaModelContent> list = query.list();
 					if (list != null && !list.isEmpty()) {
 						SbiMetaModelContent first = list.get(0);
@@ -455,7 +437,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while deleting content [" + content + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while deleting content with id [" + contentId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -575,7 +557,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? ");
+			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? order by mmc.prog desc");
 			query.setInteger(0, modelId);
 			List<SbiMetaModelContent> list = (List<SbiMetaModelContent>) query.list();
 			Iterator<SbiMetaModelContent> it = list.iterator();
@@ -614,11 +596,68 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			toReturn.setDimension(hibContent.getDimension());
 			toReturn.setModelId(hibContent.getModel().getId());
 			if (loadByteContent) {
-				toReturn.setContent(hibContent.getContent().getContent());
+				toReturn.setContent(hibContent.getContent());
 			}
 		}
 		logger.debug("OUT");
 		return toReturn;
+	}
+
+	public void setActiveVersion(Integer modelId, Integer contentId) {
+		LogMF.debug(logger, "IN: modelId = [{0}], contentId = [{1}]", modelId, contentId);
+		
+		Session session = null;
+		Transaction transaction = null;
+		
+		try {
+			if (modelId == null) {
+				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			}
+			if (contentId == null) {
+				throw new IllegalArgumentException("Input parameter [contentId] cannot be null");
+			}
+			
+			try {
+				session = getSession();
+				Assert.assertNotNull(session, "session cannot be null");
+				transaction = session.beginTransaction();
+				Assert.assertNotNull(transaction, "transaction cannot be null");
+			} catch(Throwable t) {
+				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
+			}
+			
+			// set to not active the current active template
+			String hql = " update SbiMetaModelContent mmc set mmc.active = false where mmc.active = true and mmc.model.id = ? ";
+			Query query = session.createQuery(hql);
+			query.setInteger(0, modelId.intValue());
+			logger.debug("Updates the current content of model " + modelId + " with active = false.");
+			query.executeUpdate();
+			
+			// set to active the new active template
+			hql = " update SbiMetaModelContent mmc set mmc.active = true where mmc.id = ? and mmc.model.id = ? ";
+			query = session.createQuery(hql);
+			query.setInteger(0, contentId);
+			query.setInteger(1, modelId.intValue());
+			logger.debug("Updates the current content " + contentId + " of model " + modelId + " with active = true.");
+			query.executeUpdate();
+			
+			transaction.commit();
+			
+		} catch (Throwable t) {
+			logException(t);
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+			throw new SpagoBIDOAException("An unexpected error occured while saving active content [" + contentId 
+					+ "] for model [" + modelId + "]", t);	
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+		
+		logger.debug("OUT");
+		
 	}
 
 }

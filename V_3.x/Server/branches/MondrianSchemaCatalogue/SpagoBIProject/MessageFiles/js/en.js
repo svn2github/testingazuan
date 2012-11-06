@@ -654,6 +654,7 @@ Sbi.locale.ln['sbi.config.manageconfig.fields.searchName'] = 'Enter search Name'
 Sbi.locale.ln['sbi.config.manageconfig.fields.searchLabel'] = 'Enter search Label';
 
 Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' catalogue';
+Sbi.locale.ln['sbi.tools.catalogue.mondrianSchemasCatalogue']='Mondrian schemas\' catalogue';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Saved versions';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';

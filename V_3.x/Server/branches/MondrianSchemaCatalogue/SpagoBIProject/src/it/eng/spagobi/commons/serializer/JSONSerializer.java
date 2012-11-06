@@ -38,6 +38,7 @@ import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.profiling.bean.SbiAttribute;
 import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.profiling.bo.UserBO;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
@@ -119,6 +120,7 @@ public class JSONSerializer implements Serializer {
 		mappings.put( Goal.class, new GoalJSONSerializer());
 		mappings.put( SbiKpiComments.class, new SbiKpiCommentSerializer());
 		mappings.put( MetaModel.class, new MetaModelJSONSerializer());
+		mappings.put( Artifact.class, new ArtifactJSONSerializer());
 		mappings.put( Content.class, new ContentJSONSerializer());
 	}
 

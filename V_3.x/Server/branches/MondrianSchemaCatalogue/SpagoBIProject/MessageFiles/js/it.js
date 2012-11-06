@@ -655,6 +655,7 @@ Sbi.locale.ln['sbi.config.manageconfig.fields.searchLabel'] = 'Cerca Etichetta';
 
 
 Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Catalogo modelli di business';
+Sbi.locale.ln['sbi.tools.catalogue.mondrianSchemasCatalogue']='Catalogo schemi Mondrian';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Versioni memorizzate';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creatore';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Data di creazione';

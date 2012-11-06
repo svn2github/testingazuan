@@ -753,9 +753,10 @@ Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecut
 Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation2']=' '
 
 Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' catalogue';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.title']='Saved versions';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.userIn']='Creator';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Creation date';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='File name';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Clean non-active versions';
-Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.isactive'] = 'Active';
+Sbi.locale.ln['sbi.tools.catalogue.mondrianSchemasCatalogue']='Mondrian schemas\' catalogue';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.title']='Saved versions';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.userIn']='Creator';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.dateIn']='Creation date';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.fileName']='File name';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.deleteNonActive']='Clean non-active versions';
+Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.isactive'] = 'Active';

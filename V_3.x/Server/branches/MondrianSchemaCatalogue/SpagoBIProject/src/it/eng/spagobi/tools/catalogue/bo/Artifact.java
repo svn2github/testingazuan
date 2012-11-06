@@ -5,13 +5,15 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.catalogue.bo;
 
-public class MetaModel {
+public class Artifact {
 
 	private Integer id;
 
 	private String name;
 
 	private String description;
+	
+	private String type;
 	
 	public Integer getId() {
 		return id;
@@ -37,10 +39,19 @@ public class MetaModel {
 		this.description = description;
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	@Override
 	public String toString() {
-		return "MetaModel [id=" + id + ", name=" + name + ", description="
-				+ description + "]";
+		return "Artifact [id=" + id + ", name=" + name + ", description="
+				+ description + ", type="
+						+ type + "]";
 	}
 	
 }

@@ -49,17 +49,52 @@
            scope="REQUEST">
        <CONFIG/>
     </ACTION>
-
-	<ACTION 
-	       name="MANAGE_MONDRIAN_CATALOGUE_ACTION" 
-	       class="it.eng.spagobi.tools.catalogue.service.ManageMondrianCatalogueAction" 
-	       scope="REQUEST">
-	   <CONFIG/>
-	</ACTION>
+    
+    <ACTION 
+           name="MANAGE_ARTIFACTS_CATALOGUE_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.ManageArtifactsCatalogueAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
 
     <ACTION 
-           name="GET_MONDRIAN_SCHEMAS_ACTION" 
-           class="it.eng.spagobi.tools.catalogue.service.GetMondrianSchemasAction" 
+           name="GET_ARTIFACTS_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.GetArtifactsAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+
+    <ACTION 
+           name="SAVE_ARTIFACT_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.SaveArtifactAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+    
+    <ACTION 
+           name="DELETE_ARTIFACT_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.DeleteArtifactAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+    
+    <ACTION 
+           name="GET_ARTIFACT_VERSIONS_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.GetArtifactVersionsAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+    
+    <ACTION 
+           name="DELETE_ARTIFACT_VERSIONS_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.DeleteArtifactVersionsAction" 
+           scope="REQUEST">
+       <CONFIG/>
+    </ACTION>
+    
+    <ACTION 
+           name="DOWNLOAD_ARTIFACT_VERSION_ACTION" 
+           class="it.eng.spagobi.tools.catalogue.service.DownloadArtifactVersionAction" 
            scope="REQUEST">
        <CONFIG/>
     </ACTION>

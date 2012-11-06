@@ -5,39 +5,33 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.commons.serializer;
 
-import it.eng.spagobi.tools.catalogue.bo.Content;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
 
 import java.util.Locale;
 
 import org.json.JSONObject;
 
-public class ContentJSONSerializer implements Serializer {
+public class ArtifactJSONSerializer implements Serializer {
 	
 	public static final String ID = "id";
-	public static final String CREATION_USER = "creationUser";
-	public static final String CREATION_DATE = "creationDate";
-	public static final String ACTIVE = "active";
-	public static final String FILE_NAME = "fileName";
-	public static final String DIMENSION = "dimension";
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
+	public static final String TYPE = "type";
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
-		if( !(o instanceof Content) ) {
-			throw new SerializationException("ContentJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
+		if( !(o instanceof Artifact) ) {
+			throw new SerializationException("ArtifactJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
 		}
 		
 		try {
-			Content content = (Content) o;
+			Artifact artifact = (Artifact) o;
 			result = new JSONObject();
-			
-			result.put(ID, content.getId());
-			result.put(CREATION_USER, content.getCreationUser());
-			result.put(CREATION_DATE, content.getCreationDate());
-			result.put(ACTIVE, content.getActive());
-			result.put(FILE_NAME, content.getFileName());
-			result.put(DIMENSION, content.getDimension());
-
+			result.put(ID, artifact.getId() );
+			result.put(NAME, artifact.getName() );
+			result.put(DESCRIPTION, artifact.getDescription() );
+			result.put(TYPE, artifact.getType() );
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

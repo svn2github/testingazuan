@@ -26,44 +26,25 @@
  * 
  * Authors - Davide Zerbetto (davide.zerbetto@eng.it)
  */
-Ext.ns("Sbi.tools.catalogue");
+Ext.ns("Sbi.widgets");
 
-Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
+Sbi.widgets.CatalogueVersionsGridPanel = function(config) {
 
-	var baseParams = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
-	
 	var defaultSettings = {
-		title: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.title')
+		title: LN('sbi.widgets.catalogueversionsgridpanel.title')
 		, width : 370
         , height : 200
         , layout : 'fit'
 	};
 
-	if (Sbi.settings && Sbi.settings.tools && Sbi.settings.tools.catalogue && Sbi.settings.tools.catalogue.metamodelsversionsgridpanel) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.tools.catalogue.metamodelsversionsgridpanel);
+	if (Sbi.settings && Sbi.settings.widgets && Sbi.settings.widgets.catalogueversionsgridpanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.widgets.catalogueversionsgridpanel);
 	}
 
 	var c = Ext.apply(defaultSettings, config || {});
 	
 	Ext.apply(this, c);
 	
-	this.services = this.services || new Array(); 
-	
-	this.services['getVersionsService'] = this.services['getVersionsService'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_META_MODEL_VERSIONS_ACTION'
-		, baseParams: baseParams
-	});
-	
-	this.services['deleteMetaModelVersions'] = this.services['deleteMetaModelVersions'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DELETE_META_MODEL_VERSIONS_ACTION'
-		, baseParams: baseParams
-	});
-	
-	this.services['downloadVersionService'] = this.services['downloadVersionService'] || Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'DOWNLOAD_META_MODEL_VERSION_ACTION'
-		, baseParams: baseParams
-	});
-
 	this.init();
 	
 	c = Ext.apply(c, {
@@ -78,13 +59,13 @@ Sbi.tools.catalogue.MetaModelsVersionsGridPanel = function(config) {
 	}); 
 
     // constructor
-    Sbi.tools.catalogue.MetaModelsVersionsGridPanel.superclass.constructor.call(this, c);
+    Sbi.widgets.CatalogueVersionsGridPanel.superclass.constructor.call(this, c);
     
     this.on('rowdblclick', this.rowDbClickHanlder, this);
 
 };
 
-Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, {
+Ext.extend(Sbi.widgets.CatalogueVersionsGridPanel, Ext.grid.GridPanel, {
   
 	services : null
 	, downloadColumn : null
@@ -140,20 +121,20 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 	       		    name			: 'id'
 	       		    , hidden		: true
 	       		},{
-	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.userIn')
+	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.userIn')
 	       	    	, width			: 80
 	       			, id			: 'creationUser'
 	       			, sortable		: true
 	       			, dataIndex		: 'creationUser' 
 	       	    },{
-	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn')
+	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.dateIn')
 	       	    	, width			: 80
 	       			, id			: 'creationDate'
 	       			, sortable		: true
 	       			, dataIndex		: 'creationDate'
 	       			, renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)
 	       	    },{
-	       	    	header			: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.fileName')
+	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.fileName')
 	       	    	, width			: 80
 	       			, id			: 'fileName'
 	       			, sortable		: true
@@ -171,7 +152,7 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
   	    this.store = new Ext.data.JsonStore({
   	        root: 'results'
   	        , id : 'id'
-  	        , fields: ['id', 'creationUser', 'fileName', 'dimension', 'modelId', 'active'
+  	        , fields: ['id', 'creationUser', 'fileName', 'dimension', 'active'
   	                   	, {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}
   	                   ]
   			, url: this.services['getVersionsService']
@@ -193,7 +174,7 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 			items : [
 			    '->'
 			    /*, new Ext.Toolbar.Button({
-					text: LN('sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive')
+					text: LN('sbi.widgets.catalogueversionsgridpanel.deleteNonActive')
 					, iconCls: 'icon-clear'
 					, handler: this.onDelete
 					, width: 30
@@ -248,7 +229,7 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 		var idsJoined = ids.join(',');
 			
 		Ext.Ajax.request({
-	        url: this.services['deleteMetaModelVersions'],
+	        url: this.services['deleteVersionsService'],
 	        params: { 'id' : idsJoined },
 	        success : function(response, options) {
 	      		if (response && response.responseText !== undefined) {
@@ -259,10 +240,10 @@ Ext.extend(Sbi.tools.catalogue.MetaModelsVersionsGridPanel, Ext.grid.GridPanel, 
 		  	  				this.store.remove(recordsSelected[count]);
 		  	  			}
 	      			} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting meta model versions', 'Service Error');
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting item versions', 'Service Error');
 		      		}
 	      		} else {
-	      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting meta model versions', 'Service Error');
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting item versions', 'Service Error');
 	      		}
 	        },
 	        scope: this,

@@ -9,8 +9,9 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.serializer.SerializationException;
 import it.eng.spagobi.commons.serializer.SerializerFactory;
 import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
-import it.eng.spagobi.tools.catalogue.bo.MetaModel;
-import it.eng.spagobi.tools.catalogue.dao.IMetaModelsDAO;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
+import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
@@ -22,15 +23,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GetMetaModelsAction extends AbstractSpagoBIAction {
+public class GetArtifactsAction extends AbstractSpagoBIAction {
 
 	// logger component
-	public static Logger logger = Logger.getLogger(GetMetaModelsAction.class);
+	public static Logger logger = Logger.getLogger(GetArtifactsAction.class);
 
 	public static String START = "start";
 	public static String LIMIT = "limit";
 	public static Integer START_DEFAULT = 0;
 	public static Integer LIMIT_DEFAULT = 15;
+	public static String TYPE = "type";
 	
 	@Override
 	public void doService() {
@@ -38,24 +40,29 @@ public class GetMetaModelsAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 		
 		try {
-			IMetaModelsDAO dao = DAOFactory.getMetaModelsDAO();
+			
+			String type = this.getAttributeAsString(TYPE);
+			logger.debug("Type: " + type );
+			Assert.assertNotNull(type, "Input type parameter cannot be null");
+			
+			IArtifactsDAO dao = DAOFactory.getArtifactsDAO();
 			dao.setUserProfile(this.getUserProfile());
-			List<MetaModel> allModels = dao.loadAllMetaModels();
-			logger.debug("Read " + allModels.size() + " existing models");
+			List<Artifact> allArtifacts = dao.loadAllArtifacts(type);
+			logger.debug("Read " + allArtifacts.size() + " existing artifacts of type [" + type + "]");
 			
 			Integer start = this.getStart();
 			logger.debug("Start : " + start );
 			Integer limit = this.getLimit();
 			logger.debug("Limit : " + limit );
 			
-			int startIndex = Math.min(start, allModels.size());
-			int stopIndex = Math.min(start + limit, allModels.size());
-			List<MetaModel> models = allModels.subList(startIndex, stopIndex);
+			int startIndex = Math.min(start, allArtifacts.size());
+			int stopIndex = Math.min(start + limit, allArtifacts.size());
+			List<Artifact> artifacts = allArtifacts.subList(startIndex, stopIndex);
 
 			try {
-				JSONArray modelsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(models, null);
+				JSONArray artifactsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize(artifacts, null);
 				JSONObject rolesResponseJSON = createJSONResponse(
-						modelsJSON, allModels.size());
+						artifactsJSON, allArtifacts.size());
 				writeBackToClient(new JSONSuccess(rolesResponseJSON));
 			} catch (IOException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME,
@@ -96,7 +103,7 @@ public class GetMetaModelsAction extends AbstractSpagoBIAction {
 		JSONObject results;
 		results = new JSONObject();
 		results.put("total", totalResNumber);
-		results.put("title", "MetaModels");
+		results.put("title", "Artifacts");
 		results.put("rows", rows);
 		return results;
 	}

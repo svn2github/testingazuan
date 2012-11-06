@@ -36,8 +36,8 @@
                 url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_META_MODELS_CATALOGUE_ACTION"
                 iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/metamodels16.png" />
         <ITEM   title="#menu.MondrianCatalogue"
-                functionality="MondrianCatalogueManagement"
-                url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_MONDRIAN_CATALOGUE_ACTION"
+                functionality="ArtifactCatalogueManagement"
+                url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=MANAGE_ARTIFACTS_CATALOGUE_ACTION&amp;type=MONDRIAN_SCHEMA"
                 iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/cube16.png" />
 	</ITEM>
 	

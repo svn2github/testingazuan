@@ -8,8 +8,8 @@ package it.eng.spagobi.tools.catalogue.service;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
-import it.eng.spagobi.tools.catalogue.bo.MetaModel;
-import it.eng.spagobi.tools.catalogue.dao.IMetaModelsDAO;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
+import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
@@ -18,10 +18,10 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
-public class DeleteMetaModelAction extends AbstractSpagoBIAction {
+public class DeleteArtifactAction extends AbstractSpagoBIAction {
 
 	// logger component
-	public static Logger logger = Logger.getLogger(DeleteMetaModelAction.class);
+	public static Logger logger = Logger.getLogger(DeleteArtifactAction.class);
 
 	public static String ID = "id";
 	
@@ -32,29 +32,29 @@ public class DeleteMetaModelAction extends AbstractSpagoBIAction {
 		
 		try {
 		
-			IMetaModelsDAO dao = DAOFactory.getMetaModelsDAO();
+			IArtifactsDAO dao = DAOFactory.getArtifactsDAO();
 			dao.setUserProfile(this.getUserProfile());
 			
 			Integer id = this.getAttributeAsInteger( ID );
 			logger.debug("Id = " + id);
 			Assert.assertNotNull(id, "Input id parameter cannot be null");
 			
-			MetaModel model = dao.loadMetaModelById(id);
+			Artifact artifact = dao.loadArtifactById(id);
 			
-			if (model == null) {
-				logger.warn("Meta model with id " + id + " not found...");
+			if (artifact == null) {
+				logger.warn("Artifact with id " + id + " not found...");
 			} else {
 				
 				HashMap logParameters = new HashMap<String, String>();
-				logParameters.put("MODEL", model.toString());
-				String logOperation = "META_MODEL_CATALOGUE.DELETE";
+				logParameters.put("ARTIFACT", artifact.toString());
+				String logOperation = "ARTIFACT_CATALOGUE.DELETE";
 				
 				try {
-					dao.eraseMetaModel(id);
-					logger.debug("Model [" + model + "] deleted");
+					dao.eraseArtifact(id);
+					logger.debug("Artifact [" + artifact + "] deleted");
 				} catch (Throwable t) {
 					AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "KO");
-					throw new SpagoBIServiceException(SERVICE_NAME, "Error while erasing meta model [" + model + "]", t);
+					throw new SpagoBIServiceException(SERVICE_NAME, "Error while erasing artifact [" + artifact + "]", t);
 				}
 				
 				AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "OK");

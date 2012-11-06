@@ -28,37 +28,40 @@
  */
 Ext.ns("Sbi.tools.catalogue");
 
-Sbi.tools.catalogue.MetaModelsCatalogue = function(config) {
+Sbi.tools.catalogue.MondrianSchemasCatalogue = function(config) {
 	
 	var defaultSettings = {
 		configurationObject : {
-			panelTitle : LN('sbi.tools.catalogue.metaModelsCatalogue')
-			, listTitle : LN('sbi.tools.catalogue.metaModelsCatalogue')
+			panelTitle : LN('sbi.tools.catalogue.mondrianSchemasCatalogue')
+			, listTitle : LN('sbi.tools.catalogue.mondrianSchemasCatalogue')
 		}
 	};
 	  
-	if (Sbi.settings && Sbi.settings.tools && Sbi.settings.tools.catalogue && Sbi.settings.tools.catalogue.metamodelscatalogue) {
-		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.tools.catalogue.metamodelscatalogue);
+	if (Sbi.settings && Sbi.settings.tools && Sbi.settings.tools.catalogue && Sbi.settings.tools.catalogue.mondrianschemascatalogue) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.tools.catalogue.mondrianschemascatalogue);
 	}
 	
 	var c = Ext.apply(defaultSettings, config || {});
 	  
 	Ext.apply(this, c);
 	
-	var baseParams = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
+	var baseParams = {
+		LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+		, type : 'MONDRIAN_SCHEMA'
+	};
 	
 	// start services for main catalog list
 	c.mainListServices = {
 		'manageListService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'GET_META_MODELS_ACTION'
+			serviceName: 'GET_ARTIFACTS_ACTION'
 				, baseParams: baseParams
 		})
 		, 'saveItemService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'SAVE_META_MODEL_ACTION'
+			serviceName: 'SAVE_ARTIFACT_ACTION'
 				, baseParams: baseParams
 		})
 		, 'deleteItemService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DELETE_META_MODEL_ACTION'
+			serviceName: 'DELETE_ARTIFACT_ACTION'
 				, baseParams: baseParams
 		})
 	};
@@ -67,24 +70,24 @@ Sbi.tools.catalogue.MetaModelsCatalogue = function(config) {
 	// start services for item versions list
 	c.singleItemServices = {
 		'getVersionsService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'GET_META_MODEL_VERSIONS_ACTION'
+			serviceName: 'GET_ARTIFACT_VERSIONS_ACTION'
 			, baseParams: baseParams
 		})
 		, 'deleteVersionsService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DELETE_META_MODEL_VERSIONS_ACTION'
+			serviceName: 'DELETE_ARTIFACT_VERSIONS_ACTION'
 			, baseParams: baseParams
 		})
 		, 'downloadVersionService' : Sbi.config.serviceRegistry.getServiceUrl({
-			serviceName: 'DOWNLOAD_META_MODEL_VERSION_ACTION'
+			serviceName: 'DOWNLOAD_ARTIFACT_VERSION_ACTION'
 			, baseParams: baseParams
 		})
 	};
 	// end services for item versions list
 
-	Sbi.tools.catalogue.MetaModelsCatalogue.superclass.constructor.call(this, c);
+	Sbi.tools.catalogue.MondrianSchemasCatalogue.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.tools.catalogue.MetaModelsCatalogue, Sbi.widgets.Catalogue, {
+Ext.extend(Sbi.tools.catalogue.MondrianSchemasCatalogue, Sbi.widgets.Catalogue, {
 	
 });

@@ -7,10 +7,10 @@ package it.eng.spagobi.tools.catalogue.dao;
 
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.SpagoBIDOAException;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
 import it.eng.spagobi.tools.catalogue.bo.Content;
-import it.eng.spagobi.tools.catalogue.bo.MetaModel;
-import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModel;
-import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModelContent;
+import it.eng.spagobi.tools.catalogue.metadata.SbiArtifact;
+import it.eng.spagobi.tools.catalogue.metadata.SbiArtifactContent;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
@@ -24,14 +24,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaModelsDAO {
+public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifactsDAO {
 
-	static private Logger logger = Logger.getLogger(MetaModelsDAOImpl.class);
+	static private Logger logger = Logger.getLogger(ArtifactsDAOImpl.class);
 
-	public MetaModel loadMetaModelById(Integer id) {
+	public Artifact loadArtifactById(Integer id) {
 		LogMF.debug(logger, "IN: id = [{0}]", id);
 		
-		MetaModel toReturn = null;
+		Artifact toReturn = null;
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -49,10 +49,10 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModel hibModel = (SbiMetaModel) session.load(SbiMetaModel.class, id);
-			logger.debug("Model loaded");
+			SbiArtifact hibArtifact = (SbiArtifact) session.load(SbiArtifact.class, id);
+			logger.debug("Artifact loaded");
 			
-			toReturn = toModel(hibModel);
+			toReturn = toArtifact(hibArtifact);
 			
 			transaction.rollback();
 		} catch (Throwable t) {
@@ -60,7 +60,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while loading model with id [" + id + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while loading artifact with id [" + id + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -71,10 +71,10 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public MetaModel loadMetaModelByName(String name) {
-		LogMF.debug(logger, "IN: name = [{0}]", name);
+	public Artifact loadArtifactByNameAndType(String name, String type) {
+		LogMF.debug(logger, "IN: name = [{0}], type = [{1}]", name, type);
 		
-		MetaModel toReturn = null;
+		Artifact toReturn = null;
 		Session session = null;
 		Transaction transaction = null;
 		
@@ -82,6 +82,9 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (name == null) {
 				throw new IllegalArgumentException("Input parameter [name] cannot be null");
 			}
+			if (type == null) {
+				throw new IllegalArgumentException("Input parameter [type] cannot be null");
+			}
 			
 			try {
 				session = getSession();
@@ -92,12 +95,13 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			Query query = session.createQuery(" from SbiMetaModel m where m.name = ?");
+			Query query = session.createQuery(" from SbiArtifact m where m.name = ? and m.type = ?");
 			query.setString(0, name);
-			SbiMetaModel hibModel = (SbiMetaModel) query.uniqueResult();
-			logger.debug("Model loaded");
+			query.setString(1, type);
+			SbiArtifact hibArtifact = (SbiArtifact) query.uniqueResult();
+			logger.debug("Artifact loaded");
 			
-			toReturn = toModel(hibModel);
+			toReturn = toArtifact(hibArtifact);
 			
 			transaction.rollback();
 		} catch (Throwable t) {
@@ -105,7 +109,9 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while loading model with name [" + name + "]", t);	
+			throw new SpagoBIDOAException(
+					"An unexpected error occured while loading artifact with name ["
+							+ name + "] and type [" + type + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -116,14 +122,18 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public List<MetaModel> loadAllMetaModels() {
-		logger.debug("IN");
+	public List<Artifact> loadAllArtifacts(String type) {
+		LogMF.debug(logger, "IN: type = [{0}]", type);
 		
-		List<MetaModel> toReturn = new ArrayList<MetaModel>();
+		List<Artifact> toReturn = new ArrayList<Artifact>();
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
+			
+			if (type == null) {
+				throw new IllegalArgumentException("Input parameter [type] cannot be null");
+			}
 			
 			try {
 				session = getSession();
@@ -134,13 +144,14 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			Query query = session.createQuery(" from SbiMetaModel");
+			Query query = session.createQuery(" from SbiArtifact a where a.type = ?");
+			query.setString(0, type);
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {
-				toReturn.add(toModel((SbiMetaModel) it.next()));
+				toReturn.add(toArtifact((SbiArtifact) it.next()));
 			}
-			logger.debug("Models loaded");
+			logger.debug("Artifacts loaded");
 			
 			transaction.rollback();
 		} catch (Throwable t) {
@@ -148,7 +159,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while loading models' list", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while loading artifacts' list", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -159,18 +170,18 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public void modifyMetaModel(MetaModel model) {
-		LogMF.debug(logger, "IN: model = [{0}]", model);
+	public void modifyArtifact(Artifact artifact) {
+		LogMF.debug(logger, "IN: artifact = [{0}]", artifact);
 		
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (model == null) {
-				throw new IllegalArgumentException("Input parameter [model] cannot be null");
+			if (artifact == null) {
+				throw new IllegalArgumentException("Input parameter [artifact] cannot be null");
 			}
-			if (model.getId() == null) {
-				throw new IllegalArgumentException("Input model's id cannot be null");
+			if (artifact.getId() == null) {
+				throw new IllegalArgumentException("Input artifact's id cannot be null");
 			}
 			
 			try {
@@ -182,13 +193,14 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModel hibModel = (SbiMetaModel) session.load(SbiMetaModel.class, model.getId());
-			logger.debug("Model loaded");
-			hibModel.setName(model.getName());
-			hibModel.setDescription(model.getDescription());
+			SbiArtifact hibArtifact = (SbiArtifact) session.load(SbiArtifact.class, artifact.getId());
+			logger.debug("Artifact loaded");
+			hibArtifact.setName(artifact.getName());
+			hibArtifact.setDescription(artifact.getDescription());
+			hibArtifact.setType(artifact.getType());
 			
-			updateSbiCommonInfo4Update(hibModel);
-			session.save(hibModel);
+			updateSbiCommonInfo4Update(hibArtifact);
+			session.save(hibArtifact);
 			
 			transaction.commit();
 		} catch (Throwable t) {
@@ -196,7 +208,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while saving model [" + model + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while saving artifact [" + artifact + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -207,15 +219,15 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public void insertMetaModel(MetaModel model) {
-		LogMF.debug(logger, "IN: model = [{0}]", model);
+	public void insertArtifact(Artifact artifact) {
+		LogMF.debug(logger, "IN: artifact = [{0}]", artifact);
 		
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (model == null) {
-				throw new IllegalArgumentException("Input parameter [model] cannot be null");
+			if (artifact == null) {
+				throw new IllegalArgumentException("Input parameter [artifact] cannot be null");
 			}
 			
 			try {
@@ -227,23 +239,24 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModel hibModel =  new SbiMetaModel();
-			hibModel.setName(model.getName());
-			hibModel.setDescription(model.getDescription());
+			SbiArtifact hibArtifact =  new SbiArtifact();
+			hibArtifact.setName(artifact.getName());
+			hibArtifact.setDescription(artifact.getDescription());
+			hibArtifact.setType(artifact.getType());
 			
-			updateSbiCommonInfo4Insert(hibModel);
-			session.save(hibModel);
+			updateSbiCommonInfo4Insert(hibArtifact);
+			session.save(hibArtifact);
 			
 			transaction.commit();
 			
-			model.setId(hibModel.getId());
+			artifact.setId(hibArtifact.getId());
 			
 		} catch (Throwable t) {
 			logException(t);
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while saving model [" + model + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while saving artifact [" + artifact + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -254,15 +267,15 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public void eraseMetaModel(Integer modelId) {
-		LogMF.debug(logger, "IN: model = [{0}]", modelId);
+	public void eraseArtifact(Integer artifactId) {
+		LogMF.debug(logger, "IN: artifact = [{0}]", artifactId);
 
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (modelId == null) {
-				throw new IllegalArgumentException("Input model's id cannot be null");
+			if (artifactId == null) {
+				throw new IllegalArgumentException("Input artifact's id cannot be null");
 			}
 			
 			try {
@@ -274,11 +287,11 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModel hibModel = (SbiMetaModel) session.load(SbiMetaModel.class, modelId);
-			if (hibModel == null) {
-				logger.warn("Model with id [" + modelId + "] not found");
+			SbiArtifact hibArtifact = (SbiArtifact) session.load(SbiArtifact.class, artifactId);
+			if (hibArtifact == null) {
+				logger.warn("Artifact with id [" + artifactId + "] not found");
 			} else {
-				session.delete(hibModel);
+				session.delete(hibArtifact);
 			}
 			
 			transaction.commit();
@@ -287,7 +300,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while deleting model with id [" + modelId + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while deleting artifact with id [" + artifactId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -298,20 +311,21 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 	
-	private MetaModel toModel(SbiMetaModel hibModel) {
+	private Artifact toArtifact(SbiArtifact hibArtifact) {
 		logger.debug("IN");
-		MetaModel toReturn = null;
-		if (hibModel != null) {
-			toReturn = new MetaModel();
-			toReturn.setId(hibModel.getId());
-			toReturn.setName(hibModel.getName());
-			toReturn.setDescription(hibModel.getDescription());
+		Artifact toReturn = null;
+		if (hibArtifact != null) {
+			toReturn = new Artifact();
+			toReturn.setId(hibArtifact.getId());
+			toReturn.setName(hibArtifact.getName());
+			toReturn.setDescription(hibArtifact.getDescription());
+			toReturn.setType(hibArtifact.getType());
 		}
 		logger.debug("OUT");
 		return toReturn;
 	}
 
-	public void insertMetaModelContent(Integer modelId, Content content) {
+	public void insertArtifactContent(Integer artifactId, Content content) {
 
 		LogMF.debug(logger, "IN: content = [{0}]", content);
 		
@@ -322,8 +336,8 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (content == null) {
 				throw new IllegalArgumentException("Input parameter [content] cannot be null");
 			}
-			if (modelId == null) {
-				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			if (artifactId == null) {
+				throw new IllegalArgumentException("Input parameter [artifactId] cannot be null");
 			}
 			
 			try {
@@ -336,17 +350,17 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			}
 			
 			// set to not active the current active template
-			String hql = " update SbiMetaModelContent mmc set mmc.active = false where mmc.active = true and mmc.model.id = ? ";
+			String hql = " update SbiArtifactContent mmc set mmc.active = false where mmc.active = true and mmc.artifact.id = ? ";
 			Query query = session.createQuery(hql);
-			query.setInteger(0, modelId.intValue());
-			logger.debug("Updates the current content of model " + modelId + " with active = false.");
+			query.setInteger(0, artifactId.intValue());
+			logger.debug("Updates the current content of artifact " + artifactId + " with active = false.");
 			query.executeUpdate();
 			// get the next prog for the new content
 			Integer maxProg = null;
 			Integer nextProg = null;
-			hql = " select max(mmc.prog) as maxprog from SbiMetaModelContent mmc where mmc.model.id = ? ";
+			hql = " select max(mmc.prog) as maxprog from SbiArtifactContent mmc where mmc.artifact.id = ? ";
 			query = session.createQuery(hql);
-			query.setInteger(0, modelId.intValue());
+			query.setInteger(0, artifactId.intValue());
 			List result = query.list();
 			Iterator it = result.iterator();
 			while (it.hasNext()){
@@ -360,15 +374,15 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			}
 			logger.debug("Next prog: " + nextProg);
 			
-			// store the model content
-			SbiMetaModelContent hibContent = new SbiMetaModelContent();
+			// store the artifact content
+			SbiArtifactContent hibContent = new SbiArtifactContent();
 			hibContent.setActive(new Boolean(true));
 			hibContent.setCreationDate(new Date());
 			hibContent.setFileName(content.getFileName());
 			hibContent.setProg(nextProg);
 			hibContent.setContent(content.getContent());
-			SbiMetaModel sbiModel = (SbiMetaModel) session.load(SbiMetaModel.class, modelId);
-			hibContent.setModel(sbiModel);
+			SbiArtifact sbiArtifact = (SbiArtifact) session.load(SbiArtifact.class, artifactId);
+			hibContent.setArtifact(sbiArtifact);
 			hibContent.setCreationUser(content.getCreationUser());
 			hibContent.setCreationDate(content.getCreationDate());
 			hibContent.setDimension(content.getDimension());
@@ -381,7 +395,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while saving model content [" + content + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while saving artifact content [" + content + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -392,7 +406,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public void eraseMetaModelContent(Integer contentId) {
+	public void eraseArtifactContent(Integer contentId) {
 		LogMF.debug(logger, "IN: content = [{0}]", contentId);
 
 		Session session = null;
@@ -412,19 +426,19 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, contentId);
+			SbiArtifactContent hibContent = (SbiArtifactContent) session.load(SbiArtifactContent.class, contentId);
 			if (hibContent == null) {
 				logger.warn("Content [" + hibContent + "] not found");
 			} else {
-				Integer modelId = hibContent.getModel().getId();
+				Integer artifactId = hibContent.getArtifact().getId();
 				boolean itWasActive = hibContent.getActive();
 				session.delete(hibContent);
 				if (itWasActive) {
-					Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = " 
-									+ modelId + " order by prog desc");
-					List<SbiMetaModelContent> list = query.list();
+					Query query = session.createQuery(" from SbiArtifactContent mmc where mmc.artifact.id = " 
+									+ artifactId + " order by prog desc");
+					List<SbiArtifactContent> list = query.list();
 					if (list != null && !list.isEmpty()) {
-						SbiMetaModelContent first = list.get(0);
+						SbiArtifactContent first = list.get(0);
 						first.setActive(true);
 						session.save(first);
 					}
@@ -448,7 +462,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		
 	}
 
-	public Content loadMetaModelContentById(Integer contendId) {
+	public Content loadArtifactContentById(Integer contendId) {
 		LogMF.debug(logger, "IN: id = [{0}]", contendId);
 		
 		Content toReturn = null;
@@ -469,7 +483,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			SbiMetaModelContent hibContent = (SbiMetaModelContent) session.load(SbiMetaModelContent.class, contendId);
+			SbiArtifactContent hibContent = (SbiArtifactContent) session.load(SbiArtifactContent.class, contendId);
 			logger.debug("Content loaded");
 			
 			toReturn = toContent(hibContent, true);
@@ -491,16 +505,16 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public Content loadActiveMetaModelContent(Integer modelId) {
-		LogMF.debug(logger, "IN: id = [{0}]", modelId);
+	public Content loadActiveArtifactContent(Integer artifactId) {
+		LogMF.debug(logger, "IN: id = [{0}]", artifactId);
 		
 		Content toReturn = null;
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (modelId == null) {
-				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			if (artifactId == null) {
+				throw new IllegalArgumentException("Input parameter [artifactId] cannot be null");
 			}
 			
 			try {
@@ -512,9 +526,9 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? and mmc.active = true ");
-			query.setInteger(0, modelId);
-			SbiMetaModelContent hibContent = (SbiMetaModelContent) query.uniqueResult();
+			Query query = session.createQuery(" from SbiArtifactContent mmc where mmc.artifact.id = ? and mmc.active = true ");
+			query.setInteger(0, artifactId);
+			SbiArtifactContent hibContent = (SbiArtifactContent) query.uniqueResult();
 			logger.debug("Content loaded");
 			
 			toReturn = toContent(hibContent, true);
@@ -525,7 +539,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while loading active content for model with id [" + modelId + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while loading active content for artifact with id [" + artifactId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -536,16 +550,16 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public List<Content> loadMetaModelVersions(Integer modelId) {
-		LogMF.debug(logger, "IN: id = [{0}]", modelId);
+	public List<Content> loadArtifactVersions(Integer artifactId) {
+		LogMF.debug(logger, "IN: id = [{0}]", artifactId);
 		
 		List<Content> toReturn = new ArrayList<Content>();
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (modelId == null) {
-				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			if (artifactId == null) {
+				throw new IllegalArgumentException("Input parameter [artifactId] cannot be null");
 			}
 			
 			try {
@@ -557,10 +571,10 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				throw new SpagoBIDOAException("An error occured while creating the new transaction", t);
 			}
 			
-			Query query = session.createQuery(" from SbiMetaModelContent mmc where mmc.model.id = ? order by mmc.prog desc");
-			query.setInteger(0, modelId);
-			List<SbiMetaModelContent> list = (List<SbiMetaModelContent>) query.list();
-			Iterator<SbiMetaModelContent> it = list.iterator();
+			Query query = session.createQuery(" from SbiArtifactContent mmc where mmc.artifact.id = ? order by mmc.prog desc");
+			query.setInteger(0, artifactId);
+			List<SbiArtifactContent> list = (List<SbiArtifactContent>) query.list();
+			Iterator<SbiArtifactContent> it = list.iterator();
 			while (it.hasNext()) {
 				toReturn.add(toContent(it.next(), false));
 			}
@@ -572,7 +586,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			if (transaction != null && transaction.isActive()) {
 				transaction.rollback();
 			}
-			throw new SpagoBIDOAException("An unexpected error occured while loading active content for model with id [" + modelId + "]", t);	
+			throw new SpagoBIDOAException("An unexpected error occured while loading active content for artifact with id [" + artifactId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
@@ -583,7 +597,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	private Content toContent(SbiMetaModelContent hibContent, boolean loadByteContent) {
+	private Content toContent(SbiArtifactContent hibContent, boolean loadByteContent) {
 		logger.debug("IN");
 		Content toReturn = null;
 		if (hibContent != null) {
@@ -602,15 +616,15 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 		return toReturn;
 	}
 
-	public void setActiveVersion(Integer modelId, Integer contentId) {
-		LogMF.debug(logger, "IN: modelId = [{0}], contentId = [{1}]", modelId, contentId);
+	public void setActiveVersion(Integer artifactId, Integer contentId) {
+		LogMF.debug(logger, "IN: artifactId = [{0}], contentId = [{1}]", artifactId, contentId);
 		
 		Session session = null;
 		Transaction transaction = null;
 		
 		try {
-			if (modelId == null) {
-				throw new IllegalArgumentException("Input parameter [modelId] cannot be null");
+			if (artifactId == null) {
+				throw new IllegalArgumentException("Input parameter [artifactId] cannot be null");
 			}
 			if (contentId == null) {
 				throw new IllegalArgumentException("Input parameter [contentId] cannot be null");
@@ -626,18 +640,18 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 			}
 			
 			// set to not active the current active template
-			String hql = " update SbiMetaModelContent mmc set mmc.active = false where mmc.active = true and mmc.model.id = ? ";
+			String hql = " update SbiArtifactContent mmc set mmc.active = false where mmc.active = true and mmc.artifact.id = ? ";
 			Query query = session.createQuery(hql);
-			query.setInteger(0, modelId.intValue());
-			logger.debug("Updates the current content of model " + modelId + " with active = false.");
+			query.setInteger(0, artifactId.intValue());
+			logger.debug("Updates the current content of artifact " + artifactId + " with active = false.");
 			query.executeUpdate();
 			
 			// set to active the new active template
-			hql = " update SbiMetaModelContent mmc set mmc.active = true where mmc.id = ? and mmc.model.id = ? ";
+			hql = " update SbiArtifactContent mmc set mmc.active = true where mmc.id = ? and mmc.artifact.id = ? ";
 			query = session.createQuery(hql);
 			query.setInteger(0, contentId);
-			query.setInteger(1, modelId.intValue());
-			logger.debug("Updates the current content " + contentId + " of model " + modelId + " with active = true.");
+			query.setInteger(1, artifactId.intValue());
+			logger.debug("Updates the current content " + contentId + " of artifact " + artifactId + " with active = true.");
 			query.executeUpdate();
 			
 			transaction.commit();
@@ -648,7 +662,7 @@ public class MetaModelsDAOImpl extends AbstractHibernateDAO implements IMetaMode
 				transaction.rollback();
 			}
 			throw new SpagoBIDOAException("An unexpected error occured while saving active content [" + contentId 
-					+ "] for model [" + modelId + "]", t);	
+					+ "] for artifact [" + artifactId + "]", t);	
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();

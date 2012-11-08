@@ -54,6 +54,7 @@ Sbi.widgets.Catalogue = function(config) {
 	this.rowselModel.addListener('rowselect',function(sm, row, rec) { 
 		this.getForm().loadRecord(rec);
 		this.versionsGridPanel.getStore().load({ params : { id : rec.get('id') } });
+		this.uploadField.reset();
      }, this);
 
 };
@@ -62,6 +63,7 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 	
 	configurationObject : null
 	, detailPanel : null
+	, uploadField : null
 
 	,
 	init : function(config) {
@@ -106,7 +108,7 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 				, name				: 'description'
 		};
 		
-		var uploadField = new Ext.form.TextField({
+		this.uploadField = new Ext.form.TextField({
 			inputType				: 'file'
 			, fieldLabel			: LN('sbi.generic.upload')
 			, allowBlank			: true
@@ -139,12 +141,19 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 							"margin-left" 	: "20px" 
 							, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
 				}
-				, items: [ idField , nameField , descrField , uploadField ]
+				, items: [ idField , nameField , descrField , this.uploadField ]
 				}
 				, this.versionsGridPanel 
 			]
 		});
 		
+	}
+	
+	,
+	addNewItem : function() {
+		Sbi.widgets.Catalogue.superclass.addNewItem.call(this);
+		this.versionsGridPanel.getStore().removeAll();
+		this.uploadField.reset();
 	}
 	
 	,
@@ -172,25 +181,29 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 	         url : baseUrl  // a multipart form cannot contain parameters on its main URL; they must POST parameters
 	         , params : params
 	         , waitMsg : 'Saving ...'
-	         , success : function(form, action) {
-		 			Ext.Msg.show({
-					   title: 'saved'
-					   , msg: 'saved'
-					   , buttons: Ext.Msg.OK
-					   , icon: Ext.MessageBox.INFO
-					});
-	         }
+	         , success : this.onSaveSuccess
 	         , failure : function (form, action) {
-					Ext.Msg.show({
-					   title: 'Error'
-					   , msg: action.result.msg
-					   , buttons: Ext.Msg.OK
-					   , icon: Ext.MessageBox.ERROR
-					});
+	        	 Sbi.exception.ExceptionHandler.showErrorMessage(action.result.msg, 'Service Error');
 	         }
 	         , scope : this
 	    });
-		
+	}
+	
+	,
+	onSaveSuccess : function (form, action) {
+		var success = action.result.success;
+		if (success == true) {
+			Ext.Msg.show({
+				   title: 'saved'
+				   , msg: 'saved'
+				   , buttons: Ext.Msg.OK
+				   , icon: Ext.MessageBox.INFO
+			});
+			this.commitChangesInList(action.result.msg);
+			this.uploadField.reset();
+		} else {
+			Sbi.exception.ExceptionHandler.showErrorMessage(action.result.msg, 'Service Error');
+		}
 	}
 	
 	,
@@ -212,15 +225,6 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 			toReturn.push(LN('sbi.generic.validation.missingName'));
 		}
 		return toReturn;
-	}
-	
-	,
-	doSaveHandler : function(response, options) {
-		if (response !== undefined && response.responseText !== undefined ) {
-			this.commitChangesInList(response.responseText);
-		} else {
-  			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-  		}
 	}
 	
 	,

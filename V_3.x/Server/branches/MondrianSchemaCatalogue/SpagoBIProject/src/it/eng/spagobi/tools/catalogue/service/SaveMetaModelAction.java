@@ -96,7 +96,9 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 			AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "OK");
 			
 			try {
-				replayToClient( "id:" + model.getId() , null );
+				JSONObject result = new JSONObject();
+				result.put("id", model.getId());
+				replayToClient( result.toString() , null );
 			} catch (Exception e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the response to the client", e);
 			}

@@ -119,7 +119,11 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 				'getVersionsService' 		: config.singleItemServices.getVersionsService
 				, 'deleteVersionsService' 	: config.singleItemServices.deleteVersionsService
 				, 'downloadVersionService' 	: config.singleItemServices.downloadVersionService
-			} 
+			}
+			, style			: {
+				"margin-left" 	: "20px" 
+				, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
+			}
 		});
 		
 		//END list of detail fields

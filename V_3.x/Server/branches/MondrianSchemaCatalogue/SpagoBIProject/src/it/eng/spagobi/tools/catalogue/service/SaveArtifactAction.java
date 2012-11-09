@@ -72,7 +72,7 @@ public class SaveArtifactAction extends AbstractSpagoBIAction {
 					logger.debug("Artifact [" + artifact + "] inserted");
 				} else {
 					Artifact existing = dao.loadArtifactByNameAndType(artifact.getName(), artifact.getType());
-					if (!existing.getId().equals(artifact.getId())) {
+					if (existing != null && !existing.getId().equals(artifact.getId())) {
 						logger.debug("An artifact with the same name and type already exists");
 						throw new SpagoBIServiceException(SERVICE_NAME, "An artifact with the same name already exists");
 					}
@@ -96,7 +96,7 @@ public class SaveArtifactAction extends AbstractSpagoBIAction {
 				throw e;
 			} catch (Throwable t) {
 				AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "KO");
-				throw new SpagoBIServiceException(this.getActionName(), "Error while saving meta artifact", t);
+				throw new SpagoBIServiceException(this.getActionName(), "Error while saving artifact", t);
 			}
 			
 			AuditLogUtilities.updateAudit(getHttpRequest(), this.getUserProfile(), logOperation, logParameters , "OK");

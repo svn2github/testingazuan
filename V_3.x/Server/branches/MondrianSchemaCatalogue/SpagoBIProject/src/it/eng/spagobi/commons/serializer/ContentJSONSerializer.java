@@ -5,8 +5,11 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.commons.serializer;
 
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import org.json.JSONObject;
@@ -28,12 +31,18 @@ public class ContentJSONSerializer implements Serializer {
 		}
 		
 		try {
+			// dates are sent to the client using a fixed format, the one returned by GeneralUtilities.getServerDateFormat()
+			SimpleDateFormat dateFormat =  new SimpleDateFormat();
+			dateFormat.applyPattern(GeneralUtilities.getServerTimeStampFormat());
+			
 			Content content = (Content) o;
 			result = new JSONObject();
 			
 			result.put(ID, content.getId());
+			Date creationDate = content.getCreationDate();
+			String creationDateStr = dateFormat.format(creationDate);
+			result.put(CREATION_DATE, creationDateStr );
 			result.put(CREATION_USER, content.getCreationUser());
-			result.put(CREATION_DATE, content.getCreationDate());
 			result.put(ACTIVE, content.getActive());
 			result.put(FILE_NAME, content.getFileName());
 			result.put(DIMENSION, content.getDimension());

@@ -59,10 +59,10 @@
             <column name="prog" />
         </property>
         <property name="creationDate" type="timestamp">
-            <column name="creation_date"/>
+            <column name="creation_date" not-null="true" />
         </property>     
         <property name="creationUser" type="string">
-            <column name="CREATION_USER" />
+            <column name="CREATION_USER" not-null="true" />
         </property>               
         <property name="active" type="boolean">
             <column name="active"/>

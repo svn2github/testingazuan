@@ -32,9 +32,7 @@ Sbi.widgets.CatalogueVersionsGridPanel = function(config) {
 
 	var defaultSettings = {
 		title: LN('sbi.widgets.catalogueversionsgridpanel.title')
-		, width : 370
-        , height : 200
-        , layout : 'fit'
+	    , height: 200
 	};
 
 	if (Sbi.settings && Sbi.settings.widgets && Sbi.settings.widgets.catalogueversionsgridpanel) {
@@ -86,7 +84,8 @@ Ext.extend(Sbi.widgets.CatalogueVersionsGridPanel, Ext.grid.GridPanel, {
 	,
 	initGridView : function () {
 		this.gridView = new Ext.grid.GridView({
-			getRowClass : function(row, index) {
+			forceFit : true
+			, getRowClass : function(row, index) {
 				var cls = '';
 				var data = row.data;
 				if (data.active == true) {
@@ -132,7 +131,7 @@ Ext.extend(Sbi.widgets.CatalogueVersionsGridPanel, Ext.grid.GridPanel, {
 	       			, id			: 'creationDate'
 	       			, sortable		: true
 	       			, dataIndex		: 'creationDate'
-	       			, renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)
+	       			, renderer		: Ext.util.Format.dateRenderer(Sbi.config.localizedTimestampFormat)
 	       	    },{
 	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.fileName')
 	       	    	, width			: 80

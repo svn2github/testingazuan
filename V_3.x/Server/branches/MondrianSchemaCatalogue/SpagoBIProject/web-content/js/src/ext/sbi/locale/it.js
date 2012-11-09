@@ -62,6 +62,7 @@ Sbi.locale.ln['sbi.generic.nodedescr'] = 'Descrizione Nodo';
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Errore di Validazione';
 Sbi.locale.ln['sbi.generic.validation.missingName'] = 'Nome non specificato';
+Sbi.locale.ln['sbi.generic.wait'] = 'Attendere prego...';
 Sbi.locale.ln['sbi.generic.info'] = 'Informazione';
 Sbi.locale.ln['sbi.generic.error'] = 'Errore';
 Sbi.locale.ln['sbi.generic.error.msg'] = 'Operazione fallita';

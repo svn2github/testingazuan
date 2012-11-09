@@ -11,10 +11,9 @@ import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBIServiceExceptionHandler;
-import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.bo.Artifact;
+import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
-import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.IServiceResponse;
@@ -65,13 +64,18 @@ public class SaveArtifactAction extends AbstractSpagoBIAction {
 				if (isNew(artifact)) {
 					Artifact existing = dao.loadArtifactByNameAndType(artifact.getName(), artifact.getType());
 					if (existing != null) {
-						logger.debug("An artifact with name already exists");
-						throw new SpagoBIServiceException(SERVICE_NAME, "A meta artifact with name already exists");
+						logger.debug("An artifact with the same name and type already exists");
+						throw new SpagoBIServiceException(SERVICE_NAME, "An artifact with the same name already exists");
 					}
 					logOperation = "ARTIFACT_CATALOGUE.ADD";
 					dao.insertArtifact(artifact);
 					logger.debug("Artifact [" + artifact + "] inserted");
 				} else {
+					Artifact existing = dao.loadArtifactByNameAndType(artifact.getName(), artifact.getType());
+					if (!existing.getId().equals(artifact.getId())) {
+						logger.debug("An artifact with the same name and type already exists");
+						throw new SpagoBIServiceException(SERVICE_NAME, "An artifact with the same name already exists");
+					}
 					logOperation = "ARTIFACT_CATALOGUE.MODIFY";
 					dao.modifyArtifact(artifact);
 					logger.debug("Artifact [" + artifact + "] updated");
@@ -106,7 +110,7 @@ public class SaveArtifactAction extends AbstractSpagoBIAction {
 			}
 			
 		} catch (Throwable t) {
-			SpagoBIEngineServiceException e = SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
+			SpagoBIServiceException e = SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
 			replayToClient( null, e );
 		} finally {
 			logger.debug("OUT");
@@ -117,7 +121,7 @@ public class SaveArtifactAction extends AbstractSpagoBIAction {
     /*
      * see Ext.form.BasicForm for file upload
      */
-	private void replayToClient(final String msg, final SpagoBIEngineServiceException e) {
+	private void replayToClient(final String msg, final SpagoBIServiceException e) {
 		
 		try {
 			

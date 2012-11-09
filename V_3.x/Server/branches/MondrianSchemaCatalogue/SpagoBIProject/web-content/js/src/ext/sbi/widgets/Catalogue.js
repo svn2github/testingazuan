@@ -180,29 +180,30 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 	    form.submit({
 	         url : baseUrl  // a multipart form cannot contain parameters on its main URL; they must POST parameters
 	         , params : params
-	         , waitMsg : 'Saving ...'
-	         , success : this.onSaveSuccess
+	         , waitMsg : LN('sbi.generic.wait')
+	         , success : this.doSaveHandler
 	         , failure : function (form, action) {
-	        	 Sbi.exception.ExceptionHandler.showErrorMessage(action.result.msg, 'Service Error');
+	        	 Sbi.exception.ExceptionHandler.showErrorMessage(action.result.msg, LN('sbi.generic.serviceError'));
 	         }
 	         , scope : this
 	    });
 	}
 	
 	,
-	onSaveSuccess : function (form, action) {
-		var success = action.result.success;
-		if (success == true) {
+	doSaveHandler : function (form, action) {
+		var success = (action.result && action.result.success) ? (action.result.success == true) : false;
+		if (success) {
 			Ext.Msg.show({
-				   title: 'saved'
-				   , msg: 'saved'
+				   title: LN('sbi.generic.ok')
+				   , msg: LN('sbi.generic.result')
 				   , buttons: Ext.Msg.OK
 				   , icon: Ext.MessageBox.INFO
 			});
-			this.commitChangesInList(action.result.msg);
 			this.uploadField.reset();
+			this.commitChangesInList(action.result.msg);
 		} else {
-			Sbi.exception.ExceptionHandler.showErrorMessage(action.result.msg, 'Service Error');
+			var message = (action.result && action.result.msg) ? action.result.msg : LN('sbi.generic.error.msg');
+			Sbi.exception.ExceptionHandler.showErrorMessage(message, LN('sbi.generic.error'));
 		}
 	}
 	
@@ -243,6 +244,7 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 			record.set( 'name', values['name'] );
 			record.set( 'description', values['description'] );
 			this.mainElementsStore.commitChanges();
+			this.versionsGridPanel.getStore().load({ params : { id : values['id'] } });
 		}
 	}
 	

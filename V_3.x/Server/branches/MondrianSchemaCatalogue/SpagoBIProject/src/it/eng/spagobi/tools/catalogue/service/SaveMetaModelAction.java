@@ -11,6 +11,7 @@ import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBIServiceExceptionHandler;
+import it.eng.spagobi.tools.catalogue.bo.Artifact;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.bo.MetaModel;
 import it.eng.spagobi.tools.catalogue.dao.IMetaModelsDAO;
@@ -70,6 +71,11 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 					dao.insertMetaModel(model);
 					logger.debug("Model [" + model + "] inserted");
 				} else {
+					MetaModel existing = dao.loadMetaModelByName(model.getName());
+					if (!existing.getId().equals(model.getId())) {
+						logger.debug("A meta model with name already exists");
+						throw new SpagoBIServiceException(SERVICE_NAME, "A meta model with name already exists");
+					}
 					logOperation = "META_MODEL_CATALOGUE.MODIFY";
 					dao.modifyMetaModel(model);
 					logger.debug("Model [" + model + "] updated");
@@ -104,7 +110,7 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 			}
 			
 		} catch (Throwable t) {
-			SpagoBIEngineServiceException e = SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
+			SpagoBIServiceException e = SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
 			replayToClient( null, e );
 		} finally {
 			logger.debug("OUT");
@@ -115,7 +121,7 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
     /*
      * see Ext.form.BasicForm for file upload
      */
-	private void replayToClient(final String msg, final SpagoBIEngineServiceException e) {
+	private void replayToClient(final String msg, final SpagoBIServiceException e) {
 		
 		try {
 			

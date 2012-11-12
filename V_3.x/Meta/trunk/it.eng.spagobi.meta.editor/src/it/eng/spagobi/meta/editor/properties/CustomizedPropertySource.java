@@ -10,7 +10,12 @@
 package it.eng.spagobi.meta.editor.properties;
 
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
+import it.eng.spagobi.meta.editor.olap.OlapModelManager;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessTable;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
+import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.PropertySource;
@@ -43,6 +48,12 @@ public class CustomizedPropertySource extends PropertySource {
 	    	editor.setDirty(true);
 	    	editor.firePropertyChange(IEditorPart.PROP_DIRTY);
 	    }
+	    
+	    //*** OlapModel management ***
+	    EditingDomain editingDomain	 = editor.getEditingDomain();
+	    OlapModelManager olapModelManager =  OlapModelManager.getInstance();
+	    olapModelManager.checkForOlapModel(editingDomain,object, propertyId, value);
+
 	}
 
 	public void setEditor(BusinessModelEditor editor) {

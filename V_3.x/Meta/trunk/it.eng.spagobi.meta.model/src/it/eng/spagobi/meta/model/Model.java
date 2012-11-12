@@ -10,6 +10,7 @@
 package it.eng.spagobi.meta.model;
 
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 
 import org.eclipse.emf.common.util.EList;
@@ -24,6 +25,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getPhysicalModels <em>Physical Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getBusinessModels <em>Business Models</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.Model#getOlapModels <em>Olap Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getPropertyTypes <em>Property Types</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.Model#getPropertyCategories <em>Property Categories</em>}</li>
  * </ul>
@@ -69,6 +71,24 @@ public interface Model extends ModelObject {
 	 * @generated
 	 */
 	EList<BusinessModel> getBusinessModels();
+
+	/**
+	 * Returns the value of the '<em><b>Olap Models</b></em>' containment reference list.
+	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.OlapModel}.
+	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.OlapModel#getParentModel <em>Parent Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Olap Models</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Olap Models</em>' containment reference list.
+	 * @see it.eng.spagobi.meta.model.ModelPackage#getModel_OlapModels()
+	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getParentModel
+	 * @model opposite="parentModel" containment="true"
+	 * @generated
+	 */
+	EList<OlapModel> getOlapModels();
 
 	/**
 	 * Returns the value of the '<em><b>Property Types</b></em>' containment reference list.

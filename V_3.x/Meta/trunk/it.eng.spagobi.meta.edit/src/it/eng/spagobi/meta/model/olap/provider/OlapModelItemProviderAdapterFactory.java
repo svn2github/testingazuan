@@ -101,6 +101,236 @@ public class OlapModelItemProviderAdapterFactory extends OlapModelAdapterFactory
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.Cube} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected CubeItemProvider cubeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.Cube}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createCubeAdapter() {
+		if (cubeItemProvider == null) {
+			cubeItemProvider = new CubeItemProvider(this);
+		}
+
+		return cubeItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.Dimension} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected DimensionItemProvider dimensionItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.Dimension}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createDimensionAdapter() {
+		if (dimensionItemProvider == null) {
+			dimensionItemProvider = new DimensionItemProvider(this);
+		}
+
+		return dimensionItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.Hierarchy} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected HierarchyItemProvider hierarchyItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.Hierarchy}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createHierarchyAdapter() {
+		if (hierarchyItemProvider == null) {
+			hierarchyItemProvider = new HierarchyItemProvider(this);
+		}
+
+		return hierarchyItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.Level} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected LevelItemProvider levelItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.Level}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createLevelAdapter() {
+		if (levelItemProvider == null) {
+			levelItemProvider = new LevelItemProvider(this);
+		}
+
+		return levelItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.Measure} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected MeasureItemProvider measureItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.Measure}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createMeasureAdapter() {
+		if (measureItemProvider == null) {
+			measureItemProvider = new MeasureItemProvider(this);
+		}
+
+		return measureItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.CalculatedMember} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected CalculatedMemberItemProvider calculatedMemberItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.CalculatedMember}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createCalculatedMemberAdapter() {
+		if (calculatedMemberItemProvider == null) {
+			calculatedMemberItemProvider = new CalculatedMemberItemProvider(this);
+		}
+
+		return calculatedMemberItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.NamedSet} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected NamedSetItemProvider namedSetItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.NamedSet}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createNamedSetAdapter() {
+		if (namedSetItemProvider == null) {
+			namedSetItemProvider = new NamedSetItemProvider(this);
+		}
+
+		return namedSetItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.VirtualCube} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected VirtualCubeItemProvider virtualCubeItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.VirtualCube}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createVirtualCubeAdapter() {
+		if (virtualCubeItemProvider == null) {
+			virtualCubeItemProvider = new VirtualCubeItemProvider(this);
+		}
+
+		return virtualCubeItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.VirtualCubeDimension} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected VirtualCubeDimensionItemProvider virtualCubeDimensionItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.VirtualCubeDimension}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createVirtualCubeDimensionAdapter() {
+		if (virtualCubeDimensionItemProvider == null) {
+			virtualCubeDimensionItemProvider = new VirtualCubeDimensionItemProvider(this);
+		}
+
+		return virtualCubeDimensionItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link it.eng.spagobi.meta.model.olap.VirtualCubeMeasure} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected VirtualCubeMeasureItemProvider virtualCubeMeasureItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link it.eng.spagobi.meta.model.olap.VirtualCubeMeasure}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createVirtualCubeMeasureAdapter() {
+		if (virtualCubeMeasureItemProvider == null) {
+			virtualCubeMeasureItemProvider = new VirtualCubeMeasureItemProvider(this);
+		}
+
+		return virtualCubeMeasureItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -200,6 +430,16 @@ public class OlapModelItemProviderAdapterFactory extends OlapModelAdapterFactory
 	 */
 	public void dispose() {
 		if (olapModelItemProvider != null) olapModelItemProvider.dispose();
+		if (cubeItemProvider != null) cubeItemProvider.dispose();
+		if (dimensionItemProvider != null) dimensionItemProvider.dispose();
+		if (hierarchyItemProvider != null) hierarchyItemProvider.dispose();
+		if (levelItemProvider != null) levelItemProvider.dispose();
+		if (measureItemProvider != null) measureItemProvider.dispose();
+		if (calculatedMemberItemProvider != null) calculatedMemberItemProvider.dispose();
+		if (namedSetItemProvider != null) namedSetItemProvider.dispose();
+		if (virtualCubeItemProvider != null) virtualCubeItemProvider.dispose();
+		if (virtualCubeDimensionItemProvider != null) virtualCubeDimensionItemProvider.dispose();
+		if (virtualCubeMeasureItemProvider != null) virtualCubeMeasureItemProvider.dispose();
 	}
 
 }

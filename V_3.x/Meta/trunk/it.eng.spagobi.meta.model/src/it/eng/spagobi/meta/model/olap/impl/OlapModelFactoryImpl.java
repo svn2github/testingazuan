@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.model.olap.impl;
 
+import it.eng.spagobi.meta.model.olap.*;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelFactory;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
@@ -64,6 +65,16 @@ public class OlapModelFactoryImpl extends EFactoryImpl implements OlapModelFacto
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case OlapModelPackage.OLAP_MODEL: return createOlapModel();
+			case OlapModelPackage.CUBE: return createCube();
+			case OlapModelPackage.DIMENSION: return createDimension();
+			case OlapModelPackage.HIERARCHY: return createHierarchy();
+			case OlapModelPackage.LEVEL: return createLevel();
+			case OlapModelPackage.MEASURE: return createMeasure();
+			case OlapModelPackage.CALCULATED_MEMBER: return createCalculatedMember();
+			case OlapModelPackage.NAMED_SET: return createNamedSet();
+			case OlapModelPackage.VIRTUAL_CUBE: return createVirtualCube();
+			case OlapModelPackage.VIRTUAL_CUBE_DIMENSION: return createVirtualCubeDimension();
+			case OlapModelPackage.VIRTUAL_CUBE_MEASURE: return createVirtualCubeMeasure();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -77,6 +88,106 @@ public class OlapModelFactoryImpl extends EFactoryImpl implements OlapModelFacto
 	public OlapModel createOlapModel() {
 		OlapModelImpl olapModel = new OlapModelImpl();
 		return olapModel;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Cube createCube() {
+		CubeImpl cube = new CubeImpl();
+		return cube;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Dimension createDimension() {
+		DimensionImpl dimension = new DimensionImpl();
+		return dimension;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Hierarchy createHierarchy() {
+		HierarchyImpl hierarchy = new HierarchyImpl();
+		return hierarchy;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Level createLevel() {
+		LevelImpl level = new LevelImpl();
+		return level;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Measure createMeasure() {
+		MeasureImpl measure = new MeasureImpl();
+		return measure;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CalculatedMember createCalculatedMember() {
+		CalculatedMemberImpl calculatedMember = new CalculatedMemberImpl();
+		return calculatedMember;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NamedSet createNamedSet() {
+		NamedSetImpl namedSet = new NamedSetImpl();
+		return namedSet;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public VirtualCube createVirtualCube() {
+		VirtualCubeImpl virtualCube = new VirtualCubeImpl();
+		return virtualCube;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public VirtualCubeDimension createVirtualCubeDimension() {
+		VirtualCubeDimensionImpl virtualCubeDimension = new VirtualCubeDimensionImpl();
+		return virtualCubeDimension;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public VirtualCubeMeasure createVirtualCubeMeasure() {
+		VirtualCubeMeasureImpl virtualCubeMeasure = new VirtualCubeMeasureImpl();
+		return virtualCubeMeasure;
 	}
 
 	/**

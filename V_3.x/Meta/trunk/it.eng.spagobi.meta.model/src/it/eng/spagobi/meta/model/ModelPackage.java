@@ -411,13 +411,22 @@ public interface ModelPackage extends EPackage {
 	int MODEL__BUSINESS_MODELS = MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Olap Models</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__OLAP_MODELS = MODEL_OBJECT_FEATURE_COUNT + 2;
+
+	/**
 	 * The feature id for the '<em><b>Property Types</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__PROPERTY_TYPES = MODEL_OBJECT_FEATURE_COUNT + 2;
+	int MODEL__PROPERTY_TYPES = MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Property Categories</b></em>' containment reference list.
@@ -426,7 +435,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL__PROPERTY_CATEGORIES = MODEL_OBJECT_FEATURE_COUNT + 3;
+	int MODEL__PROPERTY_CATEGORIES = MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Model</em>' class.
@@ -435,7 +444,7 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_FEATURE_COUNT = MODEL_OBJECT_FEATURE_COUNT + 4;
+	int MODEL_FEATURE_COUNT = MODEL_OBJECT_FEATURE_COUNT + 5;
 
 
 	/**
@@ -743,6 +752,17 @@ public interface ModelPackage extends EPackage {
 	EReference getModel_BusinessModels();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getOlapModels <em>Olap Models</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Olap Models</em>'.
+	 * @see it.eng.spagobi.meta.model.Model#getOlapModels()
+	 * @see #getModel()
+	 * @generated
+	 */
+	EReference getModel_OlapModels();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.Model#getPropertyTypes <em>Property Types</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1021,6 +1041,14 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference MODEL__BUSINESS_MODELS = eINSTANCE.getModel_BusinessModels();
+
+		/**
+		 * The meta object literal for the '<em><b>Olap Models</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MODEL__OLAP_MODELS = eINSTANCE.getModel_OlapModels();
 
 		/**
 		 * The meta object literal for the '<em><b>Property Types</b></em>' containment reference list feature.

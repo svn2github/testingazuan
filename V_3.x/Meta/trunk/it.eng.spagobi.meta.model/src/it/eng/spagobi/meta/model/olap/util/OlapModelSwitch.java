@@ -9,6 +9,8 @@
 **/
 package it.eng.spagobi.meta.model.olap.util;
 
+import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.olap.*;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 
@@ -94,6 +96,77 @@ public class OlapModelSwitch<T> {
 			case OlapModelPackage.OLAP_MODEL: {
 				OlapModel olapModel = (OlapModel)theEObject;
 				T result = caseOlapModel(olapModel);
+				if (result == null) result = caseModelObject(olapModel);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.CUBE: {
+				Cube cube = (Cube)theEObject;
+				T result = caseCube(cube);
+				if (result == null) result = caseModelObject(cube);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.DIMENSION: {
+				Dimension dimension = (Dimension)theEObject;
+				T result = caseDimension(dimension);
+				if (result == null) result = caseModelObject(dimension);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.HIERARCHY: {
+				Hierarchy hierarchy = (Hierarchy)theEObject;
+				T result = caseHierarchy(hierarchy);
+				if (result == null) result = caseModelObject(hierarchy);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.LEVEL: {
+				Level level = (Level)theEObject;
+				T result = caseLevel(level);
+				if (result == null) result = caseModelObject(level);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.MEASURE: {
+				Measure measure = (Measure)theEObject;
+				T result = caseMeasure(measure);
+				if (result == null) result = caseModelObject(measure);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.CALCULATED_MEMBER: {
+				CalculatedMember calculatedMember = (CalculatedMember)theEObject;
+				T result = caseCalculatedMember(calculatedMember);
+				if (result == null) result = caseModelObject(calculatedMember);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.NAMED_SET: {
+				NamedSet namedSet = (NamedSet)theEObject;
+				T result = caseNamedSet(namedSet);
+				if (result == null) result = caseModelObject(namedSet);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.VIRTUAL_CUBE: {
+				VirtualCube virtualCube = (VirtualCube)theEObject;
+				T result = caseVirtualCube(virtualCube);
+				if (result == null) result = caseModelObject(virtualCube);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.VIRTUAL_CUBE_DIMENSION: {
+				VirtualCubeDimension virtualCubeDimension = (VirtualCubeDimension)theEObject;
+				T result = caseVirtualCubeDimension(virtualCubeDimension);
+				if (result == null) result = caseModelObject(virtualCubeDimension);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OlapModelPackage.VIRTUAL_CUBE_MEASURE: {
+				VirtualCubeMeasure virtualCubeMeasure = (VirtualCubeMeasure)theEObject;
+				T result = caseVirtualCubeMeasure(virtualCubeMeasure);
+				if (result == null) result = caseModelObject(virtualCubeMeasure);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -113,6 +186,171 @@ public class OlapModelSwitch<T> {
 	 * @generated
 	 */
 	public T caseOlapModel(OlapModel object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Cube</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Cube</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCube(Cube object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dimension</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDimension(Dimension object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Hierarchy</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Hierarchy</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseHierarchy(Hierarchy object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Level</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Level</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLevel(Level object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Measure</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Measure</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMeasure(Measure object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Calculated Member</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Calculated Member</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCalculatedMember(CalculatedMember object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Named Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Named Set</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseNamedSet(NamedSet object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Virtual Cube</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Virtual Cube</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseVirtualCube(VirtualCube object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Virtual Cube Dimension</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Virtual Cube Dimension</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseVirtualCubeDimension(VirtualCubeDimension object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Virtual Cube Measure</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Virtual Cube Measure</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseVirtualCubeMeasure(VirtualCubeMeasure object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Object</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Object</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseModelObject(ModelObject object) {
 		return null;
 	}
 

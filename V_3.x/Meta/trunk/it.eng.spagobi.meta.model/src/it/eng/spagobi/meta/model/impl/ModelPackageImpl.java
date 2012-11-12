@@ -419,7 +419,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getModel_PropertyTypes() {
+	public EReference getModel_OlapModels() {
 		return (EReference)modelEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -428,8 +428,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getModel_PropertyCategories() {
+	public EReference getModel_PropertyTypes() {
 		return (EReference)modelEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getModel_PropertyCategories() {
+		return (EReference)modelEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -493,6 +502,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		modelEClass = createEClass(MODEL);
 		createEReference(modelEClass, MODEL__PHYSICAL_MODELS);
 		createEReference(modelEClass, MODEL__BUSINESS_MODELS);
+		createEReference(modelEClass, MODEL__OLAP_MODELS);
 		createEReference(modelEClass, MODEL__PROPERTY_TYPES);
 		createEReference(modelEClass, MODEL__PROPERTY_CATEGORIES);
 	}
@@ -575,6 +585,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getModel_PhysicalModels(), thePhysicalModelPackage.getPhysicalModel(), thePhysicalModelPackage.getPhysicalModel_ParentModel(), "physicalModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_BusinessModels(), theBusinessModelPackage.getBusinessModel(), theBusinessModelPackage.getBusinessModel_ParentModel(), "businessModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getModel_OlapModels(), theOlapModelPackage.getOlapModel(), theOlapModelPackage.getOlapModel_ParentModel(), "olapModels", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_PropertyTypes(), this.getModelPropertyType(), null, "propertyTypes", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_PropertyCategories(), this.getModelPropertyCategory(), null, "propertyCategories", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

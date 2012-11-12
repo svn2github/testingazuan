@@ -46,6 +46,8 @@
         eType="#//physical/PhysicalModel" containment="true" eOpposite="#//physical/PhysicalModel/parentModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="businessModels" upperBound="-1"
         eType="#//business/BusinessModel" containment="true" eOpposite="#//business/BusinessModel/parentModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="olapModels" upperBound="-1"
+        eType="#//olap/OlapModel" containment="true" eOpposite="#//olap/OlapModel/parentModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyTypes" upperBound="-1"
         eType="#//ModelPropertyType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyCategories" upperBound="-1"
@@ -200,7 +202,93 @@
   </eSubpackages>
   <eSubpackages name="olap" nsURI="http:///it/eng/spagobi/meta/model/olapl.ecore"
       nsPrefix="it.eng.spagobi.meta.model.olap">
-    <eClassifiers xsi:type="ecore:EClass" name="OlapModel"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OlapModel" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parentModel" lowerBound="1"
+          eType="#//Model" eOpposite="#//Model/olapModels"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cubes" upperBound="-1"
+          eType="#//olap/Cube" containment="true" eOpposite="#//olap/Cube/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="virtualCubes" upperBound="-1"
+          eType="#//olap/VirtualCube" eOpposite="#//olap/VirtualCube/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" upperBound="-1"
+          eType="#//olap/Dimension" eOpposite="#//olap/Dimension/model"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Cube" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//olap/OlapModel"
+          eOpposite="#//olap/OlapModel/cubes"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
+          eType="#//business/BusinessColumnSet"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" lowerBound="1"
+          upperBound="-1" eType="#//olap/Dimension"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measures" lowerBound="1"
+          upperBound="-1" eType="#//olap/Measure" eOpposite="#//olap/Measure/cube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="calculatedMembers" eType="#//olap/CalculatedMember"
+          eOpposite="#//olap/CalculatedMember/cube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namedSets" upperBound="-1"
+          eType="#//olap/NamedSet" eOpposite="#//olap/NamedSet/cube"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
+          eType="#//business/BusinessColumnSet"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchies" lowerBound="1"
+          upperBound="-1" eType="#//olap/Hierarchy" eOpposite="#//olap/Hierarchy/dimension"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//olap/OlapModel"
+          eOpposite="#//olap/OlapModel/dimensions"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Hierarchy" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" eType="#//business/BusinessColumnSet"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" eType="#//olap/Dimension"
+          eOpposite="#//olap/Dimension/hierarchies"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="levels" lowerBound="1"
+          upperBound="-1" eType="#//olap/Level" eOpposite="#//olap/Level/hierarchy"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Level" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchy" eType="#//olap/Hierarchy"
+          eOpposite="#//olap/Hierarchy/levels"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="column" eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ordinalColumn" eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="nameColumn" eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="captionColumn" eType="#//business/BusinessColumn"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="propertyColumns" upperBound="-1"
+          eType="#//business/BusinessColumn"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Measure" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cube" eType="#//olap/Cube"
+          eOpposite="#//olap/Cube/measures"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="column" eType="#//business/BusinessColumn"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CalculatedMember" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cube" eType="#//olap/Cube"
+          eOpposite="#//olap/Cube/calculatedMembers"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchy" eType="#//olap/Hierarchy"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NamedSet" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cube" eType="#//olap/Cube"
+          eOpposite="#//olap/Cube/namedSets"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="VirtualCube" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cubes" upperBound="-1"
+          eType="#//olap/Cube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" eType="#//olap/VirtualCubeDimension"
+          eOpposite="#//olap/VirtualCubeDimension/virtualCube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measures" upperBound="-1"
+          eType="#//olap/VirtualCubeMeasure" eOpposite="#//olap/VirtualCubeMeasure/virtualCube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="calculatedMembers" upperBound="-1"
+          eType="#//olap/CalculatedMember"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//olap/OlapModel"
+          eOpposite="#//olap/OlapModel/virtualCubes"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="VirtualCubeDimension" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="virtualCube" eType="#//olap/VirtualCube"
+          eOpposite="#//olap/VirtualCube/dimensions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cube" eType="#//olap/Cube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" eType="#//olap/Dimension"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="VirtualCubeMeasure" eSuperTypes="#//ModelObject">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="virtualCube" eType="#//olap/VirtualCube"
+          eOpposite="#//olap/VirtualCube/measures"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cube" eType="#//olap/Cube"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//olap/Measure"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="behavioural" nsURI="http:///it/eng/spagobi/meta/model/behavioural.ecore"
       nsPrefix="it.eng.spagobi.meta.model.behavioural">

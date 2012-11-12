@@ -15,6 +15,7 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
+import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.validator.ModelExtractor;
 import it.eng.spagobi.meta.model.validator.ModelValidator;
 
@@ -75,7 +76,8 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 					if(it.hasNext()) {
 						ModelObject modelObject = (ModelObject)it.next();
 						Model model = ModelExtractor.getModel(modelObject);
-						if(model != null) {
+						//Ignore OlapModelCommands
+						if((model != null) && (!(model instanceof OlapModel))) {
 							ModelValidator validator = new ModelValidator();
 							if(validator.validate(model) == false) {
 								showError("Impossible perform command " + mostRecentCommand.getLabel(), validator.getDiagnosticMessage());

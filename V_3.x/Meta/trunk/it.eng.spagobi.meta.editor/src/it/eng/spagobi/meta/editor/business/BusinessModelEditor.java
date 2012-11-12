@@ -597,6 +597,7 @@ public class BusinessModelEditor
 		if (propertySheetPage == null) {
 			CustomizedPropertySheetSorter propertySheetSorter = new CustomizedPropertySheetSorter();
 			propertySheetPage = new CustomizedBusinessPropertySheetPage(this, propertySheetSorter);
+			
 			CustomizedAdapterFactoryContentProvider adapterFactoryContentProvider = new CustomizedAdapterFactoryContentProvider(adapterFactory);
 			adapterFactoryContentProvider.setEditor(this);
 			propertySheetPage.setPropertySourceProvider(adapterFactoryContentProvider);

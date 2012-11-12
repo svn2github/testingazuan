@@ -15,6 +15,8 @@ import it.eng.spagobi.meta.model.ModelPropertyCategory;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.olap.OlapModel;
+import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
 
@@ -37,6 +39,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPhysicalModels <em>Physical Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getBusinessModels <em>Business Models</em>}</li>
+ *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getOlapModels <em>Olap Models</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPropertyTypes <em>Property Types</em>}</li>
  *   <li>{@link it.eng.spagobi.meta.model.impl.ModelImpl#getPropertyCategories <em>Property Categories</em>}</li>
  * </ul>
@@ -64,6 +67,16 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 * @ordered
 	 */
 	protected EList<BusinessModel> businessModels;
+
+	/**
+	 * The cached value of the '{@link #getOlapModels() <em>Olap Models</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getOlapModels()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<OlapModel> olapModels;
 
 	/**
 	 * The cached value of the '{@link #getPropertyTypes() <em>Property Types</em>}' containment reference list.
@@ -133,6 +146,18 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<OlapModel> getOlapModels() {
+		if (olapModels == null) {
+			olapModels = new EObjectContainmentWithInverseEList<OlapModel>(OlapModel.class, this, ModelPackage.MODEL__OLAP_MODELS, OlapModelPackage.OLAP_MODEL__PARENT_MODEL);
+		}
+		return olapModels;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList<ModelPropertyType> getPropertyTypes() {
 		if (propertyTypes == null) {
 			propertyTypes = new EObjectContainmentEList<ModelPropertyType>(ModelPropertyType.class, this, ModelPackage.MODEL__PROPERTY_TYPES);
@@ -165,6 +190,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getPhysicalModels()).basicAdd(otherEnd, msgs);
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getBusinessModels()).basicAdd(otherEnd, msgs);
+			case ModelPackage.MODEL__OLAP_MODELS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getOlapModels()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -181,6 +208,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return ((InternalEList<?>)getPhysicalModels()).basicRemove(otherEnd, msgs);
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				return ((InternalEList<?>)getBusinessModels()).basicRemove(otherEnd, msgs);
+			case ModelPackage.MODEL__OLAP_MODELS:
+				return ((InternalEList<?>)getOlapModels()).basicRemove(otherEnd, msgs);
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				return ((InternalEList<?>)getPropertyTypes()).basicRemove(otherEnd, msgs);
 			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
@@ -201,6 +230,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return getPhysicalModels();
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				return getBusinessModels();
+			case ModelPackage.MODEL__OLAP_MODELS:
+				return getOlapModels();
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				return getPropertyTypes();
 			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
@@ -225,6 +256,10 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				getBusinessModels().clear();
 				getBusinessModels().addAll((Collection<? extends BusinessModel>)newValue);
+				return;
+			case ModelPackage.MODEL__OLAP_MODELS:
+				getOlapModels().clear();
+				getOlapModels().addAll((Collection<? extends OlapModel>)newValue);
 				return;
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				getPropertyTypes().clear();
@@ -252,6 +287,9 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				getBusinessModels().clear();
 				return;
+			case ModelPackage.MODEL__OLAP_MODELS:
+				getOlapModels().clear();
+				return;
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				getPropertyTypes().clear();
 				return;
@@ -274,6 +312,8 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 				return physicalModels != null && !physicalModels.isEmpty();
 			case ModelPackage.MODEL__BUSINESS_MODELS:
 				return businessModels != null && !businessModels.isEmpty();
+			case ModelPackage.MODEL__OLAP_MODELS:
+				return olapModels != null && !olapModels.isEmpty();
 			case ModelPackage.MODEL__PROPERTY_TYPES:
 				return propertyTypes != null && !propertyTypes.isEmpty();
 			case ModelPackage.MODEL__PROPERTY_CATEGORIES:

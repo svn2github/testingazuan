@@ -14,6 +14,7 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
 import it.eng.spagobi.meta.model.ModelPackage;
 
+import it.eng.spagobi.meta.model.olap.OlapModelFactory;
 import java.util.Collection;
 import java.util.List;
 
@@ -149,6 +150,7 @@ public class ModelItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(ModelPackage.Literals.MODEL__OLAP_MODELS);
 			childrenFeatures.add(ModelPackage.Literals.MODEL__PROPERTY_CATEGORIES);
 		}
 		return childrenFeatures;
@@ -204,6 +206,7 @@ public class ModelItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Model.class)) {
+			case ModelPackage.MODEL__OLAP_MODELS:
 			case ModelPackage.MODEL__PROPERTY_CATEGORIES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -221,6 +224,11 @@ public class ModelItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(ModelPackage.Literals.MODEL__OLAP_MODELS,
+				 OlapModelFactory.eINSTANCE.createOlapModel()));
 
 		newChildDescriptors.add
 			(createChildParameter

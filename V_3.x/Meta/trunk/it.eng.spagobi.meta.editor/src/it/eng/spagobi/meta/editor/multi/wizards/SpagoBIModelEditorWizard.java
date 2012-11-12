@@ -16,6 +16,7 @@ import it.eng.spagobi.meta.editor.multi.BusinessTableSelectionPage;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditor;
 import it.eng.spagobi.meta.editor.multi.SpagoBIModelEditorInput;
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.PhysicalModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelFactory;
@@ -235,6 +236,7 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 			
 			createPhysicalModel();
 			createBusinessModel();
+			createOlapModel();
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to initialize the model", t);	
 		} finally {
@@ -398,6 +400,20 @@ public class SpagoBIModelEditorWizard  extends Wizard implements INewWizard {
 			throw new RuntimeException("Impossible to initialize the business model", t);	
 		} 	
 	}
+	
+	private void createOlapModel(){
+		logger.debug("start Olap Model Generation");
+
+		OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+		olapModelInitializer.setRootModel(spagobiModel);
+		spagobiModel.getOlapModels().add(olapModelInitializer.initialize(
+				modelName)
+		);
+		
+		logger.debug("end Olap Model Generation");
+
+	}
+
 	
 	private void saveModel() {
 		try {

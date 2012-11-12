@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.model.physical.impl;
 
+import it.eng.spagobi.meta.model.physical.*;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 import it.eng.spagobi.meta.model.physical.PhysicalForeignKey;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;

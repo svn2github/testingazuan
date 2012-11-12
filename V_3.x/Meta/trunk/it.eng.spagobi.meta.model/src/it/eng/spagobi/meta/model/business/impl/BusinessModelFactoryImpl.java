@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.model.business.impl;
 
+import it.eng.spagobi.meta.model.business.*;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessDomain;

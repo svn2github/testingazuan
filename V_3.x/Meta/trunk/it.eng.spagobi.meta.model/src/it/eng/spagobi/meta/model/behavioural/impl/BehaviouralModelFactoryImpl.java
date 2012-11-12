@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.model.behavioural.impl;
 
+import it.eng.spagobi.meta.model.behavioural.*;
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModel;
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModelFactory;
 import it.eng.spagobi.meta.model.behavioural.BehaviouralModelPackage;

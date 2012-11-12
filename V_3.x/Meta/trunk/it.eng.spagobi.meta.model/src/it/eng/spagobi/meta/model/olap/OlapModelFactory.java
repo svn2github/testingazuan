@@ -38,6 +38,96 @@ public interface OlapModelFactory extends EFactory {
 	OlapModel createOlapModel();
 
 	/**
+	 * Returns a new object of class '<em>Cube</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Cube</em>'.
+	 * @generated
+	 */
+	Cube createCube();
+
+	/**
+	 * Returns a new object of class '<em>Dimension</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dimension</em>'.
+	 * @generated
+	 */
+	Dimension createDimension();
+
+	/**
+	 * Returns a new object of class '<em>Hierarchy</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Hierarchy</em>'.
+	 * @generated
+	 */
+	Hierarchy createHierarchy();
+
+	/**
+	 * Returns a new object of class '<em>Level</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Level</em>'.
+	 * @generated
+	 */
+	Level createLevel();
+
+	/**
+	 * Returns a new object of class '<em>Measure</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Measure</em>'.
+	 * @generated
+	 */
+	Measure createMeasure();
+
+	/**
+	 * Returns a new object of class '<em>Calculated Member</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Calculated Member</em>'.
+	 * @generated
+	 */
+	CalculatedMember createCalculatedMember();
+
+	/**
+	 * Returns a new object of class '<em>Named Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Named Set</em>'.
+	 * @generated
+	 */
+	NamedSet createNamedSet();
+
+	/**
+	 * Returns a new object of class '<em>Virtual Cube</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Virtual Cube</em>'.
+	 * @generated
+	 */
+	VirtualCube createVirtualCube();
+
+	/**
+	 * Returns a new object of class '<em>Virtual Cube Dimension</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Virtual Cube Dimension</em>'.
+	 * @generated
+	 */
+	VirtualCubeDimension createVirtualCubeDimension();
+
+	/**
+	 * Returns a new object of class '<em>Virtual Cube Measure</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Virtual Cube Measure</em>'.
+	 * @generated
+	 */
+	VirtualCubeMeasure createVirtualCubeMeasure();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

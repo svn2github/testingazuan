@@ -9,6 +9,8 @@
 **/
 package it.eng.spagobi.meta.model.olap.util;
 
+import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.olap.*;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 
@@ -78,6 +80,50 @@ public class OlapModelAdapterFactory extends AdapterFactoryImpl {
 				return createOlapModelAdapter();
 			}
 			@Override
+			public Adapter caseCube(Cube object) {
+				return createCubeAdapter();
+			}
+			@Override
+			public Adapter caseDimension(Dimension object) {
+				return createDimensionAdapter();
+			}
+			@Override
+			public Adapter caseHierarchy(Hierarchy object) {
+				return createHierarchyAdapter();
+			}
+			@Override
+			public Adapter caseLevel(Level object) {
+				return createLevelAdapter();
+			}
+			@Override
+			public Adapter caseMeasure(Measure object) {
+				return createMeasureAdapter();
+			}
+			@Override
+			public Adapter caseCalculatedMember(CalculatedMember object) {
+				return createCalculatedMemberAdapter();
+			}
+			@Override
+			public Adapter caseNamedSet(NamedSet object) {
+				return createNamedSetAdapter();
+			}
+			@Override
+			public Adapter caseVirtualCube(VirtualCube object) {
+				return createVirtualCubeAdapter();
+			}
+			@Override
+			public Adapter caseVirtualCubeDimension(VirtualCubeDimension object) {
+				return createVirtualCubeDimensionAdapter();
+			}
+			@Override
+			public Adapter caseVirtualCubeMeasure(VirtualCubeMeasure object) {
+				return createVirtualCubeMeasureAdapter();
+			}
+			@Override
+			public Adapter caseModelObject(ModelObject object) {
+				return createModelObjectAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -108,6 +154,160 @@ public class OlapModelAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createOlapModelAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.Cube <em>Cube</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.Cube
+	 * @generated
+	 */
+	public Adapter createCubeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.Dimension <em>Dimension</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.Dimension
+	 * @generated
+	 */
+	public Adapter createDimensionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.Hierarchy <em>Hierarchy</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.Hierarchy
+	 * @generated
+	 */
+	public Adapter createHierarchyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.Level <em>Level</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.Level
+	 * @generated
+	 */
+	public Adapter createLevelAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.Measure <em>Measure</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.Measure
+	 * @generated
+	 */
+	public Adapter createMeasureAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.CalculatedMember <em>Calculated Member</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.CalculatedMember
+	 * @generated
+	 */
+	public Adapter createCalculatedMemberAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.NamedSet <em>Named Set</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.NamedSet
+	 * @generated
+	 */
+	public Adapter createNamedSetAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.VirtualCube <em>Virtual Cube</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.VirtualCube
+	 * @generated
+	 */
+	public Adapter createVirtualCubeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.VirtualCubeDimension <em>Virtual Cube Dimension</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.VirtualCubeDimension
+	 * @generated
+	 */
+	public Adapter createVirtualCubeDimensionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.olap.VirtualCubeMeasure <em>Virtual Cube Measure</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.olap.VirtualCubeMeasure
+	 * @generated
+	 */
+	public Adapter createVirtualCubeMeasureAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link it.eng.spagobi.meta.model.ModelObject <em>Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see it.eng.spagobi.meta.model.ModelObject
+	 * @generated
+	 */
+	public Adapter createModelObjectAdapter() {
 		return null;
 	}
 

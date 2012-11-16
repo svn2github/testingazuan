@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -39,16 +40,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
-	/**
-	 * The cached value of the '{@link #getCube() <em>Cube</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCube()
-	 * @generated
-	 * @ordered
-	 */
-	protected Cube cube;
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,24 +65,8 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	 * @generated
 	 */
 	public Cube getCube() {
-		if (cube != null && cube.eIsProxy()) {
-			InternalEObject oldCube = (InternalEObject)cube;
-			cube = (Cube)eResolveProxy(oldCube);
-			if (cube != oldCube) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.NAMED_SET__CUBE, oldCube, cube));
-			}
-		}
-		return cube;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Cube basicGetCube() {
-		return cube;
+		if (eContainerFeatureID() != OlapModelPackage.NAMED_SET__CUBE) return null;
+		return (Cube)eContainer();
 	}
 
 	/**
@@ -100,12 +75,7 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	 * @generated
 	 */
 	public NotificationChain basicSetCube(Cube newCube, NotificationChain msgs) {
-		Cube oldCube = cube;
-		cube = newCube;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.NAMED_SET__CUBE, oldCube, newCube);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newCube, OlapModelPackage.NAMED_SET__CUBE, msgs);
 		return msgs;
 	}
 
@@ -115,10 +85,12 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	 * @generated
 	 */
 	public void setCube(Cube newCube) {
-		if (newCube != cube) {
+		if (newCube != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.NAMED_SET__CUBE && newCube != null)) {
+			if (EcoreUtil.isAncestor(this, newCube))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (cube != null)
-				msgs = ((InternalEObject)cube).eInverseRemove(this, OlapModelPackage.CUBE__NAMED_SETS, Cube.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newCube != null)
 				msgs = ((InternalEObject)newCube).eInverseAdd(this, OlapModelPackage.CUBE__NAMED_SETS, Cube.class, msgs);
 			msgs = basicSetCube(newCube, msgs);
@@ -137,8 +109,8 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case OlapModelPackage.NAMED_SET__CUBE:
-				if (cube != null)
-					msgs = ((InternalEObject)cube).eInverseRemove(this, OlapModelPackage.CUBE__NAMED_SETS, Cube.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetCube((Cube)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -164,11 +136,24 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.NAMED_SET__CUBE:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.CUBE__NAMED_SETS, Cube.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.NAMED_SET__CUBE:
-				if (resolve) return getCube();
-				return basicGetCube();
+				return getCube();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -212,7 +197,7 @@ public class NamedSetImpl extends ModelObjectImpl implements NamedSet {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case OlapModelPackage.NAMED_SET__CUBE:
-				return cube != null;
+				return getCube() != null;
 		}
 		return super.eIsSet(featureID);
 	}

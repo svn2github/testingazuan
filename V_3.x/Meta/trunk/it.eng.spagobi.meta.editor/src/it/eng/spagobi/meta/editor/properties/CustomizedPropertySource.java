@@ -49,11 +49,14 @@ public class CustomizedPropertySource extends PropertySource {
 	    	editor.firePropertyChange(IEditorPart.PROP_DIRTY);
 	    }
 	    
-	    //*** OlapModel management ***
+	    //****************************
+	    //	  OlapModel management
+	    //****************************
 	    EditingDomain editingDomain	 = editor.getEditingDomain();
+	    //access to the singleton
 	    OlapModelManager olapModelManager =  OlapModelManager.getInstance();
 	    olapModelManager.checkForOlapModel(editingDomain,object, propertyId, value);
-
+	    //****************************
 	}
 
 	public void setEditor(BusinessModelEditor editor) {

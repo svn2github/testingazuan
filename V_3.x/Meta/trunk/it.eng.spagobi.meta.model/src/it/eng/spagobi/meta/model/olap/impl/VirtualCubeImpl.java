@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -93,16 +94,6 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 	 * @ordered
 	 */
 	protected EList<CalculatedMember> calculatedMembers;
-
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected OlapModel model;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -225,24 +216,8 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 	 * @generated
 	 */
 	public OlapModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (OlapModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.VIRTUAL_CUBE__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public OlapModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != OlapModelPackage.VIRTUAL_CUBE__MODEL) return null;
+		return (OlapModel)eContainer();
 	}
 
 	/**
@@ -251,12 +226,7 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(OlapModel newModel, NotificationChain msgs) {
-		OlapModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.VIRTUAL_CUBE__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, OlapModelPackage.VIRTUAL_CUBE__MODEL, msgs);
 		return msgs;
 	}
 
@@ -266,10 +236,12 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 	 * @generated
 	 */
 	public void setModel(OlapModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.VIRTUAL_CUBE__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -295,8 +267,8 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 			case OlapModelPackage.VIRTUAL_CUBE__MEASURES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMeasures()).basicAdd(otherEnd, msgs);
 			case OlapModelPackage.VIRTUAL_CUBE__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((OlapModel)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -326,6 +298,20 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.VIRTUAL_CUBE__MODEL:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.VIRTUAL_CUBE__CUBES:
@@ -338,8 +324,7 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 			case OlapModelPackage.VIRTUAL_CUBE__CALCULATED_MEMBERS:
 				return getCalculatedMembers();
 			case OlapModelPackage.VIRTUAL_CUBE__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -419,7 +404,7 @@ public class VirtualCubeImpl extends ModelObjectImpl implements VirtualCube {
 			case OlapModelPackage.VIRTUAL_CUBE__CALCULATED_MEMBERS:
 				return calculatedMembers != null && !calculatedMembers.isEmpty();
 			case OlapModelPackage.VIRTUAL_CUBE__MODEL:
-				return model != null;
+				return getModel() != null;
 		}
 		return super.eIsSet(featureID);
 	}

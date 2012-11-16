@@ -29,6 +29,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.Model;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.model.SortBusinessModelTablesCommand;
@@ -36,6 +37,8 @@ import it.eng.spagobi.meta.model.olap.Cube;
 import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateMeasureCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it)
@@ -75,71 +78,81 @@ public class OlapModelManager {
 		    //propertyId ="structural.tabletype", value="cube"
 		    if ( (propertyId.equals("structural.tabletype")) && (value.equals("cube")) ){
 		    	System.out.println("structural.tabletype cube su "+selectedBusinessObject);
-		    	checkPreviousObjects((BusinessTable)selectedBusinessObject);
-		    	createOlapCube((BusinessTable)selectedBusinessObject);
+		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	createOlapCube((BusinessColumnSet)selectedBusinessObject);
 		    } 
 		    //propertyId ="structural.tabletype", value="dimension"
 		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("dimension")) ){
 		    	System.out.println("structural.tabletype dimension su "+selectedBusinessObject);
-
+		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	createOlapDimension((BusinessColumnSet)selectedBusinessObject);
+		    } 
+		    //propertyId ="structural.tabletype", value="generic"
+		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("generic")) ){
+		    	System.out.println("structural.tabletype generic su "+selectedBusinessObject);
+		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
 		    } 
 	    }
 	    else if (selectedBusinessObject instanceof SimpleBusinessColumn){
 		    //propertyId="structural.columntype", value="measure"
 		    if ( (propertyId.equals("structural.columntype")) && (value.equals("measure")) ){
 		    	System.out.println("structural.columntype measure su "+selectedBusinessObject);
-
+		    	//TODO: search if BusinessColumnSet of SimpleBusinessColumn is a cube
+		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
+		    	if (cube != null){
+			    	createOlapMeasure(cube,(SimpleBusinessColumn)selectedBusinessObject);
+		    	}
+		    	
+		    } else if ( (propertyId.equals("structural.columntype")) && (value.equals("attribute")) ){
+			    //propertyId="structural.columntype", value="attribute"
+		    	System.out.println("structural.columntype attribute su "+selectedBusinessObject);
+		    	removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject);
 		    } 
 	    }
 	}
 	
-	//check if there are previous Olap Object to remove from the model (because tabletype changed)
-	private void checkPreviousObjects(BusinessTable businessTable){
-		Model rootModel = businessTable.getModel().getParentModel();
-		OlapModel olapModel = rootModel.getOlapModels().get(0);
-		
-		EList<Cube>cubes = olapModel.getCubes();
-		for (Cube cube:cubes){
-			if (cube.getTable().equals(businessTable)){
-				//TODO:remove cube from the model --> da fare con command
-				cube.setModel(null);
-			}
-		}
-		
-		EList<Dimension>dimensions = olapModel.getDimensions();
-		for (Dimension dimension:dimensions){
-			if (dimension.getTable().equals(businessTable)){
-				//TODO:remove dimension from the model --> da fare con command
-				dimension.setModel(null);
-			}
-		}
+	private Cube checkIfInsideCube(SimpleBusinessColumn simpleBusinessColumn){
+		return olapModelInitializer.getCube(simpleBusinessColumn.getTable());
 	}
 	
+	//check if there are previous Olap Object (corresponding to this BusinessTable) to remove from the model (because tabletype changed)
+	private void removePreviousObjects(BusinessColumnSet businessColumnSet){
+		olapModelInitializer.removeCorrespondingOlapObject(businessColumnSet);
+	}
+	
+	
 	//Create Olap Cube via CreateCubeCommand
-	private  void createOlapCube(BusinessTable businessTable){
-		Model rootModel = businessTable.getModel().getParentModel();
+	private  void createOlapCube(BusinessColumnSet businessColumnSet){
+		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
-		olapModelInitializer.addCube(olapModel, businessTable);
-
-		/*
-		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessTable, new ArrayList<Object>());
+		
+		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new CreateCubeCommand(editingDomain,commandParameter));
 	    }
-	    */
-		
-		//Stampa di prova
-		EList<Cube> cubes = olapModel.getCubes();
-		for (Cube element:cubes){
-			System.out.println("Trovato cube: "+element);
-			System.out.println("Radice cube: "+element.getModel().getParentModel());
-		}
-		
-		
-		
 	}
 	
-	private void checkPreviousObjects(SimpleBusinessColumn businessTable){
+	//Create Olap Dimension via CreateCubeCommand
+	private void createOlapDimension(BusinessColumnSet businessColumnSet){
+		Model rootModel = businessColumnSet.getModel().getParentModel();
+		OlapModel olapModel = rootModel.getOlapModels().get(0);
 		
+		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+	    if (editingDomain != null) {	    	
+	    	editingDomain.getCommandStack().execute(new CreateDimensionCommand(editingDomain,commandParameter));
+	    }	   
+	}
+	
+	//Create Olap Measure via CreateMeasureCommand
+	private void createOlapMeasure(Cube cube, SimpleBusinessColumn simpleBusinessColumn){
+		
+		CommandParameter commandParameter =  new CommandParameter(cube, null, simpleBusinessColumn, new ArrayList<Object>());
+	    if (editingDomain != null) {	    	
+	    	editingDomain.getCommandStack().execute(new CreateMeasureCommand(editingDomain,commandParameter));
+	    }	   
+	}	
+	
+	private void removePreviousObjects(SimpleBusinessColumn businessTable){
+		//TODO: implementation
 	}
 }

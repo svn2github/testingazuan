@@ -34,8 +34,11 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -58,16 +61,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class CubeImpl extends ModelObjectImpl implements Cube {
 	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected OlapModel model;
-
-	/**
 	 * The cached value of the '{@link #getTable() <em>Table</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,7 +71,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	protected BusinessColumnSet table;
 
 	/**
-	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' reference list.
+	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getDimensions()
@@ -88,7 +81,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	protected EList<Dimension> dimensions;
 
 	/**
-	 * The cached value of the '{@link #getMeasures() <em>Measures</em>}' reference list.
+	 * The cached value of the '{@link #getMeasures() <em>Measures</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getMeasures()
@@ -108,7 +101,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	protected CalculatedMember calculatedMembers;
 
 	/**
-	 * The cached value of the '{@link #getNamedSets() <em>Named Sets</em>}' reference list.
+	 * The cached value of the '{@link #getNamedSets() <em>Named Sets</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getNamedSets()
@@ -142,24 +135,8 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 * @generated
 	 */
 	public OlapModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (OlapModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.CUBE__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public OlapModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != OlapModelPackage.CUBE__MODEL) return null;
+		return (OlapModel)eContainer();
 	}
 
 	/**
@@ -168,12 +145,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(OlapModel newModel, NotificationChain msgs) {
-		OlapModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.CUBE__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, OlapModelPackage.CUBE__MODEL, msgs);
 		return msgs;
 	}
 
@@ -183,10 +155,12 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 * @generated
 	 */
 	public void setModel(OlapModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.CUBE__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -241,7 +215,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 */
 	public EList<Dimension> getDimensions() {
 		if (dimensions == null) {
-			dimensions = new EObjectResolvingEList<Dimension>(Dimension.class, this, OlapModelPackage.CUBE__DIMENSIONS);
+			dimensions = new EObjectContainmentEList<Dimension>(Dimension.class, this, OlapModelPackage.CUBE__DIMENSIONS);
 		}
 		return dimensions;
 	}
@@ -253,7 +227,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 */
 	public EList<Measure> getMeasures() {
 		if (measures == null) {
-			measures = new EObjectWithInverseResolvingEList<Measure>(Measure.class, this, OlapModelPackage.CUBE__MEASURES, OlapModelPackage.MEASURE__CUBE);
+			measures = new EObjectContainmentWithInverseEList<Measure>(Measure.class, this, OlapModelPackage.CUBE__MEASURES, OlapModelPackage.MEASURE__CUBE);
 		}
 		return measures;
 	}
@@ -325,7 +299,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 */
 	public EList<NamedSet> getNamedSets() {
 		if (namedSets == null) {
-			namedSets = new EObjectWithInverseResolvingEList<NamedSet>(NamedSet.class, this, OlapModelPackage.CUBE__NAMED_SETS, OlapModelPackage.NAMED_SET__CUBE);
+			namedSets = new EObjectContainmentWithInverseEList<NamedSet>(NamedSet.class, this, OlapModelPackage.CUBE__NAMED_SETS, OlapModelPackage.NAMED_SET__CUBE);
 		}
 		return namedSets;
 	}
@@ -340,8 +314,8 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case OlapModelPackage.CUBE__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((OlapModel)otherEnd, msgs);
 			case OlapModelPackage.CUBE__MEASURES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMeasures()).basicAdd(otherEnd, msgs);
@@ -365,6 +339,8 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 		switch (featureID) {
 			case OlapModelPackage.CUBE__MODEL:
 				return basicSetModel(null, msgs);
+			case OlapModelPackage.CUBE__DIMENSIONS:
+				return ((InternalEList<?>)getDimensions()).basicRemove(otherEnd, msgs);
 			case OlapModelPackage.CUBE__MEASURES:
 				return ((InternalEList<?>)getMeasures()).basicRemove(otherEnd, msgs);
 			case OlapModelPackage.CUBE__CALCULATED_MEMBERS:
@@ -381,11 +357,24 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.CUBE__MODEL:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.CUBE__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 			case OlapModelPackage.CUBE__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
@@ -475,7 +464,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case OlapModelPackage.CUBE__MODEL:
-				return model != null;
+				return getModel() != null;
 			case OlapModelPackage.CUBE__TABLE:
 				return table != null;
 			case OlapModelPackage.CUBE__DIMENSIONS:

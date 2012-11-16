@@ -208,9 +208,9 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="cubes" upperBound="-1"
           eType="#//olap/Cube" containment="true" eOpposite="#//olap/Cube/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="virtualCubes" upperBound="-1"
-          eType="#//olap/VirtualCube" eOpposite="#//olap/VirtualCube/model"/>
+          eType="#//olap/VirtualCube" containment="true" eOpposite="#//olap/VirtualCube/model"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" upperBound="-1"
-          eType="#//olap/Dimension" eOpposite="#//olap/Dimension/model"/>
+          eType="#//olap/Dimension" containment="true" eOpposite="#//olap/Dimension/model"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Cube" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//olap/OlapModel"
@@ -218,13 +218,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
           eType="#//business/BusinessColumnSet"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" lowerBound="1"
-          upperBound="-1" eType="#//olap/Dimension"/>
+          upperBound="-1" eType="#//olap/Dimension" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measures" lowerBound="1"
-          upperBound="-1" eType="#//olap/Measure" eOpposite="#//olap/Measure/cube"/>
+          upperBound="-1" eType="#//olap/Measure" containment="true" eOpposite="#//olap/Measure/cube"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="calculatedMembers" eType="#//olap/CalculatedMember"
           eOpposite="#//olap/CalculatedMember/cube"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="namedSets" upperBound="-1"
-          eType="#//olap/NamedSet" eOpposite="#//olap/NamedSet/cube"/>
+          eType="#//olap/NamedSet" containment="true" eOpposite="#//olap/NamedSet/cube"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"

@@ -50,8 +50,8 @@
       category="Structural" defaultValue="true" />
       
       <type id="structural.tabletype" name="Type"
-      description="The role played by this table in the data model (cube or dimension)"
-      category="Structural" defaultValue="dimension" />
+      description="The role played by this table in the data model (generic, cube or dimension)"
+      category="Structural" defaultValue="generic" />
     </types>
     
     <typesValues>
@@ -61,6 +61,7 @@
       </admissibleValuesOf>
       
       <admissibleValuesOf typeId="structural.tabletype">
+        <value>generic</value>      
         <value>cube</value>
         <value>dimension</value>
       </admissibleValuesOf>

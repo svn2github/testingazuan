@@ -29,7 +29,7 @@ import it.eng.spagobi.meta.model.ModelObject;
  */
 public interface NamedSet extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Cube</b></em>' reference.
+	 * Returns the value of the '<em><b>Cube</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Cube#getNamedSets <em>Named Sets</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -37,20 +37,20 @@ public interface NamedSet extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Cube</em>' reference.
+	 * @return the value of the '<em>Cube</em>' container reference.
 	 * @see #setCube(Cube)
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getNamedSet_Cube()
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getNamedSets
-	 * @model opposite="namedSets"
+	 * @model opposite="namedSets" transient="false"
 	 * @generated
 	 */
 	Cube getCube();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.NamedSet#getCube <em>Cube</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.NamedSet#getCube <em>Cube</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Cube</em>' reference.
+	 * @param value the new value of the '<em>Cube</em>' container reference.
 	 * @see #getCube()
 	 * @generated
 	 */

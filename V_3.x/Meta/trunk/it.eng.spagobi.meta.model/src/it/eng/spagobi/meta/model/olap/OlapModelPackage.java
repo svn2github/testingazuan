@@ -127,7 +127,7 @@ public interface OlapModelPackage extends EPackage {
 	int OLAP_MODEL__PARENT_MODEL = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Cubes</b></em>' reference list.
+	 * The feature id for the '<em><b>Cubes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -136,7 +136,7 @@ public interface OlapModelPackage extends EPackage {
 	int OLAP_MODEL__CUBES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Virtual Cubes</b></em>' reference list.
+	 * The feature id for the '<em><b>Virtual Cubes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -145,7 +145,7 @@ public interface OlapModelPackage extends EPackage {
 	int OLAP_MODEL__VIRTUAL_CUBES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Dimensions</b></em>' reference list.
+	 * The feature id for the '<em><b>Dimensions</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -219,7 +219,7 @@ public interface OlapModelPackage extends EPackage {
 	int CUBE__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -237,7 +237,7 @@ public interface OlapModelPackage extends EPackage {
 	int CUBE__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Dimensions</b></em>' reference list.
+	 * The feature id for the '<em><b>Dimensions</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -246,7 +246,7 @@ public interface OlapModelPackage extends EPackage {
 	int CUBE__DIMENSIONS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Measures</b></em>' reference list.
+	 * The feature id for the '<em><b>Measures</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -264,7 +264,7 @@ public interface OlapModelPackage extends EPackage {
 	int CUBE__CALCULATED_MEMBERS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 4;
 
 	/**
-	 * The feature id for the '<em><b>Named Sets</b></em>' reference list.
+	 * The feature id for the '<em><b>Named Sets</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -355,7 +355,7 @@ public interface OlapModelPackage extends EPackage {
 	int DIMENSION__HIERARCHIES = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -637,7 +637,7 @@ public interface OlapModelPackage extends EPackage {
 	int MEASURE__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Cube</b></em>' reference.
+	 * The feature id for the '<em><b>Cube</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -801,7 +801,7 @@ public interface OlapModelPackage extends EPackage {
 	int NAMED_SET__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Cube</b></em>' reference.
+	 * The feature id for the '<em><b>Cube</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -910,7 +910,7 @@ public interface OlapModelPackage extends EPackage {
 	int VIRTUAL_CUBE__CALCULATED_MEMBERS = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
+	 * The feature id for the '<em><b>Model</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1132,10 +1132,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getOlapModel_ParentModel();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getCubes <em>Cubes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getCubes <em>Cubes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Cubes</em>'.
+	 * @return the meta object for the containment reference list '<em>Cubes</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getCubes()
 	 * @see #getOlapModel()
 	 * @generated
@@ -1143,10 +1143,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getOlapModel_Cubes();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getVirtualCubes <em>Virtual Cubes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getVirtualCubes <em>Virtual Cubes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Virtual Cubes</em>'.
+	 * @return the meta object for the containment reference list '<em>Virtual Cubes</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getVirtualCubes()
 	 * @see #getOlapModel()
 	 * @generated
@@ -1154,10 +1154,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getOlapModel_VirtualCubes();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getDimensions <em>Dimensions</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.OlapModel#getDimensions <em>Dimensions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Dimensions</em>'.
+	 * @return the meta object for the containment reference list '<em>Dimensions</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getDimensions()
 	 * @see #getOlapModel()
 	 * @generated
@@ -1175,10 +1175,10 @@ public interface OlapModelPackage extends EPackage {
 	EClass getCube();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.Cube#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.Cube#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getModel()
 	 * @see #getCube()
 	 * @generated
@@ -1197,10 +1197,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getCube_Table();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getDimensions <em>Dimensions</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getDimensions <em>Dimensions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Dimensions</em>'.
+	 * @return the meta object for the containment reference list '<em>Dimensions</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getDimensions()
 	 * @see #getCube()
 	 * @generated
@@ -1208,10 +1208,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getCube_Dimensions();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getMeasures <em>Measures</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getMeasures <em>Measures</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Measures</em>'.
+	 * @return the meta object for the containment reference list '<em>Measures</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getMeasures()
 	 * @see #getCube()
 	 * @generated
@@ -1230,10 +1230,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getCube_CalculatedMembers();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getNamedSets <em>Named Sets</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getNamedSets <em>Named Sets</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Named Sets</em>'.
+	 * @return the meta object for the containment reference list '<em>Named Sets</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getNamedSets()
 	 * @see #getCube()
 	 * @generated
@@ -1273,10 +1273,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getDimension_Hierarchies();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.Dimension#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.Dimension#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Dimension#getModel()
 	 * @see #getDimension()
 	 * @generated
@@ -1413,10 +1413,10 @@ public interface OlapModelPackage extends EPackage {
 	EClass getMeasure();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.Measure#getCube <em>Cube</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.Measure#getCube <em>Cube</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Cube</em>'.
+	 * @return the meta object for the container reference '<em>Cube</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Measure#getCube()
 	 * @see #getMeasure()
 	 * @generated
@@ -1477,10 +1477,10 @@ public interface OlapModelPackage extends EPackage {
 	EClass getNamedSet();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.NamedSet#getCube <em>Cube</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.NamedSet#getCube <em>Cube</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Cube</em>'.
+	 * @return the meta object for the container reference '<em>Cube</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.NamedSet#getCube()
 	 * @see #getNamedSet()
 	 * @generated
@@ -1542,10 +1542,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getVirtualCube_CalculatedMembers();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.VirtualCube#getModel <em>Model</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.VirtualCube#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @return the meta object for the container reference '<em>Model</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.VirtualCube#getModel()
 	 * @see #getVirtualCube()
 	 * @generated
@@ -1677,21 +1677,21 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference OLAP_MODEL__PARENT_MODEL = eINSTANCE.getOlapModel_ParentModel();
 		/**
-		 * The meta object literal for the '<em><b>Cubes</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Cubes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference OLAP_MODEL__CUBES = eINSTANCE.getOlapModel_Cubes();
 		/**
-		 * The meta object literal for the '<em><b>Virtual Cubes</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Virtual Cubes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference OLAP_MODEL__VIRTUAL_CUBES = eINSTANCE.getOlapModel_VirtualCubes();
 		/**
-		 * The meta object literal for the '<em><b>Dimensions</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Dimensions</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1707,7 +1707,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EClass CUBE = eINSTANCE.getCube();
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1721,14 +1721,14 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference CUBE__TABLE = eINSTANCE.getCube_Table();
 		/**
-		 * The meta object literal for the '<em><b>Dimensions</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Dimensions</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference CUBE__DIMENSIONS = eINSTANCE.getCube_Dimensions();
 		/**
-		 * The meta object literal for the '<em><b>Measures</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Measures</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1742,7 +1742,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference CUBE__CALCULATED_MEMBERS = eINSTANCE.getCube_CalculatedMembers();
 		/**
-		 * The meta object literal for the '<em><b>Named Sets</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Named Sets</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1772,7 +1772,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference DIMENSION__HIERARCHIES = eINSTANCE.getDimension_Hierarchies();
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1869,7 +1869,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EClass MEASURE = eINSTANCE.getMeasure();
 		/**
-		 * The meta object literal for the '<em><b>Cube</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Cube</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1915,7 +1915,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EClass NAMED_SET = eINSTANCE.getNamedSet();
 		/**
-		 * The meta object literal for the '<em><b>Cube</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Cube</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1959,7 +1959,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference VIRTUAL_CUBE__CALCULATED_MEMBERS = eINSTANCE.getVirtualCube_CalculatedMembers();
 		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Model</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

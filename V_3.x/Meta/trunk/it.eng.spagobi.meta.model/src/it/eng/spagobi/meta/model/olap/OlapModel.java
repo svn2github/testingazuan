@@ -64,7 +64,7 @@ public interface OlapModel extends ModelObject {
 	void setParentModel(Model value);
 
 	/**
-	 * Returns the value of the '<em><b>Cubes</b></em>' reference list.
+	 * Returns the value of the '<em><b>Cubes</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Cube}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Cube#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -73,16 +73,16 @@ public interface OlapModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Cubes</em>' reference list.
+	 * @return the value of the '<em>Cubes</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getOlapModel_Cubes()
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<Cube> getCubes();
 
 	/**
-	 * Returns the value of the '<em><b>Virtual Cubes</b></em>' reference list.
+	 * Returns the value of the '<em><b>Virtual Cubes</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.VirtualCube}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.VirtualCube#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -91,16 +91,16 @@ public interface OlapModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Virtual Cubes</em>' reference list.
+	 * @return the value of the '<em>Virtual Cubes</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getOlapModel_VirtualCubes()
 	 * @see it.eng.spagobi.meta.model.olap.VirtualCube#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<VirtualCube> getVirtualCubes();
 
 	/**
-	 * Returns the value of the '<em><b>Dimensions</b></em>' reference list.
+	 * Returns the value of the '<em><b>Dimensions</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Dimension}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Dimension#getModel <em>Model</em>}'.
 	 * <!-- begin-user-doc -->
@@ -109,10 +109,10 @@ public interface OlapModel extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimensions</em>' reference list.
+	 * @return the value of the '<em>Dimensions</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getOlapModel_Dimensions()
 	 * @see it.eng.spagobi.meta.model.olap.Dimension#getModel
-	 * @model opposite="model"
+	 * @model opposite="model" containment="true"
 	 * @generated
 	 */
 	EList<Dimension> getDimensions();

@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -49,7 +50,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  */
 public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	/**
-	 * The cached value of the '{@link #getCubes() <em>Cubes</em>}' reference list.
+	 * The cached value of the '{@link #getCubes() <em>Cubes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getCubes()
@@ -58,7 +59,7 @@ public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	 */
 	protected EList<Cube> cubes;
 	/**
-	 * The cached value of the '{@link #getVirtualCubes() <em>Virtual Cubes</em>}' reference list.
+	 * The cached value of the '{@link #getVirtualCubes() <em>Virtual Cubes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getVirtualCubes()
@@ -67,7 +68,7 @@ public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	 */
 	protected EList<VirtualCube> virtualCubes;
 	/**
-	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' reference list.
+	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getDimensions()
@@ -143,7 +144,7 @@ public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	 */
 	public EList<Cube> getCubes() {
 		if (cubes == null) {
-			cubes = new EObjectWithInverseResolvingEList<Cube>(Cube.class, this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModelPackage.CUBE__MODEL);
+			cubes = new EObjectContainmentWithInverseEList<Cube>(Cube.class, this, OlapModelPackage.OLAP_MODEL__CUBES, OlapModelPackage.CUBE__MODEL);
 		}
 		return cubes;
 	}
@@ -155,7 +156,7 @@ public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	 */
 	public EList<VirtualCube> getVirtualCubes() {
 		if (virtualCubes == null) {
-			virtualCubes = new EObjectWithInverseResolvingEList<VirtualCube>(VirtualCube.class, this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModelPackage.VIRTUAL_CUBE__MODEL);
+			virtualCubes = new EObjectContainmentWithInverseEList<VirtualCube>(VirtualCube.class, this, OlapModelPackage.OLAP_MODEL__VIRTUAL_CUBES, OlapModelPackage.VIRTUAL_CUBE__MODEL);
 		}
 		return virtualCubes;
 	}
@@ -167,7 +168,7 @@ public class OlapModelImpl extends ModelObjectImpl implements OlapModel {
 	 */
 	public EList<Dimension> getDimensions() {
 		if (dimensions == null) {
-			dimensions = new EObjectWithInverseResolvingEList<Dimension>(Dimension.class, this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModelPackage.DIMENSION__MODEL);
+			dimensions = new EObjectContainmentWithInverseEList<Dimension>(Dimension.class, this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModelPackage.DIMENSION__MODEL);
 		}
 		return dimensions;
 	}

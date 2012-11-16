@@ -79,7 +79,7 @@ public interface Dimension extends ModelObject {
 	EList<Hierarchy> getHierarchies();
 
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.OlapModel#getDimensions <em>Dimensions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -87,20 +87,20 @@ public interface Dimension extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(OlapModel)
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getDimension_Model()
 	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getDimensions
-	 * @model opposite="dimensions"
+	 * @model opposite="dimensions" transient="false"
 	 * @generated
 	 */
 	OlapModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Dimension#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Dimension#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */

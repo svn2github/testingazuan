@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -42,16 +43,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public class MeasureImpl extends ModelObjectImpl implements Measure {
-	/**
-	 * The cached value of the '{@link #getCube() <em>Cube</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCube()
-	 * @generated
-	 * @ordered
-	 */
-	protected Cube cube;
-
 	/**
 	 * The cached value of the '{@link #getColumn() <em>Column</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -87,24 +78,8 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	 * @generated
 	 */
 	public Cube getCube() {
-		if (cube != null && cube.eIsProxy()) {
-			InternalEObject oldCube = (InternalEObject)cube;
-			cube = (Cube)eResolveProxy(oldCube);
-			if (cube != oldCube) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.MEASURE__CUBE, oldCube, cube));
-			}
-		}
-		return cube;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Cube basicGetCube() {
-		return cube;
+		if (eContainerFeatureID() != OlapModelPackage.MEASURE__CUBE) return null;
+		return (Cube)eContainer();
 	}
 
 	/**
@@ -113,12 +88,7 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	 * @generated
 	 */
 	public NotificationChain basicSetCube(Cube newCube, NotificationChain msgs) {
-		Cube oldCube = cube;
-		cube = newCube;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.MEASURE__CUBE, oldCube, newCube);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newCube, OlapModelPackage.MEASURE__CUBE, msgs);
 		return msgs;
 	}
 
@@ -128,10 +98,12 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	 * @generated
 	 */
 	public void setCube(Cube newCube) {
-		if (newCube != cube) {
+		if (newCube != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.MEASURE__CUBE && newCube != null)) {
+			if (EcoreUtil.isAncestor(this, newCube))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (cube != null)
-				msgs = ((InternalEObject)cube).eInverseRemove(this, OlapModelPackage.CUBE__MEASURES, Cube.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newCube != null)
 				msgs = ((InternalEObject)newCube).eInverseAdd(this, OlapModelPackage.CUBE__MEASURES, Cube.class, msgs);
 			msgs = basicSetCube(newCube, msgs);
@@ -188,8 +160,8 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case OlapModelPackage.MEASURE__CUBE:
-				if (cube != null)
-					msgs = ((InternalEObject)cube).eInverseRemove(this, OlapModelPackage.CUBE__MEASURES, Cube.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetCube((Cube)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -215,11 +187,24 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.MEASURE__CUBE:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.CUBE__MEASURES, Cube.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.MEASURE__CUBE:
-				if (resolve) return getCube();
-				return basicGetCube();
+				return getCube();
 			case OlapModelPackage.MEASURE__COLUMN:
 				if (resolve) return getColumn();
 				return basicGetColumn();
@@ -272,7 +257,7 @@ public class MeasureImpl extends ModelObjectImpl implements Measure {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case OlapModelPackage.MEASURE__CUBE:
-				return cube != null;
+				return getCube() != null;
 			case OlapModelPackage.MEASURE__COLUMN:
 				return column != null;
 		}

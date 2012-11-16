@@ -38,7 +38,7 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Cube extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Model</b></em>' reference.
+	 * Returns the value of the '<em><b>Model</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.OlapModel#getCubes <em>Cubes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -46,20 +46,20 @@ public interface Cube extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Model</em>' reference.
+	 * @return the value of the '<em>Model</em>' container reference.
 	 * @see #setModel(OlapModel)
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getCube_Model()
 	 * @see it.eng.spagobi.meta.model.olap.OlapModel#getCubes
-	 * @model opposite="cubes"
+	 * @model opposite="cubes" transient="false"
 	 * @generated
 	 */
 	OlapModel getModel();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Cube#getModel <em>Model</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Cube#getModel <em>Model</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Model</em>' reference.
+	 * @param value the new value of the '<em>Model</em>' container reference.
 	 * @see #getModel()
 	 * @generated
 	 */
@@ -92,7 +92,7 @@ public interface Cube extends ModelObject {
 	void setTable(BusinessColumnSet value);
 
 	/**
-	 * Returns the value of the '<em><b>Dimensions</b></em>' reference list.
+	 * Returns the value of the '<em><b>Dimensions</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Dimension}.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -100,15 +100,15 @@ public interface Cube extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimensions</em>' reference list.
+	 * @return the value of the '<em>Dimensions</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getCube_Dimensions()
-	 * @model required="true"
+	 * @model containment="true" required="true"
 	 * @generated
 	 */
 	EList<Dimension> getDimensions();
 
 	/**
-	 * Returns the value of the '<em><b>Measures</b></em>' reference list.
+	 * Returns the value of the '<em><b>Measures</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Measure}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Measure#getCube <em>Cube</em>}'.
 	 * <!-- begin-user-doc -->
@@ -117,10 +117,10 @@ public interface Cube extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Measures</em>' reference list.
+	 * @return the value of the '<em>Measures</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getCube_Measures()
 	 * @see it.eng.spagobi.meta.model.olap.Measure#getCube
-	 * @model opposite="cube" required="true"
+	 * @model opposite="cube" containment="true" required="true"
 	 * @generated
 	 */
 	EList<Measure> getMeasures();
@@ -154,7 +154,7 @@ public interface Cube extends ModelObject {
 	void setCalculatedMembers(CalculatedMember value);
 
 	/**
-	 * Returns the value of the '<em><b>Named Sets</b></em>' reference list.
+	 * Returns the value of the '<em><b>Named Sets</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.NamedSet}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.NamedSet#getCube <em>Cube</em>}'.
 	 * <!-- begin-user-doc -->
@@ -163,10 +163,10 @@ public interface Cube extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Named Sets</em>' reference list.
+	 * @return the value of the '<em>Named Sets</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getCube_NamedSets()
 	 * @see it.eng.spagobi.meta.model.olap.NamedSet#getCube
-	 * @model opposite="cube"
+	 * @model opposite="cube" containment="true"
 	 * @generated
 	 */
 	EList<NamedSet> getNamedSets();

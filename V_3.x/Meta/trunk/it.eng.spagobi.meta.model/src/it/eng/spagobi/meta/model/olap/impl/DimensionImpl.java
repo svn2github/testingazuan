@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -69,16 +70,6 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 * @ordered
 	 */
 	protected EList<Hierarchy> hierarchies;
-
-	/**
-	 * The cached value of the '{@link #getModel() <em>Model</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getModel()
-	 * @generated
-	 * @ordered
-	 */
-	protected OlapModel model;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -155,24 +146,8 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 * @generated
 	 */
 	public OlapModel getModel() {
-		if (model != null && model.eIsProxy()) {
-			InternalEObject oldModel = (InternalEObject)model;
-			model = (OlapModel)eResolveProxy(oldModel);
-			if (model != oldModel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.DIMENSION__MODEL, oldModel, model));
-			}
-		}
-		return model;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public OlapModel basicGetModel() {
-		return model;
+		if (eContainerFeatureID() != OlapModelPackage.DIMENSION__MODEL) return null;
+		return (OlapModel)eContainer();
 	}
 
 	/**
@@ -181,12 +156,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 * @generated
 	 */
 	public NotificationChain basicSetModel(OlapModel newModel, NotificationChain msgs) {
-		OlapModel oldModel = model;
-		model = newModel;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.DIMENSION__MODEL, oldModel, newModel);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newModel, OlapModelPackage.DIMENSION__MODEL, msgs);
 		return msgs;
 	}
 
@@ -196,10 +166,12 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 * @generated
 	 */
 	public void setModel(OlapModel newModel) {
-		if (newModel != model) {
+		if (newModel != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.DIMENSION__MODEL && newModel != null)) {
+			if (EcoreUtil.isAncestor(this, newModel))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (model != null)
-				msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModel.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newModel != null)
 				msgs = ((InternalEObject)newModel).eInverseAdd(this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModel.class, msgs);
 			msgs = basicSetModel(newModel, msgs);
@@ -221,8 +193,8 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 			case OlapModelPackage.DIMENSION__HIERARCHIES:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getHierarchies()).basicAdd(otherEnd, msgs);
 			case OlapModelPackage.DIMENSION__MODEL:
-				if (model != null)
-					msgs = ((InternalEObject)model).eInverseRemove(this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModel.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetModel((OlapModel)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -250,6 +222,20 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.DIMENSION__MODEL:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.OLAP_MODEL__DIMENSIONS, OlapModel.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.DIMENSION__TABLE:
@@ -258,8 +244,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 			case OlapModelPackage.DIMENSION__HIERARCHIES:
 				return getHierarchies();
 			case OlapModelPackage.DIMENSION__MODEL:
-				if (resolve) return getModel();
-				return basicGetModel();
+				return getModel();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -321,7 +306,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 			case OlapModelPackage.DIMENSION__HIERARCHIES:
 				return hierarchies != null && !hierarchies.isEmpty();
 			case OlapModelPackage.DIMENSION__MODEL:
-				return model != null;
+				return getModel() != null;
 		}
 		return super.eIsSet(featureID);
 	}

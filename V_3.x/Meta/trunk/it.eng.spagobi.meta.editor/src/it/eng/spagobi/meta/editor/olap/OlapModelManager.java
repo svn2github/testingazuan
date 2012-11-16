@@ -97,7 +97,7 @@ public class OlapModelManager {
 		    //propertyId="structural.columntype", value="measure"
 		    if ( (propertyId.equals("structural.columntype")) && (value.equals("measure")) ){
 		    	System.out.println("structural.columntype measure su "+selectedBusinessObject);
-		    	//TODO: search if BusinessColumnSet of SimpleBusinessColumn is a cube
+		    	//search if BusinessColumnSet of SimpleBusinessColumn is a cube
 		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
 		    	if (cube != null){
 			    	createOlapMeasure(cube,(SimpleBusinessColumn)selectedBusinessObject);
@@ -106,7 +106,10 @@ public class OlapModelManager {
 		    } else if ( (propertyId.equals("structural.columntype")) && (value.equals("attribute")) ){
 			    //propertyId="structural.columntype", value="attribute"
 		    	System.out.println("structural.columntype attribute su "+selectedBusinessObject);
-		    	removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject);
+		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
+		    	if (cube != null){
+			    	removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject,cube);
+		    	}
 		    } 
 	    }
 	}
@@ -152,7 +155,8 @@ public class OlapModelManager {
 	    }	   
 	}	
 	
-	private void removePreviousObjects(SimpleBusinessColumn businessTable){
-		//TODO: implementation
+	//check if there are previous Olap Object (corresponding to this BusinessColumn) to remove from the model (because columntype changed)
+	private void removePreviousObjects(SimpleBusinessColumn businessColumn, Cube cube){
+		olapModelInitializer.removeCorrespondingOlapObject(businessColumn,cube);
 	}
 }

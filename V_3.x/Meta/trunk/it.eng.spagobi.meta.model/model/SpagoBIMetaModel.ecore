@@ -218,7 +218,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
           eType="#//business/BusinessColumnSet"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="dimensions" lowerBound="1"
-          upperBound="-1" eType="#//olap/Dimension" containment="true"/>
+          upperBound="-1" eType="#//olap/Dimension"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measures" lowerBound="1"
           upperBound="-1" eType="#//olap/Measure" containment="true" eOpposite="#//olap/Measure/cube"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="calculatedMembers" eType="#//olap/CalculatedMember"

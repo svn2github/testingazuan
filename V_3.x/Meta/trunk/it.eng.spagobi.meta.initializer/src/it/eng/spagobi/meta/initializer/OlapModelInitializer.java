@@ -17,6 +17,7 @@ import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.olap.Cube;
@@ -89,7 +90,7 @@ public class OlapModelInitializer {
 		return olapModel;
 		
 	}
-	//Add an empty Cube to the OlapModel
+	//Add a Cube to the OlapModel, with Measures if found
 	public Cube addCube(OlapModel olapModel,BusinessColumnSet businessColumnSet){
 		Cube cube;
 		try {
@@ -100,6 +101,31 @@ public class OlapModelInitializer {
 			olapModel.getCubes().add(cube);
 
 			getPropertiesInitializer().addProperties(cube);	
+			
+			//Scan the businessColumnSet for columns set as Measure
+			EList<BusinessColumn> businessColumns = businessColumnSet.getColumns();
+			for (BusinessColumn column:businessColumns){
+				if (column.getProperties().get("structural.columntype").getValue().equals("measure")){
+					logger.debug("Found existing measure on "+column);
+					addMeasure(cube,column);
+				}
+			}
+			
+			//Check if the businessColumnSet has outbound relationships with other businessColumnSet marked as Dimension
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			for (BusinessRelationship businessRelationship : businessRelationships){
+				//check only outbound relationships
+				if (businessRelationship.getSourceTable().equals(businessColumnSet)){
+					BusinessColumnSet destinationTable = businessRelationship.getDestinationTable();
+					if (destinationTable.getProperties().get("structural.tabletype").getValue().equals("dimension")){
+						Dimension dimension = getDimension(destinationTable);
+						//add a reference from the cube to the dimension
+						if (dimension != null){
+							cube.getDimensions().add(dimension);
+						}
+					}
+				}
+			}
 
 			
 		} catch(Throwable t) {
@@ -109,7 +135,7 @@ public class OlapModelInitializer {
 		
 	}
 	
-	//Add an empty Dimension to the OlapModel
+	//Add a Dimension to the OlapModel, Add references to the Cubes if found
 	public Dimension addDimension(OlapModel olapModel,BusinessColumnSet businessColumnSet){
 		Dimension dimension;
 		try{
@@ -120,6 +146,24 @@ public class OlapModelInitializer {
 			olapModel.getDimensions().add(dimension);
 
 			getPropertiesInitializer().addProperties(dimension);	
+			
+			//Check if the businessColumnSet has inbound relationships from other businessColumnSet marked as Cube
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			for (BusinessRelationship businessRelationship : businessRelationships){
+				//check only inbound relationships
+				if (businessRelationship.getDestinationTable().equals(businessColumnSet)){
+					BusinessColumnSet sourceTable = businessRelationship.getSourceTable();
+					if (sourceTable.getProperties().get("structural.tabletype").getValue().equals("cube")){
+						Cube cube = getCube(sourceTable);
+						//add a reference from the existing cube to the new dimension
+						if (cube != null){
+							cube.getDimensions().add(dimension);
+						}
+					}
+				}
+			}			
+			
+			
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to add dimension ");
 		}
@@ -149,8 +193,12 @@ public class OlapModelInitializer {
 	public void removeCorrespondingOlapObject(BusinessColumnSet businessColumnSet){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
+		Dimension dimensionToRemove = null;
 		
-		//remove cube from the model 
+		//----------------------------------------------------------
+		//	remove Cube from the model 
+		//----------------------------------------------------------
+		
 		EList<Cube>cubes = olapModel.getCubes();
 		boolean foundCube=false;
 		int i=0;
@@ -164,22 +212,69 @@ public class OlapModelInitializer {
 		if (foundCube){
 			olapModel.getCubes().remove(i);
 		}
-		
-		//remove dimension from the model 
+		//----------------------------------------------------------
+
+		//----------------------------------------------------------
+		//	remove Dimension from the model 
+		//----------------------------------------------------------
+
 		EList<Dimension>dimensions = olapModel.getDimensions();
 		boolean foundDimension=false;
 		i=0;
 		for (Dimension dimension:dimensions){
 			if (dimension.getTable().equals(businessColumnSet)){
 				foundDimension = true;
+				dimensionToRemove = dimension;
 				break;				
 			}
 			i++;
 		}
 		if (foundDimension){
+			
+			//Check if the businessColumnSet has inbound relationships from other businessColumnSet marked as Cube
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			for (BusinessRelationship businessRelationship : businessRelationships){
+				//check only inbound relationships
+				if (businessRelationship.getDestinationTable().equals(businessColumnSet)){
+					BusinessColumnSet sourceTable = businessRelationship.getSourceTable();
+					if (sourceTable.getProperties().get("structural.tabletype").getValue().equals("cube")){
+						Cube cube = getCube(sourceTable);
+						//remove reference from the existing cube to the dimension to delete
+						if (cube != null){
+							if (dimensionToRemove != null){
+								cube.getDimensions().remove(dimensionToRemove);
+							}
+						}
+					}
+				}
+			}		
+			//remove the dimension from the Olap Model
 			olapModel.getDimensions().remove(i);
 		}
+		//----------------------------------------------------------
+
 	}
+	
+	//Remove Measure corresponding to the passed businessColumn
+	public void removeCorrespondingOlapObject(BusinessColumn businessColumn, Cube cube){
+		OlapModel olapModel = cube.getModel();
+		
+		//remove measure from the model 
+		EList<Measure> measures = cube.getMeasures();
+		boolean foundMeasure=false;
+		int i=0;
+		for (Measure measure:measures){
+			if (measure.getColumn().equals(businessColumn)){			
+				foundMeasure = true;
+				break;
+			}
+			i++;
+		}
+		if (foundMeasure){
+			cube.getMeasures().remove(i);
+		}
+	}
+
 	
 	//NOTE: This function is correct if there is only one cube for a specific businessColumnSet
 	//return the Cube corresponding to the businessColumnSet (if any)
@@ -194,9 +289,25 @@ public class OlapModelInitializer {
 			}
 		}
 		//no corresponding cube found
-		return null;
-			
+		return null;		
 	}
+
+	//NOTE: This function is correct if there is only one Dimension for a specific businessColumnSet
+	//return the Dimension corresponding to the businessColumnSet (if any)
+	public Dimension getDimension(BusinessColumnSet businessColumnSet){
+		Model rootModel = businessColumnSet.getModel().getParentModel();
+		OlapModel olapModel = rootModel.getOlapModels().get(0);
+		
+		EList<Dimension>dimensions = olapModel.getDimensions();
+		for (Dimension dimension:dimensions){
+			if (dimension.getTable().equals(businessColumnSet)){			
+				return dimension;
+			}
+		}
+		//no corresponding dimension found
+		return null;		
+	}
+	
 
 	
 	//  --------------------------------------------------------

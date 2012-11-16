@@ -71,7 +71,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	protected BusinessColumnSet table;
 
 	/**
-	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' containment reference list.
+	 * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getDimensions()
@@ -215,7 +215,7 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 	 */
 	public EList<Dimension> getDimensions() {
 		if (dimensions == null) {
-			dimensions = new EObjectContainmentEList<Dimension>(Dimension.class, this, OlapModelPackage.CUBE__DIMENSIONS);
+			dimensions = new EObjectResolvingEList<Dimension>(Dimension.class, this, OlapModelPackage.CUBE__DIMENSIONS);
 		}
 		return dimensions;
 	}
@@ -339,8 +339,6 @@ public class CubeImpl extends ModelObjectImpl implements Cube {
 		switch (featureID) {
 			case OlapModelPackage.CUBE__MODEL:
 				return basicSetModel(null, msgs);
-			case OlapModelPackage.CUBE__DIMENSIONS:
-				return ((InternalEList<?>)getDimensions()).basicRemove(otherEnd, msgs);
 			case OlapModelPackage.CUBE__MEASURES:
 				return ((InternalEList<?>)getMeasures()).basicRemove(otherEnd, msgs);
 			case OlapModelPackage.CUBE__CALCULATED_MEMBERS:

@@ -67,7 +67,6 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 
 			this.executed = true;
 			
-			System.out.println("Created measure: "+addedMeasure);
 			logger.debug("Command [{}] executed succesfully", CreateMeasureCommand.class.getName());	
 
 		}

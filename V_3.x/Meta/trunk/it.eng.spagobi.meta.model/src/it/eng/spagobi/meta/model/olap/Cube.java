@@ -92,7 +92,7 @@ public interface Cube extends ModelObject {
 	void setTable(BusinessColumnSet value);
 
 	/**
-	 * Returns the value of the '<em><b>Dimensions</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Dimensions</b></em>' reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Dimension}.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -100,9 +100,9 @@ public interface Cube extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimensions</em>' containment reference list.
+	 * @return the value of the '<em>Dimensions</em>' reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getCube_Dimensions()
-	 * @model containment="true" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
 	EList<Dimension> getDimensions();

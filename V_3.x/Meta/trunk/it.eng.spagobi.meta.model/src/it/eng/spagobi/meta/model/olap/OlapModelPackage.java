@@ -237,7 +237,7 @@ public interface OlapModelPackage extends EPackage {
 	int CUBE__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Dimensions</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Dimensions</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1197,10 +1197,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getCube_Table();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getDimensions <em>Dimensions</em>}'.
+	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Cube#getDimensions <em>Dimensions</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Dimensions</em>'.
+	 * @return the meta object for the reference list '<em>Dimensions</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Cube#getDimensions()
 	 * @see #getCube()
 	 * @generated
@@ -1721,7 +1721,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference CUBE__TABLE = eINSTANCE.getCube_Table();
 		/**
-		 * The meta object literal for the '<em><b>Dimensions</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Dimensions</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

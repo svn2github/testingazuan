@@ -40,6 +40,8 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 	BusinessColumn businessColumn;
 	Cube cube;
 	Measure addedMeasure;
+
+	private String originalTableType;
 	private static Logger logger = LoggerFactory.getLogger(CreateMeasureCommand.class);
 
 	/**
@@ -62,6 +64,8 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 		if (parameter.getValue() instanceof BusinessColumn){
 			cube = (Cube)parameter.getOwner();
 			businessColumn= (BusinessColumn)parameter.getValue();
+			//get the original Column Type Value for undo
+			originalTableType = businessColumn.getProperties().get("structural.columntype").getValue();
 			
 			addedMeasure = olapModelInitializer.addMeasure(cube, businessColumn);
 
@@ -87,6 +91,7 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 	@Override
 	public void undo() {		
 		cube.getMeasures().remove(addedMeasure);
+		businessColumn.getProperties().get("structural.tabletype").setValue(originalTableType);
 	}
 	
 	@Override

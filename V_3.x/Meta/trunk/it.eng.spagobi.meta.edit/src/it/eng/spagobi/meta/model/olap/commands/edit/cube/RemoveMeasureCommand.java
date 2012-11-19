@@ -10,11 +10,13 @@
 package it.eng.spagobi.meta.model.olap.commands.edit.cube;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateEmptyBusinessTableCommand;
 import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Measure;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import java.util.ArrayList;
@@ -31,15 +33,16 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
+public class RemoveMeasureCommand extends AbstractSpagoBIModelEditCommand {
 	
 	OlapModelInitializer olapModelInitializer;
 	
-	BusinessColumnSet businessColumnSet;
-	OlapModel olapModel;
-	Cube addedCube;
-	String originalTableType;
-	private static Logger logger = LoggerFactory.getLogger(CreateCubeCommand.class);
+	BusinessColumn businessColumn;
+	Cube cube;
+	Measure removedMeasure;
+
+	private String originalTableType;
+	private static Logger logger = LoggerFactory.getLogger(RemoveMeasureCommand.class);
 
 	/**
 	 * @param commandLabel
@@ -48,27 +51,27 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 	 * @param domain
 	 * @param parameter
 	 */
-	public CreateCubeCommand(EditingDomain domain, CommandParameter parameter) {
-		super("model.olap.commands.edit.cube.create.label", "model.olap.commands.edit.cube.create.description", "model.olap.commands.edit.cube.create", domain, parameter);
+	public RemoveMeasureCommand(EditingDomain domain, CommandParameter parameter) {
+		super("model.olap.commands.edit.cube.removemeasure.label", "model.olap.commands.edit.cube.removemeasure.description", "model.olap.commands.edit.cube.removemeasure", domain, parameter);
 		olapModelInitializer = new OlapModelInitializer();
 	}
 	
-	public CreateCubeCommand(EditingDomain domain){
+	public RemoveMeasureCommand(EditingDomain domain){
 		this(domain,null);
 	}
 	@Override
 	public void execute() {
-		if (parameter.getValue() instanceof BusinessColumnSet){
-			olapModel = (OlapModel)parameter.getOwner();
-			businessColumnSet= (BusinessColumnSet)parameter.getValue();
-			//get the original Table Type Value for undo
-			originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();
-
+		if (parameter.getValue() instanceof BusinessColumn){
+			cube = (Cube)parameter.getOwner();
+			businessColumn= (BusinessColumn)parameter.getValue();
+			//get the original Column Type Value for undo
+			originalTableType = businessColumn.getProperties().get("structural.columntype").getValue();
 			
-			addedCube = olapModelInitializer.addCube(olapModel, businessColumnSet);
+			removedMeasure = olapModelInitializer.removeCorrespondingOlapObject(businessColumn,cube);
 
 			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", CreateCubeCommand.class.getName());	
+			
+			logger.debug("Command [{}] executed succesfully", RemoveMeasureCommand.class.getName());	
 
 		}
 			
@@ -77,9 +80,9 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 	
 	public Collection<?> getAffectedObjects() {
 		Collection affectedObjects = Collections.EMPTY_LIST;
-		if(olapModel != null) {
+		if(cube.getModel() != null) {
 			affectedObjects = new ArrayList();
-			affectedObjects.add(olapModel);
+			affectedObjects.add(cube.getModel());
 		}
 		return affectedObjects;
 	}
@@ -87,8 +90,8 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 	
 	@Override
 	public void undo() {		
-		olapModel.getCubes().remove(addedCube);
-		businessColumnSet.getProperties().get("structural.tabletype").setValue(originalTableType);
+		cube.getMeasures().add(removedMeasure);
+		businessColumn.getProperties().get("structural.tabletype").setValue(originalTableType);
 	}
 	
 	@Override

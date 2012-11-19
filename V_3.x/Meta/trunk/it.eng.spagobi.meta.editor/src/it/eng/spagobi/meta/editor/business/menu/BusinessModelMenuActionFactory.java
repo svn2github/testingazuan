@@ -22,6 +22,10 @@ import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessViewInnerJoinRelationshipsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
+import it.eng.spagobi.meta.editor.olap.actions.SetAttributeAction;
+import it.eng.spagobi.meta.editor.olap.actions.SetCubeAction;
+import it.eng.spagobi.meta.editor.olap.actions.SetDimensionAction;
+import it.eng.spagobi.meta.editor.olap.actions.SetMeasureAction;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -62,18 +66,27 @@ public class BusinessModelMenuActionFactory {
 		
 		if(target instanceof BusinessTable) {
 			 List editActions = new ArrayList();
+		     List olapActions = new ArrayList();
+
 			 if (((BusinessTable)target).getPhysicalTable() != null ){
 				 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
 				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 				 editActions.add(new AddOutcomeBusinessRelationshipAction(activeEditorPart, selection));
 				 editActions.add(new AddIncomeBusinessRelationshipAction(activeEditorPart, selection));	
 				 //editActions.add(new AddPhysicalTableToBusinessTableAction(activeEditorPart, selection));
-				 editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));	
+				 editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));
+				 
+				 //Add Olap Actions
+ 		    	 olapActions.add(new SetCubeAction(activeEditorPart, selection));
+ 		    	 olapActions.add(new SetDimensionAction(activeEditorPart, selection));
+
 			 }
 			 else {
 				 editActions.add(new EditBusinessColumnsAction(activeEditorPart, selection));
 			 }
 			 actions.put("Edit", editActions);
+			 actions.put("Olap", olapActions);
+
 		} else if(target instanceof BusinessView) {
 			 List editActions = new ArrayList();
 			 editActions.add(new AddIdentifierAction(activeEditorPart, selection));
@@ -92,6 +105,8 @@ public class BusinessModelMenuActionFactory {
 		} else if(target instanceof SimpleBusinessColumn){
 			List editActions = new ArrayList();
 			List removeActions = new ArrayList();
+			List olapActions = new ArrayList();
+
 			BusinessColumn businessColumn = (BusinessColumn)target;
 			if ((businessColumn.isIdentifier()) || (businessColumn.isPartOfCompositeIdentifier())){
 				RemoveFromIdentifierAction removeFromIdentifierAction = new RemoveFromIdentifierAction(activeEditorPart, selection);
@@ -110,6 +125,14 @@ public class BusinessModelMenuActionFactory {
 				}
 				actions.put("Edit", editActions);
 			}
+			
+			olapActions.add(new SetMeasureAction(activeEditorPart, selection));
+			olapActions.add(new SetAttributeAction(activeEditorPart, selection));
+
+			actions.put("Olap", olapActions);
+
+			
+			
 	    } else if(target instanceof CalculatedBusinessColumn){
 			List editActions = new ArrayList();
 			List removeActions = new ArrayList();

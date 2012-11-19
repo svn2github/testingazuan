@@ -256,7 +256,7 @@ public class OlapModelInitializer {
 	}
 	
 	//Remove Measure corresponding to the passed businessColumn
-	public void removeCorrespondingOlapObject(BusinessColumn businessColumn, Cube cube){
+	public Measure removeCorrespondingOlapObject(BusinessColumn businessColumn, Cube cube){
 		OlapModel olapModel = cube.getModel();
 		
 		//remove measure from the model 
@@ -271,8 +271,10 @@ public class OlapModelInitializer {
 			i++;
 		}
 		if (foundMeasure){
-			cube.getMeasures().remove(i);
+			Measure removedMeasure = cube.getMeasures().remove(i);
+			return removedMeasure;
 		}
+		return null;
 	}
 
 	

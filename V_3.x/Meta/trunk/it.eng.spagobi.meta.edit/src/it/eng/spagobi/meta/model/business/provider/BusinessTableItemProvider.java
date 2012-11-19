@@ -19,6 +19,8 @@ import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedField
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
@@ -278,6 +280,13 @@ public class BusinessTableItemProvider
 		    	result = new DeleteBusinessTableCommand(domain, commandParameter);
 		    }  else if(commandClass == AddCalculatedFieldCommand.class) {
 		    	result = new AddCalculatedFieldCommand(domain, commandParameter);
+		    }
+		 	//OLAP Commands
+		    else if(commandClass == CreateCubeCommand.class) {
+		    	result = new CreateCubeCommand(domain, commandParameter);
+		    }
+		    else if(commandClass == CreateDimensionCommand.class) {
+		    	result = new CreateDimensionCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

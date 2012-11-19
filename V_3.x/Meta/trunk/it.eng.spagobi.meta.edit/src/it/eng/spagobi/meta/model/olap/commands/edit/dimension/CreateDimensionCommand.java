@@ -39,6 +39,8 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 	BusinessColumnSet businessColumnSet;
 	OlapModel olapModel;
 	Dimension addedDimension;
+	String originalTableType;
+
 	private static Logger logger = LoggerFactory.getLogger(CreateDimensionCommand.class);
 
 	/**
@@ -49,7 +51,7 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 	 * @param parameter
 	 */
 	public CreateDimensionCommand(EditingDomain domain, CommandParameter parameter) {
-		super("model.olap.commands.edit.cube.create.label", "model.olap.commands.edit.cube.create.description", "model.olap.commands.edit.cube.create", domain, parameter);
+		super("model.olap.commands.edit.dimension.create.label", "model.olap.commands.edit.dimension.create.description", "model.olap.commands.edit.dimension.create", domain, parameter);
 		olapModelInitializer = new OlapModelInitializer();
 	}
 	
@@ -61,6 +63,8 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 		if (parameter.getValue() instanceof BusinessColumnSet){
 			olapModel = (OlapModel)parameter.getOwner();
 			businessColumnSet= (BusinessColumnSet)parameter.getValue();
+			//get the original Table Type Value for undo
+			originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();
 			
 			addedDimension = olapModelInitializer.addDimension(olapModel, businessColumnSet);
 
@@ -84,7 +88,8 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 	
 	@Override
 	public void undo() {		
-		olapModel.getCubes().remove(addedDimension);
+		olapModel.getDimensions().remove(addedDimension);
+		businessColumnSet.getProperties().get("structural.tabletype").setValue(originalTableType);
 	}
 	
 	@Override

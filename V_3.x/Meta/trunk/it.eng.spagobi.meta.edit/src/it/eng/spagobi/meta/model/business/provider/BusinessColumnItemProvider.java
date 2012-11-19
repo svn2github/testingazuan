@@ -17,6 +17,8 @@ import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.AddColumnToIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.RemoveColumnFromIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateMeasureCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.cube.RemoveMeasureCommand;
 import it.eng.spagobi.meta.model.provider.ModelObjectItemProvider;
 import it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin;
 
@@ -193,6 +195,13 @@ public class BusinessColumnItemProvider
 		 }
 		 else if(commandClass == AddCalculatedFieldCommand.class) {
 			 result = new AddCalculatedFieldCommand(domain, commandParameter);
+		 }
+		 //OLAP Commands
+		 else if(commandClass == CreateMeasureCommand.class) {
+			 result = new CreateMeasureCommand(domain, commandParameter);
+		 }
+		 else if(commandClass == RemoveMeasureCommand.class) {
+			 result = new RemoveMeasureCommand(domain, commandParameter);
 		 }
 		 
 		 return result;

@@ -33,8 +33,8 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in3"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
-        oper.setReturnClass(java.lang.String.class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "DataHandler"));
+        oper.setReturnClass(javax.activation.DataHandler.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getArtifactContentByNameAndTypeReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
@@ -48,8 +48,8 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
-        oper.setReturnClass(java.lang.String.class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "DataHandler"));
+        oper.setReturnClass(javax.activation.DataHandler.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getArtifactContentByIdReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
@@ -108,7 +108,7 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
         }
     }
 
-    public java.lang.String getArtifactContentByNameAndType(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
+    public javax.activation.DataHandler getArtifactContentByNameAndType(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -129,9 +129,9 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
         else {
             extractAttachments(_call);
             try {
-                return (java.lang.String) _resp;
+                return (javax.activation.DataHandler) _resp;
             } catch (java.lang.Exception _exception) {
-                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
+                return (javax.activation.DataHandler) org.apache.axis.utils.JavaUtils.convert(_resp, javax.activation.DataHandler.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
@@ -139,7 +139,7 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
 }
     }
 
-    public java.lang.String getArtifactContentById(java.lang.String in0, java.lang.String in1, java.lang.Integer in2) throws java.rmi.RemoteException {
+    public javax.activation.DataHandler getArtifactContentById(java.lang.String in0, java.lang.String in1, java.lang.Integer in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -160,9 +160,9 @@ public class ArtifactServiceSoapBindingStub extends org.apache.axis.client.Stub 
         else {
             extractAttachments(_call);
             try {
-                return (java.lang.String) _resp;
+                return (javax.activation.DataHandler) _resp;
             } catch (java.lang.Exception _exception) {
-                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
+                return (javax.activation.DataHandler) org.apache.axis.utils.JavaUtils.convert(_resp, javax.activation.DataHandler.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

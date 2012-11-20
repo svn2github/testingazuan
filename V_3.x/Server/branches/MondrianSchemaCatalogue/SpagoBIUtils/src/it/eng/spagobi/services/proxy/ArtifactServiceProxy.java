@@ -8,6 +8,7 @@ package it.eng.spagobi.services.proxy;
 import it.eng.spagobi.services.artifact.stub.ArtifactServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
 
@@ -66,7 +67,7 @@ public final class ArtifactServiceProxy extends AbstractServiceProxy{
      * 
      * @return Artifact
      */
-    public String getArtifactContentByNameAndType(String name, String type) {
+    public DataHandler getArtifactContentByNameAndType(String name, String type) {
 	logger.debug("IN.name="+name);
 	logger.debug("IN.type="+type);
 	if (name==null || name.length()==0){
@@ -97,7 +98,7 @@ public final class ArtifactServiceProxy extends AbstractServiceProxy{
      * 
      * @return Artifact
      */
-    public String getArtifactContentById(Integer id) {
+    public DataHandler getArtifactContentById(Integer id) {
 	logger.debug("IN.id="+id);
 	if (id==null){
 	    logger.error("Artifact id is NULL");

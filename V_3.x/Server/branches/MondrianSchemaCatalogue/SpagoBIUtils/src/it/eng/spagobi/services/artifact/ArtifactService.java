@@ -5,6 +5,8 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.services.artifact;
 
+import javax.activation.DataHandler;
+
 
 
 /**
@@ -22,7 +24,7 @@ public interface ArtifactService {
 	 * @param type. The artifact's type.
 	 * @return the content of the artifact.
 	 */
-	String getArtifactContentByNameAndType(String token,String user, String name, String type);  
+	DataHandler getArtifactContentByNameAndType(String token,String user, String name, String type);  
 
 	/**
 	 * return the artifact getted by the id
@@ -31,6 +33,6 @@ public interface ArtifactService {
 	 * @param id. The artifact's id.
 	 * @return the content of the artifact.
 	 */
-	String getArtifactContentById(String token, String user, Integer id);  
+	DataHandler getArtifactContentById(String token, String user, Integer id);  
 
 }

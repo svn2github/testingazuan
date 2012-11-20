@@ -17,13 +17,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getArtifactContentByNameAndTypeResponse">
 
-      <wsdl:part name="getArtifactContentByNameAndTypeReturn" type="soapenc:string"/>
+      <wsdl:part name="getArtifactContentByNameAndTypeReturn" type="apachesoap:DataHandler"/>
 
    </wsdl:message>
 
    <wsdl:message name="getArtifactContentByIdResponse">
 
-      <wsdl:part name="getArtifactContentByIdReturn" type="soapenc:string"/>
+      <wsdl:part name="getArtifactContentByIdReturn" type="apachesoap:DataHandler"/>
 
    </wsdl:message>
 

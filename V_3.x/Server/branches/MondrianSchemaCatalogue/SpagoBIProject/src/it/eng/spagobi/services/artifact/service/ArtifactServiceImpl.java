@@ -5,16 +5,11 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.services.artifact.service;
 
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
-import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
-import it.eng.spagobi.tools.catalogue.bo.Artifact;
-import it.eng.spagobi.tools.catalogue.bo.Content;
-import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
+
+import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Encoder;
 
 public class ArtifactServiceImpl extends AbstractServiceImpl {
 
@@ -35,7 +30,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl {
 	 * @param type. The artifact's type.
 	 * @return the content of the artifact.
 	 */
-	public String getArtifactContentByNameAndType(String token,String user, String name, String type){
+	public DataHandler getArtifactContentByNameAndType(String token,String user, String name, String type){
 		logger.debug("IN");
 		String toReturn;
 		try {
@@ -57,7 +52,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl {
 	 * @param id. The artifact's id.
 	 * @return the content of the artifact.
 	 */
-    public String getArtifactContentById(String token, String user, Integer id){
+    public DataHandler getArtifactContentById(String token, String user, Integer id){
 		logger.debug("IN");
 		String toReturn;
 		try {

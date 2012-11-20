@@ -6,13 +6,17 @@
 package it.eng.spagobi.services.artifact.service;
 
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.sdk.utilities.SDKObjectsConverter.MemoryOnlyDataSource;
 import it.eng.spagobi.tools.catalogue.bo.Artifact;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
 
+import javax.activation.DataHandler;
+
 import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Encoder;
+import org.apache.axis.attachments.ManagedMemoryDataSource;
 
 public class ArtifactServiceImplSupplier {
     static private Logger logger = Logger.getLogger(ArtifactServiceImplSupplier.class);
@@ -25,10 +29,10 @@ public class ArtifactServiceImplSupplier {
 	 * @param type. The artifact's type.
 	 * @return the content of the artifact.
 	 */
-    public String getArtifactContentByNameAndType(String name, String type) {
+    public DataHandler getArtifactContentByNameAndType(String name, String type) {
 		logger.debug("IN.name:" + name);
 		logger.debug("IN.type:" + type);
-		String toReturn;
+		DataHandler toReturn;
 		
 		if (name == null || type == null)
 		    return null;
@@ -39,8 +43,11 @@ public class ArtifactServiceImplSupplier {
 			Artifact artifact = artdao.loadArtifactByNameAndType(name, type);
 			Content content = artdao.loadArtifactContentById(Integer.valueOf(artifact.getId()));
 			byte[] cont = content.getContent();
-			BASE64Encoder bASE64Encoder = new BASE64Encoder();
-			toReturn = bASE64Encoder.encode(cont);			
+			ManagedMemoryDataSource mods =  new ManagedMemoryDataSource(new java.io.ByteArrayInputStream(cont), Integer.MAX_VALUE - 2,
+					null, true);
+			toReturn = new DataHandler(mods);
+			//BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			//toReturn = bASE64Encoder.encode(cont);			
 			return toReturn;	
 		} catch (Exception e) {
 		    logger.error("The artifact is not correctly returned", e);
@@ -57,9 +64,9 @@ public class ArtifactServiceImplSupplier {
 	 * @param id. The artifact's id.
 	 * @return the content of the artifact.
 	 */
-    public String getArtifactContentById(Integer id){
+    public DataHandler getArtifactContentById(Integer id){
     	logger.debug("IN.id:" + id);
-    	String toReturn;
+    	DataHandler toReturn;
     	
     	if (id == null)
     	    return null;
@@ -69,8 +76,11 @@ public class ArtifactServiceImplSupplier {
 			IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();
 			Content content = artdao.loadArtifactContentById(id);
 			byte[] cont = content.getContent();
-			BASE64Encoder bASE64Encoder = new BASE64Encoder();
-			toReturn = bASE64Encoder.encode(cont);			
+			ManagedMemoryDataSource mods =  new ManagedMemoryDataSource(new java.io.ByteArrayInputStream(cont), Integer.MAX_VALUE - 2,
+			null, true);
+			toReturn = new DataHandler(mods);
+			//BASE64Encoder bASE64Encoder = new BASE64Encoder();
+			//toReturn = bASE64Encoder.encode(cont);			
 			return toReturn;
 		} catch (Exception e) {
 			logger.error("The artifact is not correctly returned", e);

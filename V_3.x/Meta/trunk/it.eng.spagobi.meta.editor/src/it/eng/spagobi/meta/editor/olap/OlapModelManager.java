@@ -38,7 +38,9 @@ import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateMeasureCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.cube.RemoveMeasureCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.generic.SetGenericCommand;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it)
@@ -77,26 +79,27 @@ public class OlapModelManager {
 	    if (selectedBusinessObject instanceof BusinessTable){
 		    //propertyId ="structural.tabletype", value="cube"
 		    if ( (propertyId.equals("structural.tabletype")) && (value.equals("cube")) ){
-		    	System.out.println("structural.tabletype cube su "+selectedBusinessObject);
-		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	//System.out.println("structural.tabletype cube su "+selectedBusinessObject);
+		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
 		    	createOlapCube((BusinessColumnSet)selectedBusinessObject);
 		    } 
 		    //propertyId ="structural.tabletype", value="dimension"
 		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("dimension")) ){
-		    	System.out.println("structural.tabletype dimension su "+selectedBusinessObject);
-		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	//System.out.println("structural.tabletype dimension su "+selectedBusinessObject);
+		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
 		    	createOlapDimension((BusinessColumnSet)selectedBusinessObject);
 		    } 
 		    //propertyId ="structural.tabletype", value="generic"
 		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("generic")) ){
-		    	System.out.println("structural.tabletype generic su "+selectedBusinessObject);
-		    	removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	//System.out.println("structural.tabletype generic su "+selectedBusinessObject);
+		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
+		    	setGenericTable((BusinessColumnSet)selectedBusinessObject);
 		    } 
 	    }
 	    else if (selectedBusinessObject instanceof SimpleBusinessColumn){
 		    //propertyId="structural.columntype", value="measure"
 		    if ( (propertyId.equals("structural.columntype")) && (value.equals("measure")) ){
-		    	System.out.println("structural.columntype measure su "+selectedBusinessObject);
+		    	//System.out.println("structural.columntype measure su "+selectedBusinessObject);
 		    	//search if BusinessColumnSet of SimpleBusinessColumn is a cube
 		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
 		    	if (cube != null){
@@ -105,10 +108,11 @@ public class OlapModelManager {
 		    	
 		    } else if ( (propertyId.equals("structural.columntype")) && (value.equals("attribute")) ){
 			    //propertyId="structural.columntype", value="attribute"
-		    	System.out.println("structural.columntype attribute su "+selectedBusinessObject);
+		    	//System.out.println("structural.columntype attribute su "+selectedBusinessObject);
 		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
 		    	if (cube != null){
-			    	removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject,cube);
+			    	//removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject,cube);
+		    		setAttribute(cube,(SimpleBusinessColumn)selectedBusinessObject);
 		    	}
 		    } 
 	    }
@@ -135,7 +139,7 @@ public class OlapModelManager {
 	    }
 	}
 	
-	//Create Olap Dimension via CreateCubeCommand
+	//Create Olap Dimension via CreateDimensionCommand
 	private void createOlapDimension(BusinessColumnSet businessColumnSet){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
@@ -145,6 +149,17 @@ public class OlapModelManager {
 	    	editingDomain.getCommandStack().execute(new CreateDimensionCommand(editingDomain,commandParameter));
 	    }	   
 	}
+	//Erase Olap Objects and reset type to generic via SetGenericCommand
+	private void setGenericTable(BusinessColumnSet businessColumnSet){
+		Model rootModel = businessColumnSet.getModel().getParentModel();
+		OlapModel olapModel = rootModel.getOlapModels().get(0);
+		
+		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+	    if (editingDomain != null) {	    	
+	    	editingDomain.getCommandStack().execute(new SetGenericCommand(editingDomain,commandParameter));
+	    }	  		
+	}
+
 	
 	//Create Olap Measure via CreateMeasureCommand
 	private void createOlapMeasure(Cube cube, SimpleBusinessColumn simpleBusinessColumn){
@@ -154,6 +169,15 @@ public class OlapModelManager {
 	    	editingDomain.getCommandStack().execute(new CreateMeasureCommand(editingDomain,commandParameter));
 	    }	   
 	}	
+	
+	//Set column as Attribute via RemoveMeasureCommand
+	private void setAttribute(Cube cube, SimpleBusinessColumn simpleBusinessColumn){
+		
+		CommandParameter commandParameter =  new CommandParameter(cube, null, simpleBusinessColumn, new ArrayList<Object>());
+	    if (editingDomain != null) {	    	
+	    	editingDomain.getCommandStack().execute(new RemoveMeasureCommand(editingDomain,commandParameter));
+	    }	   
+	}		
 	
 	//check if there are previous Olap Object (corresponding to this BusinessColumn) to remove from the model (because columntype changed)
 	private void removePreviousObjects(SimpleBusinessColumn businessColumn, Cube cube){

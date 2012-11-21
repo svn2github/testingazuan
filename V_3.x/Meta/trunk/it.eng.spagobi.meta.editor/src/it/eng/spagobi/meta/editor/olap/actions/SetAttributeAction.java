@@ -62,6 +62,7 @@ public class SetAttributeAction extends AbstractSpagoBIModelAction {
 			businessColumn = (SimpleBusinessColumn)owner;
 
 			Model rootModel = businessColumn.getTable().getModel().getParentModel();
+
 	    	Cube cube = checkIfInsideCube(businessColumn);
 	    	if (cube != null){
 	    		
@@ -70,9 +71,9 @@ public class SetAttributeAction extends AbstractSpagoBIModelAction {
 			    	editingDomain.getCommandStack().execute(new RemoveMeasureCommand(editingDomain,commandParameter));
 			    }	     
 
-				//Settare la property columntype = measure
-				businessColumn.getProperties().get("structural.columntype").setValue("attribute");
 	    	}
+
+
 
 		} catch(Throwable t) {
 			t.printStackTrace();
@@ -83,9 +84,6 @@ public class SetAttributeAction extends AbstractSpagoBIModelAction {
 		return olapModelInitializer.getCube(simpleBusinessColumn.getTable());
 	}
 	
-	//check if there are previous Olap Object (corresponding to this BusinessColumn) to remove from the model (because columntype changed)
-	private void removePreviousObjects(SimpleBusinessColumn businessColumn, Cube cube){
-		olapModelInitializer.removeCorrespondingOlapObject(businessColumn,cube);
-	}
+
 
 }

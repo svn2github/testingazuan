@@ -99,7 +99,7 @@ public class OlapModelInitializer {
 			cube.setTable(businessColumnSet);
 			cube.setName(businessColumnSet.getName());	
 			olapModel.getCubes().add(cube);
-
+			
 			getPropertiesInitializer().addProperties(cube);	
 			
 			//Scan the businessColumnSet for columns set as Measure
@@ -133,6 +133,68 @@ public class OlapModelInitializer {
 		}
 		return cube;
 		
+	}
+	
+	//Add an existing Cube to the OlapModel (used typically for undo operation)
+	public Cube addCube(OlapModel olapModel,Cube cube){
+		try {
+
+			olapModel.getCubes().add(cube);
+
+			BusinessColumnSet businessColumnSet = cube.getTable();
+			
+			//Check if the businessColumnSet has outbound relationships with other businessColumnSet marked as Dimension
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			for (BusinessRelationship businessRelationship : businessRelationships){
+				//check only outbound relationships
+				if (businessRelationship.getSourceTable().equals(businessColumnSet)){
+					BusinessColumnSet destinationTable = businessRelationship.getDestinationTable();
+					if (destinationTable.getProperties().get("structural.tabletype").getValue().equals("dimension")){
+						Dimension dimension = getDimension(destinationTable);
+						//add a reference from the cube to the dimension
+						if (dimension != null){
+							cube.getDimensions().add(dimension);
+						}
+					}
+				}
+			}
+
+			
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to add cube ");
+		}
+		return cube;
+	}
+	
+	//Add an existing Dimension to the OlapModel, Add references to the Cubes if found (typically used for undo operation)
+	public Dimension addDimension(OlapModel olapModel,Dimension dimension){
+		try{
+
+			olapModel.getDimensions().add(dimension);
+			BusinessColumnSet businessColumnSet = dimension.getTable();
+
+
+			//Check if the businessColumnSet has inbound relationships from other businessColumnSet marked as Cube
+			List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+			for (BusinessRelationship businessRelationship : businessRelationships){
+				//check only inbound relationships
+				if (businessRelationship.getDestinationTable().equals(businessColumnSet)){
+					BusinessColumnSet sourceTable = businessRelationship.getSourceTable();
+					if (sourceTable.getProperties().get("structural.tabletype").getValue().equals("cube")){
+						Cube cube = getCube(sourceTable);
+						//add a reference from the existing cube to the new dimension
+						if (cube != null){
+							cube.getDimensions().add(dimension);
+						}
+					}
+				}
+			}			
+			
+			
+		} catch(Throwable t) {
+			throw new RuntimeException("Impossible to add dimension ");
+		}
+		return dimension;
 	}
 	
 	//Add a Dimension to the OlapModel, Add references to the Cubes if found
@@ -190,7 +252,7 @@ public class OlapModelInitializer {
 	}
 	
 	//Remove Cube or Dimension corresponding to the passed businessColumnSet
-	public void removeCorrespondingOlapObject(BusinessColumnSet businessColumnSet){
+	public Object removeCorrespondingOlapObject(BusinessColumnSet businessColumnSet){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
 		Dimension dimensionToRemove = null;
@@ -210,7 +272,7 @@ public class OlapModelInitializer {
 			i++;
 		}
 		if (foundCube){
-			olapModel.getCubes().remove(i);
+			return olapModel.getCubes().remove(i);
 		}
 		//----------------------------------------------------------
 
@@ -249,10 +311,35 @@ public class OlapModelInitializer {
 				}
 			}		
 			//remove the dimension from the Olap Model
-			olapModel.getDimensions().remove(i);
+			return olapModel.getDimensions().remove(i);
 		}
 		//----------------------------------------------------------
+		return null;
 
+	}
+	
+	//Remove a Dimension from the model with all the correct checks
+	public void removeDimension(OlapModel olapModel, Dimension dimension){
+		BusinessColumnSet businessColumnSet = dimension.getTable();
+		
+
+		//Check if the businessColumnSet has inbound relationships from other businessColumnSet marked as Cube
+		List<BusinessRelationship> businessRelationships = businessColumnSet.getRelationships();
+		for (BusinessRelationship businessRelationship : businessRelationships){
+			//check only inbound relationships
+			if (businessRelationship.getDestinationTable().equals(businessColumnSet)){
+				BusinessColumnSet sourceTable = businessRelationship.getSourceTable();
+				if (sourceTable.getProperties().get("structural.tabletype").getValue().equals("cube")){
+					Cube cube = getCube(sourceTable);
+					//remove reference from the existing cube to the dimension to delete
+					if (cube != null){
+						cube.getDimensions().remove(dimension);
+					}
+				}
+			}
+		}		
+		//remove the dimension from the Olap Model
+		olapModel.getDimensions().remove(dimension);
 	}
 	
 	//Remove Measure corresponding to the passed businessColumn

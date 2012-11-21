@@ -25,13 +25,17 @@ import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetAttributeAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetCubeAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetDimensionAction;
+import it.eng.spagobi.meta.editor.olap.actions.SetGenericAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetMeasureAction;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
+import it.eng.spagobi.meta.model.olap.Cube;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import java.util.ArrayList;
@@ -52,7 +56,8 @@ import org.eclipse.ui.IEditorPart;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class BusinessModelMenuActionFactory {
-	
+	public static OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+
 	
 	public static Map<String, Collection<IAction>> getActions(IEditorPart activeEditorPart, Collection<?> descriptors, ISelection selection) {
 		Map actions = new HashMap();
@@ -77,8 +82,20 @@ public class BusinessModelMenuActionFactory {
 				 editActions.add(new AddCalculatedFieldAction(activeEditorPart, selection));
 				 
 				 //Add Olap Actions
- 		    	 olapActions.add(new SetCubeAction(activeEditorPart, selection));
- 		    	 olapActions.add(new SetDimensionAction(activeEditorPart, selection));
+				 String tableType = getTableType((BusinessTable)target);
+				 if (tableType.equals(("generic"))){
+	 		    	 olapActions.add(new SetCubeAction(activeEditorPart, selection));
+	 		    	 olapActions.add(new SetDimensionAction(activeEditorPart, selection));
+				 } 
+				 else if (tableType.equals(("cube"))){
+	 		    	 olapActions.add(new SetDimensionAction(activeEditorPart, selection));
+	 		    	 olapActions.add(new SetGenericAction(activeEditorPart, selection));
+					 
+				 } else if (tableType.equals(("dimension"))){
+	 		    	 olapActions.add(new SetCubeAction(activeEditorPart, selection));
+	 		    	 olapActions.add(new SetGenericAction(activeEditorPart, selection));
+				 }
+
 
 			 }
 			 else {
@@ -125,13 +142,17 @@ public class BusinessModelMenuActionFactory {
 				}
 				actions.put("Edit", editActions);
 			}
-			
-			olapActions.add(new SetMeasureAction(activeEditorPart, selection));
-			olapActions.add(new SetAttributeAction(activeEditorPart, selection));
-
-			actions.put("Olap", olapActions);
-
-			
+			Cube cube = checkIfInsideCube((BusinessColumn)target);
+			if (cube != null){
+				String columnType = getColumnType((BusinessColumn)target);
+				if (columnType.equals(("attribute"))){
+					olapActions.add(new SetMeasureAction(activeEditorPart, selection));
+				} else if (columnType.equals(("measure"))){
+					olapActions.add(new SetAttributeAction(activeEditorPart, selection));				
+				}
+				actions.put("Olap", olapActions);
+			}
+	
 			
 	    } else if(target instanceof CalculatedBusinessColumn){
 			List editActions = new ArrayList();
@@ -159,4 +180,17 @@ public class BusinessModelMenuActionFactory {
 		
 		return actions;
 	}
+	
+	private static String getTableType(BusinessColumnSet businessColumnSet){
+		return businessColumnSet.getProperties().get("structural.tabletype").getValue();
+	}
+	
+	private static String getColumnType(BusinessColumn businessColumn){
+		return businessColumn.getProperties().get("structural.columntype").getValue();
+	}
+	
+	private static Cube checkIfInsideCube(BusinessColumn businessColumn){
+		return olapModelInitializer.getCube(businessColumn.getTable());
+	}
+
 }

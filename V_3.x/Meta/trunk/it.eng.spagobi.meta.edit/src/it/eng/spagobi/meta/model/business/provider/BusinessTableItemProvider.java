@@ -21,6 +21,7 @@ import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTabl
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.generic.SetGenericCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessColumnFolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.InboundRelationshipFolderItemProvider;
@@ -287,6 +288,9 @@ public class BusinessTableItemProvider
 		    }
 		    else if(commandClass == CreateDimensionCommand.class) {
 		    	result = new CreateDimensionCommand(domain, commandParameter);
+		    }
+		    else if(commandClass == SetGenericCommand.class) {
+		    	result = new SetGenericCommand(domain, commandParameter);
 		    }
 		 
 		 return result;

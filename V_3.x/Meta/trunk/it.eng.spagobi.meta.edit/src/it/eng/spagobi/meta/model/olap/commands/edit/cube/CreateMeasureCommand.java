@@ -69,6 +69,9 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 			
 			addedMeasure = olapModelInitializer.addMeasure(cube, businessColumn);
 
+			//Set property columntype = measure
+			businessColumn.getProperties().get("structural.columntype").setValue("measure");
+			
 			this.executed = true;
 			
 			logger.debug("Command [{}] executed succesfully", CreateMeasureCommand.class.getName());	
@@ -91,7 +94,7 @@ public class CreateMeasureCommand extends AbstractSpagoBIModelEditCommand {
 	@Override
 	public void undo() {		
 		cube.getMeasures().remove(addedMeasure);
-		businessColumn.getProperties().get("structural.tabletype").setValue(originalTableType);
+		businessColumn.getProperties().get("structural.columntype").setValue(originalTableType);
 	}
 	
 	@Override

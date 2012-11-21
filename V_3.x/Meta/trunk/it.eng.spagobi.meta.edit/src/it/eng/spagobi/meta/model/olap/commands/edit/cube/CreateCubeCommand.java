@@ -15,6 +15,7 @@ import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateEmptyBusinessTableCommand;
 import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 	OlapModel olapModel;
 	Cube addedCube;
 	String originalTableType;
+	Object removedPreviousObject;
 	private static Logger logger = LoggerFactory.getLogger(CreateCubeCommand.class);
 
 	/**
@@ -64,8 +66,14 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 			//get the original Table Type Value for undo
 			originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();
 
+			//remove previous objects
+			removedPreviousObject = olapModelInitializer.removeCorrespondingOlapObject(businessColumnSet);
+
 			
 			addedCube = olapModelInitializer.addCube(olapModel, businessColumnSet);
+			
+			//Set property tabletype = cube
+			businessColumnSet.getProperties().get("structural.tabletype").setValue("cube");
 
 			this.executed = true;
 			logger.debug("Command [{}] executed succesfully", CreateCubeCommand.class.getName());	
@@ -87,6 +95,9 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 	
 	@Override
 	public void undo() {		
+		if ((removedPreviousObject != null) && (removedPreviousObject instanceof Dimension)){
+			olapModelInitializer.addDimension(olapModel, (Dimension)removedPreviousObject);
+		}
 		olapModel.getCubes().remove(addedCube);
 		businessColumnSet.getProperties().get("structural.tabletype").setValue(originalTableType);
 	}

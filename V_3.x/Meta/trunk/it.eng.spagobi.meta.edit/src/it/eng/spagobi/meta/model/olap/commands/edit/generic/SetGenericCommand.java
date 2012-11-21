@@ -7,7 +7,7 @@
  You can obtain one at http://mozilla.org/MPL/2.0/.
  
 **/
-package it.eng.spagobi.meta.model.olap.commands.edit.dimension;
+package it.eng.spagobi.meta.model.olap.commands.edit.generic;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -32,18 +32,15 @@ import org.slf4j.LoggerFactory;
  * @author cortella
  *
  */
-public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
+public class SetGenericCommand extends AbstractSpagoBIModelEditCommand {
 	
 	OlapModelInitializer olapModelInitializer;
 	
 	BusinessColumnSet businessColumnSet;
 	OlapModel olapModel;
-	Dimension addedDimension;
 	String originalTableType;
 	Object removedPreviousObject;
-
-
-	private static Logger logger = LoggerFactory.getLogger(CreateDimensionCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(SetGenericCommand.class);
 
 	/**
 	 * @param commandLabel
@@ -52,12 +49,12 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 	 * @param domain
 	 * @param parameter
 	 */
-	public CreateDimensionCommand(EditingDomain domain, CommandParameter parameter) {
-		super("model.olap.commands.edit.dimension.create.label", "model.olap.commands.edit.dimension.create.description", "model.olap.commands.edit.dimension.create", domain, parameter);
+	public SetGenericCommand(EditingDomain domain, CommandParameter parameter) {
+		super("model.olap.commands.edit.generic.create.label", "model.olap.commands.edit.generic.create.description", "model.olap.commands.edit.generic.create", domain, parameter);
 		olapModelInitializer = new OlapModelInitializer();
 	}
 	
-	public CreateDimensionCommand(EditingDomain domain){
+	public SetGenericCommand(EditingDomain domain){
 		this(domain,null);
 	}
 	@Override
@@ -67,16 +64,14 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 			businessColumnSet= (BusinessColumnSet)parameter.getValue();
 			//get the original Table Type Value for undo
 			originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();
-			//remove previous objects
-			removedPreviousObject = olapModelInitializer.removeCorrespondingOlapObject(businessColumnSet);			
+	
+			removedPreviousObject = olapModelInitializer.removeCorrespondingOlapObject(businessColumnSet);
 			
-			addedDimension = olapModelInitializer.addDimension(olapModel, businessColumnSet);
-			
-			//Set property tabletype = dimension
-			businessColumnSet.getProperties().get("structural.tabletype").setValue("dimension");
+			//Set property tabletype = generic
+			businessColumnSet.getProperties().get("structural.tabletype").setValue("generic");
 
 			this.executed = true;
-			logger.debug("Command [{}] executed succesfully", CreateDimensionCommand.class.getName());	
+			logger.debug("Command [{}] executed succesfully", SetGenericCommand.class.getName());	
 
 		}
 			
@@ -92,13 +87,14 @@ public class CreateDimensionCommand extends AbstractSpagoBIModelEditCommand {
 		return affectedObjects;
 	}
 	
-	
 	@Override
 	public void undo() {		
 		if ((removedPreviousObject != null) && (removedPreviousObject instanceof Cube)){
 			olapModelInitializer.addCube(olapModel, (Cube)removedPreviousObject);
 		}
-		olapModelInitializer.removeDimension(olapModel,addedDimension);
+		else if ((removedPreviousObject != null) && (removedPreviousObject instanceof Dimension)){
+			olapModelInitializer.addDimension(olapModel, (Dimension)removedPreviousObject);
+		}
 		businessColumnSet.getProperties().get("structural.tabletype").setValue(originalTableType);
 	}
 	

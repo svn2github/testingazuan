@@ -11,6 +11,7 @@ package it.eng.spagobi.meta.editor.olap.actions;
 
 import java.util.ArrayList;
 
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -35,6 +36,8 @@ import org.eclipse.ui.PlatformUI;
 public class SetDimensionAction extends AbstractSpagoBIModelAction {
 
 	private BusinessColumnSet businessColumnSet;
+	public OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+
 
 	/**
 	 * @param commandClass
@@ -57,14 +60,13 @@ public class SetDimensionAction extends AbstractSpagoBIModelAction {
 
 			Model rootModel = businessColumnSet.getModel().getParentModel();
 			OlapModel olapModel = rootModel.getOlapModels().get(0);
-			
+
 			
 			CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
 		    if (editingDomain != null) {	    	
 		    	editingDomain.getCommandStack().execute(new CreateDimensionCommand(editingDomain,commandParameter));
 		    }
-			//Settare la property tabletype = dimension
-			businessColumnSet.getProperties().get("structural.tabletype").setValue("dimension");
+
 
 
 		} catch(Throwable t) {

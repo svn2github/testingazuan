@@ -11,18 +11,15 @@ package it.eng.spagobi.meta.editor.olap.actions;
 
 import java.util.ArrayList;
 
-import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
-import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
-import it.eng.spagobi.meta.model.olap.Cube;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
-import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateMeasureCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.generic.SetGenericCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -36,19 +33,18 @@ import org.eclipse.ui.PlatformUI;
  * @author cortella
  *
  */
-public class SetMeasureAction extends AbstractSpagoBIModelAction {
+public class SetGenericAction extends AbstractSpagoBIModelAction {
 
-	private SimpleBusinessColumn businessColumn;
-	public OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+	private BusinessColumnSet businessColumnSet;
 
 	/**
 	 * @param commandClass
 	 * @param workbenchPart
 	 * @param selection
 	 */
-	public SetMeasureAction(IWorkbenchPart workbenchPart,
+	public SetGenericAction(IWorkbenchPart workbenchPart,
 			ISelection selection) {
-		super(CreateMeasureCommand.class, workbenchPart, selection);
+		super(SetGenericCommand.class, workbenchPart, selection);
 	
 	}
 	
@@ -58,26 +54,22 @@ public class SetMeasureAction extends AbstractSpagoBIModelAction {
 	@Override
 	public void run() {
 		try {
-			businessColumn = (SimpleBusinessColumn)owner;
+			businessColumnSet = (BusinessColumnSet)owner;
 
-			Model rootModel = businessColumn.getTable().getModel().getParentModel();
-	    	Cube cube = checkIfInsideCube(businessColumn);
-	    	if (cube != null){
-				CommandParameter commandParameter =  new CommandParameter(cube, null, businessColumn, new ArrayList<Object>());
-			    if (editingDomain != null) {	    	
-			    	editingDomain.getCommandStack().execute(new CreateMeasureCommand(editingDomain,commandParameter));
-			    }	     
+			Model rootModel = businessColumnSet.getModel().getParentModel();
+			OlapModel olapModel = rootModel.getOlapModels().get(0);
+			
+			
+			CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+		    if (editingDomain != null) {	    	
+		    	editingDomain.getCommandStack().execute(new SetGenericCommand(editingDomain,commandParameter));
+		    }
 
-	    	}
 
 
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}
-	}
-	
-	private Cube checkIfInsideCube(SimpleBusinessColumn simpleBusinessColumn){
-		return olapModelInitializer.getCube(simpleBusinessColumn.getTable());
 	}
 
 }

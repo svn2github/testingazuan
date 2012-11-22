@@ -45,9 +45,7 @@ public class ArtifactServiceImplSupplier {
 			byte[] cont = content.getContent();
 			ManagedMemoryDataSource mods =  new ManagedMemoryDataSource(new java.io.ByteArrayInputStream(cont), Integer.MAX_VALUE - 2,
 					null, true);
-			toReturn = new DataHandler(mods);
-			//BASE64Encoder bASE64Encoder = new BASE64Encoder();
-			//toReturn = bASE64Encoder.encode(cont);			
+			toReturn = new DataHandler(mods);		
 			return toReturn;	
 		} catch (Exception e) {
 		    logger.error("The artifact is not correctly returned", e);
@@ -78,9 +76,7 @@ public class ArtifactServiceImplSupplier {
 			byte[] cont = content.getContent();
 			ManagedMemoryDataSource mods =  new ManagedMemoryDataSource(new java.io.ByteArrayInputStream(cont), Integer.MAX_VALUE - 2,
 			null, true);
-			toReturn = new DataHandler(mods);
-			//BASE64Encoder bASE64Encoder = new BASE64Encoder();
-			//toReturn = bASE64Encoder.encode(cont);			
+			toReturn = new DataHandler(mods);		
 			return toReturn;
 		} catch (Exception e) {
 			logger.error("The artifact is not correctly returned", e);

@@ -10,6 +10,7 @@
 package it.eng.spagobi.meta.model.business.provider;
 
 
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
@@ -61,6 +62,10 @@ public class BusinessTableItemProvider
 	implements
 		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IUpdateableItemText {
+	
+	 private OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+
+	
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -208,10 +213,16 @@ public class BusinessTableItemProvider
 	 * This returns BusinessTable.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
+		 if (olapModelInitializer.getCube((BusinessTable)object) != null){
+				return overlayImage(object, getResourceLocator().getImage("full/obj16/Cube"));
+		 }
+		 if (olapModelInitializer.getDimension((BusinessTable)object) != null){
+				return overlayImage(object, getResourceLocator().getImage("full/obj16/Dimension"));
+		 }
+
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessTable"));
 	}
 

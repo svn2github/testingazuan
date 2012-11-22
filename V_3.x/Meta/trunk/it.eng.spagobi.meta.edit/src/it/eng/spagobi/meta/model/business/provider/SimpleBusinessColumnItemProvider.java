@@ -12,6 +12,7 @@ package it.eng.spagobi.meta.model.business.provider;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
@@ -43,6 +44,9 @@ public class SimpleBusinessColumnItemProvider
 		ITreeItemContentProvider,
 		IItemLabelProvider,
 		IItemPropertySource {
+	
+	 private OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -105,6 +109,10 @@ public class SimpleBusinessColumnItemProvider
 		if (businessColumn.isIdentifier() || businessColumn.isPartOfCompositeIdentifier()){
 			return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessIdentifier"));
 		}
+		if (olapModelInitializer.getMeasure((SimpleBusinessColumn)object) != null){
+			return overlayImage(object, getResourceLocator().getImage("full/obj16/Measure"));
+		}
+
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessColumn"));
 	}
 

@@ -397,6 +397,25 @@ public class OlapModelInitializer {
 		return null;		
 	}
 	
+	//Return a Measure corresponding to the BusinessColumn (if any)
+	public Measure getMeasure(BusinessColumn businessColumn){
+		
+		BusinessColumnSet businessColumnSet = businessColumn.getTable();
+		Cube cube = getCube(businessColumnSet);
+		
+		if (cube != null) {
+			EList<Measure> measures = cube.getMeasures();
+			for (Measure measure:measures){
+				if (measure.getColumn().equals(businessColumn)){			
+					return measure;
+				}
+			}
+
+		}
+		return null;	
+
+	}
+	
 
 	
 	//  --------------------------------------------------------

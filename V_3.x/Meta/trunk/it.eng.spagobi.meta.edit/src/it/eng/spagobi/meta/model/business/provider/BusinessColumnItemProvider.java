@@ -12,8 +12,10 @@ package it.eng.spagobi.meta.model.business.provider;
 
 import it.eng.spagobi.commons.resource.IResourceLocator;
 import it.eng.spagobi.meta.edit.SpagoBIMetaEditPlugin;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModelPackage;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.AddColumnToIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.identifier.RemoveColumnFromIdentifierCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedFieldCommand;
@@ -52,6 +54,8 @@ public class BusinessColumnItemProvider
 		IItemLabelProvider,
 		IItemPropertySource,
 		IUpdateableItemText {
+	
+	
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 */
@@ -130,6 +134,7 @@ public class BusinessColumnItemProvider
 		if (businessColumn.isIdentifier() || businessColumn.isPartOfCompositeIdentifier()){
 			return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessIdentifier"));
 		}
+
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/BusinessColumn"));
 	}
 

@@ -63,8 +63,15 @@ public class CreateCubeCommand extends AbstractSpagoBIModelEditCommand {
 		if (parameter.getValue() instanceof BusinessColumnSet){
 			olapModel = (OlapModel)parameter.getOwner();
 			businessColumnSet= (BusinessColumnSet)parameter.getValue();
-			//get the original Table Type Value for undo
-			originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();
+			if (parameter.getFeature() != null){
+				//original type from the property view
+				originalTableType = (String)parameter.getFeature();
+			}
+			else{
+				//get the original Table Type Value for undo
+				originalTableType = businessColumnSet.getProperties().get("structural.tabletype").getValue();			
+			}
+
 
 			//remove previous objects
 			removedPreviousObject = olapModelInitializer.removeCorrespondingOlapObject(businessColumnSet);

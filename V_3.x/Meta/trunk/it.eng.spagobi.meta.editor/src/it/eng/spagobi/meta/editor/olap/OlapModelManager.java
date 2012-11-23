@@ -73,7 +73,7 @@ public class OlapModelManager {
 	 * check propertyId and value to determine if required to create Olap Objects
 	 * 
 	 */
-	public void checkForOlapModel(EditingDomain editingDomain,Object selectedBusinessObject, Object propertyId, Object value){
+	public void checkForOlapModel(EditingDomain editingDomain,Object selectedBusinessObject, Object propertyId, Object value, String previousValue){
 		this.editingDomain = editingDomain;
 		//Gestione per l'OlapModel
 	    if (selectedBusinessObject instanceof BusinessTable){
@@ -81,19 +81,19 @@ public class OlapModelManager {
 		    if ( (propertyId.equals("structural.tabletype")) && (value.equals("cube")) ){
 		    	//System.out.println("structural.tabletype cube su "+selectedBusinessObject);
 		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
-		    	createOlapCube((BusinessColumnSet)selectedBusinessObject);
+		    	createOlapCube((BusinessColumnSet)selectedBusinessObject,previousValue);
 		    } 
 		    //propertyId ="structural.tabletype", value="dimension"
 		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("dimension")) ){
 		    	//System.out.println("structural.tabletype dimension su "+selectedBusinessObject);
 		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
-		    	createOlapDimension((BusinessColumnSet)selectedBusinessObject);
+		    	createOlapDimension((BusinessColumnSet)selectedBusinessObject,previousValue);
 		    } 
 		    //propertyId ="structural.tabletype", value="generic"
 		    else if ( (propertyId.equals("structural.tabletype")) && (value.equals("generic")) ){
 		    	//System.out.println("structural.tabletype generic su "+selectedBusinessObject);
 		    	//removePreviousObjects((BusinessColumnSet)selectedBusinessObject);
-		    	setGenericTable((BusinessColumnSet)selectedBusinessObject);
+		    	setGenericTable((BusinessColumnSet)selectedBusinessObject,previousValue);
 		    } 
 	    }
 	    else if (selectedBusinessObject instanceof SimpleBusinessColumn){
@@ -103,7 +103,7 @@ public class OlapModelManager {
 		    	//search if BusinessColumnSet of SimpleBusinessColumn is a cube
 		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
 		    	if (cube != null){
-			    	createOlapMeasure(cube,(SimpleBusinessColumn)selectedBusinessObject);
+			    	createOlapMeasure(cube,(SimpleBusinessColumn)selectedBusinessObject,previousValue);
 		    	}
 		    	
 		    } else if ( (propertyId.equals("structural.columntype")) && (value.equals("attribute")) ){
@@ -112,7 +112,7 @@ public class OlapModelManager {
 		    	Cube cube = checkIfInsideCube((SimpleBusinessColumn)selectedBusinessObject);
 		    	if (cube != null){
 			    	//removePreviousObjects((SimpleBusinessColumn)selectedBusinessObject,cube);
-		    		setAttribute(cube,(SimpleBusinessColumn)selectedBusinessObject);
+		    		setAttribute(cube,(SimpleBusinessColumn)selectedBusinessObject,previousValue);
 		    	}
 		    } 
 	    }
@@ -129,32 +129,32 @@ public class OlapModelManager {
 	
 	
 	//Create Olap Cube via CreateCubeCommand
-	private  void createOlapCube(BusinessColumnSet businessColumnSet){
+	private  void createOlapCube(BusinessColumnSet businessColumnSet,String previousValue){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
 		
-		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+		CommandParameter commandParameter =  new CommandParameter(olapModel, previousValue, businessColumnSet, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new CreateCubeCommand(editingDomain,commandParameter));
 	    }
 	}
 	
 	//Create Olap Dimension via CreateDimensionCommand
-	private void createOlapDimension(BusinessColumnSet businessColumnSet){
+	private void createOlapDimension(BusinessColumnSet businessColumnSet, String previousValue){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
 		
-		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+		CommandParameter commandParameter =  new CommandParameter(olapModel, previousValue, businessColumnSet, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new CreateDimensionCommand(editingDomain,commandParameter));
 	    }	   
 	}
 	//Erase Olap Objects and reset type to generic via SetGenericCommand
-	private void setGenericTable(BusinessColumnSet businessColumnSet){
+	private void setGenericTable(BusinessColumnSet businessColumnSet, String previousValue){
 		Model rootModel = businessColumnSet.getModel().getParentModel();
 		OlapModel olapModel = rootModel.getOlapModels().get(0);
 		
-		CommandParameter commandParameter =  new CommandParameter(olapModel, null, businessColumnSet, new ArrayList<Object>());
+		CommandParameter commandParameter =  new CommandParameter(olapModel,previousValue, businessColumnSet, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new SetGenericCommand(editingDomain,commandParameter));
 	    }	  		
@@ -162,18 +162,18 @@ public class OlapModelManager {
 
 	
 	//Create Olap Measure via CreateMeasureCommand
-	private void createOlapMeasure(Cube cube, SimpleBusinessColumn simpleBusinessColumn){
+	private void createOlapMeasure(Cube cube, SimpleBusinessColumn simpleBusinessColumn, String previousValue){
 		
-		CommandParameter commandParameter =  new CommandParameter(cube, null, simpleBusinessColumn, new ArrayList<Object>());
+		CommandParameter commandParameter =  new CommandParameter(cube, previousValue, simpleBusinessColumn, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new CreateMeasureCommand(editingDomain,commandParameter));
 	    }	   
 	}	
 	
 	//Set column as Attribute via RemoveMeasureCommand
-	private void setAttribute(Cube cube, SimpleBusinessColumn simpleBusinessColumn){
+	private void setAttribute(Cube cube, SimpleBusinessColumn simpleBusinessColumn,String previousValue){
 		
-		CommandParameter commandParameter =  new CommandParameter(cube, null, simpleBusinessColumn, new ArrayList<Object>());
+		CommandParameter commandParameter =  new CommandParameter(cube, previousValue, simpleBusinessColumn, new ArrayList<Object>());
 	    if (editingDomain != null) {	    	
 	    	editingDomain.getCommandStack().execute(new RemoveMeasureCommand(editingDomain,commandParameter));
 	    }	   

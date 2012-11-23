@@ -65,7 +65,13 @@ public class RemoveMeasureCommand extends AbstractSpagoBIModelEditCommand {
 			cube = (Cube)parameter.getOwner();
 			businessColumn= (BusinessColumn)parameter.getValue();
 			//get the original Column Type Value for undo
-			originalTableType = businessColumn.getProperties().get("structural.columntype").getValue();
+			if (parameter.getFeature() != null){
+				//original type from the property view
+				originalTableType = (String)parameter.getFeature();
+			}
+			else{
+				originalTableType = businessColumn.getProperties().get("structural.columntype").getValue();
+			}
 			
 			removedMeasure = olapModelInitializer.removeCorrespondingOlapObject(businessColumn,cube);
 			//Set property columntype = measure

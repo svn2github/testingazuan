@@ -11,7 +11,9 @@ package it.eng.spagobi.meta.editor.properties;
 
 import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.olap.OlapModelManager;
+import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
@@ -43,6 +45,17 @@ public class CustomizedPropertySource extends PropertySource {
 	}
 	
 	public void setPropertyValue(Object propertyId, Object value) {
+	    
+		//Save previous value 
+		String previousValue = null;
+	    if (object instanceof BusinessColumnSet){
+		    previousValue = ((BusinessColumnSet)object).getProperties().get("structural.tabletype").getValue();
+	    }
+	    else if (object instanceof BusinessColumn){
+		    previousValue = ((BusinessColumn)object).getProperties().get("structural.columntype").getValue();
+	    }
+	    //****************************
+
 		super.setPropertyValue(propertyId, value);
 	    if(editor != null) {
 	    	editor.setDirty(true);
@@ -55,7 +68,7 @@ public class CustomizedPropertySource extends PropertySource {
 	    EditingDomain editingDomain	 = editor.getEditingDomain();
 	    //access to the singleton
 	    OlapModelManager olapModelManager =  OlapModelManager.getInstance();
-	    olapModelManager.checkForOlapModel(editingDomain,object, propertyId, value);
+	    olapModelManager.checkForOlapModel(editingDomain,object, propertyId, value, previousValue );
 	    //****************************
 	}
 

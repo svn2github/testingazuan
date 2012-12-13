@@ -19,4 +19,6 @@ Export-Package: it.eng.spagobi.meta.initializer,
  it.eng.spagobi.meta.initializer.name,
  it.eng.spagobi.meta.initializer.properties
 Import-Package: org.eclipse.core.runtime,
+ org.eclipse.swt.custom,
+ org.eclipse.swt.widgets,
  org.osgi.framework

@@ -9,17 +9,23 @@
 **/
 package it.eng.spagobi.meta.model.olap.impl;
 
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 
+import it.eng.spagobi.meta.model.olap.Cube;
 import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.Hierarchy;
+import it.eng.spagobi.meta.model.olap.Measure;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -318,5 +324,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getModel().getParentModel().getPropertyTypes();
 	}
+	
+
 
 } //DimensionImpl

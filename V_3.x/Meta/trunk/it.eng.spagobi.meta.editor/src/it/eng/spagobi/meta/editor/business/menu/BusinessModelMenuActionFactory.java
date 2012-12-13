@@ -22,6 +22,7 @@ import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessViewInnerJoinRelationshipsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
+import it.eng.spagobi.meta.editor.olap.actions.EditHierarchiesAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetAttributeAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetCubeAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetDimensionAction;
@@ -94,6 +95,7 @@ public class BusinessModelMenuActionFactory {
 				 } else if (tableType.equals(("dimension"))){
 	 		    	 olapActions.add(new SetCubeAction(activeEditorPart, selection));
 	 		    	 olapActions.add(new SetGenericAction(activeEditorPart, selection));
+	 		    	 olapActions.add(new EditHierarchiesAction(activeEditorPart,selection));
 				 }
 
 

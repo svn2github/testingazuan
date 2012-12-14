@@ -32,11 +32,13 @@ public class HierarchyDescriptor {
 	
 	private String name;
 	private boolean hasAll;
+	private String allMemberName;
 	private List<HierarchyLevelDescriptor> levels;
 	
 	public HierarchyDescriptor(){
 		name = "";
-		hasAll =  false;
+		allMemberName="";
+		hasAll =  true;
 		levels = new ArrayList<HierarchyLevelDescriptor>();
 	}
 	
@@ -64,6 +66,20 @@ public class HierarchyDescriptor {
 	public void setHasAll(boolean hasAll) {
 		this.hasAll = hasAll;
 	}
+	/**
+	 * @return the allMemberName
+	 */
+	public String getAllMemberName() {
+		return allMemberName;
+	}
+
+	/**
+	 * @param allMemberName the allMemberName to set
+	 */
+	public void setAllMemberName(String allMemberName) {
+		this.allMemberName = allMemberName;
+	}
+
 	/**
 	 * @return the levels
 	 */

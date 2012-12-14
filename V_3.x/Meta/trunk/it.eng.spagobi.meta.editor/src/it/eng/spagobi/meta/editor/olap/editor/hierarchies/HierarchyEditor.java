@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.olap.editor.hierarchies;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
@@ -34,6 +35,7 @@ import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.dnd.DND;
@@ -70,29 +72,35 @@ import org.eclipse.swt.events.SelectionEvent;
  *
  */
 public class HierarchyEditor extends Dialog {
-	private Table tableAttributes;
-	private Table tableHierarchy;
+
 	private Hierarchy hierarchy;
 	private Dimension dimension; 
 	private BusinessColumnSet businessColumnSet;
+	private List<BusinessColumn> businessColumns;
+
 	//private Combo comboPrimarykey ;
 	private BusinessColumn selectedAttribute;
 	
-	
+	private Table tableAttributes;
+	private Table tableHierarchy;
 	private List<BusinessColumn> dimensionAttributes; 
 	private Text textHierarchyName;
-	HierarchyDescriptor hyerarchyDescriptor;
+	private HierarchyDescriptor hyerarchyDescriptor;
 	private int levelCounter;
+	private Text textAllMemberName;
+	private Button buttonHasAll ;
 	
 	
 	public static final int COLUMN_REMOVE = 0;
 	public static final int COLUMN_LEVEL_ORDER = 1;
 	public static final int COLUMN_LEVEL_NAME = 2;
 	public static final int COLUMN_COLUMN = 3;
-	public static final int COLUMN_DESCRIPTION = 4;
+	public static final int COLUMN_ORDINAL_COLUMN = 4;
+	//public static final int COLUMN_DESCRIPTION = 5;
 	public static final int COLUMN_NAMECOLUMN = 5;
 	public static final int COLUMN_CAPTIONCOLUMN = 6;
 	public static final int COLUMN_UNIQUEMEMBERS = 7;
+
 
 
 
@@ -112,6 +120,15 @@ public class HierarchyEditor extends Dialog {
 		this.businessColumnSet = businessColumnSet;
 		hyerarchyDescriptor = new HierarchyDescriptor();
 		hyerarchyDescriptor.setName(businessColumnSet.getName());
+		hyerarchyDescriptor.setAllMemberName("All "+businessColumnSet.getName());
+		hyerarchyDescriptor.setHasAll(true);
+		levelCounter = 1;
+		businessColumns = businessColumnSet.getColumns();
+		//Clone the BusinessColumns List so we don't modify the original
+		dimensionAttributes = new ArrayList<BusinessColumn>();
+		dimensionAttributes.addAll(businessColumnSet.getColumns());
+
+
 	}
 	
 	//Edit Existing Hierarchy
@@ -154,7 +171,7 @@ public class HierarchyEditor extends Dialog {
 		lblTheLevelNumbers.setText("The level numbers are 1 (Top Level) to N (Bottom level).");
 		
 		Group grpGeneralHierarchyProperties = new Group(container, SWT.NONE);
-		grpGeneralHierarchyProperties.setLayout(new GridLayout(4, false));
+		grpGeneralHierarchyProperties.setLayout(new GridLayout(6, false));
 		grpGeneralHierarchyProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		grpGeneralHierarchyProperties.setText("General Hierarchy Properties");
 		
@@ -172,12 +189,34 @@ public class HierarchyEditor extends Dialog {
 		Label lblHasAll = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblHasAll.setText("Has All");
 		
-		Button buttonHasAll = new Button(grpGeneralHierarchyProperties, SWT.CHECK);
+		buttonHasAll = new Button(grpGeneralHierarchyProperties, SWT.CHECK);
+		//set initial value
+		buttonHasAll.setSelection(true);
 		buttonHasAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				hyerarchyDescriptor.setHasAll(buttonHasAll.getSelection());
+				if (buttonHasAll.getSelection()){
+					textAllMemberName.setEnabled(true);
+				}
+				else {
+					textAllMemberName.setEnabled(false);
+				}
 			}
 		});
+
+		
+		Label lblAllMemberName = new Label(grpGeneralHierarchyProperties, SWT.NONE);
+		lblAllMemberName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblAllMemberName.setText("All Member Name");
+		
+		textAllMemberName = new Text(grpGeneralHierarchyProperties, SWT.BORDER);
+		GridData gd_textAllMemberName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_textAllMemberName.widthHint = 159;
+		textAllMemberName.setLayoutData(gd_textAllMemberName);
+		//set initial value
+		textAllMemberName.setText(hyerarchyDescriptor.getAllMemberName());		
+
 		/*
 		Label lblPrimaryKey = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblPrimaryKey.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -232,10 +271,15 @@ public class HierarchyEditor extends Dialog {
 		TableColumn tblclmnColumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnColumn.setWidth(81);
 		tblclmnColumn.setText("Column");
-		
+		/*
 		TableColumn tblclmnDescription = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnDescription.setWidth(84);
 		tblclmnDescription.setText("Description");
+		*/
+		
+		TableColumn tblclmnOrdinalcolumn = new TableColumn(tableHierarchy, SWT.NONE);
+		tblclmnOrdinalcolumn.setWidth(100);
+		tblclmnOrdinalcolumn.setText("OrdinalColumn");
 		
 		TableColumn tblclmnNamecolumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnNamecolumn.setWidth(100);
@@ -283,7 +327,6 @@ public class HierarchyEditor extends Dialog {
 	
 	
 	private void populateAttributesTable(){
-		dimensionAttributes = businessColumnSet.getColumns();
 		for (BusinessColumn attribute:dimensionAttributes){
 			TableItem item = new TableItem(tableAttributes, SWT.NONE);
 			item.setText(attribute.getName());
@@ -346,8 +389,11 @@ public class HierarchyEditor extends Dialog {
 					Table table = (Table) target.getControl();
 					String data = (String) event.data;
 					
-					//Create a new item and set columns values
+					//Create a HierarchyLevelDescriptor (internal model corresponding to a level)
 					HierarchyLevelDescriptor hierarchyLevelDescriptor = new HierarchyLevelDescriptor();
+					hyerarchyDescriptor.getLevels().add(hierarchyLevelDescriptor);
+
+					//Create a new item and set columns values
 					createTableHierarchyItem(tableHierarchy,selectedAttribute,data,hierarchyLevelDescriptor);
 
 					//Remove item from tableAttributes
@@ -364,17 +410,15 @@ public class HierarchyEditor extends Dialog {
 	//End Drag&Drop management
 	
 	public void createTableHierarchyItem(final Table tableHierarchy, BusinessColumn selectedAttribute, String attributeName,final HierarchyLevelDescriptor hierarchyLevelDescriptor){
-		//Create internal object corresponding to a level
+		//Set base properties on internal model
 		hierarchyLevelDescriptor.setBusinessColumn(selectedAttribute);
-		hierarchyLevelDescriptor.setName(attributeName);
-		hyerarchyDescriptor.getLevels().add(hierarchyLevelDescriptor);
-		
-
+		hierarchyLevelDescriptor.setName(attributeName);	
 		
 		//Create a new item and set columns values
 		final TableItem item = new TableItem(tableHierarchy, SWT.NONE);
 		
 		if (selectedAttribute != null){
+			//the TableItem contains a reference to the corresponding internal level object
 			item.setData(hierarchyLevelDescriptor);
 		}
 		
@@ -398,18 +442,15 @@ public class HierarchyEditor extends Dialog {
 					itemAttribute.setData(businessColumn);
 					//Re-add attribute to internal model
 					dimensionAttributes.add(businessColumn);
-					
-					
-					
+
 					//remove level item from UI
 					hyerarchyDescriptor.getLevels().get(index).disposeUiElements();
 					//remove level from internal model
 					hyerarchyDescriptor.getLevels().remove(index);
 
 				}
-
 				tableHierarchy.redraw();
-				
+
 			}
 		});
 		editor_button_remove.setEditor(buttonRemove,item, COLUMN_REMOVE);
@@ -419,7 +460,6 @@ public class HierarchyEditor extends Dialog {
 		
 		item.setText(COLUMN_LEVEL_ORDER,String.valueOf(levelCounter));
 		levelCounter++;
-		//item.setText(COLUMN_LEVEL_NAME, attributeName);
 		
 		//*******************
 		//create Cell Editor Text Level Name
@@ -446,6 +486,7 @@ public class HierarchyEditor extends Dialog {
 		
 		//*******************
 		//create Cell Editor Text Description
+		/*
 		TableEditor editor_description = new TableEditor(tableHierarchy);
 		final Text textDescription = new Text(tableHierarchy, SWT.NONE);
 		textDescription.setText("");
@@ -462,46 +503,86 @@ public class HierarchyEditor extends Dialog {
 		});
 		
 		editor_description.setEditor(textDescription,item, COLUMN_DESCRIPTION);
+		*/
 		//**************		
 		
 		//*******************
-		//create Cell Editor Text NameColumn
+		//create Cell Editor Combo NameColumn
 		TableEditor editor_nameColumn = new TableEditor(tableHierarchy);
-		final Text textNameColumn = new Text(tableHierarchy, SWT.NONE);
-		textNameColumn.setText("");
-
-		editor_nameColumn.grabHorizontal = true;
+		final CCombo comboNameColumn = new CCombo(tableHierarchy, SWT.READ_ONLY);
+		//populate combo
+		populateCComboBusinessColumns(comboNameColumn);
 		
-		textNameColumn.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent arg0) {
+		editor_nameColumn.grabHorizontal = true;
+			
+		comboNameColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				if (item != null){
 					HierarchyLevelDescriptor hierarchyLevelDescriptor = (HierarchyLevelDescriptor)item.getData();
-					hierarchyLevelDescriptor.setNameColumn(textNameColumn.getText());				
-				}
+					
+					String selectedItem = comboNameColumn.getItem(comboNameColumn.getSelectionIndex());
+					BusinessColumn businessColumn= getBusinessColumnByName(businessColumnSet,selectedItem);
+					hierarchyLevelDescriptor.setNameColumn(businessColumn);				
+				}	
+				
 			}
 		});
 		
-		editor_nameColumn.setEditor(textNameColumn,item, COLUMN_NAMECOLUMN);
+		editor_nameColumn.setEditor(comboNameColumn,item, COLUMN_NAMECOLUMN);
 		//**************		
 		
 		//*******************
-		//create Cell Editor Text CaptionColumn
+		//create Cell Editor Combo OrdinalColumn
+		TableEditor editor_ordinalColumn = new TableEditor(tableHierarchy);
+		final CCombo comboOrdinalColumn = new CCombo(tableHierarchy, SWT.READ_ONLY);
+		//populate combo
+		populateCComboBusinessColumns(comboOrdinalColumn);
+		
+		editor_ordinalColumn.grabHorizontal = true;
+			
+		comboOrdinalColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (item != null){
+					HierarchyLevelDescriptor hierarchyLevelDescriptor = (HierarchyLevelDescriptor)item.getData();
+					
+					String selectedItem = comboOrdinalColumn.getItem(comboOrdinalColumn.getSelectionIndex());
+					BusinessColumn businessColumn= getBusinessColumnByName(businessColumnSet,selectedItem);
+					hierarchyLevelDescriptor.setOrdinalColumn(businessColumn);				
+				}	
+				
+			}
+		});
+		
+		editor_ordinalColumn.setEditor(comboOrdinalColumn,item, COLUMN_ORDINAL_COLUMN);
+		//**************				
+		
+		//*******************
+		//create Cell Editor Combo CaptionColumn
 		TableEditor editor_captionColumn = new TableEditor(tableHierarchy);
-		final Text textCaptionColumn = new Text(tableHierarchy, SWT.NONE);
-		textCaptionColumn.setText("");
-
+		final CCombo comboCaptionColumn = new CCombo(tableHierarchy, SWT.READ_ONLY);
+		//populate combo
+		populateCComboBusinessColumns(comboCaptionColumn);
+		
 		editor_captionColumn.grabHorizontal = true;
 		
-		textCaptionColumn.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent arg0) {
+		
+		comboCaptionColumn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				if (item != null){
 					HierarchyLevelDescriptor hierarchyLevelDescriptor = (HierarchyLevelDescriptor)item.getData();
-					hierarchyLevelDescriptor.setCaptionColumn(textCaptionColumn.getText());				
-				}
+					
+					String selectedItem = comboCaptionColumn.getItem(comboCaptionColumn.getSelectionIndex());
+					BusinessColumn businessColumn= getBusinessColumnByName(businessColumnSet,selectedItem);
+					hierarchyLevelDescriptor.setCaptionColumn(businessColumn);				
+				}	
+				
 			}
 		});
 		
-		editor_captionColumn.setEditor(textCaptionColumn,item, COLUMN_CAPTIONCOLUMN);
+		editor_captionColumn.setEditor(comboCaptionColumn,item, COLUMN_CAPTIONCOLUMN);
 		//**************				
 		
 		//*******************
@@ -522,6 +603,9 @@ public class HierarchyEditor extends Dialog {
 				
 			}
 		});
+
+		
+		
 		editor_UniqueMembers.setEditor(comboUniqueMembers,item, COLUMN_UNIQUEMEMBERS);
 		//**************				
 
@@ -532,9 +616,10 @@ public class HierarchyEditor extends Dialog {
 		hierarchyLevelDescriptor.setUi_tableItem(item);
 		hierarchyLevelDescriptor.setUi_textLevelName(textLevelName);
 		hierarchyLevelDescriptor.setUi_buttonRemove(buttonRemove);
-		hierarchyLevelDescriptor.setUi_textDescription(textDescription);
-		hierarchyLevelDescriptor.setUi_textNameColumn(textNameColumn);
-		hierarchyLevelDescriptor.setUi_textCaptionColumn(textCaptionColumn);
+		//hierarchyLevelDescriptor.setUi_textDescription(textDescription);
+		hierarchyLevelDescriptor.setUi_comboNameColumn(comboNameColumn);
+		hierarchyLevelDescriptor.setUi_comboOrdinalColumn(comboOrdinalColumn);
+		hierarchyLevelDescriptor.setUi_comboCaptionColumn(comboCaptionColumn);
 		hierarchyLevelDescriptor.setUi_comboUniqueMembers(comboUniqueMembers);
 
 		tableHierarchy.redraw();
@@ -562,6 +647,13 @@ public class HierarchyEditor extends Dialog {
 		return index;
 
 	}
+	
+	private void populateCComboBusinessColumns(CCombo combo){
+		
+		for(BusinessColumn businessColumn:businessColumns){
+			combo.add(businessColumn.getName());
+		}
+	}
 
 	public void removeTableItem(Table table, BusinessColumn businessColumn){
 		TableItem[] tableItems = table.getItems();
@@ -578,5 +670,78 @@ public class HierarchyEditor extends Dialog {
 		if (itemFound == true){
 			table.remove(toRemoveIndex);
 		}
+	}
+	
+	private BusinessColumn getBusinessColumnByName(BusinessColumnSet businessColumnSet, String name){
+		List<BusinessColumn> businessColumns = businessColumnSet.getColumns();
+		for(BusinessColumn businessColumn:businessColumns){
+			if(businessColumn.getName().equals(name)){
+				return businessColumn;
+			}
+		}
+		return null;
+	}
+	@Override
+	protected void okPressed() {
+		//first check the inputs
+		if (isValidInput()) {
+			createHierarchyDescriptor();
+			super.okPressed();		
+		} else {
+			MessageDialog.openWarning(new Shell(), "Warning", "Please insert all the required values"); 
+		}			
+	}
+	
+	//check if all the required input are inserted
+	private boolean isValidInput() {
+		boolean valid = true;
+		if (textHierarchyName.getText().length() == 0 ){
+			valid = false;
+		}
+		if (hyerarchyDescriptor.getLevels().isEmpty()){
+			valid = false;
+		}
+		
+		return valid;
+			
+	}
+	
+	//Create a HierarchyDescriptor with the current information display on the UI
+	private void createHierarchyDescriptor(){
+		hyerarchyDescriptor.setName(textHierarchyName.getText());
+		hyerarchyDescriptor.setHasAll(buttonHasAll.getSelection());
+		if (buttonHasAll.getSelection()){
+			hyerarchyDescriptor.setAllMemberName(textAllMemberName.getText());
+		}
+		//Test print
+		System.out.println("------------------------");
+		System.out.println("Hierarchy Name: "+hyerarchyDescriptor.getName());
+		System.out.println("Has All: "+hyerarchyDescriptor.isHasAll());
+		System.out.println("All member Name: "+hyerarchyDescriptor.getAllMemberName());
+		List<HierarchyLevelDescriptor> levels =  hyerarchyDescriptor.getLevels();
+		for (HierarchyLevelDescriptor level:levels){
+			System.out.println(level.toString());
+		}
+
+
+		
+		//Note: HierarchyLevels are already updated
+
+
+		
+	}
+
+	/**
+	 * @return the hyerarchyDescriptor
+	 */
+	public HierarchyDescriptor getHyerarchyDescriptor() {
+		return hyerarchyDescriptor;
+	}
+
+	/**
+	 * @param hyerarchyDescriptor the hyerarchyDescriptor to set
+	 */
+	public void setHyerarchyDescriptor(HierarchyDescriptor hyerarchyDescriptor) {
+		this.hyerarchyDescriptor = hyerarchyDescriptor;
 	}
 }

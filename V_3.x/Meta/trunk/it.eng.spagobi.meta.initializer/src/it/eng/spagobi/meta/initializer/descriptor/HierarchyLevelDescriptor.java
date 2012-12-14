@@ -38,17 +38,19 @@ public class HierarchyLevelDescriptor {
 	private BusinessColumn businessColumn;
 	private String name;
 	private String description;
-	private String nameColumn;
-	private String captionColumn;
+	private BusinessColumn nameColumn;
+	private BusinessColumn captionColumn;
 	private boolean uniqueMembers;
+	private BusinessColumn ordinalColumn;
 	
 	private TableItem ui_tableItem;
 	private Text ui_textLevelName;
 	private Button ui_buttonRemove;
 	private Text ui_textDescription;
-	private Text ui_textNameColumn;
-	private Text ui_textCaptionColumn;
+	private CCombo ui_comboNameColumn;
+	private CCombo ui_comboCaptionColumn;
 	private CCombo ui_comboUniqueMembers;
+	private CCombo ui_comboOrdinalColumn;
 
 
 	
@@ -92,26 +94,38 @@ public class HierarchyLevelDescriptor {
 	/**
 	 * @return the nameColumn
 	 */
-	public String getNameColumn() {
+	public BusinessColumn getNameColumn() {
 		return nameColumn;
 	}
 	/**
 	 * @param nameColumn the nameColumn to set
 	 */
-	public void setNameColumn(String nameColumn) {
+	public void setNameColumn(BusinessColumn nameColumn) {
 		this.nameColumn = nameColumn;
 	}
 	/**
 	 * @return the captionColumn
 	 */
-	public String getCaptionColumn() {
+	public BusinessColumn getCaptionColumn() {
 		return captionColumn;
 	}
 	/**
 	 * @param captionColumn the captionColumn to set
 	 */
-	public void setCaptionColumn(String captionColumn) {
+	public void setCaptionColumn(BusinessColumn captionColumn) {
 		this.captionColumn = captionColumn;
+	}
+	/**
+	 * @return the ordinalColumn
+	 */
+	public BusinessColumn getOrdinalColumn() {
+		return ordinalColumn;
+	}
+	/**
+	 * @param ordinalColumn the ordinalColumn to set
+	 */
+	public void setOrdinalColumn(BusinessColumn ordinalColumn) {
+		this.ordinalColumn = ordinalColumn;
 	}
 	/**
 	 * @return the uniqueMembers
@@ -177,26 +191,26 @@ public class HierarchyLevelDescriptor {
 	/**
 	 * @return the ui_textNameColumn
 	 */
-	public Text getUi_textNameColumn() {
-		return ui_textNameColumn;
+	public CCombo getUi_comboNameColumn() {
+		return ui_comboNameColumn;
 	}
 	/**
 	 * @param ui_textNameColumn the ui_textNameColumn to set
 	 */
-	public void setUi_textNameColumn(Text ui_textNameColumn) {
-		this.ui_textNameColumn = ui_textNameColumn;
+	public void setUi_comboNameColumn(CCombo ui_comboNameColumn) {
+		this.ui_comboNameColumn = ui_comboNameColumn;
 	}
 	/**
 	 * @return the ui_textCaptionColumn
 	 */
-	public Text getUi_textCaptionColumn() {
-		return ui_textCaptionColumn;
+	public CCombo getUi_comboCaptionColumn() {
+		return ui_comboCaptionColumn;
 	}
 	/**
 	 * @param ui_textCaptionColumn the ui_textCaptionColumn to set
 	 */
-	public void setUi_textCaptionColumn(Text ui_textCaptionColumn) {
-		this.ui_textCaptionColumn = ui_textCaptionColumn;
+	public void setUi_comboCaptionColumn(CCombo ui_comboCaptionColumn) {
+		this.ui_comboCaptionColumn = ui_comboCaptionColumn;
 	}
 	/**
 	 * @return the ui_comboUniqueMembers
@@ -210,20 +224,53 @@ public class HierarchyLevelDescriptor {
 	public void setUi_comboUniqueMembers(CCombo ui_comboUniqueMembers) {
 		this.ui_comboUniqueMembers = ui_comboUniqueMembers;
 	}
+	/**
+	 * @return the ui_comboOrdinalColumn
+	 */
+	public CCombo getUi_comboOrdinalColumn() {
+		return ui_comboOrdinalColumn;
+	}
+	/**
+	 * @param ui_comboOrdinalColumn the ui_comboOrdinalColumn to set
+	 */
+	public void setUi_comboOrdinalColumn(CCombo ui_comboOrdinalColumn) {
+		this.ui_comboOrdinalColumn = ui_comboOrdinalColumn;
+	}
 	public void disposeUiElements() {
 		ui_textLevelName.dispose();
 		ui_buttonRemove.dispose();
-		ui_textDescription.dispose();
-		ui_textNameColumn.dispose();
-		ui_textCaptionColumn.dispose();
+		//ui_textDescription.dispose();
+		ui_comboNameColumn.dispose();
+		ui_comboCaptionColumn.dispose();
 		ui_comboUniqueMembers.dispose();
+		ui_comboOrdinalColumn.dispose();
 		ui_tableItem.dispose();
 		
 	}
 	
 	public String toString(){
-		return "Name: "+name+" Column: "+businessColumn.getUniqueName()+" Description: "+description+" NameColumn: "+nameColumn+" CaptionColumn: "+captionColumn+" UniqueMembers: "+uniqueMembers;
+		String result = "";
+		if (name != null){
+			result=result+"Name: "+name;
+		}
+		if (businessColumn.getUniqueName() != null){
+			result=result+" Column: "+businessColumn.getUniqueName();
+		}
+		if (ordinalColumn != null){
+			result=result+" OrdinalColumn: "+ordinalColumn.getName();
+		}
+		if (nameColumn != null){
+			result=result+" NameColumn: "+nameColumn.getName();
+		}
+		if (captionColumn != null){
+			result=result+" CaptionColumn: "+captionColumn.getName();
+		}
+
+		result=result+" UniqueMembers: "+uniqueMembers;
+
+		return result;
 	}
+	
 	
 
 }

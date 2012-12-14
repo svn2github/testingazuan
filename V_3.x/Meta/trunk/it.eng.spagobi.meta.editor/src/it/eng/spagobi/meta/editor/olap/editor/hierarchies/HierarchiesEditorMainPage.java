@@ -22,15 +22,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.meta.editor.olap.editor.hierarchies;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
+import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
@@ -47,7 +50,7 @@ import org.eclipse.swt.widgets.TableColumn;
  *
  */
 public class HierarchiesEditorMainPage extends Dialog {
-	private Table table;
+	private Table tableHierarchies;
 	
 	OlapModel olapModel;
 	BusinessColumnSet businessColumnSet;
@@ -100,7 +103,12 @@ public class HierarchiesEditorMainPage extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				HierarchyEditor hierarchyEditor = new HierarchyEditor(getShell(), olapModel, businessColumnSet, olapModelInitializer );
 				hierarchyEditor.create();
-				hierarchyEditor.open();
+				if (hierarchyEditor.open() ==  Window.OK){
+					HierarchyDescriptor hyerarchyDescriptor = hierarchyEditor.getHyerarchyDescriptor();
+					//TODO: create new item in Hierarchies 
+					TableItem item = new TableItem(tableHierarchies, SWT.NONE);
+					item.setText(0, hyerarchyDescriptor.getName());
+				}
 			}
 		});
 		btnAddHierarchy.setText("Add Hierarchy");
@@ -115,24 +123,24 @@ public class HierarchiesEditorMainPage extends Dialog {
 		grpCurrentHierarchies.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		grpCurrentHierarchies.setLayout(new GridLayout(1, false));
 		
-		table = new Table(grpCurrentHierarchies, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+		tableHierarchies = new Table(grpCurrentHierarchies, SWT.BORDER | SWT.FULL_SELECTION);
+		tableHierarchies.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tableHierarchies.setHeaderVisible(true);
+		tableHierarchies.setLinesVisible(true);
 		
-		TableColumn tblclmnName = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnName = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnName.setWidth(100);
 		tblclmnName.setText("Name");
 		
-		TableColumn tblclmnPrimaryKey = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnPrimaryKey = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnPrimaryKey.setWidth(100);
 		tblclmnPrimaryKey.setText("Primary Key");
 		
-		TableColumn tblclmnEdit = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnEdit = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnEdit.setWidth(100);
 		tblclmnEdit.setText("Edit");
 		
-		TableColumn tblclmnRemove = new TableColumn(table, SWT.NONE);
+		TableColumn tblclmnRemove = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnRemove.setWidth(100);
 		tblclmnRemove.setText("Remove");
 

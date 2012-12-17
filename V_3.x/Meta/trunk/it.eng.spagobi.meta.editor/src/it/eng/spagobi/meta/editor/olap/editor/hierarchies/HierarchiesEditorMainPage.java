@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.olap.editor.hierarchies;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
@@ -28,6 +31,7 @@ import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +44,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
@@ -55,6 +60,11 @@ public class HierarchiesEditorMainPage extends Dialog {
 	OlapModel olapModel;
 	BusinessColumnSet businessColumnSet;
 	OlapModelInitializer olapModelInitializer;
+	List<HierarchyDescriptor> hierarchiesDescriptors;
+	
+	public static final int COLUMN_NAME = 0;
+	public static final int COLUMN_EDIT = 1;
+	public static final int COLUMN_REMOVE = 2;
 
 	/**
 	 * Create the dialog.
@@ -66,6 +76,7 @@ public class HierarchiesEditorMainPage extends Dialog {
 		this.olapModel = olapModel;
 		this.businessColumnSet = businessColumnSet;
 		olapModelInitializer = new OlapModelInitializer();
+		hierarchiesDescriptors = new ArrayList<HierarchyDescriptor>();
 		
 	}
 	protected void configureShell(Shell shell) {
@@ -105,9 +116,10 @@ public class HierarchiesEditorMainPage extends Dialog {
 				hierarchyEditor.create();
 				if (hierarchyEditor.open() ==  Window.OK){
 					HierarchyDescriptor hyerarchyDescriptor = hierarchyEditor.getHyerarchyDescriptor();
-					//TODO: create new item in Hierarchies 
-					TableItem item = new TableItem(tableHierarchies, SWT.NONE);
-					item.setText(0, hyerarchyDescriptor.getName());
+					//Add Hierarchy Descriptor to internal model
+					hierarchiesDescriptors.add(hyerarchyDescriptor);
+					//create new item in Hierarchies Table
+					createTableItem(hyerarchyDescriptor);
 				}
 			}
 		});
@@ -131,10 +143,11 @@ public class HierarchiesEditorMainPage extends Dialog {
 		TableColumn tblclmnName = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnName.setWidth(100);
 		tblclmnName.setText("Name");
-		
+		/*
 		TableColumn tblclmnPrimaryKey = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnPrimaryKey.setWidth(100);
 		tblclmnPrimaryKey.setText("Primary Key");
+		*/
 		
 		TableColumn tblclmnEdit = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnEdit.setWidth(100);
@@ -166,4 +179,145 @@ public class HierarchiesEditorMainPage extends Dialog {
 	protected Point getInitialSize() {
 		return new Point(608, 497);
 	}
+	
+	//create new item in Hierarchies Table
+	private void createTableItem(HierarchyDescriptor hyerarchyDescriptor){
+		final TableItem item = new TableItem(tableHierarchies, SWT.NONE);
+		item.setData(hyerarchyDescriptor);
+		item.setText(COLUMN_NAME, hyerarchyDescriptor.getName());
+		
+		//*******************	
+		//create Cell Editor Button Edit
+		TableEditor editor_button_edit = new TableEditor(tableHierarchies);
+		final Button buttonEdit = new Button(tableHierarchies, SWT.NONE);
+		buttonEdit.setText("Edit");
+		editor_button_edit.grabHorizontal = true;
+		buttonEdit.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//find item in summaryPanelPageTableRows
+				int index = findItemInHierarchiesDescriptors(hierarchiesDescriptors,item);
+				if (index >= 0){
+					
+					HierarchyDescriptor hierarchyDescriptor = hierarchiesDescriptors.get(index);
+					//Open HierarchyEditor to existing Edit Hierarchy
+					HierarchyEditor hierarchyEditor = new HierarchyEditor(getShell(), olapModel, businessColumnSet, olapModelInitializer,hierarchyDescriptor );
+					hierarchyEditor.create();
+					if (hierarchyEditor.open() ==  Window.OK){
+						HierarchyDescriptor hyerarchyDescriptor = hierarchyEditor.getHyerarchyDescriptor();
+						//ModifyHierarchy Descriptor into internal model
+						HierarchyDescriptor removedHierarchyDescriptor = hierarchiesDescriptors.remove(index);
+						hyerarchyDescriptor.setUi_buttonEdit(removedHierarchyDescriptor.getUi_buttonEdit());
+						hyerarchyDescriptor.setUi_buttonRemove(removedHierarchyDescriptor.getUi_buttonRemove());
+						hierarchiesDescriptors.add(index, hyerarchyDescriptor);
+						//modify item in Hierarchies Table
+						modifyTableItem(index,hyerarchyDescriptor);
+					}
+					
+
+				}
+				tableHierarchies.redraw();
+
+			}
+		});
+		editor_button_edit.setEditor(buttonEdit,item, COLUMN_EDIT);
+		//*******************
+		
+		//*******************	
+		//create Cell Editor Button Remove
+		TableEditor editor_button_remove = new TableEditor(tableHierarchies);
+		final Button buttonRemove = new Button(tableHierarchies, SWT.NONE);
+		buttonRemove.setText("Remove");
+		editor_button_remove.grabHorizontal = true;
+		buttonRemove.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//find item in summaryPanelPageTableRows
+				int index = findItemInHierarchiesDescriptors(hierarchiesDescriptors,item);
+				if (index >= 0){
+					
+					//remove hierarchy item from UI
+					hierarchiesDescriptors.get(index).disposeUiElements();
+					//remove hierarchy from internal model
+					hierarchiesDescriptors.remove(index);
+
+				}
+				tableHierarchies.remove(index);
+
+				tableHierarchies.redraw();
+
+			}
+		});
+		editor_button_remove.setEditor(buttonRemove,item, COLUMN_REMOVE);
+		//*******************
+		
+		//Save referencens to UI element of this Item inside internal object 
+		hyerarchyDescriptor.setUi_tableItem(item);
+		hyerarchyDescriptor.setUi_buttonEdit(buttonEdit);
+		hyerarchyDescriptor.setUi_buttonRemove(buttonRemove);
+		
+	}
+	
+	private void modifyTableItem(int index,HierarchyDescriptor hyerarchyDescriptor){
+		final TableItem item = tableHierarchies.getItem(index);
+		item.setData(hyerarchyDescriptor);
+		item.setText(COLUMN_NAME, hyerarchyDescriptor.getName());
+		hyerarchyDescriptor.setUi_tableItem(item);
+		
+	}
+
+	//search a TableItem inside the collection of Hierarchies and if found return the index position of the element
+	private int findItemInHierarchiesDescriptors(List<HierarchyDescriptor> hierarchiesDescriptors, TableItem item){
+		int index = -1;
+
+		if (hierarchiesDescriptors != null){
+			index = 0;
+			boolean found = false;
+			for(HierarchyDescriptor element:hierarchiesDescriptors){
+				if (element.getUi_tableItem().equals(item)){
+					return index;
+				} else {
+					index++;
+				}
+			}
+			if (!found){
+				index= -1;
+			}
+		}
+		return index;
+
+	}	
+	
+	/**
+	 * @return the hierarchiesDescriptors
+	 */
+	public List<HierarchyDescriptor> getHierarchiesDescriptors() {
+		return hierarchiesDescriptors;
+	}
+	/**
+	 * @param hierarchiesDescriptors the hierarchiesDescriptors to set
+	 */
+	public void setHierarchiesDescriptors(
+			List<HierarchyDescriptor> hierarchiesDescriptors) {
+		this.hierarchiesDescriptors = hierarchiesDescriptors;
+	}
+	@Override
+	protected void okPressed() {
+		//first check the inputs
+		if (isValidInput()) {
+			super.okPressed();		
+		} else {
+			MessageDialog.openWarning(new Shell(), "Warning", "Please insert all the required values"); 
+		}			
+	}
+	
+	//check if all the required input are inserted
+	private boolean isValidInput() {
+		boolean valid = true;
+
+		
+		return valid;
+			
+	}
+	
 }

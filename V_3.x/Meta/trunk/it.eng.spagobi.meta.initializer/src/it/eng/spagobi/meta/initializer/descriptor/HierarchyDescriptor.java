@@ -24,6 +24,9 @@ package it.eng.spagobi.meta.initializer.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.TableItem;
+
 /**
  * @author Marco Cortella (marco.cortella@eng.it)
  *
@@ -34,6 +37,10 @@ public class HierarchyDescriptor {
 	private boolean hasAll;
 	private String allMemberName;
 	private List<HierarchyLevelDescriptor> levels;
+	private TableItem ui_tableItem;
+	private Button ui_buttonEdit;
+	private Button ui_buttonRemove;
+
 	
 	public HierarchyDescriptor(){
 		name = "";
@@ -92,7 +99,55 @@ public class HierarchyDescriptor {
 	public void setLevels(List<HierarchyLevelDescriptor> levels) {
 		this.levels = levels;
 	}
+
+	/**
+	 * @return the ui_tableItem
+	 */
+	public TableItem getUi_tableItem() {
+		return ui_tableItem;
+	}
+
+	/**
+	 * @param ui_tableItem the ui_tableItem to set
+	 */
+	public void setUi_tableItem(TableItem ui_tableItem) {
+		this.ui_tableItem = ui_tableItem;
+	}
+
+	/**
+	 * @return the ui_buttonEdit
+	 */
+	public Button getUi_buttonEdit() {
+		return ui_buttonEdit;
+	}
+
+	/**
+	 * @param ui_buttonEdit the ui_buttonEdit to set
+	 */
+	public void setUi_buttonEdit(Button ui_buttonEdit) {
+		this.ui_buttonEdit = ui_buttonEdit;
+	}
+
+	/**
+	 * @return the ui_buttonRemove
+	 */
+	public Button getUi_buttonRemove() {
+		return ui_buttonRemove;
+	}
+
+	/**
+	 * @param ui_buttonRemove the ui_buttonRemove to set
+	 */
+	public void setUi_buttonRemove(Button ui_buttonRemove) {
+		this.ui_buttonRemove = ui_buttonRemove;
+	}
 	
+	public void disposeUiElements() {
+		ui_buttonEdit.dispose();
+		ui_buttonRemove.dispose();
+		//ui_tableItem.dispose();
+		
+	}
 	
 
 }

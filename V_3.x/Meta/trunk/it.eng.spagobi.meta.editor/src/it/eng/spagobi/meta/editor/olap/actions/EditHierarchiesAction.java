@@ -10,7 +10,9 @@
 package it.eng.spagobi.meta.editor.olap.actions;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -27,6 +29,7 @@ import it.eng.spagobi.meta.editor.olap.editor.hierarchies.HierarchiesEditorMainP
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
@@ -66,7 +69,13 @@ public class EditHierarchiesAction extends AbstractSpagoBIModelAction {
 			
 			HierarchiesEditorMainPage hierarchiesEditor = new HierarchiesEditorMainPage(parentShell,olapModel,businessColumnSet );
 			hierarchiesEditor.create();
-			hierarchiesEditor.open();
+			if (hierarchiesEditor.open() ==  Window.OK){
+				//TODO: create/modify/erase OLAP Model Hierarchy objects
+				List<HierarchyDescriptor> hierarchiesDescriptors = hierarchiesEditor.getHierarchiesDescriptors();
+				//Interaction Olap Model - Internal Hierarchy Descriptor
+				
+			}
+
 
 
 

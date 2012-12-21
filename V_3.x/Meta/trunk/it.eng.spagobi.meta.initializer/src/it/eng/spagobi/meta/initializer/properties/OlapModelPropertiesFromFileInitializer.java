@@ -26,6 +26,10 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.CalculatedBusinessColumn;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
+import it.eng.spagobi.meta.model.olap.Hierarchy;
+import it.eng.spagobi.meta.model.olap.Level;
+import it.eng.spagobi.meta.model.olap.Measure;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 
 import java.io.File;
@@ -53,17 +57,12 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 
 	private Document document;
 	
-	public static final String MODEL_INITIALIZER_NAME = "structural.initializer.name";
-	public static final String MODEL_INITIALIZER_VERSION = "structural.initializer.version";
-	public static final String COLUMN_PHYSICAL_TABLE = "physical.physicaltable";
-	public static final String ROLE_DESTINATION = "structural.destinationRole";
-	public static final String CALCULATED_COLUMN_EXPRESSION = "structural.expression";
-	public static final String CALCULATED_COLUMN_DATATYPE = "structural.datatype";
-	public static final String COLUMN_DATATYPE = "structural.datatype";
-	public static final String FORCE_SUBENTITY_VISIBILITY = "structural.forceVisibilityAsSubentity";
+
+	public static final String LEVEL_UNIQUE_MEMBERS = "structural.uniquemembers";
+	public static final String HIERARCHY_HAS_ALL = "structural.hasall";
+	public static final String HIERARCHY_ALL_MEMBER_NAME = "structural.allmembername";
 
 
-	
 	
 	static public ModelFactory FACTORY = ModelFactory.eINSTANCE;
 	static public IResourceLocator RL = SpagoBIMetaInitializerPlugin.getInstance().getResourceLocator();
@@ -75,7 +74,7 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 		
 		logger.trace("IN");
 		try {
-			File propertiesFile = RL.getFile("properties/customProperties.xml");
+			File propertiesFile = RL.getFile("properties/customOlapProperties.xml");
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder builder = domFactory.newDocumentBuilder();
 	        document = builder.parse(propertiesFile);
@@ -87,37 +86,26 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 	}
 	
 	public void addProperties(ModelObject o) {
-		/*
-		if(o instanceof BusinessModel) {
-			initModelProperties((BusinessModel)o);
-		} else if(o instanceof BusinessTable) {
-			initTableProperties((BusinessTable)o);
-		} else if(o instanceof BusinessView) {
-			initViewProperties((BusinessView)o);
-		} else if(o instanceof SimpleBusinessColumn) {
-			initColumnProperties((SimpleBusinessColumn)o);
-		} else if(o instanceof CalculatedBusinessColumn) {
-			initCalculatedColumnProperties((CalculatedBusinessColumn)o);
-		} else if(o instanceof BusinessIdentifier) {
-			initIdentifierProperties((BusinessIdentifier)o);
-		} else if(o instanceof BusinessRelationship) {
-			initRelationshipProperties((BusinessRelationship)o);
-		} else {
-			
-		}
-		*/
-		/*
+		
 		if(o instanceof OlapModel) {
 			initModelProperties((OlapModel)o);
-		} else if(o instanceof BusinessTable) {
+		} else if(o instanceof Cube) {
 			initCubeProperties((Cube)o);
+		} else if(o instanceof Dimension) {
+			initDimensionProperties((Dimension)o);
+		} else if(o instanceof Hierarchy) {
+			initHierarchyProperties((Hierarchy)o);
+		} else if(o instanceof Level) {
+			initLevelProperties((Level)o);
+		} else if(o instanceof Measure) {
+			initMeasureProperties((Measure)o);
 		} 
-		*/
+
 	}
 	
 
 	
-	private void initModelProperties(BusinessModel o) {
+	private void initModelProperties(OlapModel o) {
         
 		try {
 			
@@ -127,11 +115,11 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 	        
 	      	//2- Search model types definitions
 			nodes = readXMLNodes(document, "/properties/model/types/type");
-			initModelPropertyTypes(nodes, o.getParentModel(), o);
+			initModelPropertyTypes(nodes,  o.getParentModel(), o);
 	        
 	        //3- Search model admissible types values definitions
 	        nodes = readXMLNodes(document, "/properties/model/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, o.getParentModel());
+	        initModelAdmissibleValues(nodes,o.getParentModel());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,157 +127,99 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 
 	}
 	
-	private void initTableProperties(BusinessTable o) {
+	private void initCubeProperties(Cube o) {
 		try {
 			//1- Search model categories definitions
-			NodeList nodes = readXMLNodes(document, "/properties/table/categories/category");
+			NodeList nodes = readXMLNodes(document, "/properties/cube/categories/category");
 			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
 	        
 	      	//2- Search model types definitions
-			nodes = readXMLNodes(document, "/properties/table/types/type");
+			nodes = readXMLNodes(document, "/properties/cube/types/type");
 			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
 	        
 	        //3- Search model admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/table/typesValues/admissibleValuesOf");
+	        nodes = readXMLNodes(document, "/properties/cube/typesValues/admissibleValuesOf");
 	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void initViewProperties(BusinessView o) {
+	private void initDimensionProperties(Dimension o) {
 		try {
 			//1- Search model categories definitions
-			NodeList nodes = readXMLNodes(document, "/properties/table/categories/category");
+			NodeList nodes = readXMLNodes(document, "/properties/dimension/categories/category");
 			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
 	        
 	      	//2- Search model types definitions
-			nodes = readXMLNodes(document, "/properties/table/types/type");
+			nodes = readXMLNodes(document, "/properties/dimension/types/type");
 			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
 	        
 	        //3- Search model admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/table/typesValues/admissibleValuesOf");
+	        nodes = readXMLNodes(document, "/properties/dimension/typesValues/admissibleValuesOf");
 	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-	
-
-	private void initColumnProperties(SimpleBusinessColumn o) {
-        NodeList nodes;
-        Model rootModel = null;
-		
-        int nodesLength;
+	private void initHierarchyProperties(Hierarchy o) {
 		try {
-			if(o.getTable() != null && o.getTable().getModel() != null) {
-				rootModel = o.getTable().getModel().getParentModel();
-			}
-			//1- Search column categories definitions
-			nodes = readXMLNodes(document, "/properties/column/categories/category");
-			initeModelPropertyCategories(nodes, rootModel);
+			//1- Search model categories definitions
+			NodeList nodes = readXMLNodes(document, "/properties/hierarchy/categories/category");
+			initeModelPropertyCategories(nodes, o.getDimension().getModel().getParentModel());
 	        
-	      	//2- Search column types definitions
-			nodes = readXMLNodes(document, "/properties/column/types/type");
-			nodesLength = nodes.getLength();
-			initModelPropertyTypes(nodes, rootModel, o);
+	      	//2- Search model types definitions
+			nodes = readXMLNodes(document, "/properties/hierarchy/types/type");
+			initModelPropertyTypes(nodes, o.getDimension().getModel().getParentModel(), o);
 	        
-	        //3- Search column admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/column/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, rootModel);
-	        
-	        // *********************************************************************
-	        // THIS WILL ADD PHYSICAL TABLE REFERENCE PROPERTY FOR BUSINESS COLUMN
-	        // This is not a custom property readed from xml file
-	        // *********************************************************************
-
-	        ModelPropertyCategory physicalReferenceCategory =  o.getTable().getModel().getParentModel().getPropertyCategory("Physical References");
-			if(physicalReferenceCategory == null) {
-				physicalReferenceCategory = FACTORY.createModelPropertyCategory();
-				physicalReferenceCategory.setName("Physical References");
-				physicalReferenceCategory.setDescription("The reference to the original physical object");
-				o.getTable().getModel().getParentModel().getPropertyCategories().add(physicalReferenceCategory);
-			}
-			
-			// Column Physical Table TYPE
-			ModelPropertyType propertyType = null;
-			
-			if(rootModel != null) propertyType = rootModel.getPropertyType(COLUMN_PHYSICAL_TABLE);
-			if(propertyType == null) {
-				propertyType = FACTORY.createModelPropertyType();
-				propertyType.setId(COLUMN_PHYSICAL_TABLE);
-				propertyType.setName("Physical table");
-				propertyType.setDescription("The original physical table of this column");
-				propertyType.setCategory(physicalReferenceCategory);
-				propertyType.setDefaultValue(o.getPhysicalColumn().getTable().getName());
-				
-				if(rootModel != null) rootModel.getPropertyTypes().add(propertyType);
-			}
-			
-			ModelProperty property = FACTORY.createModelProperty();
-			property.setPropertyType(propertyType);
-			o.getProperties().put(property.getPropertyType().getId(), property);
-	        
-			//**************************************************************************
-			
-			
-			
+	        //3- Search model admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/hierarchy/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, o.getDimension().getModel().getParentModel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
-	private void initCalculatedColumnProperties(CalculatedBusinessColumn o) {
-        NodeList nodes;
-        Model rootModel = null;
-		
-        int nodesLength;
+
+	private void initLevelProperties(Level o) {
 		try {
-			if(o.getTable() != null && o.getTable().getModel() != null) {
-				rootModel = o.getTable().getModel().getParentModel();
-			}
-			//1- Search column categories definitions
-			nodes = readXMLNodes(document, "/properties/calculatedcolumn/categories/category");
-			initeModelPropertyCategories(nodes, rootModel);
+			//1- Search model categories definitions
+			NodeList nodes = readXMLNodes(document, "/properties/level/categories/category");
+			initeModelPropertyCategories(nodes, o.getHierarchy().getDimension().getModel().getParentModel());
 	        
-	      	//2- Search column types definitions
-			nodes = readXMLNodes(document, "/properties/calculatedcolumn/types/type");
-			nodesLength = nodes.getLength();
-			initModelPropertyTypes(nodes, rootModel, o);
+	      	//2- Search model types definitions
+			nodes = readXMLNodes(document, "/properties/level/types/type");
+			initModelPropertyTypes(nodes, o.getHierarchy().getDimension().getModel().getParentModel(), o);
 	        
-	        //3- Search column admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/calculatedcolumn/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, rootModel);
-	        			
-			
+	        //3- Search model admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/level/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, o.getHierarchy().getDimension().getModel().getParentModel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	}		
-	
-	private void initIdentifierProperties(BusinessIdentifier o) {
-		
 	}
-	
-	private void initRelationshipProperties(BusinessRelationship o) {
+
+	private void initMeasureProperties(Measure o) {
 		try {
-			//1- Search relationship categories definitions
-			NodeList nodes = readXMLNodes(document, "/properties/relationship/categories/category");
-			initeModelPropertyCategories(nodes, o.getModel().getParentModel());
+			//1- Search model categories definitions
+			NodeList nodes = readXMLNodes(document, "/properties/measure/categories/category");
+			initeModelPropertyCategories(nodes, o.getCube().getModel().getParentModel());
 	        
-	      	//2- Search relationship types definitions
-			nodes = readXMLNodes(document, "/properties/relationship/types/type");
-			initModelPropertyTypes(nodes, o.getModel().getParentModel(), o);
+	      	//2- Search model types definitions
+			nodes = readXMLNodes(document, "/properties/measure/types/type");
+			initModelPropertyTypes(nodes, o.getCube().getModel().getParentModel(), o);
 	        
-	        //3- Search relationship admissible types values definitions
-	        nodes = readXMLNodes(document, "/properties/relationship/typesValues/admissibleValuesOf");
-	        initModelAdmissibleValues(nodes, o.getModel().getParentModel());
+	        //3- Search model admissible types values definitions
+	        nodes = readXMLNodes(document, "/properties/measure/typesValues/admissibleValuesOf");
+	        initModelAdmissibleValues(nodes, o.getCube().getModel().getParentModel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}	
+		
+	
+
+	
+	
 	
     private NodeList readXMLNodes(Document doc, String xpathExpression) throws Exception {
         XPath xpath = XPathFactory.newInstance().newXPath();
@@ -394,27 +324,24 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 		EList<ModelPropertyCategory> categories = null;
 		if(o instanceof Model) {
 			categories = ((Model)o).getPropertyCategories();
-		} else if (o instanceof BusinessModel){
-			categories = ((BusinessModel)o).getParentModel().getPropertyCategories();
+		} else if (o instanceof OlapModel){
+			categories = ((OlapModel)o).getParentModel().getPropertyCategories();
 		}
-		else if (o instanceof BusinessTable){
-			categories = ((BusinessTable)o).getModel().getParentModel().getPropertyCategories();
+		else if (o instanceof Cube){
+			categories = ((Cube)o).getModel().getParentModel().getPropertyCategories();
 		} 
-		else if (o instanceof BusinessView){
-			categories = ((BusinessView)o).getModel().getParentModel().getPropertyCategories();
+		else if (o instanceof Dimension){
+			categories = ((Dimension)o).getModel().getParentModel().getPropertyCategories();
 		} 		
-		else if (o instanceof SimpleBusinessColumn){
-			categories = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
+		else if (o instanceof Hierarchy){
+			categories = ((Hierarchy)o).getDimension().getModel().getParentModel().getPropertyCategories();
+		} 	
+		else if (o instanceof Level){
+			categories = ((Level)o).getHierarchy().getDimension().getModel().getParentModel().getPropertyCategories();			
 		}
-		else if (o instanceof CalculatedBusinessColumn){
-			categories = ((CalculatedBusinessColumn)o).getTable().getModel().getParentModel().getPropertyCategories();			
+		else if (o instanceof Measure){
+			categories = ((Measure)o).getCube().getModel().getParentModel().getPropertyCategories();			
 		}
-		else if (o instanceof BusinessIdentifier){
-			categories = ((BusinessIdentifier)o).getModel().getParentModel().getPropertyCategories();				
-		}
-		else if (o instanceof BusinessRelationship){
-			categories = ((BusinessRelationship)o).getModel().getParentModel().getPropertyCategories();							
-		} 
 		
 		if (categories != null){
 			for (ModelPropertyCategory category : categories){
@@ -431,26 +358,23 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 		
 		if(o instanceof Model) {
 			types = ((Model)o).getPropertyTypes();
-		} else if (o instanceof BusinessModel){
-			types = ((BusinessModel)o).getParentModel().getPropertyTypes();
+		} else if (o instanceof OlapModel){
+			types = ((OlapModel)o).getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof BusinessTable){
-			types = ((BusinessTable)o).getModel().getParentModel().getPropertyTypes();
+		else if (o instanceof Cube){
+			types = ((Cube)o).getModel().getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof BusinessView){
-			types = ((BusinessView)o).getModel().getParentModel().getPropertyTypes();
+		else if (o instanceof Dimension){
+			types = ((Dimension)o).getModel().getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof SimpleBusinessColumn){
-			types = ((SimpleBusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();
+		else if (o instanceof Hierarchy){
+			types = ((Hierarchy)o).getDimension().getModel().getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof CalculatedBusinessColumn){
-			types = ((CalculatedBusinessColumn)o).getTable().getModel().getParentModel().getPropertyTypes();
+		else if (o instanceof Level){
+			types = ((Level)o).getHierarchy().getDimension().getModel().getParentModel().getPropertyTypes();
 		}
-		else if (o instanceof BusinessIdentifier){
-			types = ((BusinessIdentifier)o).getModel().getParentModel().getPropertyTypes();
-		}
-		else if (o instanceof BusinessRelationship){
-			types = ((BusinessRelationship)o).getModel().getParentModel().getPropertyTypes();			
+		else if (o instanceof Measure){
+			types = ((Measure)o).getCube().getModel().getParentModel().getPropertyTypes();
 		}
 		
 		if (types != null){

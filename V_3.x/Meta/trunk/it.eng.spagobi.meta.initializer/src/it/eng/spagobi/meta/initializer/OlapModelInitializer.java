@@ -10,8 +10,12 @@
 package it.eng.spagobi.meta.initializer;
 
 
+import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.HierarchyLevelDescriptor;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.initializer.properties.IPropertiesInitializer;
 import it.eng.spagobi.meta.initializer.properties.OlapModelDefaultPropertiesInitializer;
+import it.eng.spagobi.meta.initializer.properties.OlapModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.initializer.properties.PhysicalModelDefaultPropertiesInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
@@ -22,6 +26,8 @@ import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.olap.Cube;
 import it.eng.spagobi.meta.model.olap.Dimension;
+import it.eng.spagobi.meta.model.olap.Hierarchy;
+import it.eng.spagobi.meta.model.olap.Level;
 import it.eng.spagobi.meta.model.olap.Measure;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelFactory;
@@ -63,8 +69,8 @@ public class OlapModelInitializer {
 	static public OlapModelFactory FACTORY = OlapModelFactory.eINSTANCE;
 	
 	public OlapModelInitializer() {
-		setPropertiesInitializer(new OlapModelDefaultPropertiesInitializer());
-		
+		//setPropertiesInitializer(new OlapModelDefaultPropertiesInitializer());
+		setPropertiesInitializer(new OlapModelPropertiesFromFileInitializer());
 	}
 	
 
@@ -416,6 +422,65 @@ public class OlapModelInitializer {
 
 	}
 	
+	public Hierarchy addHierarchy(Dimension dimension, HierarchyDescriptor hierarchyDescriptor){
+		Hierarchy hierarchy;
+		try{
+			hierarchy = FACTORY.createHierarchy();
+			
+			
+			hierarchy.setName(hierarchyDescriptor.getName());
+			hierarchy.setDimension(dimension);
+			List<HierarchyLevelDescriptor> levelsDescriptors = hierarchyDescriptor.getLevels();
+			//Create HierarchyLevels
+			for(HierarchyLevelDescriptor levelDescriptor:levelsDescriptors){
+				addHierarchyLevel(hierarchy,levelDescriptor);
+			}
+
+			dimension.getHierarchies().add(hierarchy);
+			
+			getPropertiesInitializer().addProperties(hierarchy);	
+			
+			//Custom Properties
+			hierarchy.setProperty(OlapModelPropertiesFromFileInitializer.HIERARCHY_HAS_ALL,String.valueOf(hierarchyDescriptor.isHasAll()));
+			if (hierarchyDescriptor.getAllMemberName() != null){
+				hierarchy.setProperty(OlapModelPropertiesFromFileInitializer.HIERARCHY_ALL_MEMBER_NAME,hierarchyDescriptor.getAllMemberName());
+			}
+
+			
+		}catch(Throwable t) {
+			throw new RuntimeException("Impossible to add hierarchy ");
+		}
+		return hierarchy;
+	}
+	
+	public 	Level addHierarchyLevel(Hierarchy hierarchy,HierarchyLevelDescriptor levelDescriptor){
+		Level level;
+		try{
+			level = FACTORY.createLevel();
+						
+			level.setName(levelDescriptor.getName());
+			if (levelDescriptor.getNameColumn() != null){
+				level.setNameColumn(levelDescriptor.getNameColumn());
+			}
+			if (levelDescriptor.getCaptionColumn() != null){
+				level.setCaptionColumn(levelDescriptor.getCaptionColumn());
+			}
+			if (levelDescriptor.getOrdinalColumn() != null){
+				level.setOrdinalColumn(levelDescriptor.getOrdinalColumn());
+			}
+			
+			level.setHierarchy(hierarchy);
+			getPropertiesInitializer().addProperties(level);
+			//Custom Properties
+			level.setProperty(OlapModelPropertiesFromFileInitializer.LEVEL_UNIQUE_MEMBERS,String.valueOf(levelDescriptor.isUniqueMembers()));
+
+		}catch(Throwable t) {
+			throw new RuntimeException("Impossible to add level hierarchy ");
+		}
+		return level;
+		
+	}
+
 
 	
 	//  --------------------------------------------------------

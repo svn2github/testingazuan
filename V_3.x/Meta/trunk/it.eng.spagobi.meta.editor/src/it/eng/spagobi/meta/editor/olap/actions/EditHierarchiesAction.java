@@ -12,12 +12,14 @@ package it.eng.spagobi.meta.editor.olap.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.commands.ISpagoBIModelCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
+import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
@@ -66,14 +68,20 @@ public class EditHierarchiesAction extends AbstractSpagoBIModelAction {
 
 			Model rootModel = businessColumnSet.getModel().getParentModel();
 			OlapModel olapModel = rootModel.getOlapModels().get(0);
+			OlapModelInitializer olapInitializer = new OlapModelInitializer();
+			Dimension dimension = olapInitializer.getDimension(businessColumnSet); 
 			
 			HierarchiesEditorMainPage hierarchiesEditor = new HierarchiesEditorMainPage(parentShell,olapModel,businessColumnSet );
 			hierarchiesEditor.create();
 			if (hierarchiesEditor.open() ==  Window.OK){
-				//TODO: create/modify/erase OLAP Model Hierarchy objects
-				List<HierarchyDescriptor> hierarchiesDescriptors = hierarchiesEditor.getHierarchiesDescriptors();
 				//Interaction Olap Model - Internal Hierarchy Descriptor
-				
+
+				//TODO: create/modify/erase OLAP Model Hierarchy objects
+				//TODO: check if there are hierarchy to modify or remove, the add new objects
+				List<HierarchyDescriptor> hierarchiesDescriptors = hierarchiesEditor.getHierarchiesDescriptors();
+				for (HierarchyDescriptor hierarchiesDescriptor : hierarchiesDescriptors){
+					olapInitializer.addHierarchy(dimension, hierarchiesDescriptor);
+				}
 			}
 
 

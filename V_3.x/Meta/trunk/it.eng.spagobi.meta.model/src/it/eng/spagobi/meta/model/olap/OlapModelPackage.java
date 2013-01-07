@@ -346,7 +346,7 @@ public interface OlapModelPackage extends EPackage {
 	int DIMENSION__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Hierarchies</b></em>' reference list.
+	 * The feature id for the '<em><b>Hierarchies</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -437,7 +437,7 @@ public interface OlapModelPackage extends EPackage {
 	int HIERARCHY__TABLE = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Dimension</b></em>' reference.
+	 * The feature id for the '<em><b>Dimension</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -446,7 +446,7 @@ public interface OlapModelPackage extends EPackage {
 	int HIERARCHY__DIMENSION = ModelPackage.MODEL_OBJECT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Levels</b></em>' reference list.
+	 * The feature id for the '<em><b>Levels</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -519,7 +519,7 @@ public interface OlapModelPackage extends EPackage {
 	int LEVEL__PROPERTIES = ModelPackage.MODEL_OBJECT__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Hierarchy</b></em>' reference.
+	 * The feature id for the '<em><b>Hierarchy</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1262,10 +1262,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getDimension_Table();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Dimension#getHierarchies <em>Hierarchies</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Dimension#getHierarchies <em>Hierarchies</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Hierarchies</em>'.
+	 * @return the meta object for the containment reference list '<em>Hierarchies</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Dimension#getHierarchies()
 	 * @see #getDimension()
 	 * @generated
@@ -1305,10 +1305,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getHierarchy_Table();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getDimension <em>Dimension</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getDimension <em>Dimension</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Dimension</em>'.
+	 * @return the meta object for the container reference '<em>Dimension</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Hierarchy#getDimension()
 	 * @see #getHierarchy()
 	 * @generated
@@ -1316,10 +1316,10 @@ public interface OlapModelPackage extends EPackage {
 	EReference getHierarchy_Dimension();
 
 	/**
-	 * Returns the meta object for the reference list '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getLevels <em>Levels</em>}'.
+	 * Returns the meta object for the containment reference list '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getLevels <em>Levels</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Levels</em>'.
+	 * @return the meta object for the containment reference list '<em>Levels</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Hierarchy#getLevels()
 	 * @see #getHierarchy()
 	 * @generated
@@ -1337,10 +1337,10 @@ public interface OlapModelPackage extends EPackage {
 	EClass getLevel();
 
 	/**
-	 * Returns the meta object for the reference '{@link it.eng.spagobi.meta.model.olap.Level#getHierarchy <em>Hierarchy</em>}'.
+	 * Returns the meta object for the container reference '{@link it.eng.spagobi.meta.model.olap.Level#getHierarchy <em>Hierarchy</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Hierarchy</em>'.
+	 * @return the meta object for the container reference '<em>Hierarchy</em>'.
 	 * @see it.eng.spagobi.meta.model.olap.Level#getHierarchy()
 	 * @see #getLevel()
 	 * @generated
@@ -1765,7 +1765,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference DIMENSION__TABLE = eINSTANCE.getDimension_Table();
 		/**
-		 * The meta object literal for the '<em><b>Hierarchies</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Hierarchies</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1795,14 +1795,14 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EReference HIERARCHY__TABLE = eINSTANCE.getHierarchy_Table();
 		/**
-		 * The meta object literal for the '<em><b>Dimension</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Dimension</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference HIERARCHY__DIMENSION = eINSTANCE.getHierarchy_Dimension();
 		/**
-		 * The meta object literal for the '<em><b>Levels</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Levels</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -1818,7 +1818,7 @@ public interface OlapModelPackage extends EPackage {
 		 */
 		EClass LEVEL = eINSTANCE.getLevel();
 		/**
-		 * The meta object literal for the '<em><b>Hierarchy</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Hierarchy</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

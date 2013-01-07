@@ -64,7 +64,7 @@ public interface Dimension extends ModelObject {
 	void setTable(BusinessColumnSet value);
 
 	/**
-	 * Returns the value of the '<em><b>Hierarchies</b></em>' reference list.
+	 * Returns the value of the '<em><b>Hierarchies</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Hierarchy}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getDimension <em>Dimension</em>}'.
 	 * <!-- begin-user-doc -->
@@ -73,10 +73,10 @@ public interface Dimension extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Hierarchies</em>' reference list.
+	 * @return the value of the '<em>Hierarchies</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getDimension_Hierarchies()
 	 * @see it.eng.spagobi.meta.model.olap.Hierarchy#getDimension
-	 * @model opposite="dimension" required="true"
+	 * @model opposite="dimension" containment="true" required="true"
 	 * @generated
 	 */
 	EList<Hierarchy> getHierarchies();

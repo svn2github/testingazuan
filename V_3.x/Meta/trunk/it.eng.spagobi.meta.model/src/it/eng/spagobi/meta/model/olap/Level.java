@@ -38,7 +38,7 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface Level extends ModelObject {
 	/**
-	 * Returns the value of the '<em><b>Hierarchy</b></em>' reference.
+	 * Returns the value of the '<em><b>Hierarchy</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getLevels <em>Levels</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -46,20 +46,20 @@ public interface Level extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Hierarchy</em>' reference.
+	 * @return the value of the '<em>Hierarchy</em>' container reference.
 	 * @see #setHierarchy(Hierarchy)
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getLevel_Hierarchy()
 	 * @see it.eng.spagobi.meta.model.olap.Hierarchy#getLevels
-	 * @model opposite="levels"
+	 * @model opposite="levels" transient="false"
 	 * @generated
 	 */
 	Hierarchy getHierarchy();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Level#getHierarchy <em>Hierarchy</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Level#getHierarchy <em>Hierarchy</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Hierarchy</em>' reference.
+	 * @param value the new value of the '<em>Hierarchy</em>' container reference.
 	 * @see #getHierarchy()
 	 * @generated
 	 */

@@ -215,15 +215,27 @@ public class HierarchyEditor extends Dialog {
 		
 		Label lblAllMemberName = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblAllMemberName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblAllMemberName.setText("All Member Name");
+		
+
+		
+		
 		
 		textAllMemberName = new Text(grpGeneralHierarchyProperties, SWT.BORDER);
 		GridData gd_textAllMemberName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_textAllMemberName.widthHint = 159;
 		textAllMemberName.setLayoutData(gd_textAllMemberName);
 		//set initial value
-		textAllMemberName.setText(hyerarchyDescriptor.getAllMemberName());		
-
+		if (hyerarchyDescriptor.getAllMemberName() != null){
+			textAllMemberName.setText(hyerarchyDescriptor.getAllMemberName());
+		}
+		else {
+			textAllMemberName.setText("All Member Name");
+		}
+		if (!hyerarchyDescriptor.isHasAll()){
+			//Disable Text Field
+			textAllMemberName.setEnabled(false);
+		}
+		
 		/*
 		Label lblPrimaryKey = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblPrimaryKey.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -779,6 +791,7 @@ public class HierarchyEditor extends Dialog {
 			hyerarchyDescriptor.setAllMemberName(textAllMemberName.getText());
 		}
 		//Test print
+		/*
 		System.out.println("------------------------");
 		System.out.println("Hierarchy Name: "+hyerarchyDescriptor.getName());
 		System.out.println("Has All: "+hyerarchyDescriptor.isHasAll());
@@ -787,6 +800,7 @@ public class HierarchyEditor extends Dialog {
 		for (HierarchyLevelDescriptor level:levels){
 			System.out.println(level.toString());
 		}
+		*/
 
 
 		

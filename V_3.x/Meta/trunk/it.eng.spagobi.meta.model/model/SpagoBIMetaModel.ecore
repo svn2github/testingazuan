@@ -230,7 +230,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1"
           eType="#//business/BusinessColumnSet"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchies" lowerBound="1"
-          upperBound="-1" eType="#//olap/Hierarchy" eOpposite="#//olap/Hierarchy/dimension"/>
+          upperBound="-1" eType="#//olap/Hierarchy" containment="true" eOpposite="#//olap/Hierarchy/dimension"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//olap/OlapModel"
           eOpposite="#//olap/OlapModel/dimensions"/>
     </eClassifiers>
@@ -239,7 +239,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" eType="#//olap/Dimension"
           eOpposite="#//olap/Dimension/hierarchies"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="levels" lowerBound="1"
-          upperBound="-1" eType="#//olap/Level" eOpposite="#//olap/Level/hierarchy"/>
+          upperBound="-1" eType="#//olap/Level" containment="true" eOpposite="#//olap/Level/hierarchy"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Level" eSuperTypes="#//ModelObject">
       <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchy" eType="#//olap/Hierarchy"

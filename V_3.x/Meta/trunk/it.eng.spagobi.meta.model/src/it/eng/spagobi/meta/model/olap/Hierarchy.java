@@ -61,7 +61,7 @@ public interface Hierarchy extends ModelObject {
 	void setTable(BusinessColumnSet value);
 
 	/**
-	 * Returns the value of the '<em><b>Dimension</b></em>' reference.
+	 * Returns the value of the '<em><b>Dimension</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Dimension#getHierarchies <em>Hierarchies</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -69,27 +69,27 @@ public interface Hierarchy extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Dimension</em>' reference.
+	 * @return the value of the '<em>Dimension</em>' container reference.
 	 * @see #setDimension(Dimension)
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getHierarchy_Dimension()
 	 * @see it.eng.spagobi.meta.model.olap.Dimension#getHierarchies
-	 * @model opposite="hierarchies"
+	 * @model opposite="hierarchies" transient="false"
 	 * @generated
 	 */
 	Dimension getDimension();
 
 	/**
-	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getDimension <em>Dimension</em>}' reference.
+	 * Sets the value of the '{@link it.eng.spagobi.meta.model.olap.Hierarchy#getDimension <em>Dimension</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Dimension</em>' reference.
+	 * @param value the new value of the '<em>Dimension</em>' container reference.
 	 * @see #getDimension()
 	 * @generated
 	 */
 	void setDimension(Dimension value);
 
 	/**
-	 * Returns the value of the '<em><b>Levels</b></em>' reference list.
+	 * Returns the value of the '<em><b>Levels</b></em>' containment reference list.
 	 * The list contents are of type {@link it.eng.spagobi.meta.model.olap.Level}.
 	 * It is bidirectional and its opposite is '{@link it.eng.spagobi.meta.model.olap.Level#getHierarchy <em>Hierarchy</em>}'.
 	 * <!-- begin-user-doc -->
@@ -98,10 +98,10 @@ public interface Hierarchy extends ModelObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Levels</em>' reference list.
+	 * @return the value of the '<em>Levels</em>' containment reference list.
 	 * @see it.eng.spagobi.meta.model.olap.OlapModelPackage#getHierarchy_Levels()
 	 * @see it.eng.spagobi.meta.model.olap.Level#getHierarchy
-	 * @model opposite="hierarchy" required="true"
+	 * @model opposite="hierarchy" containment="true" required="true"
 	 * @generated
 	 */
 	EList<Level> getLevels();

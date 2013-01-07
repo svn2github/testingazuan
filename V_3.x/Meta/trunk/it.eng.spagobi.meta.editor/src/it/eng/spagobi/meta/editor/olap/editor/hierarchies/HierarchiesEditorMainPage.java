@@ -26,9 +26,16 @@ import java.util.List;
 
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
+import it.eng.spagobi.meta.initializer.descriptor.HierarchyLevelDescriptor;
+import it.eng.spagobi.meta.initializer.properties.OlapModelPropertiesFromFileInitializer;
+import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.olap.Dimension;
+import it.eng.spagobi.meta.model.olap.Hierarchy;
+import it.eng.spagobi.meta.model.olap.Level;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -156,8 +163,61 @@ public class HierarchiesEditorMainPage extends Dialog {
 		TableColumn tblclmnRemove = new TableColumn(tableHierarchies, SWT.NONE);
 		tblclmnRemove.setWidth(100);
 		tblclmnRemove.setText("Remove");
+		
+		//Populate tableHierarchies with existing Hierarchy found on Dimension
+		populateTableHierarchies();
 
 		return container;
+	}
+	
+	//Populate tableHierarchies with existing Hierarchy found on Dimension
+	private void populateTableHierarchies(){
+		//This will create HyerarchyDescriptor objects from Hierarchy objects and
+		//HierarchyLevelDescriptor object from Level objects
+		Dimension dimension = olapModelInitializer.getDimension(businessColumnSet);
+		List<Hierarchy> hierarchies = dimension.getHierarchies();
+		if (!hierarchies.isEmpty()){
+			for (Hierarchy hierarchy : hierarchies ){
+				//Create HyerarchyDescriptor
+				HierarchyDescriptor hyerarchyDescriptor = new HierarchyDescriptor();
+				
+				hyerarchyDescriptor.setName(hierarchy.getName());
+	
+				hyerarchyDescriptor.setHasAll(Boolean.valueOf(hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_HAS_ALL).getValue()));
+				
+				hyerarchyDescriptor.setAllMemberName(hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_ALL_MEMBER_NAME).getValue());
+				List<Level> hierarchyLevels = hierarchy.getLevels();
+				if (!hierarchyLevels.isEmpty()){
+					for (Level level : hierarchyLevels){
+						//Create HierarchyLevelDescriptor
+						HierarchyLevelDescriptor hierarchyLevelDescriptor = new HierarchyLevelDescriptor();
+						
+						hierarchyLevelDescriptor.setBusinessColumn(level.getColumn());
+						hierarchyLevelDescriptor.setName(level.getName());
+						if (level.getNameColumn() != null){
+							hierarchyLevelDescriptor.setNameColumn(level.getNameColumn());
+						}
+						if (level.getCaptionColumn() != null){
+							hierarchyLevelDescriptor.setCaptionColumn(level.getCaptionColumn());
+						}
+						if (level.getOrdinalColumn() != null){
+							hierarchyLevelDescriptor.setOrdinalColumn(level.getOrdinalColumn());
+						}
+						hierarchyLevelDescriptor.setUniqueMembers(Boolean.valueOf(level.getProperties().get(OlapModelPropertiesFromFileInitializer.LEVEL_UNIQUE_MEMBERS).getValue()));
+						//Add HierarchyLevelDescriptor to HyerarchyDescriptor
+						hyerarchyDescriptor.getLevels().add(hierarchyLevelDescriptor);
+					}
+
+				}
+				
+				
+				//Add Hierarchy Descriptor to internal model
+				hierarchiesDescriptors.add(hyerarchyDescriptor);
+				//Create corresponding Table Item
+				createTableItem(hyerarchyDescriptor);
+			}
+
+		}		
 	}
 
 	/**

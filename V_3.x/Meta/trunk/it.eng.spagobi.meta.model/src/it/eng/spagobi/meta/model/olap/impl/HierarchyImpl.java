@@ -31,6 +31,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -61,17 +63,7 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	protected BusinessColumnSet table;
 
 	/**
-	 * The cached value of the '{@link #getDimension() <em>Dimension</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDimension()
-	 * @generated
-	 * @ordered
-	 */
-	protected Dimension dimension;
-
-	/**
-	 * The cached value of the '{@link #getLevels() <em>Levels</em>}' reference list.
+	 * The cached value of the '{@link #getLevels() <em>Levels</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getLevels()
@@ -143,24 +135,8 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	 * @generated
 	 */
 	public Dimension getDimension() {
-		if (dimension != null && dimension.eIsProxy()) {
-			InternalEObject oldDimension = (InternalEObject)dimension;
-			dimension = (Dimension)eResolveProxy(oldDimension);
-			if (dimension != oldDimension) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.HIERARCHY__DIMENSION, oldDimension, dimension));
-			}
-		}
-		return dimension;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Dimension basicGetDimension() {
-		return dimension;
+		if (eContainerFeatureID() != OlapModelPackage.HIERARCHY__DIMENSION) return null;
+		return (Dimension)eContainer();
 	}
 
 	/**
@@ -169,12 +145,7 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	 * @generated
 	 */
 	public NotificationChain basicSetDimension(Dimension newDimension, NotificationChain msgs) {
-		Dimension oldDimension = dimension;
-		dimension = newDimension;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.HIERARCHY__DIMENSION, oldDimension, newDimension);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newDimension, OlapModelPackage.HIERARCHY__DIMENSION, msgs);
 		return msgs;
 	}
 
@@ -184,10 +155,12 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	 * @generated
 	 */
 	public void setDimension(Dimension newDimension) {
-		if (newDimension != dimension) {
+		if (newDimension != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.HIERARCHY__DIMENSION && newDimension != null)) {
+			if (EcoreUtil.isAncestor(this, newDimension))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (dimension != null)
-				msgs = ((InternalEObject)dimension).eInverseRemove(this, OlapModelPackage.DIMENSION__HIERARCHIES, Dimension.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newDimension != null)
 				msgs = ((InternalEObject)newDimension).eInverseAdd(this, OlapModelPackage.DIMENSION__HIERARCHIES, Dimension.class, msgs);
 			msgs = basicSetDimension(newDimension, msgs);
@@ -204,7 +177,7 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	 */
 	public EList<Level> getLevels() {
 		if (levels == null) {
-			levels = new EObjectWithInverseResolvingEList<Level>(Level.class, this, OlapModelPackage.HIERARCHY__LEVELS, OlapModelPackage.LEVEL__HIERARCHY);
+			levels = new EObjectContainmentWithInverseEList<Level>(Level.class, this, OlapModelPackage.HIERARCHY__LEVELS, OlapModelPackage.LEVEL__HIERARCHY);
 		}
 		return levels;
 	}
@@ -219,8 +192,8 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case OlapModelPackage.HIERARCHY__DIMENSION:
-				if (dimension != null)
-					msgs = ((InternalEObject)dimension).eInverseRemove(this, OlapModelPackage.DIMENSION__HIERARCHIES, Dimension.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetDimension((Dimension)otherEnd, msgs);
 			case OlapModelPackage.HIERARCHY__LEVELS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getLevels()).basicAdd(otherEnd, msgs);
@@ -250,14 +223,27 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.HIERARCHY__DIMENSION:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.DIMENSION__HIERARCHIES, Dimension.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.HIERARCHY__TABLE:
 				if (resolve) return getTable();
 				return basicGetTable();
 			case OlapModelPackage.HIERARCHY__DIMENSION:
-				if (resolve) return getDimension();
-				return basicGetDimension();
+				return getDimension();
 			case OlapModelPackage.HIERARCHY__LEVELS:
 				return getLevels();
 		}
@@ -319,7 +305,7 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 			case OlapModelPackage.HIERARCHY__TABLE:
 				return table != null;
 			case OlapModelPackage.HIERARCHY__DIMENSION:
-				return dimension != null;
+				return getDimension() != null;
 			case OlapModelPackage.HIERARCHY__LEVELS:
 				return levels != null && !levels.isEmpty();
 		}

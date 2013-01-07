@@ -26,6 +26,7 @@ import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCom
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.EditHierarchiesCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.generic.SetGenericCommand;
 import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
+import it.eng.spagobi.meta.editor.business.BusinessModelEditor;
 import it.eng.spagobi.meta.editor.olap.editor.hierarchies.HierarchiesEditorMainPage;
 
 import org.eclipse.emf.edit.command.CommandParameter;
@@ -34,6 +35,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -45,6 +47,7 @@ public class EditHierarchiesAction extends AbstractSpagoBIModelAction {
 
 	private BusinessColumnSet businessColumnSet;
 	private Shell parentShell;
+	private BusinessModelEditor businessModelEditor;
 
 	/**
 	 * @param commandClass
@@ -55,7 +58,7 @@ public class EditHierarchiesAction extends AbstractSpagoBIModelAction {
 			ISelection selection) {
 		super(EditHierarchiesCommand.class, workbenchPart, selection);
 		parentShell = workbenchPart.getSite().getShell();
-	
+		businessModelEditor = (BusinessModelEditor)workbenchPart;
 	}
 	
 	/**
@@ -76,12 +79,16 @@ public class EditHierarchiesAction extends AbstractSpagoBIModelAction {
 			if (hierarchiesEditor.open() ==  Window.OK){
 				//Interaction Olap Model - Internal Hierarchy Descriptor
 
-				//TODO: create/modify/erase OLAP Model Hierarchy objects
-				//TODO: check if there are hierarchy to modify or remove, the add new objects
 				List<HierarchyDescriptor> hierarchiesDescriptors = hierarchiesEditor.getHierarchiesDescriptors();
+				//Erase All Hierarchies then construct object from scratch based on descriptors
+				dimension.getHierarchies().clear();
 				for (HierarchyDescriptor hierarchiesDescriptor : hierarchiesDescriptors){
 					olapInitializer.addHierarchy(dimension, hierarchiesDescriptor);
 				}
+				//Set the Business Model Editor to dirty to enable Save
+				businessModelEditor.setDirty(true);
+				businessModelEditor.firePropertyChange(IEditorPart.PROP_DIRTY);
+
 			}
 
 

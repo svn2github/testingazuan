@@ -459,6 +459,8 @@ public class OlapModelInitializer {
 			level = FACTORY.createLevel();
 						
 			level.setName(levelDescriptor.getName());
+			level.setColumn(levelDescriptor.getBusinessColumn());
+			
 			if (levelDescriptor.getNameColumn() != null){
 				level.setNameColumn(levelDescriptor.getNameColumn());
 			}

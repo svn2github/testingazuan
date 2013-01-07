@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -51,16 +52,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * @generated
  */
 public class LevelImpl extends ModelObjectImpl implements Level {
-	/**
-	 * The cached value of the '{@link #getHierarchy() <em>Hierarchy</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getHierarchy()
-	 * @generated
-	 * @ordered
-	 */
-	protected Hierarchy hierarchy;
-
 	/**
 	 * The cached value of the '{@link #getColumn() <em>Column</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -136,24 +127,8 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	 * @generated
 	 */
 	public Hierarchy getHierarchy() {
-		if (hierarchy != null && hierarchy.eIsProxy()) {
-			InternalEObject oldHierarchy = (InternalEObject)hierarchy;
-			hierarchy = (Hierarchy)eResolveProxy(oldHierarchy);
-			if (hierarchy != oldHierarchy) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OlapModelPackage.LEVEL__HIERARCHY, oldHierarchy, hierarchy));
-			}
-		}
-		return hierarchy;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Hierarchy basicGetHierarchy() {
-		return hierarchy;
+		if (eContainerFeatureID() != OlapModelPackage.LEVEL__HIERARCHY) return null;
+		return (Hierarchy)eContainer();
 	}
 
 	/**
@@ -162,12 +137,7 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	 * @generated
 	 */
 	public NotificationChain basicSetHierarchy(Hierarchy newHierarchy, NotificationChain msgs) {
-		Hierarchy oldHierarchy = hierarchy;
-		hierarchy = newHierarchy;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OlapModelPackage.LEVEL__HIERARCHY, oldHierarchy, newHierarchy);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
+		msgs = eBasicSetContainer((InternalEObject)newHierarchy, OlapModelPackage.LEVEL__HIERARCHY, msgs);
 		return msgs;
 	}
 
@@ -177,10 +147,12 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	 * @generated
 	 */
 	public void setHierarchy(Hierarchy newHierarchy) {
-		if (newHierarchy != hierarchy) {
+		if (newHierarchy != eInternalContainer() || (eContainerFeatureID() != OlapModelPackage.LEVEL__HIERARCHY && newHierarchy != null)) {
+			if (EcoreUtil.isAncestor(this, newHierarchy))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if (hierarchy != null)
-				msgs = ((InternalEObject)hierarchy).eInverseRemove(this, OlapModelPackage.HIERARCHY__LEVELS, Hierarchy.class, msgs);
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
 			if (newHierarchy != null)
 				msgs = ((InternalEObject)newHierarchy).eInverseAdd(this, OlapModelPackage.HIERARCHY__LEVELS, Hierarchy.class, msgs);
 			msgs = basicSetHierarchy(newHierarchy, msgs);
@@ -363,8 +335,8 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case OlapModelPackage.LEVEL__HIERARCHY:
-				if (hierarchy != null)
-					msgs = ((InternalEObject)hierarchy).eInverseRemove(this, OlapModelPackage.HIERARCHY__LEVELS, Hierarchy.class, msgs);
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetHierarchy((Hierarchy)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -390,11 +362,24 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OlapModelPackage.LEVEL__HIERARCHY:
+				return eInternalContainer().eInverseRemove(this, OlapModelPackage.HIERARCHY__LEVELS, Hierarchy.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OlapModelPackage.LEVEL__HIERARCHY:
-				if (resolve) return getHierarchy();
-				return basicGetHierarchy();
+				return getHierarchy();
 			case OlapModelPackage.LEVEL__COLUMN:
 				if (resolve) return getColumn();
 				return basicGetColumn();
@@ -484,7 +469,7 @@ public class LevelImpl extends ModelObjectImpl implements Level {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case OlapModelPackage.LEVEL__HIERARCHY:
-				return hierarchy != null;
+				return getHierarchy() != null;
 			case OlapModelPackage.LEVEL__COLUMN:
 				return column != null;
 			case OlapModelPackage.LEVEL__ORDINAL_COLUMN:

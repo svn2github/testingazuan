@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -68,7 +69,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	protected BusinessColumnSet table;
 
 	/**
-	 * The cached value of the '{@link #getHierarchies() <em>Hierarchies</em>}' reference list.
+	 * The cached value of the '{@link #getHierarchies() <em>Hierarchies</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getHierarchies()
@@ -141,7 +142,7 @@ public class DimensionImpl extends ModelObjectImpl implements Dimension {
 	 */
 	public EList<Hierarchy> getHierarchies() {
 		if (hierarchies == null) {
-			hierarchies = new EObjectWithInverseResolvingEList<Hierarchy>(Hierarchy.class, this, OlapModelPackage.DIMENSION__HIERARCHIES, OlapModelPackage.HIERARCHY__DIMENSION);
+			hierarchies = new EObjectContainmentWithInverseEList<Hierarchy>(Hierarchy.class, this, OlapModelPackage.DIMENSION__HIERARCHIES, OlapModelPackage.HIERARCHY__DIMENSION);
 		}
 		return hierarchies;
 	}

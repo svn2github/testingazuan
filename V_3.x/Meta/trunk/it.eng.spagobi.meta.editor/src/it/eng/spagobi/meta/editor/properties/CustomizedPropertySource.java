@@ -25,7 +25,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
- * @author cortella
+ * @author Marco Cortella(macortel@eng.it)
  *
  */
 public class CustomizedPropertySource extends PropertySource {

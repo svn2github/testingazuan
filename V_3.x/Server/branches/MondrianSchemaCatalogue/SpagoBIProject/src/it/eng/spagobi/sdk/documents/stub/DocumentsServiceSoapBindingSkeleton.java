@@ -293,6 +293,12 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
             _myOperations.put("getAllDatamartModels", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getAllDatamartModels")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NotAllowedOperationException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.NotAllowedOperationException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"));
+        _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKSchema"), it.eng.spagobi.sdk.documents.bo.SDKSchema.class, false, false), 
         };
@@ -304,6 +310,18 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
             _myOperations.put("uploadMondrianSchema", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("uploadMondrianSchema")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("SDKException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.SDKException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "SDKException"));
+        _oper.addFault(_fault);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NotAllowedOperationException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.NotAllowedOperationException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"));
+        _oper.addFault(_fault);
     }
 
     public DocumentsServiceSoapBindingSkeleton() {
@@ -400,13 +418,13 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         return ret;
     }
 
-    public java.util.HashMap getAllDatamartModels() throws java.rmi.RemoteException
+    public java.util.HashMap getAllDatamartModels() throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
     {
         java.util.HashMap ret = impl.getAllDatamartModels();
         return ret;
     }
 
-    public void uploadMondrianSchema(it.eng.spagobi.sdk.documents.bo.SDKSchema in0) throws java.rmi.RemoteException
+    public void uploadMondrianSchema(it.eng.spagobi.sdk.documents.bo.SDKSchema in0) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.SDKException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
     {
         impl.uploadMondrianSchema(in0);
     }

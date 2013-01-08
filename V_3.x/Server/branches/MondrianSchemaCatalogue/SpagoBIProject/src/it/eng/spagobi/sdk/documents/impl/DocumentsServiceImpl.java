@@ -55,6 +55,7 @@ import it.eng.spagobi.sdk.exceptions.InvalidParameterValue;
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
+import it.eng.spagobi.sdk.exceptions.SDKException;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter.MemoryOnlyDataSource;
 import it.eng.spagobi.tools.catalogue.bo.Artifact;
@@ -1086,7 +1087,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 	 * Add the schema mondrian to the catalogue and upload a template that uses it 
 	 * @param SDKSchema. The object with all informations
 	 */
-	public void uploadMondrianSchema(SDKSchema schema)throws NotAllowedOperationException {
+	public void uploadMondrianSchema(SDKSchema schema)throws SDKException, NotAllowedOperationException {
 		logger.debug("IN");
 		this.setTenant();
 		
@@ -1095,12 +1096,14 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			super.checkUserPermissionForFunctionality(SpagoBIConstants.DOCUMENT_MANAGEMENT, "User cannot see documents configuration.");			
 			if (schema.getSchemaName() == null){
 				logger.error("Schema name in input is null!");			
-				throw new SpagoBIRuntimeException("Error while uploading schema. Schema name is null.");
+				//throw new SpagoBIRuntimeException("Error while uploading schema. Schema name is null.");
+				throw new SDKException("1000","Error while uploading schema. Schema name is null.");
 				//return;
 			}
 			if (schema.getSchemaFile() == null || schema.getSchemaFile().getContent() == null){
 				logger.error("Schema file content in input is null!");
-				throw new SpagoBIRuntimeException("Error while uploading schema. Schema file is null.");
+				//throw new SpagoBIRuntimeException("Error while uploading schema. Schema file is null.");
+				throw new SDKException("1001","Error while uploading schema. Schema file is null.");
 				//return;
 			}
 			logger.debug("schema name = [" + schema.getSchemaName()+ "] - schema description = [" + schema.getSchemaDescription()
@@ -1174,16 +1177,24 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 					logger.info("Document saved with id = " + newIdObj);
 				} else {
 					logger.error("Document not saved!!");
-					throw new SpagoBIRuntimeException("Error while saving template.");
+					//throw new SpagoBIRuntimeException("Error while saving template.");
+					throw new SDKException("1002","Error while saving template.");
+					
 				}
-			} catch (Exception e) {
+			}catch (SDKException se) {
+				throw new SDKException(se.getCode(), se.getDescription());
+			}catch (Exception e) {
 				logger.error("Error while uploading template", e);
-				throw new SpagoBIRuntimeException(e);
+				//throw new SpagoBIRuntimeException(e);
+				throw new SDKException("1003",e.getMessage());
 			}
 			
-		} catch(Exception e) {
+		}catch (SDKException se) {
+			throw new SDKException(se.getCode(), se.getDescription());
+		}catch(Exception e) {
 			logger.error("Error while uploading schema", e);	
-			throw new SpagoBIRuntimeException(e);
+			//throw new SpagoBIRuntimeException(e);
+			throw new SDKException("1004",e.getMessage());
 		} finally {
 			this.unsetTenant();
 			logger.debug("OUT");

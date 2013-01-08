@@ -153,6 +153,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="parameterName" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>
+   <complexType name="SDKException">
+    <sequence>
+     <element name="code" nillable="true" type="soapenc:string"/>
+     <element name="description" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
   </schema>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="urn:spagobisdkdocuments"/>
@@ -306,6 +312,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <wsdl:message name="NotAllowedOperationException">
 
       <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="SDKException">
+
+      <wsdl:part name="fault" type="tns3:SDKException"/>
 
    </wsdl:message>
 
@@ -583,6 +595,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:output message="impl:getAllDatamartModelsResponse" name="getAllDatamartModelsResponse"/>
 
+         <wsdl:fault message="impl:NotAllowedOperationException" name="NotAllowedOperationException"/>
+
       </wsdl:operation>
 
       <wsdl:operation name="uploadMondrianSchema" parameterOrder="in0">
@@ -590,6 +604,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          <wsdl:input message="impl:uploadMondrianSchemaRequest" name="uploadMondrianSchemaRequest"/>
 
          <wsdl:output message="impl:uploadMondrianSchemaResponse" name="uploadMondrianSchemaResponse"/>
+
+         <wsdl:fault message="impl:SDKException" name="SDKException"/>
+
+         <wsdl:fault message="impl:NotAllowedOperationException" name="NotAllowedOperationException"/>
 
       </wsdl:operation>
 
@@ -945,6 +963,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          </wsdl:output>
 
+         <wsdl:fault name="NotAllowedOperationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotAllowedOperationException" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:fault>
+
       </wsdl:operation>
 
       <wsdl:operation name="uploadMondrianSchema">
@@ -962,6 +986,18 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobisdkdocuments" use="encoded"/>
 
          </wsdl:output>
+
+         <wsdl:fault name="SDKException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="SDKException" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NotAllowedOperationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotAllowedOperationException" namespace="urn:spagobisdkdocuments" use="encoded"/>
+
+         </wsdl:fault>
 
       </wsdl:operation>
 

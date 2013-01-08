@@ -169,5 +169,13 @@
         innerType="cmp-ns:SDKConstraint" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
+      <typeMapping
+        xmlns:ns="http://exceptions.sdk.spagobi.eng.it"
+        qname="ns:SDKException"
+        type="java:it.eng.spagobi.sdk.exceptions.SDKException"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
   </service>
 </deployment>

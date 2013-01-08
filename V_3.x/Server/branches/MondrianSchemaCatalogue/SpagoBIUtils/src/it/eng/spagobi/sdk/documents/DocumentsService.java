@@ -15,6 +15,7 @@ import it.eng.spagobi.sdk.exceptions.InvalidParameterValue;
 import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
+import it.eng.spagobi.sdk.exceptions.SDKException;
 
 import java.util.HashMap;
 
@@ -52,5 +53,5 @@ public interface DocumentsService {
     
     HashMap<String, String> getAllDatamartModels() throws NotAllowedOperationException;
     
-    void uploadMondrianSchema(SDKSchema schema) throws NotAllowedOperationException, Exception;
+    void uploadMondrianSchema(SDKSchema schema) throws NotAllowedOperationException, SDKException;
 }

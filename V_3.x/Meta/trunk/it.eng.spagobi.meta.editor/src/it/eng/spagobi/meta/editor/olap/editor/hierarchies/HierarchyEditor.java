@@ -179,7 +179,7 @@ public class HierarchyEditor extends Dialog {
 		lblTheLevelNumbers.setText("The hierarchy levels order is from the Top Level (first row) to the Bottom level (last row inserted).");
 		
 		Group grpGeneralHierarchyProperties = new Group(container, SWT.NONE);
-		grpGeneralHierarchyProperties.setLayout(new GridLayout(6, false));
+		grpGeneralHierarchyProperties.setLayout(new GridLayout(7, false));
 		grpGeneralHierarchyProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		grpGeneralHierarchyProperties.setText("General Hierarchy Properties");
 		
@@ -212,6 +212,9 @@ public class HierarchyEditor extends Dialog {
 				}
 			}
 		});
+		
+		Label lblAllMemberName_1 = new Label(grpGeneralHierarchyProperties, SWT.NONE);
+		lblAllMemberName_1.setText("All Member Name:");
 
 		
 		Label lblAllMemberName = new Label(grpGeneralHierarchyProperties, SWT.NONE);
@@ -305,9 +308,6 @@ public class HierarchyEditor extends Dialog {
 		tblclmnLevelOrder.setWidth(72);
 		tblclmnLevelOrder.setText("Level Order");
 		*/
-		TableColumn tblclmnLevelName = new TableColumn(tableHierarchy, SWT.NONE);
-		tblclmnLevelName.setWidth(86);
-		tblclmnLevelName.setText("Level Name");
 		
 		TableColumn tblclmnColumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnColumn.setWidth(81);
@@ -317,22 +317,25 @@ public class HierarchyEditor extends Dialog {
 		tblclmnDescription.setWidth(84);
 		tblclmnDescription.setText("Description");
 		*/
+		TableColumn tblclmnLevelName = new TableColumn(tableHierarchy, SWT.NONE);
+		tblclmnLevelName.setWidth(86);
+		tblclmnLevelName.setText("Level Name");
 		
 		TableColumn tblclmnOrdinalcolumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnOrdinalcolumn.setWidth(100);
-		tblclmnOrdinalcolumn.setText("OrdinalColumn");
+		tblclmnOrdinalcolumn.setText("Ordinal Column");
 		
 		TableColumn tblclmnNamecolumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnNamecolumn.setWidth(100);
-		tblclmnNamecolumn.setText("NameColumn");
+		tblclmnNamecolumn.setText("Name Column");
 		
 		TableColumn tblclmnCaptioncolumn = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnCaptioncolumn.setWidth(100);
-		tblclmnCaptioncolumn.setText("CaptionColumn");
+		tblclmnCaptioncolumn.setText("Caption Column");
 		
 		TableColumn tblclmnUniquemembers = new TableColumn(tableHierarchy, SWT.NONE);
 		tblclmnUniquemembers.setWidth(100);
-		tblclmnUniquemembers.setText("UniqueMembers");
+		tblclmnUniquemembers.setText("Unique Members");
 		
 		//******************
 		//Populate the primary key combo
@@ -586,7 +589,7 @@ public class HierarchyEditor extends Dialog {
 		//**************
 		
 		
-		item.setText(COLUMN_COLUMN,selectedAttribute.getUniqueName());
+		item.setText(COLUMN_COLUMN,selectedAttribute.getName());
 		
 		//*******************
 		//create Cell Editor Text Description

@@ -59,8 +59,8 @@ public class GeneratorFactory {
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < configElements.length; j++) {
-				if (!configElements[i].getName().equals("generator")) continue;
-				GeneratorDescriptor generatorDescriptor = buildGeneratorDescriptor(configElements[i]);
+				if (!configElements[j].getName().equals("generator")) continue;
+				GeneratorDescriptor generatorDescriptor = buildGeneratorDescriptor(configElements[j]);
 				if(generatorDescriptor != null) {
 					generatorDescriptorsCache.add(generatorDescriptor);
 				}

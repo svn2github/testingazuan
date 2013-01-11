@@ -22,6 +22,7 @@ import it.eng.spagobi.meta.editor.business.actions.EditBusinessColumnsAction;
 import it.eng.spagobi.meta.editor.business.actions.EditBusinessViewInnerJoinRelationshipsAction;
 import it.eng.spagobi.meta.editor.business.actions.GenerateJPAMappingAction;
 import it.eng.spagobi.meta.editor.business.actions.RemoveFromIdentifierAction;
+import it.eng.spagobi.meta.editor.olap.actions.CreateMondrianAction;
 import it.eng.spagobi.meta.editor.olap.actions.EditHierarchiesAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetAttributeAction;
 import it.eng.spagobi.meta.editor.olap.actions.SetCubeAction;
@@ -173,6 +174,7 @@ public class BusinessModelMenuActionFactory {
 	    	List generateActions = new ArrayList();
 	    	generateActions.add(new CreateQueryAction(activeEditorPart, selection));
 	    	generateActions.add(new GenerateJPAMappingAction(activeEditorPart, selection));
+	    	generateActions.add(new CreateMondrianAction(activeEditorPart, selection));
 	    	actions.put("Create", generateActions);
 	    	
 //	    	List queryActions = new ArrayList();

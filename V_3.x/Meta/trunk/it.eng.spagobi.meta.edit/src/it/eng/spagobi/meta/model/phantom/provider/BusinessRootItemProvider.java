@@ -20,6 +20,7 @@ import it.eng.spagobi.meta.model.business.commands.edit.table.CreateBusinessTabl
 import it.eng.spagobi.meta.model.business.commands.edit.table.CreateEmptyBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.CreateQueryCommand;
 import it.eng.spagobi.meta.model.business.commands.generate.GenerateJPAMappingCommand;
+import it.eng.spagobi.meta.model.olap.commands.edit.generate.CreateMondrianCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,6 +71,8 @@ public class BusinessRootItemProvider extends FolderItemProvider {
 			result = new CreateQueryCommand(domain, commandParameter);
 		 } else if (commandClass == CreateEmptyBusinessTableCommand.class){
 			result = new CreateEmptyBusinessTableCommand(domain, commandParameter);
+		 } else if (commandClass == CreateMondrianCommand.class){
+			result = new CreateMondrianCommand(domain, commandParameter);
 		 }
 		 
 		 return result;

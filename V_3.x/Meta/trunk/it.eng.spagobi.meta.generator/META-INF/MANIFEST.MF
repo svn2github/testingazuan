@@ -20,6 +20,7 @@ Export-Package: it.eng.spagobi.meta.generator,
  it.eng.spagobi.meta.generator.jpamapping,
  it.eng.spagobi.meta.generator.jpamapping.wrappers,
  it.eng.spagobi.meta.generator.jpamapping.wrappers.impl,
+ it.eng.spagobi.meta.generator.mondrianschema,
  it.eng.spagobi.meta.generator.utils
 Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/velocity/commons-lang-2.4.jar,

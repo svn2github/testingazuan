@@ -9,6 +9,12 @@
             id="it.eng.spagobi.meta.generator.jpamapping"
             name="Jpa Mapping Generator">
       </generator>
-   </extension>
+      <generator
+            class="it.eng.spagobi.meta.generator.mondrianschema.MondrianSchemaGenerator"
+            id="it.eng.spagobi.meta.generator.mondrianschema"
+            name="Mondrian Template Generator">
+      </generator>
+
+      </extension>
 
 </plugin>

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<SCHEMA>
+
+#foreach ($dimension in $dimensions)
+<Dimension name="${dimension.name}">
+#foreach ($hierarchy in $dimension.getHierarchies())
+<Hierarchy hasAll="${hierarchy.hasAll}">
+
+</Hierarchy>
+#end
+</Dimension> 
+#end
+
+
+#foreach ($cube in $cubes)
+<Cube name="${cube.name}">
+</Cube> 
+#end
+</SCHEMA>

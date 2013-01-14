@@ -427,7 +427,7 @@ public class OlapModelInitializer {
 		try{
 			hierarchy = FACTORY.createHierarchy();
 			
-			
+			hierarchy.setTable(dimension.getTable());
 			hierarchy.setName(hierarchyDescriptor.getName());
 			hierarchy.setDimension(dimension);
 			List<HierarchyLevelDescriptor> levelsDescriptors = hierarchyDescriptor.getLevels();

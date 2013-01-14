@@ -103,8 +103,8 @@ public class MondrianLevel implements IMondrianLevel {
 	 */
 	@Override
 	public String getUniqueMembers() {
-		if (level.getProperties().get("LEVEL_UNIQUE_MEMBERS").getValue() != null){
-			return level.getProperties().get("LEVEL_UNIQUE_MEMBERS").getValue();
+		if (level.getProperties().get(LEVEL_UNIQUE_MEMBERS).getValue() != null){
+			return level.getProperties().get(LEVEL_UNIQUE_MEMBERS).getValue();
 		}
 		return null;
 	}

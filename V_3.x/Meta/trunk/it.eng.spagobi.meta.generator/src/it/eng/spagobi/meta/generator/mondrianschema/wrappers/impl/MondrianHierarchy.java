@@ -66,7 +66,7 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 	 */
 	@Override
 	public String getHasAll() {
-		return hierarchy.getProperties().get("HIERARCHY_HAS_ALL").getValue();
+		return hierarchy.getProperties().get(HIERARCHY_HAS_ALL).getValue();
 	}
 
 	/* (non-Javadoc)
@@ -74,8 +74,8 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 	 */
 	@Override
 	public String getAllMemberName() {
-		if (hierarchy.getProperties().get("HIERARCHY_ALL_MEMBER_NAME").getValue() != null){
-			return hierarchy.getProperties().get("HIERARCHY_ALL_MEMBER_NAME").getValue();
+		if (hierarchy.getProperties().get(HIERARCHY_ALL_MEMBER_NAME).getValue() != null){
+			return hierarchy.getProperties().get(HIERARCHY_ALL_MEMBER_NAME).getValue();
 		}
 		return null;
 	}

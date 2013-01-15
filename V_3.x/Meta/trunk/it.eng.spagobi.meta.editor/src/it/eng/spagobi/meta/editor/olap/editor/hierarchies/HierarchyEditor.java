@@ -21,9 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.olap.editor.hierarchies;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyLevelDescriptor;
@@ -36,6 +39,7 @@ import it.eng.spagobi.meta.model.olap.OlapModel;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.dnd.DND;
@@ -47,6 +51,7 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -102,6 +107,7 @@ public class HierarchyEditor extends Dialog {
 	public static final int COLUMN_CAPTIONCOLUMN = 5;
 	public static final int COLUMN_UNIQUEMEMBERS = 6;
 
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
 
 
 
@@ -530,8 +536,11 @@ public class HierarchyEditor extends Dialog {
 		//*******************
 		//create Cell Editor Button Remove 
 		TableEditor editor_button_remove = new TableEditor(tableHierarchy);
-		final Button buttonRemove = new Button(tableHierarchy, SWT.NONE);
-		buttonRemove.setText("Remove");
+		final Button buttonRemove = new Button(tableHierarchy, SWT.PUSH);
+		
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.olap.hierarchy.remove") ).createImage();
+		buttonRemove.setImage(imageRem);
+		
 		editor_button_remove.grabHorizontal = true;
 		buttonRemove.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -698,6 +707,8 @@ public class HierarchyEditor extends Dialog {
 		final CCombo comboUniqueMembers = new CCombo(tableHierarchy, SWT.READ_ONLY);
 		comboUniqueMembers.add("false");
 		comboUniqueMembers.add("true");
+		comboUniqueMembers.select(0);
+		
 
 		editor_UniqueMembers.grabHorizontal = true;
 		comboUniqueMembers.addSelectionListener(new SelectionAdapter() {

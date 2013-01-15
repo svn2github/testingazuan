@@ -21,9 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.meta.editor.olap.editor.hierarchies;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eng.spagobi.commons.resource.IResourceLocator;
+import it.eng.spagobi.meta.editor.SpagoBIMetaEditorPlugin;
 import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyDescriptor;
 import it.eng.spagobi.meta.initializer.descriptor.HierarchyLevelDescriptor;
@@ -39,7 +42,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -73,6 +78,9 @@ public class HierarchiesEditorMainPage extends Dialog {
 	public static final int COLUMN_NAME = 0;
 	public static final int COLUMN_EDIT = 1;
 	public static final int COLUMN_REMOVE = 2;
+	
+	private static final IResourceLocator RL = SpagoBIMetaEditorPlugin.getInstance().getResourceLocator(); 
+
 
 	/**
 	 * Create the dialog.
@@ -251,7 +259,9 @@ public class HierarchiesEditorMainPage extends Dialog {
 		//create Cell Editor Button Edit
 		TableEditor editor_button_edit = new TableEditor(tableHierarchies);
 		final Button buttonEdit = new Button(tableHierarchies, SWT.NONE);
-		buttonEdit.setText("Edit");
+		Image imageEdit = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.olap.hierarchy.edit") ).createImage();
+		buttonEdit.setImage(imageEdit);
+		
 		editor_button_edit.grabHorizontal = true;
 		buttonEdit.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -287,8 +297,9 @@ public class HierarchiesEditorMainPage extends Dialog {
 		//*******************	
 		//create Cell Editor Button Remove
 		TableEditor editor_button_remove = new TableEditor(tableHierarchies);
-		final Button buttonRemove = new Button(tableHierarchies, SWT.NONE);
-		buttonRemove.setText("Remove");
+		final Button buttonRemove = new Button(tableHierarchies, SWT.PUSH);
+		Image imageRem = ImageDescriptor.createFromURL( (URL)RL.getImage("it.eng.spagobi.meta.editor.olap.hierarchy.remove") ).createImage();
+		buttonRemove.setImage(imageRem);
 		editor_button_remove.grabHorizontal = true;
 		buttonRemove.addSelectionListener(new SelectionAdapter() {
 			@Override

@@ -32,6 +32,9 @@ import it.eng.spagobi.meta.model.olap.Measure;
 public class MondrianMeasure implements IMondrianMeasure {
 
 	Measure measure;
+	public static final String STRUCTURAL_AGGREGATION_TYPE = "structural.aggtype";
+	public static final String STRUCTURAL_FORMAT_STRING = "structural.format";
+
 	
 	public MondrianMeasure(Measure measure){
 		this.measure = measure;
@@ -53,6 +56,30 @@ public class MondrianMeasure implements IMondrianMeasure {
 	public String getColumn() {
 		if (measure.getColumn() instanceof SimpleBusinessColumn){
 			return ((SimpleBusinessColumn)measure.getColumn()).getPhysicalColumn().getName();
+		}
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.mondrianschema.wrappers.IMondrianMeasure#getAggregator()
+	 */
+	@Override
+	public String getAggregator() {
+		if (measure.getColumn().getProperties().get(STRUCTURAL_AGGREGATION_TYPE).getValue() != null){
+			return measure.getColumn().getProperties().get(STRUCTURAL_AGGREGATION_TYPE).getValue().toLowerCase();
+		}
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.mondrianschema.wrappers.IMondrianMeasure#getFormatString()
+	 */
+	@Override
+	public String getFormatString() {
+		if (measure.getColumn().getProperties().get(STRUCTURAL_FORMAT_STRING).getValue() != null){
+			return measure.getColumn().getProperties().get(STRUCTURAL_FORMAT_STRING).getValue();
 		}
 		return null;
 	}

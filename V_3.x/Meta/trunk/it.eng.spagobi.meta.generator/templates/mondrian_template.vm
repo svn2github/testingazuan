@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <SCHEMA>
-
 #foreach ($dimension in $dimensions)
 <Dimension name="${dimension.name}">
 #foreach ($hierarchy in $dimension.getHierarchies())
@@ -23,15 +22,12 @@ captionColumn="${level.captionColumn}"
 ordinalColumn="${level.ordinalColumn}"
 #end
 uniqueMembers="${level.uniqueMembers}"
-
 />
 #end
 </Hierarchy>
 #end
 </Dimension> 
 #end
-
-
 #foreach ($cube in $cubes)
 <Cube name="${cube.name}">
 <Table name="${cube.tableName}"/>
@@ -39,7 +35,7 @@ uniqueMembers="${level.uniqueMembers}"
 <DimensionUsage name="${cubedimension.name}" source="${cubedimension.source}" foreignKey="${cubedimension.foreignKey}"/>
 #end
 #foreach ($measure in $cube.getMeasures())
-<Measure name="${measure.name}" column="${measure.column}" />
+<Measure name="${measure.name}" column="${measure.column}" aggregator="${measure.aggregator}" formatString="${measure.formatString}"/>
 #end
 </Cube> 
 #end

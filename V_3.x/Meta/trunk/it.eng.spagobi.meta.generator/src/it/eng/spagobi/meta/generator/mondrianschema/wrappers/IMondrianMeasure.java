@@ -30,5 +30,9 @@ public interface IMondrianMeasure {
 	public String getName();
 	
 	public String getColumn();
+	
+	public String getAggregator();
+	
+	public String getFormatString();
 
 }

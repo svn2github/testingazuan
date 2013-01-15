@@ -90,7 +90,12 @@
       
       <type id="structural.aggtype" name="Aggregation Type"
       description="The preferred aggregation type for the give column (COUNT, SUM, AVG, MAX, MIN)"
-      category="Structural" defaultValue="COUNT" />
+      category="Structural" defaultValue="SUM" />
+      
+      <type id="structural.format" name="Format String"
+      description="The numeric format to use if the value is numeric"
+      category="Structural" defaultValue="#,##" />
+      
       
       <type id="structural.datatype" name="Data Type"
       description="The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)"
@@ -99,6 +104,8 @@
 	  <type id="style.alignment" name="Alignment Type"
       description="The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)"
       category="Style" defaultValue="LEFT" />
+      
+      
     </types>
     
     <typesValues>
@@ -112,13 +119,21 @@
         <value>attribute</value>
       </admissibleValuesOf>
       
+      <admissibleValuesOf typeId="structural.format">
+        <value>#,##</value>
+        <value>#,###.00</value>
+        <value>#</value>
+        <value>$#,##0.00</value>
+        <value>€#,##0.00</value>
+      </admissibleValuesOf>
+      
       <admissibleValuesOf typeId="structural.aggtype">
         <value>COUNT</value>
         <value>SUM</value>
         <value>AVG</value>
         <value>MAX</value>
         <value>MIN</value>
-        <value>NONE</value>
+        <value>DISTINCT-COUNT</value>
       </admissibleValuesOf>
       
       <admissibleValuesOf typeId="structural.datatype">

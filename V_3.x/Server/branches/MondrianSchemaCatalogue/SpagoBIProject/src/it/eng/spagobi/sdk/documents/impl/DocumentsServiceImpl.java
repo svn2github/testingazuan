@@ -56,8 +56,10 @@ import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.exceptions.SDKException;
+import it.eng.spagobi.sdk.importexport.bo.SDKFile;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter;
 import it.eng.spagobi.sdk.utilities.SDKObjectsConverter.MemoryOnlyDataSource;
+import it.eng.spagobi.sdk.utilities.SchemaConverter;
 import it.eng.spagobi.tools.catalogue.bo.Artifact;
 import it.eng.spagobi.tools.catalogue.bo.Content;
 import it.eng.spagobi.tools.catalogue.dao.IArtifactsDAO;
@@ -1108,6 +1110,21 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			}
 			logger.debug("schema name = [" + schema.getSchemaName()+ "] - schema description = [" + schema.getSchemaDescription()
 					+ "] - schema datasource = [" + schema.getSchemaDataSourceLbl() + "] ");
+			
+			//--------------- start DMP management --------------------
+			//converts the DMP File in a Mondrian Schema
+			try{
+				logger.debug("Start creation of mondrian schema from DMP file");
+				DataHandler mondrianSchema = new SchemaConverter().fromDMPFileToSchemaMondrian(schema);
+				schema.getSchemaFile().setContent(mondrianSchema); //update the schemaFile with the newest
+				logger.debug("Creation of mondrian schema from DMP file ended succesfully.");
+			}catch (SDKException se) {
+				throw new SDKException(se.getCode(), se.getDescription());
+			}catch(Exception ex){
+				logger.error("Error while converting template", ex);
+				throw new SDKException("2000",ex.getMessage());
+			}
+			//--------------- end DMP management ----------------------
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			try {
 				IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();
@@ -1362,7 +1379,13 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			if(cubeLst==null || cubeLst.size()==0) throw new Exception("Cannot recover cube bean. Check the schema.");
 			SourceBean cubeSB = (SourceBean)cubeLst.get(0);
 			if(cubeSB==null) throw new Exception("Cannot recover cube bean");
+			//searching shared dimensions
 			List dimensionLst = cubeSB.getAttributeAsList("DimensionUsage");
+			if(dimensionLst==null || dimensionLst.size() == 0) {
+				//searching local dimensions
+				dimensionLst = cubeSB.getAttributeAsList("Dimension");
+			}
+			
 			if(dimensionLst==null || dimensionLst.size() == 0) throw new Exception("Cannot recover dimensions bean. Check the schema.");
 			SourceBean dimensionSB = (SourceBean)dimensionLst.get(0);
 			List measuresLst = cubeSB.getAttributeAsList("Measure");

@@ -1110,7 +1110,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			}
 			logger.debug("schema name = [" + schema.getSchemaName()+ "] - schema description = [" + schema.getSchemaDescription()
 					+ "] - schema datasource = [" + schema.getSchemaDataSourceLbl() + "] ");
-			
+			/*
 			//--------------- start DMP management --------------------
 			//converts the DMP File in a Mondrian Schema
 			try{
@@ -1123,8 +1123,9 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			}catch(Exception ex){
 				logger.error("Error while converting template", ex);
 				throw new SDKException("2000",ex.getMessage());
-			}
+			}			
 			//--------------- end DMP management ----------------------
+			 */			 
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			try {
 				IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();

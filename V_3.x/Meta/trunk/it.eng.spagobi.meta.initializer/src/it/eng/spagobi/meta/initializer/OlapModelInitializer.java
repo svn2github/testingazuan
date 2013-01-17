@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -451,6 +452,38 @@ public class OlapModelInitializer {
 			throw new RuntimeException("Impossible to add hierarchy ");
 		}
 		return hierarchy;
+	}
+	
+	//Remove a (Hierarchy) Level that point to the passed BusinessColumn
+	//also set to null level property that point to the BusinessColumn
+	public Level removeHierarchyLevel(Dimension dimension, Hierarchy hierarchy, BusinessColumn businessColumn){
+		
+		List<Level> levels = hierarchy.getLevels();
+		Level levelToRemove = null;
+		
+		for (Level level : levels){
+			if((level.getNameColumn() != null) && (level.getNameColumn().equals(businessColumn))){
+				level.setNameColumn(null);
+			}
+			if((level.getOrdinalColumn() != null) && (level.getOrdinalColumn().equals(businessColumn))){
+				level.setOrdinalColumn(null);
+			}
+			if((level.getCaptionColumn() != null) && (level.getCaptionColumn().equals(businessColumn))){
+				level.setCaptionColumn(null);
+			}
+			
+			if (level.getColumn().equals(businessColumn)){
+				levelToRemove = level;
+			}
+		}
+		
+		if (levelToRemove != null){
+			levels.remove(levelToRemove);
+		}
+
+		return levelToRemove;
+		
+		
 	}
 	
 	public 	Level addHierarchyLevel(Hierarchy hierarchy,HierarchyLevelDescriptor levelDescriptor){

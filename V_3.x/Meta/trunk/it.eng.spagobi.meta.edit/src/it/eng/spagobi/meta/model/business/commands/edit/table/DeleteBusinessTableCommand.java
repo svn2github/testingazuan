@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.model.business.commands.edit.table;
 
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
 import it.eng.spagobi.meta.model.business.BusinessModel;
@@ -16,6 +17,9 @@ import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.filter.IModelObjectFilter;
+import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
+import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
@@ -39,6 +43,8 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 	
 	BusinessIdentifier removedIdentifier;
 	List<BusinessRelationship> removedRelationships;
+	
+	Object removedOlapObject;
 	
 	private static Logger logger = LoggerFactory.getLogger(DeleteBusinessTableCommand.class);
 	
@@ -67,15 +73,34 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 			model.getIdentifiers().remove(removedIdentifier);
 		}
 		
+		updateOlapModel(getBusinessTable());
+
 		//remove relationships of this business table
 		removedRelationships = getBusinessTable().getRelationships();
 		model.getRelationships().removeAll(removedRelationships);
+		
 		
 		model.getTables().remove(getBusinessTable());
 		
 		executed = true;
 	}
 	
+	public void updateOlapModel(BusinessTable businessTable){
+		OlapModelInitializer olapModelInitializer =  new OlapModelInitializer();
+		removedOlapObject = olapModelInitializer.removeCorrespondingOlapObject(businessTable);
+	}
+
+	public void undoUpdateOlapModel(){
+		OlapModelInitializer olapModelInitializer =  new OlapModelInitializer();
+		OlapModel olapModel = getBusinessTable().getModel().getParentModel().getOlapModels().get(0);
+
+		if (removedOlapObject instanceof Cube)
+		{
+			olapModelInitializer.addCube(olapModel, (Cube)removedOlapObject);
+		} else if (removedOlapObject instanceof Dimension){
+			olapModelInitializer.addDimension(olapModel, (Dimension)removedOlapObject);
+		}
+	}
 	
 	@Override
 	public void undo() {
@@ -86,6 +111,9 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 		if(removedIdentifier != null) {
 			model.getIdentifiers().add(removedIdentifier);
 		}
+		
+		//Re-add Olap object (if any)
+		undoUpdateOlapModel();
 	}
 
 	@Override

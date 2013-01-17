@@ -10,6 +10,7 @@
 package it.eng.spagobi.meta.model.business.commands.edit.table;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessIdentifier;
@@ -18,12 +19,21 @@ import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.BusinessViewInnerJoinRelationship;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
+import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
+import it.eng.spagobi.meta.model.olap.Hierarchy;
+import it.eng.spagobi.meta.model.olap.Level;
+import it.eng.spagobi.meta.model.olap.Measure;
+import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.physical.PhysicalColumn;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -50,6 +60,13 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 	
 	List<BusinessRelationship> removedRelationships;
 	List<RelationshipModification> relationshipModifications;
+	
+	List<Measure> removedMeasures;
+	List<Hierarchy> hierarchiesToRemove;
+	Cube cube;
+	Dimension dimension;
+	List<HierarchyLevel> hierarchyLevelsToRemove;
+	List<ModifiedLevel>  modifiedLevels;
 	
 	private class RelationshipModification  {
 		BusinessRelationship relationship;
@@ -84,6 +101,11 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		removedIdentifier = null;
 		relationshipModifications = new ArrayList<RelationshipModification>();
 		removedRelationships = new ArrayList<BusinessRelationship>();
+		
+		removedMeasures = new ArrayList<Measure>();
+		hierarchyLevelsToRemove = new ArrayList<HierarchyLevel>();
+		hierarchiesToRemove = new ArrayList<Hierarchy>();
+		modifiedLevels = new ArrayList<ModifiedLevel>();
 	}
 	
 	@Override
@@ -119,6 +141,7 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 				continue;
 			}
 			
+			updateOlapModel(businessColumnToRemove);
 			updateIdentifier(businessColumnToRemove);			
 			updateRelationships(businessColumnToRemove);
 			
@@ -137,12 +160,171 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		}	
 		undoUpdateRelationships();
 		undoUpdateIdentifier();
+		undoUpdateOlapModel();
+
 	}
 	
 	@Override
 	public void redo() {
 		execute();
 	}
+	
+	
+	private void  updateOlapModel(SimpleBusinessColumn businessColumnToRemove){
+		OlapModelInitializer olapModelInitializer =  new OlapModelInitializer();
+			
+		BusinessColumnSet businessColumnSet = businessColumnToRemove.getTable();
+		
+		
+		cube = olapModelInitializer.getCube(businessColumnSet);
+		if (cube != null){
+			//Remove a Measure corresponding to the businessColumn
+			Measure removedMeasure = olapModelInitializer.removeCorrespondingOlapObject(businessColumnToRemove,cube);
+			if (removedMeasure != null){
+				removedMeasures.add(removedMeasure);
+			}
+		} else {
+			//Remove Hierarchy Level and references to the businessColumn
+			dimension = olapModelInitializer.getDimension(businessColumnSet);
+			if (dimension != null){
+				for(Hierarchy hierarchy : dimension.getHierarchies()){
+					//Level removedLevel = olapModelInitializer.removeHierarchyLevel(dimension, hierarchy, businessColumnToRemove);
+					LevelIndex levelIndex = removeHierarchyLevel(dimension, hierarchy, businessColumnToRemove);
+					modifiedLevels.addAll(modifyHierarchyLevel(dimension, hierarchy, businessColumnToRemove));
+					if (levelIndex != null){
+						HierarchyLevel hierarchyLevel =  new HierarchyLevel(hierarchy,levelIndex);
+						hierarchyLevelsToRemove.add(0,hierarchyLevel);
+					}
+					//If the hierarchy has no levels, remove the hierarchy
+					if(hierarchy.getLevels().isEmpty()){
+						hierarchiesToRemove.add(hierarchy);
+					}
+				}
+				//remove empty hierarchies
+				dimension.getHierarchies().removeAll(hierarchiesToRemove);
+
+			}
+		}
+		
+	}
+	
+	//Remove a (Hierarchy) Level that point to the passed BusinessColumn
+	public LevelIndex removeHierarchyLevel(Dimension dimension, Hierarchy hierarchy, BusinessColumn businessColumn){
+		
+		List<Level> levels = hierarchy.getLevels();
+		Level levelToRemove = null;
+		
+		for (Level level : levels){
+			/*
+			if((level.getNameColumn() != null) && (level.getNameColumn().equals(businessColumn))){
+				level.setNameColumn(null);
+			}
+			if((level.getOrdinalColumn() != null) && (level.getOrdinalColumn().equals(businessColumn))){
+				level.setOrdinalColumn(null);
+			}
+			if((level.getCaptionColumn() != null) && (level.getCaptionColumn().equals(businessColumn))){
+				level.setCaptionColumn(null);
+			}
+			*/
+			
+			if (level.getColumn().equals(businessColumn)){
+				levelToRemove = level;
+			}
+		}
+		
+		if (levelToRemove != null){
+			int index = levels.lastIndexOf(levelToRemove);
+			levels.remove(levelToRemove);
+			return new LevelIndex(index,levelToRemove);
+		}
+
+		return null;	
+		
+	}
+	
+	public List<ModifiedLevel> modifyHierarchyLevel(Dimension dimension, Hierarchy hierarchy, BusinessColumn businessColumn){
+		
+		List<Level> levels = hierarchy.getLevels();
+		List<ModifiedLevel> modifiedLevels = new ArrayList<ModifiedLevel>();
+
+		for (Level level : levels){
+			boolean modifiedNameColumn = false;
+			boolean modifiedOrdinalColumn = false;
+			boolean modifiedCaptionColumn = false;
+
+			
+			if((level.getNameColumn() != null) && (level.getNameColumn().equals(businessColumn))){
+				level.setNameColumn(null);
+				modifiedNameColumn = true;
+			}
+			if((level.getOrdinalColumn() != null) && (level.getOrdinalColumn().equals(businessColumn))){
+				level.setOrdinalColumn(null);
+				modifiedOrdinalColumn = true;
+			}
+			if((level.getCaptionColumn() != null) && (level.getCaptionColumn().equals(businessColumn))){
+				level.setCaptionColumn(null);
+				modifiedCaptionColumn = true;
+			}
+			
+			if((modifiedNameColumn) || (modifiedOrdinalColumn) || (modifiedCaptionColumn)){
+				ModifiedLevel modifiedLevel= new ModifiedLevel(level, hierarchy, businessColumn,modifiedNameColumn,modifiedOrdinalColumn,modifiedCaptionColumn );
+				modifiedLevels.add(modifiedLevel);
+			}			
+		}
+		
+		if (!modifiedLevels.isEmpty()){	
+			return modifiedLevels;
+		}
+		return null;	
+		
+	}
+	 
+	
+	private void undoUpdateOlapModel(){
+		OlapModelInitializer olapModelInitializer =  new OlapModelInitializer();
+
+		//Re-add Measures
+		if ((cube != null) && (!removedMeasures.isEmpty())){
+			for (Measure measure : removedMeasures){
+				cube.getMeasures().add(measure);
+			}
+		} else if (dimension != null){
+			if (!hierarchiesToRemove.isEmpty()){
+				//re-add empty hierarchies
+				dimension.getHierarchies().addAll(hierarchiesToRemove);
+			}
+			if (!hierarchyLevelsToRemove.isEmpty()){
+				//re-add levels to corresponding hierarchies			
+				for (HierarchyLevel hierarchyLevel : hierarchyLevelsToRemove){
+					Level level = hierarchyLevel.getLevelIndex().getLevel();
+					int index = hierarchyLevel.getLevelIndex().getIndex();
+					Hierarchy hierarchy = hierarchyLevel.getHierarchy();
+					hierarchy.getLevels().add(index, level);
+					//level.setHierarchy(hierarchyLevel.getHierarchy());
+				}
+			}
+			//re-set references to (un)deleted BusinessColumn in modified levels
+			if (!modifiedLevels.isEmpty()){
+				for (ModifiedLevel modifiedLevel : modifiedLevels){
+					Level level = modifiedLevel.getLevel();
+					BusinessColumn businessColumn = modifiedLevel.getBusinessColumn();
+					if (modifiedLevel.isModifiedCaptionColumn()){
+						level.setCaptionColumn(businessColumn);
+					}
+					if (modifiedLevel.isModifiedNameColumn()){
+						level.setNameColumn(businessColumn);
+					}
+					if (modifiedLevel.isModifiedOrdinalColumn()){
+						level.setOrdinalColumn(businessColumn);
+					}					
+				}
+			}
+			
+		}
+	}
+
+
+	
 	
 	private void updateIdentifier(BusinessColumn businessColumn) {
 		
@@ -245,5 +427,193 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 	    }
 	  });
 	}
+	
+	//*********** Inner class *************
+	private class HierarchyLevel{
+		private Hierarchy hierarchy;
+		private LevelIndex levelIndex;
+		
+		public HierarchyLevel(Hierarchy hierarchy, LevelIndex levelIndex){
+			this.hierarchy = hierarchy;
+			this.levelIndex = levelIndex;
+		}
 
+		/**
+		 * @return the hierarchy
+		 */
+		public Hierarchy getHierarchy() {
+			return hierarchy;
+		}
+
+		/**
+		 * @param hierarchy the hierarchy to set
+		 */
+		public void setHierarchy(Hierarchy hierarchy) {
+			this.hierarchy = hierarchy;
+		}
+
+		/**
+		 * @return the level
+		 */
+		public LevelIndex getLevelIndex() {
+			return levelIndex;
+		}
+
+		/**
+		 * @param level the level to set
+		 */
+		public void setLevel(LevelIndex levelIndex) {
+			this.levelIndex = levelIndex;
+		}
+	}
+	//******************************************
+	
+	private class LevelIndex{
+		private int index;
+		private Level level;
+		
+		public LevelIndex(int index, Level level){
+			this.index = index;
+			this.level = level;
+		}
+
+		/**
+		 * @return the index
+		 */
+		public int getIndex() {
+			return index;
+		}
+
+		/**
+		 * @param index the index to set
+		 */
+		public void setIndex(int index) {
+			this.index = index;
+		}
+
+		/**
+		 * @return the level
+		 */
+		public Level getLevel() {
+			return level;
+		}
+
+		/**
+		 * @param level the level to set
+		 */
+		public void setLevel(Level level) {
+			this.level = level;
+		}
+		
+		
+	}
+	//******************************************
+	
+	private class ModifiedLevel{
+		Level level;
+		Hierarchy hierarchy;
+		BusinessColumn businessColumn;
+		
+		boolean modifiedNameColumn;
+		boolean modifiedOrdinalColumn;
+		boolean modifiedCaptionColumn;
+
+		public ModifiedLevel(Level level, Hierarchy hierarchy, BusinessColumn businessColumn,boolean modifiedNameColumn,boolean modifiedOrdinalColumn,boolean modifiedCaptionColumn){
+			this.level = level;
+			this.hierarchy = hierarchy;
+			this.businessColumn = businessColumn;
+			this.modifiedCaptionColumn = modifiedCaptionColumn;
+			this.modifiedNameColumn = modifiedNameColumn;
+			this.modifiedOrdinalColumn = modifiedOrdinalColumn;
+		}
+
+		/**
+		 * @return the level
+		 */
+		public Level getLevel() {
+			return level;
+		}
+
+		/**
+		 * @param level the level to set
+		 */
+		public void setLevel(Level level) {
+			this.level = level;
+		}
+
+		/**
+		 * @return the hierarchy
+		 */
+		public Hierarchy getHierarchy() {
+			return hierarchy;
+		}
+
+		/**
+		 * @param hierarchy the hierarchy to set
+		 */
+		public void setHierarchy(Hierarchy hierarchy) {
+			this.hierarchy = hierarchy;
+		}
+
+		/**
+		 * @return the businessColumn
+		 */
+		public BusinessColumn getBusinessColumn() {
+			return businessColumn;
+		}
+
+		/**
+		 * @param businessColumn the businessColumn to set
+		 */
+		public void setBusinessColumn(BusinessColumn businessColumn) {
+			this.businessColumn = businessColumn;
+		}
+
+		/**
+		 * @return the modifiedNameColumn
+		 */
+		public boolean isModifiedNameColumn() {
+			return modifiedNameColumn;
+		}
+
+		/**
+		 * @param modifiedNameColumn the modifiedNameColumn to set
+		 */
+		public void setModifiedNameColumn(boolean modifiedNameColumn) {
+			this.modifiedNameColumn = modifiedNameColumn;
+		}
+
+		/**
+		 * @return the modifiedOrdinalColumn
+		 */
+		public boolean isModifiedOrdinalColumn() {
+			return modifiedOrdinalColumn;
+		}
+
+		/**
+		 * @param modifiedOrdinalColumn the modifiedOrdinalColumn to set
+		 */
+		public void setModifiedOrdinalColumn(boolean modifiedOrdinalColumn) {
+			this.modifiedOrdinalColumn = modifiedOrdinalColumn;
+		}
+
+		/**
+		 * @return the modifiedCaptionColumn
+		 */
+		public boolean isModifiedCaptionColumn() {
+			return modifiedCaptionColumn;
+		}
+
+		/**
+		 * @param modifiedCaptionColumn the modifiedCaptionColumn to set
+		 */
+		public void setModifiedCaptionColumn(boolean modifiedCaptionColumn) {
+			this.modifiedCaptionColumn = modifiedCaptionColumn;
+		}
+		
+		
+
+	}
+	
+	//******************************************
 }

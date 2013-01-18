@@ -11,6 +11,7 @@ package it.eng.spagobi.meta.editor.business;
 
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelObject;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCompoundCommand;
@@ -86,7 +87,7 @@ public class BusinessModelEditorCommandStackListener implements CommandStackList
 								}
 							}
 						} else {
-							if ((!(mostRecentCommand instanceof RemoveColumnsFromBusinessTable) ) && (!(modelObject instanceof BusinessView))) {
+							if ((!(mostRecentCommand instanceof RemoveColumnsFromBusinessTable) ) && (!(modelObject instanceof BusinessView)) && (!(modelObject instanceof BusinessRelationship)) ) {
 								showError("Strange behaviour from command " + mostRecentCommand.getLabel(), "Impossible to resolve root model from edit command affected object [" + modelObject + "]");
 							}
 						}

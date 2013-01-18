@@ -10,11 +10,14 @@
 package it.eng.spagobi.meta.model.business.commands.edit.relationship;
 
 import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
 import it.eng.spagobi.meta.initializer.descriptor.BusinessRelationshipDescriptor;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.commands.edit.AbstractSpagoBIModelEditCommand;
+import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +35,8 @@ import org.slf4j.LoggerFactory;
 public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditCommand {
 	
 	BusinessRelationship addedBusinessRelationship;
+	Cube cube;
+	Dimension dimension;
 	
 	private static Logger logger = LoggerFactory.getLogger(AddBusinessRelationshipCommand.class);
 	
@@ -56,6 +61,15 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditComm
 		descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
 		addedBusinessRelationship = initializer.addRelationship(descriptor);
 		
+		//TODO: add OLAP relationships
+		OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+		cube = olapModelInitializer.getCube(addedBusinessRelationship.getSourceTable());
+		dimension = olapModelInitializer.getDimension(addedBusinessRelationship.getDestinationTable());
+		if ((cube != null) && (dimension != null)){
+			//add relationship from the cube to the dimension
+			cube.getDimensions().add(dimension);
+		}
+		
 		executed = true;
 		logger.debug("Command [{}] executed succesfully", AddBusinessRelationshipCommand.class.getName());
 	}
@@ -63,6 +77,13 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditComm
 	
 	@Override
 	public void undo() {
+		//Olap Model Relationship
+		if ((cube != null) && (dimension != null)){
+			//remove relationship from the cube
+			cube.getDimensions().remove(dimension);
+		}
+		
+		
 		BusinessColumnSet businessTable = (BusinessColumnSet)parameter.getOwner();
 		BusinessModel businessModel = businessTable.getModel();
 		businessModel.getRelationships().remove(addedBusinessRelationship);	

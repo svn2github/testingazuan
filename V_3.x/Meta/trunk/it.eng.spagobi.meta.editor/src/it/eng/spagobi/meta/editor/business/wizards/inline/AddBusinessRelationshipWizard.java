@@ -48,8 +48,11 @@ public class AddBusinessRelationshipWizard extends AbstractSpagoBIModelWizard {
 	
 	public CommandParameter getCommandInputParameter(){
 		AddBusinessRelationshipWizardPage wizardPage = (AddBusinessRelationshipWizardPage)this.getStartingPage();
-
-		return new CommandParameter(sourceTable, null, wizardPage.getRelationshipDescriptor(), new ArrayList<Object>());
+		if (sourceTable != null){
+			return new CommandParameter(sourceTable, null, wizardPage.getRelationshipDescriptor(), new ArrayList<Object>());
+		} else {
+			return new CommandParameter(destinationTable, null, wizardPage.getRelationshipDescriptor(), new ArrayList<Object>());
+		}
 
 	}
 	

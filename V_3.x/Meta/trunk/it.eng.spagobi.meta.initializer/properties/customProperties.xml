@@ -94,7 +94,7 @@
       
       <type id="structural.format" name="Format String"
       description="The numeric format to use if the value is numeric"
-      category="Structural" defaultValue="#,##" />
+      category="Structural" defaultValue="#,###" />
       
       
       <type id="structural.datatype" name="Data Type"
@@ -120,9 +120,9 @@
       </admissibleValuesOf>
       
       <admissibleValuesOf typeId="structural.format">
-        <value>#,##</value>
+        <value>#,###</value>
         <value>#,###.00</value>
-        <value>#</value>
+        <value>#.###</value>
         <value>$#,##0.00</value>
         <value>€#,##0.00</value>
       </admissibleValuesOf>

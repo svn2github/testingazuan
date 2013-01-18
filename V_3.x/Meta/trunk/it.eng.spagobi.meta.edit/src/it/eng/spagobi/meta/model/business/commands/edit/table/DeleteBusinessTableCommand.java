@@ -72,7 +72,7 @@ public class DeleteBusinessTableCommand extends AbstractSpagoBIModelEditCommand 
 		if(removedIdentifier != null) {
 			model.getIdentifiers().remove(removedIdentifier);
 		}
-		
+		//remove Olap Model Objects related to this BusinessTable
 		updateOlapModel(getBusinessTable());
 
 		//remove relationships of this business table

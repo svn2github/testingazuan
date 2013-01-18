@@ -10,10 +10,12 @@
 package it.eng.spagobi.meta.editor.business.actions;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
 import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
+import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteOlapRelationshipCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.RemoveColumnsFromBusinessTable;
 import it.eng.spagobi.meta.model.business.commands.edit.view.DeleteBusinessViewCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.DeleteBusinessViewPhysicalTableCommand;
@@ -69,6 +71,7 @@ public class DeleteModelObjectAction extends DeleteAction {
 		
 		List<Command> removeTableCommands = new ArrayList<Command>();
 		List<Command> removeColumnCommands = new ArrayList<Command>();
+		List<Command> removeRelationshipsCommands = new ArrayList<Command>();
 	
 		if(selection != null && !selection.isEmpty()) {
 			Iterator it = selection.iterator();
@@ -98,6 +101,21 @@ public class DeleteModelObjectAction extends DeleteAction {
 					CommandParameter parameter = new CommandParameter(businessView, null, physicalTable, null);
 					removeCommand = new DeleteBusinessViewPhysicalTableCommand(domain, parameter);
 					removeTableCommands.add( removeCommand );
+				} else if (o instanceof BusinessRelationship)
+				{
+					BusinessRelationship businessRelationship = (BusinessRelationship)o;
+					
+					//Added Custom Command to remove Olap Relationships (Cube->Dimension) if found
+					CommandParameter parameter = new CommandParameter(businessRelationship);
+					removeCommand = new DeleteOlapRelationshipCommand(domain,parameter);
+					removeRelationshipsCommands.add(removeCommand);					
+					
+					//Default EMF behaviour for Deleting Business Relationship
+					Collection<BusinessRelationship> businessRelationships= new ArrayList<BusinessRelationship>();
+					businessRelationships.add(businessRelationship);
+					Command defaultCommand = super.createCommand(businessRelationships);
+					removeRelationshipsCommands.add(defaultCommand);
+
 				}
 			}
 			
@@ -111,17 +129,27 @@ public class DeleteModelObjectAction extends DeleteAction {
 				removeColumnsCommand = new CompoundCommand(removeColumnCommands.size()-1, "Delete attributes", "Delete attributes", removeColumnCommands);
 			}
 			
-			removeCommand = null;
-			if(removeTablesCommand != null && removeColumnsCommand != null) {
-				List<Command> removeCommands = new ArrayList<Command>();
-				removeCommands.add(removeColumnsCommand);
-				removeCommands.add(removeTablesCommand);
-				removeCommand = new CompoundCommand(removeCommands.size()-1, "Delete", "Delete", removeCommands);				
-			} else if(removeTablesCommand != null && removeColumnsCommand == null) {
-				removeCommand = removeTablesCommand;
-			} else if(removeTablesCommand == null && removeColumnsCommand != null) {
-				removeCommand = removeColumnsCommand;
+			Command removeRelationshipCommand = null;
+			if (!removeRelationshipsCommands.isEmpty()){
+				removeRelationshipCommand = new CompoundCommand(removeRelationshipsCommands.size()-1,"Delete business relationships","Delete business relationships", removeRelationshipsCommands);
 			}
+			
+			removeCommand = null;
+			if (removeRelationshipCommand != null) {
+				removeCommand = removeRelationshipCommand;
+			} else {
+				if(removeTablesCommand != null && removeColumnsCommand != null) {
+					List<Command> removeCommands = new ArrayList<Command>();
+					removeCommands.add(removeColumnsCommand);
+					removeCommands.add(removeTablesCommand);
+					removeCommand = new CompoundCommand(removeCommands.size()-1, "Delete", "Delete", removeCommands);				
+				} else if(removeTablesCommand != null && removeColumnsCommand == null) {
+					removeCommand = removeTablesCommand;
+				} else if(removeTablesCommand == null && removeColumnsCommand != null) {
+					removeCommand = removeColumnsCommand;
+				}
+			}
+
 		} 
 		
 		command = removeCommand;

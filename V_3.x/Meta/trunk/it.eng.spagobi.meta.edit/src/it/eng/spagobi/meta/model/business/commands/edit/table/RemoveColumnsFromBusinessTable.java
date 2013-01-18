@@ -215,18 +215,6 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		Level levelToRemove = null;
 		
 		for (Level level : levels){
-			/*
-			if((level.getNameColumn() != null) && (level.getNameColumn().equals(businessColumn))){
-				level.setNameColumn(null);
-			}
-			if((level.getOrdinalColumn() != null) && (level.getOrdinalColumn().equals(businessColumn))){
-				level.setOrdinalColumn(null);
-			}
-			if((level.getCaptionColumn() != null) && (level.getCaptionColumn().equals(businessColumn))){
-				level.setCaptionColumn(null);
-			}
-			*/
-			
 			if (level.getColumn().equals(businessColumn)){
 				levelToRemove = level;
 			}
@@ -242,6 +230,7 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 		
 	}
 	
+	//Set to null references to the deleted BusinessColumn inside a (OlapModel) Level object
 	public List<ModifiedLevel> modifyHierarchyLevel(Dimension dimension, Hierarchy hierarchy, BusinessColumn businessColumn){
 		
 		List<Level> levels = hierarchy.getLevels();
@@ -251,7 +240,6 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 			boolean modifiedNameColumn = false;
 			boolean modifiedOrdinalColumn = false;
 			boolean modifiedCaptionColumn = false;
-
 			
 			if((level.getNameColumn() != null) && (level.getNameColumn().equals(businessColumn))){
 				level.setNameColumn(null);

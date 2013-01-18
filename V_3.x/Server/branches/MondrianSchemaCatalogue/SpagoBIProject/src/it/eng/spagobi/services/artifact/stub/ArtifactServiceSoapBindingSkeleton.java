@@ -59,6 +59,20 @@ public class ArtifactServiceSoapBindingSkeleton implements it.eng.spagobi.servic
             _myOperations.put("getArtifactContentById", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getArtifactContentById")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getArtifactsByType", _params, new javax.xml.namespace.QName("", "getArtifactsByTypeReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiartifact", "ArrayOf_tns2_SpagoBIArtifact"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiartifact", "getArtifactsByType"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getArtifactsByType") == null) {
+            _myOperations.put("getArtifactsByType", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getArtifactsByType")).add(_oper);
     }
 
     public ArtifactServiceSoapBindingSkeleton() {
@@ -77,6 +91,12 @@ public class ArtifactServiceSoapBindingSkeleton implements it.eng.spagobi.servic
     public javax.activation.DataHandler getArtifactContentById(java.lang.String in0, java.lang.String in1, java.lang.Integer in2) throws java.rmi.RemoteException
     {
         javax.activation.DataHandler ret = impl.getArtifactContentById(in0, in1, in2);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.artifact.bo.SpagoBIArtifact[] getArtifactsByType(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.artifact.bo.SpagoBIArtifact[] ret = impl.getArtifactsByType(in0, in1, in2);
         return ret;
     }
 

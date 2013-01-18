@@ -3,6 +3,8 @@
 LICENSE: see LICENSE.txt file 
 
 --%>
+<%@page import="it.eng.spagobi.services.artifact.bo.SpagoBIArtifact"%>
+<%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@ page session="true" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
@@ -32,6 +34,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <%@page import="org.apache.log4j.Logger" %>
+<%@page import="it.eng.spagobi.services.proxy.ArtifactServiceProxy"%>
 
 <html>
 <head>
@@ -255,28 +258,25 @@ if (schemas == null) {
 	<form action="editQuery.jsp" method="post" name="chooseSchemaForm" id="chooseSchemaForm">
 		<%
 		String selectedSchema = (String) session.getAttribute("selectedSchema");
-		List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
-		if (schemas == null || schemas.size() == 0) {
-			out.write("No schemas defined in engine-config.xml file.");
+		ArtifactServiceProxy artifactProxy = new ArtifactServiceProxy(userId, session);
+		SpagoBIArtifact[] artifacts = artifactProxy.getArtifactsByType(SpagoBIConstants.MONDRIAN_SCHEMA);
+		if (artifacts == null || artifacts.length == 0) {
+			out.write("No schemas defined in Mondrian schemas' catalogue.");
 			return;
 		}		
 		%>
 		<div style="float:left;clear:left;width:150px;height:25px;margin:5px;">
 			<span style="font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;color: #074B88;font-size: 8pt;">
-				<%=EngineMessageBundle.getMessage("edit.query.select.schema", locale)%>
+				<%= EngineMessageBundle.getMessage("edit.query.select.schema", locale) %>
 			</span>
 		</div>
 		<div style="height:25px;margin:5px;">
 			<select name="schema" id="schema">
 				<%				
-				Iterator schemasIt = schemas.iterator();
-				Node selectedSchemaNode = null;
-				while (schemasIt.hasNext()) {
-					Node aSchema = (Node) schemasIt.next();
-					String aSchemaName = aSchema.valueOf("@name");
+				for (int i = 0; i < artifacts.length; i++) {
+					String aSchemaName = artifacts[i].getName();
 					String isSchemaSelected = "";
 					if (aSchemaName.equalsIgnoreCase(selectedSchema)) {
-						selectedSchemaNode = aSchema;
 						isSchemaSelected = "selected='selected'";
 					}					
 					%>

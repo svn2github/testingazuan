@@ -723,35 +723,35 @@ Sbi.locale.ln['Sbi.browser.mexport.MassiveExportWizardParametersPage.title'] = '
 Sbi.locale.ln['Sbi.office.zoomIn'] = 'Increases dimensions';
 Sbi.locale.ln['Sbi.office.zoomOut'] = 'Decrements dimensions';
 
-Sbi.locale.ln['sbi.kpi.accordionmenu.desciption']= 'Description'
-Sbi.locale.ln['sbi.kpi.accordionmenu.linkeddoc']=  'Linked document'
-Sbi.locale.ln['sbi.kpi.accordionmenu.comments']= 'Comments'
-Sbi.locale.ln['sbi.kpi.accordionmenu.history']= 'History'
-Sbi.locale.ln['sbi.kpi.accordionmenu.detail']= 'Details'
+Sbi.locale.ln['sbi.kpi.accordionmenu.desciption']= 'Description';
+Sbi.locale.ln['sbi.kpi.accordionmenu.linkeddoc']=  'Linked document';
+Sbi.locale.ln['sbi.kpi.accordionmenu.comments']= 'Comments';
+Sbi.locale.ln['sbi.kpi.accordionmenu.history']= 'History';
+Sbi.locale.ln['sbi.kpi.accordionmenu.detail']= 'Details';
 	
-Sbi.locale.ln['sbi.kpi.kpiguidetail.value']= 'Value'
-Sbi.locale.ln['sbi.kpi.kpiguidetail.targhet']= 'Targhet'
-Sbi.locale.ln['sbi.kpi.kpiguidetail.weight']= 'Weight'
+Sbi.locale.ln['sbi.kpi.kpiguidetail.value']= 'Value';
+Sbi.locale.ln['sbi.kpi.kpiguidetail.targhet']= 'Targhet';
+Sbi.locale.ln['sbi.kpi.kpiguidetail.weight']= 'Weight';
 	
-Sbi.locale.ln['sbi.kpi.kpiguicomments.savecomment']= 'Save comment'
-Sbi.locale.ln['sbi.kpi.kpiguicomments.comment']= 'Comment'
-Sbi.locale.ln['sbi.kpi.kpiguicomments.creation']= 'Creation Date'
-Sbi.locale.ln['sbi.kpi.kpiguicomments.owner']= 'Owner'
+Sbi.locale.ln['sbi.kpi.kpiguicomments.savecomment']= 'Save comment';
+Sbi.locale.ln['sbi.kpi.kpiguicomments.comment']= 'Comment';
+Sbi.locale.ln['sbi.kpi.kpiguicomments.creation']= 'Creation Date';
+Sbi.locale.ln['sbi.kpi.kpiguicomments.owner']= 'Owner';
 	
-Sbi.locale.ln['sbi.kpi.kpiguidescription.name']= 'Name'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.description']='Description'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.dataset']='Dataset'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.code']='Type code'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.measure']='Measure'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.targhet']='Targhet Audience'
-Sbi.locale.ln['sbi.kpi.kpiguidescription.scale']='Scale'
+Sbi.locale.ln['sbi.kpi.kpiguidescription.name']= 'Name';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.description']='Description';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.dataset']='Dataset';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.code']='Type code';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.measure']='Measure';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.targhet']='Targhet Audience';
+Sbi.locale.ln['sbi.kpi.kpiguidescription.scale']='Scale';
 
-Sbi.locale.ln['sbi.kpi.kpiguidoccollegato.nodoc']='No linked document'
+Sbi.locale.ln['sbi.kpi.kpiguidoccollegato.nodoc']='No linked document';
 	
-Sbi.locale.ln['ext.date.dateformat.error.title']='Date error'
-Sbi.locale.ln['ext.date.dateformat.error.text']='The entered date is not valid. The system will replace it with a correct date.'
-Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation1']=' '
-Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation2']=' '
+Sbi.locale.ln['ext.date.dateformat.error.title']='Date error';
+Sbi.locale.ln['ext.date.dateformat.error.text']='The entered date is not valid. The system will replace it with a correct date.';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation1']=' ';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute.additionalinformation2']=' ';
 
 Sbi.locale.ln['sbi.tools.catalogue.metaModelsCatalogue']='Business Models\' catalogue';
 Sbi.locale.ln['sbi.tools.catalogue.mondrianSchemasCatalogue']='Mondrian schemas\' catalogue';

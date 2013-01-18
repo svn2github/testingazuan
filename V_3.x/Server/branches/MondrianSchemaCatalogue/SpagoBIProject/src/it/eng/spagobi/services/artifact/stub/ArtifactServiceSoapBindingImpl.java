@@ -19,5 +19,10 @@ public class ArtifactServiceSoapBindingImpl implements it.eng.spagobi.services.a
     	ArtifactServiceImpl service=new ArtifactServiceImpl();
         return service.getArtifactContentById(in0, in1, in2);
     }
+    
+    public it.eng.spagobi.services.artifact.bo.SpagoBIArtifact[] getArtifactsByType(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    	ArtifactServiceImpl service=new ArtifactServiceImpl();
+        return service.getArtifactsByType(in0, in1, in2);
+    }
 
 }

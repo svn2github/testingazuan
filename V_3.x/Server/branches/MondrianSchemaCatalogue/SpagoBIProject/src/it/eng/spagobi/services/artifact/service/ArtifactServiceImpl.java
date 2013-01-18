@@ -5,11 +5,15 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.services.artifact.service;
 
+import it.eng.spagobi.services.artifact.bo.SpagoBIArtifact;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 
 import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 public class ArtifactServiceImpl extends AbstractServiceImpl {
 
@@ -23,7 +27,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl {
 	}
 
 	/**
-	 * return the artifact getted by name and type
+	 * return the artifact by name and type
 	 * @param token. The token.
 	 * @param user. The user.
 	 * @param name. The artifact's name.
@@ -32,21 +36,25 @@ public class ArtifactServiceImpl extends AbstractServiceImpl {
 	 */
 	public DataHandler getArtifactContentByNameAndType(String token,String user, String name, String type){
 		logger.debug("IN");
-		String toReturn;
+		Monitor monitor = MonitorFactory
+				.start("spagobi.service.artifact.getArtifactContentByNameAndType");
 		try {
 			validateTicket(token, user);
-			ArtifactServiceImplSupplier a = new ArtifactServiceImplSupplier();			
-			return a.getArtifactContentByNameAndType(name, type);
+			this.setTenantByUserId(user);
+			ArtifactServiceImplSupplier supplier = new ArtifactServiceImplSupplier();			
+			return supplier.getArtifactContentByNameAndType(name, type);
 		} catch (Exception e) {
 			logger.error("Exception", e);
 			return null;
 		} finally {
+			this.unsetTenant();
+			monitor.stop();
 			logger.debug("OUT");
 		}				
 	}
 
 	/**
-	 * return the artifact getted by the id
+	 * return the artifact by the id
 	 * @param token. The token.
 	 * @param user. The user.
 	 * @param id. The artifact's id.
@@ -54,15 +62,45 @@ public class ArtifactServiceImpl extends AbstractServiceImpl {
 	 */
     public DataHandler getArtifactContentById(String token, String user, Integer id){
 		logger.debug("IN");
-		String toReturn;
+		Monitor monitor = MonitorFactory
+				.start("spagobi.service.artifact.getArtifactContentById");
 		try {
 			validateTicket(token, user);
-			ArtifactServiceImplSupplier a = new ArtifactServiceImplSupplier();			
-			return a.getArtifactContentById(id);
+			this.setTenantByUserId(user);
+			ArtifactServiceImplSupplier supplier = new ArtifactServiceImplSupplier();			
+			return supplier.getArtifactContentById(id);
 		} catch (Exception e) {
 			logger.error("Exception", e);
 			return null;
 		} finally {
+			this.unsetTenant();
+			monitor.stop();
+			logger.debug("OUT");
+		}				
+    }
+    
+	/**
+	 * return the artifacts list of the given type
+	 * @param token. The token.
+	 * @param user. The user.
+	 * @param type. The artifact's type.
+	 * @return the list of the artifacts of the given type.
+	 */
+    public SpagoBIArtifact[] getArtifactsByType(String token, String user, String type){
+		logger.debug("IN");
+		Monitor monitor = MonitorFactory
+				.start("spagobi.service.artifact.getArtifactsByType");
+		try {
+			validateTicket(token, user);
+			this.setTenantByUserId(user);
+			ArtifactServiceImplSupplier supplier = new ArtifactServiceImplSupplier();			
+			return supplier.getArtifactsByType(type);
+		} catch (Exception e) {
+			logger.error("An error occurred while getting artifacts of type [" + type + "]", e);
+			return null;
+		} finally {
+			this.unsetTenant();
+			monitor.stop();
 			logger.debug("OUT");
 		}				
     }

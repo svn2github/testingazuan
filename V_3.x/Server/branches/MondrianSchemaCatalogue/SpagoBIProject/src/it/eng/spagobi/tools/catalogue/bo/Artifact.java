@@ -8,6 +8,8 @@ package it.eng.spagobi.tools.catalogue.bo;
 public class Artifact {
 
 	private Integer id;
+	
+	private Integer currentContentId;
 
 	private String name;
 
@@ -47,11 +49,19 @@ public class Artifact {
 		this.type = type;
 	}
 	
+	public Integer getCurrentContentId() {
+		return currentContentId;
+	}
+
+	public void setCurrentContentId(Integer currentContentId) {
+		this.currentContentId = currentContentId;
+	}
+	
 	@Override
 	public String toString() {
 		return "Artifact [id=" + id + ", name=" + name + ", description="
-				+ description + ", type="
-						+ type + "]";
+				+ description + ", type=" + type + ", currentContentId="
+				+ currentContentId + "]";
 	}
 	
 }

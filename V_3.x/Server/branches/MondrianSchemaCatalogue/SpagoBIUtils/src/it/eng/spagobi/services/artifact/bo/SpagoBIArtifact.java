@@ -8,6 +8,8 @@
 package it.eng.spagobi.services.artifact.bo;
 
 public class SpagoBIArtifact  implements java.io.Serializable {
+    private java.lang.Integer contentId;
+
     private java.lang.String description;
 
     private java.lang.Integer id;
@@ -20,14 +22,37 @@ public class SpagoBIArtifact  implements java.io.Serializable {
     }
 
     public SpagoBIArtifact(
-           java.lang.String description,
            java.lang.Integer id,
            java.lang.String name,
-           java.lang.String type) {
+           java.lang.String description,
+           java.lang.String type,
+           java.lang.Integer contentId
+           ) {
+           this.contentId = contentId;
            this.description = description;
            this.id = id;
            this.name = name;
            this.type = type;
+    }
+
+
+    /**
+     * Gets the contentId value for this SpagoBIArtifact.
+     * 
+     * @return contentId
+     */
+    public java.lang.Integer getContentId() {
+        return contentId;
+    }
+
+
+    /**
+     * Sets the contentId value for this SpagoBIArtifact.
+     * 
+     * @param contentId
+     */
+    public void setContentId(java.lang.Integer contentId) {
+        this.contentId = contentId;
     }
 
 
@@ -122,6 +147,9 @@ public class SpagoBIArtifact  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.contentId==null && other.getContentId()==null) || 
+             (this.contentId!=null &&
+              this.contentId.equals(other.getContentId()))) &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
@@ -145,6 +173,9 @@ public class SpagoBIArtifact  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getContentId() != null) {
+            _hashCode += getContentId().hashCode();
+        }
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
@@ -168,6 +199,12 @@ public class SpagoBIArtifact  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.artifact.services.spagobi.eng.it", "SpagoBIArtifact"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("contentId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "contentId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));

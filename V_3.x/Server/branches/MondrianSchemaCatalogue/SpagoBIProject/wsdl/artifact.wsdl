@@ -9,6 +9,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="SpagoBIArtifact">
     <sequence>
+     <element name="contentId" nillable="true" type="soapenc:int"/>
      <element name="description" nillable="true" type="soapenc:string"/>
      <element name="id" nillable="true" type="soapenc:int"/>
      <element name="name" nillable="true" type="soapenc:string"/>

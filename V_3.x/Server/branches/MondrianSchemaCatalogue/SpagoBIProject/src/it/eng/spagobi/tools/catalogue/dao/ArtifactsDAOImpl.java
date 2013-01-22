@@ -52,7 +52,7 @@ public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifacts
 			SbiArtifact hibArtifact = (SbiArtifact) session.load(SbiArtifact.class, id);
 			logger.debug("Artifact loaded");
 			
-			toReturn = toArtifact(hibArtifact);
+			toReturn = toArtifact(hibArtifact, session);
 			
 			transaction.rollback();
 		} catch (Throwable t) {
@@ -101,7 +101,7 @@ public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifacts
 			SbiArtifact hibArtifact = (SbiArtifact) query.uniqueResult();
 			logger.debug("Artifact loaded");
 			
-			toReturn = toArtifact(hibArtifact);
+			toReturn = toArtifact(hibArtifact, session);
 			
 			transaction.rollback();
 		} catch (Throwable t) {
@@ -149,7 +149,7 @@ public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifacts
 			List list = query.list();
 			Iterator it = list.iterator();
 			while (it.hasNext()) {
-				toReturn.add(toArtifact((SbiArtifact) it.next()));
+				toReturn.add(toArtifact((SbiArtifact) it.next(), session));
 			}
 			logger.debug("Artifacts loaded");
 			
@@ -311,7 +311,7 @@ public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifacts
 		
 	}
 	
-	private Artifact toArtifact(SbiArtifact hibArtifact) {
+	private Artifact toArtifact(SbiArtifact hibArtifact, Session session) {
 		logger.debug("IN");
 		Artifact toReturn = null;
 		if (hibArtifact != null) {
@@ -320,6 +320,11 @@ public class ArtifactsDAOImpl extends AbstractHibernateDAO implements IArtifacts
 			toReturn.setName(hibArtifact.getName());
 			toReturn.setDescription(hibArtifact.getDescription());
 			toReturn.setType(hibArtifact.getType());
+			// get the current (active) Content id
+			Query query = session.createQuery("select mmc.id from SbiArtifactContent mmc where mmc.artifact.id = ? and mmc.active = true ");
+			query.setInteger(0, hibArtifact.getId());
+			Integer currentContentId = (Integer) query.uniqueResult();
+			toReturn.setCurrentContentId(currentContentId);
 		}
 		logger.debug("OUT");
 		return toReturn;

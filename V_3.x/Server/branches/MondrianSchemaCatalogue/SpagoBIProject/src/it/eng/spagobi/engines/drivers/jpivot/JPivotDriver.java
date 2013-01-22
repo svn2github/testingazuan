@@ -481,6 +481,17 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 		parameters.put("document", documentId);
 		parameters.put("forward", "editQuery.jsp");
 		applySecurity(parameters, profile);
+		byte[] template = null;
+		try {
+			ObjTemplate objTemplate = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(obj.getId());
+			if (objTemplate == null || objTemplate.getContent() == null || objTemplate.getContent().length == 0) {
+				throw new Exception("Document's template is empty");
+			}
+			template = objTemplate.getContent();
+		} catch (Exception e) {
+			throw new SpagoBIRuntimeException("Error while loading document's template", e);
+		}
+		addArtifactVersionId(template, parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		logger.debug("OUT");
 		return engineURL;

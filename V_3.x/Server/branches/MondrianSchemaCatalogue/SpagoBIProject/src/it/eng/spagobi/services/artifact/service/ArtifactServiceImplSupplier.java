@@ -116,9 +116,10 @@ public class ArtifactServiceImplSupplier {
 		    toReturn = new SpagoBIArtifact[list.size()];
 		    for (int i = 0; i < list.size(); i++) {
 		    	Artifact artifact = list.get(i);
-				toReturn[i] = new SpagoBIArtifact(artifact.getDescription(),
-						artifact.getId(), artifact.getName(),
-						artifact.getType());
+				toReturn[i] = new SpagoBIArtifact(artifact.getId(),
+						artifact.getName(), artifact.getType(),
+						artifact.getDescription(),
+						artifact.getCurrentContentId());
 		    }
 			return toReturn;
 		} catch (Exception e) {

@@ -67,7 +67,7 @@ public class TemplateBean implements Serializable {
 		HttpSession session = reqContext.getSession();
 		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userUniqueIdentifier = (String) profile.getUserUniqueIdentifier();		
-		String schema = (String)session.getAttribute("selectedSchema");
+		String reference = (String)session.getAttribute("reference");
 		String documentId=(String)session.getAttribute("document");
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		MdxQuery mdxQuery = (MdxQuery) olapModel.getExtension("mdxQuery");
@@ -91,7 +91,7 @@ public class TemplateBean implements Serializable {
 		if (query != null) {
 			String xmlString = "<olap>\n";
 			//xmlString += "	<cube reference='" + catalogUri + "' />\n";
-			xmlString += "	<cube reference='" + schema + "' />\n";
+			xmlString += "	<cube reference='" + reference + "' />\n";
 			xmlString += "	<MDXquery>\n";
 			xmlString += queryWithParameters;
 			if (parameters != null && parameters.size() > 0) {
@@ -121,7 +121,7 @@ public class TemplateBean implements Serializable {
 			}
 			xmlString = document.asXML();
 		    try {
-				ContentServiceProxy proxy = new ContentServiceProxy(userUniqueIdentifier,session);
+				ContentServiceProxy proxy = new ContentServiceProxy(userUniqueIdentifier, session);
 				String result = proxy.saveObjectTemplate( documentId, templateName, xmlString);
 		    } catch (Exception gse) {		
 		    	logger.error("Error while saving template", gse);

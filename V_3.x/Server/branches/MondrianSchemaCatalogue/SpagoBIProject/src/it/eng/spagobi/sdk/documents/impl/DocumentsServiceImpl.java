@@ -1125,27 +1125,11 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 				throw new SDKException("2000",ex.getMessage());
 			}			
 			//--------------- end DMP management ----------------------
-			*/			 
+			*/	 
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			try {
-				IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();
-				// checks if the artifact already exists. In this case doesn't create the new one!
-				if (artdao.loadArtifactByNameAndType(schema.getSchemaName(), MONDRIAN_SCHEMA_TYPE) != null){
-					logger.error("The schema with name " + schema.getSchemaName()
-							+ " is already been inserted in SpagoBI catalogue. Artifact not loaded! ");
-					throw new SDKException("1500","The schema with name " + schema.getSchemaName()
-							+ " is already been inserted in SpagoBI catalogue. Schema not loaded! ");
-				}
-				//inserts schema into the catalogue (artifact)
-				Artifact artifact = new Artifact();
-				artifact.setId(new Integer(0));
-				artifact.setName(schema.getSchemaName());
-				artifact.setDescription(schema.getSchemaDescription());
-				artifact.setType(MONDRIAN_SCHEMA_TYPE);
-				artdao.insertArtifact(artifact);
-				logger.debug("Artifact [" + artifact + "] inserted");
-				//gets the new id
-				Integer artID = artdao.loadArtifactByNameAndType(schema.getSchemaName(), MONDRIAN_SCHEMA_TYPE).getId();
+				boolean isNewSchema = true;
+				Integer artID = null;
 				//defines content to insert
 				Content content = createGenericContent();
 				DataHandler dh = schema.getSchemaFile().getContent();
@@ -1154,51 +1138,81 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			    dh.writeTo(outputDH);
 		        byte[] contentSchema = outputDH.toByteArray();
 			    content.setContent(contentSchema);
+			    
+				IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();
+				Artifact artifact = artdao.loadArtifactByNameAndType(schema.getSchemaName(), MONDRIAN_SCHEMA_TYPE);
+				// checks if the artifact already exists. In this case doesn't create the new one!
+				if (artifact != null){
+					logger.info("The schema with name " + schema.getSchemaName()
+							+ " is already been inserted in SpagoBI catalogue. Artifact will be updated! ");
+					isNewSchema = false;
+					artID = artifact.getId();
+				}
+				if (isNewSchema){
+					logger.info("The schema with name " + schema.getSchemaName()
+							+ " doesn't exist in SpagoBI catalogue. Artifact will be inserted! ");
+					//inserts schema into the catalogue (artifact)
+					artifact = new Artifact();
+					artifact.setId(new Integer(0));
+					artifact.setName(schema.getSchemaName());
+					artifact.setDescription(schema.getSchemaDescription());
+					artifact.setType(MONDRIAN_SCHEMA_TYPE);
+					artdao.insertArtifact(artifact);
+					logger.debug("Artifact [" + artifact + "] inserted");
+					//gets the new id
+					artID = artdao.loadArtifactByNameAndType(schema.getSchemaName(), MONDRIAN_SCHEMA_TYPE).getId();
+				}
 		        //inserts the content of artifact
 				artdao.insertArtifactContent(artID, content);
 				logger.debug("Content [" + content + "] inserted");
-
-				// checks if the template already exists. In this case doesn't create the new one!
-				if (DAOFactory.getBIObjectDAO().loadBIObjectByLabel(schema.getSchemaName()) != null){
-					logger.info("The schema with name "	+ schema.getSchemaName()
-							+ " is already been inserted in SpagoBI. Template not loaded! ");
-					return;
-				}
-				
-				//creates the template in SpagoBI Meta
-				BIObject obj = createGenericObject(SpagoBIConstants.OLAP_TYPE_CODE);				
-				obj.setLabel(schema.getSchemaName());
-				obj.setName(schema.getSchemaName());
-				obj.setDescription(schema.getSchemaDescription());				
-				// get the dataSource if label is not null
-				IDataSource dataSource = null;
-				if (schema.getSchemaDataSourceLbl() != null) {
-					logger.debug("retrieve data source with label "
-							+ schema.getSchemaDataSourceLbl());
-					dataSource = DAOFactory.getDataSourceDAO()
-							.loadDataSourceByLabel(schema.getSchemaDataSourceLbl());
-					obj.setDataSourceId(dataSource.getDsId());
-					
-				}
-
+	
 				// sets the template's content
 				ObjTemplate objTemplate = createGenericTemplate(schema.getSchemaName() + ".xml");
 				String template = getMondrianTemplate(schema.getSchemaName(), content.getContent());
 				objTemplate.setContent(template.getBytes());
-
-				// inserts the document
-				logger.debug("Saving document ...");
+				
+				// checks if the template already exists.
+				boolean isNewObj = true;
 				IBIObjectDAO biObjDAO = DAOFactory.getBIObjectDAO();
 				biObjDAO.setUserProfile(userProfile);
-				biObjDAO.insertBIObject(obj, objTemplate);
-				Integer newIdObj = obj.getId();
-				if (newIdObj != null) {
-					logger.info("Document saved with id = " + newIdObj);
-				} else {
-					logger.error("Document not saved!!");
-					//throw new SpagoBIRuntimeException("Error while saving template.");
-					throw new SDKException("1002","Error while saving template.");
+				BIObject obj = biObjDAO.loadBIObjectByLabel(schema.getSchemaName());				
+				if (obj != null){
+					logger.info("The schema with name "	+ schema.getSchemaName()
+							+ " is already been inserted in SpagoBI. A new template is loaded for the sbiObject with name  " + obj.getName());
+					isNewObj = false;
+					objTemplate.setBiobjId(obj.getId());
+				}else{					
+					//creates the template in SpagoBI meta db
+					obj = createGenericObject(SpagoBIConstants.OLAP_TYPE_CODE);		
+				}				
+				obj.setLabel(schema.getSchemaName());
+				obj.setName(schema.getSchemaName());
+				obj.setDescription(schema.getSchemaDescription());							
+				// sets the dataSource if label is not null
+				IDataSource dataSource = null;
+				if (schema.getSchemaDataSourceLbl() != null) {
+					logger.debug("retrieve data source with label "	+ schema.getSchemaDataSourceLbl());
+					dataSource = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(schema.getSchemaDataSourceLbl());
+					obj.setDataSourceId(dataSource.getDsId());
 					
+				}
+
+				if (isNewObj){
+					// inserts the document
+					logger.debug("Create document ...");									
+					biObjDAO.insertBIObject(obj, objTemplate);
+					Integer newIdObj = obj.getId();
+					if (newIdObj != null) {
+						logger.info("Document saved with id = " + newIdObj);
+					} else {
+						logger.error("Document not saved!!");
+						//throw new SpagoBIRuntimeException("Error while saving template.");
+						throw new SDKException("1002","Error while saving template.");						
+					}
+				}else{
+					// update the template document
+					logger.debug("Modify document ...");									
+					biObjDAO.modifyBIObject(obj, objTemplate);					
 				}
 			}catch (SDKException se) {
 				throw new SDKException(se.getCode(), se.getDescription());

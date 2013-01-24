@@ -15,7 +15,9 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: it.eng.spagobi.commons.utilities,
- org.eclipse.jdt.core.compiler.batch
+ org.eclipse.jdt.core.compiler.batch,
+ org.eclipse.jface.dialogs,
+ org.eclipse.ui
 Export-Package: it.eng.spagobi.meta.generator,
  it.eng.spagobi.meta.generator.jpamapping,
  it.eng.spagobi.meta.generator.jpamapping.wrappers,

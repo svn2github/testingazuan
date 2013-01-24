@@ -10,6 +10,7 @@
 package it.eng.spagobi.meta.model.olap.commands.edit.generate;
 
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
+import it.eng.spagobi.meta.generator.GenerationException;
 import it.eng.spagobi.meta.generator.GeneratorDescriptor;
 import it.eng.spagobi.meta.generator.GeneratorFactory;
 import it.eng.spagobi.meta.generator.mondrianschema.MondrianSchemaGenerator;
@@ -77,9 +78,9 @@ public class CreateMondrianCommand extends AbstractSpagoBIModelGenerateCommand {
 		mondrianFilePath = (String)parameter.getValue();	
 		logger.debug("Mondrian path is [{}]", mondrianFilePath);
 		//Get corresponding IFile
-		//IWorkspace workspace= ResourcesPlugin.getWorkspace();    
-		//IPath location= Path.fromOSString(mondrianFilePath); 
-		//IFile ifile= workspace.getRoot().getFileForLocation(location);
+		IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+		IPath location= Path.fromOSString(mondrianFilePath); 
+		IFile ifile= workspace.getRoot().getFileForLocation(location);
 		
 		olapModel = (OlapModel)parameter.getOwner();
 
@@ -92,7 +93,20 @@ public class CreateMondrianCommand extends AbstractSpagoBIModelGenerateCommand {
 			generator =(MondrianSchemaGenerator)descriptor.getGenerator();
 			//generator.setLibDir(new File("plugins"));
 			generator.generate(olapModel, mondrianFilePath);
-		} catch (Exception e) {
+		} 
+		catch (GenerationException e){
+			logger.error("An error occurred while executing Mondrian Template Generator [{}]:", e);
+			String message = e.getMessage();
+			if (message != null){
+				showInformation("Error in Mondrian Template Generator","Cannot create Mondrian template: "+e.getMessage());
+			}
+			else{
+				showInformation("Error in Mondrian Template Generator","Cannot create Mondrian template");
+			}
+			executed = false;
+		}
+		
+		catch (Exception e) {
 			logger.error("An error occurred while executing Mondrian Template Generator [{}]:", e);
 			showInformation("Error in Mondrian Template Generator","Cannot create Mondrian template");
 			executed = false;
@@ -111,66 +125,15 @@ public class CreateMondrianCommand extends AbstractSpagoBIModelGenerateCommand {
 		} else {
 			showInformation("Failed Mondrian Template Generation","Error: Mondrian Template not created");
 			logger.debug("Mondrian Schema Generation not executed succesfully");
-		}
-		
-	}
-	/*
-	protected void initMondrianFileContents() {
-		String mondrianPath;
-		OlapModel olapModel;
-		Writer out;
-		
-		mondrianPath = (String)parameter.getValue();	
-		logger.debug("Mondrian path is [{}]", mondrianPath);
-		//Get corresponding IFile
-		IWorkspace workspace= ResourcesPlugin.getWorkspace();    
-		IPath location= Path.fromOSString(mondrianPath); 
-		IFile ifile= workspace.getRoot().getFileForLocation(location);
-
-		
-		olapModel = (BusinessModel)parameter.getOwner();
-		
-		mondrianFile = new File(queryPath);
-		ModelProperty property = businessModel.getProperties().get("structural.file");
-		String modelPath = property != null? property.getValue(): "???";
-		logger.debug("Model path is [{}]",modelPath);
-		
-		if(mondrianFile.exists()){
-			out = null;
-			JSONObject o;
-			String queryContent ;
 			try {
-				o = new JSONObject(); 
-				JSONObject queryMeta = new JSONObject(); 
-				o.put("queryMeta", queryMeta);
-				queryMeta.put("modelPath",modelPath);
-				queryContent = o.toString(3);
-			} catch (JSONException e) {
-				throw new SpagoBIPluginException("Impossibile to create JSON Metadata ",e);
+				//Delete failed (empty) Mondrian Template file
+				ifile.delete(true, null);
+			} catch (CoreException e) {
+				logger.debug("Cannot delete failed Mondrian Template File [{}]", e);
 			}
-			try {
-				//queryFile.createNewFile();
-				FileWriter fstream = new FileWriter(queryFile);
-				out = new BufferedWriter(fstream);
-				//businessModel = (BusinessModel)parameter.getOwner();
-				out.write(queryContent);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if(out != null) {
-					try {
-						out.flush();
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}		
-			
 		}
+		
 	}
-	*/
 
 	
 	//This command can't be undone

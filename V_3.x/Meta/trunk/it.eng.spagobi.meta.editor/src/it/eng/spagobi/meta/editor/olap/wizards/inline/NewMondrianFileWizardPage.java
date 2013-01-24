@@ -27,7 +27,9 @@ public class NewMondrianFileWizardPage extends WizardNewFileCreationPage {
         setTitle(RL.getString("business.editor.wizard.newmondrianfile.title"));
         setDescription(RL.getString("business.editor.wizard.newmondrianfile.description"));
         setFileExtension("xml");
+        this.setAllowExistingResources(true);
     }
 
+	
 
 }

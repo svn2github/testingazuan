@@ -97,7 +97,6 @@ public class NewMondrianFileWizard extends AbstractSpagoBIModelWizard implements
 	 */
 	@Override
 	public boolean isWizardComplete() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

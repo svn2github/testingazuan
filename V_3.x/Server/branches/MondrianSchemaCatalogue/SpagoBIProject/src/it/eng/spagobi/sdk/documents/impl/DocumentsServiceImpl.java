@@ -1125,15 +1125,16 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 				throw new SDKException("2000",ex.getMessage());
 			}			
 			//--------------- end DMP management ----------------------
-			 */			 
+			*/			 
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			try {
 				IArtifactsDAO artdao = DAOFactory.getArtifactsDAO();
 				// checks if the artifact already exists. In this case doesn't create the new one!
 				if (artdao.loadArtifactByNameAndType(schema.getSchemaName(), MONDRIAN_SCHEMA_TYPE) != null){
-					logger.info("The schema with name " + schema.getSchemaName()
+					logger.error("The schema with name " + schema.getSchemaName()
 							+ " is already been inserted in SpagoBI catalogue. Artifact not loaded! ");
-					return;
+					throw new SDKException("1500","The schema with name " + schema.getSchemaName()
+							+ " is already been inserted in SpagoBI catalogue. Schema not loaded! ");
 				}
 				//inserts schema into the catalogue (artifact)
 				Artifact artifact = new Artifact();

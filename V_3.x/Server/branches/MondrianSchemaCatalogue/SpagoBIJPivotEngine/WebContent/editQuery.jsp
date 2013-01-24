@@ -201,7 +201,7 @@ MondrianSchemaManager schemaManager = new MondrianSchemaManager(artifactProxy);
 %>
 
 <jp:table id="table01" query="#{query01}"/>
-<jp:navigator id="navi01" query="#{query01}" visible="true"/>
+<jp:navigator id="navi01" query="#{query01}" visible="false"/>
 <wcf:form id="saveTemplateForm01" xmlUri="/WEB-INF/jpivot/table/saveTemplateTable.xml" model="#{saveTemplate01}" visible="false"/>
 <wcf:toolbar id="toolbar01" bundle="com.tonbeller.jpivot.toolbar.resources">
 	<wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>

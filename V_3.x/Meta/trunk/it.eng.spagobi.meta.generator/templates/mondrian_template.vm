@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<SCHEMA>
+<SCHEMA name="${name}">
 #foreach ($dimension in $dimensions)
 <Dimension name="${dimension.name}">
 #foreach ($hierarchy in $dimension.getHierarchies())

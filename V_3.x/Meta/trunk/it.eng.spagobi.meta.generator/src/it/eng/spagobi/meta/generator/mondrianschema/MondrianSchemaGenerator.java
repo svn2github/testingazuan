@@ -83,7 +83,7 @@ public class MondrianSchemaGenerator implements IGenerator {
 	}
 		
 	@Override
-	public void generate(ModelObject o, String outputdir) {
+	public void generate(ModelObject o, String outputdir) throws GenerationException {
 		OlapModel model;
 		
 		if(o instanceof OlapModel) {
@@ -94,7 +94,7 @@ public class MondrianSchemaGenerator implements IGenerator {
 		}
 	}
 	
-	public void generateMondrianSchema(OlapModel model, String outputFilePath) {
+	public void generateMondrianSchema(OlapModel model, String outputFilePath) throws GenerationException{
 		logger.trace("IN");
 
 		Velocity.setProperty("file.resource.loader.path", getTemplateDir().getAbsolutePath());
@@ -107,14 +107,39 @@ public class MondrianSchemaGenerator implements IGenerator {
 		try {
 			logger.debug("Create Mondrian Template");
 
-			//TODO: Implementare classi wrapper e passarle a velocity opportunamente
 			context = new VelocityContext();
 			List<IMondrianCube> cubes  = new ArrayList<IMondrianCube>();
 			cubes.addAll( mondrianModel.getCubes() );
 			
 			List<IMondrianDimension> dimensions  = new ArrayList<IMondrianDimension>();
 			dimensions.addAll( mondrianModel.getDimensions() );
-
+			
+			// **** Check Model validity			
+			if (cubes.isEmpty() ){
+				throw new GenerationException("No cubes found, must define at least one cube");
+			} else {
+				for (IMondrianCube cube : cubes){
+					if (cube.getMeasures().isEmpty()){
+						throw new GenerationException("Must define at least one measure for each cube");
+					}
+					if (cube.getCubeDimensions().isEmpty()){
+						throw new GenerationException("Cannot find dimensions linked to a cube, must define at least one dimension for cube");
+					}
+				}
+			}		
+			if (dimensions.isEmpty()){
+				throw new GenerationException("No dimensions found, must define at least one dimension for cube");
+			} else {
+				for (IMondrianDimension dimension : dimensions){
+					if (dimension.getHierarchies().isEmpty()){
+						throw new GenerationException("Must define at least one hierarchy for each dimension");
+					}
+				}
+			}
+			// *****************
+			
+			String name = model.getName();
+			context.put("name", name ); //$NON-NLS-1$
 			context.put("dimensions", dimensions ); //$NON-NLS-1$
 			context.put("cubes", cubes ); //$NON-NLS-1$
 			context.put("model", model);//$NON-NLS-1$
@@ -124,8 +149,14 @@ public class MondrianSchemaGenerator implements IGenerator {
 			
 			logger.info("Mondrian template file of model [{}] succesfully created", model.getName());
 
-		} catch(Throwable t) {
+		} 
+		catch(GenerationException t) {
+			logger.error("Impossible to create mapping, Generate Exception", t);
+			throw t;
+		}
+		catch(Throwable t) {
 			logger.error("Impossible to create mapping", t);
+			
 		} finally {
 			logger.trace("OUT");
 		}

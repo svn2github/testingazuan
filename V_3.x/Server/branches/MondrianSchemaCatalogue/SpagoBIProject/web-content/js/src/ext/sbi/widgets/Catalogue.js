@@ -115,15 +115,12 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 		});
 		
 		this.versionsGridPanel = new Sbi.widgets.CatalogueVersionsGridPanel({
-			services : {
+			services 	: {
 				'getVersionsService' 		: config.singleItemServices.getVersionsService
 				, 'deleteVersionsService' 	: config.singleItemServices.deleteVersionsService
 				, 'downloadVersionService' 	: config.singleItemServices.downloadVersionService
 			}
-			, style			: {
-				"margin-left" 	: "20px" 
-				, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
-			}
+        	, height		: 200
 		});
 		
 		//END list of detail fields
@@ -132,22 +129,30 @@ Ext.extend(Sbi.widgets.Catalogue, Sbi.widgets.ListDetailForm, {
 			title 		: LN('sbi.generic.details')
 			, layout 	: 'fit'
 			, items : [{
-				columnWidth		: 0.4
-				, xtype			: 'fieldset'
-				, labelWidth	: 110
-				, defaults		: { width: 220, border : false }  
-				, defaultType	: 'textfield'
-				, autoHeight	: true
-				, autoScroll  	: true
-				, bodyStyle		: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;'
-				, border		: false
-				, style			: {
-							"margin-left" 	: "20px" 
-							, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
+					columnWidth		: 0.4
+					, xtype			: 'fieldset'
+					, labelWidth	: 110
+					, defaults		: { width: 220, border : false }  
+					, defaultType	: 'textfield'
+					, autoHeight	: true
+					, autoScroll  	: true
+					, bodyStyle		: Ext.isIE ? 'padding:0 0 5px 15px;' : 'padding:10px 15px;'
+					, border		: false
+					, style			: {
+								"margin-left" 	: "20px" 
+								, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
+					}
+					, items: [ idField , nameField , descrField , this.uploadField ]
 				}
-				, items: [ idField , nameField , descrField , this.uploadField ]
+				, {
+					style			: {
+						"margin-left" 	: "20px" 
+						, "margin-right" : Ext.isIE6 ? (Ext.isStrict ? "-20px" : "-23px") : "20"  
+					}
+					//, height		: 400
+					, items 		: [this.versionsGridPanel]
 				}
-				, this.versionsGridPanel 
+				
 			]
 		});
 		

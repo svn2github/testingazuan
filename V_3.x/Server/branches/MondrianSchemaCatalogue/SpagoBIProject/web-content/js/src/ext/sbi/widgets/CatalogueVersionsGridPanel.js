@@ -32,7 +32,6 @@ Sbi.widgets.CatalogueVersionsGridPanel = function(config) {
 
 	var defaultSettings = {
 		title: LN('sbi.widgets.catalogueversionsgridpanel.title')
-	    , height: 200
 	};
 
 	if (Sbi.settings && Sbi.settings.widgets && Sbi.settings.widgets.catalogueversionsgridpanel) {
@@ -121,20 +120,20 @@ Ext.extend(Sbi.widgets.CatalogueVersionsGridPanel, Ext.grid.GridPanel, {
 	       		    , hidden		: true
 	       		},{
 	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.userIn')
-	       	    	, width			: 80
+	       	    	//, width			: 60
 	       			, id			: 'creationUser'
 	       			, sortable		: true
 	       			, dataIndex		: 'creationUser' 
 	       	    },{
 	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.dateIn')
-	       	    	, width			: 80
+	       	    	//, width			: 60
 	       			, id			: 'creationDate'
 	       			, sortable		: true
 	       			, dataIndex		: 'creationDate'
 	       			, renderer		: Ext.util.Format.dateRenderer(Sbi.config.localizedTimestampFormat)
 	       	    },{
 	       	    	header			: LN('sbi.widgets.catalogueversionsgridpanel.fileName')
-	       	    	, width			: 80
+	       	    	//, width			: 60
 	       			, id			: 'fileName'
 	       			, sortable		: true
 	       			, dataIndex		: 'fileName' 

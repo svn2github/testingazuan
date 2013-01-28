@@ -13,6 +13,7 @@ import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.ModelPackage;
 import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.ModelPropertyType;
+import it.eng.spagobi.meta.model.phantom.provider.BusinessRootItemProvider;
 import it.eng.spagobi.meta.model.phantom.provider.FolderItemProvider;
 
 import java.util.Collection;
@@ -140,11 +141,18 @@ public class CustomItemPropertyDescriptor implements IItemPropertyDescriptor, II
 
 	@Override
 	public void setPropertyValue(Object object, Object value) {
-		ModelObject modelObject = (ModelObject)object;
-		ModelProperty property = modelObject.getProperties().get(propertyType.getId());
-		if(value != null) {
-			property.setValue("" + value);	
+		if (object instanceof BusinessRootItemProvider){
+			BusinessRootItemProvider root = (BusinessRootItemProvider) object;
+			ModelObject modelObj = (ModelObject)root.getParentObject();
+			setPropertyValue(modelObj,value);
+		} else {
+			ModelObject modelObject = (ModelObject)object;
+			ModelProperty property = modelObject.getProperties().get(propertyType.getId());
+			if(value != null) {
+				property.setValue("" + value);	
+			}
 		}
+
 	}
 
 

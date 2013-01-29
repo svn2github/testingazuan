@@ -16,9 +16,15 @@ import it.eng.spagobi.meta.editor.dnd.BusinessModelDropTargetListener;
 import it.eng.spagobi.meta.editor.properties.CustomizedAdapterFactoryContentProvider;
 import it.eng.spagobi.meta.editor.properties.CustomizedBusinessPropertySheetPage;
 import it.eng.spagobi.meta.editor.properties.CustomizedPropertySheetSorter;
+import it.eng.spagobi.meta.initializer.BusinessModelInitializer;
+import it.eng.spagobi.meta.initializer.OlapModelInitializer;
+import it.eng.spagobi.meta.initializer.properties.BusinessModelPropertiesFromFileInitializer;
 import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.analytical.provider.AnalyticalModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.behavioural.provider.BehaviouralModelItemProviderAdapterFactory;
+import it.eng.spagobi.meta.model.business.BusinessColumn;
+import it.eng.spagobi.meta.model.business.BusinessModel;
+import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.provider.BusinessModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.olap.provider.OlapModelItemProviderAdapterFactory;
 import it.eng.spagobi.meta.model.physical.provider.PhysicalModelItemProviderAdapterFactory;
@@ -645,10 +651,40 @@ public class BusinessModelEditor
 			if(validator.validate(model) == false) {
 				showError("Impossible to load model", validator.getDiagnosticMessage());
 			}
+			
+			//********************* For Backward compatibility (version 3.6 or previous) *********************
+			if (model.getOlapModels().isEmpty()){
+				BusinessModelInitializer businessModelInitializer = new BusinessModelInitializer();
+				BusinessModel businessModel = model.getBusinessModels().get(0);
+				List<BusinessTable> businessTables = businessModel.getBusinessTables();
+				for (BusinessTable businessTable :  businessTables){
+					businessModelInitializer.getPropertiesInitializer().addProperties(businessTable);	
+					//set default type
+					businessTable.setProperty("structural.tabletype", "generic");
+					for (BusinessColumn businessColumn : businessTable.getColumns()){
+						businessModelInitializer.getPropertiesInitializer().addProperties(businessColumn);
+						//set default type
+						businessColumn.setProperty("structural.columntype", "attribute");
+						businessColumn.setProperty("structural.aggtype", "SUM");
+					}
+				}
+
+				//creates an empty Olap Model
+				logger.debug("Old metamodel file: No Olap Model found, creating new empty Olap Model");
+				OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
+				olapModelInitializer.setRootModel(model);
+				model.getOlapModels().add(olapModelInitializer.initialize(
+						model.getName())
+				);
+				
+			}
+			//************************************************************************************
 		} catch (Throwable t) {
 			showError("Impossible to load model", "An eror occurred while loading model: \n" + t.getMessage());
 			t.printStackTrace();
 		}
+		
+
 	}
 
 	/**

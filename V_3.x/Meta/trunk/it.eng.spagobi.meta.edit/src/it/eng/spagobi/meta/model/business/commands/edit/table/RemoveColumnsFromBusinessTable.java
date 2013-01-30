@@ -190,7 +190,10 @@ public class RemoveColumnsFromBusinessTable extends AbstractSpagoBIModelEditComm
 				for(Hierarchy hierarchy : dimension.getHierarchies()){
 					//Level removedLevel = olapModelInitializer.removeHierarchyLevel(dimension, hierarchy, businessColumnToRemove);
 					LevelIndex levelIndex = removeHierarchyLevel(dimension, hierarchy, businessColumnToRemove);
-					modifiedLevels.addAll(modifyHierarchyLevel(dimension, hierarchy, businessColumnToRemove));
+					List<ModifiedLevel> modLevels = modifyHierarchyLevel(dimension, hierarchy, businessColumnToRemove);
+					if (modLevels != null){
+						modifiedLevels.addAll(modLevels);
+					}
 					if (levelIndex != null){
 						HierarchyLevel hierarchyLevel =  new HierarchyLevel(hierarchy,levelIndex);
 						hierarchyLevelsToRemove.add(0,hierarchyLevel);

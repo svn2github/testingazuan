@@ -68,6 +68,11 @@ public class CustomizedPropertySource extends PropertySource {
 	    EditingDomain editingDomain	 = editor.getEditingDomain();
 	    //access to the singleton
 	    OlapModelManager olapModelManager =  OlapModelManager.getInstance();
+	    if ((propertyId.equals("name")) && (value instanceof String)){
+	    	if (object instanceof BusinessColumnSet){
+	    		olapModelManager.changeOlapObjectName((BusinessColumnSet)object,(String)value);
+	    	}
+	    }
 	    olapModelManager.checkForOlapModel(editingDomain,object, propertyId, value, previousValue );
 	    //****************************
 	}

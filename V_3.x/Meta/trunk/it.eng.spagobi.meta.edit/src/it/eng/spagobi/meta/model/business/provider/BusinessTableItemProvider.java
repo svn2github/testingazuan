@@ -20,6 +20,8 @@ import it.eng.spagobi.meta.model.business.commands.edit.table.AddCalculatedField
 import it.eng.spagobi.meta.model.business.commands.edit.table.DeleteBusinessTableCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.table.ModifyBusinessTableColumnsCommand;
 import it.eng.spagobi.meta.model.business.commands.edit.view.AddPhysicalTableToBusinessViewCommand;
+import it.eng.spagobi.meta.model.olap.Cube;
+import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.commands.edit.cube.CreateCubeCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.CreateDimensionCommand;
 import it.eng.spagobi.meta.model.olap.commands.edit.dimension.EditHierarchiesCommand;
@@ -317,6 +319,18 @@ public class BusinessTableItemProvider
 		//ModelObject modelObject = (ModelObject)object;
 		//modelObject.setName(text);
 		setPropertyValue(object, "name", text);
+		
+		//change also the cube or dimension name corresponding to this Business Table
+		Cube cube = olapModelInitializer.getCube((BusinessTable)object);
+		if (cube != null){
+			cube.setName(text);
+		} else {
+			Dimension dimension = olapModelInitializer.getDimension((BusinessTable)object) ;
+			if (dimension != null){
+				dimension.setName(text);
+			}
+		}
+
 		
 	}
 

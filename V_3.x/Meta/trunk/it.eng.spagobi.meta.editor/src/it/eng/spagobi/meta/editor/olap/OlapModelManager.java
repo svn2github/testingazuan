@@ -183,4 +183,18 @@ public class OlapModelManager {
 	private void removePreviousObjects(SimpleBusinessColumn businessColumn, Cube cube){
 		olapModelInitializer.removeCorrespondingOlapObject(businessColumn,cube);
 	}
+	
+	public void changeOlapObjectName(BusinessColumnSet businessColumnSet, String name){
+		//change also the cube or dimension name corresponding to this Business Table
+		Cube cube = olapModelInitializer.getCube(businessColumnSet);
+		if (cube != null){
+			cube.setName(name);
+		} else {
+			Dimension dimension = olapModelInitializer.getDimension(businessColumnSet) ;
+			if (dimension != null){
+				dimension.setName(name);
+			}
+		}
+		
+	}
 }

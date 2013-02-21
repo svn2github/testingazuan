@@ -85,8 +85,7 @@ public class JpaTable extends AbstractJpaTable {
 		String catalog =  getModel().getPhysicalModel().getCatalog();
 		if (catalog != null){
 			if (!quoteString.equals(" ")){
-				catalog = quoteString+catalog+quoteString;
-				//catalog = "`" + catalog + "`";
+				catalog = "`" + catalog + "`";
 			}
 		}
 

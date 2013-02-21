@@ -16,7 +16,6 @@ import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaSubEntity;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelProperty;
-import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumn;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -47,8 +46,6 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	private BusinessView businessView;
 	private List<IJpaCalculatedColumn> jpaCalculatedColumns;
 	private List<BusinessColumn> businessColumnOfInnerTable;
-	String quoteString ;
-
 
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaViewInnerTable.class);
@@ -67,13 +64,6 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 		
 		this.businessView = businessView;
 		this.physicalTable= physicalTable;
-		
-		ModelPropertyType modelPropertyType = physicalTable.getModel().getPropertyType("connection.databasequotestring");
-		if(modelPropertyType != null) {
-			quoteString = modelPropertyType.getDefaultValue();
-		} else {
-			quoteString = "";
-		}
 		
 		initColumnTypesMap();
 	}
@@ -292,8 +282,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	public String getCatalog(){
 		String catalog = getModel().getPhysicalModel().getCatalog();
 		if(catalog!=null && !catalog.equals("")){
-			//catalog = "`"+catalog+"`";
-			catalog = quoteString+catalog+quoteString;
+			catalog = "`"+catalog+"`";
 		}
 		return catalog;
 	}
@@ -301,8 +290,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	public String getSchema(){
 		String schema =  getModel().getPhysicalModel().getSchema();
 		if(schema!=null && !schema.equals("")){
-			//schema = "`"+schema+"`";
-			schema = quoteString+schema+quoteString;
+			schema = "`"+schema+"`";
 		}
 		return schema;
 	}
@@ -325,8 +313,7 @@ public class JpaViewInnerTable extends AbstractJpaTable {
 	@Override
 	public String getQuotedMappingTableName() {
 		String name =  physicalTable.getName();
-		//return "`"+name+"`";
-		return quoteString+name+quoteString;
+		return "`"+name+"`";
 	}
 	
 	@Override

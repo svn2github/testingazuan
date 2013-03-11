@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: it.eng.spagobi.commons
+Bundle-SymbolicName: it.eng.spagobi.commons
+Bundle-Version: 1.0.0
+Bundle-Activator: it.eng.spagobi.commons.Activator
+Bundle-Vendor: it.eng
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit;bundle-version="3.8.2",
+ org.eclipse.emf.common;bundle-version="2.6.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: it.eng.spagobi.commons,
+ it.eng.spagobi.commons.exception,
+ it.eng.spagobi.commons.resource,
+ it.eng.spagobi.commons.utils

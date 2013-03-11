@@ -1,0 +1,26 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: it.eng.spagobi.meta.test
+Bundle-Version: 3.4.0
+Require-Bundle: it.eng.spagobi.meta.edit,
+ it.eng.spagobi.meta.editor,
+ it.eng.spagobi.meta.generator,
+ it.eng.spagobi.meta.initializer,
+ it.eng.spagobi.meta.mapper,
+ it.eng.spagobi.meta.model,
+ it.eng.spagobi.meta.querybuilder,
+ it.eng.spagobi.meta.queryengine,
+ org.junit,
+ com.windowtester.runtime,
+ com.windowtester.swt.runtime,
+ com.windowtester.swing.runtime,
+ com.instantiations.eclipse.debug,
+ org.eclipse.jface,
+ com.instantiations.common.core,
+ org.eclipse.core.runtime,
+ com.instantiations.eclipse.util,
+ org.eclipse.swt
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-SymbolicName: it.eng.spagobi.meta.test
+Manifest-Version: 1.0
+Bundle-Vendor: Engineering Group
+Import-Package: org.junit

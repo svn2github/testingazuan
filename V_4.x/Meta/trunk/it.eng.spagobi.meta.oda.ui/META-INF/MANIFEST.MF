@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: it.eng.spagobi.meta.oda.ui
+Bundle-SymbolicName: it.eng.spagobi.meta.oda.ui; singleton:=true
+Bundle-Version: 3.6.0
+Bundle-Vendor: Engineering Group
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ it.eng.spagobi.meta.oda,
+ it.eng.spagobi.meta.querybuilder,
+ it.eng.spagobi.commons,
+ org.junit,
+ org.eclipse.datatools.connectivity.oda.design.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: it.eng.spagobi.meta.oda.ui.impl
+Bundle-ClassPath: lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
+ lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
+ lib/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
+ lib/org.slf4j.api_1.5.11.v20100519-1910.jar,
+ .

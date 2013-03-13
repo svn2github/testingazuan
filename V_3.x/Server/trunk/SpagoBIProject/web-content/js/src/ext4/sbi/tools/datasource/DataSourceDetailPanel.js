@@ -21,21 +21,21 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		this.items=[this.dataSourceId, this.dataSourceDialectId, this.dataSourceLabel , this.dataSourceDescription, this.dataSourceDialect, this.dataSourceMultischema , this.dataSourceMultischemaAttribute, this.dataSourceTypeJdbc, this.dataSourceTypeJndi,this.dataSourceJndiName, this.dataSourceJdbcUrl, this.dataSourceJdbcUser, this.dataSourceJdbcPassword ,this.dataSourceDriver]
 		
 		this.addEvents('save');
-		this.tbar = Sbi.widget.toolbar.StaticToolbarBuilder.buildToolbar({items:[{name:'->'},{name:'save'}]},this);
+		this.tbar = Sbi.widget.toolbar.StaticToolbarBuilder.buildToolbar({items:[{name:'->'},{name:'test'},{name:'save'}]},this);
 		this.tbar.on("save",function(){
 			this.fireEvent("save", this.getValues());
 		},this)
-		
+		this.tbar.on("test",function(){
+			this.fireEvent("test", this.getValues());
+		},this)
 		this.callParent(arguments);
+		this.on("render",function(){this.hide()},this);
     }
 
 	, initFields: function(){
 		this.dataSourceId = Ext.create("Ext.form.field.Hidden",{
 			name: "DATASOURCE_ID"
 		});
-//		this.dataSourceDialectId = Ext.create("Ext.form.field.Hidden",{
-//			name: "DIALECT_ID"
-//		});
 		this.dataSourceLabel = Ext.create("Ext.form.field.Text",{
 			name: "DATASOURCE_LABEL",
 			fieldLabel: LN('sbi.datasource.label'),
@@ -44,10 +44,8 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		this.dataSourceDescription = Ext.create("Ext.form.field.Text",{
 			name: "DESCRIPTION",
 			fieldLabel: LN('sbi.datasource.description'),
-			allowBlank: false
 		});
 
-	
 		Ext.create("Ext.form.field.Text",{
 			name: "DIALECT_NAME",
 			fieldLabel: LN('sbi.datasource.dialect'),
@@ -76,7 +74,8 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 	        store: dialectStore,
 	        name: "DIALECT_ID",
 	        displayField:'VALUE_DS',
-	        valueField:'VALUE_ID'
+	        valueField:'VALUE_ID',
+	        allowBlank: false
 	    });
     	
 		this.dataSourceMultischema = Ext.create("Ext.form.Checkbox",{
@@ -110,6 +109,7 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		this.dataSourceTypeJndi = Ext.create("Ext.form.field.Radio",{
             hideEmptyLabel: false,
 			boxLabel: LN('sbi.datasource.type.jndi'), 
+			checked : true,
 			name: 'TYPE' , 
 			inputValue:'jndi'
 		});
@@ -117,28 +117,27 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		this.dataSourceJndiName= Ext.create("Ext.form.field.Text",{
 			name: "JNDI_URL",
 			fieldLabel: LN('sbi.datasource.type.jndi.name'),
-			allowBlank: false,
-			hidden: true
+			allowBlank: false
 		});	 
 		
 		this.dataSourceJdbcUser = Ext.create("Ext.form.field.Text",{
 			name: "USER",
 			fieldLabel: LN('sbi.datasource.type.jdbc.user'),
-			allowBlank: true,
+			allowBlank: false,
 			hidden: true
 		});
 		
 		this.dataSourceJdbcUrl = Ext.create("Ext.form.field.Text",{
 			name: "CONNECTION_URL",
 			fieldLabel: LN('sbi.datasource.type.jdbc.url'),
-			allowBlank: true,
+			allowBlank: false,
 			hidden: true
 		});
 		
 		this.dataSourceJdbcPassword = Ext.create("Ext.form.field.Text",{
 			name: "PASSWORD",
 			fieldLabel: LN('sbi.datasource.type.jdbc.password'),
-			allowBlank: true,
+			allowBlank: false,
 			hidden: true
 			
 		});
@@ -182,7 +181,27 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		}else{
 			v.TYPE='jdbc';
 		}
+		this.validateForm();
 		this.getForm().setValues(v);
+	}
+	
+	, validateForm: function(){
+		var valid = true;
+		var v = this.getValues();
+
+		valid = valid && (v.DIALECT_ID!=null && v.DIALECT_ID!=undefined &&  v.DIALECT_ID!="");
+		valid = valid && (v.DATASOURCE_LABEL!=null && v.DATASOURCE_LABEL!=undefined &&  v.DATASOURCE_LABEL!="");
+		if(v.TYPE == 'jndi'){
+			valid = valid && (v.JNDI_URL!=null && v.JNDI_URL!=undefined &&  v.JNDI_URL!="");
+		}else{
+			valid = valid && (v.CONNECTION_URL!=null && v.CONNECTION_URL!=undefined &&  v.CONNECTION_URL!="");
+			valid = valid && (v.USER!=null && v.USER!=undefined &&  v.USER!="");
+			valid = valid && (v.PASSWORD!=null && v.PASSWORD!=undefined &&  v.PASSWORD!="");
+			valid = valid && (v.DIALECT_CLASS!=null && v.DIALECT_CLASS!=undefined &&  v.DIALECT_CLASS!="");
+		}
+		alert(valid);
+		return valid;
+		
 	}
 });
     

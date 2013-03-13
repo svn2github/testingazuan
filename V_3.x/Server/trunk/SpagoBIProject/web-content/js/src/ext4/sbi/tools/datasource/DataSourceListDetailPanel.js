@@ -12,14 +12,15 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
 		this.columns = [{dataIndex:"DATASOURCE_LABEL", header:"Name"}, {dataIndex:"DESCRIPTION", header:"description"}];
 		this.fields = ["DATASOURCE_ID","DATASOURCE_LABEL","DESCRIPTION","DRIVER","DIALECT_ID","DIALECT_CLASS","DIALECT_NAME","JNDI_URL","USER","PASSWORD","SCHEMA","MULTISCHEMA","CONNECTION_URL"];
 		this.detailPanel.on("save",this.onFormSave,this);
-		
+		this.detailPanel.on("test",this.onFormTest,this);
+		this.filteredProperties = ["DATASOURCE_LABEL","DESCRIPTION"];
 		this.buttonToolbarConfig = {
-			newButton: true,
-			cloneButton: true
+			newButton: true
+			//,cloneButton: true
 		};
 		this.buttonColumnsConfig ={
-			deletebutton:true,
-			selectbutton: true
+			deletebutton:true
+			//,selectbutton: true
 		};
 		
     	this.callParent(arguments);
@@ -38,6 +39,10 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
 											serviceName: 'datasources/save'
 											, baseParams: baseParams
 		});
+		this.services["test"]= Sbi.config.serviceRegistry.getRestServiceUrl({
+											serviceName: 'datasources/test'
+											, baseParams: baseParams
+		});
 		this.services["getDialects"]= Sbi.config.serviceRegistry.getRestServiceUrl({
 											serviceName: 'domains/listValueDescriptionByType'
 											, baseParams: baseParams
@@ -51,7 +56,9 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
   	        params: {DATASOURCE_ID: record.get('DATASOURCE_ID')},
   	        success : function(response, options) {
 	      		if(response !== undefined && response.responseText !== undefined) {
-	      			var r=response;
+	      			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.datasource.deleted'));
+	      			this.grid.store.remove(record);
+	      			this.grid.store.commitChanges();
 	      		} else {
 	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 	      		}
@@ -78,6 +85,27 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
   	        scope: this,
   			failure: Sbi.exception.ExceptionHandler.handleFailure      
   		});
+	}
+	
+	, onFormTest: function(record){
+		Ext.Ajax.request({
+  	        url: this.services["test"],
+  	        params: record,
+  	        success : function(response, options) {
+	      		if(response !== undefined && response.statusText !== undefined && response.statusText=="OK") {
+	      			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.datasource.saved'));
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
+  	        },
+  	        scope: this,
+  			failure: Sbi.exception.ExceptionHandler.handleFailure      
+  		});
+	}
+	
+	, onGridSelect: function(selectionrowmodel, record, index, eOpts){
+		this.detailPanel.show();
+		this.detailPanel.setFormState(record.data);
 	}
 });
     

@@ -30,6 +30,8 @@ Ext.define('Sbi.widget.toolbar.StaticToolbarBuilder', {
 				return Sbi.widget.toolbar.StaticToolbarBuilder.addCloneItemToolbarButton(toolbar, item);
 			case 'save':
 				return Sbi.widget.toolbar.StaticToolbarBuilder.addSaveItemToolbarButton(toolbar, item);
+			case 'test':
+				return Sbi.widget.toolbar.StaticToolbarBuilder.addTestItemToolbarButton(toolbar, item);
 			case '->':
 				return '->';
 			default:
@@ -41,7 +43,7 @@ Ext.define('Sbi.widget.toolbar.StaticToolbarBuilder', {
 			var toolbarconf = {
 					//text: LN('sbi.generic.add'),
 			         iconCls: 'icon-add',
-			        handler: function(button, event, b, c, d) {
+			        handler: function(button, event) {
 			        	toolbar.fireEvent("addnew");
 					},
 			        scope: this
@@ -65,8 +67,20 @@ Ext.define('Sbi.widget.toolbar.StaticToolbarBuilder', {
 			var toolbarconf = {
 					//text: LN('sbi.generic.update'),
 			         iconCls: 'icon-save',
-			        handler: function(button, event, b, c, d) {
+			        handler: function(button, event) {
 			        	toolbar.fireEvent("save");
+					},
+			        scope: this
+			    };
+			return Ext.apply(toolbarconf,conf||{});
+		}
+		
+		,addTestItemToolbarButton: function(toolbar, conf){
+			var toolbarconf = {
+					//text: LN('sbi.generic.update'),
+			         iconCls: 'icon-test',
+			        handler: function(button, event) {
+			        	toolbar.fireEvent("test");
 					},
 			        scope: this
 			    };

@@ -97,7 +97,11 @@ Ext.define('Sbi.widgets.grid.FixedGridPanel', {
     	/**
     	 * Configuration of the filtering toolbar. Null to hide the toolbar
     	 */
-    	filterConfig: null
+    	filterConfig: null,
+    	/**
+    	 * The list of the properties that should be filtered 
+    	 */
+    	filteredProperties: new Array()
     }
 
 	/**
@@ -133,7 +137,7 @@ Ext.define('Sbi.widgets.grid.FixedGridPanel', {
     	this.storeConfig = Ext.apply({
     		parentGrid: this,
     		model: modelname,
-    		filteredProperties: ["DATASOURCE_LABEL","DESCRIPTION"],
+    		filteredProperties: this.filteredProperties,
     		proxy: {
     			type: 'ajax',
     			url:  this.services['getAllValues'],

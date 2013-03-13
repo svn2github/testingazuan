@@ -35,7 +35,6 @@ Ext.define('Sbi.widget.grid.StaticGridDecorator', {
 					columnType: "decorated",
 					items: [{
 						iconCls   : 'button-select',  // Use a URL in the icon config
-						tooltip: 'Sell stock',
 						handler: function(grid, rowIndex, colIndex) {
 							var selectedRecord =  grid.store.getAt(rowIndex);
 				 	        grid.fireEvent("selectrow",selectedRecord,rowIndex,colIndex)
@@ -55,7 +54,6 @@ Ext.define('Sbi.widget.grid.StaticGridDecorator', {
 					columnType: "decorated",
 					items: [{
 						iconCls   : 'button-remove',  // Use a URL in the icon config
-						tooltip: 'Sell stock',
 						handler: function(grid, rowIndex, colIndex) {
 							var selectedRecord =  grid.store.getAt(rowIndex);
 				 	        grid.fireEvent("deleterow",selectedRecord,rowIndex,colIndex)
@@ -122,6 +120,8 @@ Ext.define('Sbi.widget.grid.StaticGridDecorator', {
 	            scope: this
 	        });
 		}
+		
+		
 	}
 	
 

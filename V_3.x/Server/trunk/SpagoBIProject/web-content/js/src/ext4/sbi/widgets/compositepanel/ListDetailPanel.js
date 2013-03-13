@@ -84,7 +84,11 @@ Ext.define('Sbi.widgets.compositepannel.ListDetailPanel', {
     	/**
     	 * The definition of the columns of the grid. {@link Sbi.widgets.store.InMemoryFilteredStore#InMemoryFilteredStore}
     	 */
-    	columns: []
+    	columns: [],
+    	/**
+    	 * The list of the properties that should be filtered 
+    	 */
+    	filteredProperties: new Array()
     }
 
 	/**

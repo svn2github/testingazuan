@@ -49,7 +49,7 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
     	/**
     	 * The list of the properties that should be filtered 
     	 */
-    	filteredProperties: null,
+    	filteredProperties: new Array(),
     	/**
     	 * False to reload the wrapped store. It force the refresh of the in memory data
     	 */
@@ -71,7 +71,7 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
     		if(!this.inMemoryData){
     			this.inMemoryData = this.data.items.slice(0);//clone the items
     		}
-   			var items = this.getFilteredItems(this.inMemoryData);
+   			var items = this.getFilteredItems(this.inMemoryData, this.filteredProperties, this.filterString);
    			items = this.getPageItems(this.start, this.limit, items);
    			this.removeAll();
    			for(var i=0; i<items.length;i++){
@@ -102,7 +102,7 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
 			options.limit = null;
 			options.page = null;
 			this.inMemoryData=null;
-			this.callParent(options);
+			this.callParent([options]);
 		}
 
 		this.filterString = options.filterString;
@@ -132,15 +132,20 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
 	 * Filters the data in memory.
      * @private
      * @param {Array} items The list of the items to filter
+	 * @param {Array} properties The list of properties to search
+	 * @param {String} filterString string to find (apply a like)
      */
-	, getFilteredItems: function(items){
+	, getFilteredItems: function(items, properties, filterString){
 		var filteredCount = 0;
 		if(this.filterString){
 			var filteredItems = [];
 			for(var i=0; i<items.length; i++){
 				var item = items[i];
-				for(p in item.data){
-					if(!this.filteredProperties || (this.filteredProperties.indexOf(p)>=0 && (item.data[p].toLowerCase()).indexOf(this.filterString.toLowerCase())>=0)){
+				for(var p in item.data){
+					var bool = (properties==null || properties==undefined  || 
+							((properties.contains(p)) && 
+									(((item.data[p].toLowerCase()).indexOf(filterString.toLowerCase()))>=0)));
+					if(bool){
 						filteredCount++;
 						filteredItems.push(item);
 						break;

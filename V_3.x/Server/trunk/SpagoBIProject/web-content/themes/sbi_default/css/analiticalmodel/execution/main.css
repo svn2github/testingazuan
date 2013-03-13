@@ -230,6 +230,11 @@
 	background-image: url('../../../img/wapp/exit16.png') !important;
 }
 
+.icon-test {
+	background-image: url('../../../img/test16.png') !important;
+}
+
+
 .icon-role {
 	background-image: url('../../../img/wapp/roles.png') !important;
 }

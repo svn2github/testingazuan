@@ -46,7 +46,7 @@ Ext.define('Sbi.widgets.grid.InLineGridFilter', {
 
 	, constructor: function(config) {
 		this.initConfig(config);
-		this.callParent(config);
+		this.callParent(arguments);
 	}
 
 	, onRender : function(ct, position) {

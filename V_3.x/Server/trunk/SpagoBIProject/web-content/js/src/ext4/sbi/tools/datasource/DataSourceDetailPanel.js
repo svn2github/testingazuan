@@ -26,7 +26,7 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 			this.fireEvent("save", this.getValues());
 		},this)
 		
-		this.callParent(config);
+		this.callParent(arguments);
     }
 
 	, initFields: function(){

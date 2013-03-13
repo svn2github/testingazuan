@@ -310,9 +310,9 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
       type='text/css' />
 <%	} %>
 
-<LINK rel='StyleSheet' 
+<!-- LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_shared.css",currTheme)%>' 
-      type='text/css' />
+      type='text/css' /-->
 
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/jsr168.css",currTheme)%>' 

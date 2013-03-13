@@ -2,10 +2,7 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
     extend: 'Sbi.widgets.compositepannel.ListDetailPanel'
 
     ,config: {
-    	stripeRows: true,
-    	services:{
-    		
-    	}
+    	stripeRows: true
     }
 
 	, constructor: function(config) {

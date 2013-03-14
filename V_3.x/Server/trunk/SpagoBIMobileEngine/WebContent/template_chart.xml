@@ -12,7 +12,7 @@
   <ANIMATE easing='bounceOut' duration='750'/>
   
   <SERIES_LIST>
-  	<SERIE  xField='x' yField='perc' type='column' axis='left'>
+  	<SERIE  xField='x' yField='perc' type='column' axis='left' xJustify='true'>
   	      <LABEL field='perc' contrast='true' font='18px Arial' display='insideEnd' text-anchor='middle'/>   
     </SERIE>
   </SERIES_LIST>

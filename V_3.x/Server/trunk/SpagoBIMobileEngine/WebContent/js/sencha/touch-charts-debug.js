@@ -11647,9 +11647,18 @@ Ext.chart.axis.Axis = Ext.extend(Ext.chart.axis.Abstract, {
             (isSide ? floor(matrix.y(0, length)) > length : ceil(matrix.x(0, 0)) < 0)
         );
     },
+	
+		// @private
+	getOrCreateLabel: function (i, text) {
+		if(this.image){
+			return this.getOrCreateImageLabel(i, text);
+		}else{
+			return this.getOrCreateTextLabel(i, text);
+		}
+	},
 
     //@private
-    getOrCreateLabel: function(i, text) {
+    getOrCreateTextLabel: function(i, text) {
         var me = this,
             labelGroup = me.labelGroup,
             textLabel = labelGroup.getAt(i),
@@ -11689,6 +11698,51 @@ Ext.chart.axis.Axis = Ext.extend(Ext.chart.axis.Abstract, {
         }
         return textLabel;
     },
+	
+	    // @private
+    getOrCreateImageLabel: function (i, text) {
+         var me = this,
+            labelGroup = me.labelGroup,
+            textLabel = labelGroup.getAt(i),
+            surface,
+            labelStyle = me.labelStyle.style;
+        if (textLabel) {
+            if (text != textLabel.attr.text) {
+                textLabel.setAttributes(Ext.apply({
+                    src: text
+                }, labelStyle), true);
+                textLabel._bbox = textLabel.getBBox();
+            }
+        }
+        else {
+            surface = me.getLabelSurface();
+            textLabel = surface.add(Ext.apply({
+                group: labelGroup,
+                type: 'image',
+                x: 0,
+                y: 0,
+				width: 20,
+				height: 20,
+                src: text
+            }, labelStyle));
+            surface.renderItem(textLabel);
+            textLabel._bbox = textLabel.getBBox();
+        }
+        //get untransformed bounding box
+        if (labelStyle.rotation) {
+            textLabel.setAttributes({
+                rotation: {
+                    degrees: 0
+                }
+            }, true);
+            textLabel._ubbox = textLabel.getBBox();
+            textLabel.setAttributes(labelStyle, true);
+        } else {
+            textLabel._ubbox = textLabel._bbox;
+        }
+        return textLabel;
+    },
+
 
     rect2pointArray: function(sprite) {
         var surface = this.getSurface(),
@@ -14311,6 +14365,8 @@ Ext.chart.series.Bar = Ext.extend(Ext.chart.series.Cartesian, {
      * @cfg {Number} yPadding Padding between the top/bottom axes and the bars
      */
     yPadding: 10,
+	
+	xJustify: false,
 
     /**
      * @private
@@ -14444,6 +14500,12 @@ Ext.chart.series.Bar = Ext.extend(Ext.chart.series.Cartesian, {
         else if (minY / maxY < 0) {
             zero = zero - minY * scale * (column ? -1 : 1);
         }
+		
+		if(me.xJustify){
+			bbox.x = bbox.x-barWidth/2;
+		}
+		
+		
         return {
             bbox: bbox,
             barsLen: barsLen,
@@ -14543,28 +14605,36 @@ Ext.chart.series.Bar = Ext.extend(Ext.chart.series.Cartesian, {
                 floorY--;
             }
             barAttr.y = floorY;
-            barAttr.width = Math.floor(barAttr.width);
-            barAttr.height = Math.floor(barAttr.height);
+			
+                var br = Ext.apply({},barAttr);
+				if(me.xJustify && i==0){
+					br.width =Math.floor(barAttr.width/2);
+					br.x = br.x+br.width;
+				}else{
+					br.width =Math.floor(barAttr.width);
+				}
+                br.height = Math.floor(barAttr.height);
+
             items.push({
                 series: me,
                 storeItem: currentRecord,
                 value: [currentRecord.get(me.xField), yValue],
-                attr: barAttr,
-                point: column ? [barAttr.x + barAttr.width / 2, yValue >= 0 ? barAttr.y : barAttr.y + barAttr.height] :
-                                [yValue >= 0 ? barAttr.x + barAttr.width : barAttr.x, barAttr.y + barAttr.height / 2]
+                attr: br,
+                point: column ? [br.x + br.width / 2, yValue >= 0 ? br.y : br.y + br.height] :
+                                [yValue >= 0 ? br.x + br.width : br.x, br.y + br.height / 2]
             });
             // When resizing, reset before animating
             if (animate && chart.resizing) {
                 attrs = column ? {
-                    x: barAttr.x,
+                    x: br.x,
                     y: bounds.zero,
-                    width: barAttr.width,
+                    width: br.width,
                     height: 0
                 } : {
                     x: bounds.zero,
-                    y: barAttr.y,
+                    y: br.y,
                     width: 0,
-                    height: barAttr.height
+                    height: br.height
                 };
                 if (enableShadows && (stacked && !hasShadow || !stacked)) {
                     hasShadow = true;

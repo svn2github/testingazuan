@@ -11,16 +11,10 @@
  */
 package it.eng.spagobi.tools.datasource.service.rest;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.serializer.SerializationException;
@@ -29,7 +23,6 @@ import it.eng.spagobi.commons.utilities.AuditLogUtilities;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
-import it.eng.spagobi.tools.datasource.service.ListDataSourceModule;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
@@ -37,11 +30,8 @@ import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONFailure;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -64,10 +54,10 @@ import org.json.JSONObject;
 public class DataSourceCRUD {
 
 	static private Logger logger = Logger.getLogger(DataSourceCRUD.class);
-	static private String deleteNullIdDataSourceError = "The id of the datasource can not be null. SPAGOBIERRORCODE0012";
-	static private String deleteInUseDSError = "The data source can not be deleted because it's in use. SPAGOBIERRORCODE0010";
-	static private String canNotFillResponseError = "Cannot fill response container. SPAGOBIERRORCODE0011";
-	static private String saveDuplicatedDSError = "There is another data source with the same label. SPAGOBIERRORCODE0013";
+	static private String deleteNullIdDataSourceError = "error.mesage.description.data.source.cannot.be.null";
+	static private String deleteInUseDSError = "error.mesage.description.data.source.deleting.inuse";
+	static private String canNotFillResponseError = "error.mesage.description.generic.can.not.responce";
+	static private String saveDuplicatedDSError = "error.mesage.description.data.source.saving.duplicated";
 
 	@GET
 	@Path("/listall")
@@ -118,10 +108,7 @@ public class DataSourceCRUD {
 				HashMap params = new HashMap();
 				logger.debug(deleteInUseDSError);
 				updateAudit(req, profile, "DATA_SOURCE.DELETE", null, "ERR");
-				return (new JSONFailure(
-						new Exception(
-								deleteInUseDSError)))
-						.toString();
+				return (serializeException(deleteInUseDSError,null));
 			}
 
 			IDataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(new Integer(id));
@@ -135,9 +122,7 @@ public class DataSourceCRUD {
 			updateAudit(req, profile, "DATA_SOURCE.DELETE", null, "ERR");
 			logger.debug(canNotFillResponseError);
 			try {
-				return (new JSONFailure(new Exception(
-						canNotFillResponseError)))
-						.toString();
+				return (serializeException(canNotFillResponseError,null));
 			} catch (Exception e) {
 				logger.debug("Cannot fill response container.");
 				throw new SpagoBIRuntimeException(
@@ -181,14 +166,23 @@ public class DataSourceCRUD {
 			}  
 					
 			return (new JSONAcknowledge()).toString();
+		} catch (SpagoBIRuntimeException ex) {
+			logger.error("Cannot fill response container", ex);
+			updateAudit(req, profile, "DATA_SOURCE.DELETE", null, "ERR");
+			logger.debug(ex.getMessage());
+			try {
+				return (serializeException(ex.getMessage(),null));
+			} catch (Exception e) {
+				logger.debug("Cannot fill response container.");
+				throw new SpagoBIRuntimeException(
+						"Cannot fill response container", e);
+			}
 		} catch (Exception ex) {
 			logger.error("Cannot fill response container", ex);
 			updateAudit(req, profile, "DATA_SOURCE.DELETE", null, "ERR");
 			logger.debug(canNotFillResponseError);
 			try {
-				return (new JSONFailure(new Exception(
-						canNotFillResponseError)))
-						.toString();
+				return (serializeException(canNotFillResponseError,null));
 			} catch (Exception e) {
 				logger.debug("Cannot fill response container.");
 				throw new SpagoBIRuntimeException(
@@ -265,6 +259,25 @@ public class DataSourceCRUD {
 		ds.setMultiSchema(isMultiSchema);
 				
 		return ds;
+	}
+	
+	private String serializeException(String message, String localizedMessage) throws JSONException{
+		JSONArray ja = new JSONArray();
+		JSONObject jo = new JSONObject();
+		JSONObject je = new JSONObject();
+		if(message != null){
+			jo.put("message", message);
+		}
+		if(localizedMessage != null){
+			jo.put("localizedMessage", localizedMessage);
+		}
+		ja.put(jo);
+		je.put("errors", ja);
+		return je.toString();
+	}
+	
+	private String serializeException(Exception e) throws JSONException{
+		return serializeException(e.getMessage(),null);
 	}
 
 

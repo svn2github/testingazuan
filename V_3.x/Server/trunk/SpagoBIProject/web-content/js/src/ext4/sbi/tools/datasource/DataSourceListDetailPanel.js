@@ -74,10 +74,17 @@ Ext.define('Sbi.tools.datasource.DataSourceListDetailPanel', {
   	        params: record,
   	        success : function(response, options) {
 	      		if(response !== undefined && response.statusText !== undefined && response.statusText=="OK") {
-	      			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.datasource.saved'));
-	      			var selectedRow = this.grid.getSelectionModel().getSelection();
-	      			Ext.apply(selectedRow[0].data,record);
-	      			this.grid.store.commitChanges();
+	      			if(response.responseText!=null && response.responseText!=undefined){
+	      				if(response.responseText.indexOf("error.mesage.description")>=0){
+	      					Sbi.exception.ExceptionHandler.handleFailure(response);
+	      				}
+	      			}else{
+	      				Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.datasource.saved'));
+		      			var selectedRow = this.grid.getSelectionModel().getSelection();
+		      			Ext.apply(selectedRow[0].data,record);
+		      			this.grid.store.commitChanges();	
+	      			}
+	      			
 	      		} else {
 	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 	      		}

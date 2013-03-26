@@ -23,7 +23,12 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		this.addEvents('save');
 		this.tbar = Sbi.widget.toolbar.StaticToolbarBuilder.buildToolbar({items:[{name:'->'},{name:'test'},{name:'save'}]},this);
 		this.tbar.on("save",function(){
-			this.fireEvent("save", this.getValues());
+			if(this.validateForm()){
+				this.fireEvent("save", this.getValues());
+			}else{
+				Sbi.exception.ExceptionHandler.showErrorMessage('sbi.datasource.validation.error','sbi.generic.validationError');
+			}
+			
 		},this)
 		this.tbar.on("test",function(){
 			this.fireEvent("test", this.getValues());
@@ -181,7 +186,6 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 		}else{
 			v.TYPE='jdbc';
 		}
-		this.validateForm();
 		this.getForm().setValues(v);
 	}
 	
@@ -199,7 +203,6 @@ Ext.define('Sbi.tools.datasource.DataSourceDetailPanel', {
 			valid = valid && (v.PASSWORD!=null && v.PASSWORD!=undefined &&  v.PASSWORD!="");
 			valid = valid && (v.DIALECT_CLASS!=null && v.DIALECT_CLASS!=undefined &&  v.DIALECT_CLASS!="");
 		}
-		alert(valid);
 		return valid;
 		
 	}

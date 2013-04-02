@@ -158,33 +158,35 @@ public class MapOlAction extends AbstractBaseServlet {
 				    	}
 	        			logger.debug("propName: " + propName + " - propType: " + String.valueOf(propType));
 			        }
-			    	SimpleFeature feature = this.getFeature(featureSourceType, featureSource, layerName, geoIdPName, geoIdPValue);			    	
-			    	//loads props from file/WFS
-			    	List fileAttrs = feature.getFeatureType().getAttributeDescriptors();	
-			    	for(int k=0; k<fileAttrs.size(); k++){
-			    		if (k==0 && !attrDesc.equals("")) attrDesc += ",";
-			    		AttributeDescriptor attr = (AttributeDescriptor)fileAttrs.get(k);			    		
-			            //simple property type: the only types managed by the lib are : String, Double, Point,.. 		        
-		            	String simpleType = attr.getType().getBinding().getSimpleName();
-		            	if (simpleType.equals("Long") || simpleType.equals("BigDecimal")){
-				    		simpleType = "Double";
+			    	SimpleFeature feature = this.getFeature(featureSourceType, featureSource, layerName, geoIdPName, geoIdPValue);	
+			    	if(feature!=null) {
+				    	//loads props from file/WFS
+				    	List fileAttrs = feature.getFeatureType().getAttributeDescriptors();	
+				    	for(int k=0; k<fileAttrs.size(); k++){
+				    		if (k==0 && !attrDesc.equals("")) attrDesc += ",";
+				    		AttributeDescriptor attr = (AttributeDescriptor)fileAttrs.get(k);			    		
+				            //simple property type: the only types managed by the lib are : String, Double, Point,.. 		        
+			            	String simpleType = attr.getType().getBinding().getSimpleName();
+			            	if (simpleType.equals("Long") || simpleType.equals("BigDecimal")){
+					    		simpleType = "Double";
+					    	}
+			            	attrDesc += attr.getName()+":"+simpleType;
+				    		if (k < fileAttrs.size()-1){
+					    		attrDesc += ",";
+					    	}
 				    	}
-		            	attrDesc += attr.getName()+":"+simpleType;
-			    		if (k < fileAttrs.size()-1){
-				    		attrDesc += ",";
-				    	}
+				    	//create new feature type with ALL properties (db + file/WFS)
+				    	SimpleFeatureType TYPE = DataUtilities.createType("NewType", attrDesc);
+				    	SimpleFeature newSF = SimpleFeatureBuilder.retype(feature, TYPE);
+				        //for each dataset column sets the property values to the new feature
+				        for(int j=0; j<nc; j++){
+		        			String propName = dataStoreMeta.getFieldAlias(j).toUpperCase();
+		        			Object propValue = record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldAlias(j)) ).getValue();			
+		        			newSF.setAttribute(propName, propValue);
+				        }
+				        //adds the new feature to the collection
+				        outputFeatureCollection.add(newSF);
 			    	}
-			    	//create new feature type with ALL properties (db + file/WFS)
-			    	SimpleFeatureType TYPE = DataUtilities.createType("NewType", attrDesc);
-			    	SimpleFeature newSF = SimpleFeatureBuilder.retype(feature, TYPE);
-			        //for each dataset column sets the property values to the new feature
-			        for(int j=0; j<nc; j++){
-	        			String propName = dataStoreMeta.getFieldAlias(j).toUpperCase();
-	        			Object propValue = record.getFieldAt( dataStoreMeta.getFieldIndex(dataStoreMeta.getFieldAlias(j)) ).getValue();			
-	        			newSF.setAttribute(propName, propValue);
-			        }
-			        //adds the new feature to the collection
-			        outputFeatureCollection.add(newSF);
 			        
 			      } catch (Exception e) {
 			    	  e.printStackTrace();

@@ -4,79 +4,59 @@
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
-  
- 
-  
- 
- app.views.ExecutionView = Ext.extend(Ext.Panel,
+Ext.define('app.views.ExecutionView',{
+		extend:'Ext.Panel',
+		config:{
+			 fullscreen: true,
+			 layout: 'fit',
+			 loadingMaskForExec: null,
+			 title: 'Execution view',
+			 positionInExecutionContainer: null//position of the view in the list of items in the ExecutionContainerView
+		}
 
-		{
-	    fullscreen: true,
-	    layout: 'fit',
-	    loadingMaskForExec: null,
-		initComponent: function ()	{
-			this.title = 'Execution view';
+,
+	   
+		initialize: function ()	{
 			console.log('init Execution view');
-	        this.bottomTools = new app.views.BottomToolbar({parameters: this.parameters});
+//	        this.bottomTools = new app.views.BottomToolbar({parameters: this.parameters});
+//
+//	        this.dockedItems= [this.bottomTools];
 
-	        this.dockedItems= [this.bottomTools];
-
-			app.views.tableExecutionPanel = new app.views.TableExecutionPanel();
-			app.views.chartExecutionPanel = new app.views.ChartExecutionPanel({fullscreen: true});
-			app.views.composedExecutionPanel = new app.views.ComposedExecutionPanel();
-			
-		    Ext.apply(this, {
-		        items: [
-		            app.views.tableExecutionPanel,
-		            app.views.chartExecutionPanel,
-		            app.views.composedExecutionPanel
-		        ]
-		    });
-		    
-		    app.views.tableExecutionPanel.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
-		    app.views.chartExecutionPanel.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
-
-			app.views.ExecutionView.superclass.initComponent.apply(this, arguments);
+			this.callParent(this, arguments);
 
 
 		}
-		, setWidget: function(resp, type, fromCross) {
+		, setWidget: function(resp, type, fromCross, executionInstance) {
 
 			if (type == 'table'){
-				app.views.tableExecutionPanel.setTableWidget(resp, false, fromCross);
-				this.widget = app.views.tableExecutionPanel;
+				var table = Ext.create("app.views.TableExecutionPanel",{ resp:resp, fromcomposition:false, fromCross:fromCross, executionInstance:executionInstance});
+				table.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
+				this.widget = table;
 			}
 			if (type == 'chart'){
-				app.views.chartExecutionPanel.setChartWidget(resp, false, fromCross);
-				this.widget = app.views.chartExecutionPanel;
+				var chart = Ext.create("app.views.ChartExecutionPanel",{fullscreen: true, resp:resp, fromcomposition:false, fromCross:fromCross, executionInstance:executionInstance});
+				chart.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
+				this.widget = chart;
 			}
 			if (type == 'composed'){
-				app.views.composedExecutionPanel.setComposedWidget(resp);
-				this.widget = app.views.composedExecutionPanel;
+				var composed = Ext.create("app.views.ComposedExecutionPanel", {resp: resp, executionInstance:executionInstance});
+				this.widget = composed;
 			}
-
+			this.add(this.widget);
 		}
 		,hideBottomToolbar: function(){
-			this.bottomTools.hide();
+//			this.bottomTools.hide();
 		}
 		,showBottomToolbar: function(){
-			this.bottomTools.show();
+//			this.bottomTools.show();
 		}
 		,
 		setExecutionInstance : function (executionInstance) {
 			this.widget.setExecutionInstance(executionInstance);
 		}
-
-		, setWidgetComposed: function(resp, type, panel){
-			if(type == 'table'){
-				panel.setTableWidget(resp, true);
-			}
-			if(type == 'chart'){
-				panel.setChartWidget(resp, true);
-			}
-			if(type == 'composed'){
-				panel.setComposedWidget(resp, true);
-			}
+		,
+		getExecutionInstance : function () {
+			return this.widget.getExecutionInstance();
 		}
 		,
 		propagateCrossNavigationEvent : function(sourcePanel, params, targetDoc) {
@@ -84,9 +64,7 @@
 			  console.log('propagating cross nav');
 
 			
-			  Ext.dispatch({
-				  controller: app.controllers.executionController,
-				  action: 'getDocumentInfoForCrossNavExecution',
+			  app.controllers.executionController.getDocumentInfoForCrossNavExecution({
 				  targetDoc: targetDoc,
 				  params: params
 			  });

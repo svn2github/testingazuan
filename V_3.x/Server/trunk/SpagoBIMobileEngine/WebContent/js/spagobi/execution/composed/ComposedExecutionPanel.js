@@ -6,34 +6,43 @@
  
   
  
-  
- 
- app.views.ComposedExecutionPanel = Ext.extend(app.views.WidgetPanel,
-
-		{
-	    scroll: 'vertical',
-	     fullscreen: true
-		, initComponent: function (options)	{
-
-			console.log('init composed execution');
-
-			app.views.ComposedExecutionPanel.superclass.initComponent.apply(this, arguments);
-
+Ext.define('app.views.ComposedExecutionPanel',{
+		extend: 'app.views.WidgetPanel',
+		config:{
+			executionInstance: null,
+			scroll: 'vertical',
+		    fullscreen: true,
+			subdocuments: [],
+			subDocumentNumber: 0,
+			subDocumentsToUpdate:[],
+			subDocumentsToUpdateNumber:0,
+			/**
+			 * @private
+			 * true if at least on navigation has been executed
+			 */
+			crossNavigated: false
+			
 		},
-		setComposedWidget: function(resp){
-			var title = resp.title.value;
+		
+		constructor: function(config){
+			Ext.apply(this,config);
+			this.callParent();
+			this.addEvents("updatedOneDocument");
+		},
+		
+		
+		initialize: function(){
+			var title = this.resp.title.value;
 			
-			var documentsList = resp.documents.docs;
-			var documentWidth = resp.documents.totWidth;
-			var documentHeight = resp.documents.totHeight;
+			var documentsList = this.resp.documents.docs;
+			var documentWidth = this.resp.documents.totWidth;
+			var documentHeight = this.resp.documents.totHeight;
 			
-			var items = new Array();
-			
-			var executionInstance = Ext.apply({}, resp.executionInstance);
-			
+			var executionInstance = Ext.apply({}, this.resp.executionInstance);
+			this.setSubDocumentNumber(documentsList.length);
 			if (documentsList != undefined && documentsList != null) {
 				for (var i = 0; i < documentsList.length; i++) {
-					var subDocumentPanel = this.buildPanel(documentsList[i]);
+					//var subDocumentPanel = this.buildPanel(documentsList[i]);
 					var mainDocumentParameters = executionInstance.PARAMETERS;
 					var subDocumentDefaultParameters = documentsList[i].IN_PARAMETERS;
 					var subDocumentParameters = Ext.apply(subDocumentDefaultParameters, mainDocumentParameters);
@@ -41,106 +50,158 @@
 					subDocumentExecutionInstance.PARAMETERS = subDocumentParameters;
 					subDocumentExecutionInstance.IS_FROM_COMPOSED = true;
 					subDocumentExecutionInstance.ROLE = executionInstance.ROLE;
-					app.controllers.composedExecutionController.executeSubDocument(subDocumentExecutionInstance, subDocumentPanel);
-					items.push(subDocumentPanel);
+					subDocumentExecutionInstance.position = i;
+					app.controllers.composedExecutionController.executeSubDocument(subDocumentExecutionInstance, this);
 				}
 				///to add a slider configuration property
-				if(resp.slider && resp.slider.name){
-					this.addSlider(items, resp.slider);
+				if(this.resp.slider && this.resp.slider.name){
+					this.addSlider(this.resp.slider);
 				}
 			}
-
-			var composedDocumentContainerConfig = {
-				fullscreen: true,
-	            bodyMargin: '20px 50px 100px 50px',
-	            items: items
-	        };
-//
-//			if(documentWidth && documentHeight){
-//				composedDocumentContainerConfig.height =documentHeight;
-//				composedDocumentContainerConfig.width =documentWidth;
-//			}
-			
-			var composedDocumentContainer =	new Ext.Panel(composedDocumentContainerConfig);
-			app.views.composed =  composedDocumentContainer;
-			this.add(app.views.composed);
+			this.on("updatedOneDocument",this.updateOneDocument,this);
 
 		},
 		
-		buildPanel: function(config){
+		addWidgetComposed: function(resp, type, composedComponentOptions){
 
 			var panel;
-			config = Ext.apply(config,{style: 'float: left;', bodyMargin:10
-				, IS_FROM_COMPOSED: true
-				});
+			var thisPanel = this;
 			
-			if (config.TYPE_CODE == Sbi.constants.documenttype.chart) {
-				panel = new app.views.ChartExecutionPanel(config);
+			//Builds teh subdocument panel
+			resp.config = Ext.apply(resp.config||{},{IS_FROM_COMPOSED: true});
+			resp.config = Ext.apply(resp.config||{},composedComponentOptions.executionInstance||{});
+			
+			if (type == "chart") {
+				panel = Ext.create("app.views.ChartExecutionPanel",{resp: resp, fromcomposition: true, executionInstance: composedComponentOptions.executionInstance, parentDocument:this});
 			} else {
-				panel = new app.views.TableExecutionPanel(config);
+				panel = Ext.create("app.views.TableExecutionPanel",{resp: resp, fromcomposition: true, executionInstance: composedComponentOptions.executionInstance, parentDocument:this});
 			}
 			
 			panel.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
-			
-			/*
-			 * with this instruction, panel is not passed properly
-			 */
-			//this.on('execCrossNavigation', Ext.createDelegate(this.execCrossNavigationHandler, this, [panel], true));
-			
-			this.on('execCrossNavigation', function (sourcePanel, paramsArray) {
-				console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
-				if (panel != sourcePanel) {
-					var params = {};
-					for (var i = 0 ; i < paramsArray.length ; i++) {
-						var aParam = paramsArray[i];
-						params[aParam.name] = aParam.value;
-					}
-					app.controllers.composedExecutionController.refreshSubDocument(panel, params);
-				}
-			}, this);
-			
-			return panel;
-		}
-		
-		,
-		propagateCrossNavigationEvent : function(sourcePanel, params) {
-			
-			console.log('app.views.ComposedExecutionPanel:execCrossNavigation: IN');
-			
-			this.fireEvent('execCrossNavigation', sourcePanel, params);
-		}
-		
-		,
-		execCrossNavigationHandler : function(sourcePanel, params, targetPanel) {
-			
-			console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
-			
-			app.controllers.executionController.executeTemplate({
-				executionInstance : targetPanel.getExecutionInstance()
-				, parameters : null
-			}, panel);
-			
-		}
-		, addSlider: function(items, slider){
+					
+			var height;
+			var width;
+			if(resp.config && resp.config.height){
+				height =resp.config.height;
+			}
+			if(resp.config && resp.config.width ){
+				width =resp.config.width;
+			}
 
-			this.slider = new app.views.Slider({
-				sliderAttributes: slider
+			var style = panel.getStyle();
+			if(!style){
+				style = "";
+			}
+			style = style+" float: left;";
+			style = style+" width:"+ width+"; height:"+height;			
+
+			panel.setStyle(style);
+
+			//if its the first execution the subdocument is added to the composition
+			if(!this.getCrossNavigated()){
+				this.add(panel);
+				this.getSubdocuments().push(panel);
+			}else{
+				//if the document is refreshed we refresh it
+				this.fireEvent("updatedOneDocument",panel,composedComponentOptions.executionInstance.position);
+			}
+		}
+		
+		,
+		propagateCrossNavigationEventForSlider : function(paramsArray) {
+			console.log('app.views.ComposedExecutionPanel:execCrossNavigation: IN');
+			this.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
+			this.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
+			this.setCrossNavigated(true);
+			
+			for(var i=0; i<(this.getSubdocuments()).length; i++){
+				var panel = (this.getSubdocuments())[i];
+				console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
+
+				var params = {};
+				for (var j = 0 ; j < paramsArray.length ; j++) {
+					var aParam = paramsArray[j];
+					params[aParam.name] = aParam.value;
+				}
+
+				app.controllers.composedExecutionController.refreshSubDocument(panel, this, params);
+			}
+		},
+		
+		propagateCrossNavigationEvent : function(sourcePanel, paramsArray) {
+			console.log('app.views.ComposedExecutionPanel:execCrossNavigation: IN');
+			sourcePanel.parentDocument.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
+			sourcePanel.parentDocument.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
+			this.setCrossNavigated(true);
+			
+			for(var i=0; i<(sourcePanel.parentDocument.getSubdocuments()).length; i++){
+				var panel = (sourcePanel.parentDocument.getSubdocuments())[i];
+				console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
+
+				var params = {};
+				for (var j = 0 ; j < paramsArray.length ; j++) {
+					var aParam = paramsArray[j];
+					params[aParam.name] = aParam.value;
+				}
+
+				app.controllers.composedExecutionController.refreshSubDocument(panel,  sourcePanel.parentDocument, params);
+			}
+		},
+		
+		updateOneDocument:function(panel,position){
+			//update the document in the temp list
+			(this.getSubDocumentsToUpdate())[position] = panel;
+			this.setSubDocumentsToUpdateNumber(this.getSubDocumentsToUpdateNumber()-1);
+			//if all the subdocuments has benen updated 
+			if(this.getSubDocumentsToUpdateNumber()==0){				
+				this.removeAll();
+				for(var i=0; i<this.getSubDocumentNumber();i++){
+					this.insert(i, this.getSubDocumentsToUpdate()[i]);//add them to the composition
+				}
+			}
+		}
+//		,
+//		execCrossNavigationHandler : function(sourcePanel, params, targetPanel) {
+//			
+//			console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
+//			
+//			app.controllers.executionController.executeTemplate({
+//				executionInstance : targetPanel.getExecutionInstance()
+//				, parameters : null
+//			}, panel);
+//			
+//		}
+		, addSlider: function(slider){
+
+			var sliderComp = Ext.create('app.views.Slider',{
+				sliderAttributes: slider,
+				composedDoc: this
 			});
 			var minLbl = {
-	            xtype: 'component',
-	            style: 'float: left; width: 7%',
-	            cls: 'sliderLbl',
+	            xtype: 'label',
+	            style: 'width: 7%;color: blue;text-align: right; margin-top:5px;',
 	            html: slider.minValue
 	        };
 			var maxLbl = {
-		            xtype: 'component',
-		            style: 'float: left; width: 7%',
-		            cls: 'sliderLbl',
+		            xtype: 'label',
+		           style: 'width: 7%;color: blue; margin-top:5px;',
 		            html: slider.maxValue
 		    };
-			items.push(minLbl);
-			items.push(this.slider);
-			items.push(maxLbl);
+			
+			
+			this.sliderToolbar = new Ext.Toolbar({
+                xtype: 'toolbar',
+                docked: 'bottom',
+                height:30,
+                ui: 'neutral',
+                items : [minLbl, 
+                         sliderComp,
+                         {xtype:"spacer"},
+                         maxLbl]
+            });
+			
+			this.add(this.sliderToolbar);
+
 		}
 		
 });

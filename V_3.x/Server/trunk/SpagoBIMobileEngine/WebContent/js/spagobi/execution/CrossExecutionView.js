@@ -5,11 +5,9 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
   
- 
-  
- 
-app.views.CrossExecutionView = Ext.extend(Ext.Panel,
-	{
+Ext.define('app.views.CrossExecutionView',{
+	extend:'Ext.Panel',
+
 	fullscreen: true,
 	layout: 'card',	
     sortable: false,
@@ -24,11 +22,7 @@ app.views.CrossExecutionView = Ext.extend(Ext.Panel,
 		    iconCls: 'reply',			    
 		    text: 'Home',
             handler: function () {
-        		Ext.dispatch({
-                    controller: app.controllers.mobileController,
-                    action: 'backToBrowser',
-                    fromCross: true
-        		});
+        		app.controllers.mobileController.backToBrowser({fromCross: true});
 
             }};
 		this.toolbarForCross = new Ext.Toolbar({xtype: 'toolbar',
@@ -65,10 +59,7 @@ app.views.CrossExecutionView = Ext.extend(Ext.Panel,
 			    text: objectLabel,
 			    disabled: true,
 	            handler: function () {
-	  			Ext.dispatch({
-					  controller: app.controllers.mobileController,
-					  action: 'getRoles',
-					  label: objectLabel, 
+	  			app.controllers.mobileController.getRoles({  label: objectLabel, 
 					  id: objectId,
 					  typeCode: typeCode,
 					  parameters: parameters,

@@ -4,95 +4,107 @@
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
-  
+ /**
+ * @authors
+ * - Alberto Ghedin (alberto.ghedin@eng.it)
+ * - Monica Franceschini (monica.franceschini@eng.it)  
+ */
  
   
  
- app.views.LoginView = Ext.extend(Ext.Panel, {
-	fullscreen : true,
-	userIDField : null,
-	pwdField : null,
-	loginUrl : null,
-	style: 'background-color: #747474;',
-	initComponent : function() {
+Ext.define('app.views.LoginView',{
+	extend: 'Ext.Panel',
+	config:{
+		fullscreen : true,
+		userIDField : null,
+		pwdField : null,
+		loginUrl : null,
+		layout:"fit",
+		style: 'background-color: #747474;'		
 
-		Sbi.config = {};
+	},
+	
+	initialize : function() {
 
-		var url = {
-			host : hostGlobal,
-			port : portGlobal
-
-		};
-
-		var executionContext = {};
-
-		Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
-			baseUrl : url
-
-		});
 		this.loginUrl = Sbi.config.serviceRegistry.getServiceUrl({
 			serviceName : 'LOGIN_ACTION'
 		});
-		console.log(this.loginUrl);
+		console.log("Log in URL: "+ this.loginUrl);
+		
+		app.views.form = Ext.create('Ext.form.FormPanel',{
+				floating : true,
+	            modal: true,
+	            centered: true,
+	            width: 320,
+	            height: 270,
+	            submitOnAction: true,
+	            ui: 'dark',
+	            
+                listeners:{
+                	submit: function( f, result, e, eOpts ) {
+                		alert('bu');
+                	}
+                },
+	            items:[
+	                   {
+	                       xtype : 'fieldset',
+	                       cls: 'login-fieldset-top',
+	                       items:[{
+		               			xtype : 'textfield',
+		            			name : 'userID',
+		            			//label : 'Username',
+		            			placeHolder : 'Username',
+		            			useClearIcon : true
+		
+		                    },{
+		            			xtype : 'passwordfield',
+		            			name : 'password',
+		            			//label : 'Password',
+		            			placeHolder : 'Password',
+		            			useClearIcon : false
+		                    }]
+	                   		,dockedItems:[]      
+	                    	   
+	                   }
+	                   ,
+	                    {
+	                        docked: 'bottom',
+	                        xtype: 'toolbar',
+	                        height:30,
+	                        style:'padding : 7px;',
+	                        //ui: 'neutral',
+	                        items:[
+	                            {
+	                            	xtype: 'spacer'
+	                            },
+	                        	{
+	                                text: 'Login',
+	                                ui: 'confirm',
+	                                handler: function(){
+	                                	app.views.loginView.doSubmit(app.views.form.getValues());
+	                                }
+	                            }
+	                        ]
+	                    }
+	            ],
+	            scrollable: true
+	        });
+		this.add(app.views.form);
 
-		this.userIDField = new Ext.form.Text({
-			xtype : 'textfield',
-			name : 'userID',
-			//label : 'Username',
-			placeHolder : 'Username',
-			useClearIcon : true
-		});
-
-		this.pwdField = new Ext.form.Password({
-			xtype : 'passwordfield',
-			name : 'password',
-			//label : 'Password',
-			placeHolder : 'Password',
-			useClearIcon : false
-		});
-
-		//creates form panel
-
-		app.views.form = new Ext.form.FormPanel({
-			autoRender : true,
-			floating : true,
-			modal : true,
-			centered : true,
-			hideOnMaskTap : false,
-			height : 280,
-			width : 320,
-			items : [ {
-				xtype : 'fieldset',
-				cls: 'login-fieldset-top',
-				items : [ this.userIDField, this.pwdField ]
-			} ],
-
-			dockedItems : [ {
-				xtype : 'toolbar',
-				dock : 'bottom',
-				scope : this,
-				items : [ {xtype: 'spacer'},{
-					text : 'Login',
-					ui : 'confirm',
-					scope : this,
-					handler : this.doSubmit
-				} ]
-			} ]
-		});
-		app.views.form.on('beforesubmit', function() {
+		app.views.form.on('submit', function() {
 			this.doSubmit();
 			return false;
 		}, this);
-		app.views.form.show();
-		//this.add(this.form);
-		app.views.LoginView.superclass.initComponent.apply(this, arguments);
+		
+
+		this.callParent(this, arguments);
 
 	}
 
-	, doSubmit : function() {
+	, doSubmit : function(user) {
 
-		var userid = app.views.loginView.userIDField.getValue();
-		var pwd = app.views.loginView.pwdField.getValue();
+		var userid =  user.userID;
+		var pwd = user.password;
 		Ext.Ajax.request({
 			url : app.views.loginView.loginUrl,
 			scope : this,
@@ -115,21 +127,15 @@
 					if (esito == 'userhome') {
 						app.views.form.hide();
 						localStorage.setItem('app.views.launched', 'true');
-						Ext.dispatch({
-							controller : app.controllers.mobileController,
-							action : 'login',
-							animation : {
-								type : 'slide',
-								direction : 'right'
-							}
-						});
+						app.controllers.mobileController.login();
+					
 						
 					} else {
-						Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn).doLayout();
+						Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn);
 						return;
 					}
 				} else {
-					Ext.Msg.alert('','<p style="color:#fff;font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn).doLayout();
+					Ext.Msg.alert('','<p style="color:#fff;font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn);
 					return;
 				}
 			}

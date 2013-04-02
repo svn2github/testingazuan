@@ -5,88 +5,101 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
   
- 
-  
- 
- app.views.TableExecutionPanel = Ext.extend(app.views.WidgetPanel,
-
-		{
-	    scroll: 'vertical'
-	    , initComponent: function (options)	{
-
-			console.log('init table execution');
-
-
-			app.views.TableExecutionPanel.superclass.initComponent.apply(this, arguments);
+Ext.define('app.views.TableExecutionPanel',{
+		extend: 'app.views.WidgetPanel',
+		config:{
+			//fullscreen:true,
+			scroll: 'vertical',
+			executionInstance: null,
+			//,style:'border: 3px solid red; background-color: #fff;',
 			
-			if(this.IS_FROM_COMPOSED){
-				if(app.views.execution.loadingMaskForExec != undefined){
-					app.views.execution.loadingMaskForExec.hide();
-				}
-				this.on('afterlayout',this.showLoadingMask,this);
-				
-			}
-			this.addEvents('execCrossNavigation');
 			
+		},
 
+		constructor : function(config) {
+			Ext.apply(this,config);
+			this.callParent(arguments);
+		
+		},
+		
+		initialize : function() {
+			this.setTableWidget(this.resp, this.fromcomposition,this.fromCross );
+			console.log('init table execution');		
 		}
 
+
 		,setTableWidget: function(resp, fromcomposition, fromCross){
-
-		      var store = new Ext.data.Store({
-		     		root: 'values'
-		     		, fields: resp.features.fields
-		      		, pageSize: 5
-		      		, data: resp
-		     		, proxy: {
-			              type: 'memory',	              
-			              reader: {
-			                  type: 'json',
-			                  root: 'values',	 
-			                  totalProperty: "total",    
-			                  totalCount: 'total'
-			              }
-		          }
-		      });
-
-		      store.load();
-		      var toolbarForTable = new Ext.Toolbar({
-					xtype : "toolbar",
-					dock  : "top",						
-					title : resp.features.title.value,
-					style:  resp.features.title.style,
-					layout: 'hbox',
-					autoDestroy : true
-	                
-				});
+			console.log(resp.features.fields);
+			console.log(resp);
+			Ext.define("ListFields", {
+			    extend: "Ext.data.Model",
+			    config: {
+			        fields: resp.features.fields
+			    }
+			});
+			
+			var store = Ext.create("Ext.data.Store", {
+			    storeId: "ListStore",
+			    model: "ListFields",
+			    data : resp.values
+			});
+		     
+//		      
+//		      var toolbarForTable = new Ext.Toolbar({
+//				xtype : "toolbar",
+//				dock  : "top",						
+//				title : resp.features.title.value,
+//				style:  resp.features.title.style,
+//				layout: 'hbox',
+//				autoDestroy : true
+//              
+//		      });
 		      
-		      	var tbConfig = {
-					store       : store,
-					multiSelect : false,
-					dockedItems: [toolbarForTable],
-					conditions  : resp.features.conditions,
-					colModel    : resp.features.columns,
-					scope: this,
-			    	listeners: { 
-			    		tap: { 
-			    			element : 'el',
-			    			fn : function(e) {
-		      		 			var crossParams = new Array();
-	      						var target = e.target;
-	      						
-	      						this.setCrossNavigation(resp, target, crossParams);
-	      						if(crossParams.length != 0){
-		      						var targetDoc;
-		      						if(resp.features != undefined && resp.features.drill != undefined){
-			      						targetDoc = this.setTargetDocument(resp);		      						
-		      						}
-		      						this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+		      var tbConfig = {
+		    	title       : 'Prova',
+		        store       : store,
+				multiSelect : false,
+//				dockedItems: [toolbarForTable],
+				conditions  : resp.features.conditions,
+				columns    : resp.features.columns,
+				//features    : resp.features,
+				features : [
+				            {
+				                ftype    : 'Ext.ux.touch.grid.feature.Sorter',
+				                launchFn : 'initialize'
+				            },
+				            {
+				                ftype    : 'Ext.ux.touch.grid.feature.Editable',
+				                launchFn : 'initialize'
+				            }
+				        ],
+				scope: this,
+		    	listeners: { 
+		    		tap: { 
+		    			element : 'element',
+		    			fn : function(e) {
+	      		 			var crossParams = new Array();
+    						var target = e.target;
+    						
+    						this.setCrossNavigation(resp, target, crossParams);
+    						if(crossParams.length != 0){
+	      						var targetDoc;
+	      						if(resp.features != undefined && resp.features.drill != undefined){
+		      						targetDoc = this.setTargetDocument(resp);		      						
 	      						}
-    						},
-    						scope : this
-  						}
-		      		}
-		      	};
+	      						this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+    						}
+						},
+						scope : this
+					}
+	      		}
+	      	};
+		      
+		      app.views.table =new Ext.ux.touch.grid.List(tbConfig);
+
+		      app.views.table.applyStore(store);
+		      this.add(app.views.table);
+
 				if(fromcomposition || fromCross){
 					tbConfig.width='100%';
 					tbConfig.height='100%';
@@ -97,26 +110,27 @@
 
 				}
 				
-				app.views.table = new Ext.ux.TouchGridPanel(tbConfig);
+				app.views.table = new Ext.ux.touch.grid.List(tbConfig);
 				if(fromcomposition){
 					  this.insert(0, app.views.table);
-				      this.doLayout();
+
 				}
 				if(fromCross){
 					var r = new Ext.Panel({
 						style:'z-index:100;',
 						height:'100%',
-						items: [app.views.table]
+						//items: [app.views.table]
 						        
 					});
+					r.add(app.views.table);
 					
 					this.insert(0, r);
-					r.doLayout();
-					this.doLayout();
+
 				}
 				if(this.IS_FROM_COMPOSED){
 					this.loadingMask.hide();
 				}
+
 		}
 
 		, setCrossNavigation: function(resp, target, crossParams){
@@ -124,20 +138,16 @@
 			var drill = resp.features.drill;
 			if(drill != null && drill != undefined){
 				var params = drill.params;
-				
-				//captures event e on target				
-				var textCell = target.innerText;
+
 				var row = target.parentNode;
-				var cellsOfRow = row.cells;
-				var rowIdx = row.rowIndex;
-				var attributes = target.attributes;
-				var columns= new Array();
+				var cellsOfRow = row.children;
+
 				var colValues = {};
 				for(a=0; a<cellsOfRow.length; a++){
 					var cell = cellsOfRow[a];
 					for(i = 0; i<cell.attributes.length; i++){
 						var at = cell.attributes[i];
-						if(at.name == 'mapping'){
+						if(at.name == 'dataindex'){
 							var nCol=at.value;
 							colValues[nCol] = cell.textContent;
 							

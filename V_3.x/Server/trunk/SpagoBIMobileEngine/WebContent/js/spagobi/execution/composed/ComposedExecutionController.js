@@ -5,25 +5,25 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
   
- 
-  
- 
- app.controllers.ComposedExecutionController = Ext.extend(Ext.Controller,{
+Ext.define('app.controllers.ComposedExecutionController',{
 	
-	executeSubDocument : function(executionInstance, subDocumentPanel){
+	extend:'Ext.app.Controller',
+	config:{},
+	constructor: function(){},
+	executeSubDocument : function(executionInstance, parentDocumentPanel){
 		var option = {};
 		option.executionInstance = executionInstance;
-		app.controllers.executionController.executeTemplate(option, subDocumentPanel);
+		app.controllers.executionController.executeTemplate(option, parentDocumentPanel);
 	}
 
 	,
-	refreshSubDocument : function (panel, newParameters) {
+	refreshSubDocument : function (panel, parentDocumentPanel, newParameters) {
 		
 		console.log('app.controllers.ComposedExecutionController:refreshSubDocument: IN');
 		
 		var executionInstance = panel.getExecutionInstance();
 		var oldParameters = executionInstance.PARAMETERS;
-		if (app.controllers.composedExecutionController.parametersHaveBeenChanged(oldParameters, newParameters)) {
+	//	if (app.controllers.composedExecutionController.parametersHaveBeenChanged(oldParameters, newParameters)) {
 			console.log('app.controllers.ComposedExecutionController:refreshSubDocument: parameters have been changed');
 			
 			var newDocumentParameters = app.controllers.composedExecutionController.applyNewParameters(newParameters, oldParameters);
@@ -33,8 +33,13 @@
 			app.controllers.executionController.executeTemplate({
 				executionInstance : executionInstance
 				, parameters : newDocumentParameters
-			}, panel);
-		}
+			}, parentDocumentPanel);
+
+//		}else{
+//			//if no parameters of the document have been updated 
+//			//
+//			parentDocumentPanel.updateOneDocument(panel,executionInstance.position);
+//		}
 	}
 	
 	,

@@ -4,13 +4,11 @@
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
-  
- 
-  
- 
- app.controllers.ParametersController = Ext.extend(Ext.Controller,{
-
-	init: function()  {
+Ext.define('app.controllers.ParametersController',{
+	extend: 'Ext.app.Controller',
+	config:{
+	},
+	constructor: function()  {
 		var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 
 		this.services = new Array();
@@ -59,38 +57,30 @@
 					};
 					
 					if(responseJson==undefined || responseJson==null || responseJson.length==0  ){
-						  Ext.dispatch({
-							  controller: app.controllers.executionController,
-							  action: 'executeTemplate',
-							  executionInstance: executionInstance
-						  });
+						  app.controllers.executionController.executeTemplate({executionInstance: executionInstance});
 					}else{
 						if(isFromCross){
 
 							var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
-							app.controllers.mobileController.destroyExecutionView();
+							//app.controllers.mobileController.destroyExecutionView();
 							var paramsToBeFilled = parameters.slice(0);
 							var paramsFromCrossFilled= this.fillParametersFromCross(parameters, paramsFromCross, paramsToBeFilled);
-							if(paramsToBeFilled.length == 0){
+							if(paramsToBeFilled.length == paramsFromCrossFilled.length){
 								//execute now!
 								executionInstance.PARAMETERS = this.fromArrayToObject(paramsFromCross);
 								executionInstance.isFromCross = true;
-								Ext.dispatch({
-									  controller: app.controllers.executionController,
-									  action: 'executeTemplate',
-									  executionInstance: executionInstance
-								});
+								controller: app.controllers.executionController.executeTemplate({executionInstance: executionInstance});
 							}else{
-								app.views.parameters = new app.views.ParametersView();
+//								app.views.parameters = Ext.create("app.views.ParametersView");
 								app.views.parameters.refresh(paramsToBeFilled);
 								app.views.viewport.add(app.views.parameters);
-								app.views.viewport.setActiveItem(app.views.parameters);
+								app.views.viewport.goParameters();
 
 							}
 						}else{
 							var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
 							app.views.parameters.refresh(parameters);
-							app.views.viewport.setActiveItem(app.views.parameters);
+							app.views.viewport.goParameters();
 						}
 					}
 				}
@@ -113,18 +103,18 @@
 	}
 	
 	, fillParametersFromCross: function(parametersNeeded, parametersFromCross, paramsToBeFilled){
-		var parametersFilled = {};
+		var parametersFilled = new Array();
 		if(parametersNeeded != null && parametersNeeded != undefined && 
 				parametersFromCross != null && parametersFromCross != undefined	){
 		
 			for(i =0; i<parametersNeeded.length; i++){
 				var p = parametersNeeded[i];
-				var nm = p.name;
+				var nm = p.getName();
 				for(k =0; k<parametersFromCross.length; k++){
 					var pCross = parametersFromCross[k];
 					if(nm == pCross.name && pCross.value != null && pCross.value != ''){
-						parametersFilled[nm] = pCross.value;
-						paramsToBeFilled.remove(p);
+						parametersFilled.push(pCross);
+						//paramsToBeFilled.remove(p);
 						p.value = pCross.value;
 						break;
 					}
@@ -158,8 +148,11 @@
 				, name : p.id
 				// , allowBlank: !p.mandatory
 		};
-	
-		if(p.selectionType === 'COMBOBOX' || p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST') {
+		var defaultValue= null;
+		if(p.defaultValues && p.defaultValues.length != 0){
+			defaultValue = p.defaultValues[0].value;
+		}
+		if(p.selectionType === 'COMBOBOX' || p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST' || p.selectionType === 'LOOKUP') {
 	
 			//get the metadata of the parameter 
 			var metadata = p.metaData.metaData;
@@ -169,7 +162,7 @@
 				, MODE: 'complete'
 			}, executionInstance);
 	
-			var store = new Ext.data.Store({
+			var store = Ext.create("Ext.data.Store",{
 				proxy: {
 					type: 'ajax',
 					url: this.services['getParameterValueForExecutionService'],
@@ -194,28 +187,31 @@
 			if(p.mandatory && p.mandatory == true){
 				mandatory = true;
 			}
-			field = new Ext.ux.touch.CustomSelectField(Ext.apply({
+
+			field = Ext.create("Ext.field.Select",(Ext.apply({
 				valueField : metadata.valueField,
 				displayField : metadata.displayField,
 				placeHolder: 'Selezionare un valore...',
 		        useClearIcon: true,
 		        required: mandatory,
 				store : store
-			},baseConfig));
+			},baseConfig)));
 
 			field.on('focus', function(f) {
 				f.setValue(' ');
 			}, this);
 		} else { 
 			if(p.type === 'DATE' || p.type ==='DATE_DEFAULT') {		
-				field = new Ext.form.DatePicker(baseConfig);
+				field = Ext.create("Ext.field.DatePicker",baseConfig);
 	
 			} else if(p.type === 'NUMBER') {
-				field = new Ext.form.Number(baseConfig);
+				field =  Ext.create("Ext.field.Number",baseConfig);
 			} else {	
-				field = new Ext.form.Text(baseConfig);
+				field =  Ext.create("Ext.field.Text",baseConfig);
+				
 			}			
-		}		
+		}	
+		field.setValue(defaultValue);
 		return field;
 	}
 	
@@ -226,15 +222,15 @@
 			
 			try{
 				var field = this.fields[i];
-				state[field.name + '_field_visible_description'] = '';
+				state[field.getName() + '_field_visible_description'] = '';
 				var value = field.getValue();
 				if(value==undefined || value==null){
-					state[field.name] = '';
+					state[field.getName()] = '';
 				}else{
-					state[field.name] = value;
+					state[field.getName()] = value;
 				}
 			}catch (e){
-				state[field.name] = '';
+				state[field.getName()] = '';
 			}
 	
 		}

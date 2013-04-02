@@ -5,12 +5,12 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
   
- 
-  
- 
- app.controllers.ExecutionController = Ext.extend(Ext.Controller,{
-	
-	init: function()  {
+Ext.define('app.controllers.ExecutionController',{
+
+	extend:'Ext.app.Controller',
+	config:{
+	},
+	constructor: function()  {
 		var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 		
 		this.services = new Array();
@@ -47,9 +47,7 @@
 	        		var doc = resp['document'];
 	        		if(doc != undefined && doc != null){
 		        		var type = doc.typeCode;
-			  			Ext.dispatch({
-							  controller: app.controllers.mobileController,
-							  action: 'getRoles',
+			  			app.controllers.mobileController.getRoles({
 							  id: doc.id,
 							  label: doc.label, 
 							  engine: doc.engine, 
@@ -65,7 +63,7 @@
 			} 
 	    });
 	}
-	, executeTemplate: function(option, documentContainerPanel){
+	, executeTemplate: function(option, documentContainerPanel,refresh){
 
 		var executionInstance = option.executionInstance;
 		var typeCode =  executionInstance.TYPE_CODE;
@@ -85,7 +83,7 @@
 		        success: function(response, opts) {
 		        	if(response!=undefined && response!=null && response.responseText!=undefined && response.responseText!=null){
 		        		var resp = Ext.decode(response.responseText);
-		        		this.createWidgetExecution(resp, 'table', documentContainerPanel, executionInstance);
+		        		this.createWidgetExecution(resp, 'table', documentContainerPanel, executionInstance, option,refresh);
 		        	}
 		        }
 				,failure: function(response, options) {
@@ -102,7 +100,7 @@
 		        success: function(response, opts) {
 		        	if(response!=undefined && response!=null && response.responseText!=undefined && response.responseText!=null){
 		        		var resp = Ext.decode(response.responseText);
-		        		this.createWidgetExecution(resp, 'chart', documentContainerPanel, executionInstance);
+		        		this.createWidgetExecution(resp, 'chart', documentContainerPanel, executionInstance, option,refresh);
 		        	}
 		        }
 				,failure: function(response, options) {
@@ -120,7 +118,7 @@
 		        	if(response!=undefined && response!=null && response.responseText!=undefined && response.responseText!=null){
 		        		var resp = Ext.decode(response.responseText);
 		        		resp.executionInstance = params;
-		        		this.createWidgetExecution(resp,  'composed', null, executionInstance);
+		        		this.createWidgetExecution(resp,  'composed', null, executionInstance, option, refresh);
 		        	}
 		        }
 				,failure: function(response, options) {
@@ -130,31 +128,40 @@
 		}
 	}
 
-	, simpleNavigationManagement: function(resp, type, executionInstance){
-		app.controllers.mobileController.destroyExecutionView();
-		if(app.views.execView == undefined || app.views.execView == null){
-			app.views.execView = new app.views.ExecutionView({parameters: executionInstance.PARAMETERS});
-		}
-	    var viewport = app.views.viewport;	    
-	    viewport.add(app.views.execView);	
-	    app.views.execView.showBottomToolbar();
-	    app.views.execView.setWidget(resp, type);
-		app.views.execView.bottomTools.setBreadCrumb(executionInstance.OBJECT_LABEL, 
-				executionInstance.OBJECT_ID,
-				executionInstance.TYPE_CODE,
-				executionInstance.PARAMETERS);
-	    viewport.setActiveItem(app.views.execView, { type: 'slide', direction: 'left' });
-	}
+//	, simpleNavigationManagement: function(resp, type, executionInstance){
+//		
+//		app.views.executionContainer.clearExecutions();
+//		app.views.executionContainer.addExecution(resp, type, false, executionInstance);
+//		app.controllers.mobileController.destroyExecutionView();
+//		if(app.views.execView == undefined || app.views.execView == null){
+//			//app.views.execView = Ext.create("app.views.ExecutionView",{parameters: executionInstance.PARAMETERS});
+//			app.views.execView = Ext.create("app.views.ExecutionView");
+//		}
+//		app.views.execView.setWidget(resp, type, false, executionInstance);
+//	    var viewport = app.views.viewport;	    
+//	    viewport.add(app.views.execView);	
+////	    app.views.execView.showBottomToolbar();
+//	    app.views.execView.setWidget(resp, type, false, executionInstance);
+////		app.views.execView.bottomTools.setBreadCrumb(executionInstance.OBJECT_LABEL, 
+////				executionInstance.OBJECT_ID,
+////				executionInstance.TYPE_CODE,
+////				executionInstance.PARAMETERS);
+//	    		app.views.viewport.goExecution();
+//	}
 
-	, createWidgetExecution: function(resp, type, documentContainerPanel, executionInstance){
+	, createWidgetExecution: function(resp, type, documentContainerPanel, executionInstance, composedComponentOptions,refresh){
 
 		if (documentContainerPanel == undefined || documentContainerPanel == null) {
-
-			this.simpleNavigationManagement(resp, type, executionInstance);
-			app.views.execView.setExecutionInstance(executionInstance);
+			if(!executionInstance.isFromCross && !refresh){
+				app.views.executionContainer.clearExecutions();
+			}
+			app.views.executionContainer.addExecution(resp, type, executionInstance.isFromCross, executionInstance,refresh);
+			app.views.viewport.goExecution();
+//			this.simpleNavigationManagement(resp, type, executionInstance);
+			//app.views.execView.setExecutionInstance(executionInstance);
 		} else {
-			app.views.execView.setWidgetComposed(resp, type, documentContainerPanel);
-			documentContainerPanel.setExecutionInstance(executionInstance);
+			documentContainerPanel.addWidgetComposed(resp, type, composedComponentOptions);
+			//documentContainerPanel.setExecutionInstance(executionInstance);
 		}
 		
 		

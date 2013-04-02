@@ -6,18 +6,18 @@
  
   
  
-  
- 
- app.views.ParametersView = Ext.extend(
-		Ext.Panel,
-		{
+Ext.define('app.views.ParametersView',{
+		extend: 'Ext.Panel',
+		config:{
 			fullscreen: true,
-			style: 'background-color: #747474;',
+			style: 'background-color: #747474;'
+		},
 
 
-			initComponent : function() {
+
+			initialize : function() {
 				this.html = '  ';
-				app.views.ParametersView.superclass.initComponent.apply(this, arguments);
+				this.callParent(arguments);
 
 			}
 
@@ -25,16 +25,15 @@
 
 				this.removeAll();
 	
-				var fieldset = new Ext.form.FieldSet({
+				var fieldset = Ext.create("Ext.form.FieldSet",{
 						title : 'Document Parameters',
 						xtype : 'fieldset',
-
 						items : items
 				});
 
 
 				
-				var formPanel = new Ext.form.FormPanel({
+				var formPanel = Ext.create("Ext.form.FormPanel",{
 						
 					autoRender : true,
 					floating : true,
@@ -44,10 +43,10 @@
 					width : 600,
 					scroll: 'vertical',
 					hideOnMaskTap : false,
-					items: [fieldset],
-					dockedItems : [ {
+					items: [fieldset, {
 						xtype : 'toolbar',
-						dock : 'bottom',
+						docked : 'bottom',
+						height: 30,
 						defaults : {
 							ui : 'plain',
 							iconMask : true
@@ -62,12 +61,7 @@
 						        	 iconCls : 'reply',
 						        	 text : 'Home',
 						        	 handler : function() {
-						        		 Ext
-						        		 .dispatch({
-						        			 controller : app.controllers.mobileController,
-						        			 action : 'backToBrowser'
-						        		 });
-
+						        		 app.controllers.mobileController.backToBrowser();
 						        	 }
 						         },
 						         {
@@ -77,9 +71,7 @@
 						        	 handler : function() {
 						        		 var executionInstance = app.controllers.parametersController.executionInstance;
 						        		 executionInstance.PARAMETERS = app.controllers.parametersController.getFormState();
-						        		 Ext.dispatch({
-						        			 controller : app.controllers.executionController,
-						        			 action : 'executeTemplate',
+						        		 app.controllers.executionController.executeTemplate({
 						        			 executionInstance : executionInstance
 						        		 });
 						        	 }
@@ -88,9 +80,7 @@
 					} ]
 				});
 				formPanel.show();
-				this.insert(0,formPanel);
-
-				this.doLayout();
+				this.add(formPanel);
 
 				
 

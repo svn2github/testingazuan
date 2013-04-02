@@ -34,6 +34,7 @@
   * 
   * - Andrea Gioia (andrea.gioia@eng.it)
   * - Monica Franceschini (monica.franceschini@eng.it)
+  * - Alberto Ghedin (alberto.ghedin@eng.it)
   */
 
 
@@ -61,7 +62,7 @@ Sbi.exception.ExceptionHandler = function(){
         			if(content.errors !== undefined && content.errors.length > 0) {
         				errMessage = '';
         				if (content.errors[0].message === 'session-expired') {
-        					errMessage = LN('sbi.qbe.sessionexpired.msg');
+        					errMessage = 'Session Expired';
         				} else {
 	        				for(var i = 0; i < content.errors.length; i++) {
 	        					if(content.errors[i].message != '' && content.errors[i].message != undefined){
@@ -88,14 +89,14 @@ Sbi.exception.ExceptionHandler = function(){
         	var m = errMessage || 'Generic error';
         	var t = title || 'Error';
         	
-        	Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn).doLayout();
+        	(Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn)).setHeight(250);
         },
         
         showWarningMessage : function(errMessage, title) {
         	var m = errMessage || 'Generic warning';
         	var t = title || 'Warning';
         	
-        	Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn).doLayout();
+        	(Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn)).setHeight(250);
 
         },
         
@@ -103,7 +104,14 @@ Sbi.exception.ExceptionHandler = function(){
         	var m = errMessage || 'Info';
         	var t = title || 'Info';
         	
-        	Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn).doLayout();
+        	(Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,Ext.emptyFn)).setHeight(250);
+        }
+        
+        ,showConfirmMessage : function(errMessage, title, fn) {
+        	var m = errMessage || '';
+        	var t = title || 'Confirm';
+        	
+        	(Ext.Msg.confirm('','<p style="color:#fff; font-weight: bold;">'+t+'</p><br/>'+m,fn)).setHeight(250);
         }
 
 	};

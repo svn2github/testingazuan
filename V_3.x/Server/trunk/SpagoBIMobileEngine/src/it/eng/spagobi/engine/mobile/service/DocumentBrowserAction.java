@@ -21,6 +21,8 @@ import org.json.JSONObject;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -54,7 +56,7 @@ public class DocumentBrowserAction extends AbstractBaseHttpAction{
 		
 		
 		List functionalities;
-		List objects;
+		List objects = new ArrayList<BIObject>();
 		boolean isRoot = false;
 		boolean isHome = false;
 		
@@ -69,7 +71,7 @@ public class DocumentBrowserAction extends AbstractBaseHttpAction{
 			
 			//getting default folder (root)
 			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
-			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID) ||functID.equalsIgnoreCase("0")||functID.equalsIgnoreCase("root")){
+			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID) ||functID.equalsIgnoreCase("0")||functID.equalsIgnoreCase("ext-data-treestore-1-root")){
 				isRoot = true;
 				functID = String.valueOf(rootFunct.getId());
 			}else if (functID.equalsIgnoreCase(rootFunct.getId().toString())) {
@@ -82,7 +84,7 @@ public class DocumentBrowserAction extends AbstractBaseHttpAction{
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			///case user not logged provides a fake store
-			if(profile == null || functID.equals("root")){
+			if(profile == null || functID.equals("ext-data-treestore-1-root")){
 
 				JSONObject foldersAndDocsResponseJSON =  createJSONResponse(new JSONArray("[{name: Document Browser}]"), new JSONArray());
 				
@@ -96,27 +98,23 @@ public class DocumentBrowserAction extends AbstractBaseHttpAction{
 					
 				}
 			}
-			
-			LowFunctionality targetFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(functID), false);
-			isHome = "USER_FUNCT".equalsIgnoreCase( targetFunct.getCodType() );
 
-			List tmpObjects = DAOFactory.getBIObjectDAO().loadBIObjects(Integer.valueOf(functID), profile,isHome);
-			objects = new ArrayList();
-			if(tmpObjects != null) {
-                for(Iterator it = tmpObjects.iterator(); it.hasNext();) {
-                    BIObject obj = (BIObject)it.next();
-                    if(ObjectsAccessVerifier.checkProfileVisibility(obj, profile))
-                    	objects.add(obj);
-                }
-			}
+			objects = fillInnerDocuments(functID, isHome,profile);
+			
 			HttpServletRequest httpRequest = getHttpRequest();
 			MessageBuilder m = new MessageBuilder();
 			Locale locale = m.getLocale(httpRequest);
-			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects ,locale);
+			
 
 
 			functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(Integer.valueOf(functID), false, profile);
+			if(functionalities!= null && functionalities.size() ==1){
+				Integer lonelyFolderId = ((LowFunctionality)functionalities.get(0)).getId();
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(lonelyFolderId, false, profile);
+				objects = fillInnerDocuments(lonelyFolderId.toString(), isHome,profile);
+			}
 			
+			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects ,locale);
 			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities,locale );			
 			
 			JSONObject foldersAndDocsResponseJSON =  createJSONResponse(foldersJSON, documentsJSON);
@@ -138,6 +136,21 @@ public class DocumentBrowserAction extends AbstractBaseHttpAction{
 		}
 	}
 
+	
+	private ArrayList fillInnerDocuments(String functID, boolean isHome, IEngUserProfile profile) throws NumberFormatException, EMFUserError, EMFInternalError{
+		LowFunctionality targetFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(functID), false);
+		isHome = "USER_FUNCT".equalsIgnoreCase( targetFunct.getCodType() );
+		List tmpObjects = DAOFactory.getBIObjectDAO().loadBIObjects(Integer.valueOf(functID), profile, isHome);
+		ArrayList objects = new ArrayList();
+		if(tmpObjects != null) {
+            for(Iterator it = tmpObjects.iterator(); it.hasNext();) {
+                BIObject obj = (BIObject)it.next();
+                if(ObjectsAccessVerifier.checkProfileVisibility(obj, profile))
+                	objects.add(obj);
+            }
+		}
+		return objects;
+	}
 
 	/**
 	 * Creates a json object with children document and folders

@@ -19,7 +19,7 @@ Ext.define('app.views.DocumentBrowser',{
 		listeners: {
 			itemtap:function( item, list, index, target, record, e, eOpts ){
 				var button = this.getBackButtomFromToolbar();
-				if(button){
+				if(!record.typeCode && button){
 					button.show();
 					button.setText(record.data.name);
 				}

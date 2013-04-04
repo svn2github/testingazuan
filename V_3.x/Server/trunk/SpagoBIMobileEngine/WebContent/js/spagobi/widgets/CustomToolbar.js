@@ -143,7 +143,7 @@ Ext.define('app.views.CustomToolbar', {
     	}
     }
     
-    ,setViewModality: function(modality){
+    ,setViewModality: function(modality, submodality){
     	this.updateToolbar(this.toolbarConfiguration[modality]);
     	this.modality = modality;
     }
@@ -153,7 +153,7 @@ Ext.define('app.views.CustomToolbar', {
      * Its important that visibleButtonsList is a proper subset of this.visibleButtons
      *  
      */
-    ,updateToolbar: function(visibleButtonsList){
+    ,updateToolbar: function(visibleButtonsList, submodality){
     	if(visibleButtonsList && visibleButtonsList.length>0){
     		this.show();
     		var j=0;
@@ -164,7 +164,7 @@ Ext.define('app.views.CustomToolbar', {
         		}
         		if(j<this.visibleButtons.length && this.visibleButtons[j].btnKey==visibleButtonsList[i]){
         			this.visibleButtons[j].show();
-        			if(this.visibleButtons[j].btnKey=="documentbrowser"){
+        			if(this.visibleButtons[j].btnKey=="documentbrowser" && submodality!="refresh"){
         				this.visibleButtons[j].hide();
         			}
         			j++;

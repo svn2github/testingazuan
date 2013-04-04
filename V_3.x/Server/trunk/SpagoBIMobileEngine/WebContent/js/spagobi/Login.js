@@ -131,11 +131,11 @@ Ext.define('app.views.LoginView',{
 					
 						
 					} else {
-						Ext.Msg.alert('','<p style="color:#fff; font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn);
+						Sbi.exception.ExceptionHandler.showErrorMessage('<p style="color:#fff; font-weight: bold;">Login</p><br/>Authentication failure!');
 						return;
 					}
 				} else {
-					Ext.Msg.alert('','<p style="color:#fff;font-weight: bold;">Login</p><br/>Authentication failure!',Ext.emptyFn);
+					Sbi.exception.ExceptionHandler.showErrorMessage('<p style="color:#fff; font-weight: bold;">Login</p><br/>Authentication failure!');
 					return;
 				}
 			}

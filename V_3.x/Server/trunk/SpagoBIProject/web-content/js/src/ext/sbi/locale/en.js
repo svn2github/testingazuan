@@ -43,6 +43,7 @@ Sbi.locale.ln['sbi.generic.update2'] = 'Update';
 Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'No items selected';
 Sbi.locale.ln['sbi.kpi.trend.title'] = 'Trend for resource ';
 Sbi.locale.ln['sbi.kpi.trend.nodata'] = 'No data found! Select the specific node to view the data trend. ';
+Sbi.locale.ln['sbi.generic.filter'] = 'Filter';
 
 //Fields
 Sbi.locale.ln['sbi.generic.name'] = 'Name';
@@ -81,6 +82,7 @@ Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confirm item delete?';
 Sbi.locale.ln['sbi.generic.confirmChangeNode'] = 'There are unsaved changes. Confirm root node change?';
 Sbi.locale.ln['sbi.generic.deleteKpi'] = 'Delete Kpi';
 Sbi.locale.ln['sbi.generic.attributes'] = 'Attributes';
+Sbi.locale.ln['sbi.generic.select.toclone'] = 'Select the row to clone';
 //END Generic messages
 
 //START List Detail messages
@@ -580,7 +582,23 @@ Sbi.locale.ln['sbi.lookup.Contains'] = 'Contains';
 Sbi.locale.ln['sbi.lookup.StartsWith'] = 'Starts with';
 Sbi.locale.ln['sbi.lookup.EndsWith'] = 'Ends with';
 
+Sbi.locale.ln['sbi.datasource.label']= 'Label';
+Sbi.locale.ln['sbi.datasource.description']= 'Description';
+Sbi.locale.ln['sbi.datasource.driver']= 'Driver';
+Sbi.locale.ln['sbi.datasource.dialect']= 'Dialect';
+Sbi.locale.ln['sbi.datasource.multischema']= 'Multischema';
+Sbi.locale.ln['sbi.datasource.multischema.attribute']= 'Multischema Attribute';
+Sbi.locale.ln['sbi.datasource.type']= 'Type';
+Sbi.locale.ln['sbi.datasource.type.jndi']= 'Jndi';
+Sbi.locale.ln['sbi.datasource.type.jdbc']= 'Jdbc';
+Sbi.locale.ln['sbi.datasource.type.jndi.name']= 'Jndi Name';
+Sbi.locale.ln['sbi.datasource.type.jdbc.user']= 'User';
+Sbi.locale.ln['sbi.datasource.type.jdbc.url']= 'URL';
+Sbi.locale.ln['sbi.datasource.type.jdbc.password']= 'Password';
 Sbi.locale.ln['sbi.datasource.jndiname.info']= 'For the data source configuration you should specify the connection pool configured inside the application server. For example: <ul><li>Tomcat :  java:comp/env/jdbc/foodmart</li> <li> JBoss:     java:comp/env/jdbc/foodmart</li></ul>';
+Sbi.locale.ln['sbi.datasource.saved']= 'Data source correctly saved';
+Sbi.locale.ln['sbi.datasource.deleted']= 'Data source correctly deleted';
+Sbi.locale.ln['sbi.datasource.validation.error']= 'There is some error in the data source configuration. Check the marked fields.';
 
 //Datasets
 Sbi.locale.ln['sbi.ds.clearOldVersion'] = 'Clear All';
@@ -797,7 +815,15 @@ Sbi.locale.ln['sbi.behavioural.lov.back']='Back'
 Sbi.locale.ln['sbi.behavioural.delete']='Delete'
 	
 
-
-
-
+//===================================================================
+//ERRORS 
+//===================================================================
+		
+//GENERIC
+Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not send responce to client"
+	
+//DATASOURCE	
+Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of teh data source can not be null"
+Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use"
+Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label"
 	

@@ -70,6 +70,8 @@ Sbi.locale.ln['sbi.generic.confirmDelete'] = 'Confermi l\'eliminazione dell\'ogg
 Sbi.locale.ln['sbi.generic.confirmChangeNode'] = 'Ci sono delle modifiche non salvate. Confermare il cambio di root?';
 Sbi.locale.ln['sbi.generic.deleteKpi'] = 'Elimina Kpi';
 Sbi.locale.ln['sbi.generic.attributes'] = 'Attributi';
+Sbi.locale.ln['sbi.generic.select.toclone'] = 'Selezionare la riga da clonare';
+Sbi.locale.ln['sbi.generic.filter'] = 'Filter';
 //END Generic messages
 
 //START List Detail messages
@@ -573,7 +575,42 @@ Sbi.locale.ln['sbi.ds.pars'] = 'Attributi di Profilo disponibili';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.title'] = 'Ricalcolare i metadati?';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.msg'] = 'Vuoi che il sistema ricalcoli i metadati del dataset? (il dataset verrà rieseguito dal sistema; si consiglia di effettuare questa operazione nel caso in cui il dataset sia stato alterato in modo significativo)';
 
+Sbi.locale.ln['sbi.datasource.label']= 'Etichetta';
+Sbi.locale.ln['sbi.datasource.description']= 'Descrizione';
+Sbi.locale.ln['sbi.datasource.driver']= 'Driver';
+Sbi.locale.ln['sbi.datasource.dialect']= 'Dialetto';
+Sbi.locale.ln['sbi.datasource.multischema']= 'Multischema';
+Sbi.locale.ln['sbi.datasource.multischema.attribute']= 'Attributo Multischema';
+Sbi.locale.ln['sbi.datasource.type']= 'Tipo';
+Sbi.locale.ln['sbi.datasource.type.jndi']= 'Jndi';
+Sbi.locale.ln['sbi.datasource.type.jdbc']= 'Jdbc';
+Sbi.locale.ln['sbi.datasource.type.jndi.name']= 'Nome Jndi';
+Sbi.locale.ln['sbi.datasource.type.jdbc.url']= 'URL';
+Sbi.locale.ln['sbi.datasource.type.jdbc.user']= 'User';
+Sbi.locale.ln['sbi.datasource.type.jdbc.password']= 'Password';
 Sbi.locale.ln['sbi.datasource.jndiname.info']= 'Per la configurazione del data source JNDI è necessario inserire il nome del connection pool configurato all\'interno dell\'application server. Esempi: <ul><li>Tomcat :  java:comp/env/jdbc/foodmart</li> <li> JBoss:     java:comp/env/jdbc/foodmart</li></ul>';
+Sbi.locale.ln['sbi.datasource.saved']= 'Data source salvato correttamente';
+Sbi.locale.ln['sbi.datasource.deleted']= 'Data source cancellato correttamente';
+Sbi.locale.ln['sbi.datasource.validation.error']= 'Ci sono degli errori di validazione. Controlla i campi marcati.';
+
+Sbi.locale.ln['sbi.datasource.label']= 'Etichetta';
+Sbi.locale.ln['sbi.datasource.description']= 'Descrizione';
+Sbi.locale.ln['sbi.datasource.driver']= 'Driver';
+Sbi.locale.ln['sbi.datasource.dialect']= 'Dialetto';
+Sbi.locale.ln['sbi.datasource.multischema']= 'Multischema';
+Sbi.locale.ln['sbi.datasource.multischema.attribute']= 'Attributo Multischema';
+Sbi.locale.ln['sbi.datasource.type']= 'Tipo';
+Sbi.locale.ln['sbi.datasource.type.jndi']= 'Jndi';
+Sbi.locale.ln['sbi.datasource.type.jdbc']= 'Jdbc';
+Sbi.locale.ln['sbi.datasource.type.jndi.name']= 'Nome Jndi';
+Sbi.locale.ln['sbi.datasource.type.jdbc.url']= 'URL';
+Sbi.locale.ln['sbi.datasource.type.jdbc.user']= 'User';
+Sbi.locale.ln['sbi.datasource.type.jdbc.password']= 'Password';
+Sbi.locale.ln['sbi.datasource.jndiname.info']= 'Per la configurazione del data source JNDI è necessario inserire il nome del connection pool configurato all\'interno dell\'application server. Esempi: <ul><li>Tomcat :  java:comp/env/jdbc/foodmart</li> <li> JBoss:     java:comp/env/jdbc/foodmart</li></ul>';
+Sbi.locale.ln['sbi.datasource.saved']= 'Data source salvato correttamente';
+Sbi.locale.ln['sbi.datasource.deleted']= 'Data source cancellato correttamente';
+Sbi.locale.ln['sbi.datasource.validation.error']= 'Ci sono degli errori di validazione. Controlla i campi marcati.';
+
 //===================================================================
 //MESSAGE BOX BUTTONS
 //===================================================================
@@ -665,3 +702,5 @@ Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.dateIn']='Data di
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.fileName']='Nome del file';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']='Elimina versioni non attive';
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.isactive'] = 'Attivo';
+
+

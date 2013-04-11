@@ -14,6 +14,7 @@ import it.eng.spagobi.commons.SingletonConfig;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.serializer.DataSetJSONSerializer;
 import it.eng.spagobi.commons.serializer.SerializerFactory;
 import it.eng.spagobi.commons.services.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.utilities.AuditLogUtilities;
@@ -196,6 +197,8 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 						attributesResponseSuccessJSON.put("userIn", dsDetailSaved.getUserIn());
 						attributesResponseSuccessJSON.put("versId", dsDetailSaved.getDsHId());
 						attributesResponseSuccessJSON.put("versNum", dsDetailSaved.getVersionNum());
+						attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
+						
 					}
 					AuditLogUtilities.updateAudit(getHttpRequest(),  profile, "DATA_SET.ADD",logParam , "OK");
 					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );

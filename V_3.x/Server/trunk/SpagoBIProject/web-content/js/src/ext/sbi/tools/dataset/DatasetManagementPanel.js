@@ -1608,6 +1608,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 												var userIn = content.userIn;
 												var versId = content.versId;
 												var versNum = content.versNum;
+												var meta = content.meta;
 
 												if (isNewRec
 														&& itemId != null
@@ -1617,12 +1618,15 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 													var length = this.mainElementsStore.getCount();
 													for(var i=0;i<length;i++){
 											   	        var tempRecord = this.mainElementsStore.getAt(i);
+											   	        tempRecord.set('meta',meta);
+											   	        this.rowselModel.selectLastRow(true);
 											   	        if(tempRecord.data.id==0){
 											   	        	tempRecord.set('id',itemId);
 											   	        	tempRecord.set('dateIn',dateIn);
 											   	        	tempRecord.set('userIn',userIn);
 											   	        	tempRecord.set('versId',versId);
 											   	        	tempRecord.set('versNum',versNum);
+											   	        	
 											   	        	tempRecord.commit();
 											   	        	this.detailFieldId.setValue(itemId);
 											   	        	this.detailFieldUserIn.setValue(userIn);

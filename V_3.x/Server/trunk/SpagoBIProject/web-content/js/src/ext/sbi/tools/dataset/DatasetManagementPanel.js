@@ -84,6 +84,7 @@ Sbi.tools.dataset.DatasetManagementPanel = function(config) {
 		this.activateTransfForm(null, rec, row);
 		this.activateDsVersionsGrid(null, rec, row);
 		this.activateDsTestTab(this.datasetTestTab);
+		this.manageDatasetFieldMetadataGrid.loadItems(rec.get("meta"), rec);
 		this.setValues(rec);
 		// destroy the qbe query builder, if existing
 		if (this.qbeDataSetBuilder != null) {
@@ -115,6 +116,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 	datasetTestTab : null,
 	manageParsGrid : null,
 	manageDsVersionsGrid : null,
+	manageDatasetFieldMetadataGrid: null,
 	newRecord: null,
 	detailFieldId: null,
 	detailFieldUserIn: null,
@@ -284,7 +286,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						userIn: values['userIn'],
 						dateIn: values['dateIn'],
 						versNum: values['versNum'],
-						versId: values['versId']
+						versId: values['versId'],
+						meta: values['meta']
 					};
 					arrayPars = this.parsGrid.getParametersValues();
 					if (arrayPars) {
@@ -319,7 +322,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 							'pivotColName', 'pivotColValue',
 							'pivotRowName', 'pivotIsNumRows', 'dsVersions',
 							'qbeSQLQuery', 'qbeJSONQuery', 'qbeDataSource',
-							'qbeDatamarts',	'userIn','dateIn','versNum','versId'];
+							'qbeDatamarts',	'userIn','dateIn','versNum','versId','meta'];
 
 					this.configurationObject.emptyRecToAdd = new Ext.data.Record(
 							{	id : null,
@@ -331,7 +334,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 								trasfTypeCd : '', pivotColName : '', pivotColValue : '',
 								pivotRowName : '', pivotIsNumRows : '', qbeSQLQuery: '',
 								qbeJSONQuery: '', qbeDataSource: '', qbeDatamarts: '',
-								dsVersions : [], userIn:'',dateIn:'',versNum:'',versId:''
+								dsVersions : [], userIn:'',dateIn:'',versNum:'',versId:'',meta:[]
 							});
 
 					this.configurationObject.gridColItems = [ {
@@ -362,6 +365,16 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 					this.configurationObject.listTitle = LN('sbi.ds.listTitle');
 					
 					var tbButtonsArray = new Array();
+					
+					this.tbFieldsMetadataButton = new Ext.Toolbar.Button({
+		 	            text: LN('sbi.ds.metadata'),
+		 	            iconCls: 'icon-metadata',
+		 	            handler: this.fieldsMetadata,
+		 	            width: 30,
+		 	            scope: this
+		 	            });
+					tbButtonsArray.push(this.tbFieldsMetadataButton);
+					
 					this.tbProfAttrsButton = new Ext.Toolbar.Button({
 		 	            text: LN('sbi.ds.pars'),
 		 	            iconCls: 'icon-profattr',
@@ -413,6 +426,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						data : config.catTypeVn,
 						autoLoad : false
 					});
+					
+					
 
 					// START list of detail fields
 					this.detailFieldId = new Ext.form.TextField({
@@ -482,6 +497,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 					// END list of detail fields
 
 					var c = {};
+					this.manageDatasetFieldMetadataGrid = new Sbi.tools.ManageDatasetFieldMetadata(c);
+					
 					this.manageDsVersionsGrid = new Sbi.tools.ManageDatasetVersions(c);
 					this.manageDsVersionsGrid.addListener('verionrestored', function(version) {
 						
@@ -1306,7 +1323,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						userIn: values['userIn'],
 						dateIn: values['dateIn'],
 						versNum: values['versNum'],
-						versId: values['versId']
+						versId: values['versId'],
+						meta: values['meta']
 					});
 					return newRec;
 				}
@@ -1345,7 +1363,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						userIn: values['userIn'],
 						dateIn: values['dateIn'],
 						versNum: values['versNum'],
-						versId: values['versId']
+						versId: values['versId'],
+						meta: values['meta']
 					});
 					return newRec;
 				}	
@@ -1381,12 +1400,13 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 							userIn: values['userIn'],
 							dateIn: values['dateIn'],
 							versNum: values['versNum'],
-							versId: values['versId']
+							versId: values['versId'],
+							meta: values['meta']
 						};
 					return params;
 				}
 				
-				,updateNewRecord: function(record, values, arrayPars, customString){
+				,updateNewRecord: function(record, values, arrayPars, meta, customString){
 					record.set('label',values['label']);
 					record.set('name',values['name']);
 					record.set('description',values['description']);
@@ -1421,10 +1441,16 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 					if (arrayPars) {
 						record.set('pars',arrayPars);
 					}
-					
+					if (arrayPars) {
+						record.set('pars',arrayPars);
+					}
 					if (customString) {
 						record.set('customData',customString);
 					}
+					if (meta) {
+						record.set('meta',meta);
+					}
+
 
 					
 				}
@@ -1441,7 +1467,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 			   	    }	
 					var params = this.buildParamsToSendToServer(values);
 					var arrayPars = this.manageParsGrid.getParsArray();
-					this.updateNewRecord(record,values,arrayPars);
+					var meta = this.manageDatasetFieldMetadataGrid.getValues()
+					this.updateNewRecord(record,values,arrayPars, meta);
 					this.mainElementsStore.commitChanges();
 				}
 				
@@ -1513,9 +1540,9 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 					params.recalculateMetadata = recalculateMetadata;
 					var arrayPars = this.manageParsGrid.getParsArray();
 					var customString = this.customDataGrid.getDataString();
-					
+					var meta = this.manageDatasetFieldMetadataGrid.getValues()
 					if (idRec == 0 || idRec == null || idRec === '') {
-						this.updateNewRecord(this.newRecord,values,arrayPars, customString);
+						this.updateNewRecord(this.newRecord,values,arrayPars,meta, customString);
 						isNewRec = true;
 					}else{
 						var record;
@@ -1528,7 +1555,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 				   	        	oldType = record.get('dsTypeCd');
 							}			   
 				   	    }	
-						this.updateNewRecord(record,values,arrayPars, customString);
+						this.updateNewRecord(record,values,arrayPars,meta, customString);
 						
 						newDsVersion = new Ext.data.Record(
 								{	dsId: values['id'],
@@ -1546,6 +1573,10 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 					if (customString) {
 						params.customData = Ext.util.JSON.encode(customString);
 					}
+					if (this.manageDatasetFieldMetadataGrid) {
+						params.meta = Ext.util.JSON.encode(this.manageDatasetFieldMetadataGrid.getValues());
+					}
+					
 
 					
 					if (idRec) {
@@ -1767,6 +1798,30 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						});
 					};
 					win_info_4.show();
+			    }
+				
+				,fieldsMetadata: function() {		
+				
+					if(!this.win_info_metadata){
+						this.win_info_metadata= new Ext.Window({     				
+							layout:'fit',
+							width:360,
+							height:350,
+							closeAction:'hide',
+							autoScroll: true,
+							items: [this.manageDatasetFieldMetadataGrid]
+							,buttonAlign : 'right',
+						    buttons: [{
+								text: LN('sbi.qbe.calculatedFields.buttons.text.ok'),
+							    handler: function(){
+							    	this.manageDatasetFieldMetadataGrid.updateRecord();
+							    	this.win_info_metadata.hide();
+							    }
+						       	, scope: this
+							}]
+						});
+					};
+					this.win_info_metadata.show();
 			    }
 				
 				,profileAttrs: function() {		

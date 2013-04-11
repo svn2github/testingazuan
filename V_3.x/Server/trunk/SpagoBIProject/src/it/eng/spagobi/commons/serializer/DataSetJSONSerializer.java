@@ -118,20 +118,40 @@ public class DataSetJSONSerializer implements Serializer {
 			String meta = dsDetail.getDsMetadata();
 			if(meta!=null && !meta.equals("")){
 				SourceBean source = SourceBean.fromXMLString(meta);
-				if(source!=null && source.getName().equals("METADATALIST")){
-					List<SourceBean> rows = source.getAttributeAsList("ROWS.ROW");
-					for(int i=0; i< rows.size(); i++){
-						SourceBean row = rows.get(i);
-						String name = (String)row.getAttribute("NAME");
-						String type = (String)row.getAttribute("TYPE");
-						JSONObject jsonMeta = new JSONObject();
-						jsonMeta.put("name", name);
-						jsonMeta.put("type", type);
-						metaListJSON.put(jsonMeta);
-					}				
+				if(source!=null){
+					if(source.getName().equals("COLUMNLIST")){
+						List<SourceBean> rows = source.getAttributeAsList("COLUMN");
+						for(int i=0; i< rows.size(); i++){
+							SourceBean row = rows.get(i);
+							String name = (String)row.getAttribute("name");
+							String type = (String)row.getAttribute("TYPE");
+							String fieldType = (String)row.getAttribute("fieldType");
+							JSONObject jsonMeta = new JSONObject();
+							jsonMeta.put("name", name);
+							jsonMeta.put("type", type);
+							jsonMeta.put("fieldType", fieldType);
+							metaListJSON.put(jsonMeta);
+						}				
+					}else if(source.getName().equals("METADATALIST")){
+						List<SourceBean> rows = source.getAttributeAsList("ROWS.ROW");
+						for(int i=0; i< rows.size(); i++){
+							SourceBean row = rows.get(i);
+							String name = (String)row.getAttribute("NAME");
+							String type = (String)row.getAttribute("TYPE");
+							JSONObject jsonMeta = new JSONObject();
+							jsonMeta.put("name", name);
+							jsonMeta.put("type", type);
+							metaListJSON.put(jsonMeta);
+						}				
+					}
 				}
+				
+				
+
 			}
-			result.put(METADATA, metaListJSON);	
+			result.put(METADATA, metaListJSON);
+			
+
 			
 			JSONArray versionsListJSON = new JSONArray();
 			List<GuiDataSetDetail> nonActiveDetails = ds.getNonActiveDetails();

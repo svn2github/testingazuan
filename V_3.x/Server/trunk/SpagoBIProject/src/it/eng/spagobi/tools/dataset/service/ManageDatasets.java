@@ -44,6 +44,8 @@ import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.behaviour.UserProfileUtils;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
+import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
@@ -52,6 +54,7 @@ import it.eng.spagobi.tools.dataset.utils.DatasetMetadataParser;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+import it.eng.spagobi.utilities.json.JSONUtils;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
@@ -69,6 +72,15 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+
 
 public class ManageDatasets extends AbstractSpagoBIAction {
 
@@ -422,6 +434,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 
 			if(meta != null && !meta.equals("")){
 				dsActiveDetail.setDsMetadata(meta);
+				
 			}
 
 			
@@ -453,8 +466,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 							parametersMap = getDataSetParametersAsMap();
 							
 							IEngUserProfile profile = getUserProfile();
-							dsMetadata = getDatasetTestMetadata(ds,
-									parametersMap, profile);
+							dsMetadata = getDatasetTestMetadata(ds,	parametersMap, profile, meta);
 							LogMF.debug(logger, "Dataset executed, metadata are [{0}]", dsMetadata);
 						} else {
 							// load existing metadata
@@ -963,7 +975,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		return toReturn;
 	}
 
-	public String getDatasetTestMetadata(IDataSet dataSet, HashMap parametersFilled, IEngUserProfile profile) throws Exception {
+	public String getDatasetTestMetadata(IDataSet dataSet, HashMap parametersFilled, IEngUserProfile profile, String metadata) throws Exception {
 		logger.debug("IN");
 		String dsMetadata = null;
 
@@ -976,6 +988,26 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 			dataSet.loadData(start, limit, GeneralUtilities.getDatasetMaxResults());
 			IDataStore dataStore = dataSet.getDataStore();
 			DatasetMetadataParser dsp = new DatasetMetadataParser();
+			
+			JSONArray metadataArray = toJSONArray(metadata);
+			
+	
+
+			IMetaData metaData = dataStore.getMetaData();
+			for(int i=0; i<metaData.getFieldCount(); i++){
+				IFieldMetaData ifmd = metaData.getFieldMeta(i);
+				for(int j=0; j<metadataArray.length(); j++){
+					if(ifmd.getName().equals((metadataArray.getJSONObject(j)).getString("name"))){
+						if("MEASURE".equals((metadataArray.getJSONObject(j)).getString("fieldType"))){
+							ifmd.setFieldType(IFieldMetaData.FieldType.MEASURE);
+						}else{
+							ifmd.setFieldType(IFieldMetaData.FieldType.ATTRIBUTE);
+						}
+						break;
+					}
+				}
+			}
+
 			dsMetadata = dsp.metadataToXML(dataStore.getMetaData());
 		}
 		catch (Exception e) {
@@ -987,6 +1019,57 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		return dsMetadata;
 	}
 
+	
+	
+	public static JSONArray toJSONArray(String object)  throws JSONException, JsonMappingException, JsonParseException,IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode df = (ArrayNode) mapper.readValue(object, JsonNode.class);
+		return toJSONArray(df);
+	}
+	
+	public static JSONObject toJSONObject(String object) throws JSONException, JsonMappingException, JsonParseException,IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode df = (ObjectNode) mapper.readValue(object, JsonNode.class);
+		return toJSONObject(df);
+	}
+
+	public static JSONArray toJSONArray(ArrayNode df)  throws JSONException{
+		JSONArray toReturn = new JSONArray();
+//		ObjectMapper mapper = new ObjectMapper();
+//		ArrayNode df = (ArrayNode) mapper.readValue(object, JsonNode.class);
+		for(int i=0; i<df.size(); i++){
+			
+			toReturn.put(getValueFromJsonNode(df.get(i)));
+		}
+		return toReturn;
+	} 
+	
+	public static JSONObject toJSONObject(ObjectNode df) throws JSONException{
+		JSONObject toReturn = new JSONObject();
+		Iterator<String> namesIter = df.fieldNames();
+		while(namesIter.hasNext()){
+			String key = namesIter.next();
+			JsonNode node = df.get(key);
+			Object value = getValueFromJsonNode(node);
+			toReturn.put(key, value);
+		}
+		return toReturn;
+	} 
+	
+	public static Object getValueFromJsonNode(JsonNode node) throws JSONException{
+		
+		Object value = null;
+		if(node instanceof TextNode){
+			value = ((TextNode)(node)).textValue();
+		}else if(node instanceof ObjectNode){
+			value = toJSONObject((ObjectNode)node);
+		}else if(node instanceof ArrayNode){
+			value = toJSONArray((ArrayNode)node);
+		}
+		return value;
+	}
+	
+	
 	public JSONObject getDatasetTestResultList(IDataSet dataSet, HashMap<String, String> parametersFilled, IEngUserProfile profile) {
 		
 		JSONObject dataSetJSON;

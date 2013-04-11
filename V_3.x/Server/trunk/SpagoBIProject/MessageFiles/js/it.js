@@ -33,6 +33,7 @@ Sbi.locale.ln['sbi.generic.confirmRestore'] = 'Restore';
 //Fields
 Sbi.locale.ln['sbi.generic.name'] = 'Nome';
 Sbi.locale.ln['sbi.generic.descr'] = 'Descrizione';
+Sbi.locale.ln['sbi.generic.missing.description'] = 'Descrizione non disponibile';
 Sbi.locale.ln['sbi.generic.code'] = 'Codice';
 Sbi.locale.ln['sbi.generic.type'] = 'Tipo';
 Sbi.locale.ln['sbi.generic.label'] = 'Etichetta';
@@ -42,13 +43,22 @@ Sbi.locale.ln['sbi.generic.value'] = 'Valore';
 Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'Non è stato selezionato alcun elemento';
+Sbi.locale.ln['sbi.generic.next'] = 'Avanti >';
+Sbi.locale.ln['sbi.generic.back'] = '< Indietro';
 Sbi.locale.ln['sbi.generic.udpValues'] = 'Valori Udp';
 Sbi.locale.ln['sbi.generic.author'] = 'Autore';
 Sbi.locale.ln['sbi.generic.creationdate'] = 'Data di creazione';
-
 Sbi.locale.ln['sbi.generic.kpi'] = 'Kpi';
 Sbi.locale.ln['sbi.generic.nodetype'] = 'Tipo Nodo';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Descrizione Nodo';
+
+//search filters
+Sbi.locale.ln['sbi.generic.search.label.title'] = 'Etichetta';
+Sbi.locale.ln['sbi.generic.search.label.msg'] = 'cerca per etichetta';
+Sbi.locale.ln['sbi.generic.search.name.title'] = 'Nome';
+Sbi.locale.ln['sbi.generic.search.name.msg'] = 'cerca per nome';
+Sbi.locale.ln['sbi.generic.search.clear'] = 'Pulisci';
+
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Errore di Validazione';
 Sbi.locale.ln['sbi.generic.validation.missingName'] = 'Nome non specificato';
@@ -704,3 +714,15 @@ Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.deleteNonActive']
 Sbi.locale.ln['sbi.tools.catalogue.metamodelsversionsgridpanel.isactive'] = 'Attivo';
 
 
+//===================================================================
+//Sbi.worksheet.WorksheetFromDatasetPanel : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.nodatasetselected.msg']='Non è stato selezionato alcun dataset! Seleziona un dataset per proseguire.';
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.choosedataset.msg']='Seleziona un dataset e clicca sul pulsante Avanti ...';
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.createworksheet.msg']='... ora puoi disegnare il worksheet!';
+
+//===================================================================
+//Sbi.worksheet.WorksheetEditorIframePanelExt3 : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.saveas']='Salva come nuovo documento ...';
+Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Esporta in uno dei formati disponibili ...';

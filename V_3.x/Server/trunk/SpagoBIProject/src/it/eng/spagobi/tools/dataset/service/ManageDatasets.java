@@ -197,7 +197,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 						attributesResponseSuccessJSON.put("userIn", dsDetailSaved.getUserIn());
 						attributesResponseSuccessJSON.put("versId", dsDetailSaved.getDsHId());
 						attributesResponseSuccessJSON.put("versNum", dsDetailSaved.getVersionNum());
-						attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
+//						attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
 						
 					}
 					AuditLogUtilities.updateAudit(getHttpRequest(),  profile, "DATA_SET.ADD",logParam , "OK");
@@ -358,7 +358,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		return items;
 	}
 
-	private List<GuiGenericDataSet> getListOfGenericDatasets(IDataSetDAO dsDao) throws JSONException, EMFUserError{
+	protected List<GuiGenericDataSet> getListOfGenericDatasets(IDataSetDAO dsDao) throws JSONException, EMFUserError{
 		Integer start = getAttributeAsInteger( DataSetConstants.START );
 		Integer limit = getAttributeAsInteger( DataSetConstants.LIMIT );
 
@@ -836,7 +836,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		return ds;
 	}
 
-	private JSONObject createJSONResponse(JSONArray rows, Integer totalResNumber)
+	protected JSONObject createJSONResponse(JSONArray rows, Integer totalResNumber)
 	throws JSONException {
 		JSONObject results;
 

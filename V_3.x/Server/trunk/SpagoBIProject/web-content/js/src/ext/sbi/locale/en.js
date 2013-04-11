@@ -41,6 +41,8 @@ Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.update2'] = 'Update';
 Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'No items selected';
+Sbi.locale.ln['sbi.generic.next'] = 'Next >';
+Sbi.locale.ln['sbi.generic.back'] = '< Back';
 Sbi.locale.ln['sbi.kpi.trend.title'] = 'Trend for resource ';
 Sbi.locale.ln['sbi.kpi.trend.nodata'] = 'No data found! Select the specific node to view the data trend. ';
 Sbi.locale.ln['sbi.generic.filter'] = 'Filter';
@@ -48,6 +50,7 @@ Sbi.locale.ln['sbi.generic.filter'] = 'Filter';
 //Fields
 Sbi.locale.ln['sbi.generic.name'] = 'Name';
 Sbi.locale.ln['sbi.generic.descr'] = 'Description';
+Sbi.locale.ln['sbi.generic.missing.description'] = 'Description not available';
 Sbi.locale.ln['sbi.generic.code'] = 'Code';
 Sbi.locale.ln['sbi.generic.type'] = 'Type';
 Sbi.locale.ln['sbi.generic.label'] = 'Label';
@@ -57,10 +60,17 @@ Sbi.locale.ln['sbi.generic.value'] = 'Value';
 Sbi.locale.ln['sbi.generic.udpValues'] = 'Udp Values';
 Sbi.locale.ln['sbi.generic.author'] = 'Author';
 Sbi.locale.ln['sbi.generic.creationdate'] = 'Creation date';
-
 Sbi.locale.ln['sbi.generic.kpi'] = 'Kpi';
 Sbi.locale.ln['sbi.generic.nodetype'] = 'Node Type';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Node Description';
+
+//search filters
+Sbi.locale.ln['sbi.generic.search.label.title'] = 'Label';
+Sbi.locale.ln['sbi.generic.search.label.msg'] = 'enter label';
+Sbi.locale.ln['sbi.generic.search.name.title'] = 'Name';
+Sbi.locale.ln['sbi.generic.search.name.msg'] = 'enter name';
+Sbi.locale.ln['sbi.generic.search.clear'] = 'Clear';
+
 //Messages
 Sbi.locale.ln['sbi.generic.validationError'] = 'Validation Error';
 Sbi.locale.ln['sbi.generic.validation.missingName'] = 'Name not specified';
@@ -799,22 +809,34 @@ Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.isactive'] = 'Active';
 //BEHAVIOURAL 
 //===================================================================
 	
-Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Simple'
-Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Tree'
-Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filter'
-Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Saved'
-Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='The LOV has been successfully saved'
-Sbi.locale.ln['sbi.behavioural.lov.save']='Save'
-Sbi.locale.ln['sbi.behavioural.lov.select.type']='Select a type...'
-Sbi.locale.ln['sbi.behavioural.lov.name']='Name'
-Sbi.locale.ln['sbi.behavioural.lov.value']='Value'
-Sbi.locale.ln['sbi.behavioural.lov.description']='Description'
-Sbi.locale.ln['sbi.behavioural.lov.visible']='Visible'
-Sbi.locale.ln['sbi.behavioural.lov.test.error']='Error testing the lov'
-Sbi.locale.ln['sbi.behavioural.lov.back']='Back'
-Sbi.locale.ln['sbi.behavioural.delete']='Delete'
-	
+Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Simple';
+Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Tree';
+Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filter';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Saved';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='The LOV has been successfully saved';
+Sbi.locale.ln['sbi.behavioural.lov.save']='Save';
+Sbi.locale.ln['sbi.behavioural.lov.select.type']='Select a type...';
+Sbi.locale.ln['sbi.behavioural.lov.name']='Name';
+Sbi.locale.ln['sbi.behavioural.lov.value']='Value';
+Sbi.locale.ln['sbi.behavioural.lov.description']='Description';
+Sbi.locale.ln['sbi.behavioural.lov.visible']='Visible';
+Sbi.locale.ln['sbi.behavioural.lov.test.error']='Error testing the lov';
+Sbi.locale.ln['sbi.behavioural.lov.back']='Back';
+Sbi.locale.ln['sbi.behavioural.delete']='Delete';
 
+//===================================================================
+//Sbi.worksheet.WorksheetFromDatasetPanel : AD-HOC REPORTING
+//===================================================================
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.nodatasetselected.msg']='No dataset selected! Please select one in order to proceed.';
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.choosedataset.msg']='Please selected a dataset to work with and click on Next';
+Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.createworksheet.msg']='... now you can design your worksheet! In order to change dataset, click on Back';
+
+//===================================================================
+//Sbi.worksheet.WorksheetEditorIframePanelExt3 : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.saveas']='Save as new document ...';
+Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Export into one of the available formats ...';
+	
 //===================================================================
 //ERRORS 
 //===================================================================
@@ -826,4 +848,5 @@ Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not sen
 Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of teh data source can not be null"
 Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use"
 Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label"
+	
 	

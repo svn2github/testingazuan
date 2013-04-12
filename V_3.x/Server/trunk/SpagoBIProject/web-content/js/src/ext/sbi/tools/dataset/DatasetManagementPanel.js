@@ -1618,7 +1618,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 													var length = this.mainElementsStore.getCount();
 													for(var i=0;i<length;i++){
 											   	        var tempRecord = this.mainElementsStore.getAt(i);
-											   	        tempRecord.set('meta',meta);
+											   	       
 											   	        this.rowselModel.selectLastRow(true);
 											   	        if(tempRecord.data.id==0){
 											   	        	tempRecord.set('id',itemId);
@@ -1626,7 +1626,6 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 											   	        	tempRecord.set('userIn',userIn);
 											   	        	tempRecord.set('versId',versId);
 											   	        	tempRecord.set('versNum',versNum);
-											   	        	
 											   	        	tempRecord.commit();
 											   	        	this.detailFieldId.setValue(itemId);
 											   	        	this.detailFieldUserIn.setValue(userIn);
@@ -1644,10 +1643,8 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 													}
 												}
 												this.mainElementsStore.commitChanges();
-												if (isNewRec
-														&& itemId != null
-														&& itemId !== '') {
-													this.rowselModel.selectLastRow(true);
+												if (isNewRec) {
+													this.rowselModel.selectLastRow();
 												}
 
 												Ext.MessageBox

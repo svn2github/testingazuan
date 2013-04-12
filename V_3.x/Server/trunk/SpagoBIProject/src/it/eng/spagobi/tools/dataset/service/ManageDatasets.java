@@ -197,7 +197,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 						attributesResponseSuccessJSON.put("userIn", dsDetailSaved.getUserIn());
 						attributesResponseSuccessJSON.put("versId", dsDetailSaved.getDsHId());
 						attributesResponseSuccessJSON.put("versNum", dsDetailSaved.getVersionNum());
-//						attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
+						attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
 						
 					}
 					AuditLogUtilities.updateAudit(getHttpRequest(),  profile, "DATA_SET.ADD",logParam , "OK");

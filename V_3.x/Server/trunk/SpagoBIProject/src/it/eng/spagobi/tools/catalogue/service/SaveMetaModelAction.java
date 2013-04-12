@@ -72,7 +72,7 @@ public class SaveMetaModelAction extends AbstractSpagoBIAction {
 					logger.debug("Model [" + model + "] inserted");
 				} else {
 					MetaModel existing = dao.loadMetaModelByName(model.getName());
-					if (!existing.getId().equals(model.getId())) {
+					if (existing != null && !existing.getId().equals(model.getId())) {
 						logger.debug("A meta model with name already exists");
 						throw new SpagoBIServiceException(SERVICE_NAME, "A meta model with name already exists");
 					}

@@ -41,6 +41,7 @@ Sbi.worksheet.DatasetsListPanel = function(config) {
 	var defaultSettings = {
 		frame : true
 		, pagingSize : 15
+		, keyPressedDelay : 400
 	};
 		
 	if (Sbi.settings && Sbi.settings.worksheet && Sbi.settings.worksheet.datasetslistpanel) {
@@ -72,8 +73,8 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 	
 	datasetsStore : null
 	, datasetsGrid : null
-	, labelFilterInput : null
-	, nameFilterInput : null
+	, searchInput : null
+	, keyPressedDelay : null
 	
 	,
 	init : function () {
@@ -107,29 +108,18 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 	        , items : this.extraButtons
 		});
 		
-		this.labelFilterInput = new Ext.form.TextField({
-			emptyText: LN('sbi.generic.search.label.msg')
+		this.searchInput = new Ext.form.TextField({
+			emptyText: LN('sbi.generic.search.msg')
 			, enableKeyEvents : true
 			, listeners : {
-				keyup : this.filterStore
+				keyup : this.keyupHandler
 				, scope: this
 			 }
 		});
 		
-		this.nameFilterInput = new Ext.form.TextField({
-			emptyText: LN('sbi.generic.search.name.msg')
-			, enableKeyEvents : true
-			, listeners : {
-				keyup : this.filterStore
-				, scope: this
-			}
-		});
-		
 		var toolbar =  new Ext.Toolbar([
-		    {xtype: 'tbtext', text: LN('sbi.generic.search.label.title'), style: {'padding-left': 20}}
-			, this.labelFilterInput
-			, {xtype: 'tbtext', text: LN('sbi.generic.search.name.title'), style: {'padding-left': 20}}
-			, this.nameFilterInput
+		    {xtype: 'tbtext', text: LN('sbi.generic.search.title'), style: {'padding-left': 20}}
+			, this.searchInput
 			, {xtype: 'tbspacer', width: 30}
 			, {
 				iconCls : 'icon-clear'
@@ -143,30 +133,67 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 		    store: this.datasetsStore
 		    , tbar : toolbar
 		    , columns : [
-		        {header: LN('sbi.generic.label'), dataIndex: 'label', renderer: function (value) {return '<b>' + value + '</b>';}}
-		        , {header: LN('sbi.generic.name'), dataIndex: 'name', renderer: function (value) {return '<b>' + value + '</b>';}}
-		        , {header: LN('sbi.generic.type'), dataIndex : 'dsTypeCd'}
-		        , {header: LN('sbi.generic.author'), dataIndex : 'userIn'}
+		        {header: LN('sbi.generic.label'), dataIndex: 'label', scope : this, renderer: function (value) {return '<b>' + this.highlightSearchString(value) + '</b>';}}
+		        , {header: LN('sbi.generic.name'), dataIndex: 'name', scope : this, renderer: function (value) {return '<b>' + this.highlightSearchString(value) + '</b>';}}
+		        , {header: LN('sbi.generic.type'), dataIndex : 'dsTypeCd', scope : this, renderer: this.highlightSearchString }
+		        , {header: LN('sbi.generic.author'), dataIndex : 'userIn', scope : this, renderer: this.highlightSearchString }
 		    ]
 		    , viewConfig : {
 		        forceFit : true
 	            , enableRowBody : true
-	            , showPreview : true
-	            , getRowClass : function(record, rowIndex, p, store){
-	                if (this.showPreview) {
-	                	var description = record.data.description;
-	                    p.body = (description == null || description == '') ? 
-	                    		'<p class="x-grid-empty">[' + LN('sbi.generic.missing.description') + ']</p>'
-	                    		: '<p class="x-grid3-cell-inner">' + description + '</p>';
-	                    return 'x-grid3-row-expanded';
-	                }
-	                return 'x-grid3-row-collapsed';
-	            }
+	            , getRowClass : this.getRowClass.createDelegate(this)
+				, scope : this
 		    }
 		    , sm : new Ext.grid.RowSelectionModel({singleSelect:true})
             , bbar : pagingBar
 		});
 		
+	}
+
+	,
+	getRowClass : function(record, rowIndex, p, store) {
+    	var description = record.data.description;
+        p.body = (description == null || description == '') ? 
+        		'<p class="x-grid-empty">[' + LN('sbi.generic.missing.description') + ']</p>'
+        		: '<p class="x-grid3-cell-inner">' + this.highlightSearchString(description) + '</p>';
+        return 'x-grid3-row-expanded';
+    }
+
+	,
+	keyupHandler : function () {
+	    if (this.keyPressedTimeOut) {
+	        clearTimeout(this.keyPressedTimeOut);
+	    }           
+	    this.keyPressedTimeOut = this.filterStore.defer(this.keyPressedDelay, this);
+	}
+
+	,
+	highlightSearchString : function (value) {
+		var searchString = this.searchInput.getValue().toUpperCase();
+		if (value != undefined && value != null && searchString != '') {
+			return this.highlightSearchStringInternal(value, 0, searchString);
+		}
+		return value;
+	}
+
+	,
+	/**
+	 * @Private
+	 */
+	highlightSearchStringInternal: function (value, startIndex, searchString) {
+        var startPosition = value.toLowerCase().indexOf(searchString.toLowerCase(), startIndex);
+        if (startPosition >= 0 ) {
+            var prefix = "";
+            if (startPosition > 0 ) {
+                prefix = value.substring(0, startPosition);
+            }
+            var filterSpan = "<span class='x-livesearch-match'>" + value.substring(startPosition, startPosition + searchString.length) + "</span>";
+            var suffix = value.substring(startPosition + searchString.length);
+            var newValue = prefix + filterSpan + suffix;
+            return this.highlightSearchStringInternal(newValue, startPosition + filterSpan.length, searchString);
+        } else {
+        	return value;
+        }
 	}
 
 	,
@@ -177,21 +204,18 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 	
 	,
 	filterStore : function () {
-		var label = this.labelFilterInput.getValue().toUpperCase();
-		var name = this.nameFilterInput.getValue().toUpperCase();
-		var filters = {};
-		if (label !== '') {
-			filters['label'] = label;
-		}
-		if (name !== '') {
-			filters['name'] = name;
+		var searchString = this.searchInput.getValue().toUpperCase();
+		var filter = {};
+		if (searchString !== '') {
+			filter.filterString = searchString;
+			filter.columnsToFilter = ['label', 'name', 'description', 'dsTypeCd', 'userIn'];
 		}
 		this.datasetsStore.load(
 			{
 				params : {
 					start: 0
 					, limit: this.pagingSize
-					, filters : filters
+					, filter : filter
 				}
 			}
 		);
@@ -199,9 +223,8 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 	
 	,
 	clearFilterForm : function () {
-		this.labelFilterInput.setValue('');
-		this.nameFilterInput.setValue('');
-		this.datasetsStore.load({params : {start: 0, limit: this.pagingSize, filters: {}}});
+		this.searchInput.setValue('');
+		this.datasetsStore.load({params : {start: 0, limit: this.pagingSize, filter: {}}});
 	}
 
 });

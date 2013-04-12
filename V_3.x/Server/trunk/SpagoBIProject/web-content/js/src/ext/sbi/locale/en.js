@@ -66,10 +66,8 @@ Sbi.locale.ln['sbi.generic.nodetype'] = 'Node Type';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Node Description';
 
 //search filters
-Sbi.locale.ln['sbi.generic.search.label.title'] = 'Label';
-Sbi.locale.ln['sbi.generic.search.label.msg'] = 'enter label';
-Sbi.locale.ln['sbi.generic.search.name.title'] = 'Name';
-Sbi.locale.ln['sbi.generic.search.name.msg'] = 'enter name';
+Sbi.locale.ln['sbi.generic.search.title'] = 'Search';
+Sbi.locale.ln['sbi.generic.search.msg'] = 'enter search string';
 Sbi.locale.ln['sbi.generic.search.clear'] = 'Clear';
 
 //Messages

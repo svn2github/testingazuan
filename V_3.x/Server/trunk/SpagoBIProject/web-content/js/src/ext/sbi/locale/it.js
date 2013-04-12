@@ -66,11 +66,9 @@ Sbi.locale.ln['sbi.generic.kpi'] = 'Kpi';
 Sbi.locale.ln['sbi.generic.nodetype'] = 'Tipo Nodo';
 Sbi.locale.ln['sbi.generic.nodedescr'] = 'Descrizione Nodo';
 
-// search filters
-Sbi.locale.ln['sbi.generic.search.label.title'] = 'Etichetta';
-Sbi.locale.ln['sbi.generic.search.label.msg'] = 'cerca per etichetta';
-Sbi.locale.ln['sbi.generic.search.name.title'] = 'Nome';
-Sbi.locale.ln['sbi.generic.search.name.msg'] = 'cerca per nome';
+//search filters
+Sbi.locale.ln['sbi.generic.search.title'] = 'Ricerca';
+Sbi.locale.ln['sbi.generic.search.msg'] = 'inserisci testo da ricercare';
 Sbi.locale.ln['sbi.generic.search.clear'] = 'Pulisci';
 
 //Messages

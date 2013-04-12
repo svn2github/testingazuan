@@ -14,7 +14,7 @@ Sbi.widgets.store.InMemoryFilteredStore = function(config) {
 		if (!this.inMemoryData) {
 			this.inMemoryData = this.data.items.slice(0);//clone the items
 		}
-		var items = this.getFilteredItems(this.inMemoryData, this.filters);
+		var items = this.getFilteredItems(this.inMemoryData, this.filter);
 		// we need to set the totalLength, since removeAll doesn't clear the totalLength counter
 		this.totalLength = items.length;
 		items = this.getPageItems(this.start, this.limit, items);
@@ -40,9 +40,9 @@ Ext.extend(Sbi.widgets.store.InMemoryFilteredStore, Ext.data.Store, {
 	, useChache: false //cache means that the values are cached
 	
 	/**
-	 * Objects containing value for filters: {column_1 : value_1, column_2 : value_3, ...}
+	 * Object containing filtering value and columns to be filtered: {filterString : '....', columnsToFilter : ['label', 'name', ...]}
 	 */
-	, filters: null
+	, filter: null
 	
     /**
      * @Override
@@ -50,7 +50,7 @@ Ext.extend(Sbi.widgets.store.InMemoryFilteredStore, Ext.data.Store, {
 	, load: function(options) {
 		this.limit = (options && options.params && options.params.limit != undefined) ? options.params.limit : this.limit;
 		this.start = (options && options.params && options.params.start != undefined) ? options.params.start : this.start;
-		this.filters = (options && options.params && options.params.filters) ? options.params.filters : this.filters;
+		this.filter = (options && options.params && options.params.filter) ? options.params.filter : this.filter;
 		
 		if (this.useChache || this.inMemoryData == undefined || this.inMemoryData == null){
 			//set null the paging configuration to load all the items from the store
@@ -87,33 +87,32 @@ Ext.extend(Sbi.widgets.store.InMemoryFilteredStore, Ext.data.Store, {
 	 * Filters the data in memory.
 	 * @private
 	 * @param {Array} items The list of the items to filter
-	 * @param {Object} filters Objects containing value for filters: {column_1 : value_1, column_2 : value_3, ...}
+	 * @param {Object} filters Object containing filtering value and columns to be filtered: {filterString : '....', columnsToFilter : ['label', 'name', ...]}
 	 */
-	, getFilteredItems: function(items, filters) {
-		var filteredCount = 0;
-		if (filters != null && filters != {}) {
+	, getFilteredItems: function(items, filter) {
+		if (filter && filter.columnsToFilter && filter.filterString) {
+			var columnsToFilter = filter.columnsToFilter;
+			var filterString = filter.filterString;
+			var filteredCount = 0;
 			var filteredItems = [];
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				var satisfiesFilters = true;
-				for (var p in filters) {
-					var valueFilter = filters[p];
-					if (item.data[p]) {
-						var value = item.data[p];
-						var bool = value.toLowerCase().indexOf(valueFilter.toLowerCase()) >= 0;
-						if (!bool) {
-							satisfiesFilters = false;
+				for (var j = 0; j < columnsToFilter.length; j++) {
+					var columnToFilter = columnsToFilter[j];
+					if (item.data[columnToFilter]) {
+						var value = item.data[columnToFilter];
+						var bool = value.toLowerCase().indexOf(filterString.toLowerCase()) >= 0;
+						if (bool) {
+							filteredCount++;
+							filteredItems.push(item);
 							break;
 						}
 					}
 				}
-				if (satisfiesFilters) {
-					filteredCount++;
-					filteredItems.push(item);
-				}
 			}
 			return filteredItems;
 		}
+
 		return items;
 	}
 	

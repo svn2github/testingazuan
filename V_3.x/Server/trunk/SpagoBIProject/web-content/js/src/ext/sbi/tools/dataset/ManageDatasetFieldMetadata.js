@@ -15,10 +15,6 @@ Ext.ns("Sbi.tools");
 
 Sbi.tools.ManageDatasetFieldMetadata = function(config) { 
 
-	var comboStore = new Ext.data.SimpleStore({
-	    fields: ['value'],
-	    data:['ATTRIBUTE','MEASURE']
-	});
 	
 	this.border =  false;
 	this.frame = false;

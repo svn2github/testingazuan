@@ -180,6 +180,8 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 					attributesResponseSuccessJSON.put("success", true);
 					attributesResponseSuccessJSON.put("responseText", "Operation succeded");
 					attributesResponseSuccessJSON.put("id", id);
+					GuiDataSetDetail dsDetailSaved = ds.getActiveDetail();
+					attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));
 					AuditLogUtilities.updateAudit(getHttpRequest(),  profile, "DATA_SET.MODIFY",logParam , "OK");
 					writeBackToClient( new JSONSuccess(attributesResponseSuccessJSON) );					
 					

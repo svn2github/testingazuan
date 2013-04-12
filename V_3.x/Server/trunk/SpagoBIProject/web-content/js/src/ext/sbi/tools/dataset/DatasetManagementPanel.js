@@ -1609,23 +1609,40 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 												var versId = content.versId;
 												var versNum = content.versNum;
 												var meta = content.meta;
-
+												
+												//update metadata
+												var length = this.mainElementsStore.getCount();
+												for(var i=0;i<length;i++){
+										   	        var tempRecord = this.mainElementsStore.getAt(i);
+										   	        if(tempRecord.data.id==itemId){
+										   	        	tempRecord.set('meta',meta);
+										   	        	tempRecord.commit();
+										   	        	this.manageDatasetFieldMetadataGrid.loadItems(meta,tempRecord);
+										   	        	break;
+													}			   
+										   	    }
+												
+												
+//												var newRecord = this.mainElementsStore.getAt(this.mainElementsStore.getCount()-1);
+//												newRecord.data.meta = meta;
+//												newRecord.commit();
 												if (isNewRec
 														&& itemId != null
 														&& itemId !== '') {
 		
 													var record;
-													var length = this.mainElementsStore.getCount();
+													
 													for(var i=0;i<length;i++){
 											   	        var tempRecord = this.mainElementsStore.getAt(i);
 											   	       
 											   	        this.rowselModel.selectLastRow(true);
-											   	        if(tempRecord.data.id==0){
+											   	        if(!tempRecord.data.id || tempRecord.data.id==0){
 											   	        	tempRecord.set('id',itemId);
 											   	        	tempRecord.set('dateIn',dateIn);
 											   	        	tempRecord.set('userIn',userIn);
 											   	        	tempRecord.set('versId',versId);
 											   	        	tempRecord.set('versNum',versNum);
+											   	        	tempRecord.set('meta',meta);
 											   	        	tempRecord.commit();
 											   	        	this.detailFieldId.setValue(itemId);
 											   	        	this.detailFieldUserIn.setValue(userIn);

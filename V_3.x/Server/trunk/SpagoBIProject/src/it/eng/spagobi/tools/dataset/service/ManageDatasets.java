@@ -992,7 +992,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 			IDataStore dataStore = dataSet.getDataStore();
 			DatasetMetadataParser dsp = new DatasetMetadataParser();
 			
-			JSONArray metadataArray = toJSONArray(metadata);
+			JSONArray metadataArray = JSONUtils.toJSONArray(metadata);
 			
 	
 
@@ -1023,55 +1023,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 	}
 
 	
-	
-	public static JSONArray toJSONArray(String object)  throws JSONException, JsonMappingException, JsonParseException,IOException{
-		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode df = (ArrayNode) mapper.readValue(object, JsonNode.class);
-		return toJSONArray(df);
-	}
-	
-	public static JSONObject toJSONObject(String object) throws JSONException, JsonMappingException, JsonParseException,IOException{
-		ObjectMapper mapper = new ObjectMapper();
-		ObjectNode df = (ObjectNode) mapper.readValue(object, JsonNode.class);
-		return toJSONObject(df);
-	}
 
-	public static JSONArray toJSONArray(ArrayNode df)  throws JSONException{
-		JSONArray toReturn = new JSONArray();
-//		ObjectMapper mapper = new ObjectMapper();
-//		ArrayNode df = (ArrayNode) mapper.readValue(object, JsonNode.class);
-		for(int i=0; i<df.size(); i++){
-			
-			toReturn.put(getValueFromJsonNode(df.get(i)));
-		}
-		return toReturn;
-	} 
-	
-	public static JSONObject toJSONObject(ObjectNode df) throws JSONException{
-		JSONObject toReturn = new JSONObject();
-		Iterator<String> namesIter = df.fieldNames();
-		while(namesIter.hasNext()){
-			String key = namesIter.next();
-			JsonNode node = df.get(key);
-			Object value = getValueFromJsonNode(node);
-			toReturn.put(key, value);
-		}
-		return toReturn;
-	} 
-	
-	public static Object getValueFromJsonNode(JsonNode node) throws JSONException{
-		
-		Object value = null;
-		if(node instanceof TextNode){
-			value = ((TextNode)(node)).textValue();
-		}else if(node instanceof ObjectNode){
-			value = toJSONObject((ObjectNode)node);
-		}else if(node instanceof ArrayNode){
-			value = toJSONArray((ArrayNode)node);
-		}
-		return value;
-	}
-	
 	
 	public JSONObject getDatasetTestResultList(IDataSet dataSet, HashMap<String, String> parametersFilled, IEngUserProfile profile) {
 		

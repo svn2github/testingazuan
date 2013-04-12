@@ -7,6 +7,7 @@ Sbi.locale.ln['Documents']  = 'Documenti';
 Sbi.locale.ln['sbi.general.yes'] = 'Si';
 Sbi.locale.ln['sbi.general.No'] = 'No';
 Sbi.locale.ln['sbi.general.close'] = 'Chiudi';
+Sbi.locale.ln['sbi.general.ok'] = 'OK';
 
 Sbi.locale.ln['sbidomains.ds.Generic_Node'] = 'Nodo Generico';
 Sbi.locale.ln['sbidomains.ds.Generic_root'] = 'Radice Generica';
@@ -582,8 +583,15 @@ Sbi.locale.ln['sbi.ds.pivotIsNumRows'] = 'Numerazione automatica delle colonne?'
 Sbi.locale.ln['sbi.ds.openQbeQizard'] = 'Apri il wizard QbE';
 Sbi.locale.ln['sbi.ds.help'] = 'Aiuto';
 Sbi.locale.ln['sbi.ds.pars'] = 'Attributi di Profilo disponibili';
+Sbi.locale.ln['sbi.ds.metadata'] = 'Metadati delle colonne';
+Sbi.locale.ln['sbi.ds.field.metadata'] = 'Metadata';
+Sbi.locale.ln['sbi.ds.field.name'] = 'Nome';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.title'] = 'Ricalcolare i metadati?';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.msg'] = 'Vuoi che il sistema ricalcoli i metadati del dataset? (il dataset verrà rieseguito dal sistema; si consiglia di effettuare questa operazione nel caso in cui il dataset sia stato alterato in modo significativo)';
+Sbi.locale.ln['sbi.ds.measure'] = 'Misura';
+Sbi.locale.ln['sbi.ds.attribute'] = 'Attributo';
+Sbi.locale.ln['sbi.ds.field.nature.title'] = 'Selezionare la tipologia di campo';
+Sbi.locale.ln['sbi.ds.field.metadata.nosaved'] = 'Devi salvare il dataset prima di modificare i metadati';
 
 Sbi.locale.ln['sbi.datasource.label']= 'Etichetta';
 Sbi.locale.ln['sbi.datasource.description']= 'Descrizione';
@@ -620,6 +628,7 @@ Sbi.locale.ln['sbi.datasource.jndiname.info']= 'Per la configurazione del data s
 Sbi.locale.ln['sbi.datasource.saved']= 'Data source salvato correttamente';
 Sbi.locale.ln['sbi.datasource.deleted']= 'Data source cancellato correttamente';
 Sbi.locale.ln['sbi.datasource.validation.error']= 'Ci sono degli errori di validazione. Controlla i campi marcati.';
+
 
 //===================================================================
 //MESSAGE BOX BUTTONS

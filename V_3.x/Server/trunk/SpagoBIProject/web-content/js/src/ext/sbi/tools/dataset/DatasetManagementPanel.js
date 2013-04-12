@@ -1816,7 +1816,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 							items: [this.manageDatasetFieldMetadataGrid]
 							,buttonAlign : 'right',
 						    buttons: [{
-								text: LN('sbi.qbe.calculatedFields.buttons.text.ok'),
+								text: LN('sbi.general.ok'),
 							    handler: function(){
 							    	this.manageDatasetFieldMetadataGrid.updateRecord();
 							    	this.win_info_metadata.hide();
@@ -1825,7 +1825,12 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 							}]
 						});
 					};
-					this.win_info_metadata.show();
+					if(this.manageDatasetFieldMetadataGrid.emptyStore){
+						Sbi.exception.ExceptionHandler.showInfoMessage(LN("sbi.ds.field.metadata.nosaved"));
+					}else{
+						this.win_info_metadata.show();
+					}
+					
 			    }
 				
 				,profileAttrs: function() {		

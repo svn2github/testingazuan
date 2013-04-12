@@ -19,6 +19,10 @@ Sbi.tools.ManageDatasetFieldMetadata = function(config) {
 	    fields: ['value'],
 	    data:['ATTRIBUTE','MEASURE']
 	});
+	
+	this.border =  false;
+	this.frame = false;
+	
 
 	//Add to the dom the select used from the combo..
 	//it is referenced by Id from the transform
@@ -34,16 +38,15 @@ Sbi.tools.ManageDatasetFieldMetadata = function(config) {
 
 	this.fieldsColumns =  [
 	    {
-	    	header: LN('sbi.ds.name'), 
+	    	header: LN('sbi.ds.field.name'), 
 	    	width: 160, 
-	    	style:"width: 50%",
 			id:'name',
 			sortable: true, 
 			dataIndex: 'name' 
 	    },{
-        	header: LN('sbi.ds.metadata'),
+        	header: LN('sbi.ds.field.metadata'),
             dataIndex: 'fieldType',
-            width: 160,
+            width: 150,
             editor: new Ext.form.ComboBox({
             	typeAhead: true,
                 triggerAction: 'all',
@@ -91,12 +94,16 @@ Sbi.tools.ManageDatasetFieldMetadata = function(config) {
 
 Ext.extend(Sbi.tools.ManageDatasetFieldMetadata, Ext.grid.EditorGridPanel, {
   
-	fieldsColumns:null
+	fieldsColumns:null,
+	emptyStore: true
 
   	,loadItems: function(fieldsColumns, record){
   		this.record = record;
   		if(fieldsColumns){
   			this.fieldStore.loadData(fieldsColumns);
+  			this.emptyStore = false;
+  		}else{
+  			this.emptyStore = true;
   		}
 	}
 
@@ -108,9 +115,6 @@ Ext.extend(Sbi.tools.ManageDatasetFieldMetadata, Ext.grid.EditorGridPanel, {
 		}
 		return values;
 	}
-
-
-
 
 	,updateRecord: function(){
 

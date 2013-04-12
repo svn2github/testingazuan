@@ -7,6 +7,7 @@ Sbi.locale.ln['sbi.browser.documentstree.root']  = 'Root';
 Sbi.locale.ln['sbi.general.yes'] = 'Yes';
 Sbi.locale.ln['sbi.general.No'] = 'No';
 Sbi.locale.ln['sbi.general.close'] = 'Close';
+Sbi.locale.ln['sbi.general.ok'] = 'OK';
 
 Sbi.locale.ln['sbidomains.ds.Generic_Node'] = 'Generic Node';
 Sbi.locale.ln['sbidomains.ds.Generic_root'] = 'Generic Root';
@@ -43,8 +44,6 @@ Sbi.locale.ln['sbi.generic.state'] = 'State';
 Sbi.locale.ln['sbi.generic.upload'] = 'Upload';
 Sbi.locale.ln['sbi.generic.download'] = 'Download';
 Sbi.locale.ln['sbi.generic.noItemsSelected'] = 'No items selected';
-Sbi.locale.ln['sbi.generic.next'] = 'Next >';
-Sbi.locale.ln['sbi.generic.back'] = '< Back';
 Sbi.locale.ln['sbi.generic.value'] = 'Value';
 Sbi.locale.ln['sbi.generic.udpValues'] = 'Udp Values';
 Sbi.locale.ln['sbi.generic.author'] = 'Author';
@@ -604,8 +603,15 @@ Sbi.locale.ln['sbi.ds.pivotIsNumRows'] = 'Automatic Columns numeration?';
 Sbi.locale.ln['sbi.ds.openQbeQizard'] = 'Open QbE wizard';
 Sbi.locale.ln['sbi.ds.help'] = 'Help';
 Sbi.locale.ln['sbi.ds.pars'] = 'Available Profile Attributes';
+Sbi.locale.ln['sbi.ds.metadata'] = 'Fields metadata';
+Sbi.locale.ln['sbi.ds.field.metadata'] = 'Field metadata';
+Sbi.locale.ln['sbi.ds.field.name'] = 'Field name';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.title'] = 'Recalculate metadata?';
 Sbi.locale.ln['sbi.ds.recalculatemetadataconfirm.msg'] = 'Do you want the system to recalculate dataset\'s metadata? (the dataset will be executed by the system: this is required if you modified the dataset significantly)';
+Sbi.locale.ln['sbi.ds.measure'] = 'Measure';
+Sbi.locale.ln['sbi.ds.attribute'] = 'Attribute';
+Sbi.locale.ln['sbi.ds.field.nature.title'] = 'Select the nature of the field';
+Sbi.locale.ln['sbi.ds.field.metadata.nosaved'] = 'You should save the dataset before edit metadata';
 
 
 //===================================================================

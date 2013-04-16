@@ -81,9 +81,13 @@ Ext.define('app.views.Viewport',{
 		this.setActiveItem(app.views.loginView, { type: 'fade' });	
 	}
 	
-	,goExecution: function(){
+	,goExecution: function(config){
 		app.views.customTopToolbar.setViewModality("execution");
 		app.views.customBottomToolbar.setViewModality("execution");
+		if(config && !config.documentWithParameters ){
+			app.views.customTopToolbar.hideItem("params");
+			app.views.customBottomToolbar.hideItem("params");
+		}
 		this.setActiveItem(app.views.executionContainer, { type: 'fade' });	
 	}
 	

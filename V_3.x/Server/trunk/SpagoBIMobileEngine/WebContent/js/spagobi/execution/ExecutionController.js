@@ -67,7 +67,7 @@ Ext.define('app.controllers.ExecutionController',{
 
 		var executionInstance = option.executionInstance;
 		var typeCode =  executionInstance.TYPE_CODE;
-		var engine =  executionInstance.ENGINE;
+//		var engine =  executionInstance.ENGINE;
 		
 		var params = Ext.apply({}, executionInstance);
 		params.PARAMETERS =  Ext.encode(executionInstance.PARAMETERS);
@@ -156,7 +156,8 @@ Ext.define('app.controllers.ExecutionController',{
 				app.views.executionContainer.clearExecutions();
 			}
 			app.views.executionContainer.addExecution(resp, type, executionInstance.isFromCross, executionInstance,refresh);
-			app.views.viewport.goExecution();
+			var documentWithParameters = (executionInstance.PARAMETERS!=null) && (executionInstance.PARAMETERS!=undefined) && (executionInstance.PARAMETERS.length!=0);
+			app.views.viewport.goExecution({documentWithParameters: documentWithParameters});
 //			this.simpleNavigationManagement(resp, type, executionInstance);
 			//app.views.execView.setExecutionInstance(executionInstance);
 		} else {

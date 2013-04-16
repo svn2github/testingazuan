@@ -129,8 +129,8 @@ Ext.define('app.views.ExecutionContainerView',{
 				this.removeDocumentsOnTheRight(positionOfActive,-1);
 				this.setActiveItem(this.executedDocumentsList[position-1]);
 			}else{
-				app.controllers.mobileController.backToBrowser();
-				//app.views.viewport.goHome("refresh");//go home with out refresh document browser
+				//app.controllers.mobileController.backToBrowser();
+				app.views.viewport.goHome("refresh");//go home with out refresh document browser
 			}
 			
 //			var position = this.getActiveItem().getPositionInExecutionContainer();

@@ -144,7 +144,7 @@ Ext.define('app.views.CustomToolbar', {
     }
     
     ,setViewModality: function(modality, submodality){
-    	this.updateToolbar(this.toolbarConfiguration[modality]);
+    	this.updateToolbar(this.toolbarConfiguration[modality],submodality);
     	this.modality = modality;
     }
         
@@ -164,9 +164,9 @@ Ext.define('app.views.CustomToolbar', {
         		}
         		if(j<this.visibleButtons.length && this.visibleButtons[j].btnKey==visibleButtonsList[i]){
         			this.visibleButtons[j].show();
-        			if(this.visibleButtons[j].btnKey=="documentbrowser" && submodality!="refresh"){
-        				this.visibleButtons[j].hide();
-        			}
+//        			if(this.visibleButtons[j].btnKey=="documentbrowser" && submodality!="refresh"){
+//        				this.visibleButtons[j].hide();
+//        			}
         			j++;
         		}
     		}
@@ -177,6 +177,23 @@ Ext.define('app.views.CustomToolbar', {
     	}else{//no button to show, so we hide the toolbar
     		this.hide();
     	}
+    },
+    
+    
+    /**
+     * Show the buttons contained in the visibleButtonsList and hide all the others.
+     * Its important that visibleButtonsList is a proper subset of this.visibleButtons
+     *  
+     */
+    hideItem: function(itemKey){
+    	if(this.visibleButtons){
+        	for(var j=0; j<this.visibleButtons.length; j++){
+        		if(this.visibleButtons[j].btnKey==itemKey){
+        			this.visibleButtons[j].hide();
+        			break;
+        		}
+        	}
+   		}
     },
     
     

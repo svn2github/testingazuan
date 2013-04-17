@@ -139,21 +139,19 @@ Ext.define('app.views.TableExecutionPanel',{
 			if(drill != null && drill != undefined){
 				var params = drill.params;
 
-				var row = target.parentNode;
-				var cellsOfRow = row.children;
+				var serie =null;
+				var category = null;
 
-				var colValues = {};
-				for(a=0; a<cellsOfRow.length; a++){
-					var cell = cellsOfRow[a];
-					for(i = 0; i<cell.attributes.length; i++){
-						var at = cell.attributes[i];
-						if(at.name == 'dataindex'){
-							var nCol=at.value;
-							colValues[nCol] = cell.textContent;
-							
-						}
+				var cell = target;
+				for(var i = 0; i<cell.attributes.length; i++){
+					var at = cell.attributes[i];
+					if(at.name == 'dataindex'){
+						serie = cell.textContent;
+						category = at.nodeValue;
 					}
 				}
+
+				
 				if(params != null && params != undefined){
 					for(i=0; i< params.length; i++){
 						var param = params[i];
@@ -162,16 +160,12 @@ Ext.define('app.views.TableExecutionPanel',{
 
 						/*	RELATIVE AND ABSOLUTE PARAMETERS ARE MANAGED SERVER SIDE */
 						if(type == 'SERIE'){
-								var col = colValues[name];
-								if(col){
-									crossParams.push({name : name, value : col});
-								}	
+							crossParams.push({name : name, value : serie});
 						}else if(type == 'CATEGORY'){
-							crossParams.push({name : name, value : column});
+							crossParams.push({name : name, value : category});
 						}else{
 							crossParams.push({name : name, value : param.paramValue});
 						}
-
 					}
 				}				
 			}

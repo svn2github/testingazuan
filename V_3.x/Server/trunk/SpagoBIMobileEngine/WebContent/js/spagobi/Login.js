@@ -72,7 +72,7 @@ Ext.define('app.views.LoginView',{
 	                        xtype: 'toolbar',
 	                        height:30,
 	                        style:'padding : 7px;',
-	                        //ui: 'neutral',
+	                        ui: 'dark',
 	                        items:[
 	                            {
 	                            	xtype: 'spacer'
@@ -80,6 +80,7 @@ Ext.define('app.views.LoginView',{
 	                        	{
 	                                text: 'Login',
 	                                ui: 'confirm',
+	                                cls:'x-button-custom',
 	                                handler: function(){
 	                                	app.views.loginView.doSubmit(app.views.form.getValues());
 	                                }

@@ -87,7 +87,7 @@ Ext.define('app.views.ExecutionContainerView',{
 			newExecution.setWidget(resp, type, fromCross, executionInstance);
 			this.add(newExecution);
 			this.executedDocumentsList.push(newExecution);
-			this.setActiveItem(newExecution);
+			this.setActiveExecution(newExecution);
 			
 			//update the navigation toolbar
 			if(this.containerToolbars){
@@ -116,7 +116,7 @@ Ext.define('app.views.ExecutionContainerView',{
 		
 //		goToPreviousExecutions: function(){
 //			if(this.executedDocuments>1){
-//				this.setActiveItem(this.executedDocumentsList[this.executedDocuments-2]);
+//				this.setActiveExecution(this.executedDocumentsList[this.executedDocuments-2]);
 //				this.remove(this.executedDocumentsList[this.executedDocuments-1]);
 //				this.executedDocuments--;
 //			}
@@ -127,7 +127,7 @@ Ext.define('app.views.ExecutionContainerView',{
 			var positionOfActive = this.getActiveItem().getPositionInExecutionContainer();
 			if(positionOfActive>0){
 				this.removeDocumentsOnTheRight(positionOfActive,-1);
-				this.setActiveItem(this.executedDocumentsList[position-1]);
+				this.setActiveExecution(this.executedDocumentsList[positionOfActive-1]);
 			}else{
 				//app.controllers.mobileController.backToBrowser();
 				app.views.viewport.goHome("refresh");//go home with out refresh document browser
@@ -135,7 +135,7 @@ Ext.define('app.views.ExecutionContainerView',{
 			
 //			var position = this.getActiveItem().getPositionInExecutionContainer();
 //			if(position>0){
-//				this.setActiveItem(this.executedDocumentsList[position-1]);
+//				this.setActiveExecution(this.executedDocumentsList[position-1]);
 //				for(var i=position; i<this.executedDocuments; i++){
 //					this.remove(this.executedDocumentsList[i]);
 //				}
@@ -144,7 +144,7 @@ Ext.define('app.views.ExecutionContainerView',{
 		},
 //		
 		changeActiveDocument:function(documentPosition){
-			this.setActiveItem(this.executedDocumentsList[documentPosition]);
+			this.setActiveExecution(this.executedDocumentsList[documentPosition]);
 		},
 		
 		/**
@@ -169,5 +169,18 @@ Ext.define('app.views.ExecutionContainerView',{
 			this.loadingMask = new Ext.LoadMask(panel.id, {msg:"Loading..."});					
 			this.loadingMask.show();
 			this.un('afterlayout',this.showLoadingMask,this);
+		}
+		,setActiveExecution:function(execution){
+			this.setActiveItem(execution);
+			//manages the parameters panel icon
+			if(execution.getExecutionInstance().noParametersPageNeeded){
+				//if there is no parameter we hide the parameter icon
+				app.views.customTopToolbar.hideItem("params");
+				app.views.customBottomToolbar.hideItem("params");
+			}else{
+				//if there is some parameter to value we show the parameter icon
+				app.views.customTopToolbar.showItem("params");
+				app.views.customBottomToolbar.showItem("params");
+			}
 		}
 });

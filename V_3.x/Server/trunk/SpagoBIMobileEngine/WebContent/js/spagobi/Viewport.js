@@ -84,7 +84,7 @@ Ext.define('app.views.Viewport',{
 	,goExecution: function(config){
 		app.views.customTopToolbar.setViewModality("execution");
 		app.views.customBottomToolbar.setViewModality("execution");
-		if(config && !config.documentWithParameters ){
+		if(config && config.noParametersPageNeeded ){
 			app.views.customTopToolbar.hideItem("params");
 			app.views.customBottomToolbar.hideItem("params");
 		}
@@ -110,7 +110,24 @@ Ext.define('app.views.Viewport',{
 			}
 		},this);
 		aToolbar.on("gotoparameters",function(toolbar){
-			this.goParameters();
+			var activeExecutionInstance = app.views.executionContainer.getActiveExecutionInstance();
+			if(activeExecutionInstance && activeExecutionInstance.isFromCross){
+				var option = {
+						id: activeExecutionInstance.OBJECT_ID,
+						label: activeExecutionInstance.OBJECT_LABEL,
+						roleName: activeExecutionInstance.ROLE,
+						sbiExecutionId: activeExecutionInstance.SBI_EXECUTION_ID,
+						typeCode : activeExecutionInstance.TYPE_CODE,
+						engine : activeExecutionInstance.ENGINE,
+						isFromCross: activeExecutionInstance.isFromCross,
+						params: activeExecutionInstance.paramsFromCross//filled only from cross navigation
+				};
+
+				app.controllers.parametersController.getParametersForExecutionAction(option, true);
+			}else{
+				this.goParameters();	
+			}
+				
 		},this);
 		aToolbar.on("refreshDoc",function(toolbar){
 			app.views.executionContainer.refresh();

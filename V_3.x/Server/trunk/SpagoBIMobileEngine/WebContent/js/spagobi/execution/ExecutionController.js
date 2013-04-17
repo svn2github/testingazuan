@@ -157,7 +157,7 @@ Ext.define('app.controllers.ExecutionController',{
 			}
 			app.views.executionContainer.addExecution(resp, type, executionInstance.isFromCross, executionInstance,refresh);
 			var documentWithParameters = (executionInstance.PARAMETERS!=null) && (executionInstance.PARAMETERS!=undefined) && (executionInstance.PARAMETERS.length!=0);
-			app.views.viewport.goExecution({documentWithParameters: documentWithParameters});
+			app.views.viewport.goExecution({noParametersPageNeeded: executionInstance.noParametersPageNeeded});
 //			this.simpleNavigationManagement(resp, type, executionInstance);
 			//app.views.execView.setExecutionInstance(executionInstance);
 		} else {

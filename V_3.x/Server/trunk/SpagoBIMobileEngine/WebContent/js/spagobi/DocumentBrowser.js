@@ -133,6 +133,7 @@ Ext.define('app.views.DocumentBrowser',{
 	
 	,goToRoot:function(){
 		var node = this.findRootNode(this);
+		this.isRoot=true;
 		this.goToNode(node);
 	}
 	

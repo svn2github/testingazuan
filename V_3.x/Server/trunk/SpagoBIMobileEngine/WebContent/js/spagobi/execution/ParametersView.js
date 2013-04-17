@@ -70,10 +70,11 @@ Ext.define('app.views.ParametersView',{
 						        	 text : 'Execute',
 						        	 handler : function() {
 						        		 var executionInstance = app.controllers.parametersController.executionInstance;
+						        		 var isRefresh = app.controllers.parametersController.isRefresh;
 						        		 executionInstance.PARAMETERS = app.controllers.parametersController.getFormState();
 						        		 app.controllers.executionController.executeTemplate({
 						        			 executionInstance : executionInstance
-						        		 });
+						        		 }, null, isRefresh);
 						        	 }
 						         } ]
 

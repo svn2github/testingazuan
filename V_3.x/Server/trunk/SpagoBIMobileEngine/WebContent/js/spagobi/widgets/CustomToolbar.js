@@ -196,6 +196,17 @@ Ext.define('app.views.CustomToolbar', {
    		}
     },
     
+    showItem: function(itemKey){
+    	if(this.visibleButtons){
+        	for(var j=0; j<this.visibleButtons.length; j++){
+        		if(this.visibleButtons[j].btnKey==itemKey){
+        			this.visibleButtons[j].show();
+        			break;
+        		}
+        	}
+   		}
+    },
+    
     
     getToolbarButtonByType: function(type){
     	for(var i=0; i<this.visibleButtons.length; i++){

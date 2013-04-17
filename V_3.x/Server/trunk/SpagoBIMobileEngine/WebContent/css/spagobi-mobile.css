@@ -176,7 +176,7 @@
 }
 
 .login-fieldset-top{
-	 background-image:url('../img/Logo_SpagoBI.png') !important;
+	 background-image:url('../img/Logo_SpagoBI.png');
 	 background-repeat:no-repeat;
 	 background-position: center top; 
 	 padding-top: 60px;

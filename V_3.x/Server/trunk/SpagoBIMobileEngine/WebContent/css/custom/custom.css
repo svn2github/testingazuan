@@ -1,0 +1,45 @@
+/* log-in page image */
+.login-fieldset-top{
+	 background-image:url('../../img/custom/home_page_top.png') !important;
+	 background-repeat:no-repeat !important;
+	 background-position: left top !important;
+	 padding-top: 75px !important;
+}
+
+/*red color to items of the document browser*/
+.table-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}  
+.chart-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+.composed-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+.navigate {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+
+/*custom button*/
+.x-button-custom.x-button-confirm{
+	border: 2px solid c01520 !important;
+	background-color: #fff !important;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff),
+		color-stop(2%, #F04E5A), color-stop(100%, #EA1223) )!important;
+	background-image: linear-gradient(top, #fff 0%, #F04E5A 2%, #EA1223 100%)!important;
+}
+.x-button-custom.x-button-pressing{
+	border: 2px solid #fff!important;
+	background-color: #fff!important;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff),
+		color-stop(2%, #F04E5A), color-stop(100%, #fff) )!important;
+	background-image: linear-gradient(top, #fff 0%, #F04E5A 2%, #fff 100%)!important;
+}

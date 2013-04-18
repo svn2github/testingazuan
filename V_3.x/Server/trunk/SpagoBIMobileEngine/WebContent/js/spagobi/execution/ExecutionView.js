@@ -40,6 +40,7 @@ Ext.define('app.views.ExecutionView',{
 			}
 			if (type == 'composed'){
 				var composed = Ext.create("app.views.ComposedExecutionPanel", {resp: resp, executionInstance:executionInstance});
+				composed.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
 				this.widget = composed;
 			}
 			this.add(this.widget);

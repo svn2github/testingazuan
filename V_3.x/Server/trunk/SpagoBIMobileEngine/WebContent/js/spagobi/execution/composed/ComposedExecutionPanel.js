@@ -128,23 +128,28 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			}
 		},
 		
-		propagateCrossNavigationEvent : function(sourcePanel, paramsArray) {
-			console.log('app.views.ComposedExecutionPanel:execCrossNavigation: IN');
-			sourcePanel.parentDocument.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
-			sourcePanel.parentDocument.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
-			this.setCrossNavigated(true);
+		propagateCrossNavigationEvent : function(sourcePanel, paramsArray, targetDoc) {
 			
-			for(var i=0; i<(sourcePanel.parentDocument.getSubdocuments()).length; i++){
-				var panel = (sourcePanel.parentDocument.getSubdocuments())[i];
-				console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
+			if(targetDoc){
+				this.fireEvent('execCrossNavigation', sourcePanel, paramsArray, targetDoc);
+			}else{
+				console.log('app.views.ComposedExecutionPanel:execCrossNavigation: IN');
+				sourcePanel.parentDocument.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
+				sourcePanel.parentDocument.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
+				this.setCrossNavigated(true);
+				
+				for(var i=0; i<(sourcePanel.parentDocument.getSubdocuments()).length; i++){
+					var panel = (sourcePanel.parentDocument.getSubdocuments())[i];
+					console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
 
-				var params = {};
-				for (var j = 0 ; j < paramsArray.length ; j++) {
-					var aParam = paramsArray[j];
-					params[aParam.name] = aParam.value;
+					var params = {};
+					for (var j = 0 ; j < paramsArray.length ; j++) {
+						var aParam = paramsArray[j];
+						params[aParam.name] = aParam.value;
+					}
+
+					app.controllers.composedExecutionController.refreshSubDocument(panel,  sourcePanel.parentDocument, params);
 				}
-
-				app.controllers.composedExecutionController.refreshSubDocument(panel,  sourcePanel.parentDocument, params);
 			}
 		},
 		

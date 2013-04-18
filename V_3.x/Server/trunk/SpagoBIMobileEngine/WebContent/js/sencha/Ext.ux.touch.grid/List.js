@@ -404,6 +404,9 @@ Ext.define('Ext.ux.touch.grid.List', {
 			cond = '='+cond;
 		}
 		var ret =false;
+		if(isNaN(alarmValue)){
+			alarmValue = "'"+alarmValue+"'";
+		}
 		eval('if('+alarmValue + cond+'){ret = true;}');
 		return ret;
 	}

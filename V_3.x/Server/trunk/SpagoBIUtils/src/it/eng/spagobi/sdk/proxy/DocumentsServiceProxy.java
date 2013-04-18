@@ -132,6 +132,12 @@ public class DocumentsServiceProxy extends AbstractSDKServiceProxy implements Do
     return documentsService.getAdmissibleValues(in0, in1);
   }
   
+  public java.util.HashMap getDefaultValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException{
+	    if (documentsService == null)
+	      _initDocumentsServiceProxy();
+	    return documentsService.getDefaultValues(in0, in1);
+  }
+  
   public it.eng.spagobi.sdk.documents.bo.SDKTemplate downloadTemplate(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException{
     if (documentsService == null)
       _initDocumentsServiceProxy();

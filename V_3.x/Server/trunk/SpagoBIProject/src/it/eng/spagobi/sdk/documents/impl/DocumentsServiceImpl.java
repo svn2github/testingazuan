@@ -21,6 +21,9 @@ import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
+import it.eng.spagobi.analiticalmodel.execution.bo.defaultvalues.DefaultValue;
+import it.eng.spagobi.analiticalmodel.execution.bo.defaultvalues.DefaultValuesList;
+import it.eng.spagobi.analiticalmodel.execution.bo.defaultvalues.DefaultValuesRetriever;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
@@ -152,6 +155,71 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 					values.put(value, description);
 				}
 			}
+		} catch(NonExecutableDocumentException e) {
+			throw e;
+		} catch(Exception e) {
+			logger.error(e);
+		} finally {
+			this.unsetTenant();
+			logger.debug("OUT");
+		}
+		return values;
+	}
+	
+	public HashMap getDefaultValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
+		HashMap values = new HashMap<String, String>();
+		logger.debug("IN: documentParameterId = [" + documentParameterId + "]; roleName = [" + roleName + "]");
+		
+		this.setTenant();
+		
+		try {
+			IEngUserProfile profile = getUserProfile();
+			BIObjectParameter documentParameter = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(documentParameterId);
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(documentParameter.getBiObjectID());
+			if (!ObjectsAccessVerifier.canSee(obj, profile)) {
+				logger.error("User [" + ((UserProfile) profile).getUserName() + "] cannot execute document with id = [" + obj.getId() + "]");
+				throw new NonExecutableDocumentException();
+			}
+			List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(obj.getId(), profile);
+			if (correctRoles == null || correctRoles.size() == 0) {
+				logger.error("User [" + ((UserProfile) profile).getUserName() + "] has no roles to execute document with id = [" + obj.getId() + "]");
+				throw new NonExecutableDocumentException();
+			}
+			if (!correctRoles.contains(roleName)) {
+				logger.error("Role [" + roleName + "] is not a valid role for executing document with id = [" + obj.getId() + "] for user [" + ((UserProfile) profile).getUserName() + "]");
+				throw new NonExecutableDocumentException();
+			}
+
+			ExecutionInstance executionInstance = new ExecutionInstance(profile, "", "", obj.getId(), roleName, null, null);
+			logger.debug("Execution instance created");
+			
+			// reload BIObjectParameter in execution modality
+			BIObjectParameter biParameter = null;
+			obj = executionInstance.getBIObject();
+			List biparameters = obj.getBiObjectParameters();
+			Iterator biparametersIt = biparameters.iterator();
+			while (biparametersIt.hasNext()) {
+				BIObjectParameter aDocParameter = (BIObjectParameter) biparametersIt.next();
+				if (aDocParameter.getId().equals(documentParameterId)) {
+					biParameter = aDocParameter;
+					break;
+				}
+			}
+			
+			DefaultValuesRetriever retriever = new DefaultValuesRetriever();
+			logger.debug("Retrieving default values ...");
+			DefaultValuesList defaultValues = retriever.getDefaultValues(biParameter, executionInstance, profile);
+			logger.debug("Default values retrieved");
+			
+			Iterator<DefaultValue> it = defaultValues.iterator();
+			while (it.hasNext()) {
+				DefaultValue defaultValue = it.next();
+				String value = defaultValue.getValue() != null ? defaultValue.getValue().toString() : null;
+				String description = defaultValue.getDescription() != null ? defaultValue.getDescription().toString() : "";
+				logger.debug("Default value retrieved : value = [" + value + "], description = [" + description + "]");
+				values.put(value, description);
+			}
+			
 		} catch(NonExecutableDocumentException e) {
 			throw e;
 		} catch(Exception e) {

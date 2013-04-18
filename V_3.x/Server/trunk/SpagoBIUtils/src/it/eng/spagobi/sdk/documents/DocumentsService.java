@@ -35,6 +35,8 @@ public interface DocumentsService {
 	
 	HashMap<String, String> getAdmissibleValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException;
 	
+	HashMap<String, String> getDefaultValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException;
+	
 	SDKTemplate downloadTemplate(Integer documentId) throws NotAllowedOperationException;
 	
 	void uploadTemplate(Integer documentId, SDKTemplate template) throws NotAllowedOperationException;

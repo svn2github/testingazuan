@@ -98,7 +98,7 @@ Ext.define('app.views.TableExecutionPanel',{
 		      app.views.table =new Ext.ux.touch.grid.List(tbConfig);
 
 		      app.views.table.applyStore(store);
-		      this.add(app.views.table);
+		     
 
 				if(fromcomposition || fromCross){
 					tbConfig.width='100%';
@@ -110,12 +110,11 @@ Ext.define('app.views.TableExecutionPanel',{
 
 				}
 				
-				app.views.table = new Ext.ux.touch.grid.List(tbConfig);
+				//app.views.table = new Ext.ux.touch.grid.List(tbConfig);
 				if(fromcomposition){
 					  this.insert(0, app.views.table);
 
-				}
-				if(fromCross){
+				}else if(fromCross){
 					var r = new Ext.Panel({
 						style:'z-index:100;',
 						height:'100%',
@@ -126,6 +125,8 @@ Ext.define('app.views.TableExecutionPanel',{
 					
 					this.insert(0, r);
 
+				}else{
+					 this.add(app.views.table);
 				}
 				if(this.IS_FROM_COMPOSED){
 					this.loadingMask.hide();

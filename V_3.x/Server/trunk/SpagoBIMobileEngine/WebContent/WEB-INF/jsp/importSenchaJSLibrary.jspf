@@ -7,13 +7,14 @@
 <script type="text/javascript">var addToHomeConfig = { touchIcon:true };</script> 
 <script type="text/javascript" src="../js/add2home/add2home.js"></script> 
 
-<link rel="stylesheet" href="../js/sencha/resources/css/sencha-touch.css" type="text/css">
-<link rel="stylesheet" href="../css/Ext.ux.grid.View.css" type="text/css">
-
+<link rel="stylesheet" href="../js/sencha/resources/css/sencha-touch.css" type="text/css"/>
+<link rel="stylesheet" href="../css/Ext.ux.grid.View.css" type="text/css"/>
 
 <!-- script type="text/javascript" src="../js/sencha/sencha-touch-debug.js"></script-->
 <script type="text/javascript" src="../js/sencha/sencha-touch-all-debug.js"></script>
 <script type="text/javascript" src="../js/sencha/override-sencha-2.1.1.js"></script>
+<script type="text/javascript" src="../js/sencha/sencha_220/chart/series/Gauge.js"></script>
+<script type="text/javascript" src="../js/sencha/sencha_220/chart/SpaceFillingChart.js"></script>
 
 <script type="text/javascript" src="../js/add2home/add2home.js"></script>
 

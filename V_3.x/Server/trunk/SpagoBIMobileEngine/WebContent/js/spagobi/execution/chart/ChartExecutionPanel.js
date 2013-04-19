@@ -97,11 +97,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 		if(config.title){
 			chartConfig.title = config.title.value;
 		}
-		
-		
-
 		return chartConfig;
-
 	}
 	
 	//search in the template, the user function tag,
@@ -109,7 +105,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 	, resolveUserFunctions: function(template){
 	
 		if(!(template instanceof Object)){
-			return template;
+			return this.evalFunction(template);
 		}
 		for(p in template){
 			if(p=="userFunction"){
@@ -123,6 +119,19 @@ Ext.define('app.views.ChartExecutionPanel',{
 				}
 			}else{
 				template[p] = this.resolveUserFunctions(template[p]);
+			}
+		}
+		return template;
+	}
+	
+	, evalFunction: function(template){
+
+		if((typeof template) == "string"){
+			if(template.indexOf("functionToEval")>=0){
+				template = template.replace("functionToEval(","");
+				template = template.replace(")functionToEval","");
+				template = template.replace("userFunctions.","Sbi.chart.userFunctions");
+				template = eval(template);
 			}
 		}
 		return template;

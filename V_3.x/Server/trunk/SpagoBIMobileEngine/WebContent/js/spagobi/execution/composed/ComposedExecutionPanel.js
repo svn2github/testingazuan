@@ -35,12 +35,14 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			var title = this.resp.title.value;
 			
 			var documentsList = this.resp.documents.docs;
-			var documentWidth = this.resp.documents.totWidth;
-			var documentHeight = this.resp.documents.totHeight;
+//			var documentWidth = this.resp.documents.totWidth;
+//			var documentHeight = this.resp.documents.totHeight;
+			
 			
 			var executionInstance = Ext.apply({}, this.resp.executionInstance);
 			this.setSubDocumentNumber(documentsList.length);
 			if (documentsList != undefined && documentsList != null) {
+				this.getSubdocuments().length = documentsList.length;;
 				for (var i = 0; i < documentsList.length; i++) {
 					//var subDocumentPanel = this.buildPanel(documentsList[i]);
 					var mainDocumentParameters = executionInstance.PARAMETERS;
@@ -51,7 +53,7 @@ Ext.define('app.views.ComposedExecutionPanel',{
 					subDocumentExecutionInstance.IS_FROM_COMPOSED = true;
 					subDocumentExecutionInstance.ROLE = executionInstance.ROLE;
 					subDocumentExecutionInstance.position = i;
-					app.controllers.composedExecutionController.executeSubDocument(subDocumentExecutionInstance, this);
+					app.controllers.composedExecutionController.executeSubDocument(subDocumentExecutionInstance, this,i);
 				}
 				///to add a slider configuration property
 				if(this.resp.slider && this.resp.slider.name){
@@ -62,7 +64,7 @@ Ext.define('app.views.ComposedExecutionPanel',{
 
 		},
 		
-		addWidgetComposed: function(resp, type, composedComponentOptions){
+		addWidgetComposed: function(resp, type, composedComponentOptions, positionInComposition){
 
 			var panel;
 			var thisPanel = this;
@@ -99,8 +101,8 @@ Ext.define('app.views.ComposedExecutionPanel',{
 
 			//if its the first execution the subdocument is added to the composition
 			if(!this.getCrossNavigated()){
-				this.add(panel);
-				this.getSubdocuments().push(panel);
+				this.insert(positionInComposition, panel);
+				this.getSubdocuments()[positionInComposition]=(panel);
 			}else{
 				//if the document is refreshed we refresh it
 				this.fireEvent("updatedOneDocument",panel,composedComponentOptions.executionInstance.position);

@@ -50,6 +50,7 @@ import it.eng.spagobi.sdk.AbstractSDKService;
 import it.eng.spagobi.sdk.documents.DocumentsService;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue;
 import it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.documents.bo.SDKSchema;
@@ -81,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -100,8 +102,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 
 	static private Logger logger = Logger.getLogger(DocumentsServiceImpl.class);
 
-	public HashMap getAdmissibleValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
-		HashMap values = new HashMap<String, String>();
+	public SDKDocumentParameterValue[] getAdmissibleValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
+		SDKDocumentParameterValue[] values = new SDKDocumentParameterValue[]{};
 		logger.debug("IN: documentParameterId = [" + documentParameterId + "]; roleName = [" + roleName + "]");
 		
 		this.setTenant();
@@ -147,12 +149,12 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 				String lovResult = lovDetail.getLovResult(profile, null, null);
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
 				List rows = lovResultHandler.getRows();
-				Iterator it = rows.iterator();
-				while (it.hasNext()) {
-					SourceBean row = (SourceBean) it.next();
+				values = new SDKDocumentParameterValue[rows.size()];
+				for (int i = 0; i < rows.size(); i++) {
+					SourceBean row = (SourceBean) rows.get(i);
 					String value = (String) row.getAttribute(lovDetail.getValueColumnName());
 					String description = (String) row.getAttribute(lovDetail.getDescriptionColumnName());
-					values.put(value, description);
+					values[i] = new SDKDocumentParameterValue(value, description);
 				}
 			}
 		} catch(NonExecutableDocumentException e) {
@@ -166,8 +168,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		return values;
 	}
 	
-	public HashMap getDefaultValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
-		HashMap values = new HashMap<String, String>();
+	public SDKDocumentParameterValue[] getDefaultValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
+		SDKDocumentParameterValue[] values = new SDKDocumentParameterValue[]{};
 		logger.debug("IN: documentParameterId = [" + documentParameterId + "]; roleName = [" + roleName + "]");
 		
 		this.setTenant();
@@ -211,13 +213,13 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			DefaultValuesList defaultValues = retriever.getDefaultValues(biParameter, executionInstance, profile);
 			logger.debug("Default values retrieved");
 			
-			Iterator<DefaultValue> it = defaultValues.iterator();
-			while (it.hasNext()) {
-				DefaultValue defaultValue = it.next();
+			values = new SDKDocumentParameterValue[defaultValues.size()];
+			for (int i = 0; i < defaultValues.size(); i++) {
+				DefaultValue defaultValue = defaultValues.get(i);
 				String value = defaultValue.getValue() != null ? defaultValue.getValue().toString() : null;
 				String description = defaultValue.getDescription() != null ? defaultValue.getDescription().toString() : "";
 				logger.debug("Default value retrieved : value = [" + value + "], description = [" + description + "]");
-				values.put(value, description);
+				values[i] = new SDKDocumentParameterValue(value, description);
 			}
 			
 		} catch(NonExecutableDocumentException e) {

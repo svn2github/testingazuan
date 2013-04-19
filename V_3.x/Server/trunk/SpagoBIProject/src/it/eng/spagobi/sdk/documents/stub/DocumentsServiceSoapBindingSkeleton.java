@@ -122,7 +122,7 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getAdmissibleValues", _params, new javax.xml.namespace.QName("", "getAdmissibleValuesReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameterValue"));
         _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getAdmissibleValues"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
@@ -141,7 +141,7 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getDefaultValues", _params, new javax.xml.namespace.QName("", "getDefaultValuesReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameterValue"));
         _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getDefaultValues"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
@@ -386,15 +386,15 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         return ret;
     }
 
-    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException
+    public it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException
     {
-        java.util.HashMap ret = impl.getAdmissibleValues(in0, in1);
+        it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] ret = impl.getAdmissibleValues(in0, in1);
         return ret;
     }
 
-    public java.util.HashMap getDefaultValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException
+    public it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] getDefaultValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException
     {
-        java.util.HashMap ret = impl.getDefaultValues(in0, in1);
+        it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] ret = impl.getDefaultValues(in0, in1);
         return ret;
     }
 

@@ -56,6 +56,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="values" nillable="true" type="impl:ArrayOf_xsd_anyType"/>
     </sequence>
    </complexType>
+   <complexType name="SDKDocumentParameterValue">
+    <sequence>
+     <element name="description" nillable="true" type="soapenc:string"/>
+     <element name="value" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
    <complexType name="SDKTemplate">
     <sequence>
      <element name="content" nillable="true" type="apachesoap:DataHandler"/>
@@ -127,6 +133,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </restriction>
     </complexContent>
    </complexType>
+   <complexType name="ArrayOf_tns2_SDKDocumentParameterValue">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:SDKDocumentParameterValue[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
   </schema>
   <schema targetNamespace="http://exceptions.sdk.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="urn:spagobisdkdocuments"/>
@@ -195,7 +208,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getDefaultValuesResponse">
 
-      <wsdl:part name="getDefaultValuesReturn" type="apachesoap:Map"/>
+      <wsdl:part name="getDefaultValuesReturn" type="impl:ArrayOf_tns2_SDKDocumentParameterValue"/>
 
    </wsdl:message>
 
@@ -239,7 +252,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getAdmissibleValuesResponse">
 
-      <wsdl:part name="getAdmissibleValuesReturn" type="apachesoap:Map"/>
+      <wsdl:part name="getAdmissibleValuesReturn" type="impl:ArrayOf_tns2_SDKDocumentParameterValue"/>
 
    </wsdl:message>
 

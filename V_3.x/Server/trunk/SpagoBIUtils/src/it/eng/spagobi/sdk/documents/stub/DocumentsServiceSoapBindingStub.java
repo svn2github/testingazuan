@@ -114,8 +114,8 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"));
-        oper.setReturnClass(java.util.HashMap.class);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameterValue"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getAdmissibleValuesReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
@@ -133,8 +133,8 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"));
-        oper.setReturnClass(java.util.HashMap.class);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameterValue"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getDefaultValuesReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
@@ -385,6 +385,13 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocumentParameterValue");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKExecutedDocumentContent");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent.class;
@@ -494,6 +501,15 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             cls = it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[].class;
             cachedSerClasses.add(cls);
             qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocumentParameter");
+            qName2 = null;
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameterValue");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocumentParameterValue");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
@@ -785,7 +801,7 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
+    public it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -806,9 +822,9 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (java.util.HashMap) _resp;
+                return (it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[]) _resp;
             } catch (java.lang.Exception _exception) {
-                return (java.util.HashMap) org.apache.axis.utils.JavaUtils.convert(_resp, java.util.HashMap.class);
+                return (it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[].class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
@@ -824,7 +840,7 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.util.HashMap getDefaultValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
+    public it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[] getDefaultValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -845,9 +861,9 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (java.util.HashMap) _resp;
+                return (it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[]) _resp;
             } catch (java.lang.Exception _exception) {
-                return (java.util.HashMap) org.apache.axis.utils.JavaUtils.convert(_resp, java.util.HashMap.class);
+                return (it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameterValue[].class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

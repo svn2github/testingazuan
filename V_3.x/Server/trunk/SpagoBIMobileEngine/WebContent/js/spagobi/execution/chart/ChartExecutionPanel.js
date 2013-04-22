@@ -9,7 +9,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 	extend: 'app.views.WidgetPanel',
 	config:{
 		scroll : 'vertical',
-		executionInstance: null,
+
 		items:[],
 		//colors: ['red','blue','yellow','green','orange','brown','white','grey'],
 		chartTypes:{

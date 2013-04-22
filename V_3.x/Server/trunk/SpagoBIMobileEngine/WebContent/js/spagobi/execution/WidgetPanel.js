@@ -18,8 +18,6 @@ Ext.define('app.views.WidgetPanel',{
     ,initialize: function (options) {
 
     	this.callParent( arguments);
-		///to add a slider configuration property
-		//this.addSlider();
 	}
 	
 	,
@@ -42,17 +40,24 @@ Ext.define('app.views.WidgetPanel',{
 		var targetDoc = drill.document;
 		return targetDoc;
 	}
-/*	, addSlider: function(){
-		var attr = {
-			name: 'Slider',
-			value: 5,
-			minValue: 0,
-			maxValue: 10
-		};
-		this.slider = new app.views.Slider({
-			sliderAttributes: attr
+	
+	, buildHeader: function(){
+		var header = new Ext.Panel({
+			html: "HEADER",
+			style: {
+				height: "20px"
+			}
 		});
-
-		this.dockedItems.items.push(this.slider);
-	}*/
+		return header;
+	}
+	
+	, buildFooter: function(){
+		var footer = new Ext.Panel({
+			html: "FOOTER",
+			style: {
+				height: "20px"
+			}
+		});
+		return footer;
+	}
 });

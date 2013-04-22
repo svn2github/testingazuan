@@ -18,9 +18,6 @@ Ext.define('app.views.ExecutionView',{
 	   
 		initialize: function ()	{
 			console.log('init Execution view');
-//	        this.bottomTools = new app.views.BottomToolbar({parameters: this.parameters});
-//
-//	        this.dockedItems= [this.bottomTools];
 
 			this.callParent(this, arguments);
 

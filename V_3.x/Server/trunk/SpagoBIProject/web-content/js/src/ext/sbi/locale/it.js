@@ -805,6 +805,7 @@ Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.deleteNonActive']='Elimina
 	
 Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Normale';
 Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Albero';
+Sbi.locale.ln['sbi.behavioural.lov.type.treeinner']='Albero Completo';
 Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filtra';	
 Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Salvato';
 Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='Il LOV \u00e8 stato salvato correttamente';

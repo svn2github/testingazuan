@@ -733,3 +733,23 @@ Sbi.locale.ln['sbi.worksheet.worksheetfromdatasetpanel.createworksheet.msg']='..
 //===================================================================
 Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.saveas']='Salva come nuovo documento ...';
 Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Esporta in uno dei formati disponibili ...';
+
+//===================================================================
+//BEHAVIOURAL 
+//===================================================================
+	
+Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Normale';
+Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Albero';
+Sbi.locale.ln['sbi.behavioural.lov.type.treeinner']='Albero Completo';
+Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filtra';	
+Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Salvato';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='Il LOV \u00e8 stato salvato correttamente';
+Sbi.locale.ln['sbi.behavioural.lov.save']='Salva';
+Sbi.locale.ln['sbi.behavioural.lov.select.type']='Seleziona una tipologia...';
+Sbi.locale.ln['sbi.behavioural.lov.name']='Nome';
+Sbi.locale.ln['sbi.behavioural.lov.value']='Valore';
+Sbi.locale.ln['sbi.behavioural.lov.description']='Descrizione';
+Sbi.locale.ln['sbi.behavioural.lov.visible']='Visibile';
+Sbi.locale.ln['sbi.behavioural.lov.test.error']='Errore nel test del lov';
+Sbi.locale.ln['sbi.behavioural.lov.back']='Indietro';
+Sbi.locale.ln['sbi.behavioural.delete']='Cancella';

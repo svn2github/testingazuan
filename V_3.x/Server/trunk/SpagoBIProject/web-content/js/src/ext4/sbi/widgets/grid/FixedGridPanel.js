@@ -149,6 +149,9 @@ Ext.define('Sbi.widgets.grid.FixedGridPanel', {
     	},this.storeConfig||{});
     	this.store = Ext.create('Sbi.widgets.store.InMemoryFilteredStore', this.storeConfig);
     	Sbi.debug('FixedGridPanel store built');
+    	for(var i=0; i<this.columns.length; i++){
+    		this.columns[i].renderer =  this.onRenderCell;
+    	}
       	
     	//Add the widgets to the rows
       	Sbi.widget.grid.StaticGridDecorator.addButtonColumns(this.buttonColumnsConfig, this.columns, this);
@@ -233,7 +236,23 @@ Ext.define('Sbi.widgets.grid.FixedGridPanel', {
     	}
     	
 
-    }
+    },
+    onRenderCell: function(value, metaData, record, rowIndex,colIndex, store, view) {
+    		  var filterString = "pag";
+    		  var startPosition = value.toLowerCase().indexOf(filterString.toLowerCase());
+    		  
+    		  if(startPosition>=0){
+    			  var prefix = "";
+    			  if(startPosition>0){
+    				  prefix = "<span>"+ value.substring(0,startPosition)+"</span>";
+    			  }
+    			  var filterSpan = "<span class='x-livesearch-match'>"+ value.substring(startPosition,startPosition+filterString.length)+"</span>";
+    			  var suffix = "<span>"+ value.substring(startPosition+filterString.length)+"</span>";
+    			  return prefix+filterSpan+suffix;
+
+    		  }
+    	      return '<span>'+ value+'</span>';
+    	    }
 });
 
 

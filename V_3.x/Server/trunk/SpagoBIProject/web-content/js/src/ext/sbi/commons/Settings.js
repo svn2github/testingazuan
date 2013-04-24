@@ -68,16 +68,6 @@ Sbi.settings.kpi = {
 };
 
 
-/**
- * WIDGETS
- */
-Sbi.settings.widgets = {
-		TreeLookUpField : {
-			//true to allow the selection of the internal node of the tree driver
-			//false to allow the selection only foe the leafs
-			allowInternalNodeSelection: false
-		}
-};
 
 // Specific IE settings
 Ext.ns("Sbi.settings.IE");

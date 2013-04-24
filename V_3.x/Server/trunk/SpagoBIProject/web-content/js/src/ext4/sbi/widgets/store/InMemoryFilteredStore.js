@@ -57,7 +57,12 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
     	/**
     	 * The string used as filter
     	 */
-    	filterString: null
+    	filterString: null,
+    	  /**
+         * @cfg {String} matchCls
+         * The matched string css classe.
+         */
+        matchCls: 'x-livesearch-match'
     }
       
     /**
@@ -77,6 +82,8 @@ Ext.define('Sbi.widgets.store.InMemoryFilteredStore', {
    			for(var i=0; i<items.length;i++){
    				this.add(items[i]);
    			}
+   			
+   			
     	},this);
     }
 

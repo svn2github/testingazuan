@@ -13,7 +13,6 @@ package it.eng.spagobi.engine.mobile.template;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engine.mobile.MobileConstants;
-import it.eng.spagobi.utilities.json.JSONTemplateUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +28,8 @@ public class AbstractTemplateInstance {
 	protected JSONObject drill = new JSONObject();
 	protected Map<String, Object> documentProperties = new HashMap<String, Object>();
 	protected SourceBean template;
-	protected HashMap<String, String> paramsMap = new HashMap<String, String>();
+	protected Map<String, String> paramsMap = new HashMap<String, String>();
+	protected Map<String, String> notNullParamsMap = null;
 	private JSONObject title = new JSONObject();
 	
 	private static transient Logger logger = Logger.getLogger(AbstractTemplateInstance.class);
@@ -120,12 +120,27 @@ public class AbstractTemplateInstance {
 		getDocumentContainerStyle();
 	}
 	
-	public void getHeader(){
-		documentProperties.put("header",(String)template.getCharacters(MobileConstants.HEADER));
+	public void getHeader() throws Exception{
+		String header = (String)template.getCharacters(MobileConstants.HEADER);
+		if(header !=null){
+			Map<String, String> params = getNotNullPrameters();
+			if(params!=null){
+				header= StringUtilities.substituteParametersInString(header, params, null, false);
+			}
+			
+		}
+		documentProperties.put("header",header);
 	}
 	
-	public void getFooter(){
-		documentProperties.put("footer",(String)template.getCharacters(MobileConstants.FOOTER));
+	public void getFooter() throws Exception{
+		String footer = (String)template.getCharacters(MobileConstants.FOOTER);
+		if(footer !=null){
+			Map<String, String> params = getNotNullPrameters();
+			if(params!=null){
+				footer= StringUtilities.substituteParametersInString(footer,params , null, false);
+			}
+		}
+		documentProperties.put("footer",footer);
 	}
 	
 	public void getDocumentContainerStyle(){
@@ -134,6 +149,22 @@ public class AbstractTemplateInstance {
 
 	public Map<String, Object> getDocumentProperties() {
 		return documentProperties;
+	}
+	
+	protected Map<String, String> getNotNullPrameters(){
+		if(notNullParamsMap==null || notNullParamsMap.size()==0){
+			notNullParamsMap = this.paramsMap;
+			Iterator it = notNullParamsMap.keySet().iterator();
+			while(it.hasNext()){
+				String key = (String)it.next();
+
+				if(notNullParamsMap.get(key)== null){
+					notNullParamsMap.put(key, " ");			
+				}
+			}
+			return notNullParamsMap;
+		}
+		return null;
 	}
 
 }

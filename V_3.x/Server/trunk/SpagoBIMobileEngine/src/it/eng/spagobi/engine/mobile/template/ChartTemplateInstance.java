@@ -35,7 +35,7 @@ public class ChartTemplateInstance extends AbstractTemplateInstance  implements 
 	public void loadTemplateFeatures() throws Exception {
 		super.loadTemplateFeatures();
 		JSONTemplateUtils ju = new JSONTemplateUtils();
-		JSONArray array = toJSONArray(this.paramsMap);
+		JSONArray array = toJSONArray((HashMap<String,String>)this.paramsMap);
 		features = ju.getJSONTemplateFromXml(this.template, array);
 		if(features == null){
 			features = new JSONObject(); 

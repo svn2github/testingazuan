@@ -10,11 +10,13 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engine.mobile.MobileConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -146,10 +148,18 @@ public class ComposedTemplateInstance extends AbstractTemplateInstance implement
 			String name = (String)confSB.getAttribute(MobileConstants.SLIDER_NAME_ATTR);
 			String min = (String)confSB.getAttribute(MobileConstants.SLIDER_MIN_ATTR);
 			String max = (String)confSB.getAttribute(MobileConstants.SLIDER_MAX_ATTR);
-			String value = (String)confSB.getAttribute(MobileConstants.SLIDER_VALUE_ATTR);
+			String value =  (String)confSB.getAttribute(MobileConstants.SLIDER_VALUE_ATTR);
 			String label = (String)confSB.getAttribute(MobileConstants.SLIDER_LABEL_ATTR);
 			String increm = (String)confSB.getAttribute(MobileConstants.SLIDER_INCREMENT_ATTR);
 
+			Map<String, String> params = getNotNullPrameters();
+			if(params!=null && value!=null && value.length()==0){
+				value = StringUtilities.substituteParametersInString(value,params , null, false);
+			}
+			if(value!=null && value.length()==0){
+				value = min;
+			}
+			
 			slider.putOpt("name", name);
 			slider.putOpt("value", value);
 			slider.putOpt("minValue", min);

@@ -11,13 +11,10 @@ Ext.define('app.views.TableExecutionPanel',{
 		scroll: 'vertical',		
 	},
 
-	constructor : function(config) {
-		Ext.apply(this,config);
-		this.callParent(arguments);
 
-	},
 
 	initialize : function() {
+		this.callParent();
 		this.setTableWidget(this.resp, this.fromcomposition,this.fromCross );
 		console.log('init table execution');		
 	}
@@ -40,7 +37,7 @@ Ext.define('app.views.TableExecutionPanel',{
 		});
 
 		var tbConfig = {
-				title       : 'Prova',
+				title       : '',
 				store       : store,
 				multiSelect : false,
 				conditions  : resp.features.conditions,

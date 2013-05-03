@@ -9,7 +9,9 @@ Ext.define('app.views.ChartExecutionPanel',{
 	extend: 'app.views.WidgetPanel',
 	config:{
 		scroll : 'vertical',
-
+		style:{
+			position: "relative"
+		},
 		items:[],
 		//colors: ['red','blue','yellow','green','orange','brown','white','grey'],
 		chartTypes:{
@@ -20,13 +22,8 @@ Ext.define('app.views.ChartExecutionPanel',{
 	},
 
 
-	constructor : function(config) {
-		Ext.apply(this,config);
-		this.callParent(arguments);
-
-	},
-
 	initialize : function() {
+		
 		var c = this.setChartWidget(this.resp, this.fromcomposition,this.fromCross );
 
 		if(c.chartType){
@@ -36,18 +33,10 @@ Ext.define('app.views.ChartExecutionPanel',{
 		}
 
 		console.log('init chart execution');
-//		if(this.IS_FROM_COMPOSED){
-//		this.on('afterlayout',this.showLoadingMask,this);
-//		if(app.views.execution.loadingMaskForExec != undefined){
-//		app.views.execution.loadingMaskForExec.hide();
-//		}
-//		}.callParent(arguments);
-
+		this.callParent();
 	},
 
 	setChartWidget : function(resp, fromcomposition, fromCross) {
-
-		var r;
 		var config = resp.config;
 		config.animate = true;
 		config.shadow = true;
@@ -55,8 +44,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 		if(config.enableuserfunction){
 			this.resolveUserFunctions(config);	
 		}
-		
-		
+
 		config.listeners = {
 				scope: this,
 				'itemtap': function(series, item, event) { 
@@ -82,14 +70,14 @@ Ext.define('app.views.ChartExecutionPanel',{
 		
 		this.manageColors(chartConfig);
 
-		if (fromcomposition) {
+//		if (fromcomposition) {
 
-			chartConfig.width = '100%';
-			chartConfig.height = '100%';
-		} else {
-			this.fullscreen = true;
-			chartConfig.fullscreen = true;
-		}
+		chartConfig.width = '100%';
+		chartConfig.height = '100%';
+//		} else {
+//			this.fullscreen = true;
+//			chartConfig.fullscreen = true;
+//		}
 
 		//chartConfig.bodyMargin = '10% 1px 60% 1px';
 
@@ -97,6 +85,8 @@ Ext.define('app.views.ChartExecutionPanel',{
 		if(config.title){
 			chartConfig.title = config.title.value;
 		}
+		
+		
 		return chartConfig;
 	}
 	

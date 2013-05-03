@@ -32,15 +32,13 @@ Ext.define('app.views.ComposedExecutionPanel',{
 		
 		
 		initialize: function(){
-			var title = this.resp.title.value;
-			
+		
 			var documentsList = this.resp.documents.docs;
-//			var documentWidth = this.resp.documents.totWidth;
-//			var documentHeight = this.resp.documents.totHeight;
-			
-			
 			var executionInstance = Ext.apply({}, this.resp.executionInstance);
 			this.setSubDocumentNumber(documentsList.length);
+			this.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
+			this.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
+			
 			if (documentsList != undefined && documentsList != null) {
 				this.getSubdocuments().length = documentsList.length;;
 				for (var i = 0; i < documentsList.length; i++) {
@@ -91,9 +89,9 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			}
 
 			var style = panel.getStyle();
-			if(!style){
+//			if(!style){
 				style = "";
-			}
+//			}
 			style = style+" float: left;";
 			style = style+" width:"+ width+"; height:"+height;			
 
@@ -101,12 +99,13 @@ Ext.define('app.views.ComposedExecutionPanel',{
 
 			//if its the first execution the subdocument is added to the composition
 			if(!this.getCrossNavigated()){
-				this.insert(positionInComposition, panel);
+//				this.insert(positionInComposition, panel);
 				this.getSubdocuments()[positionInComposition]=(panel);
-			}else{
+
+			}
 				//if the document is refreshed we refresh it
 				this.fireEvent("updatedOneDocument",panel,composedComponentOptions.executionInstance.position);
-			}
+		
 		}
 		
 		,
@@ -167,17 +166,7 @@ Ext.define('app.views.ComposedExecutionPanel',{
 				}
 			}
 		}
-//		,
-//		execCrossNavigationHandler : function(sourcePanel, params, targetPanel) {
-//			
-//			console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
-//			
-//			app.controllers.executionController.executeTemplate({
-//				executionInstance : targetPanel.getExecutionInstance()
-//				, parameters : null
-//			}, panel);
-//			
-//		}
+
 		, addSlider: function(slider){
 
 			var sliderComp = Ext.create('app.views.Slider',{

@@ -85,6 +85,7 @@ Ext.define('app.controllers.MobileController',{
                     var roleName = responseJson.root[0].name;
                     this.startNewExecutionProcess(options.id, 
                     								options.label, 
+                    								options.name,
                     								roleName,  
                     								options.engine, 
                     								options.typeCode, 
@@ -99,7 +100,7 @@ Ext.define('app.controllers.MobileController',{
 	    }); 
 	}
 	
-	, startNewExecutionProcess: function(id, label, roleName, engine, typeCode, isFromCross, params){
+	, startNewExecutionProcess: function(id, label, docName, roleName, engine, typeCode, isFromCross, params){
 
 		Ext.Ajax.request({
             url: this.services['startNewExecutionProcess'],
@@ -110,7 +111,7 @@ Ext.define('app.controllers.MobileController',{
             	if(response!=undefined && response!=null && response.responseText!=undefined && response.responseText!=null){
             		var responseJson = Ext.decode(response.responseText);
             		var execContextId = responseJson.execContextId;
-            		this.getParametersForExecutionAction(id, label, roleName, execContextId, engine, typeCode, isFromCross, params);
+            		this.getParametersForExecutionAction(id, label, docName, roleName, execContextId, engine, typeCode, isFromCross, params);
             	}
             }
             ,failure: function(response, options) {
@@ -119,7 +120,7 @@ Ext.define('app.controllers.MobileController',{
 	    }); 
 	}
 	//params filled only from cross navigation
-	, getParametersForExecutionAction: function(id, label, roleName, sbiExecutionId, engine, typeCode, isFromCross, params){
+	, getParametersForExecutionAction: function(id, label, docName, roleName, sbiExecutionId, engine, typeCode, isFromCross, params){
 				
 		  app.controllers.parametersController.getParametersForExecutionAction({
 			  id: id,
@@ -129,6 +130,7 @@ Ext.define('app.controllers.MobileController',{
 			  engine: engine, 
 			  typeCode: typeCode,
 			  isFromCross : isFromCross,
+			  docName: docName,
 			  params: params //filled only from cross navigation
 		  });
 	}

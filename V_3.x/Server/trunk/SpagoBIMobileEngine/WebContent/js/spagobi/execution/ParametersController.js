@@ -47,6 +47,7 @@ Ext.define('app.controllers.ParametersController',{
 					var responseJson = Ext.decode(response.responseText);
 					
 					var executionInstance = {
+							OBJECT_NAME: option.docName,
 							OBJECT_ID: id, 
 							OBJECT_LABEL: label, 
 							isFromCross: isFromCross, 
@@ -83,7 +84,7 @@ Ext.define('app.controllers.ParametersController',{
 							}
 						}else{
 							var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
-							this.executionInstance.noParametersPageNeeded=true;
+							this.executionInstance.noParametersPageNeeded=false;
 							app.views.parameters.refresh(parameters);
 							app.views.viewport.goParameters();
 						}

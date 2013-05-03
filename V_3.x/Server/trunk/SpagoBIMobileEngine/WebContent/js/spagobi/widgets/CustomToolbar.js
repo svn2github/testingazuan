@@ -109,6 +109,12 @@ Ext.define('app.views.CustomToolbar', {
 						}
 						
 						});
+	    	}else if(btnKey === 'title'){
+	    		button = new Ext.Button( {
+    				hidden: true,
+					title : 'title',
+					html: ' '
+					});
 	    	}else if(btnKey === 'spacer'){
 	    		button = new Ext.Spacer( {
 	    			xtype: 'spacer'
@@ -132,7 +138,6 @@ Ext.define('app.views.CustomToolbar', {
 					ui: 'plain',
 					html: Sbi.settings.toolbar.html[code],
 					autoEvent: 'html'
-					
 					});
 	    	}
 	    	if(button){
@@ -163,10 +168,9 @@ Ext.define('app.views.CustomToolbar', {
         			j++;
         		}
         		if(j<this.visibleButtons.length && this.visibleButtons[j].btnKey==visibleButtonsList[i]){
-        			this.visibleButtons[j].show();
-//        			if(this.visibleButtons[j].btnKey=="documentbrowser" && submodality!="refresh"){
-//        				this.visibleButtons[j].hide();
-//        			}
+        			if(!this.visibleButtons[j].toHide){
+        				this.visibleButtons[j].show();	
+        			}
         			j++;
         		}
     		}
@@ -206,7 +210,6 @@ Ext.define('app.views.CustomToolbar', {
         	}
    		}
     },
-    
     
     getToolbarButtonByType: function(type){
     	for(var i=0; i<this.visibleButtons.length; i++){
@@ -251,9 +254,4 @@ Ext.define('app.views.CustomToolbar', {
     	//	this.navigationToolbar.documentNames.length = position;
     	}
     }
-
-
-    
-
-
 });

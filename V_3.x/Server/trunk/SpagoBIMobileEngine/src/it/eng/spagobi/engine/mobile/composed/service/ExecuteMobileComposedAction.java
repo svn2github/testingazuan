@@ -8,6 +8,8 @@ package it.eng.spagobi.engine.mobile.composed.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
+import it.eng.spagobi.engine.mobile.chart.serializer.MobileChartJSONSerializer;
+import it.eng.spagobi.engine.mobile.composed.serializer.MobileComposedJSONSerializer;
 import it.eng.spagobi.engine.mobile.service.AbstractExecuteMobileAction;
 import it.eng.spagobi.engine.mobile.template.ComposedTemplateInstance;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -48,12 +50,13 @@ public class ExecuteMobileComposedAction extends AbstractExecuteMobileAction{
 			ComposedTemplateInstance templInst = new ComposedTemplateInstance(template);
 			templInst.loadTemplateFeatures();
 			logger.debug("Created template instance");
-			JSONObject features = templInst.getFeatures();
+			MobileComposedJSONSerializer writer = new MobileComposedJSONSerializer();	
+			JSONObject toReturn =  (JSONObject)writer.write(templInst);
 			//this engine doesn't need dataset, cause it just encapsulates other mobile docs
 
 			try {
 				logger.debug("OUT");
-				writeBackToClient( new JSONSuccess( features) );
+				writeBackToClient( new JSONSuccess( toReturn) );
 			} catch (IOException e) {
 				SpagoBIEngineServiceException serviceError = new SpagoBIEngineServiceException("Execution", "Error executing the cockpit");
 				try {

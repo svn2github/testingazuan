@@ -5,16 +5,20 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /**
- * @authors Monica Franceschini (Monica.Franceschini@eng.it)
+ * @authors Monica Franceschini (Monica.Franceschini@eng.it), Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
 package it.eng.spagobi.engine.mobile.template;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engine.mobile.MobileConstants;
+import it.eng.spagobi.utilities.json.JSONTemplateUtils;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -23,12 +27,17 @@ import org.json.JSONObject;
 public class AbstractTemplateInstance {
 	//table template properties
 	protected JSONObject drill = new JSONObject();
-	
-
+	protected Map<String, Object> documentProperties = new HashMap<String, Object>();
 	protected SourceBean template;
 	protected HashMap<String, String> paramsMap = new HashMap<String, String>();
+	private JSONObject title = new JSONObject();
 	
 	private static transient Logger logger = Logger.getLogger(AbstractTemplateInstance.class);
+	
+	public void loadTemplateFeatures() throws Exception {
+		buildGenericComponents();
+	}
+	
 	protected void buildDrillJSON() throws Exception {
 		
 		SourceBean confSB = null;
@@ -61,7 +70,6 @@ public class AbstractTemplateInstance {
 					paramJSON.putOpt("paramValue", paramValue);//should be applied only on absolute type
 				}
 				params.put(paramJSON);
-
 			}
 			drill.put("params", params);
 		}
@@ -70,6 +78,62 @@ public class AbstractTemplateInstance {
 
 		logger.debug("OUT");		
 
+	}
+	
+	protected void buildTitleJSON() throws Exception {
+		
+		SourceBean confSB = null;
+		String titleName = null;
+		
+		logger.debug("IN");
+		confSB = (SourceBean)template.getAttribute(MobileConstants.TITLE_TAG);
+		if(confSB == null) {
+			logger.warn("Cannot find title configuration settings: tag name " + MobileConstants.TITLE_TAG);
+			return;
+		}
+		titleName = (String)confSB.getAttribute(MobileConstants.TITLE_VALUE_ATTR);
+		Map parNotNull = this.paramsMap;
+		Iterator it = parNotNull.keySet().iterator();
+		while(it.hasNext()){
+			String key = (String)it.next();
+
+			if(parNotNull.get(key)== null){
+				parNotNull.put(key, " ");			
+			}
+		}
+		String titleWithPars = StringUtilities.substituteParametersInString(titleName, ((Map)parNotNull), null, false);
+		
+		String titleStyle = (String)confSB.getAttribute(MobileConstants.TITLE_STYLE_ATTR);
+		
+		title.put("value", titleWithPars);
+		title.put("style", titleStyle);
+		documentProperties.put("title", title);
+		logger.debug("OUT");		
+
+	}
+	
+	public void buildGenericComponents() throws Exception {
+		buildDrillJSON();
+		buildTitleJSON();
+		getHeader();
+		getFooter();
+		getDocumentContainerStyle();
+	}
+	
+	public void getHeader(){
+		documentProperties.put("header",(String)template.getCharacters(MobileConstants.HEADER));
+	}
+	
+	public void getFooter(){
+		documentProperties.put("footer",(String)template.getCharacters(MobileConstants.FOOTER));
+	}
+	
+	public void getDocumentContainerStyle(){
+		documentProperties.put("style", (String)template.getAttribute(MobileConstants.DOCUMENT_STYLE_ATTR));
+	}
+
+	public Map<String, Object> getDocumentProperties() {
+		return documentProperties;
 	}
 
 }

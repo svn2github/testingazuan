@@ -103,13 +103,7 @@ Ext.define('app.views.DocumentBrowser',{
 //			app.controllers.mobileController.showDetail({record: record});
 			//direct execution: no preview
 			var rec = record.data;
-			app.controllers.mobileController.getRoles({
-				action: 'getRoles',
-				id: rec.id,
-				label: rec.label, 
-				engine: rec.engine, 
-				typeCode: rec.typeCode
-			});
+			app.controllers.mobileController.getRoles(rec);
 		}
 
 

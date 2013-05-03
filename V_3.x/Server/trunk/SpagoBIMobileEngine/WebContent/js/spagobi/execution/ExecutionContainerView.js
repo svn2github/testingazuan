@@ -95,7 +95,16 @@ Ext.define('app.views.ExecutionContainerView',{
 				
 				for(var i=0; i<this.containerToolbars.length; i++){
 					toolbar = this.containerToolbars[i];
-					toolbar.addDocumentToNavigationToolbar(executionInstance.OBJECT_LABEL, this.executedDocuments);
+					var label = executionInstance.OBJECT_NAME;
+					try{
+						if(Sbi.settings && Sbi.settings.navigationToolbar && Sbi.settings.navigationToolbar.label){
+							label = eval(Sbi.settings.navigationToolbar.label);
+						}
+					}catch(e){
+						console.debug(e);
+					}
+
+					toolbar.addDocumentToNavigationToolbar(label, this.executedDocuments);
 				}
 			}
 			this.executedDocuments++;

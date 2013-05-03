@@ -10,13 +10,23 @@ Ext.define('app.views.WidgetPanel',{
 	extend:'Ext.Panel',
 	config:{
 		executionInstance : null
+		,resp: null
 		,slider: null
-		, dockedItems: []	
+		,dockedItems: []	
+	},
+
+	constructor : function(config) {
+		Ext.apply(this,config);
+		this.callParent(arguments);
 	}
 
 	                
     ,initialize: function (options) {
-
+    	if(this.resp && this.resp.documentProperties && this.resp.documentProperties.style){
+    		this.setStyle(this.resp.documentProperties.style);
+    	}else{
+    		this.setStyle("");
+    	}
     	this.callParent( arguments);
 	}
 	
@@ -42,22 +52,61 @@ Ext.define('app.views.WidgetPanel',{
 	}
 	
 	, buildHeader: function(){
-		var header = new Ext.Panel({
-			html: "HEADER",
-			style: {
-				height: "20px"
-			}
-		});
-		return header;
+		if(this.resp && this.resp.documentProperties && this.resp.documentProperties.header){
+			var header = new Ext.Panel({
+				html: this.resp.documentProperties.header,
+				docked: "top",
+				style: {
+					height: "20px",
+					position: "relative"
+				}
+			});
+			return header;
+		}
+		return null;
 	}
 	
 	, buildFooter: function(){
-		var footer = new Ext.Panel({
-			html: "FOOTER",
-			style: {
-				height: "20px"
+		if(this.resp && this.resp.documentProperties && this.resp.documentProperties.footer){
+			var footer = new Ext.Panel({
+				docked: "bottom",
+				html: this.resp.documentProperties.footer,
+				style: {
+					height: "20px",
+					position: "relative"
+				}
+			});
+			return footer;
+		}
+		return null;
+	}
+	
+	, updateTitle: function(){
+		var button = null;
+		
+		if(app.views.customTopToolbar){
+			button = app.views.customTopToolbar.getToolbarButtonByType('title');
+		}
+		if(button==null && app.views.customBottomToolbar){
+			button = app.views.customBottomToolbar.getToolbarButtonByType('title');
+		}
+		
+		if(button && this.resp && this.resp.documentProperties && this.resp.documentProperties.title){
+			button.toHide = false;
+			var titleText = this.resp.documentProperties.title.value;
+			var titleStyle = this.resp.documentProperties.title.style;
+			if(titleText){
+				button.setHtml(titleText);				
+			}else{
+				c.hide();
+				button.toHide=true;
 			}
-		});
-		return footer;
+			if(titleStyle){
+				button.setStyle(titleStyle); 
+			}
+		}else{
+			button.hide();
+			button.toHide=true;
+		}
 	}
 });

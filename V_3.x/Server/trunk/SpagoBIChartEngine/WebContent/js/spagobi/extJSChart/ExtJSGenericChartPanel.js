@@ -134,11 +134,13 @@ Ext.define('Sbi.extjs.chart.ExtJSGenericChartPanel', {
     }
     
   , onLoad: function(){
-	  var elements = this.store.getRange();
-	  if (elements.length == 0){
-			//Sbi.exception.ExceptionHandler.showWarningMessage('The dataset has no elements');		
-			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.charts.messagewin.info.nodataset'));
+	  if (!this.store.loading) {
+		  var elements = this.store.getRange();
+		  if (elements.length == 0){
+				Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.charts.messagewin.info.nodataset'));
+		  }
 	  }
+
 	  this.adaptStoreForChart();
       this.createChart();
   }

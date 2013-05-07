@@ -56,4 +56,5 @@ Sbi.locale.formats = {
 Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Message d\'alerte';
 Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Message d\'erreur';
 Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Message d\'information';
+Sbi.locale.ln['sbi.charts.messagewin.info.nodataset'] = 'Le Dataset ne contient aucun élément';
 

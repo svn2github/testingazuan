@@ -92,16 +92,14 @@ public class AbstractTemplateInstance {
 			return;
 		}
 		titleName = (String)confSB.getAttribute(MobileConstants.TITLE_VALUE_ATTR);
-		Map parNotNull = this.paramsMap;
-		Iterator it = parNotNull.keySet().iterator();
-		while(it.hasNext()){
-			String key = (String)it.next();
 
-			if(parNotNull.get(key)== null){
-				parNotNull.put(key, " ");			
-			}
+		Map<String, String> params = getNotNullPrameters();
+		
+		String titleWithPars = titleName;
+		if(params!=null && titleName!=null){
+			titleWithPars = StringUtilities.substituteParametersInString(titleName, params, null, false);	
 		}
-		String titleWithPars = StringUtilities.substituteParametersInString(titleName, ((Map)parNotNull), null, false);
+		
 		
 		String titleStyle = (String)confSB.getAttribute(MobileConstants.TITLE_STYLE_ATTR);
 		
@@ -162,9 +160,8 @@ public class AbstractTemplateInstance {
 					notNullParamsMap.put(key, " ");			
 				}
 			}
-			return notNullParamsMap;
 		}
-		return null;
+		return notNullParamsMap;
 	}
 
 }

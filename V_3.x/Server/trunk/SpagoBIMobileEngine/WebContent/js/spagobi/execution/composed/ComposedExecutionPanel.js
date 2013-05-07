@@ -44,6 +44,9 @@ Ext.define('app.views.ComposedExecutionPanel',{
 				for (var i = 0; i < documentsList.length; i++) {
 					//var subDocumentPanel = this.buildPanel(documentsList[i]);
 					var mainDocumentParameters = executionInstance.PARAMETERS;
+					if(mainDocumentParameters){
+						mainDocumentParameters = Ext.decode(mainDocumentParameters);
+					}
 					var subDocumentDefaultParameters = documentsList[i].IN_PARAMETERS;
 					var subDocumentParameters = Ext.apply(subDocumentDefaultParameters, mainDocumentParameters);
 					var subDocumentExecutionInstance = Ext.apply({}, documentsList[i]);
@@ -59,7 +62,6 @@ Ext.define('app.views.ComposedExecutionPanel',{
 				}
 			}
 			this.on("updatedOneDocument",this.updateOneDocument,this);
-
 		},
 		
 		addWidgetComposed: function(resp, type, composedComponentOptions, positionInComposition){
@@ -184,7 +186,6 @@ Ext.define('app.views.ComposedExecutionPanel',{
 		            html: slider.maxValue
 		    };
 			
-			
 			this.sliderToolbar = new Ext.Toolbar({
                 xtype: 'toolbar',
                 docked: 'bottom',
@@ -197,7 +198,6 @@ Ext.define('app.views.ComposedExecutionPanel',{
             });
 			
 			this.add(this.sliderToolbar);
-
 		}
 		
 });

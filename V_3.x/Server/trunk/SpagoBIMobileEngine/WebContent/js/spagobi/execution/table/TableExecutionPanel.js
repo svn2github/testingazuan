@@ -8,6 +8,7 @@
 Ext.define('app.views.TableExecutionPanel',{
 	extend: 'app.views.WidgetPanel',
 	config:{
+		cls: 'spagobi-table',
 		scroll: 'vertical',		
 	},
 

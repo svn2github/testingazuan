@@ -103,6 +103,7 @@ Ext.define('app.views.CustomToolbar', {
 	    				hidden: true,
 						title : 'back',
 						ui: 'back',
+						cls: 'toolbar-doc-browser',
 						text: 'Back',
 						handler: function(){
 							thisPanel.fireEvent("documentbrowserback",thisPanel, this);
@@ -133,9 +134,10 @@ Ext.define('app.views.CustomToolbar', {
 	    		button = this.buildNavigationToolbar();
 	    	}else if(btnKey.substring(0,4) === 'html'){
 	    		var code = btnKey.substring(5); 
-	    		button = new Ext.Button( {
+	    		button = new Ext.Panel( {
 					title : 'Html',
 					ui: 'plain',
+					cls: 'toolbar-html',
 					html: Sbi.settings.toolbar.html[code],
 					autoEvent: 'html'
 					});
@@ -236,6 +238,7 @@ Ext.define('app.views.CustomToolbar', {
     		var button = Ext.create('Ext.Button', {
     		    text: text,
     		    height: 20,
+    		    cls: 'toolbar-navigation',
 				handler: function(){
 					thisPanel.fireEvent("navigationbuttonclicked",thisPanel, itemPos);
 				}

@@ -49,6 +49,7 @@ Ext.define('app.controllers.ExecutionController',{
 		        		var type = doc.typeCode;
 			  			app.controllers.mobileController.getRoles({
 							  id: doc.id,
+							  name: doc.name,
 							  label: doc.label, 
 							  engine: doc.engine, 
 							  typeCode: doc.typeCode,

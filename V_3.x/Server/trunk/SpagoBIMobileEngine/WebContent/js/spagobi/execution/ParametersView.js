@@ -26,7 +26,7 @@ Ext.define('app.views.ParametersView',{
 				this.removeAll();
 	
 				var fieldset = Ext.create("Ext.form.FieldSet",{
-						title : 'Document Parameters',
+						title : 'Parametri del Documento',
 						xtype : 'fieldset',
 						items : items
 				});
@@ -46,6 +46,7 @@ Ext.define('app.views.ParametersView',{
 					items: [fieldset, {
 						xtype : 'toolbar',
 						docked : 'bottom',
+						cls: 'parameters-toolbar',
 						height: 30,
 						defaults : {
 							ui : 'plain',

@@ -69,6 +69,7 @@ Ext.define('app.views.LoginView',{
 	                   ,
 	                    {
 	                        docked: 'bottom',
+	                        cls: 'log-in-toolbar',
 	                        xtype: 'toolbar',
 	                        height:30,
 	                        style:'padding : 7px;',

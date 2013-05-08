@@ -51,7 +51,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 					var crossParams = new Array();
 					this.setCrossNavigation(resp, item, crossParams);
 					var targetDoc;
-					if(resp.config && resp.config.drill && resp.config.drill.param){
+					if(resp.config && resp.config.drill && resp.config.drill.params){
 						targetDoc = this.setTargetDocument(resp);	
 						this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
 					}

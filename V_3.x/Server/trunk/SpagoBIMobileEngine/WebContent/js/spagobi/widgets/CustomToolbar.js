@@ -111,7 +111,7 @@ Ext.define('app.views.CustomToolbar', {
 						
 						});
 	    	}else if(btnKey === 'title'){
-	    		button = new Ext.Button( {
+	    		button = new Ext.Panel( {
     				hidden: true,
 					title : 'title',
 					html: ' '

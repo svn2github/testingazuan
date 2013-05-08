@@ -47,6 +47,9 @@ Ext.define('app.views.WidgetPanel',{
 			//for table cross navigation
 			drill = resp.features.drill;
 		}
+		if(!drill){
+			drill = resp.features.drill;
+		}
 		var targetDoc = drill.document;
 		return targetDoc;
 	}
@@ -54,32 +57,39 @@ Ext.define('app.views.WidgetPanel',{
 	, buildHeader: function(){
 		if(this.resp && this.resp.documentProperties && this.resp.documentProperties.header){
 			var header = new Ext.Panel({
-				html: this.resp.documentProperties.header,
+				html: this.updateParameters(this.resp.documentProperties.header),
 				docked: "top",
 				style: {
 					height: "20px",
 					position: "relative"
 				}
 			});
+			this.header = header;
 			return header;
 		}
+		this.header = null;
 		return null;
 	}
 	
+
 	, buildFooter: function(){
 		if(this.resp && this.resp.documentProperties && this.resp.documentProperties.footer){
 			var footer = new Ext.Panel({
 				docked: "bottom",
-				html: this.resp.documentProperties.footer,
+				html: this.updateParameters(this.resp.documentProperties.footer),
 				style: {
 					height: "20px",
 					position: "relative"
 				}
 			});
+			this.footer = footer;
 			return footer;
 		}
+		this.footer =null;
 		return null;
 	}
+
+
 	
 	, updateTitle: function(){
 		var button = null;
@@ -92,9 +102,12 @@ Ext.define('app.views.WidgetPanel',{
 		}
 		
 		if(button && this.resp && this.resp.documentProperties && this.resp.documentProperties.title){
+			
 			button.toHide = false;
 			var titleText = this.resp.documentProperties.title.value;
 			var titleStyle = this.resp.documentProperties.title.style;
+			button.titleText = titleText;
+			titleText = this.updateParameters(titleText);
 			if(titleText){
 				button.setHtml(titleText);				
 			}else{
@@ -104,9 +117,48 @@ Ext.define('app.views.WidgetPanel',{
 			if(titleStyle){
 				button.setStyle(titleStyle); 
 			}
+			this.titleButton = button;
 		}else{
 			button.hide();
 			button.toHide=true;
 		}
+	}
+	
+	, updateHeader: function(params){
+		if(this.header){
+			this.header.setHtml(this.updateParameters(this.resp.documentProperties.header,params));	
+		}
+	}
+	, updateFooter: function(params){
+		if(this.footer){
+			this.footer.setHtml(this.updateParameters(this.resp.documentProperties.footer, params));	
+		}
+	}
+	
+	, updateTitlePanel: function(params){
+		if(this.titleButton){
+			this.titleButton.setHtml(this.updateParameters(this.titleButton.titleText, params));	
+		}
+	}
+	
+	, updateParameters: function(text,parameters){
+		try{
+			if(!parameters){
+				parameters = this.executionInstance.PARAMETERS;			
+			}
+			for(p in parameters){
+				text = text.replace("$P{"+p+"}",parameters[p]);
+			}
+			return text;
+		}catch(e){
+			console.error(e);
+		}
+		return text;
+	}
+	
+	, updatePanel: function(params){
+		this.updateHeader(params);
+		this.updateFooter(params);
+		this.updateTitlePanel(params);
 	}
 });

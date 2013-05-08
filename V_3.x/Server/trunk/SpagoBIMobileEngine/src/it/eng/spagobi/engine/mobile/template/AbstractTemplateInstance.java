@@ -93,12 +93,12 @@ public class AbstractTemplateInstance {
 		}
 		titleName = (String)confSB.getAttribute(MobileConstants.TITLE_VALUE_ATTR);
 
-		Map<String, String> params = getNotNullPrameters();
-		
+//		Map<String, String> params = getNotNullPrameters();
+//		
 		String titleWithPars = titleName;
-		if(params!=null && titleName!=null){
-			titleWithPars = StringUtilities.substituteParametersInString(titleName, params, null, false);	
-		}
+//		if(params!=null && titleName!=null){
+//			titleWithPars = StringUtilities.substituteParametersInString(titleName, params, null, false);	
+//		}
 		
 		
 		String titleStyle = (String)confSB.getAttribute(MobileConstants.TITLE_STYLE_ATTR);
@@ -121,10 +121,10 @@ public class AbstractTemplateInstance {
 	public void getHeader() throws Exception{
 		String header = (String)template.getCharacters(MobileConstants.HEADER);
 		if(header !=null){
-			Map<String, String> params = getNotNullPrameters();
-			if(params!=null){
-				header= StringUtilities.substituteParametersInString(header, params, null, false);
-			}
+//			Map<String, String> params = getNotNullPrameters();
+//			if(params!=null){
+//				header= StringUtilities.substituteParametersInString(header, params, null, false);
+//			}
 			
 		}
 		documentProperties.put("header",header);
@@ -133,10 +133,10 @@ public class AbstractTemplateInstance {
 	public void getFooter() throws Exception{
 		String footer = (String)template.getCharacters(MobileConstants.FOOTER);
 		if(footer !=null){
-			Map<String, String> params = getNotNullPrameters();
-			if(params!=null){
-				footer= StringUtilities.substituteParametersInString(footer,params , null, false);
-			}
+//			Map<String, String> params = getNotNullPrameters();
+//			if(params!=null){
+//				footer= StringUtilities.substituteParametersInString(footer,params , null, false);
+//			}
 		}
 		documentProperties.put("footer",footer);
 	}

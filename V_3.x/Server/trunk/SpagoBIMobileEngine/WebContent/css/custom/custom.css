@@ -125,14 +125,30 @@
 }
 
 
-
-
-/*
-
-.spagobi-table .x-list-item-body{
-	min-height: 5px !important;
+/*custom button*/
+.toolbar-navigation.x-layout-box-item.x-stretched.x-button-pressed {
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #A0061D), color-stop(100%, #712833)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#A0061D 7%,#712833) !important;
+  background-image: linear-gradient(top, #D8061D,#A0061D 7%,#712833)!important; 
 }
 
-.x-container .x-list-item .x-stretched .x-touchgrid-item .x-list-item-first .x-list-header-wrap{
-	min-height: 5px !important;
-}*/
+.touchgridpanel .x-grid-cell-hd{
+color: black !important;
+text-shadow: none !important
+font-size: 8px !important;
+font-family: Verdana !important;
+}
+.x-grid-cell{
+text-shadow: none !important;
+font-size: 16px !important;
+}
+.x-container .x-list-item .x-stretched .x-touchgrid-item .x-item-selected .x-list-item-first .x-list-header-wrap{
+min-height: 20px !important;
+-webkit-transform: translate3d(0px, 0px, 0px);
+}
+.x-legend-item{
+text-shadow: none !important;
+font-size: 12px !important;
+font-family: Verdana !important;
+}

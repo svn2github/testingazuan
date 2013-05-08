@@ -18,6 +18,7 @@ import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -46,8 +47,8 @@ public class ExecuteMobileComposedAction extends AbstractExecuteMobileAction{
 			SourceBean template = SourceBean.fromXMLString( templContString );
 			logger.debug("Created template source bean");
 			
-			
-			ComposedTemplateInstance templInst = new ComposedTemplateInstance(template);
+			HashMap paramMap = getParametersList(getAttributeAsJSONObject("PARAMETERS"));
+			ComposedTemplateInstance templInst = new ComposedTemplateInstance(template, paramMap);
 			templInst.loadTemplateFeatures();
 			logger.debug("Created template instance");
 			MobileComposedJSONSerializer writer = new MobileComposedJSONSerializer();	

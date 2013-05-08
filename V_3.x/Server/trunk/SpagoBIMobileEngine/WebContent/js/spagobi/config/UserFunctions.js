@@ -55,4 +55,17 @@ Ext.define('Sbi.chart.userFunctions', {
     		return changes;
     	}
     }
+    ,axisFormatter: function(a,b,c,d){
+    	if(a/1000>1){
+    		return Math.floor(a/1000)+"K";
+    	}else if(a/1000000>1){
+    		return Math.floor(a/1000000)+"M";
+    	}else if(a/1000000000>1){
+    		return Math.floor(a/1000000000)+"G";
+    	}else if(a/1000000000000>1){
+    		return Math.floor(a/1000000000000)+"T";
+    	}    		
+    	
+    	return a;
+    }
 });

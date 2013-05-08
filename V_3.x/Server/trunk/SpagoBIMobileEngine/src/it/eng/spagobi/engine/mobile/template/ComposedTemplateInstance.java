@@ -14,6 +14,7 @@ import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engine.mobile.MobileConstants;
 import it.eng.spagobi.engines.config.bo.Engine;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class ComposedTemplateInstance extends AbstractTemplateInstance implement
 	private JSONObject slider = new JSONObject();
 	
 	
-	public ComposedTemplateInstance(SourceBean template) {
+	public ComposedTemplateInstance(SourceBean template, HashMap<String, String> paramsMap) {
+		this.paramsMap = paramsMap;
 		this.template = template;
 	}
 
@@ -153,7 +155,7 @@ public class ComposedTemplateInstance extends AbstractTemplateInstance implement
 			String increm = (String)confSB.getAttribute(MobileConstants.SLIDER_INCREMENT_ATTR);
 
 			Map<String, String> params = getNotNullPrameters();
-			if(params!=null && value!=null && value.length()==0){
+			if(params!=null && value!=null && value.length()!=0){
 				value = StringUtilities.substituteParametersInString(value,params , null, false);
 			}
 			if(value!=null && value.length()==0){

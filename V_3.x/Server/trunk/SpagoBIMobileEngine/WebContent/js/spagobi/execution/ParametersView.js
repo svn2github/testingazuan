@@ -58,11 +58,10 @@ Ext.define('app.views.ParametersView',{
 						},
 						items : [
 						         {
-						        	 title : 'Home',
-						        	 iconCls : 'reply',
-						        	 text : 'Home',
+						    		 text : 'Previous',
+						    		 iconCls : 'reply',
 						        	 handler : function() {
-						        		 app.controllers.mobileController.backToBrowser();
+						        		 app.views.executionContainer.goToPreviousExecutions(true);
 						        	 }
 						         },
 						         {

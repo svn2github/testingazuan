@@ -249,12 +249,25 @@ Ext.define('app.views.CustomToolbar', {
     	}
     },
     
-    cleanNavigationToolbarFromPosition: function(position){	
+    /**
+     * Clean the toolbar on the right.
+     * 
+     * @param position
+     * @param goForward if true we are navigating forward
+     */
+    cleanNavigationToolbarFromPosition: function(position, goForward){	
     	if(this.navigationToolbar){
-    		for(var i=this.navigationToolbar.getItems().items.length-1; i>=position; i-- ){
+    		var i=-1;
+    		for(i=this.navigationToolbar.getItems().items.length-1; i>=position; i-- ){
     			this.navigationToolbar.remove(this.navigationToolbar.getItems().items[i]);
     		}
-    	//	this.navigationToolbar.documentNames.length = position;
+    		if(!goForward && i>=0){
+    			this.navigationToolbar.getItems().items[i].addCls("x-button-pressed");
+    		}else{
+        		for(i=0; i<position; i++ ){
+        			this.navigationToolbar.getItems().items[i].removeCls("x-button-pressed");
+        		}
+    		}
     	}
     }
 });

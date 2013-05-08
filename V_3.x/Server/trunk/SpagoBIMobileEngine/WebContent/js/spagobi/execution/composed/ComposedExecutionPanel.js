@@ -62,6 +62,7 @@ Ext.define('app.views.ComposedExecutionPanel',{
 				}
 			}
 			this.on("updatedOneDocument",this.updateOneDocument,this);
+			this.callParent();
 		},
 		
 		addWidgetComposed: function(resp, type, composedComponentOptions, positionInComposition){
@@ -78,6 +79,11 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			} else {
 				panel = Ext.create("app.views.TableExecutionPanel",{resp: resp, fromcomposition: true, executionInstance: composedComponentOptions.executionInstance, parentDocument:this});
 			}
+			var h = panel.buildHeader();
+			var f = panel.buildFooter();
+
+			panel.add(h);
+			panel.add(f);
 			
 			panel.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
 					
@@ -116,12 +122,12 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			this.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
 			this.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
 			this.setCrossNavigated(true);
-			
+			var params = {};
 			for(var i=0; i<(this.getSubdocuments()).length; i++){
 				var panel = (this.getSubdocuments())[i];
 				console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
 
-				var params = {};
+				
 				for (var j = 0 ; j < paramsArray.length ; j++) {
 					var aParam = paramsArray[j];
 					params[aParam.name] = aParam.value;
@@ -129,6 +135,8 @@ Ext.define('app.views.ComposedExecutionPanel',{
 
 				app.controllers.composedExecutionController.refreshSubDocument(panel, this, params);
 			}
+			//update header, footer, title
+			this.updatePanel(params);
 		},
 		
 		propagateCrossNavigationEvent : function(sourcePanel, paramsArray, targetDoc) {
@@ -140,12 +148,11 @@ Ext.define('app.views.ComposedExecutionPanel',{
 				sourcePanel.parentDocument.setSubDocumentsToUpdate(new Array(this.getSubDocumentNumber()));
 				sourcePanel.parentDocument.setSubDocumentsToUpdateNumber(this.getSubDocumentNumber());
 				this.setCrossNavigated(true);
-				
+				var params = {};
 				for(var i=0; i<(sourcePanel.parentDocument.getSubdocuments()).length; i++){
 					var panel = (sourcePanel.parentDocument.getSubdocuments())[i];
 					console.log('app.views.ComposedExecutionPanel:execCrossNavigationHandler: IN');
 
-					var params = {};
 					for (var j = 0 ; j < paramsArray.length ; j++) {
 						var aParam = paramsArray[j];
 						params[aParam.name] = aParam.value;
@@ -153,7 +160,10 @@ Ext.define('app.views.ComposedExecutionPanel',{
 
 					app.controllers.composedExecutionController.refreshSubDocument(panel,  sourcePanel.parentDocument, params);
 				}
+				this.updatePanel(params);
 			}
+			//update header, footer, title
+			
 		},
 		
 		updateOneDocument:function(panel,position){

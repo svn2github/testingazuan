@@ -51,10 +51,11 @@ Ext.define('app.views.ChartExecutionPanel',{
 					var crossParams = new Array();
 					this.setCrossNavigation(resp, item, crossParams);
 					var targetDoc;
-					if(resp.config != undefined && resp.config.drill != undefined){
-						targetDoc = this.setTargetDocument(resp);					
+					if(resp.config && resp.config.drill && resp.config.drill.param){
+						targetDoc = this.setTargetDocument(resp);	
+						this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
 					}
-					this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+					
 				}
 		};
 
@@ -77,7 +78,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 //		} else {
 //			this.fullscreen = true;
 //			chartConfig.fullscreen = true;
-//		}
+//
 
 		//chartConfig.bodyMargin = '10% 1px 60% 1px';
 

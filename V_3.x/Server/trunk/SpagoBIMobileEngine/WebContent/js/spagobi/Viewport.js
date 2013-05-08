@@ -45,28 +45,7 @@ Ext.define('app.views.Viewport',{
 			this.goLogIn();
 		},this);
 
-
-		
-//	    //put instances of login into app.views namespace
-//	    Ext.apply(app.views, {
-//	        loginView: new app.views.LoginView(),
-//	        main:      new app.views.MainContainer(),
-//	        parameters:new app.views.ParametersView(),
-//	        execution: new app.views.ExecutionView ()
-//
-//	    });
-//	    //put instances of loginView into viewport
-//	    Ext.apply(this, {
-//	        items: [
-//	            app.views.loginView,
-//	            app.views.main,
-//	            app.views.parameters,
-//	            app.views.execution
-//	        ]
-//	    });
-	    
 	    this.callParent(arguments);
-//	    this.goLogIn();
 
 	  }
 	
@@ -113,6 +92,7 @@ Ext.define('app.views.Viewport',{
 			var activeExecutionInstance = app.views.executionContainer.getActiveExecutionInstance();
 			if(activeExecutionInstance && activeExecutionInstance.isFromCross){
 				var option = {
+						docName:activeExecutionInstance.OBJECT_NAME,
 						id: activeExecutionInstance.OBJECT_ID,
 						label: activeExecutionInstance.OBJECT_LABEL,
 						roleName: activeExecutionInstance.ROLE,

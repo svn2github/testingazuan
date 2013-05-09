@@ -12,6 +12,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
 
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
@@ -159,10 +160,6 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		else return "";
 	}
 	
-	/**
-	 * TODO .. da verificare
-	 * @return
-	 */
 	protected String getOppositeRoleName(){
 		return JavaKeywordsUtils.transformToJavaPropertyName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getUniqueName()+"_in_"+getBusinessRelationship().getDestinationTable().getUniqueName());	
 	}
@@ -171,16 +168,42 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		return StringUtils.pluralise(JavaKeywordsUtils.transformToJavaPropertyName( getBusinessRelationship().getName()));
 	}	
 	
-	public String getSimpleSourceColumnName(){
-		return StringUtils.doubleQuote("`"+getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName()+"`");
+	public List<IJpaColumn> getSourceColumns(){
+		List<IJpaColumn> jpaSourceColumns = new ArrayList<IJpaColumn>();
+		List<SimpleBusinessColumn> sourceColumns = getBusinessRelationship().getSourceSimpleBusinessColumns();
+		for (SimpleBusinessColumn column : sourceColumns ){
+			jpaSourceColumns.add( new JpaColumn(getJpaTable(), column) );
+		}
+		return jpaSourceColumns;
 	}
 	
+	public List<IJpaColumn> getDestinationColumns(){
+		List<IJpaColumn> jpaDestinationColumns = new ArrayList<IJpaColumn>();
+		List<SimpleBusinessColumn> destinationColumns = getBusinessRelationship().getDestinationSimpleBusinessColumns();
+		for (SimpleBusinessColumn column : destinationColumns ){
+			jpaDestinationColumns.add( new JpaColumn(this.getReferencedTable(), column) );
+		}
+		return jpaDestinationColumns;
+	}
+	
+	/**
+	 * true if the relationship involve more than one column from the source table (and so also at the
+	 * destination table because the number of source columns must be always equal to the number of
+	 * destination columns
+	 */
 	public boolean isMultipleRelationship(){
 		if (getBusinessRelationship().getSourceColumns().size() > 1){
 			return true;
 		} else {
 			return false;
 		}			
+	}
+	
+	/**
+	 * facility method. returns the sql name on the single source column involved in the relationship
+	 */
+	public String getSimpleSourceColumnName(){
+		return StringUtils.doubleQuote("`"+getBusinessRelationship().getSourceSimpleBusinessColumns().get(0).getPhysicalColumn().getName()+"`");
 	}
 	
 	public List<String> getSimpleSourceColumnsNames(){

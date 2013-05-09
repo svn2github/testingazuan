@@ -91,6 +91,7 @@ public class JpaMappingClassesGenerator extends JpaMappingCodeGenerator {
 			copyFile( new File(srcDir, "views.json"),  binDir);
 			copyFile( new File(srcDir, "label.properties"),  binDir);
 			copyFile( new File(srcDir, "qbe.properties"),  binDir);
+			copyFile( new File(srcDir, "relationships.json"),  binDir);
 			copyFile( new File(srcDir, "META-INF/persistence.xml"),  new File(binDir, "META-INF"));
 			
 		} catch(Throwable t) {

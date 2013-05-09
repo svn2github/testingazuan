@@ -21,7 +21,9 @@ import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.ModelObject;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,61 +49,78 @@ import org.slf4j.LoggerFactory;
 public class JpaMappingCodeGenerator implements IGenerator {
 
 	/**
-	 * The base output dir as passed to the method generate (this class is not thread safe!) 
+	 * The base output folder as passed to the method generate (this class is not thread safe!) 
 	 */
 	protected File baseOutputDir;
 
 	protected File srcDir;
 
 	protected File distDir;
-
-
-
+	
 	/**
 	 *   The velocity template directory
 	 */
 	private File templateDir;
+	
+	private String persistenceUnitName;
+
+	// =======================================================================================
+	// VELOCITY TEMPALTES 
+	// =======================================================================================
 
 	/**
-	 * The velocity template used to map business table to java class
+	 * The template used to map business table to java class
 	 */
 	private File tableTemplate;
 
 	/**
-	 * The velocity template used to map business view to json mapping file
+	 * The template used to map business view to json mapping file
 	 */
 	private File viewTemplate;
 
 	/**
-	 * The velocity template used to map business table's composed key to a java class
+	 * The template used to map business table's composed key to a java class
 	 */
 	private File keyTemplate;	
 
 	/**
-	 * The velocity template used to generate the persistence.xml file
+	 * The template used to generate the persistence.xml file
 	 */
 	private File persistenceUnitTemplate;
 
+	/**
+	 * The template used to generate labels.properties file
+	 */
 	private File labelsTemplate;
 
+	/**
+	 * The template used to generate qbe.properties file
+	 */
 	private File propertiesTemplate;
 
+	/**
+	 * The template used to generate cfileds.xml file
+	 */
 	private File cfieldsTemplate;
+	
+	/**
+	 * The template used to generate relationshipsTemplate.json file
+	 */
+	private File relationshipsTemplate;
 
-	private String persistenceUnitName;
-
+	
+	//  -- STATICS --------------------------------------------------
+	
+	public static String defaultTemplateFolderPath = "templates";
 	public static final String DEFAULT_SRC_DIR = "src";
-
 	public static final String DEFAULT_DIST_DIR = "dist";
 
-
 	private static final IResourceLocator RL = SpagoBIMetaGeneratorPlugin.getInstance().getResourceLocator(); 
-
-	public static String defaultTemplateFolderPath = "templates";
 	
 	private static Logger logger = LoggerFactory.getLogger(JpaMappingCodeGenerator.class);
 
 
+	
 	public JpaMappingCodeGenerator() {
 		String templatesDirRelativePath;
 
@@ -141,6 +161,12 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			cfieldsTemplate  = new File(templateDir, "sbi_cfields.vm");
 			logger.trace("[Calculated Fields] template file is equal to [{}]", cfieldsTemplate);
 			Assert.assertTrue("[Calculated Fields] template file [" + cfieldsTemplate + "] does not exist", cfieldsTemplate.exists());
+		
+			relationshipsTemplate  = new File(templateDir, "sbi_relationships.vm");
+			logger.trace("[Relationships] template file is equal to [{}]", relationshipsTemplate);
+			Assert.assertTrue("[Relationships] template file [" + relationshipsTemplate + "] does not exist", relationshipsTemplate.exists());
+		
+			
 		} catch (Throwable t) {
 			logger.error("Impossible to resolve folder [" + templatesDirRelativePath + "]", t);
 		} finally{
@@ -242,7 +268,12 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 		createCfieldsFile(cfieldsTemplate, jpaModel);
 		logger.info("Properties file for model [{}] succesfully created", model.getName());
+		
+		createRelationshipFile(relationshipsTemplate, jpaModel);
+		logger.info("Properties file for model [{}] succesfully created", model.getName());
 
+		
+		
 		logger.trace("OUT");		
 	}
 
@@ -448,7 +479,34 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			logger.trace("OUT");
 		}
 	}	
+	
+	
+	private void createRelationshipFile(File templateFile, JpaModel model){
+		VelocityContext context;
 
+		logger.trace("IN");
+
+		try {
+			logger.debug("Create relationships.json");
+
+			context = new VelocityContext();
+			context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
+			context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
+
+			File outputFile = new File(srcDir, "relationships.json");
+
+			createFile(templateFile, outputFile, context);
+			BufferedReader r  = new BufferedReader(new FileReader(outputFile));
+			String content = "", l = "";
+			while( (l = r.readLine()) != null) content += l + "\n";
+			JSONObject o = new JSONObject(content);
+			r.close();
+		} catch(Throwable t) {
+			logger.error("Impossible to create relationships.json", t);
+		} finally {
+			logger.trace("OUT");
+		}
+	}	
 
 	private void createFile(File templateFile, File outputFile, VelocityContext context) {
 		Template template;
@@ -461,6 +519,7 @@ public class JpaMappingCodeGenerator implements IGenerator {
 
 		FileWriter fileWriter = null;
 		try {
+
 			fileWriter = new FileWriter(outputFile);
 
 			template.merge(context, fileWriter);

@@ -10,8 +10,11 @@
 package it.eng.spagobi.meta.generator.jpamapping.wrappers;
 
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.AbstractJpaTable;
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaColumn;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.impl.JpaRelationshipColumnsNames;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +34,6 @@ public interface IJpaRelationship {
 	boolean isManyToMany();	
 	
 	AbstractJpaTable getReferencedTable();
-	
 	AbstractJpaTable getJpaTable();
 	
 	/**
@@ -61,4 +63,8 @@ public interface IJpaRelationship {
 	public String getCollectionType();
 	
 	public String getOppositeWithAnnotation();
+	
+	public List<IJpaColumn> getSourceColumns();
+	
+	public List<IJpaColumn> getDestinationColumns();
 }

@@ -20,7 +20,7 @@ import java.util.List;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public abstract class AbstractJpaRelationship implements IJpaRelationship{
+public abstract class AbstractJpaRelationship implements IJpaRelationship {
 	AbstractJpaTable jpaTable;
 	String cardinality;
 	boolean bidirectional;

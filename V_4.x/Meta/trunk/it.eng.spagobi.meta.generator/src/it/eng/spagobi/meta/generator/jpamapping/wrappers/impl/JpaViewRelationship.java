@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 
+import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @deprecated until futher testing
+ * @deprecated until further testing
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -167,6 +168,18 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 	 */
 	@Override
 	public List<JpaRelationshipColumnsNames> getRelationshipColumnsNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IJpaColumn> getSourceColumns() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IJpaColumn> getDestinationColumns() {
 		// TODO Auto-generated method stub
 		return null;
 	}	

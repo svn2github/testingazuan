@@ -34,5 +34,8 @@ Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
- libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar
+ libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar,
+ libs/jackson-annotations-2.0.2.jar,
+ libs/jackson-core-2.0.2.jar,
+ libs/jackson-databind-2.0.2.jar
 Bundle-Vendor: Engineering Group

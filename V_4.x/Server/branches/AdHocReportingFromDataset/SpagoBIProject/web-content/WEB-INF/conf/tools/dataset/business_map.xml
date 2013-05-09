@@ -3,6 +3,9 @@
 	<MAP_ACTIONS>
 		<MAP_ACTION actionName="MANAGE_DATASETS_ACTION"  businessProcess="DatasetManagement"/>
 	</MAP_ACTIONS>
+	<MAP_ACTIONS>
+		<MAP_ACTION actionName="UPDATE_CONSOLE_DATASETS_ACTION"  businessProcess="DatasetManagement"/>
+	</MAP_ACTIONS>
 	<MAP_PAGE_MODULES>
 	</MAP_PAGE_MODULES>
 </BUSINESS_MAP>

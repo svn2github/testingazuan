@@ -265,6 +265,7 @@ Ext.onReady(function () {
     this.mainframe = Ext.create('Ext.ux.IFrame', 
     			{ xtype: 'uxiframe'
   	  			, src: firstUrl
+  	  			, height: '100%'
   	  			});
     
     this.titlePath = Ext.create("Ext.Panel",{title :'Home'});
@@ -298,11 +299,12 @@ Ext.onReady(function () {
 // 			}
 // 		}
 	}
-    this.mainpanel =  Ext.create("Ext.Panel",{
-    	height:'100%',
+    this.mainpanel =  Ext.create("Ext.panel.Panel",{
+    	autoScroll: true,
+    	height: '100%',
     	items: [
-			this.titlePath			
-    	    , mainframe]
+			//this.titlePath	,		
+    	    mainframe]
     	, dockedItems: [{
 	   	    xtype: 'toolbar',
 	   	    dock: 'left',
@@ -311,6 +313,7 @@ Ext.onReady(function () {
     });
     
     Ext.create('Ext.Viewport', {
+    	
         layout: 'fit',
         items: [this.mainpanel]
     });

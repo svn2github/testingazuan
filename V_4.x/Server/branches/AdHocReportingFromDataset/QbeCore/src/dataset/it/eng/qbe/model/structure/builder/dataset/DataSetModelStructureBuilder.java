@@ -10,6 +10,7 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.model.properties.initializer.IModelStructurePropertiesInitializer;
 import it.eng.qbe.model.properties.initializer.ModelStructurePropertiesInitializerFactory;
+import it.eng.qbe.model.properties.initializer.SimpleModelStructurePropertiesInitializer;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
@@ -30,31 +31,24 @@ import org.apache.log4j.Logger;
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
  */
 public class DataSetModelStructureBuilder implements IModelStructureBuilder {
-	
+	private static final String FIELD_TYPE_PROPERTY = "type";
 	private static transient Logger logger = Logger.getLogger(DataSetModelStructureBuilder.class);
 
 	private IDataSource dataSource;	
 	IModelStructurePropertiesInitializer propertiesInitializer;
 
-
-	/**
-	 * Constructor
-	 * @param dataSource the JPA DataSource
-	 */
 	public DataSetModelStructureBuilder(DataSetDataSource dataSource) {
 		if(dataSource == null) {
 			throw new IllegalArgumentException("DataSource parameter cannot be null");
 		}
 		setDataSource( dataSource );
-		propertiesInitializer = ModelStructurePropertiesInitializerFactory.getDataMartStructurePropertiesInitializer(dataSource);
+		propertiesInitializer = new SimpleModelStructurePropertiesInitializer(dataSource);
 	}
 	
 
 	public IModelStructure build() {
 		ModelStructure modelStructure;
 		String modelName;
-
-
 		
 		logger.debug("IN");
 		
@@ -66,7 +60,9 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 			
 			propertiesInitializer.addProperties(modelStructure);	
 			Map calculatedFields = getDataSource().getConfiguration().loadCalculatedFields();
-			modelStructure.setCalculatedFields(calculatedFields);
+			if(calculatedFields!=null){
+				modelStructure.setCalculatedFields(calculatedFields);
+			}
 					
 			List<IDataSet> rootentities = getDataSource().getRootEntities();
 			logger.debug("The root entity names are ["+ rootentities + "] ");
@@ -102,6 +98,7 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 
 		String entityName = entity.getName();		
 		IModelEntity dataMartEntity = modelStructure.addRootEntity(modelName, entityName, null, null, entityName);
+		dataMartEntity.getProperties().put(FIELD_TYPE_PROPERTY,"cube");
 		propertiesInitializer.addProperties(dataMartEntity);
 		
 		addNormalFields(dataMartEntity, entity);
@@ -152,9 +149,14 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 
 		IModelField datamartField = dataMartEntity.addNormalField(keyPrefix+ fieldName);
 		datamartField.setType(fieldMetadata.getFieldType().name());
+		datamartField.setName(fieldName);
 		datamartField.setPrecision(precisionInt);
 		datamartField.setLength(scale);
 		propertiesInitializer.addProperties(datamartField);
+		if(fieldMetadata.getFieldType()!=null){
+			datamartField.getProperties().put(FIELD_TYPE_PROPERTY, (fieldMetadata.getFieldType().name()).toLowerCase());
+		}
+		
 	}
 	
 

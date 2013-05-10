@@ -12,7 +12,7 @@ import it.eng.spagobi.tools.dataset.bo.IDataSet;
  * @author Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
-public class DataSetDataSourceConfiguration extends DelegatingDataSourceConfiguration {
+public class DataSetDataSourceConfiguration extends AbstractDataSourceConfiguration {
 	
 	IDataSet dataset;
 	

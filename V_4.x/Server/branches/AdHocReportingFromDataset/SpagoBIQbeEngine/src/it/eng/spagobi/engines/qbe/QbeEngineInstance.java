@@ -88,6 +88,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		dataSourceProperties.put("dblinkMap", template.getDbLinkMap());
 		
 		dataSourceProperties.put("metadataServiceProxy", env.get(EngineConstants.ENV_METAMODEL_PROXY));
+		dataSourceProperties.put(EngineConstants.ENV_DATASETS, env.get(EngineConstants.ENV_DATASETS));
 		
 		dataSource = QbeDataSourceManager.getInstance().getDataSource(template.getDatamartNames(), dataSourceProperties, 
 				QbeEngineConfig.getInstance().isDataSourceCacheEnabled());

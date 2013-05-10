@@ -32,8 +32,8 @@ public class DataSetDataSource  extends AbstractDataSource implements IDataSourc
 	
 	
 	private List<IDataSet> datasets;
-	
-	
+	public static final String EMPTY_MODEL_NAME = "";
+	public static final String DATASETS = "DATASETS";
 	private static transient Logger logger = Logger.getLogger(JPADataSource.class);
 
 	protected DataSetDataSource(String dataSourceName, IDataSourceConfiguration configuration) {
@@ -47,12 +47,16 @@ public class DataSetDataSource  extends AbstractDataSource implements IDataSourc
 		if(configuration instanceof DataSetDataSourceConfiguration){
 			datasets.add(((DataSetDataSourceConfiguration) configuration).getDataset());
 		} else if(configuration instanceof CompositeDataSourceConfiguration){
-			IDataSourceConfiguration subConf = ((CompositeDataSourceConfiguration)configuration).getSubConfigurations().get(0);
-			if(subConf instanceof DataSetDataSourceConfiguration){
-				datasets.add(((DataSetDataSourceConfiguration)subConf).getDataset());
-			} else {
-				Assert.assertUnreachable("Not suitable configuration to create a JPADataSource");
+			List<IDataSourceConfiguration> subConfigurations = ((CompositeDataSourceConfiguration)configuration).getSubConfigurations();
+			for(int i=0; i<subConfigurations.size(); i++){
+				IDataSourceConfiguration subConf = ((CompositeDataSourceConfiguration)configuration).getSubConfigurations().get(i);
+				if(subConf instanceof DataSetDataSourceConfiguration){
+					datasets.add(((DataSetDataSourceConfiguration)subConf).getDataset());
+				} else {
+					Assert.assertUnreachable("Not suitable configuration to create a JPADataSource");
+				}
 			}
+
 		} else {
 			Assert.assertUnreachable("Not suitable configuration to create a JPADataSource");
 		}

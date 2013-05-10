@@ -19,6 +19,7 @@ import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -74,10 +75,13 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			} else {
 				logger.debug("Audit enabled: [FALSE]");
 			}
-			
+
+			//Add the datyaset
+			Map env = addDatasetsToEnv();
+
 			logger.debug("Creating engine instance ...");
 			try {
-				qbeEngineInstance = QbeEngine.createInstance( templateBean, getEnv() );
+				qbeEngineInstance = QbeEngine.createInstance( templateBean,env );
 			} catch(Throwable t) {
 				SpagoBIEngineStartupException serviceException;
 				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";
@@ -174,4 +178,16 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 
 		
 	}    
+    
+    private Map addDatasetsToEnv(){
+		Map env = getEnv();
+		
+//		DataSetServiceProxy serviceProxy = getDataSetServiceProxy();
+//		List<IDataSet> dataSets = new ArrayList<IDataSet>();
+//		dataSets.add(serviceProxy.getDataSetByLabel("TelecomR2B2"));
+//		dataSets.add(serviceProxy.getDataSetByLabel("aa"));
+//		env.put(EngineConstants.ENV_DATASETS, dataSets);
+		
+		return env;
+    }
 }

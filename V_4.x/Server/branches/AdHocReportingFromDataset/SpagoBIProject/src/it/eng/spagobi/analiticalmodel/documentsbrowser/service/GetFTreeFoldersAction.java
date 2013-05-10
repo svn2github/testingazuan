@@ -177,7 +177,7 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			try{
 				List childrenFolders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities((Integer)tmpNode.get(FoldersJSONSerializer.ID), false);
 				if (childrenFolders == null || childrenFolders.size() == 0)
-					node.put("leaf", "true");
+					node.put("leaf", true);
 			} catch (Throwable t) {
 				throw new Exception("An unexpected error occured while executing GET_FTREE_FOLDERS_ACTION", t);
 			}

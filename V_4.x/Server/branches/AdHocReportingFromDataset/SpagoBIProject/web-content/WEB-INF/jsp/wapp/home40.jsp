@@ -31,7 +31,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 <!-- Include Ext stylesheets here: -->
 <link id="extall"     rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/resources/css/ext-all.css" type="text/css" />
 <link id="theme-gray" rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/resources/css/ext-all-gray.css" type="text/css" />
-
+<script type="text/javascript" src="/SpagoBI/js/src/ext4/sbi/overrides/overrides.js"></script>
 
 <link id="spagobi-ext-4" rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/overrides/resources/css/spagobi.css" type="text/css" />
 <link id="spagobi-ext-4" rel="styleSheet" href ="/SpagoBI/themes/sbi_default/css/home40/layout.css" type="text/css" />
@@ -56,7 +56,11 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 	//System.out.println(jsonMenuList);
 
 %>
-
+<%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
+<script>
+sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
+</script>
+<%-- End javascript object useful for session expired management (see also sessionExpired.jsp) --%>
 <!-- I want to execute if there is an homepage, only for user!-->
 <%
 	String characterEncoding = response.getCharacterEncoding();
@@ -144,6 +148,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 	
  %>
 <script type="text/javascript">
+
 var win_info_1;
 Ext.require([
              'Ext.panel.*',
@@ -289,16 +294,17 @@ Ext.onReady(function () {
 			if(Sbi.user.roles && Sbi.user.roles.length == 1){
 				menuItem.hidden=true;
 			}
+		}else if(menuItem.itemLabel != null && menuItem.itemLabel == "HOME"){
+			menuItem.tooltip = '<p style="color: blue; ">'+LN('sbi.home.Welcome')+'<b>'+ 
+			'<p style="color: white; font-weight: bold;">'+Sbi.user.userName+'</p>'
+								+'<b></p>'
 		}
-// 		else if(menuItem.itemLabel != null && menuItem.itemLabel == "HOME"){
-// 			if(Sbi.user.roles){
-// 				for(j=0; j < Sbi.user.roles.length; j++){
-// 					var role = Sbi.user.roles[j];
-// 				}
-
-// 			}
-// 		}
+		
 	}
+	function hideItem( menu, e, eOpts){
+        console.log('bye bye ');
+        menu.hide();
+    }
     this.mainpanel =  Ext.create("Ext.panel.Panel",{
     	autoScroll: true,
     	height: '100%',
@@ -321,6 +327,7 @@ Ext.onReady(function () {
     
 });
 
+	
 </script>
  
 

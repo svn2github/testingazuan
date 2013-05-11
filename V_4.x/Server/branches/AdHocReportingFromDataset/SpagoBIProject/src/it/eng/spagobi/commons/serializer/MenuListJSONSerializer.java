@@ -271,7 +271,7 @@ public class MenuListJSONSerializer implements Serializer {
 			}
 		}
 		temp2.put(ID, new Double(Math.random()).toString());
-		
+
 		if (childElem.getHasChildren()){
 			level ++;
 			temp2.put(TITLE, text);
@@ -279,6 +279,7 @@ public class MenuListJSONSerializer implements Serializer {
 			temp2.put(COLUMNS, 1);
 			temp2.put(XTYPE, "buttongroup");
 			temp2.put(TARGET, "_self");
+			temp2.put(ICON_CLS, "bullet");
 			
 			List childrenBis = childElem.getLstChildren();
 			JSONArray tempMenuList2 =(JSONArray)getChildren(childrenBis,level, locale);
@@ -295,6 +296,7 @@ public class MenuListJSONSerializer implements Serializer {
 				temp2.put("style", "text-align: left;");
 				temp2.put(SRC, childElem.getUrl());
 				temp2.put(TARGET, "_self");
+				temp2.put(ICON_CLS, "bullet");
 				
 				if(childElem.getObjId()!=null){
 					temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");

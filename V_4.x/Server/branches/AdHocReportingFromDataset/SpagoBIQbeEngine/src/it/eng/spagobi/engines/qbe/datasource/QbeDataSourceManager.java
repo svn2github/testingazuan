@@ -47,7 +47,7 @@ public class QbeDataSourceManager {
 	
 	public IDataSource getDataSource(List<String> dataMartNames, Map<String, Object> dataSourceProperties, boolean useCache) {
 		if(dataSourceProperties!=null && dataSourceProperties.get(EngineConstants.ENV_DATASETS)!=null){
-			return getDataSourceFromDataSet(dataMartNames, dataSourceProperties, useCache);
+			return getDataSourceFromDataSet(dataSourceProperties, useCache);
 		}else{
 			return getORMDataSource(dataMartNames, dataSourceProperties, useCache);
 		}
@@ -97,7 +97,7 @@ public class QbeDataSourceManager {
 		return dataSource;
 	}
 	
-	public IDataSource getDataSourceFromDataSet(List<String> dataMartNames, Map<String, Object> dataSourceProperties, boolean useCache) {
+	public IDataSource getDataSourceFromDataSet(Map<String, Object> dataSourceProperties, boolean useCache) {
 		
 		IDataSource dataSource;
 		List<IDataSet> dataSets = (List<IDataSet>)dataSourceProperties.get(EngineConstants.ENV_DATASETS);

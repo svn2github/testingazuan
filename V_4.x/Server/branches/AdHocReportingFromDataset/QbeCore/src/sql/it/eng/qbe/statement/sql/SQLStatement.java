@@ -3,14 +3,26 @@
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package it.eng.qbe.statement.jpa;
+
+
+package it.eng.qbe.statement.sql;
 
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.jpa.IJpaDataSource;
 import it.eng.qbe.datasource.jpa.JPADataSource;
+import it.eng.qbe.datasource.sql.ISQLDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
+import it.eng.qbe.statement.jpa.JPQL2SQLStatementRewriter;
+import it.eng.qbe.statement.jpa.JPQLBusinessViewUtility;
+import it.eng.qbe.statement.jpa.JPQLStatement;
+import it.eng.qbe.statement.jpa.JPQLStatementFromClause;
+import it.eng.qbe.statement.jpa.JPQLStatementGroupByClause;
+import it.eng.qbe.statement.jpa.JPQLStatementHavingClause;
+import it.eng.qbe.statement.jpa.JPQLStatementOrderByClause;
+import it.eng.qbe.statement.jpa.JPQLStatementSelectClause;
+import it.eng.qbe.statement.jpa.JPQLStatementWhereClause;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -27,19 +39,20 @@ import javax.persistence.EntityManager;
 import org.apache.log4j.Logger;
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Alberto Ghedin (alberto.ghedin@eng.it)
  */
-public class JPQLStatement extends AbstractStatement {
+
+public class SQLStatement extends AbstractStatement {
 	
-	protected IJpaDataSource dataSource;
+	protected IDataSource dataSource;
 	
-	public static transient Logger logger = Logger.getLogger(JPQLStatement.class);
+	public static transient Logger logger = Logger.getLogger(SQLStatement.class);
 		
-	protected JPQLStatement(IDataSource dataSource) {
+	protected SQLStatement(IDataSource dataSource) {
 		super(dataSource);
 	}
 	
-	public JPQLStatement(IDataSource dataSource, Query query) {
+	public SQLStatement(IDataSource dataSource, Query query) {
 		super(dataSource, query);
 	}
 	
@@ -86,19 +99,16 @@ public class JPQLStatement extends AbstractStatement {
 		// let's start with the query at hand
 		entityAliasesMaps.put(query.getId(), new HashMap<String, String>());
 		
-		JPQLBusinessViewUtility viewsUtility = new JPQLBusinessViewUtility(this);
-		
-		selectClause = JPQLStatementSelectClause.build(this, query, entityAliasesMaps);
-		whereClause = JPQLStatementWhereClause.build(this, query, entityAliasesMaps);
-		groupByClause = JPQLStatementGroupByClause.build(this, query, entityAliasesMaps);
-		orderByClause = JPQLStatementOrderByClause.build(this, query, entityAliasesMaps);
-		havingClause = JPQLStatementHavingClause.build(this, query, entityAliasesMaps);
-		
-		viewRelation = viewsUtility.buildViewsRelations(entityAliasesMaps, query, whereClause);
-		fromClause = JPQLStatementFromClause.build(this, query, entityAliasesMaps);
-		
-		JPQLStatementWhereClause clause = new JPQLStatementWhereClause(this);
-		whereClause = clause.fixWhereClause(whereClause, query, entityAliasesMaps);
+
+		selectClause = SQLStatementSelectClause.build(this, query, entityAliasesMaps);
+//		whereClause = JPQLStatementWhereClause.build(this, query, entityAliasesMaps);
+//		groupByClause = JPQLStatementGroupByClause.build(this, query, entityAliasesMaps);
+//		orderByClause = JPQLStatementOrderByClause.build(this, query, entityAliasesMaps);
+//		havingClause = JPQLStatementHavingClause.build(this, query, entityAliasesMaps);
+//		fromClause = JPQLStatementFromClause.build(this, query, entityAliasesMaps);
+//		
+//		JPQLStatementWhereClause clause = new JPQLStatementWhereClause(this);
+//		whereClause = clause.fixWhereClause(whereClause, query, entityAliasesMaps);
 		
 		queryStr = selectClause    + " " 
 				   + fromClause    + " " 
@@ -127,7 +137,6 @@ public class JPQLStatement extends AbstractStatement {
 		return queryStr;
 	}
 
-	
 
 	
 	public Set getSelectedEntities() {
@@ -150,11 +159,11 @@ public class JPQLStatement extends AbstractStatement {
 		// let's start with the query at hand
 		entityAliasesMaps.put( getQuery().getId(), new HashMap<String, String>());
 		
-		JPQLStatementSelectClause.build(this, getQuery(), entityAliasesMaps);
-		JPQLStatementWhereClause.build(this, getQuery(), entityAliasesMaps);
-		JPQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
-		JPQLStatementOrderByClause.build(this, getQuery(), entityAliasesMaps);
-		JPQLStatementFromClause.build(this, getQuery(), entityAliasesMaps);
+//		JPQLStatementSelectClause.build(this, getQuery(), entityAliasesMaps);
+//		JPQLStatementWhereClause.build(this, getQuery(), entityAliasesMaps);
+//		JPQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
+//		JPQLStatementOrderByClause.build(this, getQuery(), entityAliasesMaps);
+//		JPQLStatementFromClause.build(this, getQuery(), entityAliasesMaps);
 		
 		Map entityAliases = (Map)entityAliasesMaps.get( getQuery().getId());
 		entityUniqueNamesIterator = entityAliases.keySet().iterator();
@@ -180,19 +189,21 @@ public class JPQLStatement extends AbstractStatement {
 	
 	public String getSqlQueryString() {
 
-		JPADataSource ds = ((JPADataSource)getDataSource());
-		EntityManager em = ds.getEntityManager();
-
-		JPQL2SQLStatementRewriter translator = new JPQL2SQLStatementRewriter(em);
-		return translator.rewrite( getQueryString());
+		ISQLDataSource ds = ((ISQLDataSource)getDataSource());
+		return "";
+//		EntityManager em = ds.getEntityManager();
+//
+//		JPQL2SQLStatementRewriter translator = new JPQL2SQLStatementRewriter(em);
+//		return translator.rewrite( getQueryString());
 
 	}
 
 
 	@Override
 	public String getValueBounded(String operandValueToBound, String operandType) {
-		JPQLStatementWhereClause clause = new JPQLStatementWhereClause(this);
-		return clause.getValueBounded(operandValueToBound, operandType);
+//		JPQLStatementWhereClause clause = new JPQLStatementWhereClause(this);
+//		return clause.getValueBounded(operandValueToBound, operandType);
+		return null;
 	}
 	
 

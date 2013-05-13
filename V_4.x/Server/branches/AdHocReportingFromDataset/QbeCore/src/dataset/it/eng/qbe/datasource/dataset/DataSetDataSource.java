@@ -8,12 +8,12 @@ package it.eng.qbe.datasource.dataset;
 
 import it.eng.qbe.datasource.AbstractDataSource;
 import it.eng.qbe.datasource.ConnectionDescriptor;
-import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.IPersistenceManager;
 import it.eng.qbe.datasource.configuration.CompositeDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.DataSetDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADataSource;
+import it.eng.qbe.datasource.sql.ISQLDataSource;
 import it.eng.qbe.datasource.transaction.ITransaction;
 import it.eng.qbe.datasource.transaction.dataset.DataSetTransaction;
 import it.eng.qbe.model.accessmodality.AbstractModelAccessModality;
@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class DataSetDataSource  extends AbstractDataSource implements IDataSource{
+public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSource{
 	
 	
 	private List<IDataSet> datasets;

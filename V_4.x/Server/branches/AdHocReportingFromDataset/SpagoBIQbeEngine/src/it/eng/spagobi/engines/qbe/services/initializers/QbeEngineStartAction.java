@@ -13,11 +13,15 @@ import it.eng.spagobi.engines.qbe.registry.bo.RegistryConfiguration;
 import it.eng.spagobi.engines.qbe.registry.serializer.RegistryConfigurationJSONSerializer;
 import it.eng.spagobi.engines.qbe.template.QbeTemplateParseException;
 import it.eng.spagobi.engines.worksheet.WorksheetEngineInstance;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -187,7 +191,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 //		dataSets.add(serviceProxy.getDataSetByLabel("TelecomR2B2"));
 //		dataSets.add(serviceProxy.getDataSetByLabel("aa"));
 //		env.put(EngineConstants.ENV_DATASETS, dataSets);
-		
+//		
 		return env;
     }
 }

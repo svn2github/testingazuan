@@ -3,35 +3,40 @@
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package it.eng.qbe.statement.jpa;
+
+package it.eng.qbe.statement.sql;
 
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractSelectStatementClause;
+import it.eng.qbe.statement.IStatement;
+import it.eng.qbe.statement.jpa.JPQLStatementSelectClause;
 
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
- *
+ * @author Alberto Ghedin (alberto.ghedin@eng.it)
  */
-public class JPQLStatementSelectClause extends AbstractSelectStatementClause {
+
+public class SQLStatementSelectClause extends AbstractSelectStatementClause{
 	
 
-	public static transient Logger logger = Logger.getLogger(JPQLStatementSelectClause.class);
+	 
+	public static transient Logger logger = Logger.getLogger(SQLStatementSelectClause.class);
 	
-	public static String build(JPQLStatement parentStatement, Query query, Map<String, Map<String, String>> entityAliasesMaps){
-		JPQLStatementSelectClause clause = new JPQLStatementSelectClause(parentStatement);
+	public static String build(IStatement parentStatement, Query query, Map<String, Map<String, String>> entityAliasesMaps){
+		SQLStatementSelectClause clause = new SQLStatementSelectClause(parentStatement);
 		return clause.buildClause(query, entityAliasesMaps);
 	}
 	
-	protected JPQLStatementSelectClause(JPQLStatement statement) {
+	protected SQLStatementSelectClause(IStatement statement) {
 		parentStatement = statement;
 	}
 	
 
 	
-	
+
+
 	
 }

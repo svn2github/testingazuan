@@ -6,11 +6,13 @@
 package it.eng.qbe.statement;
 
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.datasource.jpa.JPADataSource;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.hibernate.HQLStatement;
 import it.eng.qbe.statement.jpa.JPQLStatement;
+import it.eng.qbe.statement.sql.SQLStatement;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -25,7 +27,9 @@ public class StatementFactory {
 			statement = new HQLStatement((IHibernateDataSource)dataSource, query);
 		} else if (dataSource instanceof JPADataSource) {
 			statement = new JPQLStatement((JPADataSource)dataSource, query);
-		} else {
+		} else if (dataSource instanceof DataSetDataSource) {
+			statement = new SQLStatement((DataSetDataSource)dataSource, query);
+		}else {
 			throw new RuntimeException("Impossible to create statement from a datasource of type [" + dataSource.getClass().getName() + "]");
 		}
 		

@@ -98,8 +98,9 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 
 		String entityName = entity.getName();		
 		IModelEntity dataMartEntity = modelStructure.addRootEntity(modelName, entityName, null, null, entityName);
-		dataMartEntity.getProperties().put(FIELD_TYPE_PROPERTY,"cube");
+		
 		propertiesInitializer.addProperties(dataMartEntity);
+		dataMartEntity.getProperties().put(FIELD_TYPE_PROPERTY,"cube");
 		
 		addNormalFields(dataMartEntity, entity);
 		addCalculatedFields(dataMartEntity);		

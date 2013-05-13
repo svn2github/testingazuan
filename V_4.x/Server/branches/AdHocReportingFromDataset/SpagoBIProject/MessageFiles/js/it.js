@@ -719,11 +719,15 @@ Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Es
 //===================================================================
 		
 //GENERIC
-Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Impossibile mandare la risposta al client"
+Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Impossibile mandare la risposta al client";
 	
 //DATASOURCE	
-Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "La label del documento deve essere valorizata"
-Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossibile cancellare il datasource perché è in uso"
-Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossibile salvare il datasource: label duplicata"
-	
+Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "La label del documento deve essere valorizata";
+Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossibile cancellare il datasource perché è in uso";
+Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossibile salvare il datasource: label duplicata";
+
+//===================================================================
+//Sbi.execution.toolbar.SaveDatasetWindow : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Datasource di persistenza";
 	

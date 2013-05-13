@@ -846,20 +846,20 @@ Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.deleteNonActive']='Elimina
 //BEHAVIOURAL 
 //===================================================================
 	
-Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Normale'
-Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Albero'	
-Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filtra'	
-Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Salvato'
-Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='Il LOV \u00e8 stato salvato correttamente'
-Sbi.locale.ln['sbi.behavioural.lov.save']='Salva'
-Sbi.locale.ln['sbi.behavioural.lov.select.type']='Seleziona una tipologia...'
-Sbi.locale.ln['sbi.behavioural.lov.name']='Nome'
-Sbi.locale.ln['sbi.behavioural.lov.value']='Valore'
-Sbi.locale.ln['sbi.behavioural.lov.description']='Descrizione'
-Sbi.locale.ln['sbi.behavioural.lov.visible']='Visibile'
-Sbi.locale.ln['sbi.behavioural.lov.test.error']='Errore nel test del lov'
-Sbi.locale.ln['sbi.behavioural.lov.back']='Indietro'
-Sbi.locale.ln['sbi.behavioural.delete']='Cancella'
+Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Normale';
+Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Albero';
+Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filtra';	
+Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Salvato';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='Il LOV \u00e8 stato salvato correttamente';
+Sbi.locale.ln['sbi.behavioural.lov.save']='Salva';
+Sbi.locale.ln['sbi.behavioural.lov.select.type']='Seleziona una tipologia...';
+Sbi.locale.ln['sbi.behavioural.lov.name']='Nome';
+Sbi.locale.ln['sbi.behavioural.lov.value']='Valore';
+Sbi.locale.ln['sbi.behavioural.lov.description']='Descrizione';
+Sbi.locale.ln['sbi.behavioural.lov.visible']='Visibile';
+Sbi.locale.ln['sbi.behavioural.lov.test.error']='Errore nel test del lov';
+Sbi.locale.ln['sbi.behavioural.lov.back']='Indietro';
+Sbi.locale.ln['sbi.behavioural.delete']='Cancella';
 
 
 //===================================================================
@@ -880,9 +880,14 @@ Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Es
 //===================================================================
 			
 //GENERIC
-Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Impossibile mandare la risposta al client"
+Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Impossibile mandare la risposta al client";
 		
 //DATASOURCE	
-Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "La label del documento deve essere valorizata"
-Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossibile cancellare il datasource perché è in uso"
-Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossibile salvare il datasource: label duplicata"
+Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "La label del documento deve essere valorizata";
+Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossibile cancellare il datasource perché è in uso";
+Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossibile salvare il datasource: label duplicata";
+
+//===================================================================
+//Sbi.execution.toolbar.SaveDatasetWindow : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Datasource di persistenza";

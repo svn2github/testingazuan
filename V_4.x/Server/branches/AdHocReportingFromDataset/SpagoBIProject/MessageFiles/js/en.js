@@ -721,11 +721,14 @@ Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Ex
 //===================================================================
 		
 //GENERIC
-Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not send responce to client"
+Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not send responce to client";
 	
 //DATASOURCE	
-Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of the data source can not be null"
-Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use"
-Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label"
-	
-	
+Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of the data source can not be null";
+Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use";
+Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label";
+
+//===================================================================
+//Sbi.execution.toolbar.SaveDatasetWindow : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Datasource for persistence";

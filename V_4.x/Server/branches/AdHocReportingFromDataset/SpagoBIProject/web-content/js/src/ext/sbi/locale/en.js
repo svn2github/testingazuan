@@ -841,20 +841,20 @@ Sbi.locale.ln['sbi.widgets.catalogueversionsgridpanel.isactive'] = 'Active';
 //BEHAVIOURAL 
 //===================================================================
 	
-Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Simple'
-Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Tree'
-Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filter'
-Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Saved'
-Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='The LOV has been successfully saved'
-Sbi.locale.ln['sbi.behavioural.lov.save']='Save'
-Sbi.locale.ln['sbi.behavioural.lov.select.type']='Select a type...'
-Sbi.locale.ln['sbi.behavioural.lov.name']='Name'
-Sbi.locale.ln['sbi.behavioural.lov.value']='Value'
-Sbi.locale.ln['sbi.behavioural.lov.description']='Description'
-Sbi.locale.ln['sbi.behavioural.lov.visible']='Visible'
-Sbi.locale.ln['sbi.behavioural.lov.test.error']='Error testing the lov'
-Sbi.locale.ln['sbi.behavioural.lov.back']='Back'
-Sbi.locale.ln['sbi.behavioural.delete']='Delete'
+Sbi.locale.ln['sbi.behavioural.lov.type.simple']='Simple';
+Sbi.locale.ln['sbi.behavioural.lov.type.tree']='Tree';
+Sbi.locale.ln['sbi.behavioural.lov.filter.apply']='Filter';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.title']='LOV Saved';
+Sbi.locale.ln['sbi.behavioural.lov.save.window.text']='The LOV has been successfully saved';
+Sbi.locale.ln['sbi.behavioural.lov.save']='Save';
+Sbi.locale.ln['sbi.behavioural.lov.select.type']='Select a type...';
+Sbi.locale.ln['sbi.behavioural.lov.name']='Name';
+Sbi.locale.ln['sbi.behavioural.lov.value']='Value';
+Sbi.locale.ln['sbi.behavioural.lov.description']='Description';
+Sbi.locale.ln['sbi.behavioural.lov.visible']='Visible';
+Sbi.locale.ln['sbi.behavioural.lov.test.error']='Error testing the lov';
+Sbi.locale.ln['sbi.behavioural.lov.back']='Back';
+Sbi.locale.ln['sbi.behavioural.delete']='Delete';
 	
 
 //===================================================================
@@ -876,10 +876,14 @@ Sbi.locale.ln['sbi.worksheet.worksheeteditoriframepanelext3.toolbar.export']='Ex
 //===================================================================
 		
 //GENERIC
-Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not send responce to client"
+Sbi.locale.ln["error.mesage.description.generic.can.not.responce"]= "Can not send responce to client";
 	
 //DATASOURCE	
-Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of teh data source can not be null"
-Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use"
-Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label"
-	
+Sbi.locale.ln["error.mesage.description.data.source.cannot.be.null"]= "The label of teh data source can not be null";
+Sbi.locale.ln["error.mesage.description.data.source.deleting.inuse"] = "Impossible to delete the data source because it is in use";
+Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossible to save the data source because there is another one with the same label";
+
+//===================================================================
+//Sbi.execution.toolbar.SaveDatasetWindow : AD-HOC REPORTING 
+//===================================================================
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Datasource for persistence";

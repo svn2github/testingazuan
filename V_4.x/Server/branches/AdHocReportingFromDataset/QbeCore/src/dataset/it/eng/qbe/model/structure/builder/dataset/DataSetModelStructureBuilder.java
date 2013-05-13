@@ -9,7 +9,6 @@ package it.eng.qbe.model.structure.builder.dataset;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.model.properties.initializer.IModelStructurePropertiesInitializer;
-import it.eng.qbe.model.properties.initializer.ModelStructurePropertiesInitializerFactory;
 import it.eng.qbe.model.properties.initializer.SimpleModelStructurePropertiesInitializer;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;

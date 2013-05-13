@@ -8,21 +8,10 @@
 package it.eng.qbe.statement.sql;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.jpa.IJpaDataSource;
-import it.eng.qbe.datasource.jpa.JPADataSource;
 import it.eng.qbe.datasource.sql.ISQLDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
-import it.eng.qbe.statement.jpa.JPQL2SQLStatementRewriter;
-import it.eng.qbe.statement.jpa.JPQLBusinessViewUtility;
-import it.eng.qbe.statement.jpa.JPQLStatement;
-import it.eng.qbe.statement.jpa.JPQLStatementFromClause;
-import it.eng.qbe.statement.jpa.JPQLStatementGroupByClause;
-import it.eng.qbe.statement.jpa.JPQLStatementHavingClause;
-import it.eng.qbe.statement.jpa.JPQLStatementOrderByClause;
-import it.eng.qbe.statement.jpa.JPQLStatementSelectClause;
-import it.eng.qbe.statement.jpa.JPQLStatementWhereClause;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -33,8 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 
@@ -91,7 +78,6 @@ public class SQLStatement extends AbstractStatement {
 		String orderByClause = null;
 		String fromClause = null;
 		String havingClause = null;
-		String viewRelation = null;
 		
 		Assert.assertNotNull(query, "Input parameter 'query' cannot be null");
 		Assert.assertTrue(!query.isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
@@ -101,19 +87,16 @@ public class SQLStatement extends AbstractStatement {
 		
 
 		selectClause = SQLStatementSelectClause.build(this, query, entityAliasesMaps);
-//		whereClause = JPQLStatementWhereClause.build(this, query, entityAliasesMaps);
-//		groupByClause = JPQLStatementGroupByClause.build(this, query, entityAliasesMaps);
-//		orderByClause = JPQLStatementOrderByClause.build(this, query, entityAliasesMaps);
-//		havingClause = JPQLStatementHavingClause.build(this, query, entityAliasesMaps);
-//		fromClause = JPQLStatementFromClause.build(this, query, entityAliasesMaps);
-//		
-//		JPQLStatementWhereClause clause = new JPQLStatementWhereClause(this);
-//		whereClause = clause.fixWhereClause(whereClause, query, entityAliasesMaps);
+		whereClause = SQLStatementWhereClause.build(this, query, entityAliasesMaps);
+		groupByClause = SQLStatementGroupByClause.build(this, query, entityAliasesMaps);
+		orderByClause = SQLStatementGroupByClause.build(this, query, entityAliasesMaps);
+		havingClause = SQLStatementHavingClause.build(this, query, entityAliasesMaps);
+		fromClause = SQLStatementFromClause.build(this, query, entityAliasesMaps);
+
 		
 		queryStr = selectClause    + " " 
 				   + fromClause    + " " 
 				   + whereClause   + " "
-				   + viewRelation  + " " 
 				   + groupByClause + " " 
 				   + havingClause  + " " 
 				   + orderByClause;
@@ -159,11 +142,11 @@ public class SQLStatement extends AbstractStatement {
 		// let's start with the query at hand
 		entityAliasesMaps.put( getQuery().getId(), new HashMap<String, String>());
 		
-//		JPQLStatementSelectClause.build(this, getQuery(), entityAliasesMaps);
-//		JPQLStatementWhereClause.build(this, getQuery(), entityAliasesMaps);
-//		JPQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
-//		JPQLStatementOrderByClause.build(this, getQuery(), entityAliasesMaps);
-//		JPQLStatementFromClause.build(this, getQuery(), entityAliasesMaps);
+		SQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
+		SQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
+		SQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
+		SQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
+		SQLStatementGroupByClause.build(this, getQuery(), entityAliasesMaps);
 		
 		Map entityAliases = (Map)entityAliasesMaps.get( getQuery().getId());
 		entityUniqueNamesIterator = entityAliases.keySet().iterator();

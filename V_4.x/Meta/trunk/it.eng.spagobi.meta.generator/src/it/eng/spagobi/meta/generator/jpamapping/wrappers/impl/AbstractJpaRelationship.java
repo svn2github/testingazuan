@@ -36,7 +36,11 @@ public abstract class AbstractJpaRelationship implements IJpaRelationship {
 	}
 
 	public boolean isOneToMany() {
-		return JpaRelationship.ONE_TO_MANY.equals( cardinality );
+		return JpaRelationship.ONE_TO_MANY.equals( cardinality ) || JpaRelationship.OPTIONAL_ONE_TO_MANY.equals( cardinality ) ||  JpaRelationship.ONE_TO_OPTIONAL_MANY.equals( cardinality );
+	}
+	
+	public boolean isOneToOne() {
+		return JpaRelationship.ONE_TO_ONE.equals( cardinality ) || JpaRelationship.OPTIONAL_ONE_TO_ONE.equals( cardinality ) ||  JpaRelationship.ONE_TO_OPTIONAL_ONE.equals( cardinality );
 	}
 	
 	public boolean isManyToMany() {
@@ -170,11 +174,17 @@ public abstract class AbstractJpaRelationship implements IJpaRelationship {
 			return "java.util.Set";
 		}
 		
-		protected abstract String getOppositeRoleName();
+		//protected abstract String getOppositeRoleName();
 		
 		public String getOppositeWithAnnotation(){
 			return appendAnnotation("", "mappedBy", getOppositeRoleName(),true);
 
 		}
+		
+		public String getOppositeOneToOneWithAnnotation(){
+			return appendAnnotation("", "mappedBy", getBidirectionalPropertyName(),true);
+
+		}
+
 	
 }

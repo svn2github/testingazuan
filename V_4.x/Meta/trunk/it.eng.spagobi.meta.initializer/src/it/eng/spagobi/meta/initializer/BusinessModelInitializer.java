@@ -50,7 +50,7 @@ public class BusinessModelInitializer {
 	BusinessModelNamesInitializer namesInitializer;
 
 	static public String INITIALIZER_NAME = "StandardSpagoBIBusinessModelInitializer";
-	static public String INITIALIZER_VERSION = "3.6.0";
+	static public String INITIALIZER_VERSION = "4.0.0";
 		
 	static public BusinessModelFactory FACTORY = BusinessModelFactory.eINSTANCE;
 	
@@ -549,8 +549,8 @@ public class BusinessModelInitializer {
 			getPropertiesInitializer().addProperties(businessRelationship);
 			//set the destinationRole property
 			businessRelationship.setProperty(BusinessModelPropertiesFromFileInitializer.ROLE_DESTINATION, businessRelationship.getDestinationTable().getName());
-
-			
+			//set the cardinality property
+			businessRelationship.setProperty(BusinessModelPropertiesFromFileInitializer.RELATIONSHIP_CARDINALITY, descriptor.getRelationCardinality());
 		
 			
 		} catch(Throwable t) {

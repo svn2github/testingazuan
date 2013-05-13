@@ -15,6 +15,7 @@ package it.eng.spagobi.meta.generator.jpamapping.wrappers.impl;
 import it.eng.spagobi.meta.generator.jpamapping.wrappers.IJpaColumn;
 import it.eng.spagobi.meta.generator.utils.JavaKeywordsUtils;
 import it.eng.spagobi.meta.generator.utils.StringUtils;
+import it.eng.spagobi.meta.model.ModelProperty;
 import it.eng.spagobi.meta.model.business.BusinessRelationship;
 import it.eng.spagobi.meta.model.business.BusinessTable;
 import it.eng.spagobi.meta.model.business.BusinessView;
@@ -34,6 +35,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class JpaRelationship extends AbstractJpaRelationship {
+	public static final String RELATIONSHIP_CARDINALITY = "structural.cardinality";
+
 	
 	BusinessRelationship businessRelationship;
 
@@ -51,16 +54,69 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		this.jpaTable = jpaTable;
 		this.businessRelationship = businessRelationship;
 		
+		/*
 		if ( isSourceRole() ){
 			this.cardinality = JpaRelationship.MANY_TO_ONE;
 		} else if ( isDestinationRole() ){
 			this.cardinality = JpaRelationship.ONE_TO_MANY;				
 		}
+		*/
+		
+		//Set Cardinality
+		ModelProperty propertyCardinality = businessRelationship.getProperties().get(RELATIONSHIP_CARDINALITY);
+		if (propertyCardinality != null){
+			String cardinalityValue = propertyCardinality.getValue();
+			
+			if ( isSourceRole() ){
+				this.cardinality = cardinalityValue;
+			} else if ( isDestinationRole() ){
+				if (cardinalityValue.equals(JpaRelationship.ONE_TO_MANY)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.MANY_TO_ONE;
+				} else if (cardinalityValue.equals(JpaRelationship.MANY_TO_ONE)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.ONE_TO_MANY;
+				} else if (cardinalityValue.equals(JpaRelationship.ONE_TO_ONE)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.ONE_TO_MANY;
+				} else if (cardinalityValue.equals(JpaRelationship.OPTIONAL_ONE_TO_ONE)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.ONE_TO_OPTIONAL_ONE;
+				} else if (cardinalityValue.equals(JpaRelationship.ONE_TO_OPTIONAL_ONE)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.OPTIONAL_ONE_TO_ONE;
+				} else if (cardinalityValue.equals(JpaRelationship.OPTIONAL_ONE_TO_MANY)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.MANY_TO_OPTIONAL_ONE;
+				} else if (cardinalityValue.equals(JpaRelationship.ONE_TO_OPTIONAL_MANY)){
+					//setting inverse cardinality
+					this.cardinality = JpaRelationship.OPTIONAL_MANY_TO_ONE;
+				} else if (cardinalityValue.equals(JpaRelationship.OPTIONAL_MANY_TO_ONE)){
+					//settare cardinalità inversa
+					this.cardinality = JpaRelationship.ONE_TO_OPTIONAL_MANY;
+				}  else if (cardinalityValue.equals(JpaRelationship.MANY_TO_OPTIONAL_ONE)){
+					//settare cardinalità inversa
+					this.cardinality = JpaRelationship.OPTIONAL_ONE_TO_MANY;
+				}
+				
+			}
+			
+		} else {
+			// for retrocompatibility (version older than 4.0)
+			if ( isSourceRole() ){
+				this.cardinality = JpaRelationship.MANY_TO_ONE;
+			} else if ( isDestinationRole() ){
+				this.cardinality = JpaRelationship.ONE_TO_MANY;				
+			}
+		}
+
 		
 		this.bidirectional = true;
 	}
+	
+	
 
-	private boolean isDestinationRole() {
+	public boolean isDestinationRole() {
 		boolean isSourceRole;
 		
 		if(jpaTable instanceof JpaTable) {
@@ -72,7 +128,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		return isSourceRole;
 	}
 	
-	private boolean isSourceRole() {
+	public boolean isSourceRole() {
 		boolean isSourceRole;
 		
 		if(jpaTable instanceof JpaTable) {
@@ -160,7 +216,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 		else return "";
 	}
 	
-	protected String getOppositeRoleName(){
+	public String getOppositeRoleName(){
 		return JavaKeywordsUtils.transformToJavaPropertyName( "rel_"+getBusinessRelationship().getSourceColumns().get(0).getUniqueName()+"_in_"+getBusinessRelationship().getDestinationTable().getUniqueName());	
 	}
 	

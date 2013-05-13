@@ -27,11 +27,20 @@ public interface IJpaRelationship {
 	final static String MANY_TO_ONE = "many-to-one";
 	final static String MANY_TO_MANY = "many-to-many";
 	final static String ONE_TO_ONE = "one-to-one";
+	final static String OPTIONAL_ONE_TO_ONE = "optional-one-to-one";
+	final static String ONE_TO_OPTIONAL_ONE = "one-to-optional-one";
+	final static String OPTIONAL_ONE_TO_MANY = "optional-one-to-many";
+	final static String ONE_TO_OPTIONAL_MANY = "one-to-optional-many";
+	final static String OPTIONAL_MANY_TO_ONE = "optional-many-to-one";
+	final static String MANY_TO_OPTIONAL_ONE = "many-to-optional-one";
+	
+
 	
 	boolean isBidirectional();
 	String getCardinality();
 	boolean isOneToMany();	
 	boolean isManyToMany();	
+	boolean isOneToOne();
 	
 	AbstractJpaTable getReferencedTable();
 	AbstractJpaTable getJpaTable();
@@ -64,7 +73,16 @@ public interface IJpaRelationship {
 	
 	public String getOppositeWithAnnotation();
 	
+	public String getOppositeOneToOneWithAnnotation();
+
+	public boolean isSourceRole();
+	
+	public boolean isDestinationRole();
+	
 	public List<IJpaColumn> getSourceColumns();
 	
 	public List<IJpaColumn> getDestinationColumns();
+	
+	public String getOppositeRoleName();
+
 }

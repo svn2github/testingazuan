@@ -48,11 +48,11 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 		this.bidirectional = true;
 	}
 	
-	private boolean isSourceRole() {
+	public boolean isSourceRole() {
 		return businessInnerRelationship.getSourceTable().equals( jpaTable.getPhysicalTable() );
 	}
 	
-	private boolean isDestinationRole() {
+	public boolean isDestinationRole() {
 		return businessInnerRelationship.getDestinationTable().equals( jpaTable.getPhysicalTable() );
 	}
 
@@ -143,7 +143,7 @@ public class JpaViewRelationship extends AbstractJpaRelationship {
 		else return "";
 	}
 	@Override
-	protected String getOppositeRoleName(){
+	public String getOppositeRoleName(){
 		return JavaKeywordsUtils.transformToJavaPropertyName( businessInnerRelationship.getSourceColumns().get(0).getName());	
 	}
 	@Override

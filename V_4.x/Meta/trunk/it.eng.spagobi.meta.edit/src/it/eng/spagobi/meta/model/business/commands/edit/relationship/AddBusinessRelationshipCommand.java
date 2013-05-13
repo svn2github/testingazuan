@@ -61,7 +61,7 @@ public class AddBusinessRelationshipCommand extends AbstractSpagoBIModelEditComm
 		descriptor = (BusinessRelationshipDescriptor)parameter.getValue();
 		addedBusinessRelationship = initializer.addRelationship(descriptor);
 		
-		//TODO: add OLAP relationships
+		//add OLAP relationships
 		OlapModelInitializer olapModelInitializer = new OlapModelInitializer();
 		cube = olapModelInitializer.getCube(addedBusinessRelationship.getSourceTable());
 		dimension = olapModelInitializer.getDimension(addedBusinessRelationship.getDestinationTable());

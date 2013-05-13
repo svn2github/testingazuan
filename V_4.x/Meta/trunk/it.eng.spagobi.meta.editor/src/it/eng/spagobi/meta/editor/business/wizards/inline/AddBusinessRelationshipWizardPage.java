@@ -50,7 +50,14 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	private static int ONE_TO_ONE = 1;
 	private static int ONE_TO_MANY = 2;
 	private static int MANY_TO_ONE = 3;
-	private static int MANY_TO_MANY = 4;
+	private static int MANY_TO_MANY = 4; // not supported
+	private static int OPTIONAL_ONE_TO_ONE = 5;
+	private static int ONE_TO_OPTIONAL_ONE = 6;
+	private static int OPTIONAL_ONE_TO_MANY = 7;
+	private static int ONE_TO_OPTIONAL_MANY = 8;
+	private static int OPTIONAL_MANY_TO_ONE = 9;
+	private static int MANY_TO_OPTIONAL_ONE = 10;
+
 	
 	private BusinessModel model;
 	private BusinessColumnSet sourceTable;
@@ -159,11 +166,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
  		cardinalityGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
  		cardinalityGroup.setLayout(new GridLayout(2, false));
  		
- 		/*
- 		 *  Hiding this components because we don't use cardinality now
- 		 */
-
- 		/*
+ 		
  		Label lblCardinality = new Label(cardinalityGroup, SWT.NONE);
  		lblCardinality.setText("Cardinality");
  		lblCardinality.setLocation(0, 0);
@@ -200,6 +203,7 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 			}
 		});
  		
+ 		/*
  		Button buttonNtoN = new Button(compGroup, SWT.RADIO);
  		buttonNtoN.setText("N to N");
  		buttonNtoN.addSelectionListener(new SelectionAdapter() {
@@ -209,6 +213,60 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 			}
 		});
 		*/
+ 		
+ 		Button button1optTo1 = new Button(compGroup, SWT.RADIO);
+ 		button1optTo1.setText("1* to 1");
+ 		button1optTo1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = OPTIONAL_ONE_TO_ONE;
+			}
+		});
+ 		
+ 		Button button1ToOpt1 = new Button(compGroup, SWT.RADIO);
+ 		button1ToOpt1.setText("1 to 1*");
+ 		button1ToOpt1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = ONE_TO_OPTIONAL_ONE;
+			}
+		});
+		
+ 		Button buttonOpt1ToN = new Button(compGroup, SWT.RADIO);
+ 		buttonOpt1ToN.setText("1* to N");
+ 		buttonOpt1ToN.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = OPTIONAL_ONE_TO_MANY;
+			}
+		});
+ 		
+ 		Button button1ToOptN = new Button(compGroup, SWT.RADIO);
+ 		button1ToOptN.setText("1 to N*");
+ 		button1ToOptN.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = ONE_TO_OPTIONAL_MANY;
+			}
+		});
+ 		
+ 		Button buttonOptNto1 = new Button(compGroup, SWT.RADIO);
+ 		buttonOptNto1.setText("N* to 1");
+ 		buttonOptNto1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = OPTIONAL_MANY_TO_ONE;
+			}
+		});
+ 		
+ 		Button buttonNtoOpt1 = new Button(compGroup, SWT.RADIO);
+ 		buttonNtoOpt1.setText("N to 1*");
+ 		buttonNtoOpt1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+					cardinality = MANY_TO_OPTIONAL_ONE;
+			}
+		});
  		
  		Button btnAddRelationship = new Button(cardinalityGroup, SWT.NONE);
  		btnAddRelationship.setText(RL.getString("business.editor.wizard.addbusinessrelationship.addbutton"));
@@ -458,11 +516,17 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	
 	private String cardinalityToString(int cardinality){
 		switch(cardinality){
-			case 1: return "One to One"; 
-			case 2: return "One to Many"; 
-			case 3: return "Many to One"; 
-			case 4: return "Many to Many"; 
-			default: return "One to Many";
+			case 1: return "one-to-one"; 
+			case 2: return "one-to-many"; 
+			case 3: return "many-to-one"; 
+			case 4: return "many-to-many"; 
+			case 5: return "optional-one-to-one";
+			case 6: return "one-to-optional-one";
+			case 7: return "optional-one-to-many";
+			case 8: return "one-to-optional-many";
+			case 9: return "optional-many-to-one";
+			case 10: return "many-to-optional-one";					
+			default: return "one-to-many";
 		}
 	}
 	
@@ -474,6 +538,6 @@ public class AddBusinessRelationshipWizardPage extends WizardPage {
 	 * @return the relationshipsContainer
 	 */
 	public BusinessRelationshipDescriptor getRelationshipDescriptor() {
-		return new BusinessRelationshipDescriptor( getSourceTable(), getDestinationTable(), sourceColumns, destinationColumns, cardinality, getBusinessRelationshipName() );
+		return new BusinessRelationshipDescriptor( getSourceTable(), getDestinationTable(), sourceColumns, destinationColumns, cardinalityToString(cardinality), getBusinessRelationshipName() );
 	}
 }

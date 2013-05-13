@@ -270,7 +270,7 @@ public abstract class AbstractJpaTable implements IJpaTable {
 
 		List<IJpaRelationship> relationships = getRelationships();
 		for ( IJpaRelationship relationship :  relationships ) {
-			if ( relationship.isOneToMany() || relationship.isManyToMany() ) {
+			if ( relationship.isOneToMany() || relationship.isManyToMany() || relationship.isOneToOne() ) {
 				importStatement.append( "import " + relationship.getCollectionType() + ";\n"); //$NON-NLS-1$
 				break;
 			}

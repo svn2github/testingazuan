@@ -248,6 +248,11 @@
       description="Force visibility of destination Table as Sub-entity"
       category="Structural" defaultValue="false" />
       </types>
+      <types>
+      	<type id="structural.cardinality" name="Business Relationship Cardinality"
+      description="Business Relationship Cardinality"
+      category="Structural" defaultValue="many-to-one" />
+      </types>
       
       <typesValues>
      	 <admissibleValuesOf typeId="structural.forceVisibilityAsSubentity">

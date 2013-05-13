@@ -22,10 +22,10 @@ public class BusinessRelationshipDescriptor {
 	private String relationshipName;
 	private BusinessColumnSet sourceTable, destinationTable;
 	private java.util.List<BusinessColumn> sourceColumns, destinationColumns;
-	private int relationCardinality;
+	private String relationCardinality;
 	
 	
-	public BusinessRelationshipDescriptor(BusinessColumnSet source, BusinessColumnSet destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, int cardinality, String relationshipName){
+	public BusinessRelationshipDescriptor(BusinessColumnSet source, BusinessColumnSet destination, java.util.List<BusinessColumn> sourceCol, java.util.List<BusinessColumn> destinationCol, String cardinality, String relationshipName){
 		sourceTable = source;
 		destinationTable = destination;
 		sourceColumns = sourceCol;
@@ -93,14 +93,14 @@ public class BusinessRelationshipDescriptor {
 	/**
 	 * @param relationCardinality the relationCardinality to set
 	 */
-	public void setRelationCardinality(int relationCardinality) {
+	public void setRelationCardinality(String relationCardinality) {
 		this.relationCardinality = relationCardinality;
 	}
 
 	/**
 	 * @return the relationCardinality
 	 */
-	public int getRelationCardinality() {
+	public String getRelationCardinality() {
 		return relationCardinality;
 	}
 

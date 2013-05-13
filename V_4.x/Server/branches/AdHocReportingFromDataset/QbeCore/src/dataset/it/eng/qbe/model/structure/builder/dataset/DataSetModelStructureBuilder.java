@@ -113,14 +113,13 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 	 */
 	public void addNormalFields(IModelEntity dataMartEntity, IDataSet entity) {		
 		logger.debug("Adding the field "+dataMartEntity.getName());
-		String[] propertyNames;
 
 		IMetaData datasetMetadata = entity.getMetadata();
 		
 		
 		for(int i=0; i<datasetMetadata.getFieldCount(); i++) {
 			IFieldMetaData fieldMetadata = datasetMetadata.getFieldMeta(i);
-			addField(fieldMetadata, dataMartEntity, dataMartEntity+".");	
+			addField(fieldMetadata, dataMartEntity, "");	
 		}	
 		
 		

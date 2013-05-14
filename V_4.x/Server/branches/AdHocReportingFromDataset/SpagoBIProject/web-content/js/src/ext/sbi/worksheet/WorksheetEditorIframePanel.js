@@ -96,7 +96,7 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 	businessMetadata : null
 	, datasetLabel : null
 	, datasetParameters : null
-	
+	, selectedDatasourceLabel : null
 	,
 	init : function () {
 		this.initToolbar();
@@ -198,6 +198,7 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 				'business_metadata': this.businessMetadata,
 				'MESSAGE_DET': 'DOC_SAVE_FROM_DATASET',
 				'dataset_label': this.datasetLabel,
+				'selected_datasource_label': this.selectedDatasourceLabel,
 				'typeid': 'WORKSHEET' 
 		};
 		this.win_saveDoc = new Sbi.execution.SaveDocumentWindow(documentWindowsParams);

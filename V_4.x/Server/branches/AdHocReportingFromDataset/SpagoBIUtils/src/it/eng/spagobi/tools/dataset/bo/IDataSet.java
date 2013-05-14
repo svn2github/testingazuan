@@ -12,6 +12,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreFilter;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.sql.Connection;
 import java.util.Map;
@@ -162,5 +163,9 @@ public interface IDataSet {
 	boolean isCalculateResultNumberOnLoadEnabled();
 	
 	void setCalculateResultNumberOnLoad(boolean enabled); 
+	
+	public void setDataSource(IDataSource dataSource);
+	
+	public IDataSource getDataSource();
 	
 }

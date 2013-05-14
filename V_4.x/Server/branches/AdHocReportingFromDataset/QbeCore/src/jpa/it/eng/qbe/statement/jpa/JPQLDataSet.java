@@ -9,6 +9,7 @@ import it.eng.qbe.datasource.jpa.IJpaDataSource;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractQbeDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -241,4 +242,12 @@ public class JPQLDataSet extends AbstractQbeDataSet {
 		}
 	}
 
+
+	public void setDataSource(IDataSource dataSource) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 }

@@ -446,7 +446,7 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 	 * to build a JDBCDataSet
 	 * @return
 	 */
-	private IDataSource getDataSource(){
+	public IDataSource getDataSource(){
 		if(dataSource==null){
 			dataSource = new DataSource();
 			ConnectionDescriptor connectionDescriptor = ((AbstractDataSource)statement.getDataSource()).getConnection();

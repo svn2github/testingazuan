@@ -57,7 +57,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	
 
 	protected QbeEngineInstance(Object template, Map env) throws QbeEngineException {
-		this( QbeTemplateParser.getInstance().parse(template), env );
+		this( QbeTemplateParser.getInstance() != null ? QbeTemplateParser.getInstance().parse(template) : null, env );
+	
 	}
 	
 	protected QbeEngineInstance(QbeTemplate template, Map env) throws QbeEngineException {
@@ -69,8 +70,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		queryCatalogue = new QueryCatalogue();
 		queryCatalogue.addQuery(new Query());
+	
 		
-				
 		it.eng.spagobi.tools.datasource.bo.IDataSource dataSrc = (it.eng.spagobi.tools.datasource.bo.IDataSource)env.get( EngineConstants.ENV_DATASOURCE );
 		SpagoBiDataSource ds = dataSrc.toSpagoBiDataSource();
 		
@@ -85,16 +86,18 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
 		dataSourceProperties.put("connection", connection);
-		dataSourceProperties.put("dblinkMap", template.getDbLinkMap());
+		if(template != null) dataSourceProperties.put("dblinkMap", template.getDbLinkMap());
 		
 		dataSourceProperties.put("metadataServiceProxy", env.get(EngineConstants.ENV_METAMODEL_PROXY));
 		dataSourceProperties.put(EngineConstants.ENV_DATASETS, env.get(EngineConstants.ENV_DATASETS));
 		
-		dataSource = QbeDataSourceManager.getInstance().getDataSource(template.getDatamartNames(), dataSourceProperties, 
+		dataSource = QbeDataSourceManager.getInstance().getDataSource(
+				template != null ? template.getDatamartNames() : null, 
+				dataSourceProperties, 
 				QbeEngineConfig.getInstance().isDataSourceCacheEnabled());
-				
 		
-		if(template.getDatamartModelAccessModality() != null) {
+		if(template != null){
+		   if(template.getDatamartModelAccessModality() != null) {
 			
 			if(template.getDatamartModelAccessModality().getRecursiveFiltering() == null) {
 				String recursiveFilteringAttr = dataSource.getModelStructure().getPropertyAsString(AbstractModelAccessModality.ATTR_RECURSIVE_FILTERING);
@@ -128,7 +131,10 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 //			loadWorksheetDefinition((JSONObject) template.getProperty("worksheetJSONTemplate"));
 //		}
 		
+		}
+		
 		validate();
+		
 		
 		logger.debug("OUT");
 	}
@@ -320,7 +326,11 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 
 	public RegistryConfiguration getRegistryConfiguration() {
 		QbeTemplate template = this.getTemplate();
-		RegistryConfiguration registryConf = (RegistryConfiguration) template.getProperty("registryConfiguration");
+		
+		RegistryConfiguration registryConf = null; 
+		if(template != null){
+			registryConf = (RegistryConfiguration) template.getProperty("registryConfiguration");
+		}
 		return registryConf;
 	}    
 	

@@ -7,6 +7,7 @@
 package it.eng.qbe.statement.sql;
 
 import it.eng.qbe.statement.AbstractQbeDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.List;
 
@@ -56,4 +57,12 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		}
 	}
 
+
+	public void setDataSource(IDataSource dataSource) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 }

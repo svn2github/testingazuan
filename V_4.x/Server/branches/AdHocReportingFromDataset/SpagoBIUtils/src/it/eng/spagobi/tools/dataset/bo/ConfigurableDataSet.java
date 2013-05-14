@@ -13,6 +13,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreFilter;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -242,4 +243,16 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 		calculateResultNumberOnLoad = enabled;
 	}
 
+	public void setDataSource(IDataSource dataSource) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public IDataSource getDataSource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
 }

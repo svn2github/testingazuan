@@ -23,6 +23,9 @@ public class EngineConstants {
 	
 	public static final String ENV_DATASOURCE = "DATASOURCE";
 	public static final Object ENV_DATASET = "DATASET";
+	public static final Object ENV_DATASET_LABEL = "datasetLabel";
+	public static final Object ENV_DATASOURCE_LABEL = "datasourceLabel";
+
 	public static final String ENV_DATASETS = "DATASETS";
 	public static final String ENV_DATASET_PROXY = "ENV_DATASET_PROXY";
 	public static final String ENV_DATASOURCE_PROXY = "ENV_DATASOURCE_PROXY";

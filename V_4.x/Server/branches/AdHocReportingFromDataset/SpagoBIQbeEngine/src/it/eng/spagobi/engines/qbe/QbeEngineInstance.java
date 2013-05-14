@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.qbe;
 
 import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.model.accessmodality.AbstractModelAccessModality;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.catalogue.QueryCatalogue;
@@ -82,15 +83,21 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		connection.setDriverClass( ds.getDriver() );			
 		connection.setPassword( ds.getPassword() );
 		connection.setUrl( ds.getUrl() );
-		connection.setUsername( ds.getUser() );			
-		
+		connection.setUsername( ds.getUser() );		
+
 		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
 		dataSourceProperties.put("connection", connection);
-		if(template != null) dataSourceProperties.put("dblinkMap", template.getDbLinkMap());
-		
+		if(template != null){
+			dataSourceProperties.put("dblinkMap", template.getDbLinkMap());			
+		}
+
 		dataSourceProperties.put("metadataServiceProxy", env.get(EngineConstants.ENV_METAMODEL_PROXY));
 		dataSourceProperties.put(EngineConstants.ENV_DATASETS, env.get(EngineConstants.ENV_DATASETS));
 		
+		if( env.get(EngineConstants.ENV_DATASETS) !=null){
+			dataSourceProperties.put(DataSetDataSource.SPAGOBI_DATA_SOURCE, ds);
+		}
+
 		dataSource = QbeDataSourceManager.getInstance().getDataSource(
 				template != null ? template.getDatamartNames() : null, 
 				dataSourceProperties, 

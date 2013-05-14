@@ -186,12 +186,12 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     public Map addDatasetsToEnv(){
 		Map env = getEnv();
 		
-//		DataSetServiceProxy serviceProxy = getDataSetServiceProxy();
-//		List<IDataSet> dataSets = new ArrayList<IDataSet>();
-//		dataSets.add(serviceProxy.getDataSetByLabel("TelecomR2B2"));
-//		dataSets.add(serviceProxy.getDataSetByLabel("aa"));
-//		env.put(EngineConstants.ENV_DATASETS, dataSets);
-//		
+		DataSetServiceProxy serviceProxy = getDataSetServiceProxy();
+		List<IDataSet> dataSets = new ArrayList<IDataSet>();
+		dataSets.add(serviceProxy.getDataSetByLabel("TelecomR2B2"));
+		dataSets.add(serviceProxy.getDataSetByLabel("Customer"));
+		env.put(EngineConstants.ENV_DATASETS, dataSets);
+		
 		return env;
     }
 }

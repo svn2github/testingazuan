@@ -20,6 +20,7 @@ import it.eng.qbe.model.accessmodality.AbstractModelAccessModality;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.builder.IModelStructureBuilder;
 import it.eng.qbe.model.structure.builder.dataset.DataSetModelStructureBuilder;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.utilities.assertion.Assert;
 
@@ -32,16 +33,23 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	
 	
 	private List<IDataSet> datasets;
+	private SpagoBiDataSource spagoBiDataSource;
 	public static final String EMPTY_MODEL_NAME = "";
 	public static final String DATASETS = "DATASETS";
+	public static final String SPAGOBI_DATA_SOURCE = "SPAGOBI_DATA_SOURCE";
+	
 	private static transient Logger logger = Logger.getLogger(JPADataSource.class);
 
 	protected DataSetDataSource(String dataSourceName, IDataSourceConfiguration configuration) {
-		logger.debug("Creating a new JPADataSource");
+		logger.debug("Creating a new DataSetDataSource");
 		setName( dataSourceName );
 		dataMartModelAccessModality = new AbstractModelAccessModality();
 		this.configuration = configuration;
 		datasets= new ArrayList<IDataSet>();
+		
+		Assert.assertNotNull(configuration.loadDataSourceProperties(), "The properties of the datasource can not be empty");
+		spagoBiDataSource = (SpagoBiDataSource)configuration.loadDataSourceProperties().get(SPAGOBI_DATA_SOURCE); 
+		Assert.assertNotNull(spagoBiDataSource, "There must be a connection definition to connect to the db");
 		
 //		// validate and set configuration
 		if(configuration instanceof DataSetDataSourceConfiguration){
@@ -105,11 +113,20 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	public IPersistenceManager getPersistenceManager() {
 		return null;
 	}
-	
 
-	
 	public List<IDataSet> getRootEntities(){
 		return datasets;
 	}
+
+	public SpagoBiDataSource getSpagoBiDataSource() {
+		return spagoBiDataSource;
+	}
+
+	public void setSpagoBiDataSource(SpagoBiDataSource spagoBiDataSource) {
+		this.spagoBiDataSource = spagoBiDataSource;
+	}
+
+
 	
+
 }

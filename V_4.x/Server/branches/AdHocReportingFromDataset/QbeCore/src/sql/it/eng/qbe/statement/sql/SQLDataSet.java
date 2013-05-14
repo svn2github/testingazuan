@@ -6,12 +6,11 @@
 
 package it.eng.qbe.statement.sql;
 
+import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.statement.AbstractQbeDataSet;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
 
@@ -21,8 +20,7 @@ import org.apache.log4j.Logger;
 
 public class SQLDataSet extends AbstractQbeDataSet {
 
-	
-	private List resultList;
+
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(SQLDataSet.class);
@@ -34,30 +32,28 @@ public class SQLDataSet extends AbstractQbeDataSet {
 	
 	
 	public void loadData(int offset, int fetchSize, int maxResults) {
-		EntityManager entityManager;
+
+		DataSetDataSource ds = (DataSetDataSource)statement.getDataSource();
+		String statementStr = statement.getQueryString();
 		
-//		try {
-//			entityManager = ((SQLStatement)statement.getDataSource()).getEntityManager();
-//			loadDataPersistenceProvider(offset, fetchSize, maxResults, entityManager);
-//		} catch (Throwable t) {
-//			throw new RuntimeException("Impossible to load data", t);
-//		}
-	
-	}
-	
-	
-	
-	private String getParameterKey(String fieldValue) {
-		int beginIndex = fieldValue.indexOf("P{");
-		int endIndex = fieldValue.indexOf("}");
-		if (beginIndex > 0 && endIndex > 0 && endIndex > beginIndex) {
-			return fieldValue.substring(beginIndex + 2, endIndex);
-		} else {
-			return null;
+		SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
+		dataSetConfig.setDataSource( ds.getSpagoBiDataSource() );
+		dataSetConfig.setQuery(statementStr);
+		JDBCDataSet dataset = new JDBCDataSet(dataSetConfig);
+
+		dataset.loadData(offset, fetchSize, maxResults);
+
+		dataStore = dataset.getDataStore();
+		dataStore.getMetaData();
+		
+				
+		if(hasDataStoreTransformer()) {
+			getDataStoreTransformer().transform(dataStore);
 		}
+
+	
 	}
-
-
+	
 	public void setDataSource(IDataSource dataSource) {
 		// TODO Auto-generated method stub
 		
@@ -65,4 +61,5 @@ public class SQLDataSet extends AbstractQbeDataSet {
 
 	
 	
+
 }

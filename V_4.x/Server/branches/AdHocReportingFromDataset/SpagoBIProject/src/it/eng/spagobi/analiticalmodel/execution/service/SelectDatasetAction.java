@@ -54,12 +54,12 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 	public static final String  QBE_EDIT_ACTION = "QBE_ENGINE_FROM_DATASET_START_ACTION";
 
 	/**parameter that ecides action target*/
-	public static final String  INPUT_PARAMETER_TARGET = "TARGET";
+	public static final String  INPUT_PARAMETER_ENGINE = "ENGINE";
 	public static final String  WORKSHEET = "WORKSHEET";
 	public static final String  QBE = "QBE";
 
 	/**label f dataset to open*/
-	public static final String  INPUT_PARAMETER_DS_LABEL = DataSetConstants.LABEL;
+	public static final String  INPUT_PARAMETER_DS_LABEL = "DATASET_LABEL";
 		
 	public static final String  OUTPUT_PARAMETER_WORKSHEET_EDIT_SERVICE_URL = "serviceUrl";
 	public static final String  OUTPUT_PARAMETER_EXECUTION_ID = "executionId";
@@ -82,10 +82,10 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 		
 		try {
 			// can be QBE or WORKSHEETs
-			LogMF.trace(logger, "Reading input parametr [{0}] from request...", INPUT_PARAMETER_TARGET);
-			target = getAttributeAsString( INPUT_PARAMETER_TARGET );
-			LogMF.debug(logger, "Input parameter [{0}] is equal to [{1}]", INPUT_PARAMETER_TARGET, target);
-			Assert.assertNotNull(target, "Input parameter [" + INPUT_PARAMETER_TARGET + "] cannot be null");
+			LogMF.trace(logger, "Reading input parametr [{0}] from request...", INPUT_PARAMETER_ENGINE);
+			target = getAttributeAsString( INPUT_PARAMETER_ENGINE );
+			LogMF.debug(logger, "Input parameter [{0}] is equal to [{1}]", INPUT_PARAMETER_ENGINE, target);
+			Assert.assertNotNull(target, "Input parameter [" + INPUT_PARAMETER_ENGINE + "] cannot be null");
 			
 			String actionToCall = target == null || target.equals(WORKSHEET) ? WORKSHEET_EDIT_ACTION : QBE_EDIT_ACTION; 
 			
@@ -151,7 +151,7 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 
 				getServiceResponse().setAttribute(OUTPUT_PARAMETER_DATASET_PARAMETERS, datasetParameterValuesMap);
 
-				getServiceResponse().setAttribute(INPUT_PARAMETER_TARGET, target);
+				getServiceResponse().setAttribute(INPUT_PARAMETER_ENGINE, target);
 
 				// business metadata
 //AAA				JSONObject businessMetadata = getBusinessMetadataFromRequest();

@@ -253,6 +253,79 @@ public class MenuListJSONSerializer implements Serializer {
 	}
 	
 	private JSONArray createUserMenuElement(Menu childElem, Locale locale, int level, JSONArray tempMenuList) throws JSONException{
+		JSONObject  temp2 = new JSONObject();
+
+		String path=MenuUtilities.getMenuPath(childElem, locale);
+
+		MessageBuilder msgBuild=new MessageBuilder();
+		String text = "";
+		if (!childElem.isAdminsMenu() || !childElem.getName().startsWith("#"))
+			text = msgBuild.getI18nMessage(locale, childElem.getName());
+		else{							
+			if (childElem.getName().startsWith("#")){				
+				String titleCode = childElem.getName().substring(1);									
+				text = msgBuild.getMessage(titleCode, locale);								
+			} else {
+				text = childElem.getName();
+			}
+		}
+		temp2.put(ID, new Double(Math.random()).toString());
+
+
+		level ++;
+		if(childElem.getGroupingMenu() != null && childElem.getGroupingMenu().equals("true")){
+			temp2.put(TITLE, text);
+			temp2.put(TITLE_ALIGN, "left");
+			temp2.put(COLUMNS, 1);
+			temp2.put(XTYPE, "buttongroup");
+		}else{
+			temp2.put(TEXT, text);
+			temp2.put("style", "text-align: left;");
+			temp2.put(SRC, childElem.getUrl());
+			temp2.put(TARGET, "_self");
+			temp2.put(ICON_CLS, "bullet");
+			
+			if(childElem.getObjId()!=null){
+				temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");
+			}else if(childElem.getStaticPage()!=null){
+				temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");
+			}else if(childElem.getFunctionality()!=null){					
+				String finalUrl = "javascript:execDirectUrl('"+DetailMenuModule.findFunctionalityUrl(childElem, contextName)+"', '"+path+"')";
+				temp2.put(HREF, finalUrl);
+
+			}else if(childElem.getExternalApplicationUrl()!=null){
+				temp2.put(HREF, "javascript:callExternalApp('"+StringEscapeUtils.escapeJavaScript(childElem.getExternalApplicationUrl())+"', '"+path+"')");
+			}else if (childElem.isAdminsMenu() && childElem.getUrl()!=null){							
+				String url = "javascript:execDirectUrl('"+ childElem.getUrl()+"'";
+				url = url.replace("${SPAGOBI_CONTEXT}",contextName);
+				url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());		
+				path = path.replace("#","");
+
+				temp2.put(HREF, url+", '"+path+"')");
+			}/*else{
+				temp2.put(XTYPE, "buttongroup");
+				temp2.put(TITLE, text);
+				temp2.put(TITLE_ALIGN, "left");
+				temp2.put(COLUMNS, 1);
+			}*/
+		}
+		if (childElem.getHasChildren()){
+			List childrenBis = childElem.getLstChildren();
+			JSONArray tempMenuList2 =(JSONArray)getChildren(childrenBis,level, locale);
+			if(childElem.getGroupingMenu() != null && childElem.getGroupingMenu().equals("true")){
+				temp2.put(ITEMS, tempMenuList2);
+			}else{
+				temp2.put(MENU, tempMenuList2);
+			}
+			
+		}
+
+
+		tempMenuList.put(temp2);
+		return tempMenuList;
+	}
+	/*
+	private JSONArray createUserMenuElement(Menu childElem, Locale locale, int level, JSONArray tempMenuList) throws JSONException{
 
 		JSONObject  temp2 = new JSONObject();
 
@@ -321,6 +394,5 @@ public class MenuListJSONSerializer implements Serializer {
 		tempMenuList.put(temp2);
 		return tempMenuList;
 	}
-
-
+	*/
 }

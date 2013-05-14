@@ -31,7 +31,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 <!-- Include Ext stylesheets here: -->
 <link id="extall"     rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/resources/css/ext-all.css" type="text/css" />
 <link id="theme-gray" rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/resources/css/ext-all-gray.css" type="text/css" />
-<script type="text/javascript" src="/SpagoBI/js/src/ext4/sbi/overrides/overrides.js"></script>
+<script type="text/javascript" src="/SpagoBI/js/lib/ext-4.1.1a/overrides/overrides.js"></script>
 
 <link id="spagobi-ext-4" rel="styleSheet" href ="/SpagoBI/js/lib/ext-4.1.1a/overrides/resources/css/spagobi.css" type="text/css" />
 <link id="spagobi-ext-4" rel="styleSheet" href ="/SpagoBI/themes/sbi_default/css/home40/layout.css" type="text/css" />

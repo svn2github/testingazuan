@@ -85,8 +85,12 @@ public class WorksheetWithDatasetStartEditAction extends WorksheetEngineStartAct
 		// datasource information is coming with the request
 		String datasourceLabel = this.getAttributeAsString( DATASOURCE_LABEL );
 		logger.debug("Parameter [" + DATASOURCE_LABEL + "]  is equal to [" + datasourceLabel + "]");
-		Assert.assertNotNull(datasourceLabel, "Data source not specified");
-		IDataSource dataSource = getDataSourceServiceProxy().getDataSourceByLabel(datasourceLabel);
+		//Assert.assertNotNull(datasourceLabel, "Data source not specified");
+		
+		IDataSource dataSource = null;
+		if(datasourceLabel != null)
+			dataSource = getDataSourceServiceProxy().getDataSourceByLabel(datasourceLabel);
+		
 		return dataSource;
 	}
 

@@ -166,8 +166,8 @@ public class PersistedTableManager {
 				for (int i2=0, l2=rec.getFields().size(); i2<l2; i2++){		
 					IFieldMetaData fmd = md.getFieldMeta(i2);
 					IField field = rec.getFieldAt(i2);
-					if (fmd.getType().toString().contains("String")){
-						Integer lenValue = new Integer(field.getValue().toString().length());
+					if (fmd.getType().toString().contains("String")){	
+						Integer lenValue = (field.getValue()==null)?new Integer("0"):new Integer(field.getValue().toString().length());
 						Integer prevValue = getColumnSize().get(fmd.getName()) == null? new Integer("0"): getColumnSize().get(fmd.getName());
 						if (lenValue > prevValue ){
 							getColumnSize().remove(fmd.getName());
@@ -224,6 +224,8 @@ public class PersistedTableManager {
 			toReturn = " NUMERIC ";	
 			if (getDialect().contains(DIALECT_ORACLE)) { 
 				toReturn = " NUMBER ";	
+			}else if (getDialect().contains(DIALECT_MYSQL)) { 
+				toReturn = " BIGINT ";	
 			}	
 		}else if (type.contains("java.lang.BigDecimal") || type.contains("java.math.BigDecimal")){
 			toReturn = " NUMERIC ";	

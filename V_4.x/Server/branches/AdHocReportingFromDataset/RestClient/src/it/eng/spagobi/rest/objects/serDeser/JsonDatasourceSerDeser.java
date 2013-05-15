@@ -47,29 +47,29 @@ public class JsonDatasourceSerDeser  implements ObjectsSerDeser{
 		
 		try {
 		
-			String idD = (String)datasource.get("id");
-			String nameD = (String)datasource.get("name");
-			String descriptionD = (String)datasource.get("description");
+			String idD = (String)datasource.opt("id");
+			String nameD = (String)datasource.opt("name");
+			String descriptionD = (String)datasource.opt("description");
 //			
-//			Integer creationDateD = (Integer)datasource.get("creationDate");
-//			Integer lastModifiedDateD = (Integer)datasource.get("lastModifiedDate");
-//			String userD = (String)datasource.get("user");
-//			String ownerD = (String)datasource.get("owner");
-//			String userObjectStatusD = (String)datasource.get("userObjectStatus");
-//			String ownerObjectStatusD = (String)datasource.get("ownerObjectStatus");
+//			Integer creationDateD = (Integer)datasource.opt("creationDate");
+//			Integer lastModifiedDateD = (Integer)datasource.opt("lastModifiedDate");
+//			String userD = (String)datasource.opt("user");
+//			String ownerD = (String)datasource.opt("owner");
+//			String userObjectStatusD = (String)datasource.opt("userObjectStatus");
+//			String ownerObjectStatusD = (String)datasource.opt("ownerObjectStatus");
 
 			dataSourceSpagoBI.setDescr(descriptionD);
 			
-			JSONObject detail = (JSONObject)datasource.get("details");
+			JSONObject detail = (JSONObject)datasource.opt("details");
 
 
-			String subT = detail.getString("subtype");
-			String URL = detail.getString("URL");
-			String username = detail.getString("username");
-			String password = detail.getString("password");
-			String resourceType = detail.getString("resourceType");
+			String subT = detail.optString("subtype");
+			String URL = detail.optString("URL");
+			String username = detail.optString("username");
+			String password = detail.optString("password");
+			String resourceType = detail.optString("resourceType");
 			String resource = detail.getString("resource");
-			String label =detail.getString("biId");
+			String label =detail.optString("biId");
 			
 			dataSourceSpagoBI.setLabel(label);
 			dataSourceSpagoBI.setUser(username);
@@ -118,7 +118,7 @@ public class JsonDatasourceSerDeser  implements ObjectsSerDeser{
 		DataSource ds = (DataSource)o;
 		datasrcJson.put("biId", ds.getLabel());
 		datasrcJson.put("description", ds.getDescr());
-		datasrcJson.put("type", SerDeserFactory.TYPE_DATAOURCE);
+		datasrcJson.put("type", SerDeserFactory.TYPE_DATASOURCE);
 		JSONObject details = new JSONObject();
 		
 		details.put("subType", "RDBMS");

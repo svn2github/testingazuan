@@ -51,9 +51,9 @@ public class SerDeserUtil {
 			JSONObject col = (JSONObject)columns.get(i);
 			
 			String name = (String)col.getString("name");
-			JSONObject dataType = (JSONObject)col.get("dataType");
-			String typeName = dataType.getString("name");
-			String fieldType = (String)col.getString("biType");
+			JSONObject dataType = (JSONObject)col.opt("dataType");
+			String typeName = dataType.optString("name");
+			String fieldType = (String)col.optString("biType");
 			
 			SourceBean column = new SourceBean("COLUMN");
 			column.setAttribute("name", name);

@@ -18,13 +18,13 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 public class SerDeserFactory{
 	
 	public static String TYPE_DATASET ="dataset";
-	public static String TYPE_DATAOURCE ="datasource";
+	public static String TYPE_DATASOURCE ="datasource";
 	static Map<String, ObjectsSerDeser> types;
 	
 	static {
 		types = new HashMap();
 		types.put( TYPE_DATASET, new JsonDatasetSerDeser() );
-		types.put( TYPE_DATAOURCE, new JsonDatasourceSerDeser() );
+		types.put( TYPE_DATASOURCE, new JsonDatasourceSerDeser() );
 	}
 	
 	public static ObjectsSerDeser getDeserializer(String type) {

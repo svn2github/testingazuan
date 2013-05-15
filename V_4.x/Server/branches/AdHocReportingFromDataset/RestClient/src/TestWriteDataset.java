@@ -24,7 +24,7 @@ public class TestWriteDataset {
 		GuiGenericDataSet dSet = new GuiGenericDataSet();
 		
 		
-		ObjectsSerDeser des1 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATAOURCE);
+		ObjectsSerDeser des1 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASOURCE);
 		JSONObject inputDataSource = des1.serialize(dSRC, null);
 		
 		//http://<host>:<port>/<path>/objects

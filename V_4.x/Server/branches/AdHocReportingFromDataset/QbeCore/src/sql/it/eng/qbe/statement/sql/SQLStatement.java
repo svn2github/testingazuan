@@ -89,7 +89,7 @@ public class SQLStatement extends AbstractStatement {
 		selectClause = SQLStatementSelectClause.build(this, query, entityAliasesMaps);
 		whereClause = SQLStatementWhereClause.build(this, query, entityAliasesMaps);
 		groupByClause = SQLStatementGroupByClause.build(this, query, entityAliasesMaps);
-		orderByClause = SQLStatementGroupByClause.build(this, query, entityAliasesMaps);
+		orderByClause = SQLStatementOrderByClause.build(this, query, entityAliasesMaps);
 		havingClause = SQLStatementHavingClause.build(this, query, entityAliasesMaps);
 		fromClause = SQLStatementFromClause.build(this, query, entityAliasesMaps);
 

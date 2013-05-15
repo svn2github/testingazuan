@@ -26,7 +26,7 @@ import java.util.Map;
 
 public abstract class AbstractStatementGroupByClause extends AbstractStatementClause {
 	
-	public static final String GROUP_BY = "GROUP_BY";
+	public static final String GROUP_BY = "GROUP BY";
 	
 	public String buildClause(Query query, Map<String, Map<String, String>> entityAliasesMaps) {
 		StringBuffer buffer;	

@@ -153,7 +153,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		}
 	}
 
-	private void datatsetInsert(IDataSetDAO dsDao, Locale locale){
+	protected void datatsetInsert(IDataSetDAO dsDao, Locale locale){
 		GuiGenericDataSet ds = getGuiGenericDatasetToInsert();
 		JSONObject attributesResponseSuccessJSON = new JSONObject();
 		HashMap<String, String> logParam = new HashMap();
@@ -392,7 +392,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		return items;
 	}
 
-	private GuiGenericDataSet getGuiGenericDatasetToInsert() {
+	protected GuiGenericDataSet getGuiGenericDatasetToInsert() {
 
 		GuiGenericDataSet ds = null;
 

@@ -6,10 +6,14 @@
 package it.eng.spagobi.adhocreporting.services;
 
 import it.eng.spagobi.analiticalmodel.execution.service.CreateDatasetForWorksheetAction;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.LogMF;
@@ -23,6 +27,9 @@ public class StartCreatingWorksheetFromDatasetAction extends CreateDatasetForWor
 	// logger component
 	private static Logger logger = Logger.getLogger(StartCreatingWorksheetFromDatasetAction.class);
 
+	public static final String OUTPUT_PARAMETER_QBE_EDIT_SERVICE_URL = "qbeServiceURL";
+	public static final String QBE_EDIT_ACTION = "QBE_ENGINE_FROM_DATASET_START_ACTION";
+	
 	public void doService() {
 		logger.debug("IN");
 		try {
@@ -40,10 +47,25 @@ public class StartCreatingWorksheetFromDatasetAction extends CreateDatasetForWor
 			String worksheetEditActionUrl = GeneralUtilities.getUrl(worksheetEngine.getUrl(), worksheetEditActionParameters);
 			LogMF.debug(logger, "Worksheet edit service invocation url is equal to [{}]", worksheetEditActionUrl);
 			
+			
+			// create the input parameters to pass to the WorkSheet Edit Service
+			Map qbeEditActionParameters = buildQbeEditServiceBaseParametersMap();
+
+			executionId = createNewExecutionId();
+			qbeEditActionParameters.put("SBI_EXECUTION_ID" , executionId);
+			
+			Engine qbeEngine = getQbeEngine();
+			LogMF.debug(logger, "Engine label is equal to [{0}]", qbeEngine.getLabel());
+			
+			// create the qbe Edit Service's URL
+			String qbeEditActionUrl = GeneralUtilities.getUrl(qbeEngine.getUrl(), qbeEditActionParameters);
+			LogMF.debug(logger, "Qbe edit service invocation url is equal to [{}]", qbeEditActionUrl);
+			
 			logger.trace("Copying output parameters to response...");
 			try {
 				getServiceResponse().setAttribute(OUTPUT_PARAMETER_EXECUTION_ID, executionId);
 				getServiceResponse().setAttribute(OUTPUT_PARAMETER_WORKSHEET_EDIT_SERVICE_URL, worksheetEditActionUrl);
+				getServiceResponse().setAttribute(OUTPUT_PARAMETER_QBE_EDIT_SERVICE_URL, qbeEditActionUrl);
 			} catch (Throwable t) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "An error occurred while creating service response", t);				
 			}
@@ -52,6 +74,26 @@ public class StartCreatingWorksheetFromDatasetAction extends CreateDatasetForWor
 		} finally {
 			logger.debug("OUT");
 		}
+	}
+	
+	protected Map<String, String> buildQbeEditServiceBaseParametersMap() {
+		HashMap<String, String> parametersMap = new HashMap<String, String>();
+		
+		parametersMap.put("ACTION_NAME", QBE_EDIT_ACTION);
+		parametersMap.put("NEW_SESSION", "TRUE");
+		
+		parametersMap.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+		parametersMap.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+		
+		parametersMap.put(SpagoBIConstants.SBI_LANGUAGE, getLocale().getLanguage());
+		parametersMap.put(SpagoBIConstants.SBI_COUNTRY, getLocale().getCountry());
+		
+		if (!GeneralUtilities.isSSOEnabled()) {
+			UserProfile userProfile = (UserProfile)getUserProfile();
+			parametersMap.put(SsoServiceInterface.USER_ID, (String)userProfile.getUserId());
+		}
+		
+		return parametersMap;
 	}
 
 }

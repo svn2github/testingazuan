@@ -140,29 +140,36 @@ public class CreateDatasetForWorksheetAction extends ExecuteDocumentAction {
 			logger.debug("OUT");
 		}
 	}
-
 	
-	protected Engine getWorksheetEngine() {
-		Engine worksheetEngine;
+	protected Engine getEngineByDocumentType(String type) {
+		Engine engine;
 		List<Engine> engines;
 		
-		worksheetEngine = null;
+		engine = null;
 		try {
 			Assert.assertNotNull(DAOFactory.getEngineDAO(), "EngineDao cannot be null");
-			engines = DAOFactory.getEngineDAO().loadAllEnginesForBIObjectType(SpagoBIConstants.WORKSHEET_TYPE_CODE);
+			engines = DAOFactory.getEngineDAO().loadAllEnginesForBIObjectType(type);
 			if (engines == null || engines.size() == 0) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "There are no engines for documents of type [WORKSHEET] available");
+				throw new SpagoBIServiceException(SERVICE_NAME, "There are no engines for documents of type [" + type + "] available");
 			} else {
-				worksheetEngine = (Engine) engines.get(0);
-				LogMF.warn(logger, "There are more than one engine for document of type [WORKSHEET]. We will use the one whose label is equal to [{0}]", worksheetEngine.getLabel());
+				engine = (Engine) engines.get(0);
+				LogMF.warn(logger, "There are more than one engine for document of type [" + type + "]. We will use the one whose label is equal to [{0}]", engine.getLabel());
 			}
 		} catch(Throwable t) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to load a valid engine for document of type [WORKSHEET]", t);				
+			throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to load a valid engine for document of type [" + type + "]", t);				
 		} finally {
 			logger.debug("OUT");
 		}
 		
-		return worksheetEngine;
+		return engine;
+	}
+	
+	protected Engine getWorksheetEngine() {
+		return getEngineByDocumentType(SpagoBIConstants.WORKSHEET_TYPE_CODE);
+	}
+	
+	protected Engine getQbeEngine() {
+		return getEngineByDocumentType(SpagoBIConstants.DATAMART_TYPE_CODE);
 	}
 
 	private String getDatasourceLabel(Engine engine) {
@@ -206,8 +213,7 @@ public class CreateDatasetForWorksheetAction extends ExecuteDocumentAction {
 		
 		return parametersMap;
 	}
-
-
+	
 	protected String createNewExecutionId() {
 		String executionId;
 		

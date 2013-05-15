@@ -87,7 +87,9 @@ Sbi.worksheet.WorksheetEditorIframePanelExt3 = function(config) {
 Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePanel, {
 	
 	datasetLabel : null
-	, datasetParameters : null
+	, datasetParameters : null	
+	, selectedDatasourceLabel : null
+	, engine : null // QBE/WORKSHEET
 	
 	,
 	getDatasetLabel : function () {
@@ -100,6 +102,16 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	}
 	
 	,
+	getEngine : function () {
+		return this.engine;
+	}
+
+	,
+	setEngine : function (engine) {
+		this.engine = engine;
+	}
+	
+	,
 	init : function () {
 		this.initToolbar();
 	}
@@ -109,9 +121,9 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 
 		var saveButton = new Ext.Toolbar.Button({
 			iconCls : 'icon-saveas' 
-			, tooltip: LN('sbi.worksheet.worksheeteditoriframepanelext3.toolbar.saveas')
+			, tooltip: LN('sbi.execution.executionpage.toolbar.saveas')
 			, scope : this
-    	    , handler : this.saveWorksheet
+    	    , handler : this.saveHandler
 		});
 		
 	    var exportMenu = new Ext.menu.Menu({
@@ -146,7 +158,7 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 			   , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 		});	
 		
-		var items = ['->', saveButton, exportMenuButton];
+		var items = ['->', saveButton]; //, exportMenuButton];
 		this.toolbar = new Ext.Toolbar({
 			  items: items
 		});
@@ -176,7 +188,16 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	
 	,
 	saveWorksheet : function() {
-    	var thePanel = this.getFrame().getWindow().workSheetPanel;
+		
+		var theWindow = this.getFrame().getWindow();
+		
+		//the worksheet has been constructed starting from a qbe document
+		var thePanel = theWindow.qbe;
+		if (thePanel == null) {
+			//the worksheet is alone with out the qbe
+			thePanel = theWindow.workSheetPanel;
+		}
+		
     	var template = thePanel.validate();	
     	if (template == null){
     		return;
@@ -195,5 +216,57 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 		this.win_saveDoc.show();
     
     }
+	
+	,
+	saveHandler: function () {
+		if (this.engine == 'QBE') {
+			this.saveQbe();
+		} else {
+			this.saveWorksheet();
+		}
+	}
+	
+	,
+	saveQbe : function () {
+		try {
+			// If the user is a Qbe power user, he can save both current query and worksheet definition.
+			// We must get the current active tab in order to understand what must be saved.
+			var qbeWindow = this.getFrame().getWindow();
+			var qbePanel = qbeWindow.qbe;
+			var anActiveTab = qbePanel.tabs.getActiveTab();
+			var activeTabId = anActiveTab.getId();
+			var isBuildingWorksheet = (activeTabId === 'WorksheetDesignerPanel' || activeTabId === 'WorkSheetPreviewPage');
+			if (isBuildingWorksheet) {
+				// save worksheet as document
+				this.saveWorksheet();
+			} else {
+				// save query as new dataset
+				var queryDefinition = this.getQbeQueryDefinition();
+				var saveDatasetWindow = new Sbi.execution.toolbar.SaveDatasetWindow( { queryDefinition : queryDefinition } );
+				saveDatasetWindow.on('save', function(theWindow, formState) { theWindow.close(); }, this);
+				saveDatasetWindow.show();
+			}
+		} catch (err) {
+			alert('Sorry, cannot perform operation.');
+			throw err;
+		}
+	}
+	
+	,
+	getQbeQueryDefinition : function () {
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: IN');
+		var qbeWindow = this.getFrame().getWindow();
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got window');
+		var qbePanel = qbeWindow.qbe;
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got qbe panel object');
+		var queries = qbePanel.getQueries();
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries');
+		var query = queries[0];
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got first query : ' + query);
+		var toReturn = {};
+		toReturn.query = query;
+		toReturn.datasourceLabel = this.selectedDatasourceLabel;
+		return toReturn;
+	}
 	
 });

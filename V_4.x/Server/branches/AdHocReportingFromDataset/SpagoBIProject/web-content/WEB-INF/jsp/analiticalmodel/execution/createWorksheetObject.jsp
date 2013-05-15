@@ -30,6 +30,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
     String selectedDatasourceLabel = (String) aResponseContainer.getServiceResponse().getAttribute(SelectDatasetAction.OUTPUT_PARAMETER_DATASOURCE_LABEL);
 	
 	String title ="";
+	String engine = (String) aRequestContainer.getServiceRequest().getAttribute("ENGINE");
 
 %>
 
@@ -63,6 +64,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			, datasetLabel : '<%= datasetLabel %>'
 	        , selectedDatasourceLabel : '<%= selectedDatasourceLabel%>'
 			, datasetParameters : <%= new JSONObject(datasetParameterValuesMap).toString() %>
+	        , engine : '<%= engine %>'
 		});
 	
 		

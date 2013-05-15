@@ -72,6 +72,7 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 	datasetsListPanel : null
 	, worksheetEditor : null
 	, worksheetEngineBaseUrl : null
+	, qbeEngineBaseUrl : null
 	
 	,
 	init : function () {
@@ -127,6 +128,7 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 		this.getLayout().setActiveItem( 1 );
 		this.worksheetEditor.setSrc( this.worksheetEngineBaseUrl + '&dataset_label=' + datasetLabel + '&datasource_label=' + datasourceLabel );
 		this.worksheetEditor.setDatasetLabel(datasetLabel);
+		this.worksheetEditor.setEngine('WORKSHEET');
 	}
 	
 	,
@@ -139,7 +141,13 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 					, LN('sbi.generic.warning'));
 			return;
 		}
-		alert(selectedRecord);
+		var datasetLabel = selectedRecord.get('label');
+		var datasourceLabel = selectedRecord.get('dataSource');
+		this.getLayout().setActiveItem( 1 );
+		this.worksheetEditor.setSrc( this.qbeEngineBaseUrl + '&dataset_label=' + datasetLabel + '&selected_datasource_label=' + datasourceLabel );
+		this.worksheetEditor.setDatasetLabel(datasetLabel);
+		this.worksheetEditor.setEngine('QBE');
+		
 	}
 	
 	,

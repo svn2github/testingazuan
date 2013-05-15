@@ -886,4 +886,5 @@ Sbi.locale.ln["error.mesage.description.data.source.saving.duplicated"]="Impossi
 //===================================================================
 //Sbi.execution.toolbar.SaveDatasetWindow : AD-HOC REPORTING 
 //===================================================================
-Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Datasource for persistence";
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.title"]="Fill in the dataset details and click on Save";
+Sbi.locale.ln["sbi.execution.toolbar.savedatasetwindow.fields.datasource"]="Save data on";

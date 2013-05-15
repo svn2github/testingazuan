@@ -201,7 +201,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 						throw new SpagoBIServiceException(SERVICE_NAME,"sbi.ds.dsCannotPersist");
 					}
 					IDataSource datasource = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(ds.getActiveDetail().getDataSourcePersist());
-					PersistedTableManager ptm = new PersistedTableManager();
+					PersistedTableManager ptm = new PersistedTableManager(profile);
 					ptm.persistDataSet(dataset, datasource);										
 					logger.debug("Persistence ended succesfully!");
 				}

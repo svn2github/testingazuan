@@ -190,7 +190,7 @@ public class PersistedTableManager {
 						toReturn.setBigDecimal(i2+1, (BigDecimal)field.getValue());
 					}else{				
 						//toReturn.setString(i2+1, (String)field.getValue());
-						logger.debug("Cannot setting the column "+ fmd.getName()+ "with type "+ fmd.getType().toString());
+						logger.debug("Cannot setting the column "+ fmd.getName()+ " with type "+ fmd.getType().toString());
 					}
 				}
 				toReturn.addBatch();
@@ -200,14 +200,15 @@ public class PersistedTableManager {
 				throw new SpagoBIEngineRuntimeException("Error persisting the dataset into table", e);
 		}			
 		return toReturn;
-	}
+	} 
 	
 	private String getDBFieldType(IFieldMetaData fieldMetaData){
 		String toReturn = "";
-		String type = fieldMetaData.getType().getName().toString();
+		String type = fieldMetaData.getType().toString();
 		logger.debug("Column type input: " + type);	
 
-		if (type.equalsIgnoreCase("java.lang.String")){
+		//if (type.equalsIgnoreCase("java.lang.String")){
+		if (type.contains("java.lang.String")){
 			toReturn = " VARCHAR ";
 			if (getDialect().contains(DIALECT_ORACLE)) { 
 				toReturn = " VARCHAR2 ";	
@@ -217,21 +218,21 @@ public class PersistedTableManager {
 			}else{
 				toReturn += " (" + getColumnSize().get(fieldMetaData.getName())+ ")";
 			}
-		}else if (type.equalsIgnoreCase("java.lang.Integer")){
+		}else if (type.contains("java.lang.Integer")){
 			toReturn = " INTEGER ";			
-		}else if (type.equalsIgnoreCase("java.lang.Long")){
+		}else if (type.contains("java.lang.Long")){
 			toReturn = " NUMERIC ";	
 			if (getDialect().contains(DIALECT_ORACLE)) { 
 				toReturn = " NUMBER ";	
 			}	
-		}else if (type.equalsIgnoreCase("java.lang.BigDecimal") || type.equalsIgnoreCase("java.math.BigDecimal")){
+		}else if (type.contains("java.lang.BigDecimal") || type.contains("java.math.BigDecimal")){
 			toReturn = " NUMERIC ";	
 			if (getDialect().contains(DIALECT_ORACLE)) { 
 				toReturn = " NUMBER ";	
 			}else if (getDialect().contains(DIALECT_MYSQL)) { 
 				toReturn = " FLOAT ";	
 			}
-		}else if (type.equalsIgnoreCase("java.lang.Double")){
+		}else if (type.contains("java.lang.Double")){
 			toReturn = " DOUBLE ";
 			if (getDialect().contains(DIALECT_POSTGRES) || getDialect().contains(DIALECT_SQLSERVER) || 
 					getDialect().contains(DIALECT_TERADATA)) { 
@@ -239,7 +240,7 @@ public class PersistedTableManager {
 			}else if (getDialect().contains(DIALECT_ORACLE)) { 
 				toReturn = " NUMBER ";	
 			}
-		}else if (type.equalsIgnoreCase("java.lang.Boolean")){
+		}else if (type.contains("java.lang.Boolean")){
 			toReturn = " BOOLEAN ";
 			if (getDialect().contains(DIALECT_ORACLE) || getDialect().contains(DIALECT_TERADATA) || 
 					getDialect().contains(DIALECT_DB2)) { 
@@ -247,12 +248,12 @@ public class PersistedTableManager {
 			}else if (getDialect().contains(DIALECT_SQLSERVER)) { 
 				toReturn = " BIT ";	
 			}
-		}else if (type.equalsIgnoreCase("java.sql.Date")){
+		}else if (type.contains("java.sql.Date")){
 			toReturn = " DATE ";
 			if (getDialect().contains(DIALECT_SQLSERVER)) { 
 				toReturn = " DATETIME ";	
 			}
-		}else if (type.equalsIgnoreCase("java.sql.Timestamp")){
+		}else if (type.contains("java.sql.Timestamp")){
 			toReturn = " TIMESTAMP ";
 			if (getDialect().contains(DIALECT_SQLSERVER)) { 
 				toReturn = " DATETIME ";	

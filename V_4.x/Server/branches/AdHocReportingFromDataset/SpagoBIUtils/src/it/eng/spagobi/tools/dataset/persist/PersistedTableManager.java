@@ -14,6 +14,7 @@ import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.temporarytable.TemporaryTableManager;
 
 import java.math.BigDecimal;
@@ -70,7 +71,12 @@ public class PersistedTableManager {
 		// set dialect of db
 		this.setDialect(dsPersist.getHibDialectClass());
 		logger.debug("DataSource target dialect is [" + getDialect() + "]");
-		
+		//for the first version not all target dialect are enable
+		if (getDialect().contains(DIALECT_SQLSERVER) || getDialect().contains(DIALECT_DB2) ||
+			getDialect().contains(DIALECT_INGRES) ||  getDialect().contains(DIALECT_TERADATA)){
+			logger.debug("Persistence management isn't able for " +  getDialect() + ".");
+			throw new SpagoBIServiceException("","sbi.ds.dsCannotPersistDialect");
+		}
 		String signature = dataset.getSignature();
 		logger.debug("Dataset signature : " + signature);
 		if (signature != null && signature.equals(TemporaryTableManager.getLastDataSetSignature(tableName))) {

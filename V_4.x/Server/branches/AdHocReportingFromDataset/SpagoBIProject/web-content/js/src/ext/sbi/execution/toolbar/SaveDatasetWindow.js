@@ -118,7 +118,7 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 			, width : 160
 			, fieldLabel : LN('sbi.execution.toolbar.savedatasetwindow.fields.datasource')
 			, displayField : 'label'
-			, valueField : 'id'
+			, valueField : 'label'
 			, forceSelection : true
 			, triggerAction : 'all'
 			, selectOnFocus : true
@@ -156,7 +156,7 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
       	formState.label = this.labelField.getValue();
       	formState.name = this.nameField.getValue();
       	formState.description = this.descriptionField.getValue();
-      	formState.datasourceForPersistence = this.datasourceField.getValue();
+      	formState.dataSourcePersist = this.datasourceField.getValue();
       	return formState;
     }
 	
@@ -178,8 +178,11 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 	,
 	getInfoToBeSentToServer : function () {
 		var formState = this.getFormState();
-		formState.query = Ext.util.JSON.encode(this.queryDefinition.query);
-		formState.sourceDatasourceLabel = this.queryDefinition.datasourceLabel;
+		formState.qbeJSONQuery = Ext.util.JSON.encode(this.queryDefinition.queries);
+		formState.qbeDataSource = this.queryDefinition.datasourceLabel;
+		formState.isPersisted = true;
+		formState.isFlatDataset = false;
+		formState.sourceDatasetLabel = this.queryDefinition.sourceDatasetLabel;
 		return formState;
 	}
 	

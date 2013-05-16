@@ -19,6 +19,8 @@ public class GuiGenericDataSet implements Serializable{
 	private String description=null;
 	private String label=null;
 	
+	private Integer sourceDatasetId = null;
+	
 	private GuiDataSetDetail activeDetail = null;
 	private List<GuiDataSetDetail> nonActiveDetails = null;
 
@@ -208,6 +210,14 @@ public class GuiGenericDataSet implements Serializable{
 
 	public void setNonActiveDetails(List<GuiDataSetDetail> nonActiveDetails) {
 		this.nonActiveDetails = nonActiveDetails;
+	}
+	
+	public Integer getSourceDatasetId() {
+		return sourceDatasetId;
+	}
+
+	public void setSourceDatasetId(Integer sourceDatasetId) {
+		this.sourceDatasetId = sourceDatasetId;
 	}
 
 	@Override

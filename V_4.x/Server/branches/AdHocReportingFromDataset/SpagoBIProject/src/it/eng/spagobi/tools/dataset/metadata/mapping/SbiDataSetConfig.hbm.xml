@@ -20,6 +20,20 @@
         <property name="label" type="string">
             <column name="LABEL" />
         </property>
+        
+        <set name="children" inverse="true">
+            <key>
+                <column name="TARGET_DS_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependencies" />
+        </set>
+        <set name="fathers" inverse="true">
+            <key>
+                <column name="SOURCE_DS_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependencies" />
+        </set>
+        
    <component name="commonInfo" insert="true" update="true"  class="it.eng.spagobi.commons.metadata.SbiCommonInfo">
         <property name="userIn" type="string">
             <column name="USER_IN" length="100" not-null="true" />

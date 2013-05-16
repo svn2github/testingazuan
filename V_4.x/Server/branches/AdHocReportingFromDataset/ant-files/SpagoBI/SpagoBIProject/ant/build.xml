@@ -403,6 +403,7 @@
 				<file name="./src/ext/sbi/execution/toolbar/NotesWindow.js" />
 				<file name="./src/ext/sbi/execution/toolbar/MetadataWindow.js" />
 				<file name="./src/ext/sbi/execution/toolbar/RatingWindow.js" />
+				<file name="./src/ext/sbi/execution/toolbar/SaveDatasetWindow.js" />
 				<file name="./src/ext/sbi/home/Footer.js" />
 				<file name="./src/ext/sbi/home/Banner.js" />
 				<file name="./src/ext/sbi/execution/toolbar/ListNotesWindow.js" />

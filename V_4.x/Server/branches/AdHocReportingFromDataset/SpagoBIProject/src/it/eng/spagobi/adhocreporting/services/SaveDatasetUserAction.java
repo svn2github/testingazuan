@@ -55,16 +55,16 @@ public class SaveDatasetUserAction extends ManageDatasets {
 			
 			GuiGenericDataSet ds = getGuiGenericDatasetToInsert();
 			String label = sendToTiLABConsole(ds);
-			
+			ds.setLabel(label);
 			// add extra information into request (more secure on server-side instead of client side)
 			try {
-				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.LABEL, label);
+				this.getRequestContainer().getServiceRequest().updAttribute(DataSetConstants.LABEL, label);
 			} catch (SourceBeanException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot modify request", e);
 			}
 			
 			// invoke save service method
-			datatsetInsert(dao, locale);
+			datatsetInsert(ds, dao, locale);
 			
 		} finally {
 			logger.debug("OUT");

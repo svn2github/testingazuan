@@ -96,8 +96,29 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 	businessMetadata : null
 	, datasetLabel : null
 	, datasetParameters : null
-	, selectedDatasourceLabel : null
+	, datasourceLabel : null
 	, engine : null // QBE/WORKSHEET
+	
+	,
+	getDatasetLabel : function () {
+		return this.datasetLabel;
+	}
+
+	,
+	setDatasetLabel : function (datasetLabel) {
+		this.datasetLabel = datasetLabel;
+	}
+	
+	,
+	getDatasourceLabel : function () {
+		return this.datasourceLabel;
+	}
+
+	,
+	setDatasourceLabel : function (datasourceLabel) {
+		this.datasourceLabel = datasourceLabel;
+	}
+	
 	,
 	init : function () {
 		this.initToolbar();
@@ -231,13 +252,12 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got window');
 		var qbePanel = qbeWindow.qbe;
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got qbe panel object');
-		var queries = qbePanel.getQueries();
+		var queries = qbePanel.getQueriesCatalogue();
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries');
-		var query = queries[0];
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got first query : ' + query);
 		var toReturn = {};
-		toReturn.query = query;
-		toReturn.datasourceLabel = this.selectedDatasourceLabel;
+		toReturn.queries = queries;
+		toReturn.datasourceLabel = this.getDatasourceLabel();
+		toReturn.sourceDatasetLabel = this.getDatasetLabel();
 		return toReturn;
 	}
 	
@@ -256,8 +276,8 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 				'OBJECT_WK_DEFINITION': wkDefinition,
 				'business_metadata': this.businessMetadata,
 				'MESSAGE_DET': 'DOC_SAVE_FROM_DATASET',
-				'dataset_label': this.datasetLabel,
-				'selected_datasource_label': this.selectedDatasourceLabel,
+				'dataset_label': this.getDatasetLabel(),
+				'selected_datasource_label': this.getDatasourceLabel(),
 				'typeid': 'WORKSHEET' 
 		};
 		this.win_saveDoc = new Sbi.execution.SaveDocumentWindow(documentWindowsParams);

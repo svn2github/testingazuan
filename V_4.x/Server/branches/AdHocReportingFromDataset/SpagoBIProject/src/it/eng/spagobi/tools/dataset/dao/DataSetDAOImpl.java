@@ -20,6 +20,8 @@ import it.eng.spagobi.tools.dataset.bo.ScriptDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.WSDataSetDetail;
 import it.eng.spagobi.tools.dataset.metadata.SbiCustomDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependencies;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependenciesId;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetHistory;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
@@ -32,8 +34,10 @@ import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -199,7 +203,7 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 				SbiDataSetConfig dsConfig = new SbiDataSetConfig();			
 				dsConfig.setLabel(dataSet.getLabel());
 				dsConfig.setDescription(dataSet.getDescription());
-				dsConfig.setName(dataSet.getName());	
+				dsConfig.setName(dataSet.getName());
 				updateSbiCommonInfo4Insert(dsConfig);
 
 				String userIn = dsConfig.getCommonInfo().getUserIn();
@@ -247,6 +251,14 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 				Integer dsId =(Integer) session.save(dsConfig);
 				dsConfig.setDsId(dsId);
 				hibDataSet.setSbiDsConfig(dsConfig);
+				
+				//manage of source dataset
+				if (dataSet.getSourceDatasetId() != null) {
+					SbiDataSetConfig source = (SbiDataSetConfig) session.load(SbiDataSetConfig.class, dataSet.getSourceDatasetId());
+					SbiDataSetDependenciesId dependencyId = new SbiDataSetDependenciesId(source.getDsId(), dsId);
+					SbiDataSetDependencies dependency = new SbiDataSetDependencies(dependencyId, source, dsConfig);
+					session.save(dependency);
+				}
 
 				session.save(hibDataSet);
 

@@ -5,6 +5,9 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.dataset.metadata;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import it.eng.spagobi.commons.metadata.SbiHibernateModel;
 
 /**
@@ -31,6 +34,9 @@ public class SbiDataSetConfig extends SbiHibernateModel {
 	private String name=null;
 	private String description=null;
 	private String label=null;
+    private Set children = new HashSet(0);
+    private Set fathers = new HashSet(0);
+
     	
 	
 	/**
@@ -104,4 +110,20 @@ public class SbiDataSetConfig extends SbiHibernateModel {
 	public void setDsId(int dsId) {
 		this.dsId = dsId;
 	}
+	
+    public Set getChildren() {
+        return this.children;
+    }
+    
+    public void setChildren(Set children) {
+        this.children = children;
+    }
+    
+    public Set getFathers() {
+        return this.fathers;
+    }
+    
+    public void setFathers(Set fathers) {
+        this.fathers = fathers;
+    }
 }

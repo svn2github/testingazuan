@@ -88,6 +88,7 @@
         
         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mapping/SbiDataSetConfig.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mapping/SbiDataSetHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mapping/SbiDataSetDependencies.xml" />
         
          <!-- KPI Engine -->
         <mapping resource="it/eng/spagobi/kpi/config/metadata/mapping/SbiKpi.hbm.xml" />

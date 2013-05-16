@@ -134,6 +134,7 @@ ALTER TABLE `sbi_meta_models` RENAME `SBI_META_MODELS`;
 ALTER TABLE `sbi_meta_models_versions` RENAME `SBI_META_MODELS_VERSIONS`;
 ALTER TABLE `sbi_artifacts` RENAME `SBI_ARTIFACTS`;
 ALTER TABLE `sbi_artifacts_versions` RENAME `SBI_ARTIFACTS_VERSIONS`;
+ALTER TABLE `sbi_data_set_dependencies` RENAME `SBI_DATA_SET_DEPENDENCIES`;
 
 select concat('rename table ', table_name, ' to ' , upper(table_name) , ';') from information_schema.tables where table_schema = 'your_schema_name';
 

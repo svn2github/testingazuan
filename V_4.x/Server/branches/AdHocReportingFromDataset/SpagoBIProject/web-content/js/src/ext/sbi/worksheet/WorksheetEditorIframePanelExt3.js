@@ -88,7 +88,7 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	
 	datasetLabel : null
 	, datasetParameters : null	
-	, selectedDatasourceLabel : null
+	, datasourceLabel : null
 	, engine : null // QBE/WORKSHEET
 	
 	,
@@ -99,6 +99,16 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	,
 	setDatasetLabel : function (datasetLabel) {
 		this.datasetLabel = datasetLabel;
+	}
+	
+	,
+	getDatasourceLabel : function () {
+		return this.datasourceLabel;
+	}
+
+	,
+	setDatasourceLabel : function (datasourceLabel) {
+		this.datasourceLabel = datasourceLabel;
 	}
 	
 	,
@@ -259,13 +269,12 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got window');
 		var qbePanel = qbeWindow.qbe;
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got qbe panel object');
-		var queries = qbePanel.getQueries();
+		var queries = qbePanel.getQueriesCatalogue();
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries');
-		var query = queries[0];
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got first query : ' + query);
 		var toReturn = {};
-		toReturn.query = query;
-		toReturn.datasourceLabel = this.selectedDatasourceLabel;
+		toReturn.queries = queries;
+		toReturn.datasourceLabel = this.getDatasourceLabel();
+		toReturn.sourceDatasetLabel = this.getDatasetLabel();
 		return toReturn;
 	}
 	

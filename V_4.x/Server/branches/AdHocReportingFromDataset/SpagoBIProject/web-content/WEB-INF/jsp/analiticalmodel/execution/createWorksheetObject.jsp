@@ -62,7 +62,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			, defaultSrc: '<%= StringEscapeUtils.escapeJavaScript(worksheetEditActionUrl) %>'
 			, businessMetadata : <%= businessMetadata %>
 			, datasetLabel : '<%= datasetLabel %>'
-	        , selectedDatasourceLabel : '<%= selectedDatasourceLabel%>'
+	        , datasourceLabel : '<%= selectedDatasourceLabel%>'
 			, datasetParameters : <%= new JSONObject(datasetParameterValuesMap).toString() %>
 	        , engine : '<%= engine %>'
 		});

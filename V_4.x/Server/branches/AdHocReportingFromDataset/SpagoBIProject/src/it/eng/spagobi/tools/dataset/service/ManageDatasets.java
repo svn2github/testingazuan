@@ -155,6 +155,10 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 
 	protected void datatsetInsert(IDataSetDAO dsDao, Locale locale){
 		GuiGenericDataSet ds = getGuiGenericDatasetToInsert();
+		datatsetInsert(ds, dsDao, locale);
+	}
+	
+	protected void datatsetInsert(GuiGenericDataSet ds, IDataSetDAO dsDao, Locale locale){
 		JSONObject attributesResponseSuccessJSON = new JSONObject();
 		HashMap<String, String> logParam = new HashMap();
 		logParam.put("NAME", ds.getName());
@@ -196,7 +200,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 					//gets the dataset object informations		
 					IDataSet dataset = DAOFactory.getDataSetDAO().loadActiveDataSetByLabel(ds.getLabel());								
 					JSONArray parsListJSON = getAttributeAsJSONArray(DataSetConstants.PARS);
-					if(parsListJSON.length()>0)  { 
+					if(parsListJSON != null && parsListJSON.length()>0)  { 
 						logger.error("The dataset cannot be persisted because uses parameters!");
 						throw new SpagoBIServiceException(SERVICE_NAME,"sbi.ds.dsCannotPersist");
 					}
@@ -400,25 +404,34 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		String name = getAttributeAsString(DataSetConstants.NAME);
 		String description = getAttributeAsString(DataSetConstants.DESCRIPTION);		
 		String datasetTypeCode = getAttributeAsString(DataSetConstants.DS_TYPE_CD);
-
+		String sourceDatasetLabel = getAttributeAsString(DataSetConstants.SOURCE_DS_LABEL);
+		GuiGenericDataSet sourceDs = null;
+		if (sourceDatasetLabel != null && !sourceDatasetLabel.trim().equals("")) {
+			try {
+				sourceDs = DAOFactory.getDataSetDAO().loadDataSetByLabel(sourceDatasetLabel);
+				if (sourceDs == null) {
+					throw new SpagoBIRuntimeException("Dataset with label [" + sourceDatasetLabel + "] does not exist");
+				}
+			} catch (Exception e) {
+				throw new SpagoBIServiceException(SERVICE_NAME,	"Cannot retrieve source dataset information");
+			}
+		}
+		
 		String datasetTypeName = getDatasetTypeName(datasetTypeCode);
 	
 		if (name != null && label != null && datasetTypeName!=null && !datasetTypeName.equals("")) {
 
-			ds = new GuiGenericDataSet();		
-			if(ds!=null){
-				ds.setLabel(label);
-				ds.setName(name);
+			ds = new GuiGenericDataSet();
+			ds.setLabel(label);
+			ds.setName(name);
+			ds.setSourceDatasetId(sourceDs != null ? sourceDs.getDsId() : null);
 
-				if(description != null && !description.equals("")){
-					ds.setDescription(description);
-				}
-				GuiDataSetDetail dsActiveDetail = constructDataSetDetail(datasetTypeName);
-				ds.setActiveDetail(dsActiveDetail);	
-			}else{
-				logger.error("DataSet type is not existent");
-				throw new SpagoBIServiceException(SERVICE_NAME,	"sbi.ds.dsTypeError");
+			if(description != null && !description.equals("")){
+				ds.setDescription(description);
 			}
+			GuiDataSetDetail dsActiveDetail = constructDataSetDetail(datasetTypeName);
+			ds.setActiveDetail(dsActiveDetail);
+			
 		}    
 		return ds;
 	}

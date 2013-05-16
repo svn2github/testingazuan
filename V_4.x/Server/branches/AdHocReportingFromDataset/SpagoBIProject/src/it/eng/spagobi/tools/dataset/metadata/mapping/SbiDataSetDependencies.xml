@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 16-mag-2013 10.43.56 by Hibernate Tools 3.1.0 beta3 -->
+<hibernate-mapping>
+    <class name="it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependencies" table="SBI_DATA_SET_DEPENDENCIES">
+        <composite-id name="id" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependenciesId">
+            <key-property name="sourceDsId" type="integer">
+                <column name="SOURCE_DS_ID" />
+            </key-property>
+            <key-property name="targetDsId" type="integer">
+                <column name="TARGET_DS_ID" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="source" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" update="false" insert="false" fetch="select">
+            <column name="SOURCE_DS_ID" not-null="true" />
+        </many-to-one>
+        <many-to-one name="target" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" update="false" insert="false" fetch="select">
+            <column name="TARGET_DS_ID" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

@@ -168,4 +168,6 @@ public interface IDataSet {
 	
 	public IDataSource getDataSource();
 	
+	public String getPeristedTableName();
+	
 }

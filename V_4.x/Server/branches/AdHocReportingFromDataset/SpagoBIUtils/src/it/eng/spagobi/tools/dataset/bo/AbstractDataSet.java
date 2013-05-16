@@ -456,4 +456,15 @@ public abstract class AbstractDataSet implements IDataSet {
 		throw new RuntimeException("Unsupported method");
 	}
 
+	
+	public String getPeristedTableName(){
+		if(isPersisted()){
+			return getLabel();
+		}else if(isFlatDataset()){
+			return getFlatTableName();
+		}else{
+			//TO-DO
+			return getLabel();
+		}
+	}	
 }

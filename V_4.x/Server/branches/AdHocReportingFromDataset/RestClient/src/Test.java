@@ -1,12 +1,9 @@
+import it.eng.spagobi.rest.client.api.TilabClientAPI;
+import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
+
+import java.util.List;
+
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.sun.jersey.api.client.GenericType;
-
-import it.eng.spagobi.rest.client.TilabClient;
-import it.eng.spagobi.rest.client.TilabClient.V1.Objects;
-import it.eng.spagobi.rest.objects.serDeser.SerDeserFactory;
-import it.eng.spagobi.rest.objects.serDeser.ObjectsSerDeser;
 
 
 public class Test {
@@ -18,9 +15,9 @@ public class Test {
 	 */
 	public static void main(String[] args) throws JSONException {
 		// TODO Auto-generated method stub
-		TilabClient tc = new TilabClient();
-		Objects objs = tc.v1().objects();
-		//String json = objs.getAsJson(1, 20, type, user, authorization, returnType);
+//		TilabClient tc = new TilabClient();
+//		Objects objs = tc.v1().objects();
+//		//String json = objs.getAsJson(1, 20, type, user, authorization, returnType);
 		String json = "{"+
 			"'responseCode': '200',"+
 			"'responseDesc': 'Operation succeeded',"+
@@ -93,14 +90,13 @@ public class Test {
 				"}]"+
 			"}	"+
 		"}";
-		JSONObject jsonObj = new JSONObject(json);
-		JSONObject jsonInnerObj = null;
-		String type = null;
-
-		//instantiate proper deserializer
-		ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
-		Object deserializedObj = des.deserialize(jsonObj);
-		System.out.println(json);
+		
+		//use simulator http://localhost:8080/RestServerSimul/
+		TilabClientAPI tca = new TilabClientAPI();
+		//GuiGenericDataSet gdd = tca.getDatasetDetail("", "", ""); ok
+		
+		List<GuiGenericDataSet> gdd1 = tca.getDatasetList("0", "10", "", "");
+		
 	}
 	
 }

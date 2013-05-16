@@ -37,20 +37,20 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 	static private Logger logger = Logger.getLogger(JsonDatasetSerDeser.class);
 
 	@Override
-	public Object deserialize(JSONObject obj) throws SerializationException {
-		if(obj == null){
+	public Object deserialize(JSONObject o) throws SerializationException {
+		if(o == null){
 			return null;
 		}
-		JSONObject o = null;
+
 		DataSource dataSourceSpagoBI = new DataSource();
 		GuiGenericDataSet guiGenericDataSet = new GuiGenericDataSet();
-		GuiDataSetDetail guiDataSetDetail = null;
+		GuiDataSetDetail guiDataSetDetail = new GuiDataSetDetail();
 		
 		try {
-			if(obj.has("object")){
-				o = (JSONObject)obj.opt("object");
-				logger.debug("get dataset inner object");
-			}
+//			if(obj.has("object")){
+//				o = (JSONObject)obj.opt("object");
+//				logger.debug("get dataset inner object");
+//			}
 			String id = (String)o.optString("id");
 			String name = (String)o.optString("name");
 			String description = (String)o.optString("description");
@@ -71,36 +71,39 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 			
 			String ownerObjectStatus = (String)o.optString("ownerObjectStatus");
 			String user = (String)o.optString("user");
-			Integer lastModifiedDate = (Integer)o.opt("lastModifiedDate");
+			String lastModifiedDate = (String)o.opt("lastModifiedDate");
 			JSONObject details = (JSONObject)o.opt("details");
 			JSONObject structure = (JSONObject)details.opt("structure");
 			JSONArray columns = (JSONArray)structure.opt("columns");	
 			String meta =SerDeserUtil.deserMetadata(columns);
 			
-
-			guiGenericDataSet.setTimeUp(new Date(lastModifiedDate));
-			guiGenericDataSet.setUserUp(user);
-			guiDataSetDetail.setDsMetadata(meta);
-			
 			JSONArray datasources = (JSONArray)o.opt("objects");
-			for(int i=0; i<datasources.length(); i++){
-				JSONObject datasource = (JSONObject) datasources.get(i);
+			if(datasources != null && datasources.length() != 0){
+				QueryDataSetDetail queryDatasetDetail = new QueryDataSetDetail();
+				
+				JSONObject datasource = (JSONObject) datasources.get(0);
 				
 				ObjectsSerDeser des = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASOURCE);
 				DataSource dataSourceObj = (DataSource)des.deserialize(datasource);
 				
-				((QueryDataSetDetail)guiDataSetDetail).setDataSourceLabel(dataSourceObj.getLabel());//datasource label
-				String resource = datasource.optString("resource");
-				((QueryDataSetDetail)guiDataSetDetail).setQuery("select * from "+resource);//query
+				queryDatasetDetail.setDataSourceLabel(dataSourceObj.getLabel());//datasource label
+				String resource = ((JSONObject)datasource.opt("details")).optString("resource");
+				queryDatasetDetail.setQuery("select * from "+resource);//query
 				
 				guiDataSetDetail.setDsType(JDBC_DS_TYPE);
-			}			
+				guiDataSetDetail =(GuiDataSetDetail)queryDatasetDetail;
+			}		
+			
+			guiGenericDataSet.setTimeUp(new Date(Long.valueOf(lastModifiedDate)));
+			guiGenericDataSet.setUserUp(user);
+			guiDataSetDetail.setDsMetadata(meta);
+			
 			guiGenericDataSet.setActiveDetail(guiDataSetDetail);
 
 		}catch(Exception ex){
 			logger.error(ex);
 		}
-		return guiDataSetDetail;
+		return guiGenericDataSet;
 	}
 
 	@Override

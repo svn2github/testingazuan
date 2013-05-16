@@ -1,8 +1,5 @@
 package it.eng.spagobi.rest.client.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.rest.client.TilabClient;
 import it.eng.spagobi.rest.objects.serDeser.ObjectsSerDeser;
@@ -11,30 +8,35 @@ import it.eng.spagobi.tools.dataset.bo.GuiDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.sun.jersey.json.impl.provider.entity.JSONRootElementProvider;
 import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 
 public class TilabClientAPI {
 	
-	public GuiDataSetDetail getDatasetDetail(String id, String user, String auth) throws SerializationException, JSONException{
-		GuiDataSetDetail result = null;
+	public GuiGenericDataSet getDatasetDetail(String id, String user, String auth) throws SerializationException, JSONException{
+		GuiGenericDataSet result = null;
 
 		//http://<host>:<port>/<path>/objects/4d2a9ddf-2ba6-456d-b708-9b65a1bca811
-		JSONObject jsonObj = TilabClient.v1().objectsId(id).getAsJson(user, auth, JSONObject.class);
-		//JSONObject jsonObj = new JSONObject(objs);
+		//JSONObject jsonObj = TilabClient.v1().objectsId(id).getAsJson(user, auth, JSONObject.class);
+		String jsonObjStr = TilabClient.v1().objectsId(id).getAsJson(user, auth, String.class);
+		JSONObject jsonObj = new JSONObject(jsonObjStr);
 		String type = SerDeserFactory.TYPE_DATASET;
 		
-		if(jsonObj.getString("responseCode").equals("204")) {
+		if(!jsonObj.getString("responseCode").equals("204")) {
 			//get object type
 			JSONObject object = jsonObj.getJSONObject("object");
 			if(object != null){
 				type = object.getString("type");
 				//instantiate proper deserializer
 				ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
-				result = (GuiDataSetDetail)des.deserialize(object);
+				result = (GuiGenericDataSet)des.deserialize(object);
 
 			}
 		}
@@ -45,8 +47,8 @@ public class TilabClientAPI {
 		List<GuiGenericDataSet> result = new ArrayList<GuiGenericDataSet>();
 
 		//http://<host>:<port>/<path>/objects?type=dataset&offset=0&limit=10
-		JSONObject jsonObj = TilabClient.v1().objects().getAsJson(offset, limit, SerDeserFactory.TYPE_DATASET, user, auth, JSONObject.class);
-		//JSONObject jsonObj = new JSONObject(objs);
+		String jsonObjStr = TilabClient.v1().objects().getAsJson(offset, limit, SerDeserFactory.TYPE_DATASET, user, auth, String.class);
+		JSONObject jsonObj = new JSONObject(jsonObjStr);
 		
 		//get objects
 		JSONArray objects = jsonObj.getJSONArray("objects");

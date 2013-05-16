@@ -28,7 +28,9 @@ public class TilabClient {
     public final static URI BASE_URI;
 
     static {
-        URI originalURI = URI.create("http://localhost:8080/mdalayer/rest/");
+        //URI originalURI = URI.create("http://localhost:8080/mdalayer/rest/");
+    	URI originalURI = URI.create("http://localhost:8080/RestServerSimul/");
+        
         // Look up to see if we have any indirection in the local copy
         // of META-INF/java-rs-catalog.xml file, assuming it will be in the
         // oasis:name:tc:entity:xmlns:xml:catalog namespace or similar duck type

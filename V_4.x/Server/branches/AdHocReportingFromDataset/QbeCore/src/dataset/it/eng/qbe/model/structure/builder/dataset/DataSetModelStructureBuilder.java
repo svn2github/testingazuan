@@ -95,16 +95,7 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 	
 	private void addEntity (IModelStructure modelStructure, String modelName, IDataSet entity){
 
-		String entityName= "";
-		
-		if(entity.isPersisted()){
-			entityName = entity.getLabel();
-		}else if(entity.isFlatDataset()){
-			entityName = entity.getFlatTableName();
-		}else{
-			//TO-DO
-			entityName = entity.getLabel();
-		}
+		String entityName = entity.getPeristedTableName();
 
 		
 		IModelEntity dataMartEntity = modelStructure.addRootEntity(modelName, entityName, null, null, entityName);

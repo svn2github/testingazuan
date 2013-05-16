@@ -35,7 +35,7 @@
 		<IMG SRC="birt/images/parameter.gif" ALT="<%= parameterBean.getDisplayName( ) %>" TITLE="<%= parameterBean.getToolTip( ) %>"/>
 	</TD>
 	<TD NOWRAP>
-		<LABEL TITLE="<%= parameterBean.getToolTip( ) %>" ID="id_<%= parameterBean.getName()%>" FOR="<%=encodedParameterName%>" + "0"><%= parameterBean.getDisplayName( ) %>:</LABEL>
+		<FONT TITLE="<%= parameterBean.getToolTip( ) %>"><%= parameterBean.getDisplayName( ) %>:</FONT>
 		<%-- is required --%>
 		<%
 		if ( parameterBean.isRequired( ) )
@@ -81,13 +81,7 @@
 	<BR>
 <%
 			if( CHECKED )
-			{
 				isSelected = true;
-				%><script type="text/javascript">
-					document.getElementById("id_" + "<%= parameterBean.getName()%>")
-						.setAttribute("FOR", "<%= encodedParameterName + i %>");
-				</script><%
-			}
 		}
 	}	
 

@@ -187,7 +187,7 @@
 	<TR>
 		<TD COLSPAN="4">			
 			<DIV>
-				<label for="exportDataExtension"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.extension" )%></label>
+				<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.extension" )%> 
 				<SELECT ID="exportDataExtension" CLASS="birtviewer_exportdata_dialog_select">
 				<%
 					for ( int i = 0; i < dataExtractInfos.length; i++ )
@@ -212,26 +212,21 @@
 			<DIV ID="exportDataEncodingSetting">
 				<TABLE>
 					<TR>
-						<TD><label for="exportDataEncoding_UTF8"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding" )%></label></TD>
-						<TD>
-							<INPUT TYPE="radio" NAME="exportDataEncoding" ID="exportDataEncoding_UTF8" CHECKED value="UTF-8">
-							<label for="exportDataEncoding_UTF8">UTF-8</label>
-						</TD>
+						<TD><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding" )%></TD>
+						<TD><INPUT TYPE="radio" NAME="exportDataEncoding" ID="exportDataEncoding_UTF8" CHECKED value="UTF-8">UTF-8</TD>
 					</TR>
 					<TR>
 						<TD></TD>
 						<TD>
-							<INPUT TYPE="radio" NAME="exportDataEncoding" ID="exportDataEncoding_other">
-							<label for="exportDataEncoding_other"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding.other" )%></label>
-							<INPUT TYPE="text" NAME="exportDataOtherEncoding" ID="exportDataOtherEncoding_input" CLASS="birtviewer_exportdata_dialog_input" DISABLED="true">
-							<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding.comment" )%>
+							<INPUT TYPE="radio" NAME="exportDataEncoding" ID="exportDataEncoding_other"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding.other" )%>
+							<INPUT TYPE="text" NAME="exportDataOtherEncoding" ID="exportDataOtherEncoding_input" CLASS="birtviewer_exportdata_dialog_input" DISABLED="true"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.encoding.comment" )%>
 						</TD>
 					</TR>
 				</TABLE>				
 			</DIV>
 			<BR/>
 			<DIV>
-				<label for="exportDataCSVSeparator"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.separator" )%></label>
+				<%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.separator" )%> 
 				<SELECT ID="exportDataCSVSeparator" CLASS="birtviewer_exportdata_dialog_select">
 					<OPTION VALUE="0" SELECTED><%= BirtResources.getMessage( "birt.viewer.sep.0" )%></OPTION>
 					<OPTION VALUE="1"><%= BirtResources.getMessage( "birt.viewer.sep.1" )%></OPTION>
@@ -245,19 +240,9 @@
 				<TABLE cellpadding="0" cellspacing="0">
 					<TR valign="top">
 						<TD><INPUT TYPE="checkbox" ID="exportColumnDataType"></TD>
-						<TD style="padding-top:2px;" nowrap="nowrap">
-							<label for="exportColumnDataType"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.datatype" )%></label>
-						</TD>
+						<TD style="padding-top:2px;" nowrap="nowrap"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.datatype" )%></TD>
 						<TD style="padding-left:20px;" valign="top"><INPUT TYPE="checkbox" ID="exportColumnLocaleNeutral"></TD>
-						<TD style="padding-top:2px;" valign="top">
-							<label for="exportColumnLocaleNeutral"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.localeneutral" )%></label>
-						</TD>
-					</TR>
-					<TR>
-						<TD><INPUT TYPE="checkbox" ID="exportDataWithCR"></TD>
-						<TD style="padding-top:2px;" nowrap="nowrap">
-							<label for="exportDataWithCR"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.carriage_return" )%></label>
-						</TD>
+						<TD style="padding-top:2px;" valign="top"><%= BirtResources.getMessage( "birt.viewer.dialog.exportdata.localeneutral" )%></TD>
 					</TR>
 				</TABLE>
 			</DIV>

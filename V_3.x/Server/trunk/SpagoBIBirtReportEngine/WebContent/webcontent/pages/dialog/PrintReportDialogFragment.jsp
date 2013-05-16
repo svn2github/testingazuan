@@ -26,15 +26,13 @@
 	<TR>
 		<TD>
 			<DIV ID="printFormatSetting">
-				<DIV><label for="printAsHTML"><%=BirtResources.getMessage( "birt.viewer.dialog.print.format" )%></label></DIV>
+				<DIV><%=BirtResources.getMessage( "birt.viewer.dialog.print.format" )%></DIV>
 				<br/>
 				<DIV>
-					<INPUT TYPE="radio" ID="printAsHTML" name="printFormat" CHECKED />
-					<label for="printAsHTML"><%=BirtResources.getMessage( "birt.viewer.dialog.print.format.html" )%></label>
+				<INPUT TYPE="radio" ID="printAsHTML" name="printFormat" CHECKED/><%=BirtResources.getMessage( "birt.viewer.dialog.print.format.html" )%>
 				</DIV>
 				<DIV>
-					<INPUT TYPE="radio" ID="printAsPDF" name="printFormat" />
-					<label for="printAsPDF"><%=BirtResources.getMessage( "birt.viewer.dialog.print.format.pdf" )%></label>
+				<INPUT TYPE="radio" ID="printAsPDF" name="printFormat"/><%=BirtResources.getMessage( "birt.viewer.dialog.print.format.pdf" )%>
 				&nbsp;&nbsp;
 				<SELECT	ID="printFitSetting" CLASS="birtviewer_printreport_dialog_select" DISABLED="true">
 					<option value="0" selected><%=BirtResources.getMessage( "birt.viewer.dialog.export.pdf.fittoauto" )%></option>
@@ -52,21 +50,13 @@
 				<TABLE>
 					<TR>
 						<TD>
-						<label for="exportPages"><%=BirtResources.getMessage( "birt.viewer.dialog.page" )%></label>
-						</TD>
-					</TR>
-					<TR>
-						<TD>
-							<INPUT TYPE="radio" ID="printPageAll" NAME="printPages" CHECKED/>
-							<label for="printPageAll"><%=BirtResources.getMessage( "birt.viewer.dialog.page.all" )%></label>
+							<INPUT TYPE="radio" ID="printPageAll" NAME="printPages" CHECKED/><%=BirtResources.getMessage( "birt.viewer.dialog.page.all" )%>
 						</TD>
 						<TD STYLE="padding-left:5px">	
-							<INPUT TYPE="radio" ID="printPageCurrent" NAME="printPages"/>
-							<label for="printPageCurrent"><%=BirtResources.getMessage( "birt.viewer.dialog.page.current" )%></label>
+							<INPUT TYPE="radio" ID="printPageCurrent" NAME="printPages"/><%=BirtResources.getMessage( "birt.viewer.dialog.page.current" )%>
 						</TD>	
 						<TD STYLE="padding-left:5px">
-							<INPUT TYPE="radio" ID="printPageRange" NAME="printPages"/>
-							<label for="printPageRange"><%=BirtResources.getMessage( "birt.viewer.dialog.page.range" )%></label>
+							<INPUT TYPE="radio" ID="printPageRange" NAME="printPages"/><%=BirtResources.getMessage( "birt.viewer.dialog.page.range" )%>
 							<INPUT TYPE="text" CLASS="birtviewer_printreport_dialog_input" ID="printPageRange_input" DISABLED="true"/>
 						</TD>
 					</TR>		

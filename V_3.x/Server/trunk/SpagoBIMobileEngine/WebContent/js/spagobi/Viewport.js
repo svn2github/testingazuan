@@ -79,6 +79,8 @@ Ext.define('app.views.Viewport',{
 	,goHome: function(submodality){
 		app.views.customTopToolbar.setViewModality("main",submodality);
 		app.views.customBottomToolbar.setViewModality("main",submodality);
+		//cleans the execution 
+		app.views.executionContainer.clearExecutions();
 		this.setActiveItem(app.views.main, { type: 'fade' });	
 	}
 	

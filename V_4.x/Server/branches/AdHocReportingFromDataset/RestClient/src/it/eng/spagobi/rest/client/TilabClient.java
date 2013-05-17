@@ -8,7 +8,10 @@ package it.eng.spagobi.rest.client;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
+
 import javax.annotation.Generated;
 import javax.ws.rs.core.UriBuilder;
 import com.sun.jersey.api.client.Client;
@@ -29,7 +32,9 @@ public class TilabClient {
 
     static {
         //URI originalURI = URI.create("http://localhost:8080/mdalayer/rest/");
-    	URI originalURI = URI.create("http://localhost:8080/RestServerSimul/");
+    	
+    	ResourceBundle rb = ResourceBundle.getBundle("restclient", Locale.ITALY);
+    	URI originalURI = URI.create(rb.getString("rest.server.url"));
         
         // Look up to see if we have any indirection in the local copy
         // of META-INF/java-rs-catalog.xml file, assuming it will be in the

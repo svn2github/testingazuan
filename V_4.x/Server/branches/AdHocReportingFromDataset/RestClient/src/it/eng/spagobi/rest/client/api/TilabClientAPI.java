@@ -35,7 +35,7 @@ public class TilabClientAPI {
 			if(object != null){
 				type = object.getString("type");
 				//instantiate proper deserializer
-				ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+				ObjectsSerDeser des = SerDeserFactory.getSerDeser(type);
 				result = (GuiGenericDataSet)des.deserialize(object);
 
 			}
@@ -54,7 +54,7 @@ public class TilabClientAPI {
 		JSONArray objects = jsonObj.getJSONArray("objects");
 
 		//instantiate proper deserializer
-		ObjectsSerDeser des = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASET);
+		ObjectsSerDeser des = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
 		for(int i= 0; i<objects.length(); i++){
 			JSONObject dataset = objects.getJSONObject(i);
 			GuiGenericDataSet deserializedObj = (GuiGenericDataSet)des.deserialize(dataset);
@@ -74,7 +74,7 @@ public class TilabClientAPI {
 		JSONArray objects = jsonObj.getJSONArray("objects");
 
 		//instantiate proper deserializer
-		ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+		ObjectsSerDeser des = SerDeserFactory.getSerDeser(type);
 		for(int i= 0; i<objects.length(); i++){
 			JSONObject dataset = objects.getJSONObject(i);
 			Object deserializedObj = des.deserialize(dataset);
@@ -96,7 +96,7 @@ public class TilabClientAPI {
 			if(object != null){
 				type = object.getString("type");
 				//instantiate proper deserializer
-				ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+				ObjectsSerDeser des = SerDeserFactory.getSerDeser(type);
 				result = (Object)des.deserialize(object);
 
 			}
@@ -107,22 +107,41 @@ public class TilabClientAPI {
 		
 		boolean result = false;
 		
-		ObjectsSerDeser des1 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASOURCE);
+		ObjectsSerDeser des1 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASOURCE);
 		JSONObject inputDataSource = des1.serialize(dSRC, null);
 		
 		//http://<host>:<port>/<path>/objects
-		JSONObject responseDatasource = TilabClient.v1().objects().postJson(inputDataSource, user, auth, JSONObject.class);
+		String responseDatasourceStr = TilabClient.v1().objects().postJson(inputDataSource, user, auth, String.class);
+		JSONObject responseDatasource = new JSONObject(responseDatasourceStr);
 		//put in array
 		JSONArray objects = new JSONArray();
 		objects.put(responseDatasource);
 		//use datasource for dataset request
+		if(responseDatasource.getString("responseCode").equals("200")){
+			ObjectsSerDeser des2 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
+			
+			JSONObject inputDataSet = des2.serialize(dSet, objects);
+			String responseDatasetStr = TilabClient.v1().objects().postJson(inputDataSet, "", "", String.class);
+			JSONObject responseDataset = new JSONObject(responseDatasetStr);
+			if(responseDataset.getString("responseCode").equals("200")) {
+				result = true;
+			}
+		}
+
+		return result;
+	}
+	public boolean writeObject(Object obj, String user, String auth, String type) throws JSONException, SourceBeanException{	
 		
-		ObjectsSerDeser des2 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASET);
+		boolean result = false;
 		
-		JSONObject inputDataSet = des2.serialize(dSet, objects);
-		JSONObject responseDataset = TilabClient.v1().objects().postJson(inputDataSet, "", "", JSONObject.class);
+		ObjectsSerDeser des = SerDeserFactory.getSerDeser(type);
+		JSONObject biObject = des.serialize(obj, null);
 		
-		if(responseDataset.getString("responseCode").equals("200")) {
+		//http://<host>:<port>/<path>/objects
+		String responseStr = TilabClient.v1().objects().postJson(biObject, user, auth, String.class);
+		JSONObject response = new JSONObject(responseStr);
+
+		if(response.getString("responseCode").equals("200")) {
 			result = true;
 		}
 		return result;

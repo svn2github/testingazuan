@@ -30,7 +30,7 @@ public class TestDatasetDetail {
 			if(object != null){
 				type = object.getString("type");
 				//instantiate proper deserializer
-				ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+				ObjectsSerDeser des = SerDeserFactory.getSerDeser(type);
 				result = (GuiDataSetDetail)des.deserialize(object);
 
 			}

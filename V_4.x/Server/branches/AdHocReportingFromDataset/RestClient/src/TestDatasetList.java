@@ -37,7 +37,7 @@ public class TestDatasetList {
 		JSONArray objects = jsonObj.getJSONArray("objects");
 
 		//instantiate proper deserializer
-		ObjectsSerDeser des = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASET);
+		ObjectsSerDeser des = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
 		for(int i= 0; i<objects.length(); i++){
 			JSONObject dataset = objects.getJSONObject(i);
 			GuiGenericDataSet deserializedObj = (GuiGenericDataSet)des.deserialize(dataset);

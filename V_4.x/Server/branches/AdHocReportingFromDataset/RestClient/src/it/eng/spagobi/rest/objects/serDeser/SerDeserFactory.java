@@ -29,7 +29,7 @@ public class SerDeserFactory{
 		types.put( TYPE_DASHBOARD, new JsonDashboardSerDeser() );
 	}
 	
-	public static ObjectsSerDeser getDeserializer(String type) {
+	public static ObjectsSerDeser getSerDeser(String type) {
 		return types.get( type );
 	}
 }

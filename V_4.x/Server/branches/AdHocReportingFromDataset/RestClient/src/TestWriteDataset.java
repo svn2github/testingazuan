@@ -24,7 +24,7 @@ public class TestWriteDataset {
 		GuiGenericDataSet dSet = new GuiGenericDataSet();
 		
 		
-		ObjectsSerDeser des1 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASOURCE);
+		ObjectsSerDeser des1 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASOURCE);
 		JSONObject inputDataSource = des1.serialize(dSRC, null);
 		
 		//http://<host>:<port>/<path>/objects
@@ -34,7 +34,7 @@ public class TestWriteDataset {
 		objects.put(responseDatasource);
 		//use datasource for dataset request
 		
-		ObjectsSerDeser des2 = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASET);
+		ObjectsSerDeser des2 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
 		
 		JSONObject inputDataSet = des2.serialize(dSet, objects);
 		JSONObject responseDataset = TilabClient.v1().objects().postJson(inputDataSet, "", "", JSONObject.class);

@@ -68,7 +68,7 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 				
 				JSONObject datasource = (JSONObject) datasources.get(0);
 				
-				ObjectsSerDeser des = SerDeserFactory.getDeserializer(SerDeserFactory.TYPE_DATASOURCE);
+				ObjectsSerDeser des = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASOURCE);
 				DataSource dataSourceObj = (DataSource)des.deserialize(datasource);
 				
 				queryDatasetDetail.setDataSourceLabel(dataSourceObj.getLabel());//datasource label

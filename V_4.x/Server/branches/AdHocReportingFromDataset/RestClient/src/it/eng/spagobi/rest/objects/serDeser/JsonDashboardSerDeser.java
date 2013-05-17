@@ -11,9 +11,26 @@ import org.json.JSONObject;
 import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 
 public class JsonDashboardSerDeser implements ObjectsSerDeser {
+/*
+    "details" : {
+    "URL" : " http://localhost:8080/SpagoBI/servlet/AdapterHTTP",
+    “authType” : “noauth”,            // es. “noauth”, “OAuth2”, ecc.
+    “httpMethod” : "GET"
+    “queryParameters” : {
+          PAGE="LoginPage"
+          , NEW_SESSION="TRUE"
+          , userID="biadmin"
+          , password="biadmin"
+          , OBJECT_LABEL: "DASH1"
 
+     }
+    “header” : {},
+    “body” : “”,                        // Sempre vuoto per il PoC
+}
+*/
 	@Override
 	public Object deserialize(JSONObject o) throws SerializationException {
+		//per lettura
 		if(o == null){
 			return null;
 		}
@@ -22,26 +39,23 @@ public class JsonDashboardSerDeser implements ObjectsSerDeser {
 		String id = (String)o.opt("id");
 		String name = (String)o.opt("name");
 		String description = (String)o.opt("description");
-//			
-//			Integer creationDateD = (Integer)o.opt("creationDate");
-//			Integer lastModifiedDateD = (Integer)o.opt("lastModifiedDate");
-//			String userD = (String)o.opt("user");
-//			String ownerD = (String)o.opt("owner");
-//			String userObjectStatusD = (String)o.opt("userObjectStatus");
-//			String ownerObjectStatusD = (String)o.opt("ownerObjectStatus");
 
 		document.setDescription(description);
 		
 		JSONObject detail = (JSONObject)o.opt("details");
 
-
-//			String subT = detail.optString("subtype");
-//			String URL = detail.optString("URL");
-//			String username = detail.optString("username");
-//			String password = detail.optString("password");
-//			String resourceType = detail.optString("resourceType");
-//			String resource = detail.getString("resource");
-//			String label =detail.optString("biId");
+			String URL = detail.optString("URL");
+			String authType = detail.optString("authType");
+			String httpMethod = detail.optString("httpMethod");
+			JSONObject queryParameters = (JSONObject)detail.opt("queryParameters");
+			if(queryParameters != null){
+				String page =queryParameters.optString("PAGE");
+				String newSession =queryParameters.optString("NEW_SESSION");
+				String userID =queryParameters.optString("userID");
+				String password =queryParameters.optString("password");
+				String label =queryParameters.optString("OBJECT_LABEL");				
+			}
+			
 		
 		document.setLabel(id);
 		document.setName(name);

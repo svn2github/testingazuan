@@ -51,7 +51,8 @@ public class JDBCHiveDataReader extends AbstractDataReader {
 		
 		dataStore = new DataStore();
 		dataStoreMeta = new MetaData();
-		
+		dataStore.setMetaData(dataStoreMeta);
+		int resultNumber = 0;
 		try {				
 
     		while (rs.next()) {
@@ -70,19 +71,19 @@ public class JDBCHiveDataReader extends AbstractDataReader {
             		String fieldName = rs.getMetaData().getColumnLabel(columnIndex);
             		
             		logger.debug("Field [" + columnIndex + "] name is equal to [" + fieldName + "]");
-            		if(dataStoreMeta.getFieldIndex(fieldName) == -1){
+            		if(dataStore.getMetaData().getFieldIndex(fieldName) == -1){
                 		fieldMeta.setName( fieldName );
                 		fieldMeta.setType(String.class);
-                		dataStoreMeta.addFiedMeta(fieldMeta);
+                		dataStore.getMetaData().addFiedMeta(fieldMeta);
             		}
 
             		
             	}    
         		
     			dataStore.appendRecord(record);
-    			
+    			resultNumber++;
     		}
-    		dataStore.setMetaData(dataStoreMeta);
+    		dataStore.getMetaData().setProperty("resultNumber", new Integer(resultNumber));
 				
 		} catch (SQLException e) {
 			logger.error("An unexpected error occured while reading resultset", e);

@@ -52,10 +52,31 @@ public class JDBCHiveDataReader extends AbstractDataReader {
 		dataStore = new DataStore();
 		dataStoreMeta = new MetaData();
 		dataStore.setMetaData(dataStoreMeta);
-		int resultNumber = 0;
-		try {				
 
-    		while (rs.next()) {
+		try {				
+			logger.debug("Reading data ...");
+    		if(getOffset() > 0) {
+    			logger.debug("Offset is equal to [" + getOffset() + "]");
+    			int i=0;
+     			while(i != getOffset()){
+     				rs.next();
+     				i++;
+     			}
+    			
+    		} else {
+    			logger.debug("Offset not set");
+    		}
+    		
+    		long maxRecToParse = Long.MAX_VALUE;
+    		if(getFetchSize() > 0) {
+    			maxRecToParse = getFetchSize();
+    			logger.debug("FetchSize is equal to [" + maxRecToParse + "]");
+    		} else {
+    			logger.debug("FetchSize not set");
+    		}
+    		int recCount = 0;
+    		int resultNumber = 0;
+    		while ((recCount < maxRecToParse) && rs.next()) {
     			IRecord record = new Record(dataStore);
             	logger.debug("Reading metadata ...");
             	columnCount = rs.getMetaData().getColumnCount();
@@ -76,14 +97,22 @@ public class JDBCHiveDataReader extends AbstractDataReader {
                 		fieldMeta.setType(String.class);
                 		dataStore.getMetaData().addFiedMeta(fieldMeta);
             		}
-
-            		
             	}    
         		
     			dataStore.appendRecord(record);
-    			resultNumber++;
+    			recCount++;
     		}
-    		dataStore.getMetaData().setProperty("resultNumber", new Integer(resultNumber));
+    		logger.debug("Readed [" + recCount+ "] records");
+    		logger.debug("Data readed succcesfully");
+    		
+    		if (this.isCalculateResultNumberEnabled()) {
+    			logger.debug("Calculation of result set number is enabled");
+    			resultNumber = getResultNumber(rs, maxRecToParse, recCount);
+    			dataStore.getMetaData().setProperty("resultNumber", new Integer(resultNumber));
+    		} else {
+    			logger.debug("Calculation of result set number is NOT enabled");
+    		}
+
 				
 		} catch (SQLException e) {
 			logger.error("An unexpected error occured while reading resultset", e);
@@ -93,7 +122,35 @@ public class JDBCHiveDataReader extends AbstractDataReader {
 		
 		return dataStore;
     }
+    
+	private int getResultNumber(ResultSet rs, long maxRecToParse, int recCount)
+			throws SQLException {
+		logger.debug("IN");
+		
+		int toReturn =recCount;
+		
+		logger.debug("resultset type [" + rs.getType() + "] (" + (rs.getType()  == ResultSet.TYPE_FORWARD_ONLY) + ")");
+		if (rs.getType()  == ResultSet.TYPE_FORWARD_ONLY) {
 
+			int recordsCount = 0;
+			if (recCount < maxRecToParse) {
+				// records read where less then max records to read, therefore the resultset has been completely read
+				recordsCount = getOffset() + recCount;
+			} else {
+				//recordsCount = rs.getRow();
+				while (rs.next()) {
+					recordsCount++;
+					// do nothing, just scroll result set
+				}
+			}
+
+			toReturn = recordsCount;
+		}
+		
+		logger.debug("Reading total record numeber is equal to [" + toReturn + "]");
+		logger.debug("OUT " + toReturn);
+		return toReturn;
+	}
 
 	
 }

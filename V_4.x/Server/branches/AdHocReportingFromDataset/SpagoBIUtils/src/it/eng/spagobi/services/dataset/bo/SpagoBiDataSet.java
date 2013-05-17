@@ -1,8 +1,9 @@
-/* SpagoBI, the Open Source Business Intelligence suite
-
- * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
- * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/**
+ * SpagoBiDataSet.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
 
 package it.eng.spagobi.services.dataset.bo;
 
@@ -48,10 +49,6 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String pivotRowName;
 
     private java.lang.String query;
-    
-    private java.lang.String queryScript;
-    
-    private java.lang.String queryScriptLanguage;
 
     private java.lang.String script;
 
@@ -61,7 +58,20 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String customData;
 
-    
+    private java.lang.Integer dataSourceFlatId;
+
+    private java.lang.Integer dataSourcePersistId;
+
+    private boolean flatDataset;
+
+    private java.lang.String flatTableName;
+
+    private boolean persisted;
+
+    private java.lang.String queryScript;
+
+    private java.lang.String queryScriptLanguage;
+
     public SpagoBiDataSet() {
     }
 
@@ -87,12 +97,17 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            java.lang.String pivotColumnValue,
            java.lang.String pivotRowName,
            java.lang.String query,
-           java.lang.String queryScript,
-           java.lang.String queryScriptLanguage,
            java.lang.String script,
            java.lang.Integer transformerId,
            java.lang.String type,
-           java.lang.String customData) {
+           java.lang.String customData,
+           java.lang.Integer dataSourceFlatId,
+           java.lang.Integer dataSourcePersistId,
+           boolean flatDataset,
+           java.lang.String flatTableName,
+           boolean persisted,
+           java.lang.String queryScript,
+           java.lang.String queryScriptLanguage) {
            this.adress = adress;
            this.categoryId = categoryId;
            this.dataSource = dataSource;
@@ -114,12 +129,17 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.pivotColumnValue = pivotColumnValue;
            this.pivotRowName = pivotRowName;
            this.query = query;
-           this.queryScript = queryScript;
-           this.queryScriptLanguage = queryScriptLanguage;
            this.script = script;
            this.transformerId = transformerId;
            this.type = type;
            this.customData = customData;
+           this.dataSourceFlatId = dataSourceFlatId;
+           this.dataSourcePersistId = dataSourcePersistId;
+           this.flatDataset = flatDataset;
+           this.flatTableName = flatTableName;
+           this.persisted = persisted;
+           this.queryScript = queryScript;
+           this.queryScriptLanguage = queryScriptLanguage;
     }
 
 
@@ -541,27 +561,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     public void setQuery(java.lang.String query) {
         this.query = query;
     }
-    
-    
 
 
-    public java.lang.String getQueryScript() {
-		return queryScript;
-	}
-
-	public void setQueryScript(java.lang.String queryScript) {
-		this.queryScript = queryScript;
-	}
-
-	public java.lang.String getQueryScriptLanguage() {
-		return queryScriptLanguage;
-	}
-
-	public void setQueryScriptLanguage(java.lang.String queryScriptLanguage) {
-		this.queryScriptLanguage = queryScriptLanguage;
-	}
-
-	/**
+    /**
      * Gets the script value for this SpagoBiDataSet.
      * 
      * @return script
@@ -619,11 +621,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     public void setType(java.lang.String type) {
         this.type = type;
     }
-    
+
+
     /**
-     * Gets the type value for this SpagoBiDataSet.
+     * Gets the customData value for this SpagoBiDataSet.
      * 
-     * @return type
+     * @return customData
      */
     public java.lang.String getCustomData() {
         return customData;
@@ -631,14 +634,153 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
 
     /**
-     * Sets the type value for this SpagoBiDataSet.
+     * Sets the customData value for this SpagoBiDataSet.
      * 
-     * @param type
+     * @param customData
      */
     public void setCustomData(java.lang.String customData) {
         this.customData = customData;
     }
-    
+
+
+    /**
+     * Gets the dataSourceFlatId value for this SpagoBiDataSet.
+     * 
+     * @return dataSourceFlatId
+     */
+    public java.lang.Integer getDataSourceFlatId() {
+        return dataSourceFlatId;
+    }
+
+
+    /**
+     * Sets the dataSourceFlatId value for this SpagoBiDataSet.
+     * 
+     * @param dataSourceFlatId
+     */
+    public void setDataSourceFlatId(java.lang.Integer dataSourceFlatId) {
+        this.dataSourceFlatId = dataSourceFlatId;
+    }
+
+
+    /**
+     * Gets the dataSourcePersistId value for this SpagoBiDataSet.
+     * 
+     * @return dataSourcePersistId
+     */
+    public java.lang.Integer getDataSourcePersistId() {
+        return dataSourcePersistId;
+    }
+
+
+    /**
+     * Sets the dataSourcePersistId value for this SpagoBiDataSet.
+     * 
+     * @param dataSourcePersistId
+     */
+    public void setDataSourcePersistId(java.lang.Integer dataSourcePersistId) {
+        this.dataSourcePersistId = dataSourcePersistId;
+    }
+
+
+    /**
+     * Gets the flatDataset value for this SpagoBiDataSet.
+     * 
+     * @return flatDataset
+     */
+    public boolean isFlatDataset() {
+        return flatDataset;
+    }
+
+
+    /**
+     * Sets the flatDataset value for this SpagoBiDataSet.
+     * 
+     * @param flatDataset
+     */
+    public void setFlatDataset(boolean flatDataset) {
+        this.flatDataset = flatDataset;
+    }
+
+
+    /**
+     * Gets the flatTableName value for this SpagoBiDataSet.
+     * 
+     * @return flatTableName
+     */
+    public java.lang.String getFlatTableName() {
+        return flatTableName;
+    }
+
+
+    /**
+     * Sets the flatTableName value for this SpagoBiDataSet.
+     * 
+     * @param flatTableName
+     */
+    public void setFlatTableName(java.lang.String flatTableName) {
+        this.flatTableName = flatTableName;
+    }
+
+
+    /**
+     * Gets the persisted value for this SpagoBiDataSet.
+     * 
+     * @return persisted
+     */
+    public boolean isPersisted() {
+        return persisted;
+    }
+
+
+    /**
+     * Sets the persisted value for this SpagoBiDataSet.
+     * 
+     * @param persisted
+     */
+    public void setPersisted(boolean persisted) {
+        this.persisted = persisted;
+    }
+
+
+    /**
+     * Gets the queryScript value for this SpagoBiDataSet.
+     * 
+     * @return queryScript
+     */
+    public java.lang.String getQueryScript() {
+        return queryScript;
+    }
+
+
+    /**
+     * Sets the queryScript value for this SpagoBiDataSet.
+     * 
+     * @param queryScript
+     */
+    public void setQueryScript(java.lang.String queryScript) {
+        this.queryScript = queryScript;
+    }
+
+
+    /**
+     * Gets the queryScriptLanguage value for this SpagoBiDataSet.
+     * 
+     * @return queryScriptLanguage
+     */
+    public java.lang.String getQueryScriptLanguage() {
+        return queryScriptLanguage;
+    }
+
+
+    /**
+     * Sets the queryScriptLanguage value for this SpagoBiDataSet.
+     * 
+     * @param queryScriptLanguage
+     */
+    public void setQueryScriptLanguage(java.lang.String queryScriptLanguage) {
+        this.queryScriptLanguage = queryScriptLanguage;
+    }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
@@ -711,12 +853,6 @@ public class SpagoBiDataSet  implements java.io.Serializable {
             ((this.query==null && other.getQuery()==null) || 
              (this.query!=null &&
               this.query.equals(other.getQuery()))) &&
-            ((this.queryScript==null && other.getQueryScript()==null) || 
-             (this.queryScript!=null &&
-              this.queryScript.equals(other.getQueryScript()))) &&
-            ((this.queryScriptLanguage==null && other.getQueryScriptLanguage()==null) || 
-             (this.queryScriptLanguage!=null && 
-              this.queryScriptLanguage.equals(other.getQueryScriptLanguage()))) &&
             ((this.script==null && other.getScript()==null) || 
              (this.script!=null &&
               this.script.equals(other.getScript()))) &&
@@ -728,7 +864,24 @@ public class SpagoBiDataSet  implements java.io.Serializable {
               this.type.equals(other.getType()))) &&
             ((this.customData==null && other.getCustomData()==null) || 
              (this.customData!=null &&
-              this.customData.equals(other.getCustomData())));
+              this.customData.equals(other.getCustomData()))) &&
+            ((this.dataSourceFlatId==null && other.getDataSourceFlatId()==null) || 
+             (this.dataSourceFlatId!=null &&
+              this.dataSourceFlatId.equals(other.getDataSourceFlatId()))) &&
+            ((this.dataSourcePersistId==null && other.getDataSourcePersistId()==null) || 
+             (this.dataSourcePersistId!=null &&
+              this.dataSourcePersistId.equals(other.getDataSourcePersistId()))) &&
+            this.flatDataset == other.isFlatDataset() &&
+            ((this.flatTableName==null && other.getFlatTableName()==null) || 
+             (this.flatTableName!=null &&
+              this.flatTableName.equals(other.getFlatTableName()))) &&
+            this.persisted == other.isPersisted() &&
+            ((this.queryScript==null && other.getQueryScript()==null) || 
+             (this.queryScript!=null &&
+              this.queryScript.equals(other.getQueryScript()))) &&
+            ((this.queryScriptLanguage==null && other.getQueryScriptLanguage()==null) || 
+             (this.queryScriptLanguage!=null &&
+              this.queryScriptLanguage.equals(other.getQueryScriptLanguage())));
         __equalsCalc = null;
         return _equals;
     }
@@ -799,12 +952,6 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         if (getQuery() != null) {
             _hashCode += getQuery().hashCode();
         }
-        if (getQueryScript() != null) {
-            _hashCode += getQueryScript().hashCode();
-        }
-        if (getQueryScriptLanguage() != null) {
-            _hashCode += getQueryScriptLanguage().hashCode();
-        }
         if (getScript() != null) {
             _hashCode += getScript().hashCode();
         }
@@ -816,6 +963,23 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         }
         if (getCustomData() != null) {
             _hashCode += getCustomData().hashCode();
+        }
+        if (getDataSourceFlatId() != null) {
+            _hashCode += getDataSourceFlatId().hashCode();
+        }
+        if (getDataSourcePersistId() != null) {
+            _hashCode += getDataSourcePersistId().hashCode();
+        }
+        _hashCode += (isFlatDataset() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getFlatTableName() != null) {
+            _hashCode += getFlatTableName().hashCode();
+        }
+        _hashCode += (isPersisted() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getQueryScript() != null) {
+            _hashCode += getQueryScript().hashCode();
+        }
+        if (getQueryScriptLanguage() != null) {
+            _hashCode += getQueryScriptLanguage().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -974,6 +1138,48 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("customData");
         elemField.setXmlName(new javax.xml.namespace.QName("", "customData"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSourceFlatId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSourceFlatId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSourcePersistId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSourcePersistId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("flatDataset");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "flatDataset"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("flatTableName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "flatTableName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("persisted");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "persisted"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("queryScript");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "queryScript"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("queryScriptLanguage");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "queryScriptLanguage"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

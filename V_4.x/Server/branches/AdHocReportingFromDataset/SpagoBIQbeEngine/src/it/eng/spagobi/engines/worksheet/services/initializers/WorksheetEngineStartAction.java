@@ -15,6 +15,7 @@ import it.eng.spagobi.engines.worksheet.WorksheetEngineAnalysisState;
 import it.eng.spagobi.engines.worksheet.WorksheetEngineException;
 import it.eng.spagobi.engines.worksheet.WorksheetEngineInstance;
 import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
@@ -185,6 +186,8 @@ public class WorksheetEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("Qbe engine instance not found. Retrieving dataset from document configuration...");
 			dataset = getDataSet();
 		}
+		
+		dataset.updateDataSourceForReading( (DataSourceServiceProxy)  getEnv().get(EngineConstants.ENV_DATASOURCE_PROXY), dataset);
 		
 		// update parameters into the dataset
 		logger.debug("Setting parameters into dataset...");

@@ -323,13 +323,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		this.statement = statment;
 	}
 
-//	public WorkSheetDefinition getWorkSheetDefinition() {
-//		return workSheetDefinition;
-//	}
-//
-//	public void setWorkSheetDefinition(WorkSheetDefinition workSheetDefinition) {
-//		this.workSheetDefinition = workSheetDefinition;
-//	}
 
 	public RegistryConfiguration getRegistryConfiguration() {
 		QbeTemplate template = this.getTemplate();

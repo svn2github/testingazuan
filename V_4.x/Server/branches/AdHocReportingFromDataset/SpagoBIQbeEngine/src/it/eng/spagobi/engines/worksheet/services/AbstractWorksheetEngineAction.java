@@ -24,6 +24,7 @@ import it.eng.spagobi.engines.worksheet.bo.WorksheetFieldsOptions;
 import it.eng.spagobi.engines.worksheet.exceptions.WrongConfigurationForFiltersOnDomainValuesException;
 import it.eng.spagobi.engines.worksheet.serializer.json.WorkSheetSerializationUtils;
 import it.eng.spagobi.engines.worksheet.utils.crosstab.CrosstabQueryCreator;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.FilteringBehaviour;
 import it.eng.spagobi.tools.dataset.common.behaviour.SelectableFieldsBehaviour;
@@ -34,6 +35,7 @@ import it.eng.spagobi.tools.dataset.common.metadata.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
+import it.eng.spagobi.tools.dataset.persist.DataSetTableDescriptor;
 import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -192,13 +194,30 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 	public IDataSetTableDescriptor persistDataSet() {
 		
 		WorksheetEngineInstance engineInstance = getEngineInstance();
-		
-		// get temporary table name
-		String tableName = engineInstance.getTemporaryTableName();
-		logger.debug("Temporary table name is [" + tableName + "]");
-		
-		// set all filters into dataset, because dataset's getSignature() and persist() methods may depend on them
 		IDataSet dataset = engineInstance.getDataSet();
+		
+		if(dataset.isPersisted() || dataset.isFlatDataset()){
+			return getDescriptorFromDatasetMeta(dataset);
+		}else{
+			String tableName = engineInstance.getTemporaryTableName();
+			return persistDataSetWithTemporaryTable(dataset, tableName);
+		}
+		
+	}
+	
+	/**
+	 * Persist the data set in the db and returns the descriptor of the created table
+	 * @param dataset
+	 * @param tableName
+	 * @return
+	 */
+	private IDataSetTableDescriptor persistDataSetWithTemporaryTable(IDataSet dataset, String tableName){
+		// get temporary table name
+
+		logger.debug("Temporary table name is [" + tableName + "]");
+
+		// set all filters into dataset, because dataset's getSignature() and persist() methods may depend on them
+
 		Assert.assertNotNull(dataset, "The engine instance is missing the dataset!!");
 		Map<String, List<String>> filters = getFiltersOnDomainValues();
 		if (dataset.hasBehaviour(FilteringBehaviour.ID)) {
@@ -207,7 +226,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			logger.debug("Setting filters on domain values : " + filters);
 			filteringBehaviour.setFilters(filters);
 		}
-		
+
 		if (dataset.hasBehaviour(SelectableFieldsBehaviour.ID)) {
 			logger.debug("Dataset has SelectableFieldsBehaviour.");
 			List<String> fields = getAllFields();
@@ -215,7 +234,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			logger.debug("Setting list of fields : " + fields);
 			selectableFieldsBehaviour.setSelectedFields(fields);
 		}
-		
+
 		String signature = dataset.getSignature();
 		logger.debug("Dataset signature : " + signature);
 		if (signature.equals(TemporaryTableManager.getLastDataSetSignature(tableName))) {
@@ -223,7 +242,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			logger.debug("Signature matches: no need to create a TemporaryTable");
 			return TemporaryTableManager.getLastDataSetTableDescriptor(tableName);
 		}
-		
+
 		//drop the temporary table if one exists
 		try {
 			logger.debug("Signature does not match: dropping TemporaryTable " + tableName + " if it exists...");
@@ -232,10 +251,10 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			logger.error("Impossible to drop the temporary table with name " + tableName, e);
 			throw new SpagoBIEngineRuntimeException("Impossible to drop the temporary table with name " + tableName, e);
 		}
-		
+
 		Connection connection = null;
 		IDataSetTableDescriptor td = null;
-		
+
 		try {
 			connection = getConnection();
 			logger.debug("Cheking autocommit ...");
@@ -250,9 +269,9 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			}
 			logger.debug("Persisting dataset ...");
 			td = dataset.persist(tableName, connection);
-			
+
 			this.recordTemporaryTable(tableName, getEngineInstance().getDataSource());
-			
+
 			try {
 				if (!connection.getAutoCommit() && !connection.isClosed()) {
 					logger.debug("Committing changes ...");
@@ -277,10 +296,27 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 				}
 			}
 		}
+
+		IDataSource dataSource = this.getDataSource();
+		td.setDataSource(dataSource);
 		
 		logger.debug("Dataset persisted successfully. Table descriptor : " + td);
 		TemporaryTableManager.setLastDataSetSignature(tableName, signature);
 		TemporaryTableManager.setLastDataSetTableDescriptor(tableName, td);
+		return td;
+	}
+
+	
+	/**
+	 * The table is already present in the db because the dataset is flat or persisted.
+	 * So we take the descriptor of the table from the metadata of the dataset
+	 * @param dataset
+	 * @return
+	 */
+	private IDataSetTableDescriptor getDescriptorFromDatasetMeta(IDataSet dataset){
+		logger.debug("Getting the TableDescriptor for the dataset with label [" + dataset.getLabel() + "]");
+		IDataSetTableDescriptor td = new DataSetTableDescriptor(dataset);
+		logger.debug("Table descriptor successully created : " + td);
 		return td;
 	}
 
@@ -649,8 +685,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 	protected String buildSqlStatement(String fieldName, IDataSetTableDescriptor descriptor, List<WhereField> filters, String ordeType) {
 		List<String> fieldNames = new ArrayList<String>();
 		fieldNames.add(fieldName);
-		IDataSource dataSource = this.getDataSource();
-		return CrosstabQueryCreator.getTableQuery(fieldNames, true, descriptor, filters, ordeType, fieldNames, dataSource);
+		return CrosstabQueryCreator.getTableQuery(fieldNames, true, descriptor, filters, ordeType, fieldNames);
 	}
 	
 }

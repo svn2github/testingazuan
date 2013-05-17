@@ -32,7 +32,8 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 		IFieldMetaData fieldMetadata;
 		String fieldName;
 		
-		dataSource = dataSet.getDataSource();
+		dataSource =  dataSet.getDataSourceForReading();
+		
 		IMetaData metaData =  dataSet.getMetadata();
 		if(metaData!=null){
 			for(int i=0; i<metaData.getFieldCount(); i++){
@@ -46,6 +47,7 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 				field2ClassMap.put(fieldName, fieldMetadata.getType());
 			}
 		}
+		tableName = dataSet.getPeristedTableName();
 	}
 	
 	public void addField(String fieldName, String columnName, Class type) {

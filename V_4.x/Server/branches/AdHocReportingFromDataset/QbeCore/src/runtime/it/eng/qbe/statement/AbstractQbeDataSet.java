@@ -20,8 +20,10 @@ import it.eng.qbe.query.serializer.json.QuerySerializationConstants;
 import it.eng.qbe.statement.hibernate.HQLStatement;
 import it.eng.qbe.statement.hibernate.HQLStatement.IConditionalOperator;
 import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetVariable;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -50,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
@@ -322,7 +323,7 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 
 
 	public IDataSetTableDescriptor persist(String tableName, Connection connection) {
-		IDataSource dataSource = getDataSource();
+		IDataSource dataSource = getDataSourceForReading();
 		try {
 			String sql = getSQLQuery();
 			List<String> fields = getDataSetSelectedFields(statement.getQuery());
@@ -334,6 +335,25 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 	}
 
 	public IDataStore getDomainValues(String fieldName, Integer start, Integer limit, IDataStoreFilter filter) {
+		if(isPersisted() || isFlatDataset()){
+			return  getDomainValuesForPersistedOrFlat(fieldName, start, limit, filter);
+		}else{
+			return getDomainValuesFromTemporaryTable(fieldName, start, limit, filter);
+		}
+	}
+	
+	private IDataStore getDomainValuesForPersistedOrFlat(String fieldName, Integer start, Integer limit, IDataStoreFilter filter) {
+		StringBuffer buffer = new StringBuffer("Select DISTINCT " + fieldName + " FROM " + getPeristedTableName());
+		manageFilterOnDomainValues(buffer, fieldName, filter);
+		SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
+		dataSetConfig.setDataSource( getDataSourceForReading().toSpagoBiDataSource() );
+		dataSetConfig.setQuery(buffer.toString());
+		JDBCDataSet dataset = new JDBCDataSet(dataSetConfig);
+		dataset.loadData(start, limit, -1);
+		return dataset.getDataStore();
+	}
+	
+	private IDataStore getDomainValuesFromTemporaryTable(String fieldName, Integer start, Integer limit, IDataStoreFilter filter) {
 		IDataStore toReturn = null;
 		try {
 			String tableName = this.getTemporaryTableName();
@@ -380,6 +400,37 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 			IConditionalOperator conditionalOperator = (IConditionalOperator) HQLStatement.conditionalOperators.get(filter.getOperator());
 			String temp = conditionalOperator.apply(columnName, new String[] { value });
 			buffer.append(" WHERE " + temp);
+		}
+	}
+	
+	private void manageFilterOnDomainValues(StringBuffer buffer, String fieldName, IDataStoreFilter filter) {
+		if (filter != null) {
+			
+			//get The fieldByAlias
+			IMetaData md = getMetadata();
+			IFieldMetaData fmd = null;
+			int i=0;
+			if(md!=null){
+				for(i=0; i<md.getFieldCount(); i++){
+					fmd = md.getFieldMeta(i);
+					if(fieldName.equals(fmd.getAlias()) || fieldName.equals(fmd.getName())){
+						break;
+					}
+				}
+			}
+			if(i<md.getFieldCount()){
+				Class clazz = fmd.getType();
+				String value = getFilterValue(filter.getValue(), clazz);
+				IConditionalOperator conditionalOperator = (IConditionalOperator) HQLStatement.conditionalOperators.get(filter.getOperator());
+				String temp = conditionalOperator.apply(fieldName, new String[] { value });
+				buffer.append(" WHERE " + temp);
+			}else{
+				throw new SpagoBIRuntimeException("Field name [" + fieldName + "] not found");
+			}
+
+			
+			
+
 		}
 	}
 

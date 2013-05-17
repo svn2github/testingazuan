@@ -15,10 +15,12 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
@@ -72,6 +74,7 @@ public abstract class AbstractDataSet implements IDataSet {
     protected boolean flatDataset;
     protected Integer dataSourceFlatId;
     protected String flatTableName;	
+    private IDataSource dataSourceForReading;
     
     private static transient Logger logger = Logger.getLogger(AbstractDataSet.class);
 
@@ -96,6 +99,11 @@ public abstract class AbstractDataSet implements IDataSet {
 		setPivotColumnValue(dataSetConfig.getPivotColumnValue());
 		setNumRows(dataSetConfig.isNumRows());
 		setDsMetadata(dataSetConfig.getDsMetadata());
+		setFlatDataset(dataSetConfig.isFlatDataset());
+		setPersisted(dataSetConfig.isPersisted());
+		setFlatTableName(dataSetConfig.getFlatTableName());
+		setDataSourceFlatId(dataSetConfig.getDataSourceFlatId());
+		setDataSourcePersistId(dataSetConfig.getDataSourcePersistId());
 		
 		if(this.getPivotColumnName() != null 
 				&& this.getPivotColumnValue() != null
@@ -123,6 +131,12 @@ public abstract class AbstractDataSet implements IDataSet {
 		sbd.setPivotRowName(getPivotRowName());
 		sbd.setPivotColumnValue(getPivotColumnValue());
 		sbd.setNumRows(isNumRows());
+		sbd.setPersisted(isPersisted());
+		sbd.setFlatTableName(getFlatTableName());
+		sbd.setFlatDataset(isFlatDataset());
+		sbd.setDataSourceFlatId(getDataSourceFlatId());
+		sbd.setDataSourcePersistId(getDataSourcePersistId());
+		
 		return sbd;
 	}
     
@@ -467,4 +481,27 @@ public abstract class AbstractDataSet implements IDataSet {
 			return getLabel();
 		}
 	}	
+	
+	public void updateDataSourceForReading(DataSourceServiceProxy proxy, IDataSet dataset){
+		IDataSource ds = dataset.getDataSource();
+		if(dataset.isPersisted()){
+			int id = dataset.getDataSourcePersistId();
+			ds = proxy.getDataSourceById(id);
+		}else if(dataset.isFlatDataset()){
+			int id = dataset.getDataSourceFlatId();
+			ds = proxy.getDataSourceById(id);
+		}
+		dataSourceForReading =ds;
+	}
+
+	public IDataSource getDataSourceForReading() {
+		return dataSourceForReading;
+	}
+
+	public void setDataSourceForReading(IDataSource dataSourceForReading) {
+		this.dataSourceForReading = dataSourceForReading;
+	}
+	
+	
+	
 }

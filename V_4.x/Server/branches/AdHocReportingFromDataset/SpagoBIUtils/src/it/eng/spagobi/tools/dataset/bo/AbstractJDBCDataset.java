@@ -226,7 +226,7 @@ public static String DS_TYPE = "SbiQueryDataSet";
 		StringBuffer buffer = new StringBuffer("Select DISTINCT " + fieldName + " FROM " + getPeristedTableName());
 		manageFilterOnDomainValues(buffer, fieldName, filter);
 		SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
-		dataSetConfig.setDataSource( getDataSource().toSpagoBiDataSource() );
+		dataSetConfig.setDataSource( getDataSourceForReading().toSpagoBiDataSource() );
 		dataSetConfig.setQuery(buffer.toString());
 		JDBCDataSet dataset = new JDBCDataSet(dataSetConfig);
 
@@ -304,7 +304,7 @@ public static String DS_TYPE = "SbiQueryDataSet";
 			Class clazz = fmd.getType();
 			String value = getFilterValue(filter.getValue(), clazz);
 			IConditionalOperator conditionalOperator = SQLStatementConditionalOperators.getOperator(filter.getOperator());
-			String temp = conditionalOperator.apply(encapsulateColumnName(fieldName, getDataSource()), new String[] { value });
+			String temp = conditionalOperator.apply(encapsulateColumnName(fieldName, getDataSourceForReading()), new String[] { value });
 			buffer.append(" WHERE " + temp);
 
 		}

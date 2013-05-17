@@ -6,6 +6,7 @@
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreFilter;
@@ -169,5 +170,9 @@ public interface IDataSet {
 	public IDataSource getDataSource();
 	
 	public String getPeristedTableName();
+	
+	public IDataSource getDataSourceForReading();
+	
+	public void updateDataSourceForReading(DataSourceServiceProxy proxy, IDataSet dataset);
 	
 }

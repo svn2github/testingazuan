@@ -63,6 +63,46 @@ public class TilabClientAPI {
 		return result;
 	}
 	
+	public List<Object> getObjectsList(String offset, String limit, String user, String auth, String type) throws JSONException{
+		List<Object> result = new ArrayList<Object>();
+
+		//http://<host>:<port>/<path>/objects?type=dataset&offset=0&limit=10
+		String jsonObjStr = TilabClient.v1().objects().getAsJson(offset, limit, type, user, auth, String.class);
+		JSONObject jsonObj = new JSONObject(jsonObjStr);
+		
+		//get objects
+		JSONArray objects = jsonObj.getJSONArray("objects");
+
+		//instantiate proper deserializer
+		ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+		for(int i= 0; i<objects.length(); i++){
+			JSONObject dataset = objects.getJSONObject(i);
+			Object deserializedObj = des.deserialize(dataset);
+			result.add(deserializedObj);
+		}
+		return result;
+	}
+	public Object getObjectDetail(String id, String user, String auth, String type) throws SerializationException, JSONException{
+		Object result = null;
+
+		//http://<host>:<port>/<path>/objects/4d2a9ddf-2ba6-456d-b708-9b65a1bca811
+		//JSONObject jsonObj = TilabClient.v1().objectsId(id).getAsJson(user, auth, JSONObject.class);
+		String jsonObjStr = TilabClient.v1().objectsId(id).getAsJson(user, auth, String.class);
+		JSONObject jsonObj = new JSONObject(jsonObjStr);
+		
+		if(!jsonObj.getString("responseCode").equals("204")) {
+			//get object type
+			JSONObject object = jsonObj.getJSONObject("object");
+			if(object != null){
+				type = object.getString("type");
+				//instantiate proper deserializer
+				ObjectsSerDeser des = SerDeserFactory.getDeserializer(type);
+				result = (Object)des.deserialize(object);
+
+			}
+		}
+		return result;
+	}
 	public boolean writeDataset(DataSource dSRC, GuiGenericDataSet dSet, String user, String auth) throws JSONException, SourceBeanException{	
 		
 		boolean result = false;

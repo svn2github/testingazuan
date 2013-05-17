@@ -19,12 +19,14 @@ public class SerDeserFactory{
 	
 	public static String TYPE_DATASET ="dataset";
 	public static String TYPE_DATASOURCE ="datasource";
+	public static String TYPE_DASHBOARD ="dashboard";
 	static Map<String, ObjectsSerDeser> types;
 	
 	static {
 		types = new HashMap();
 		types.put( TYPE_DATASET, new JsonDatasetSerDeser() );
 		types.put( TYPE_DATASOURCE, new JsonDatasourceSerDeser() );
+		types.put( TYPE_DASHBOARD, new JsonDashboardSerDeser() );
 	}
 	
 	public static ObjectsSerDeser getDeserializer(String type) {

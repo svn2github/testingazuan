@@ -5,7 +5,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.rest.objects.serDeser;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.rest.objects.serDeser.util.SerDeserUtil;
 import it.eng.spagobi.tools.dataset.bo.GuiDataSetDetail;
@@ -14,23 +13,13 @@ import it.eng.spagobi.tools.dataset.bo.QueryDataSetDetail;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sun.xml.internal.ws.encoding.soap.SerializationException;
-/*{		 "id": "65eb0353-8837-407c-814a-8e5bf58a6217",
-		 "name": "Utenti ADSL",
-         "type": "dataset",
-         "owner":"telecomitalia",
-         "userObjectStatus": "Buyed",
-		    "description": "Utenti ADSL residenziali Telecom Italia",
-			 "creationDate": 1234567890
-		    }*///nel caso si lista dataset
 
 public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 	public static final String JDBC_DS_TYPE = "Query";
@@ -42,21 +31,17 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 			return null;
 		}
 
-		DataSource dataSourceSpagoBI = new DataSource();
 		GuiGenericDataSet guiGenericDataSet = new GuiGenericDataSet();
 		GuiDataSetDetail guiDataSetDetail = new GuiDataSetDetail();
 		
 		try {
-//			if(obj.has("object")){
-//				o = (JSONObject)obj.opt("object");
-//				logger.debug("get dataset inner object");
-//			}
+
 			String id = (String)o.optString("id");
 			String name = (String)o.optString("name");
 			String description = (String)o.optString("description");
 			Integer creationDate = (Integer)o.opt("creationDate");	
 			String owner = (String)o.optString("owner");
-			String userObjectStatus = (String)o.optString("userObjectStatus");
+			//String userObjectStatus = (String)o.optString("userObjectStatus");
 			
 			guiGenericDataSet.setLabel(id);
 			guiGenericDataSet.setName(name);

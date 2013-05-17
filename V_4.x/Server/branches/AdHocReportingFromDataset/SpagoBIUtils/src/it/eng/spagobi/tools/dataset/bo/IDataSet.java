@@ -173,6 +173,6 @@ public interface IDataSet {
 	
 	public IDataSource getDataSourceForReading();
 	
-	public void updateDataSourceForReading(DataSourceServiceProxy proxy, IDataSet dataset);
+	public void setDataSourceForReading(IDataSource datasource);
 	
 }

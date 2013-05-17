@@ -68,6 +68,12 @@ public static String DS_TYPE = "SbiQueryDataSet";
 		} catch (Exception e) {
 			throw new RuntimeException("Missing right exstension", e);
 		}
+		
+		try{
+			setDataSourceForReading( DataSourceFactory.getDataSource( dataSetConfig.getDataSourceForReading()) );
+		} catch (Exception e) {
+			throw new RuntimeException("Missing right exstension", e);
+		}
 	
 		setQuery( dataSetConfig.getQuery() );
 		setQueryScript( dataSetConfig.getQueryScript() );
@@ -108,6 +114,7 @@ public static String DS_TYPE = "SbiQueryDataSet";
 			
 		dataProxy = (JDBCDataProxy)this.getDataProxy();
 		sbd.setDataSource(dataProxy.getDataSource().toSpagoBiDataSource());
+		sbd.setDataSourceForReading(getDataSourceForReading().toSpagoBiDataSource());
 		if(query != null){
 			sbd.setQuery(query.toString());
 		}

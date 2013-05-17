@@ -187,8 +187,6 @@ public class WorksheetEngineStartAction extends AbstractEngineStartAction {
 			dataset = getDataSet();
 		}
 		
-		dataset.updateDataSourceForReading( (DataSourceServiceProxy)  getEnv().get(EngineConstants.ENV_DATASOURCE_PROXY), dataset);
-		
 		// update parameters into the dataset
 		logger.debug("Setting parameters into dataset...");
 		logger.debug( worksheetEngineInstance.getEnv() );

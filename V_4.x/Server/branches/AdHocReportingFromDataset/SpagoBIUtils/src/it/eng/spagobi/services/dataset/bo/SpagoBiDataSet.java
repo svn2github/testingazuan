@@ -7,6 +7,7 @@
 
 package it.eng.spagobi.services.dataset.bo;
 
+
 public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String adress;
 
@@ -72,6 +73,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String queryScriptLanguage;
 
+    private it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading;
+
     public SpagoBiDataSet() {
     }
 
@@ -107,7 +110,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            java.lang.String flatTableName,
            boolean persisted,
            java.lang.String queryScript,
-           java.lang.String queryScriptLanguage) {
+           java.lang.String queryScriptLanguage,
+           it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading) {
            this.adress = adress;
            this.categoryId = categoryId;
            this.dataSource = dataSource;
@@ -140,6 +144,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.persisted = persisted;
            this.queryScript = queryScript;
            this.queryScriptLanguage = queryScriptLanguage;
+           this.dataSourceForReading = dataSourceForReading;
     }
 
 
@@ -782,6 +787,26 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.queryScriptLanguage = queryScriptLanguage;
     }
 
+
+    /**
+     * Gets the dataSourceForReading value for this SpagoBiDataSet.
+     * 
+     * @return dataSourceForReading
+     */
+    public it.eng.spagobi.services.datasource.bo.SpagoBiDataSource getDataSourceForReading() {
+        return dataSourceForReading;
+    }
+
+
+    /**
+     * Sets the dataSourceForReading value for this SpagoBiDataSet.
+     * 
+     * @param dataSourceForReading
+     */
+    public void setDataSourceForReading(it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading) {
+        this.dataSourceForReading = dataSourceForReading;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSet)) return false;
@@ -881,7 +906,10 @@ public class SpagoBiDataSet  implements java.io.Serializable {
               this.queryScript.equals(other.getQueryScript()))) &&
             ((this.queryScriptLanguage==null && other.getQueryScriptLanguage()==null) || 
              (this.queryScriptLanguage!=null &&
-              this.queryScriptLanguage.equals(other.getQueryScriptLanguage())));
+              this.queryScriptLanguage.equals(other.getQueryScriptLanguage()))) &&
+            ((this.dataSourceForReading==null && other.getDataSourceForReading()==null) || 
+             (this.dataSourceForReading!=null &&
+              this.dataSourceForReading.equals(other.getDataSourceForReading())));
         __equalsCalc = null;
         return _equals;
     }
@@ -980,6 +1008,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         }
         if (getQueryScriptLanguage() != null) {
             _hashCode += getQueryScriptLanguage().hashCode();
+        }
+        if (getDataSourceForReading() != null) {
+            _hashCode += getDataSourceForReading().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -1181,6 +1212,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setFieldName("queryScriptLanguage");
         elemField.setXmlName(new javax.xml.namespace.QName("", "queryScriptLanguage"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSourceForReading");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSourceForReading"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.datasource.services.spagobi.eng.it", "SpagoBiDataSource"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

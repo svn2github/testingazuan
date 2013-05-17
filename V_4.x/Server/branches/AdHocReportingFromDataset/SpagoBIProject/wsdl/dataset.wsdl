@@ -61,6 +61,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="persisted" type="xsd:boolean"/>
      <element name="queryScript" nillable="true" type="soapenc:string"/>
      <element name="queryScriptLanguage" nillable="true" type="soapenc:string"/>
+     <element name="dataSourceForReading" nillable="true" type="tns3:SpagoBiDataSource"/>
     </sequence>
    </complexType>
   </schema>
@@ -84,15 +85,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getDataSetResponse">
-
-      <wsdl:part name="getDataSetReturn" type="tns2:SpagoBiDataSet"/>
-
-   </wsdl:message>
-
    <wsdl:message name="getDataSetByLabelResponse">
 
       <wsdl:part name="getDataSetByLabelReturn" type="tns2:SpagoBiDataSet"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetResponse">
+
+      <wsdl:part name="getDataSetReturn" type="tns2:SpagoBiDataSet"/>
 
    </wsdl:message>
 
@@ -126,19 +127,19 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:portType name="DataSetService">
 
-      <wsdl:operation name="getDataSetByLabel" parameterOrder="in0 in1 in2">
-
-         <wsdl:input message="impl:getDataSetByLabelRequest" name="getDataSetByLabelRequest"/>
-
-         <wsdl:output message="impl:getDataSetByLabelResponse" name="getDataSetByLabelResponse"/>
-
-      </wsdl:operation>
-
       <wsdl:operation name="getDataSet" parameterOrder="in0 in1 in2">
 
          <wsdl:input message="impl:getDataSetRequest" name="getDataSetRequest"/>
 
          <wsdl:output message="impl:getDataSetResponse" name="getDataSetResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSetByLabel" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:getDataSetByLabelRequest" name="getDataSetByLabelRequest"/>
+
+         <wsdl:output message="impl:getDataSetByLabelResponse" name="getDataSetByLabelResponse"/>
 
       </wsdl:operation>
 
@@ -156,24 +157,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
 
-      <wsdl:operation name="getDataSetByLabel">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getDataSetByLabelRequest">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidataset" use="encoded"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getDataSetByLabelResponse">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidataset" use="encoded"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="getDataSet">
 
          <wsdlsoap:operation soapAction=""/>
@@ -185,6 +168,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="getDataSetResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidataset" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSetByLabel">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDataSetByLabelRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidataset" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDataSetByLabelResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobidataset" use="encoded"/>
 

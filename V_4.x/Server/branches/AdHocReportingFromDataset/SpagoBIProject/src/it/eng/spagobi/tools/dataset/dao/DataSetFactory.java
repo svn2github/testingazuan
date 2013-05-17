@@ -6,7 +6,6 @@
 package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.qbe.dataset.QbeDataSet;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSet;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -301,6 +300,7 @@ public class DataSetFactory {
 				IDataSource dataSource=dataSourceDao.toDataSource(sbids);
 				((JDBCDataSet)ds).setDataSource(dataSource);
 			}
+			
 			ds.setDsType(DataSetConstants.QUERY);
 		}
 
@@ -377,6 +377,17 @@ public class DataSetFactory {
 			ds.setDataSourceFlatId((sbiDataSetHistory.getDataSourceFlat()==null)?null:sbiDataSetHistory.getDataSourceFlat().getDsId());
 			ds.setFlatTableName(sbiDataSetHistory.getFlatTableName());
 		}
+		
+		if(((SbiQueryDataSet)sbiDataSetHistory).isPersisted()){
+			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+			IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourcePersist());
+			ds.setDataSourceForReading(dataSource);
+		}else if(((SbiQueryDataSet)sbiDataSetHistory).isFlatDataset()){
+			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+			IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourceFlat());
+			ds.setDataSourceForReading(dataSource);
+		}
+		
 		return ds;
 	}
 	

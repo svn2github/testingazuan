@@ -6,6 +6,8 @@
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.datasource.bo.DataSourceFactory;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.io.IOException;
@@ -14,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -39,8 +40,22 @@ public class DataSetFactory {
 			throw new SpagoBIRuntimeException("Cannot load configuration from datasetTypes.properties file", e);
 		}
 		String dsType = dataSetConfig.getType();
-		logger.debug("Dataset type: " + dsType);
 		String className = p.getProperty(dsType);
+		
+		logger.debug("Dataset type: " + dsType);
+		if(className.equals(JDBCDataSet.class.getName())){
+			try{
+				IDataSource ds = DataSourceFactory.getDataSource( dataSetConfig.getDataSourceForReading()) ;
+				if((ds.getHibDialectName()).toLowerCase().contains("hive")){
+					className = JDBCHiveDataSet.class.getName();
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Missing right exstension", e);
+			}
+		}
+		
+		
+		
 		logger.debug("Dataset class: " + className);
 		if (className == null) {
 			throw new SpagoBIRuntimeException("No dataset class found for dataset type [" + dsType + "]");

@@ -482,17 +482,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		}
 	}	
 	
-	public void updateDataSourceForReading(DataSourceServiceProxy proxy, IDataSet dataset){
-		IDataSource ds = dataset.getDataSource();
-		if(dataset.isPersisted()){
-			int id = dataset.getDataSourcePersistId();
-			ds = proxy.getDataSourceById(id);
-		}else if(dataset.isFlatDataset()){
-			int id = dataset.getDataSourceFlatId();
-			ds = proxy.getDataSourceById(id);
-		}
-		dataSourceForReading =ds;
-	}
+
 
 	public IDataSource getDataSourceForReading() {
 		return dataSourceForReading;

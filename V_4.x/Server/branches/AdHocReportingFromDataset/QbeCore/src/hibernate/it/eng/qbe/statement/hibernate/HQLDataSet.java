@@ -7,9 +7,7 @@ package it.eng.qbe.statement.hibernate;
 
 import it.eng.qbe.datasource.hibernate.IHibernateDataSource;
 import it.eng.qbe.datasource.transaction.hibernate.HibernateTransaction;
-import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCSharedConnectionDataProxy;
@@ -17,7 +15,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

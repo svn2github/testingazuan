@@ -203,10 +203,10 @@ public class TilabClientAPI {
 		
 	}
 	
-	public boolean writeDataset(DataSource dSRC, GuiGenericDataSet dSet) {	
+	public String writeDataset(DataSource dSRC, GuiGenericDataSet dSet) {	
 		try {
 		
-			boolean result = false;
+			String datasetLabel = null;
 			
 			ObjectsSerDeser des1 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASOURCE);
 			JSONObject inputDataSource = des1.serialize(dSRC, null);
@@ -217,19 +217,48 @@ public class TilabClientAPI {
 			//put in array
 			JSONArray objects = new JSONArray();
 			objects.put(responseDatasource);
-			//use datasource for dataset request
-			if(responseDatasource.getString("responseCode").equals("200")){
-				ObjectsSerDeser des2 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
-				
-				JSONObject inputDataSet = des2.serialize(dSet, objects);
-				String responseDatasetStr = TilabClient.v1().objects().postJson(inputDataSet, "", "", String.class);
-				JSONObject responseDataset = new JSONObject(responseDatasetStr);
-				if(responseDataset.getString("responseCode").equals("200")) {
-					result = true;
-				}
+			String responseCode = responseDatasource.getString("responseCode");
+			String responseDesc = responseDatasource.getString("responseDesc");
+			if (responseCode == null) {
+				logger.error("Response code is missing when saving datasource");
+				throw new RuntimeException("Response code is missing when saving datasource");
 			}
-
-			return result;
+			if (!responseCode.equals("200")) {
+				logger.error("Error while writing datasource into Tilab console: response code is ["
+						+ responseCode
+						+ "], response desc is ["
+						+ responseDesc + "]");
+				throw new RuntimeException(
+						"Error while writing datasource into Tilab console: response code is ["
+								+ responseCode + "], response desc is ["
+								+ responseDesc + "]");
+			}
+			
+			//use datasource for dataset request
+			ObjectsSerDeser des2 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASET);
+			
+			JSONObject inputDataSet = des2.serialize(dSet, objects);
+			String responseDatasetStr = TilabClient.v1().objects().postJson(inputDataSet, "", "", String.class);
+			JSONObject responseDataset = new JSONObject(responseDatasetStr);
+			responseCode = responseDataset.getString("responseCode");
+			responseDesc = responseDataset.getString("responseDesc");
+			if (responseCode == null) {
+				logger.error("Response code is missing when saving dataset");
+				throw new RuntimeException("Response code is missing when saving dataset");
+			}
+			if (!responseCode.equals("200")) {
+				logger.error("Error while writing dataset into Tilab console: response code is ["
+						+ responseCode
+						+ "], response desc is ["
+						+ responseDesc + "]");
+				throw new RuntimeException(
+						"Error while writing dataset into Tilab console: response code is ["
+								+ responseCode + "], response desc is ["
+								+ responseDesc + "]");
+			}
+			
+			datasetLabel = responseDataset.getJSONObject("object").getString("id");
+			return datasetLabel;
 			
 		} catch (Exception e) {
 			logger.error("Error while writing dataset [" + dSet + "]", e);

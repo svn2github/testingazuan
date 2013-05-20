@@ -297,7 +297,7 @@ public class SaveDocumentAction extends AbstractSpagoBIAction {
 			api.writeDocument(document);
 			logger.debug("Document saved into Tilab console without errors");
 		} catch (Exception e) {
-			throw new SpagoBIServiceException(SERVICE_NAME, "Error while updating datasets list from Tilab console", e);
+			throw new SpagoBIServiceException(SERVICE_NAME, "Error while saving document into Tilab console", e);
 		}		
 	}
 

@@ -20,6 +20,8 @@ import it.eng.qbe.model.accessmodality.AbstractModelAccessModality;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.builder.IModelStructureBuilder;
 import it.eng.qbe.model.structure.builder.dataset.DataSetModelStructureBuilder;
+import it.eng.qbe.statement.hive.HiveQLStatement;
+import it.eng.qbe.statement.sql.SQLStatement;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -37,6 +39,7 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	public static final String EMPTY_MODEL_NAME = "";
 	public static final String DATASETS = "DATASETS";
 	public static final String SPAGOBI_DATA_SOURCE = "SPAGOBI_DATA_SOURCE";
+	public Class statementType=SQLStatement.class;
 	
 	private static transient Logger logger = Logger.getLogger(JPADataSource.class);
 
@@ -69,6 +72,7 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 			Assert.assertUnreachable("Not suitable configuration to create a JPADataSource");
 		}
 		logger.debug("Created a new JPADataSource");
+		initStatementType();
 	}
 	
 	public DataSetDataSourceConfiguration getDataSetDataSourceConfiguration() {
@@ -127,6 +131,14 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	}
 
 
-	
+	public Class getStatementType(){
+		return statementType;
+	}
 
+	private void initStatementType(){
+		
+		if(datasets.get(0).getDataSourceForReading().getHibDialectName().toLowerCase().contains("hive")){
+			statementType = HiveQLStatement.class;
+		}
+	}
 }

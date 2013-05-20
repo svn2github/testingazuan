@@ -103,6 +103,12 @@ Ext.define('app.controllers.ParametersController',{
 			var obj = jsonArray[i];
 			var name = obj.name;
 			var value = obj.value;
+			if(!value){
+				value = obj.paramValue;
+			}
+			if(!name){
+				name = obj.paramName;
+			}
 			params[name]=value;
 		}
 		return params;
@@ -119,9 +125,17 @@ Ext.define('app.controllers.ParametersController',{
 				var found =false;
 				for(var k =0; k<parametersFromCross.length; k++){
 					var pCross = parametersFromCross[k];
-					if(nm == pCross.name && pCross.value != null && pCross.value != ''){
+					var pCrossValue = pCross.value;
+					if(!pCrossValue){
+						pCrossValue = pCross.paramValue;
+					}
+					var pCrossName = pCross.name;
+					if(!pCrossName){
+						pCrossName = pCross.paramName;
+					}
+					if(nm == pCrossName && pCrossValue != null && pCrossValue != ''){
 						found = true;
-						p.setValue(pCross.value);
+						p.setValue(pCrossValue);
 						paramsToBeFilled.splice(i,1);
 						break;
 					}

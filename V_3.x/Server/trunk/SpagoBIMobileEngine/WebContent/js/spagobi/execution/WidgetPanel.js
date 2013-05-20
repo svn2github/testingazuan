@@ -27,6 +27,15 @@ Ext.define('app.views.WidgetPanel',{
     	}else{
     		this.setStyle("");
     	}
+		var h = this.buildHeader();
+		if(h){
+			this.add(h);
+		}
+		var f = this.buildFooter();
+		if(f){
+			this.add(f);
+		}
+		
     	this.callParent( arguments);
 	}
 	

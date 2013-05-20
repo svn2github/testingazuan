@@ -79,11 +79,7 @@ Ext.define('app.views.ComposedExecutionPanel',{
 			} else {
 				panel = Ext.create("app.views.TableExecutionPanel",{resp: resp, fromcomposition: true, executionInstance: composedComponentOptions.executionInstance, parentDocument:this});
 			}
-			var h = panel.buildHeader();
-			var f = panel.buildFooter();
 
-			panel.add(h);
-			panel.add(f);
 			
 			panel.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
 					

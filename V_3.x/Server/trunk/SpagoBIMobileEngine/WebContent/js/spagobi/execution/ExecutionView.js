@@ -44,11 +44,7 @@ Ext.define('app.views.ExecutionView',{
 				composed.on('execCrossNavigation', this.propagateCrossNavigationEvent, this);
 				this.widget = composed;
 			}
-			var h = this.widget.buildHeader();
-			var f = this.widget.buildFooter();
 
-			this.widget.add(h);
-			this.widget.add(f);
 			this.widget.updateTitle();
 			this.add(this.widget);
 			

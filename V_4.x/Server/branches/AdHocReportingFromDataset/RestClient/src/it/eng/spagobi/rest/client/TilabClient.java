@@ -6,14 +6,15 @@
 
 package it.eng.spagobi.rest.client;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.Properties;
 
 import javax.annotation.Generated;
 import javax.ws.rs.core.UriBuilder;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
@@ -24,6 +25,8 @@ import com.sun.jersey.api.client.WebResource;
 }, comments = "wadl2java, http://wadl.java.net", date = "2013-05-13T16:54:17.671+02:00")
 public class TilabClient {
 
+	public final static String CONFIG_FILE = "restclient.properties";
+	
     /**
      * The base URI for the resource represented by this proxy
      * 
@@ -33,8 +36,14 @@ public class TilabClient {
     static {
         //URI originalURI = URI.create("http://localhost:8080/mdalayer/rest/");
     	
-    	ResourceBundle rb = ResourceBundle.getBundle("restclient", Locale.ITALY);
-    	URI originalURI = URI.create(rb.getString("rest.server.url"));
+    	Properties properties = new Properties();
+    	try {
+			properties.load(TilabClient.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read " + CONFIG_FILE + " file", e);
+		}
+    	
+    	URI originalURI = URI.create(properties.getProperty("rest.server.url"));
         
         // Look up to see if we have any indirection in the local copy
         // of META-INF/java-rs-catalog.xml file, assuming it will be in the

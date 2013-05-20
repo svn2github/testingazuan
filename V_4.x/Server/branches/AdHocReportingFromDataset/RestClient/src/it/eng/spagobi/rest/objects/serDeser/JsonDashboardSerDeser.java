@@ -1,11 +1,11 @@
 package it.eng.spagobi.rest.objects.serDeser;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+
+import java.io.IOException;
+import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +31,25 @@ public class JsonDashboardSerDeser implements ObjectsSerDeser {
     “body” : “”,                        // Sempre vuoto per il PoC
 }
 */
+    
+	public final static String CONFIG_FILE = "restclient.properties";
+	
+	private static String user;
+    private static String password;
+    private static String page;
+	
+    static {
+    	Properties properties = new Properties();
+    	try {
+			properties.load(JsonDashboardSerDeser.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read " + CONFIG_FILE + " file", e);
+		}
+    	user = properties.getProperty("rest.spagobi.user");
+    	password = properties.getProperty("rest.spagobi.pwd");
+    	page = properties.getProperty("rest.spagobi.page");
+    }
+	
 	@Override
 	public Object deserialize(JSONObject o) throws SerializationException {
 		//per lettura
@@ -76,7 +95,6 @@ public class JsonDashboardSerDeser implements ObjectsSerDeser {
 		if(o == null){
 			return null;
 		}
-		ResourceBundle rb = ResourceBundle.getBundle("restclient", Locale.ITALY);
 		
 		BIObject obj = (BIObject)o;
 		datasrcJson.put("id", obj.getLabel());
@@ -84,17 +102,16 @@ public class JsonDashboardSerDeser implements ObjectsSerDeser {
 		datasrcJson.put("type", SerDeserFactory.TYPE_DASHBOARD);
 
 		JSONObject details = new JSONObject();
-		String url = rb.getString("rest.spagobi.protocol")+rb.getString("rest.spagobi.host")+":"+rb.getString("rest.spagobi.port")+rb.getString("rest.spagobi.uri");
-		details.put("URL", url);
+		details.put("URL", GeneralUtilities.getSpagoBiHost() + GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl());
 		details.put("authType", "noauth");
 		details.put("httpMethod", "GET");
 		JSONObject queryParameters = new JSONObject();
 		
 		
-		queryParameters.put("PAGE", rb.getString("rest.spagobi.page"));
+		queryParameters.put("PAGE", page);
 		queryParameters.put("NEW_SESSION", "TRUE");
-		queryParameters.put("userID", rb.getString("rest.spagobi.user"));
-		queryParameters.put("password", rb.getString("rest.spagobi.pwd"));
+		queryParameters.put("userID", user);
+		queryParameters.put("password", password);
 		queryParameters.put("OBJECT_LABEL", obj.getLabel());
 		
 		details.put("queryParameters", queryParameters);

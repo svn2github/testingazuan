@@ -95,7 +95,7 @@ public class Test {
 		TilabClientAPI tca = new TilabClientAPI();
 		//GuiGenericDataSet gdd = tca.getDatasetDetail("", "", ""); ok
 		
-		List<GuiGenericDataSet> gdd1 = tca.getDatasetList("0", "10", "", "");
+		List<GuiGenericDataSet> gdd1 = tca.getDatasetList("0", "10");
 		
 	}
 	

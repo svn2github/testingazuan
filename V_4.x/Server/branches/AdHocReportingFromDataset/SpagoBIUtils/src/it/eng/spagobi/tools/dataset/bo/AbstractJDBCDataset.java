@@ -238,7 +238,13 @@ public static String DS_TYPE = "SbiQueryDataSet";
 		SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
 		dataSetConfig.setDataSource( getDataSourceForReading().toSpagoBiDataSource() );
 		dataSetConfig.setQuery(buffer.toString());
-		JDBCDataSet dataset = new JDBCDataSet(dataSetConfig);
+		AbstractJDBCDataset dataset =null;
+		if(this instanceof JDBCHiveDataSet){
+			dataset = new JDBCHiveDataSet(dataSetConfig);
+		}else{
+			dataset = new JDBCDataSet(dataSetConfig);
+		}
+		
 
 		dataset.loadData(start, limit, -1);
 

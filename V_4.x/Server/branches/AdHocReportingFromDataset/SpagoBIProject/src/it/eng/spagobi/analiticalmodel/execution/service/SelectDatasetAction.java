@@ -99,15 +99,20 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 			
 			LogMF.debug(logger, "Engine label is equal to [{0}]", engineToCall.getLabel());
 			
-			String defaultDatasourceLabel = getDatasourceLabel(engineToCall);
-			LogMF.debug(logger, "Default Datasource label is equal to [{0}]", defaultDatasourceLabel);
-			editActionParameters.put("datasource_label" , defaultDatasourceLabel);
+//			String defaultDatasourceLabel = getDatasourceLabel(engineToCall);
+//			LogMF.debug(logger, "Default Datasource label is equal to [{0}]", defaultDatasourceLabel);
+//			editActionParameters.put("datasource_label" , defaultDatasourceLabel);
 
 			dataset = getDatasetToOpen();
 			editActionParameters.put("dataset_label" , dataset.getLabel());
 			
 			IDataSource datasource = dataset.getDataSource();
-			editActionParameters.put("selected_datasource_label" , datasource.getLabel());
+			if ( target.equals(WORKSHEET) ) {
+				editActionParameters.put("datasource_label" , datasource.getLabel());
+			} else {
+				editActionParameters.put("selected_datasource_label" , datasource.getLabel());
+			}
+			
 
 			//IDataSource dataSource = getDatasourceToOpen(dataSourceId);
 

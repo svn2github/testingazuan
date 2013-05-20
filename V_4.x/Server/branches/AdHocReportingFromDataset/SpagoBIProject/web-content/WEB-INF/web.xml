@@ -244,7 +244,7 @@ END-LIFERAY -->
 
     <context-param>
          <param-name>resteasy.scan</param-name>
-        <param-value>true</param-value>    
+        <param-value>false</param-value>    
     </context-param>
 
     

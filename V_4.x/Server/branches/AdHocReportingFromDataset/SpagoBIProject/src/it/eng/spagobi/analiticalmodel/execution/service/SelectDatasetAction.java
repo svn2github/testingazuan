@@ -1,26 +1,25 @@
-package it.eng.spagobi.analiticalmodel.execution.service;
-
-
 /* SpagoBI, the Open Source Business Intelligence suite
 
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
+package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.rest.client.api.TilabClientAPI;
 import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.HashMap;
@@ -281,6 +280,9 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 			Assert.assertNotNull(label, "Input parameter [" + INPUT_PARAMETER_DS_LABEL + "] cannot be null");
 			
 			IDataSetDAO	dsDao = DAOFactory.getDataSetDAO();
+			
+			getDatasetFromTilabConsole(label, dsDao);
+			
 			dataset = dsDao.loadActiveDataSetByLabel(label);
 			Assert.assertNotNull(dataset, "Dataset with label [" + label + "] not found");
 			
@@ -292,6 +294,29 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 		
 		return dataset;
 	}
+
+	private void getDatasetFromTilabConsole(String label, IDataSetDAO dao) {
+		
+		GuiGenericDataSet dataset = dao.loadDataSetByLabel(label);
+		if (dataset == null) {
+			logger.debug("Dataset with label [" + label + "] not existing");
+			// retrieving dataset from Tilab console
+			TilabClientAPI api = new TilabClientAPI();
+			logger.debug("Retrieving dataset with id [" + label + "] from Tilab console...");
+			try {
+				dataset = api.getDatasetDetail(label);
+			} catch (Exception e) {
+				throw new SpagoBIRuntimeException("Error while retrieving dataset from Tilab console", e);
+			}
+			logger.debug("Dataset with label [" + label + "] retrieved from Tilab console");
+			dao.insertDataSet(dataset);
+			logger.debug("Dataset with label [" + label + "] inserted");
+		} else {
+			logger.debug("Dataset with label [" + label + "] already existing.");
+		}
+		
+	}
+
 
 	/**
 	 *  get DataSource 	

@@ -9,10 +9,12 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.rest.client.api.TilabClientAPI;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.service.ManageDatasets;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.Locale;
@@ -54,7 +56,7 @@ public class SaveDatasetUserAction extends ManageDatasets {
 			}
 			
 			GuiGenericDataSet ds = getGuiGenericDatasetToInsert();
-			String label = sendToTiLABConsole(ds);
+			String label = saveIntoTilabConsole(ds);
 			ds.setLabel(label);
 			// add extra information into request (more secure on server-side instead of client side)
 			try {
@@ -71,9 +73,15 @@ public class SaveDatasetUserAction extends ManageDatasets {
 		}
 	}
 
-	private String sendToTiLABConsole(GuiGenericDataSet ds) {
-		// TODO: TiLAB: mandare il dataset alla console e recuperare il dataset salvato
-		return ds.getLabel();
+	private String saveIntoTilabConsole(GuiGenericDataSet ds) {
+		try {
+			TilabClientAPI api = new TilabClientAPI();
+			String label = api.writeDataset(null, null);
+			logger.debug("Dataset saved with label [" + label + "]");
+			return label;
+		} catch (Exception e) {
+			throw new SpagoBIRuntimeException("Error while saving dataset into Tilab console", e);
+		}
 	}
 
 }

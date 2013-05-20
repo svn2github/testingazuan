@@ -20,6 +20,7 @@ import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.worksheet.WorksheetDriver;
+import it.eng.spagobi.rest.client.api.TilabClientAPI;
 import it.eng.spagobi.tools.dataset.bo.GuiDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSetDetail;
@@ -277,6 +278,9 @@ public class SaveDocumentAction extends AbstractSpagoBIAction {
 			if(metadataJSON != null) {
 				documentManagementAPI.saveDocumentMetadataProperties(document, null, metadataJSON);
 			}
+			
+			saveIntoTilabConsole(document);
+			
 		} catch (SpagoBIServiceException e) {
 			throw e;			
 		} catch (Throwable e) {
@@ -286,6 +290,17 @@ public class SaveDocumentAction extends AbstractSpagoBIAction {
 		}
 	}
 	
+	private void saveIntoTilabConsole(BIObject document) {
+		try {
+			TilabClientAPI api = new TilabClientAPI();
+			logger.debug("Sending request to Tilab console...");
+			api.writeDocument(document);
+			logger.debug("Document saved into Tilab console without errors");
+		} catch (Exception e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Error while updating datasets list from Tilab console", e);
+		}		
+	}
+
 	// TODO consolidate the following 2 methods
 	private BIObject createBaseDocument(JSONObject documentJSON, JSONObject sourceDocumentJSON, JSONArray folderJSON) {
 		BIObject sourceDocument = null;

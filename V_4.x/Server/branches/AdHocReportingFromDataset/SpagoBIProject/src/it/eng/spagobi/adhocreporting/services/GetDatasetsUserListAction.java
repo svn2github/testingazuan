@@ -9,7 +9,9 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.serializer.SerializerFactory;
+import it.eng.spagobi.rest.client.api.TilabClientAPI;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.service.ManageDatasets;
@@ -17,6 +19,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +49,9 @@ public class GetDatasetsUserListAction extends ManageDatasets {
 			} catch (EMFUserError e) {				
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
+			
+			updateDatasetsFromTilabConsole(dao);
+			
 			Locale locale = getLocale();
 			List<GuiGenericDataSet> items = null;
 			getSpagoBIRequestContainer().set( DataSetConstants.START , new Integer(0) );
@@ -77,6 +83,46 @@ public class GetDatasetsUserListAction extends ManageDatasets {
 		} finally {
 			logger.debug("OUT");
 		}
+	}
+
+	private void updateDatasetsFromTilabConsole(IDataSetDAO dao) {
+		try {
+			TilabClientAPI api = new TilabClientAPI();
+			List<GuiGenericDataSet> list = api.getDatasetList();
+			Iterator<GuiGenericDataSet> it = list.iterator();
+			
+			List<IDataSet> existings = dao.loadAllActiveDataSets();
+			
+			while (it.hasNext()) {
+				GuiGenericDataSet dataSet = it.next();
+				String label = dataSet.getLabel();
+				logger.debug("Looking for dataset with label [" + label + "] ...");
+				boolean existing = isExisting(label, existings);
+				if (existing) {
+					logger.debug("Dataset with label [" + label + "] already existing");
+				} else {
+					logger.debug("Dataset with label [" + label + "] not existing; trying to get details ....");
+					dataSet = api.getDatasetDetail(label);
+					logger.debug("Dataset's details retrieved");
+					dao.insertDataSet(dataSet);
+					logger.debug("Dataset with label [" + label + "] inserted");
+				}
+			}
+		} catch (Exception e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Error while updating datasets list from Tilab console", e);
+		}
+		
+	}
+
+	private boolean isExisting(String label, List<IDataSet> existings) {
+		Iterator<IDataSet> it = existings.iterator();
+		while (it.hasNext()) {
+			IDataSet existing = it.next();
+			if (existing.getLabel().equals(label)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

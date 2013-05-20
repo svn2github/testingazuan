@@ -97,7 +97,7 @@ public class JsonDashboardSerDeser implements ObjectsSerDeser {
 		}
 		
 		BIObject obj = (BIObject)o;
-		datasrcJson.put("id", obj.getLabel());
+		//datasrcJson.put("id", obj.getLabel());
 		datasrcJson.put("description", obj.getDescription());
 		datasrcJson.put("type", SerDeserFactory.TYPE_DASHBOARD);
 

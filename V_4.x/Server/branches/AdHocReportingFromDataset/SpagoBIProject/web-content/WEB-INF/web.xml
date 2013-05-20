@@ -247,6 +247,10 @@ END-LIFERAY -->
         <param-value>false</param-value>    
     </context-param>
 
+    <context-param>
+        <param-name>resteasy.resources</param-name>
+        <param-value>it.eng.spagobi.tools.datasource.service.rest.DataSourceCRUD,it.eng.spagobi.commons.domains.DomainCRUD,it.eng.spagobi.tools.datasource.service.rest.TestConnection</param-value>    
+    </context-param>
     
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>

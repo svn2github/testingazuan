@@ -386,6 +386,8 @@ public class DataSetFactory {
 			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
 			IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourceFlat());
 			ds.setDataSourceForReading(dataSource);
+		}else{
+			ds.setDataSourceForReading(ds.getDataSource());
 		}
 		
 		return ds;

@@ -70,7 +70,10 @@ public static String DS_TYPE = "SbiQueryDataSet";
 		}
 		
 		try{
-			setDataSourceForReading( DataSourceFactory.getDataSource( dataSetConfig.getDataSourceForReading()) );
+			if(dataSetConfig.getDataSourceForReading()!=null){
+				setDataSourceForReading( DataSourceFactory.getDataSource(dataSetConfig.getDataSourceForReading())  );
+			}
+			
 		} catch (Exception e) {
 			throw new RuntimeException("Missing right exstension", e);
 		}

@@ -7,6 +7,8 @@ package it.eng.qbe.statement;
 
 import it.eng.qbe.statement.hibernate.HQLDataSet;
 import it.eng.qbe.statement.hibernate.HQLStatement;
+import it.eng.qbe.statement.hive.HiveQLDataSet;
+import it.eng.qbe.statement.hive.HiveQLStatement;
 import it.eng.qbe.statement.jpa.JPQLDataSet;
 import it.eng.qbe.statement.jpa.JPQLStatement;
 import it.eng.qbe.statement.sql.SQLDataSet;
@@ -27,7 +29,9 @@ public class QbeDatasetFactory {
 			dataSet = new JPQLDataSet( (JPQLStatement)statement );
 		} else if(statement instanceof SQLStatement) {
 			dataSet = new SQLDataSet( (SQLStatement)statement );
-		}else {
+		} else if(statement instanceof HiveQLStatement) {
+			dataSet = new HiveQLDataSet( (HiveQLStatement)statement );
+		} else {
 			throw new RuntimeException("Impossible to create dataset from a statement of type [" + statement.getClass().getName() + "]");
 		}
 		

@@ -39,7 +39,7 @@ public class StatementFactory {
 				c = ds.getStatementType().getConstructor(IDataSource.class, Query.class);
 				object = c.newInstance( (DataSetDataSource)dataSource, query);
 				statement = (IStatement) object;
-				statement = new SQLStatement((DataSetDataSource)dataSource, query);
+				//statement = new SQLStatement((DataSetDataSource)dataSource, query);
 			}catch(Exception e){
 				throw new RuntimeException("Impossible to create statement from a datasource of type DataSetDataSource [" + ds.getStatementType() + "]");
 			}

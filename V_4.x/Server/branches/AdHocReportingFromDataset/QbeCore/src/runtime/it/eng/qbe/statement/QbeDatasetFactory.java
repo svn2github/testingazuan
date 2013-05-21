@@ -27,10 +27,10 @@ public class QbeDatasetFactory {
 			dataSet = new HQLDataSet( (HQLStatement)statement );
 		} else if(statement instanceof JPQLStatement) {
 			dataSet = new JPQLDataSet( (JPQLStatement)statement );
+		}else if(statement instanceof HiveQLStatement) {
+				dataSet = new HiveQLDataSet( (HiveQLStatement)statement );
 		} else if(statement instanceof SQLStatement) {
 			dataSet = new SQLDataSet( (SQLStatement)statement );
-		} else if(statement instanceof HiveQLStatement) {
-			dataSet = new HiveQLDataSet( (HiveQLStatement)statement );
 		} else {
 			throw new RuntimeException("Impossible to create dataset from a statement of type [" + statement.getClass().getName() + "]");
 		}

@@ -24,6 +24,7 @@ import it.eng.qbe.statement.hive.HiveQLStatement;
 import it.eng.qbe.statement.sql.SQLStatement;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
@@ -140,5 +141,9 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 		if(datasets.get(0).getDataSourceForReading().getHibDialectName().toLowerCase().contains("hive")){
 			statementType = HiveQLStatement.class;
 		}
+	}
+	
+	public IDataSource getDataSourceForReading(){
+		return ((IDataSet)datasets.get(0)).getDataSourceForReading();
 	}
 }

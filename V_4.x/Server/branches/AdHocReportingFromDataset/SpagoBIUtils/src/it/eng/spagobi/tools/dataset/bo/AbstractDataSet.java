@@ -102,6 +102,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		setDsMetadata(dataSetConfig.getDsMetadata());
 		setFlatDataset(dataSetConfig.isFlatDataset());
 		setPersisted(dataSetConfig.isPersisted());
+		setPersistTableName(dataSetConfig.getPersistTableName());
 		setFlatTableName(dataSetConfig.getFlatTableName());
 		setDataSourceFlatId(dataSetConfig.getDataSourceFlatId());
 		setDataSourcePersistId(dataSetConfig.getDataSourcePersistId());
@@ -133,6 +134,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		sbd.setPivotColumnValue(getPivotColumnValue());
 		sbd.setNumRows(isNumRows());
 		sbd.setPersisted(isPersisted());
+		sbd.setPersistTableName(getPersistTableName());
 		sbd.setFlatTableName(getFlatTableName());
 		sbd.setFlatDataset(isFlatDataset());
 		sbd.setDataSourceFlatId(getDataSourceFlatId());

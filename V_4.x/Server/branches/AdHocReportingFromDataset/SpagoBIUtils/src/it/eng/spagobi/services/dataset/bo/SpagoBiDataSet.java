@@ -7,7 +7,6 @@
 
 package it.eng.spagobi.services.dataset.bo;
 
-
 public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String adress;
 
@@ -75,6 +74,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading;
 
+    private java.lang.String persistTableName;
+
     public SpagoBiDataSet() {
     }
 
@@ -111,7 +112,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            boolean persisted,
            java.lang.String queryScript,
            java.lang.String queryScriptLanguage,
-           it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading) {
+           it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading,
+           java.lang.String persistTableName) {
            this.adress = adress;
            this.categoryId = categoryId;
            this.dataSource = dataSource;
@@ -145,6 +147,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.queryScript = queryScript;
            this.queryScriptLanguage = queryScriptLanguage;
            this.dataSourceForReading = dataSourceForReading;
+           this.persistTableName = persistTableName;
     }
 
 
@@ -807,6 +810,26 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.dataSourceForReading = dataSourceForReading;
     }
 
+
+    /**
+     * Gets the persistTableName value for this SpagoBiDataSet.
+     * 
+     * @return persistTableName
+     */
+    public java.lang.String getPersistTableName() {
+        return persistTableName;
+    }
+
+
+    /**
+     * Sets the persistTableName value for this SpagoBiDataSet.
+     * 
+     * @param persistTableName
+     */
+    public void setPersistTableName(java.lang.String persistTableName) {
+        this.persistTableName = persistTableName;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSet)) return false;
@@ -909,7 +932,10 @@ public class SpagoBiDataSet  implements java.io.Serializable {
               this.queryScriptLanguage.equals(other.getQueryScriptLanguage()))) &&
             ((this.dataSourceForReading==null && other.getDataSourceForReading()==null) || 
              (this.dataSourceForReading!=null &&
-              this.dataSourceForReading.equals(other.getDataSourceForReading())));
+              this.dataSourceForReading.equals(other.getDataSourceForReading()))) &&
+            ((this.persistTableName==null && other.getPersistTableName()==null) || 
+             (this.persistTableName!=null &&
+              this.persistTableName.equals(other.getPersistTableName())));
         __equalsCalc = null;
         return _equals;
     }
@@ -1011,6 +1037,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         }
         if (getDataSourceForReading() != null) {
             _hashCode += getDataSourceForReading().hashCode();
+        }
+        if (getPersistTableName() != null) {
+            _hashCode += getPersistTableName().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -1218,6 +1247,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setFieldName("dataSourceForReading");
         elemField.setXmlName(new javax.xml.namespace.QName("", "dataSourceForReading"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://bo.datasource.services.spagobi.eng.it", "SpagoBiDataSource"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("persistTableName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "persistTableName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

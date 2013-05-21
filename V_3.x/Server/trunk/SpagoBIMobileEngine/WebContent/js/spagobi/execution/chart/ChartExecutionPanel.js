@@ -45,19 +45,48 @@ Ext.define('app.views.ChartExecutionPanel',{
 			this.resolveUserFunctions(config);	
 		}
 
-		config.listeners = {
-				scope: this,
-				'itemtap': function(series, item, event) { 
-					var crossParams = new Array();
-					this.setCrossNavigation(resp, item, crossParams);
-					var targetDoc;
-					if(resp.config && resp.config.drill && resp.config.drill.params){
-						targetDoc = this.setTargetDocument(resp);	
-						this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+		//manage the god direct to the document in any place for the chart I click
+		if(resp.config.series && resp.config.series[0] && resp.config.series[0].type=='gauge'){
+			config.listeners = {
+					scope: this,
+					'tap': function(series, item, event) { 
+						var crossParams = new Array();
+						var targetDoc;
+						if(resp.config && resp.config.drill){
+							if(resp.config.drill.params){
+								crossParams = resp.config.drill.params;
+							}
+							targetDoc = this.setTargetDocument(resp);	
+							if(targetDoc){
+								this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+							}
+						}
 					}
-					
-				}
-		};
+			};
+		}else{
+			config.listeners = {
+					scope: this,
+					'itemtap': function(series, item, event) { 
+
+						if(resp.config && resp.config.drill){
+							var crossParams = new Array();
+							if(resp.config.drill.params){
+								crossParams = resp.config.drill.params;
+							}
+							this.setCrossNavigation(resp, item, crossParams);
+							var targetDoc;
+							targetDoc = this.setTargetDocument(resp);	
+							if(targetDoc){
+								this.fireEvent('execCrossNavigation', this, crossParams, targetDoc);
+							}
+						}
+					}
+			};
+		}
+		
+
+		
+
 
 		if(config.interactions==undefined || config.interactions==null){
 			config.interactions = new Array();

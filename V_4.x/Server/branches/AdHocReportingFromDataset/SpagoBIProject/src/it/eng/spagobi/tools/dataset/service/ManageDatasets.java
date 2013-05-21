@@ -483,6 +483,10 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 				if(dataSourcePersist != null && !dataSourcePersist.equals("")){
 					dsActiveDetail.setDataSourcePersist(dataSourcePersist);
 				}
+				String persistTableName = getAttributeAsString(DataSetConstants.PERSIST_TABLE_NAME);
+				if(persistTableName != null && !persistTableName.equals("")){
+					dsActiveDetail.setPersistTableName(persistTableName);
+				}
 			}else{
 				dsActiveDetail.setDataSourcePersist("");
 			}

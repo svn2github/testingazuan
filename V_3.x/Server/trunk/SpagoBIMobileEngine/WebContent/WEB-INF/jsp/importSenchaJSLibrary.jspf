@@ -8,8 +8,6 @@
 <script type="text/javascript" src="../js/add2home/add2home.js"></script> 
 
 <link rel="stylesheet" href="../js/sencha_2.1.1/resources/css/sencha-touch.css" type="text/css"/>
-<link rel="stylesheet" href="../js/sencha_2.1.1/override-sencha-2.1.1.css" type="text/css"/>
-<link rel="stylesheet" href="../css/custom/custom.css" type="text/css">
 
 <link rel="stylesheet" href="../css/Ext.ux.grid.View.css" type="text/css"/>
 
@@ -35,4 +33,7 @@
 <script type="text/javascript" src="../js/sencha_2.1.1/Ext.ux.touch.CustomSelectField.js"></script>
 
 <script type="text/javascript" src="../js/sencha_2.1.1/ux/touch/graphics/ColorPatterns.js"></script>
+
+<link rel="stylesheet" href="../js/sencha_2.1.1/override-sencha-2.1.1.css" type="text/css"/>
+<link rel="stylesheet" href="../css/custom/custom.css" type="text/css">
 

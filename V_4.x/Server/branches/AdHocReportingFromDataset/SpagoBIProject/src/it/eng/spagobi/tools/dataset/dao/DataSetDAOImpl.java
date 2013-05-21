@@ -223,6 +223,7 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 				hibDataSet.setNumRows(dataSetActiveDetail.isNumRows());
 				
 				//manage of persistence fields
+				hibDataSet.setPersisted(dataSetActiveDetail.isPersisted());
 				if (dataSetActiveDetail.getDataSourcePersist() != null){
 					String dataSourcePersist = dataSetActiveDetail.getDataSourcePersist();
 					Criterion labelCriterrion = Expression.eq("label", dataSourcePersist);
@@ -231,7 +232,7 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 					SbiDataSource hibDataSourcePersist = (SbiDataSource) criteria.uniqueResult();
 					hibDataSet.setDataSourcePersist(hibDataSourcePersist);
 				}
-				hibDataSet.setPersisted(dataSetActiveDetail.isPersisted());
+				hibDataSet.setPersistTableName(dataSetActiveDetail.getPersistTableName());
 				//manage of flat fields
 				hibDataSet.setFlatDataset(dataSetActiveDetail.isFlatDataset());
 				if (dataSetActiveDetail.getDataSourceFlat() != null){
@@ -1067,6 +1068,7 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 				hibDataSet.setDsMetadata(dsActiveDetailToSet.getDsMetadata());
 				
 				//manage of persistence fields
+				hibDataSet.setPersisted(dsActiveDetailToSet.isPersisted());
 				if (dsActiveDetailToSet.getDataSourcePersist() != null){
 					String dataSourcePersist = dsActiveDetailToSet.getDataSourcePersist();
 					Criterion labelCriterrion = Expression.eq("label", dataSourcePersist);
@@ -1075,7 +1077,7 @@ public class DataSetDAOImpl extends AbstractHibernateDAO implements IDataSetDAO 
 					SbiDataSource hibDataSourcePersist = (SbiDataSource) criteria.uniqueResult();
 					hibDataSet.setDataSourcePersist(hibDataSourcePersist);
 				}
-				hibDataSet.setPersisted(dsActiveDetailToSet.isPersisted());
+				hibDataSet.setPersistTableName(dsActiveDetailToSet.getPersistTableName());
 				//manage of flat fields
 				hibDataSet.setFlatDataset(dsActiveDetailToSet.isFlatDataset());
 				if (dsActiveDetailToSet.getDataSourceFlat() != null){

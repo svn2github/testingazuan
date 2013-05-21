@@ -47,6 +47,7 @@ public class SbiDataSetHistory {
 	
 	private boolean persisted = false;
 	private SbiDataSource dataSourcePersist;
+	private String persistTableName = null;
 
 	private boolean flatDataset = false;
 	private String flatTableName = null;
@@ -301,6 +302,20 @@ public class SbiDataSetHistory {
 	 */
 	public void setFlatTableName(String flatTableName) {
 		this.flatTableName = flatTableName;
+	}
+	
+	/**
+	 * @return the persistTableName
+	 */
+	public String getPersistTableName() {
+		return persistTableName;
+	}
+
+	/**
+	 * @param persistTableName the persistTableName to set
+	 */
+	public void setPersistTableName(String persistTableName) {
+		this.persistTableName = persistTableName;
 	}
 
 	/**

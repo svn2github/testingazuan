@@ -76,6 +76,7 @@ public class DataSetJSONSerializer implements Serializer {
 	
 	private static final String IS_PERSISTED = "isPersisted";
 	private static final String DATA_SOURCE_PERSIST = "dataSourcePersist";
+	private static final String PERSIST_TABLE_NAME = "persistTableName";
 	private static final String IS_FLAT_DATASET = "isFlatDataset";
 	private static final String FLAT_TABLE_NAME = "flatTableName";
 	private static final String DATA_SOURCE_FLAT = "dataSourceFlat";
@@ -243,7 +244,8 @@ public class DataSetJSONSerializer implements Serializer {
 			result.put(PIVOT_ROW_NAME,dsDetail.getPivotRowName());	
 			result.put(PIVOT_IS_NUM_ROWS,dsDetail.isNumRows());
 			result.put(IS_PERSISTED,dsDetail.isPersisted());	
-			result.put(DATA_SOURCE_PERSIST,dsDetail.getDataSourcePersist());	
+			result.put(DATA_SOURCE_PERSIST,dsDetail.getDataSourcePersist());
+			result.put(PERSIST_TABLE_NAME,dsDetail.getPersistTableName());
 			result.put(IS_FLAT_DATASET,dsDetail.isFlatDataset());	
 			result.put(FLAT_TABLE_NAME,dsDetail.getFlatTableName());
 			result.put(DATA_SOURCE_FLAT,dsDetail.getDataSourceFlat());

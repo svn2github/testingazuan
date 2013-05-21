@@ -6,6 +6,7 @@
 package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.qbe.dataset.QbeDataSet;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSet;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -120,6 +121,7 @@ public class DataSetFactory {
 		guiDataSetDetail.setDsHId(sbiDataSetHistory.getDsHId());
 		guiDataSetDetail.setPersisted(sbiDataSetHistory.isPersisted());
 		guiDataSetDetail.setDataSourcePersist((sbiDataSetHistory.getDataSourcePersist()==null) ? null:sbiDataSetHistory.getDataSourcePersist().getLabel());
+		guiDataSetDetail.setPersistTableName(sbiDataSetHistory.getPersistTableName());
 		guiDataSetDetail.setFlatDataset(sbiDataSetHistory.isFlatDataset());
 		guiDataSetDetail.setDataSourceFlat((sbiDataSetHistory.getDataSourceFlat()==null)?null:sbiDataSetHistory.getDataSourceFlat().getLabel());
 		guiDataSetDetail.setFlatTableName((sbiDataSetHistory.getFlatTableName()==null) ? null:sbiDataSetHistory.getFlatTableName());
@@ -271,6 +273,7 @@ public class DataSetFactory {
 		//set persist values
 		guiDataSetDetail.setPersisted(dataSet.isPersisted());
 		//guiDataSetDetail.setDataSourcePersist(dataSet.getDataSourcePersistId());
+		guiDataSetDetail.setPersistTableName(dataSet.getPeristedTableName());
 		guiDataSetDetail.setFlatDataset(dataSet.isFlatDataset());
 		//guiDataSetDetail.setDataSourceFlat(dataSet.getDataSourceFlatId());
 		guiDataSetDetail.setFlatTableName(dataSet.getFlatTableName());
@@ -373,6 +376,7 @@ public class DataSetFactory {
 			}
 			ds.setPersisted(sbiDataSetHistory.isPersisted());
 			ds.setDataSourcePersistId((sbiDataSetHistory.getDataSourcePersist()==null)?null:sbiDataSetHistory.getDataSourcePersist().getDsId());
+			((AbstractDataSet) ds).setPersistTableName(sbiDataSetHistory.getPersistTableName());
 			ds.setFlatDataset(sbiDataSetHistory.isFlatDataset());
 			ds.setDataSourceFlatId((sbiDataSetHistory.getDataSourceFlat()==null)?null:sbiDataSetHistory.getDataSourceFlat().getDsId());
 			ds.setFlatTableName(sbiDataSetHistory.getFlatTableName());

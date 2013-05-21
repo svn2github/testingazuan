@@ -66,7 +66,7 @@ public class PersistedTableManager {
 		logger.debug("IN");
 
 		// get persisted table name
-		this.setTableName(dataset.getLabel());
+		this.setTableName(dataset.getPeristedTableName());
 		logger.debug("Persisted table name is [" + getTableName() + "]");
 		// set dialect of db
 		this.setDialect(dsPersist.getHibDialectClass());

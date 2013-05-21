@@ -14,12 +14,16 @@ import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.service.ManageDatasets;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
@@ -51,6 +55,9 @@ public class SaveDatasetUserAction extends ManageDatasets {
 			// add extra information into request (more secure on server-side instead of client side)
 			try {
 				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.DS_TYPE_CD, "Qbe");
+				UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+				UUID uuid = uuidGen.generateTimeBasedUUID();
+				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.PERSIST_TABLE_NAME, uuid.toString());
 			} catch (SourceBeanException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot modify request", e);
 			}
@@ -58,13 +65,6 @@ public class SaveDatasetUserAction extends ManageDatasets {
 			GuiGenericDataSet ds = getGuiGenericDatasetToInsert();
 			String label = saveIntoTilabConsole(ds);
 			ds.setLabel(label);
-			// add extra information into request (more secure on server-side instead of client side)
-			try {
-				this.getRequestContainer().getServiceRequest().updAttribute(DataSetConstants.LABEL, label);
-			} catch (SourceBeanException e) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot modify request", e);
-			}
-			
 			// invoke save service method
 			datatsetInsert(ds, dao, locale);
 			
@@ -74,14 +74,17 @@ public class SaveDatasetUserAction extends ManageDatasets {
 	}
 
 	private String saveIntoTilabConsole(GuiGenericDataSet ds) {
-		try {
-			TilabClientAPI api = new TilabClientAPI();
-			String label = api.writeDataset(null, null);
-			logger.debug("Dataset saved with label [" + label + "]");
-			return label;
-		} catch (Exception e) {
-			throw new SpagoBIRuntimeException("Error while saving dataset into Tilab console", e);
-		}
+		return ds.getLabel();
+//		try {
+//			TilabClientAPI api = new TilabClientAPI();
+//			String datasourceLabel = ds.getActiveDetail().getDataSourcePersist();
+//			DataSource dataSource = (DataSource) DAOFactory.getDataSourceDAO().loadDataSourceByLabel(datasourceLabel);
+//			String label = api.writeDataset(dataSource, ds);
+//			logger.debug("Dataset saved with label [" + label + "]");
+//			return label;
+//		} catch (Exception e) {
+//			throw new SpagoBIRuntimeException("Error while saving dataset into Tilab console", e);
+//		}
 	}
 
 }

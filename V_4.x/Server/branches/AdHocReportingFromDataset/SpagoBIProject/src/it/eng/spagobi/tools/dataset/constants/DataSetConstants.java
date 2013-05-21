@@ -85,6 +85,8 @@ public class DataSetConstants {
 	
 	public static final String IS_PERSISTED = "isPersisted";
 	public static final String DATA_SOURCE_PERSIST = "dataSourcePersist";
+	public static final String PERSIST_TABLE_NAME = "persistTableName";
+	
 	public static final String IS_FLAT_DATASET = "isFlatDataset";
 	public static final String FLAT_TABLE_NAME = "flatTableName";
 	public static final String DATA_SOURCE_FLAT = "dataSourceFlat";

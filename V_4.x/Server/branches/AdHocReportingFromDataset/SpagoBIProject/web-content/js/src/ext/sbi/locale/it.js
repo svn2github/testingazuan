@@ -655,6 +655,7 @@ Sbi.locale.ln['sbi.ds.advancedTab'] = 'Avanzate';
 Sbi.locale.ln['sbi.ds.helpAdvanced'] = 'Aiuto';
 Sbi.locale.ln['sbi.ds.persist'] = 'Configurazione persistenza del dataset';
 Sbi.locale.ln['sbi.ds.isPersisted'] = 'Persisti';
+Sbi.locale.ln['sbi.ds.persistTableName'] = 'Nome tabella';
 Sbi.locale.ln['sbi.ds.flat'] = 'Configurazione dataset di tipo flat';
 Sbi.locale.ln['sbi.ds.isFlatDataset'] = 'Dataset piatto';
 Sbi.locale.ln['sbi.ds.flatTableName'] = 'Nome tabella';

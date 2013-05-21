@@ -676,6 +676,7 @@ Sbi.locale.ln['sbi.ds.advancedTab'] = 'Advanced';
 Sbi.locale.ln['sbi.ds.helpAdvanced'] = 'Help';
 Sbi.locale.ln['sbi.ds.persist'] = 'Configuration persisted dataset';
 Sbi.locale.ln['sbi.ds.isPersisted'] = 'Persist';
+Sbi.locale.ln['sbi.ds.persistTableName'] = 'Table name';
 Sbi.locale.ln['sbi.ds.flat'] = 'Configuration flat dataset';
 Sbi.locale.ln['sbi.ds.isFlatDataset'] = 'Flat dataset';
 Sbi.locale.ln['sbi.ds.flatTableName'] = 'Table name';

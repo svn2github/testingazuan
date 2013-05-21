@@ -75,6 +75,9 @@
         <property name="flatTableName" type="string">
             <column name="FLAT_TABLE_NAME" length="50" not-null="false" />
         </property>
+        <property name="persistTableName" type="string">
+            <column name="PERSIST_TABLE_NAME" length="50" not-null="false" />
+        </property>
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSetHistory" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />

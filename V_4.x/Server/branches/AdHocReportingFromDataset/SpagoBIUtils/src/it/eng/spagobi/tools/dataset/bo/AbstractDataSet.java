@@ -71,6 +71,7 @@ public abstract class AbstractDataSet implements IDataSet {
 
     protected boolean persisted;
     protected Integer dataSourcePersistId;
+    protected String persistTableName;	
     protected boolean flatDataset;
     protected Integer dataSourceFlatId;
     protected String flatTableName;	
@@ -458,6 +459,20 @@ public abstract class AbstractDataSet implements IDataSet {
 	public void setFlatTableName(String flatTableName) {
 		this.flatTableName = flatTableName;
 	}
+	
+	/**
+	 * @return the persistTableName
+	 */
+	public String getPersistTableName() {
+		return persistTableName;
+	}
+
+	/**
+	 * @param persistTableName the persistTableName to set
+	 */
+	public void setPersistTableName(String persistTableName) {
+		this.persistTableName = persistTableName;
+	}
 
 	// ===============================================
     // Core methods
@@ -471,14 +486,13 @@ public abstract class AbstractDataSet implements IDataSet {
 	}
 
 	
-	public String getPeristedTableName(){
-		if(isPersisted()){
-			return getLabel();
-		}else if(isFlatDataset()){
+	public String getPeristedTableName() {
+		if (isPersisted()) {
+			return getPersistTableName();
+		} else if (isFlatDataset()) {
 			return getFlatTableName();
-		}else{
-			//TO-DO
-			return getLabel();
+		} else {
+			throw new RuntimeException("Dataset is not persisted");
 		}
 	}	
 	

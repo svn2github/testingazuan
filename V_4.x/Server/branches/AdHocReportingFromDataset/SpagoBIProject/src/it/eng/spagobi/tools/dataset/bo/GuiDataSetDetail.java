@@ -41,6 +41,7 @@ public class GuiDataSetDetail implements Serializable{
 	
 	private boolean isPersisted = false;
 	private String dataSourcePersist;
+	private String persistTableName = null;
 	private boolean isFlatDataset = false;
 	private String flatTableName = null;
 	private String dataSourceFlat;
@@ -298,7 +299,21 @@ public class GuiDataSetDetail implements Serializable{
 	public void setFlatTableName(String flatTableName) {
 		this.flatTableName = flatTableName;
 	}
+	
+	/**
+	 * @return the persistTableName
+	 */
+	public String getPersistTableName() {
+		return persistTableName;
+	}
 
+	/**
+	 * @param persistTableName the persistTableName to set
+	 */
+	public void setPersistTableName(String persistTableName) {
+		this.persistTableName = persistTableName;
+	}
+	
 	/**
 	 * @return the dataSourceFlat
 	 */

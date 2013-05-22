@@ -77,6 +77,9 @@ public abstract class AbstractDataSet implements IDataSet {
     protected String flatTableName;	
     private IDataSource dataSourceForReading;
     
+    private IDataSet sourceDataset;
+    
+    
     private static transient Logger logger = Logger.getLogger(AbstractDataSet.class);
 
     public AbstractDataSet() {
@@ -506,6 +509,14 @@ public abstract class AbstractDataSet implements IDataSet {
 
 	public void setDataSourceForReading(IDataSource dataSourceForReading) {
 		this.dataSourceForReading = dataSourceForReading;
+	}
+
+	public IDataSet getSourceDataset() {
+		return sourceDataset;
+	}
+
+	public void setSourceDataset(IDataSet sourceDataset) {
+		this.sourceDataset = sourceDataset;
 	}
 	
 	

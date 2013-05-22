@@ -8,13 +8,16 @@ package it.eng.qbe.dataset;
 import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.configuration.CompositeDataSourceConfiguration;
+import it.eng.qbe.datasource.configuration.DataSetDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
-import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.datasource.dataset.DataSetDataSource;
+import it.eng.qbe.datasource.dataset.DataSetDriver;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.catalogue.QueryCatalogue;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -24,6 +27,7 @@ import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
 import it.eng.spagobi.tools.dataset.utils.DatasetMetadataParser;
 import it.eng.spagobi.tools.datasource.bo.DataSourceFactory;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
@@ -32,6 +36,7 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -175,19 +180,62 @@ public static String DS_TYPE = "SbiQbeDataSet";
 
         dataSourceProperties.put("connection", connection);
         dataSourceProperties.put("dblinkMap", new HashMap());
+        
+		if (this.getSourceDataset() != null) {
+			List<IDataSet> dataSets = new ArrayList<IDataSet>();
+			dataSets.add(this.getSourceDataset());
+			dataSourceProperties.put(EngineConstants.ENV_DATASETS, dataSets);
+			SpagoBiDataSource ds = dataSource.toSpagoBiDataSource();
+			dataSourceProperties.put(DataSetDataSource.SPAGOBI_DATA_SOURCE, ds);
+		}
+        
+		if (dataSourceProperties.get(EngineConstants.ENV_DATASETS) != null) {
+			return getDataSourceFromDataSet(dataSourceProperties, useCache);
+		} else {
+			return getORMDataSource(modelNames, dataSourceProperties,
+					useCache);
+		}
 
+	}
+	
+	public it.eng.qbe.datasource.IDataSource getDataSourceFromDataSet(Map<String, Object> dataSourceProperties, boolean useCache) {
+		
+		it.eng.qbe.datasource.IDataSource dataSource;
+		List<IDataSet> dataSets = (List<IDataSet>)dataSourceProperties.get(EngineConstants.ENV_DATASETS);
+		dataSourceProperties.remove(EngineConstants.ENV_DATASETS);
+		
+		CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration(DataSetDataSource.EMPTY_MODEL_NAME);
+		Iterator<String> it = dataSourceProperties.keySet().iterator();
+		while(it.hasNext()) {
+			String propertyName = it.next();
+			compositeConfiguration.loadDataSourceProperties().put(propertyName, dataSourceProperties.get(propertyName));
+		}
+
+		for(int i = 0; i < dataSets.size(); i++) {
+			DataSetDataSourceConfiguration c = new DataSetDataSourceConfiguration((dataSets.get(i)).getLabel(), dataSets.get(i));
+			compositeConfiguration.addSubConfiguration(c);
+		}
+
+		dataSource = DriverManager.getDataSource(DataSetDriver.DRIVER_ID, compositeConfiguration, useCache);
+		
+		return dataSource;
+	}
+	
+	private it.eng.qbe.datasource.IDataSource getORMDataSource(List<String> dataMartNames, Map<String, Object> dataSourceProperties, boolean useCache) {
+		
 	    File modelJarFile = null;
 	    List<File> modelJarFiles = new ArrayList<File>();
 	    CompositeDataSourceConfiguration compositeConfiguration = new CompositeDataSourceConfiguration();
 	    compositeConfiguration.loadDataSourceProperties().putAll( dataSourceProperties);
 	    
 	    String resourcePath = getResourcePath();
-	    modelJarFile = new File(resourcePath+File.separator+"qbe" + File.separator + "datamarts" + File.separator + modelNames.get(0)+File.separator+"datamart.jar");
+	    modelJarFile = new File(resourcePath+File.separator+"qbe" + File.separator + "datamarts" + File.separator + dataMartNames.get(0)+File.separator+"datamart.jar");
 	    modelJarFiles.add(modelJarFile);
-	    compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(modelNames.get(0), modelJarFile));
+	    compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(dataMartNames.get(0), modelJarFile));
 	
-	    logger.debug("OUT: Finish to load the data source for the model names "+modelNames+"..");
+	    logger.debug("OUT: Finish to load the data source for the model names "+dataMartNames+"..");
 	    return DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, this.useCache);
+
 	}
 	
     /**

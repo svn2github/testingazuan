@@ -82,7 +82,7 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 		return dataStore;
 	}
 
-	private MetaData getDataStoreMeta(Query query) {
+	protected MetaData getDataStoreMeta(Query query) {
 		MetaData dataStoreMeta;
 		ISelectField queryFiled;
 		FieldMetadata dataStoreFieldMeta;

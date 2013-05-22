@@ -6,7 +6,10 @@
 package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.qbe.dataset.QbeDataSet;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.AbstractJDBCDataset;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSet;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
@@ -16,6 +19,7 @@ import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCHiveDataSet;
 import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QbeDataSetDetail;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSetDetail;
@@ -26,6 +30,7 @@ import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.metadata.SbiCustomDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetDependencies;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetHistory;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
@@ -36,8 +41,10 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -291,18 +298,22 @@ public class DataSetFactory {
 			ds.setDsType(DataSetConstants.FILE);
 		}
 
-		if(sbiDataSetHistory instanceof SbiQueryDataSet){			
-			ds=new JDBCDataSet();
-			((JDBCDataSet)ds).setQuery(((SbiQueryDataSet)sbiDataSetHistory).getQuery());
-			((JDBCDataSet)ds).setQueryScript(((SbiQueryDataSet)sbiDataSetHistory).getQueryScript());
-			((JDBCDataSet)ds).setQueryScriptLanguage(((SbiQueryDataSet)sbiDataSetHistory).getQueryScriptLanguage());
-
-			SbiDataSource sbids=((SbiQueryDataSet)sbiDataSetHistory).getDataSource();
-			if(sbids!=null){
-				DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
-				IDataSource dataSource=dataSourceDao.toDataSource(sbids);
-				((JDBCDataSet)ds).setDataSource(dataSource);
+		if(sbiDataSetHistory instanceof SbiQueryDataSet){
+			
+			SbiDataSource sbids = ((SbiQueryDataSet)sbiDataSetHistory).getDataSource();
+			if (sbids.getDialect().getValueCd().equals("hive")) {
+				ds = new JDBCHiveDataSet();
+			} else {
+				ds = new JDBCDataSet();
 			}
+			
+			((AbstractJDBCDataset)ds).setQuery(((SbiQueryDataSet)sbiDataSetHistory).getQuery());
+			((AbstractJDBCDataset)ds).setQueryScript(((SbiQueryDataSet)sbiDataSetHistory).getQueryScript());
+			((AbstractJDBCDataset)ds).setQueryScriptLanguage(((SbiQueryDataSet)sbiDataSetHistory).getQueryScriptLanguage());
+
+			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+			IDataSource dataSource=dataSourceDao.toDataSource(sbids);
+			((AbstractJDBCDataset)ds).setDataSource(dataSource);
 			
 			ds.setDsType(DataSetConstants.QUERY);
 		}
@@ -357,6 +368,20 @@ public class DataSetFactory {
 				ds.setName(sbiDataSetHistory.getSbiDsConfig().getName());
 				ds.setLabel(sbiDataSetHistory.getSbiDsConfig().getLabel());
 				ds.setDescription(sbiDataSetHistory.getSbiDsConfig().getDescription());	
+				
+				//manage of source dataset
+				Set<SbiDataSetDependencies> children = sbiDataSetHistory.getSbiDsConfig().getChildren();
+				if (children != null && !children.isEmpty()) {
+					// considering just the first
+					SbiDataSetDependencies chil = children.iterator().next();
+					IDataSet source;
+					try {
+						source = DAOFactory.getDataSetDAO().loadActiveIDataSetByID(chil.getId().getSourceDsId());
+					} catch (EMFUserError e) {
+						throw new SpagoBIRuntimeException("Cannot load source dataset", e);
+					}
+					((AbstractDataSet) ds).setSourceDataset(source);
+				}
 			}
 	
 			ds.setTransformerId((sbiDataSetHistory.getTransformer()==null)?null:sbiDataSetHistory.getTransformer().getValueId());

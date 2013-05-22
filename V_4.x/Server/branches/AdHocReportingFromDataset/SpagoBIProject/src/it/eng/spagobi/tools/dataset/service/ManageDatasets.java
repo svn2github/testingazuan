@@ -22,6 +22,7 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.container.ObjectUtils;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.AbstractJDBCDataset;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSet;
 import it.eng.spagobi.tools.dataset.bo.CustomDataSetDetail;
@@ -405,11 +406,11 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 		String description = getAttributeAsString(DataSetConstants.DESCRIPTION);		
 		String datasetTypeCode = getAttributeAsString(DataSetConstants.DS_TYPE_CD);
 		String sourceDatasetLabel = getAttributeAsString(DataSetConstants.SOURCE_DS_LABEL);
-		GuiGenericDataSet sourceDs = null;
+		GuiGenericDataSet sourceDataset = null;
 		if (sourceDatasetLabel != null && !sourceDatasetLabel.trim().equals("")) {
 			try {
-				sourceDs = DAOFactory.getDataSetDAO().loadDataSetByLabel(sourceDatasetLabel);
-				if (sourceDs == null) {
+				sourceDataset = DAOFactory.getDataSetDAO().loadDataSetByLabel(sourceDatasetLabel);
+				if (sourceDataset == null) {
 					throw new SpagoBIRuntimeException("Dataset with label [" + sourceDatasetLabel + "] does not exist");
 				}
 			} catch (Exception e) {
@@ -424,19 +425,19 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 			ds = new GuiGenericDataSet();
 			ds.setLabel(label);
 			ds.setName(name);
-			ds.setSourceDatasetId(sourceDs != null ? sourceDs.getDsId() : null);
+			ds.setSourceDatasetId(sourceDataset != null ? sourceDataset.getDsId() : null);
 
 			if(description != null && !description.equals("")){
 				ds.setDescription(description);
 			}
-			GuiDataSetDetail dsActiveDetail = constructDataSetDetail(datasetTypeName);
+			GuiDataSetDetail dsActiveDetail = constructDataSetDetail(datasetTypeName, sourceDataset);
 			ds.setActiveDetail(dsActiveDetail);
 			
 		}    
 		return ds;
 	}
 
-	private GuiDataSetDetail constructDataSetDetail(String dsType){
+	private GuiDataSetDetail constructDataSetDetail(String dsType, GuiGenericDataSet sourceDataset){
 		GuiDataSetDetail dsActiveDetail = instantiateCorrectDsDetail(dsType);
 
 		if(dsActiveDetail!=null){
@@ -512,6 +513,12 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 				if (dsType != null && !dsType.equals("")) {
 					ds = getDataSet(dsType);
 					if (ds != null) {
+						
+						if (sourceDataset != null) {
+							IDataSet source = DAOFactory.getDataSetDAO().loadActiveDataSetByLabel(sourceDataset.getLabel());
+							((AbstractDataSet) ds).setSourceDataset(source);
+						}
+						
 						if (trasfTypeCd != null && !trasfTypeCd.equals("")) {
 							ds = setTransformer(ds, trasfTypeCd);
 						}

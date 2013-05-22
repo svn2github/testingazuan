@@ -15,7 +15,6 @@ import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.service.ManageDatasets;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
@@ -34,6 +33,8 @@ import org.safehaus.uuid.UUIDGenerator;
 public class SaveDatasetUserAction extends ManageDatasets {
 
 	public static final String SERVICE_NAME = "SAVE_DATASET_USER_ACTION";
+	
+	public static final String PERSIST_TABLE_NAME_PREFIX = "persist_";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(SaveDatasetUserAction.class);
@@ -55,9 +56,11 @@ public class SaveDatasetUserAction extends ManageDatasets {
 			// add extra information into request (more secure on server-side instead of client side)
 			try {
 				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.DS_TYPE_CD, "Qbe");
+				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.METADATA, "[]");
 				UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 				UUID uuid = uuidGen.generateTimeBasedUUID();
-				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.PERSIST_TABLE_NAME, uuid.toString());
+				String persistTableName = PERSIST_TABLE_NAME_PREFIX + uuid.toString().replaceAll("-", "");
+				this.getRequestContainer().getServiceRequest().setAttribute(DataSetConstants.PERSIST_TABLE_NAME, persistTableName);
 			} catch (SourceBeanException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot modify request", e);
 			}
@@ -74,6 +77,7 @@ public class SaveDatasetUserAction extends ManageDatasets {
 	}
 
 	private String saveIntoTilabConsole(GuiGenericDataSet ds) {
+//		return ds.getLabel();
 		try {
 			TilabClientAPI api = new TilabClientAPI();
 			String datasourceLabel = ds.getActiveDetail().getDataSourcePersist();

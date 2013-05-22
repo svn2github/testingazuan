@@ -36,11 +36,12 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		DataSetDataSource ds = (DataSetDataSource)statement.getDataSource();
 		String statementStr = statement.getQueryString();
 		
-		SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
-		dataSetConfig.setDataSource( ds.getSpagoBiDataSource() );
-		dataSetConfig.setQuery(statementStr);
-		JDBCDataSet dataset = new JDBCDataSet(dataSetConfig);
-
+		//SpagoBiDataSet dataSetConfig = new SpagoBiDataSet();
+		//dataSetConfig.setDataSource( ds.getSpagoBiDataSource() );
+		//dataSetConfig.setQuery(statementStr);
+		JDBCDataSet dataset = new JDBCDataSet();
+		dataset.setDataSource(ds.getDataSourceForReading());
+		dataset.setQuery(statementStr);
 		dataset.loadData(offset, fetchSize, maxResults);
 
 		dataStore = dataset.getDataStore();

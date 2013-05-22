@@ -74,17 +74,16 @@ public class SaveDatasetUserAction extends ManageDatasets {
 	}
 
 	private String saveIntoTilabConsole(GuiGenericDataSet ds) {
-		return ds.getLabel();
-//		try {
-//			TilabClientAPI api = new TilabClientAPI();
-//			String datasourceLabel = ds.getActiveDetail().getDataSourcePersist();
-//			DataSource dataSource = (DataSource) DAOFactory.getDataSourceDAO().loadDataSourceByLabel(datasourceLabel);
-//			String label = api.writeDataset(dataSource, ds);
-//			logger.debug("Dataset saved with label [" + label + "]");
-//			return label;
-//		} catch (Exception e) {
-//			throw new SpagoBIRuntimeException("Error while saving dataset into Tilab console", e);
-//		}
+		try {
+			TilabClientAPI api = new TilabClientAPI();
+			String datasourceLabel = ds.getActiveDetail().getDataSourcePersist();
+			DataSource dataSource = (DataSource) DAOFactory.getDataSourceDAO().loadDataSourceByLabel(datasourceLabel);
+			String label = api.writeDataset(dataSource, ds);
+			logger.debug("Dataset saved with label [" + label + "]");
+			return label;
+		} catch (Exception e) {
+			throw new SpagoBIRuntimeException("Error while saving dataset into Tilab console", e);
+		}
 	}
 
 }

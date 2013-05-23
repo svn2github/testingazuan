@@ -41,8 +41,12 @@ Ext.define('app.views.Viewport',{
 		this.addToolbarEvents(app.views.customBottomToolbar);
 		
 		this.on("activate",function(){
-			app.views.customTopToolbar.setViewModality("login");
-			this.goLogIn();
+			if(loggedGlobal){
+				this.goHome();
+			}else{
+				this.goLogIn();
+			}
+
 		},this);
 
 	    this.callParent(arguments);

@@ -61,15 +61,16 @@ Ext.define('app.controllers.ParametersController',{
 						executionInstance.noParametersPageNeeded=true;
 						app.controllers.executionController.executeTemplate({executionInstance: executionInstance},null,refresh);
 					}else{
+						var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
+						var defaultValues = this.fillParametersWithDefault(parameters);
 						if(isFromCross){
-
-							var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
 							//app.controllers.mobileController.destroyExecutionView();
 							var paramsToBeFilled = parameters.slice(0);
 							var paramsFilled= this.fillParametersFromCross(parameters, paramsFromCross, paramsToBeFilled);
-							if(paramsToBeFilled.length==0){
+							
+							if((paramsToBeFilled.length-defaultValues)==0){
 								//execute now!
-								executionInstance.PARAMETERS = this.fromArrayToObject(paramsFromCross);
+								executionInstance.PARAMETERS = this.fromArrayToObject(paramsFromCross, defaultValues);
 								executionInstance.isFromCross = true;
 								executionInstance.noParametersPageNeeded=true;
 								app.controllers.executionController.executeTemplate({executionInstance: executionInstance},null,refresh);
@@ -83,10 +84,16 @@ Ext.define('app.controllers.ParametersController',{
 
 							}
 						}else{
-							var parameters = this.onParametersForExecutionLoaded(executionInstance,responseJson);
-							this.executionInstance.noParametersPageNeeded=false;
-							app.views.parameters.refresh(parameters);
-							app.views.viewport.goParameters();
+							if((defaultValues.length)==parameters.length){
+								//execute now!
+								executionInstance.PARAMETERS = this.fromArrayToObject(null, defaultValues);
+								executionInstance.noParametersPageNeeded=true;
+								app.controllers.executionController.executeTemplate({executionInstance: executionInstance},null,this.isRefresh);
+							}else{
+								this.executionInstance.noParametersPageNeeded=false;
+								app.views.parameters.refresh(parameters);
+								app.views.viewport.goParameters();
+							}
 						}
 					}
 				}
@@ -97,21 +104,51 @@ Ext.define('app.controllers.ParametersController',{
 		}); 
 	}
 	
-	, fromArrayToObject: function(jsonArray){
+	, fromArrayToObject: function(jsonArray, defaultValues){
 		var params={};
-		for(var i=0; i<jsonArray.length; i++){
-			var obj = jsonArray[i];
-			var name = obj.name;
-			var value = obj.value;
-			if(!value){
-				value = obj.paramValue;
+		if(jsonArray){
+			for(var i=0; i<jsonArray.length; i++){
+				var obj = jsonArray[i];
+				var name = obj.name;
+				var value = obj.value;
+				if(!value){
+					value = obj.paramValue;
+				}
+				if(!name){
+					name = obj.paramName;
+				}
+				params[name]=value;
 			}
-			if(!name){
-				name = obj.paramName;
-			}
-			params[name]=value;
 		}
+		if(defaultValues){
+			for(var i=0; i<defaultValues.length; i++){
+				var obj = defaultValues[i];
+				var name = obj.name;
+				var value = obj.value;
+				params[name]=value;
+			}
+		}
+
 		return params;
+	}
+	
+	, fillParametersWithDefault: function(parametersNeeded){
+		var parametersFilled = new Array();
+		if(parametersNeeded != null && parametersNeeded != undefined){
+		
+			for(var i =parametersNeeded.length-1; i>=0; i--){
+				var p = parametersNeeded[i];
+				var nm = p.getName();
+				var value = p.getValue();
+				if((!value || value=="") && p.config){
+					value = p.config.value;
+				}
+				if(value && value!=""){
+					parametersFilled.push({name:nm, value:value});
+				}
+			}
+		}
+		return parametersFilled;
 	}
 	
 	, fillParametersFromCross: function(parametersNeeded, parametersFromCross, paramsToBeFilled){
@@ -145,7 +182,6 @@ Ext.define('app.controllers.ParametersController',{
 				}
 			}
 		}
-
 		return parametersFilled;
 	}
 	
@@ -175,6 +211,7 @@ Ext.define('app.controllers.ParametersController',{
 		var defaultValue= null;
 		if(p.defaultValues && p.defaultValues.length != 0){
 			defaultValue = p.defaultValues[0].value;
+			baseConfig.value = defaultValue;
 		}
 		if(p.selectionType === 'COMBOBOX' || p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST' || p.selectionType === 'LOOKUP') {
 	
@@ -196,7 +233,7 @@ Ext.define('app.controllers.ParametersController',{
 						root: metadata.root
 					}
 				},
-				fields: metadata.root,
+				fields: metadata.fields,
 				autoLoad : true,
 				autoDestroy : true
 			});

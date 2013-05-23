@@ -160,5 +160,9 @@ public abstract class  AbstractStatement implements IStatement {
 		
 		return "t_" + aliasesCount;
 	}
+	
+	public String getFieldAlias(String rootEntityAlias, String queryName){
+		return  rootEntityAlias + "." + queryName;
+	}
 
 }

@@ -9,7 +9,6 @@ package it.eng.qbe.statement.sql;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractSelectStatementClause;
 import it.eng.qbe.statement.IStatement;
-import it.eng.qbe.statement.jpa.JPQLStatementSelectClause;
 
 import java.util.Map;
 

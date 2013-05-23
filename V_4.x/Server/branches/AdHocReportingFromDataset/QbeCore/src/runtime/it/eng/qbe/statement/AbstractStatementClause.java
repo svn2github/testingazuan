@@ -19,6 +19,7 @@ import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.json.QuerySerializationConstants;
 import it.eng.qbe.serializer.SerializationManager;
+import it.eng.qbe.statement.hive.HiveQLStatement;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -124,13 +125,9 @@ public abstract class AbstractStatementClause implements IStatementClause {
 						rootEntity = modelField.getParent().getRoot(); 	
 					}
 					
-					rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-					if(rootEntityAlias == null) {
-						rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-						entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
-					}
+					rootEntityAlias = getEntityAlias(rootEntity, entityAliases, entityAliasesMaps);
 					
-					queryName = rootEntityAlias + "." + queryName;
+					queryName = parentStatement.getFieldAlias(rootEntityAlias, queryName);
 					logger.debug("Expression token [" + token + "] query name is equal to [" + queryName + "]");
 	
 					fieldQueryNames.add(queryName);
@@ -430,5 +427,26 @@ public abstract class AbstractStatementClause implements IStatementClause {
 		
 		return toReturn;
 	}
+	
+	protected String getEntityAlias(IModelEntity entity, Map entityAliases, Map entityAliasesMaps){
+		if(parentStatement instanceof HiveQLStatement){
+			String rootEntityAlias = (String)entityAliases.get(entity.getName());
+			if(rootEntityAlias == null) {
+				rootEntityAlias = entity.getName();
+				entityAliases.put(entity.getUniqueName(), entity.getName());
+			}	
+			return rootEntityAlias;
+		}else{
+			String rootEntityAlias = (String)entityAliases.get(entity.getUniqueName());
+			if(rootEntityAlias == null) {
+				rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
+				entityAliases.put(entity.getUniqueName(), rootEntityAlias);
+			}	
+			return rootEntityAlias;	
+		}
+		
+	}
+	
+	
 
 }

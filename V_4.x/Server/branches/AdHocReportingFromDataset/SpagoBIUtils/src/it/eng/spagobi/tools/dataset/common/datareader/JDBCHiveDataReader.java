@@ -15,7 +15,9 @@ import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.common.metadata.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
+import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -94,7 +96,13 @@ public class JDBCHiveDataReader extends AbstractDataReader {
             		logger.debug("Field [" + columnIndex + "] name is equal to [" + fieldName + "]");
             		if(dataStore.getMetaData().getFieldIndex(fieldName) == -1){
                 		fieldMeta.setName( fieldName );
-                		fieldMeta.setType(String.class);
+                		Class tpeClass = String.class;
+                		try {
+                			tpeClass = getType(rs.getMetaData().getColumnTypeName(columnIndex));
+						} catch (Exception e) {
+							logger.error("Can not read the type of the the clumn with index ["+columnIndex+"] and name ["+fieldName+"]",e);
+						}
+                		fieldMeta.setType(tpeClass );
                 		dataStore.getMetaData().addFiedMeta(fieldMeta);
             		}
             	}    
@@ -150,6 +158,48 @@ public class JDBCHiveDataReader extends AbstractDataReader {
 		logger.debug("Reading total record numeber is equal to [" + toReturn + "]");
 		logger.debug("OUT " + toReturn);
 		return toReturn;
+	}
+	
+	private Class getType(String type) throws SpagoBIEngineException{
+		type = type.toUpperCase();
+		if(type.equals("STRING") ||type.equals("CHAR") || type.equals("VARCHAR") || type.equals("LONGVARCHAR")){
+			return String.class;
+		}else if(type.equals("NUMERIC") || type.equals("DECIMAL")){
+			return java.math.BigDecimal.class;
+		}else if(type.equals("BIT") || type.equals("BOOLEAN") ){
+			return Boolean.class;
+		}else if(type.equals("TINYINT")){
+			return Byte.class;
+		}else if(type.equals("SMALLINT")){
+			return Short.class;
+		}else if(type.equals("INT")){
+			return Integer.class; 
+		}else if(type.equals("BIGINT")){
+			return Long.class;
+		}else if(type.equals("REAL")){
+			return Float.class;
+		}else if(type.equals("FLOAT") || type.equals("DOUBLE")){
+			return Double.class;
+		}else if(type.equals("BINARY") || type.equals("VARBINARY") || type.equals("LONGVARBINARY")){
+			return String.class;
+		}else if(type.equals("DATE") || type.equals("TIME")){
+			return java.sql.Date.class;
+		}else if(type.equals("TIME")){
+			return java.sql.Time.class;
+		}else if(type.equals("TIMESTAMP")){
+			return java.sql.Timestamp.class;
+		}else if(type.equals("ARRAY")){
+			return String.class;
+		}else if(type.equals("STRUCT")){
+			return String.class;
+		}else if(type.equals("REF")){
+			return Ref.class;
+		}else if(type.equals("DATALINK")){
+			return java.net.URL.class;
+		}else if(type.equals("MAP")){
+			return String.class;
+		}
+		throw new SpagoBIEngineException("Can not find a java type for ["+type+"]");
 	}
 
 	

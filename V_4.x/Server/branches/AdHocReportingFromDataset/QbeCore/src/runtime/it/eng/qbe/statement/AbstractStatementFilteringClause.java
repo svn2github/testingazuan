@@ -187,9 +187,11 @@ public abstract class AbstractStatementFilteringClause extends AbstractStatement
 			
 			if(!targetQueryEntityAliasesMap.containsKey(rootEntity.getUniqueName())) {
 				logger.debug("Entity [" + rootEntity.getUniqueName() + "] require a new alias");
-				rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
+				rootEntityAlias = getEntityAlias(rootEntity, targetQueryEntityAliasesMap, entityAliasesMaps);
 				logger.debug("A new alias has been generated [" + rootEntityAlias + "]");				
-				targetQueryEntityAliasesMap.put(rootEntity.getUniqueName(), rootEntityAlias);
+				
+				
+				
 			}
 			rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );
 			logger.debug("where field root entity alias [" + rootEntityAlias + "]");
@@ -197,9 +199,9 @@ public abstract class AbstractStatementFilteringClause extends AbstractStatement
 			if (operand instanceof HavingField.Operand) {
 				HavingField.Operand havingFieldOperand = (HavingField.Operand) operand;
 				IAggregationFunction function = havingFieldOperand.function;
-				operandElement = function.apply(rootEntityAlias + "." + queryName);
+				operandElement = function.apply(parentStatement.getFieldAlias(rootEntityAlias, queryName));
 			} else {
-				operandElement = rootEntityAlias + "." + queryName;
+				operandElement = parentStatement.getFieldAlias(rootEntityAlias, queryName);
 			}
 			logger.debug("where element operand value [" + operandElement + "]");
 		} finally {
@@ -267,7 +269,7 @@ public abstract class AbstractStatementFilteringClause extends AbstractStatement
 			}
 			logger.debug("where right-hand field root entity alias [" + rootEntityAlias + "]");
 			
-			operandElement = rootEntityAlias + "." + queryName;
+			operandElement = parentStatement.getFieldAlias(rootEntityAlias, queryName);
 			logger.debug("where element right-hand field value [" + operandElement + "]");
 		} finally {
 			logger.debug("OUT");

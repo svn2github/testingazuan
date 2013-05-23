@@ -73,7 +73,7 @@ public abstract class AbstractStatementGroupByClause extends AbstractStatementCl
 					entityAliases.put(root.getUniqueName(), parentStatement.getNextAlias(entityAliasesMaps));
 				}
 				String entityAlias = (String)entityAliases.get( root.getUniqueName() );
-				fieldName = entityAlias + "." + queryName;
+				fieldName =  parentStatement.getFieldAlias(entityAlias, queryName);
 			} else {
 				// TODO throw an exception here
 			}

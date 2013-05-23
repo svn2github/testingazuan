@@ -149,7 +149,7 @@ public class DataSetModelStructureBuilder implements IModelStructureBuilder {
 		}
 
 		IModelField datamartField = dataMartEntity.addNormalField(keyPrefix+ fieldName);
-		datamartField.setType(fieldMetadata.getFieldType().name());
+		datamartField.setType(fieldMetadata.getType().getName());
 		datamartField.setName(fieldName);
 		datamartField.setPrecision(precisionInt);
 		datamartField.setLength(scale);

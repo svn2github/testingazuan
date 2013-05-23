@@ -7,12 +7,9 @@
 package it.eng.qbe.statement.sql;
 
 import it.eng.qbe.datasource.dataset.DataSetDataSource;
-import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
-import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
@@ -47,13 +44,14 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		dataset.setDataSource(ds.getDataSourceForReading());
 		dataset.setQuery(statementStr);
 		dataset.loadData(offset, fetchSize, maxResults);
+
 		dataStore = dataset.getDataStore();
-		// executed JDBC dataset does not contain correct metadata (for example
-		// if a field a column or a measure) therefore we need to adjust
-		// metadata
-		this.adjustMetadata(dataStore);
-		dataStore.getMetaData();
+		int resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
+		MetaData md = getDataStoreMeta(this.getStatement().getQuery());
 		
+		//Update the metadata (use the qbe alias, type,..)
+		((DataStore)dataStore).setMetaData(md);
+		dataStore.getMetaData().setProperty("resultNumber",resultNumber);
 				
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);
@@ -62,27 +60,6 @@ public class SQLDataSet extends AbstractQbeDataSet {
 	
 	}
 	
-	/**
-	 * Adjusts the metadata of the datastore retrieved by a JDBCDataSet, since
-	 * executed JDBC dataset does not contain correct metadata (for example if a
-	 * field a column or a measure) therefore we need to adjust metadata
-	 * @param dataStore 
-	 */
-	private void adjustMetadata(IDataStore dataStore) {
-		IMetaData metadata = dataStore.getMetaData();
-		SQLStatement statement = (SQLStatement) this.getStatement();
-		Query query = statement.getQuery();
-		MetaData qbeMetadata = this.getDataStoreMeta(query);
-		int count = metadata.getFieldCount();
-		for (int i = 0; i < count; i++) {
-			IFieldMetaData fieldMeta = metadata.getFieldMeta(i);
-			// JDBC field name is the Qbe query field's alias
-			IFieldMetaData qbeFieldMeta = qbeMetadata.getFieldByAlias(fieldMeta.getName());
-			fieldMeta.setFieldType(qbeFieldMeta.getFieldType());
-		}
-	}
-
-
 	public void setDataSource(IDataSource dataSource) {
 		// TODO Auto-generated method stub
 		

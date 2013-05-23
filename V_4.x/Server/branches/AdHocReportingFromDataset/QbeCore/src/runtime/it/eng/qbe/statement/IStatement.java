@@ -59,5 +59,7 @@ public interface IStatement {
 	public void setParameters(Map parameters);
 	
 	public String getNextAlias(Map entityAliasesMaps);
+	public String getFieldAlias(String rootEntityAlias, String queryName);
+
 	
 }

@@ -65,12 +65,8 @@ public abstract class AbstractStatementOrderByClause extends AbstractStatementCl
 					root = modelField.getParent().getRoot(); 	
 				}
 				
-				if(!entityAliases.containsKey(root.getUniqueName())) {
-					entityAliases.put(root.getUniqueName(), parentStatement.getNextAlias(entityAliasesMaps));
-				}
-				
-				String entityAlias = (String)entityAliases.get( root.getUniqueName() );
-				String fieldName = entityAlias + "." + queryName;
+				String entityAlias = getEntityAlias(root, entityAliases, entityAliasesMaps);
+				String fieldName = parentStatement.getFieldAlias(entityAlias, queryName);
 				
 				buffer.append(" " + simpleField.getFunction().apply(fieldName));
 			

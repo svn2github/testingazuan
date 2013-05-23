@@ -140,14 +140,13 @@ public class AbstractSelectStatementClause extends AbstractStatementClause{
 			
 		logger.debug("select field root entity unique name [" + rootEntity.getUniqueName() + "]");
 		
-		rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-		if(rootEntityAlias == null) {
-			rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
-		}
-		logger.debug("select field root entity alias [" + rootEntityAlias + "]");
 		
-		selectClauseElement = rootEntityAlias + "." + queryName;
+		rootEntityAlias = getEntityAlias(rootEntity, entityAliases, entityAliasesMaps);
+		
+		logger.debug("select field root entity alias [" + rootEntityAlias + "]");
+			
+		selectClauseElement = parentStatement.getFieldAlias(rootEntityAlias, queryName);
+		
 		logger.debug("select clause element before aggregation [" + selectClauseElement + "]");
 		
 		selectClauseElement = selectField.getFunction().apply(selectClauseElement);

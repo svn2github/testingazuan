@@ -334,25 +334,17 @@ public abstract class AbstractStatementWhereClause extends AbstractStatementFilt
 					IConditionalOperator conditionalOperator = null;
 					conditionalOperator = (IConditionalOperator)JPQLStatementConditionalOperators.getOperator( CriteriaConstants.EQUALS_TO );
 
-					String sourceEntityAlias = (String)entityAliases.get(join.getSourceEntity().getUniqueName());
-					if(sourceEntityAlias == null) {
-						sourceEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-						entityAliases.put(join.getSourceEntity().getUniqueName(), sourceEntityAlias);
-					}
-					String destinationEntityAlias = (String)entityAliases.get(join.getDestinationEntity().getUniqueName());
-					if(destinationEntityAlias == null) {
-						destinationEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-						entityAliases.put(join.getDestinationEntity().getUniqueName(), destinationEntityAlias);
-					}
-
+					String sourceEntityAlias =  getEntityAlias(join.getSourceEntity(), entityAliases, entityAliasesMaps);
+					String destinationEntityAlias = getEntityAlias(join.getDestinationEntity(), entityAliases, entityAliasesMaps);
+					
 					for(int i = 0; i < join.getSourceFileds().size(); i++) {
 						IModelField sourceField = join.getSourceFileds().get(i);
 						IModelField destinationField = join.getDestinationFileds().get(i);
 						String sourceFieldName = (String)sourceField.getQueryName().getFirst();
 						String destinationFieldName = (String)destinationField.getQueryName().getFirst();
 
-						String leftHandValue = sourceEntityAlias + "." + sourceFieldName;
-						String rightHandValues = destinationEntityAlias + "." + destinationFieldName;
+						String leftHandValue = parentStatement.getFieldAlias(sourceEntityAlias, sourceFieldName);
+						String rightHandValues = parentStatement.getFieldAlias(destinationEntityAlias, destinationFieldName);
 
 						String filterCondition = conditionalOperator.apply(leftHandValue, new String[]{rightHandValues});
 

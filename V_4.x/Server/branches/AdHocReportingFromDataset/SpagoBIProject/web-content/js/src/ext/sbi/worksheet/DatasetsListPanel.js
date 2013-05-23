@@ -259,6 +259,11 @@ Ext.extend(Sbi.worksheet.DatasetsListPanel, Ext.Panel, {
 		this.datasetsStore.load({params : {start: 0, limit: this.pagingSize, filter: {}}});
 	}
 	
+	,
+	refresh : function () {
+		this.datasetsStore.load({ forceRefresh : true });
+	}
+	
 	/*
     ,
     onSelect: function(sm, rowIndex, record) {

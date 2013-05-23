@@ -160,6 +160,7 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 	,
 	moveToDatasetsListPage : function () {
 		this.getLayout().setActiveItem( 0 );
+		this.datasetsListPanel.refresh();
 	}
 
 });

@@ -93,9 +93,9 @@ public class Test {
 		
 		//use simulator http://localhost:8080/RestServerSimul/
 		TilabClientAPI tca = new TilabClientAPI();
-		//GuiGenericDataSet gdd = tca.getDatasetDetail("", "", ""); ok
+		GuiGenericDataSet gdd = tca.getDatasetDetail("a9a85db6-7a28-41f4-abf3-875b0617b314"); 
 		
-		List<GuiGenericDataSet> gdd1 = tca.getDatasetList("0", "10");
+		//List<GuiGenericDataSet> gdd1 = tca.getDatasetList("0", "10");
 		
 	}
 	

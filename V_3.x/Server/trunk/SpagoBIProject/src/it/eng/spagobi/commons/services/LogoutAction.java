@@ -45,9 +45,6 @@ public class LogoutAction extends AbstractHttpAction {
 		//Start writing log in the DB
 		Session aSession =null;
 		try {
-			aSession = HibernateUtil.currentSession();
-			//Connection jdbcConnection = aSession.connection();
-			Connection jdbcConnection = HibernateUtil.getConnection(aSession);
 			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			HashMap<String, String> logParam = new HashMap();
 			logParam.put("USER",UserUtilities.getUserProfile().toString());

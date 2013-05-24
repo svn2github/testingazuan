@@ -164,7 +164,7 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 	saveDatasetHandler: function () {
 		
 		var params = this.getInfoToBeSentToServer();
-		
+		Ext.MessageBox.wait(LN('sbi.generic.wait'));
 		Ext.Ajax.request({
 	        url : this.services['saveDatasetService']
 	        , params : params

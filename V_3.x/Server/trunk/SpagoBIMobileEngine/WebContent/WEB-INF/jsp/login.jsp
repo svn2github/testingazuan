@@ -31,8 +31,7 @@ RequestContainer reqCont = RequestContainer.getRequestContainer();
 SessionContainer sessCont = reqCont.getSessionContainer();
 SessionContainer permSess = sessCont.getPermanentContainer();
 UserProfile previousProfile = (UserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-String userId = (String)request.getAttribute("userID");
-boolean logged = (userId!=null && !userId.equals("")) && (previousProfile!=null);
+boolean logged = (previousProfile!=null);
 %>
 
 <html>

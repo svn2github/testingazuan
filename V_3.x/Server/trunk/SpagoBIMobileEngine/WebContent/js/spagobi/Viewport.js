@@ -41,7 +41,10 @@ Ext.define('app.views.Viewport',{
 		this.addToolbarEvents(app.views.customBottomToolbar);
 		
 		this.on("activate",function(){
-			if(loggedGlobal){
+			if(loggedGlobal && loggedGlobal=="true"){
+				app.views.form.hide();
+				localStorage.setItem('app.views.launched', 'true');
+				this.addMain();
 				this.goHome();
 			}else{
 				this.goLogIn();

@@ -168,18 +168,20 @@ Ext.define('app.controllers.MobileController',{
     , logout : function () {
 		var func = function(answer) {
 	        if (answer === "yes") {
-	        	Ext.Ajax.request({
-                     url : Sbi.env.invalidateSessionURL
-                     , method : 'POST'
-                     , success : function(response, opts) {
-                    	 // refresh page
-                    	 localStorage.removeItem('app.views.launched');
-                    	 localStorage.removeItem('app.views.browser');
-                    	 window.location.href = Sbi.env.contextPath;
-                     }
-                     , failure : Sbi.exception.ExceptionHandler.handleFailure
-                     , scope : this
-                });
+	        	 window.location.href = Sbi.env.contextPath+"/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
+//	        	Ext.Ajax.request({
+//                     url : Sbi.env.invalidateSessionURL
+//                     , method : 'POST'
+//                     , success : function(response, opts) {
+//                    	 // refresh page
+//                    	 localStorage.removeItem('app.views.launched');
+//                    	 localStorage.removeItem('app.views.browser');
+//                    	                    	 
+//                    	 window.location.href = Sbi.env.contextPath;
+//                     }
+//                     , failure : Sbi.exception.ExceptionHandler.handleFailure
+//                     , scope : this
+//                });
 	        }
 		};
 		Sbi.exception.ExceptionHandler.showConfirmMessage('Are you sure you want to logout?', null, func);

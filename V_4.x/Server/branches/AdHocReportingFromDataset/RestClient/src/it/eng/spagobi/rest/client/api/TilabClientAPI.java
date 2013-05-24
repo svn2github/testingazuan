@@ -9,8 +9,10 @@ import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -205,7 +207,13 @@ public class TilabClientAPI {
 	
 	public String writeDataset(DataSource dSRC, GuiGenericDataSet dSet) {	
 		try {
-		
+			//get table name from datset and put it in datasource objects field
+			//then the serializer will use it
+			Set<GuiGenericDataSet> objectsGGU = new HashSet<GuiGenericDataSet>();
+			objectsGGU.add(dSet);
+			dSRC.setObjects(objectsGGU);
+			
+			
 			String datasetLabel = null;
 			
 			ObjectsSerDeser des1 = SerDeserFactory.getSerDeser(SerDeserFactory.TYPE_DATASOURCE);

@@ -122,7 +122,10 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 			return;
 		}
 		var datasetLabel = selectedRecord.get('label');
-		var datasourceLabel = selectedRecord.get('dataSource');
+		var datasourceLabel = this.getDatasourceLabel(selectedRecord);
+		if (datasourceLabel == null) {
+			return;
+		}
 		this.getLayout().setActiveItem( 1 );
 		this.worksheetEditor.setSrc( this.worksheetEngineBaseUrl + '&dataset_label=' + datasetLabel + '&datasource_label=' + datasourceLabel );
 		this.worksheetEditor.setDatasetLabel(datasetLabel);
@@ -148,7 +151,10 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 			return;
 		}
 		var datasetLabel = selectedRecord.get('label');
-		var datasourceLabel = selectedRecord.get('dataSource');
+		var datasourceLabel = this.getDatasourceLabel(selectedRecord);
+		if (datasourceLabel == null) {
+			return;
+		}
 		this.getLayout().setActiveItem( 1 );
 		this.worksheetEditor.setSrc( this.qbeEngineBaseUrl + '&dataset_label=' + datasetLabel + '&selected_datasource_label=' + datasourceLabel );
 		this.worksheetEditor.setDatasetLabel(datasetLabel);
@@ -161,6 +167,24 @@ Ext.extend(Sbi.worksheet.WorksheetFromDatasetPanel, Ext.Panel, {
 	moveToDatasetsListPage : function () {
 		this.getLayout().setActiveItem( 0 );
 		this.datasetsListPanel.refresh();
+	}
+	
+	,
+	getDatasourceLabel : function (selectedRecord) {
+		var datasetType = selectedRecord.get('dsTypeCd');
+		switch (datasetType) {
+		  case "Qbe":
+		    return selectedRecord.get('qbeDataSource');
+		    break;
+		  case "Query":
+		    return selectedRecord.get('dataSource');
+		    break;
+		  default:
+				Sbi.exception.ExceptionHandler.showWarningMessage(
+						'Sorry but selected dataset isn\' supported for ad-hoc reporting'
+						, LN('sbi.generic.warning'));
+				return null;
+		}
 	}
 
 });

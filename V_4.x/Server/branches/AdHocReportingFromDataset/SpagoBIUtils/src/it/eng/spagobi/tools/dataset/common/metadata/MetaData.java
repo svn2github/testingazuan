@@ -166,19 +166,5 @@ public class MetaData implements IMetaData {
 		IFieldMetaData m = this.getFieldMeta(fieldIndex);
 		m.setAlias(newAlias);
 	}
-	
-	public IFieldMetaData getFieldByAlias(String alias) {
-		IFieldMetaData toReturn = null;
-		Iterator<IFieldMetaData> it = fieldsMeta.iterator();
-		while(it.hasNext()) {
-			IFieldMetaData fieldMeta = it.next();
-			String fieldAlias = fieldMeta.getAlias();
-			if (fieldAlias != null && fieldAlias.equals(alias)) {
-				toReturn = fieldMeta;
-				break;
-			}
-		}
-		return toReturn;
-	}
 
 }

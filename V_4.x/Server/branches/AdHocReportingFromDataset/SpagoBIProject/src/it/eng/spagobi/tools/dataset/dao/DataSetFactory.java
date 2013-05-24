@@ -407,18 +407,16 @@ public class DataSetFactory {
 			ds.setFlatTableName(sbiDataSetHistory.getFlatTableName());
 		}
 		
-		if(sbiDataSetHistory instanceof SbiQueryDataSet){	
-			if(((SbiQueryDataSet)sbiDataSetHistory).isPersisted()){
-				DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
-				IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourcePersist());
-				ds.setDataSourceForReading(dataSource);
-			}else if(((SbiQueryDataSet)sbiDataSetHistory).isFlatDataset()){
-				DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
-				IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourceFlat());
-				ds.setDataSourceForReading(dataSource);
-			}else{
-				ds.setDataSourceForReading(ds.getDataSource());
-			}
+		if(sbiDataSetHistory.isPersisted()){
+			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+			IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourcePersist());
+			ds.setDataSourceForReading(dataSource);
+		}else if(sbiDataSetHistory.isFlatDataset()){
+			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
+			IDataSource dataSource=dataSourceDao.toDataSource(sbiDataSetHistory.getDataSourceFlat());
+			ds.setDataSourceForReading(dataSource);
+		}else{
+			ds.setDataSourceForReading(ds.getDataSource());
 		}
 		
 		

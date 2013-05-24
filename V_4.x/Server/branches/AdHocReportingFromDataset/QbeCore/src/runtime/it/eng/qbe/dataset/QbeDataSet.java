@@ -76,6 +76,10 @@ public static String DS_TYPE = "SbiQbeDataSet";
 		IDataSource dataSource = DataSourceFactory.getDataSource( dataSetConfig.getDataSource() ) ;
 		this.setDataSource(dataSource);
 		
+		if (dataSetConfig.getDataSourceForReading() != null) {
+			IDataSource dataSourceForReading = DataSourceFactory.getDataSource( dataSetConfig.getDataSourceForReading() ) ;
+			this.setDataSourceForReading(dataSourceForReading);
+		}
 	}
     
     public QbeDataSet(AbstractQbeDataSet ds) {
@@ -155,6 +159,11 @@ public static String DS_TYPE = "SbiQbeDataSet";
 		if(getDataSource() != null) {
 			sbd.setDataSource(getDataSource().toSpagoBiDataSource());
 		}
+		
+		if (getDataSourceForReading() != null) {
+			sbd.setDataSourceForReading(getDataSourceForReading().toSpagoBiDataSource());
+		}
+		
 		sbd.setJsonQuery(getJsonQuery());
 		sbd.setDatamarts(getDatamarts());
 

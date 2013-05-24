@@ -10,6 +10,8 @@ import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
+import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
@@ -46,12 +48,11 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		dataset.loadData(offset, fetchSize, maxResults);
 
 		dataStore = dataset.getDataStore();
-		int resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
-		MetaData md = getDataStoreMeta(this.getStatement().getQuery());
 		
-		//Update the metadata (use the qbe alias, type,..)
-		((DataStore)dataStore).setMetaData(md);
-		dataStore.getMetaData().setProperty("resultNumber",resultNumber);
+		IMetaData jdbcMetadata = dataStore.getMetaData();
+		IMetaData qbeQueryMetaData = getDataStoreMeta(this.getStatement().getQuery());
+		IMetaData merged = mergeMetadata(jdbcMetadata, qbeQueryMetaData);
+		((DataStore)dataStore).setMetaData(merged);
 				
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);
@@ -65,6 +66,27 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		
 	}
 
+	
+	/**
+	 * Adjusts the metadata of the datastore retrieved by a JDBCDataSet, since
+	 * executed JDBC dataset does not contain correct metadata (name, alias,
+	 * attribute/measure) therefore we need to merge metadata
+	 * 
+	 * @param jdbcMetadata the metadata retrieved by executing the JDBC dataset
+	 * @param qbeQueryMetaData the metadata of the Qbe query
+	 */
+	private IMetaData mergeMetadata(IMetaData jdbcMetadata, IMetaData qbeQueryMetaData) {
+		int count = jdbcMetadata.getFieldCount();
+		for (int i = 0; i < count; i++) {
+			IFieldMetaData jdbcFieldMeta = jdbcMetadata.getFieldMeta(i);
+			// positional matching between the 2 metadata
+			IFieldMetaData qbeFieldMeta = qbeQueryMetaData.getFieldMeta(i);
+			jdbcFieldMeta.setFieldType(qbeFieldMeta.getFieldType());
+			jdbcFieldMeta.setName(qbeFieldMeta.getName());
+			jdbcFieldMeta.setAlias(qbeFieldMeta.getAlias());
+		}
+		return jdbcMetadata;
+	}
 	
 	
 

@@ -16,36 +16,8 @@
 	<ACTION name="GET_DOCUMENT_INFO_ACTION"/>
 </ACTIONS_EXCLUDED_FROM_GLOBAL>
 	
-
 <PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 
-<PAGE_MODULE pagename="LOGINPAGE" modulename="LOGINMODULE"/>
+
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>
-
-<PAGES>
-	
-	<PAGE name="LoginPage" scope="REQUEST" title="Document template build page" >
-    	<DEPENDENCIES>
-      		<DEPENDENCE source="LoginPage" target="LoginModule">
-        		<CONDITIONS/>
-        		<CONSEQUENCES/>
-      		</DEPENDENCE>
-    	</DEPENDENCIES>
-    	<MODULES>
-      		<MODULE keep_instance="false" keep_response="false" name="LoginModule"/>
-    	</MODULES>
-  	</PAGE>
-
-</PAGES>
-<PRESENTATION>
-<MAPPING business_name="LoginPage" business_type="PAGE" publisher_name="LoginPublisherJava"/>
-</PRESENTATION>
-
-<MODULES>
-	
-	<MODULE class="it.eng.spagobi.commons.services.LoginModule" name="LoginModule">
-     	<CONFIG/>
-    </MODULE>
-  
-</MODULES>

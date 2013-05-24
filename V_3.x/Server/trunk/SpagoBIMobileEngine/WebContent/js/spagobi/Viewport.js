@@ -45,6 +45,7 @@ Ext.define('app.views.Viewport',{
 				app.views.form.hide();
 				localStorage.setItem('app.views.launched', 'true');
 				this.addMain();
+				
 				this.goHome();
 			}else{
 				this.goLogIn();

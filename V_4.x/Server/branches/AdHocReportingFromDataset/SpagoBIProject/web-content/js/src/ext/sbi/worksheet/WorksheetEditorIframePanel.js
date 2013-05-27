@@ -263,17 +263,32 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 	
 	,
 	saveWorksheet : function() {
-    	var thePanel = this.getFrame().getWindow().workSheetPanel;  // TODO nel caso del QBE non va: sistemare
+
+		var theWindow = this.getFrame().getWindow();
+		Sbi.debug('[WorksheetEditorIframePanel.saveWorksheet]: got window');
+		
+		//the worksheet has been constructed starting from a qbe document
+		var thePanel = theWindow.qbe;
+		Sbi.debug('[WorksheetEditorIframePanel.saveWorksheet]: qbe panel is ' + thePanel);
+		if (thePanel == null) {
+			Sbi.debug('[WorksheetEditorIframePanel.saveWorksheet]: qbe panel is null, getting woskheet panel ...');
+			//the worksheet is alone with out the qbe
+			thePanel = theWindow.workSheetPanel;
+			Sbi.debug('[WorksheetEditorIframePanel.saveWorksheet]: woskheet panel is ' + thePanel);
+		}
+		
     	var template = thePanel.validate();	
     	if (template == null){
     		return;
     	}
     	var templateJSON = Ext.util.JSON.decode(template);
 		var wkDefinition = templateJSON.OBJECT_WK_DEFINITION;
+		var worksheetQuery = templateJSON.OBJECT_QUERY;
 		var documentWindowsParams = {
 				'OBJECT_TYPE': 'WORKSHEET',
 				//'template': wkDefinition,
 				'OBJECT_WK_DEFINITION': wkDefinition,
+				'OBJECT_QUERY': worksheetQuery,
 				'business_metadata': this.businessMetadata,
 				'MESSAGE_DET': 'DOC_SAVE_FROM_DATASET',
 				'dataset_label': this.getDatasetLabel(),

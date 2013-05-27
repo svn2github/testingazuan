@@ -79,7 +79,7 @@ public class DocumentTemplateBuilder {
 				String parentQbeDocumentTemplateContent = new String(parentQbeDocumentTemplate.getContent());
 				worksheetDocumentTemplate = worksheetDriver.composeWorksheetTemplate(worksheetData, query, smartFilterValuesString, parentQbeDocumentTemplateContent);
 			} else if(parentQbeDocument == null && worksheetData != null) {
-				worksheetDocumentTemplate = worksheetDriver.createNewWorksheetTemplate(worksheetData);
+				worksheetDocumentTemplate = worksheetDriver.createNewWorksheetTemplate(worksheetData, query);
 			} 
 			
 			template = buildDocumentTemplate(templateName, templateAuthor, worksheetDocumentTemplate);

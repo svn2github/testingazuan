@@ -398,12 +398,19 @@ public class WorksheetDriver extends AbstractDriver implements IEngineDriver {
 		return template;
 	}
 
-	public String createNewWorksheetTemplate(String worksheetDefinition) throws SourceBeanException {
+	public String createNewWorksheetTemplate(String worksheetDefinition, String query) throws SourceBeanException {
 		SourceBean templateSB = new SourceBean(TAG_WORKSHEET);
 		templateSB.setAttribute(ATTRIBUTE_VERSION, CURRENT_VERSION);
 		SourceBean worksheetDefinitionSB = new SourceBean(TAG_WORKSHEET_DEFINITION);
 		worksheetDefinitionSB.setCharacters(worksheetDefinition);
 		templateSB.setAttribute(worksheetDefinitionSB);
+		if (query != null) {
+			SourceBean qbeSB = new SourceBean(TAG_QBE);
+			SourceBean queryDefinitionSB = new SourceBean(QUERY);
+			queryDefinitionSB.setCharacters(query);
+			qbeSB.setAttribute(queryDefinitionSB);
+			templateSB.setAttribute(qbeSB);
+		}
 		String template = templateSB.toXML(false);	
 		return template;
 	}

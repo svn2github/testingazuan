@@ -200,12 +200,16 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	saveWorksheet : function() {
 		
 		var theWindow = this.getFrame().getWindow();
+		Sbi.debug('[WorksheetEditorIframePanelExt3.saveWorksheet]: got window');
 		
 		//the worksheet has been constructed starting from a qbe document
 		var thePanel = theWindow.qbe;
+		Sbi.debug('[WorksheetEditorIframePanelExt3.saveWorksheet]: qbe panel is ' + thePanel);
 		if (thePanel == null) {
+			Sbi.debug('[WorksheetEditorIframePanelExt3.saveWorksheet]: qbe panel is null, getting woskheet panel ...');
 			//the worksheet is alone with out the qbe
 			thePanel = theWindow.workSheetPanel;
+			Sbi.debug('[WorksheetEditorIframePanelExt3.saveWorksheet]: woskheet panel is ' + thePanel);
 		}
 		
     	var template = thePanel.validate();	
@@ -214,14 +218,17 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
     	}
     	var templateJSON = Ext.util.JSON.decode(template);
 		var wkDefinition = templateJSON.OBJECT_WK_DEFINITION;
+		var worksheetQuery = templateJSON.OBJECT_QUERY;
 		var documentWindowsParams = {
 				'OBJECT_TYPE': 'WORKSHEET',
 				//'template': wkDefinition,
 				'OBJECT_WK_DEFINITION': wkDefinition,
+				'OBJECT_QUERY': worksheetQuery,
 				'MESSAGE_DET': 'DOC_SAVE_FROM_DATASET',
 				'dataset_label': this.datasetLabel,
 				'typeid': 'WORKSHEET' 
 		};
+		
 		this.win_saveDoc = new Sbi.execution.SaveDocumentWindow(documentWindowsParams);
 		this.win_saveDoc.show();
     
@@ -264,13 +271,13 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanelExt3, Ext.ux.ManagedIFramePan
 	
 	,
 	getQbeQueryDefinition : function () {
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: IN');
+		Sbi.debug('[WorksheetEditorIframePanelExt3.getQbeQueryDefinition]: IN');
 		var qbeWindow = this.getFrame().getWindow();
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got window');
+		Sbi.debug('[WorksheetEditorIframePanelExt3.getQbeQueryDefinition]: got window');
 		var qbePanel = qbeWindow.qbe;
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got qbe panel object');
+		Sbi.debug('[WorksheetEditorIframePanelExt3.getQbeQueryDefinition]: got qbe panel object');
 		var queries = qbePanel.getQueriesCatalogue();
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries');
+		Sbi.debug('[WorksheetEditorIframePanelExt3.getQbeQueryDefinition]: got queries');
 		var toReturn = {};
 		toReturn.queries = queries;
 		toReturn.datasourceLabel = this.getDatasourceLabel();

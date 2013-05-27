@@ -179,6 +179,11 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 					GuiDataSetDetail dsDetailSaved = ds.getActiveDetail();
 					attributesResponseSuccessJSON.put("meta", DataSetJSONSerializer.serializeMetada(dsDetailSaved.getDsMetadata()));										
 				}else{
+					IDataSet existing = dsDao.loadActiveDataSetByLabel(ds.getLabel());
+					if (existing != null) {
+						throw new SpagoBIServiceException(SERVICE_NAME,	"sbi.ds.labelAlreadyExistent");
+					}
+					
 					Integer dsID = dsDao.insertDataSet(ds);
 					GuiGenericDataSet dsSaved = dsDao.loadDataSetById(dsID);
 					logger.debug("New Resource inserted");					

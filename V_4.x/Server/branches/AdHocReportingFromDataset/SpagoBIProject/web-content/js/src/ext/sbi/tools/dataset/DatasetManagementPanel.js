@@ -717,7 +717,7 @@ Ext.extend(Sbi.tools.dataset.DatasetManagementPanel, Sbi.widgets.ListDetailForm,
 						// sees in the popup
 						valueField : 'dataSource', // what is passed to the
 						// 'change' event
-						typeAhead : true, forceSelection : true,
+						typeAhead : true, forceSelection : false,
 						mode : 'local',
 						triggerAction : 'all',
 						selectOnFocus : true, editable : false,

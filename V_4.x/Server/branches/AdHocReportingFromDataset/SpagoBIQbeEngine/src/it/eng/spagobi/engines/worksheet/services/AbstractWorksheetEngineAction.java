@@ -318,22 +318,23 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			}
 			logger.debug("Persisting dataset ...");
 			
-			if(dataset instanceof HiveQLDataSet){
+			if (dataset instanceof HiveQLDataSet) {
 				UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
 				PersistedTableManager ptm = new PersistedTableManager(userProfile);
 				ptm.persistDataSet(dataset,  getEngineInstance().getDataSourceForWriting(), tableName);
 				td = new DataSetTableDescriptor(dataset);
 				td.setTableName(tableName);
-			}else{
+			} else {
 				td = dataset.persist(tableName, connection);
 				this.recordTemporaryTable(tableName, getEngineInstance().getDataSourceForWriting());
 				IDataSource dataSource = this.getDataSource();
 				td.setDataSource(dataSource);
-
-				logger.debug("Dataset persisted successfully. Table descriptor : " + td);
-				TemporaryTableManager.setLastDataSetSignature(tableName, signature);
-				TemporaryTableManager.setLastDataSetTableDescriptor(tableName, td);
 			}
+			
+			logger.debug("Dataset persisted successfully. Table descriptor : " + td);
+			TemporaryTableManager.setLastDataSetSignature(tableName, signature);
+			TemporaryTableManager.setLastDataSetTableDescriptor(tableName, td);
+			
 
 			try {
 				if (!connection.getAutoCommit() && !connection.isClosed()) {

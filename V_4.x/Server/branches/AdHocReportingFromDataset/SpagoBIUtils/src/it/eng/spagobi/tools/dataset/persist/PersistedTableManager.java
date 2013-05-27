@@ -63,11 +63,17 @@ public class PersistedTableManager {
 	public PersistedTableManager(IEngUserProfile profile){
 		this.profile = profile;
 	}
+	
 	public void persistDataSet(IDataSet dataset, IDataSource dsPersist) throws Exception {
+		String tableName = dataset.getPeristedTableName();
+		persistDataSet(dataset, dsPersist, tableName);
+	}
+	
+	public void persistDataSet(IDataSet dataset, IDataSource dsPersist, String tableName) throws Exception {
 		logger.debug("IN");
 
 		// get persisted table name
-		this.setTableName(dataset.getPeristedTableName());
+		this.setTableName(tableName);
 		logger.debug("Persisted table name is [" + getTableName() + "]");
 		// set dialect of db
 		this.setDialect(dsPersist.getHibDialectClass());
@@ -105,6 +111,7 @@ public class PersistedTableManager {
 		dataset.loadData();
 		IDataStore datastore = dataset.getDataStore();		
 		persistDataset(datastore, dsPersist);
+		
 	}
 	
 	private void persistDataset(IDataStore datastore, IDataSource datasource)throws Exception {

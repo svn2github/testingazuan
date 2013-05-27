@@ -13,6 +13,7 @@ public interface IDataSetTableDescriptor {
 	Class getColumnType(String fieldName);
 	String getFieldName(String columnName);
 	String getTableName();
+	void setTableName(String tableName);
 	IDataSource getDataSource();
 	void setDataSource(IDataSource dataSource);
 

@@ -55,6 +55,11 @@ public class StartCreatingWorksheetFromDatasetAction extends CreateDatasetForWor
 			qbeEditActionParameters.put("SBI_EXECUTION_ID" , executionId);
 			
 			Engine qbeEngine = getQbeEngine();
+			
+			int defEngineDataSource = qbeEngine.getDataSourceId();
+			qbeEditActionParameters.put("ENGINE_DATASOURCE_ID", defEngineDataSource);
+			
+			
 			LogMF.debug(logger, "Engine label is equal to [{0}]", qbeEngine.getLabel());
 			
 			// create the qbe Edit Service's URL

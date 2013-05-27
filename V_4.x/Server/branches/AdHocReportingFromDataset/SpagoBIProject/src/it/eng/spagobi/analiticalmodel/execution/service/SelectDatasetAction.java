@@ -45,7 +45,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * 
  * @author Giulio Gavardi
  */
-public class SelectDatasetAction extends ExecuteDocumentAction {
+public class SelectDatasetAction extends CreateDatasetForWorksheetAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -111,6 +111,10 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 				editActionParameters.put("datasource_label" , datasource.getLabel());
 			} else {
 				editActionParameters.put("selected_datasource_label" , datasource.getLabel());
+				//add the data default datasource of teh engine
+				Engine qbeEngine = getQbeEngine();
+				int defEngineDataSource = qbeEngine.getDataSourceId();
+				editActionParameters.put("ENGINE_DATASOURCE_ID", defEngineDataSource);
 			}
 			
 
@@ -129,6 +133,8 @@ public class SelectDatasetAction extends ExecuteDocumentAction {
 				editActionParameters.putAll( new HashMap<String, String>());
 				
 			}
+			
+
 			
 			// create the WorkSheet Edit Service's URL
 			String worksheetEditActionUrl = GeneralUtilities.getUrl(engineToCall.getUrl(), editActionParameters);

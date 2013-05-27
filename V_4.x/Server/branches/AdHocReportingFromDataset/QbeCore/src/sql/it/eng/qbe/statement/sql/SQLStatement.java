@@ -172,8 +172,8 @@ public class SQLStatement extends AbstractStatement {
 	
 	public String getSqlQueryString() {
 
-		ISQLDataSource ds = ((ISQLDataSource)getDataSource());
-		return "";
+		//ISQLDataSource ds = ((ISQLDataSource)getDataSource());
+		return getQueryString();
 //		EntityManager em = ds.getEntityManager();
 //
 //		JPQL2SQLStatementRewriter translator = new JPQL2SQLStatementRewriter(em);

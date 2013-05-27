@@ -64,7 +64,7 @@ public class WorksheetEngineStartAction extends AbstractEngineStartAction {
 			SourceBean templateBean = getTemplateAsSourceBean();
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
-			logger.debug("Document Id: " + getDocumentId());
+			//logger.debug("Document Id: " + getDocumentId());
 			logger.debug("Template: " + templateBean);
 						
 			if(getAuditServiceProxy() != null) {

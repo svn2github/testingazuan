@@ -76,17 +76,11 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		it.eng.spagobi.tools.datasource.bo.IDataSource dataSrc = (it.eng.spagobi.tools.datasource.bo.IDataSource)env.get( EngineConstants.ENV_DATASOURCE );
 		SpagoBiDataSource ds = dataSrc.toSpagoBiDataSource();
 		
-		ConnectionDescriptor connection = new ConnectionDescriptor();			
-		connection.setName( ds.getLabel() );
-		connection.setDialect( ds.getHibDialectClass() );			
-		connection.setJndiName( ds.getJndiName() );			
-		connection.setDriverClass( ds.getDriver() );			
-		connection.setPassword( ds.getPassword() );
-		connection.setUrl( ds.getUrl() );
-		connection.setUsername( ds.getUser() );		
+
 
 		Map<String, Object> dataSourceProperties = new HashMap<String, Object>();
-		dataSourceProperties.put("connection", connection);
+	
+		
 		if(template != null){
 			dataSourceProperties.put("dblinkMap", template.getDbLinkMap());			
 		}
@@ -96,8 +90,33 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		if( env.get(EngineConstants.ENV_DATASETS) !=null){
 			dataSourceProperties.put(DataSetDataSource.SPAGOBI_DATA_SOURCE, ds);
+			if(((it.eng.spagobi.tools.datasource.bo.IDataSource) env.get(EngineConstants.ENGINE_DATASOURCE))!=null){
+				ConnectionDescriptor connection = new ConnectionDescriptor();	
+				SpagoBiDataSource engineDS = ((it.eng.spagobi.tools.datasource.bo.IDataSource) env.get(EngineConstants.ENGINE_DATASOURCE)).toSpagoBiDataSource();
+			
+				connection.setName( engineDS.getLabel() );
+				connection.setDialect( engineDS.getHibDialectClass() );			
+				connection.setJndiName( engineDS.getJndiName() );			
+				connection.setDriverClass( engineDS.getDriver() );			
+				connection.setPassword( engineDS.getPassword() );
+				connection.setUrl( engineDS.getUrl() );
+				connection.setUsername( engineDS.getUser() );	
+				dataSourceProperties.put("connection", connection);
+			}		
+		}else{	
+			ConnectionDescriptor connection = new ConnectionDescriptor();	
+			connection.setName( ds.getLabel() );
+			connection.setDialect( ds.getHibDialectClass() );			
+			connection.setJndiName( ds.getJndiName() );			
+			connection.setDriverClass( ds.getDriver() );			
+			connection.setPassword( ds.getPassword() );
+			connection.setUrl( ds.getUrl() );
+			connection.setUsername( ds.getUser() );		
+			dataSourceProperties.put("connection", connection);
 		}
 
+		
+		
 		dataSource = QbeDataSourceManager.getInstance().getDataSource(
 				template != null ? template.getDatamartNames() : null, 
 				dataSourceProperties, 

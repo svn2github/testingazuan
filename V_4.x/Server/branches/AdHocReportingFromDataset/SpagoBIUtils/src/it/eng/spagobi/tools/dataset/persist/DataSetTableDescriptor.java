@@ -42,8 +42,8 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 				if(fieldName==null || fieldName.equals("")){
 					fieldName = fieldMetadata.getName();
 				}
-				field2ColumnMap.put(fieldName, fieldName);
-				column2fieldMap.put(fieldName, fieldName);
+				field2ColumnMap.put(fieldMetadata.getName(), fieldName);
+				column2fieldMap.put(fieldName, fieldMetadata.getName());
 				field2ClassMap.put(fieldName, fieldMetadata.getType());
 			}
 		}

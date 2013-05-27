@@ -497,14 +497,18 @@ public abstract class AbstractDataSet implements IDataSet {
 		} else if (isFlatDataset()) {
 			return getFlatTableName();
 		} else {
-			throw new RuntimeException("Dataset is not persisted");
+			return null;
+			//throw new RuntimeException("Dataset is not persisted");
 		}
 	}	
 	
 
 
 	public IDataSource getDataSourceForReading() {
-		return dataSourceForReading;
+		if(dataSourceForReading!=null){
+			return dataSourceForReading;
+		}
+		return getDataSource();
 	}
 
 	public void setDataSourceForReading(IDataSource dataSourceForReading) {

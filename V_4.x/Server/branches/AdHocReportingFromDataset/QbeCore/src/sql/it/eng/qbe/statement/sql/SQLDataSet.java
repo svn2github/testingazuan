@@ -66,28 +66,7 @@ public class SQLDataSet extends AbstractQbeDataSet {
 		
 	}
 
-	
-	/**
-	 * Adjusts the metadata of the datastore retrieved by a JDBCDataSet, since
-	 * executed JDBC dataset does not contain correct metadata (name, alias,
-	 * attribute/measure) therefore we need to merge metadata
-	 * 
-	 * @param jdbcMetadata the metadata retrieved by executing the JDBC dataset
-	 * @param qbeQueryMetaData the metadata of the Qbe query
-	 */
-	private IMetaData mergeMetadata(IMetaData jdbcMetadata, IMetaData qbeQueryMetaData) {
-		int count = jdbcMetadata.getFieldCount();
-		for (int i = 0; i < count; i++) {
-			IFieldMetaData jdbcFieldMeta = jdbcMetadata.getFieldMeta(i);
-			// positional matching between the 2 metadata
-			IFieldMetaData qbeFieldMeta = qbeQueryMetaData.getFieldMeta(i);
-			jdbcFieldMeta.setFieldType(qbeFieldMeta.getFieldType());
-			jdbcFieldMeta.setName(qbeFieldMeta.getName());
-			jdbcFieldMeta.setAlias(qbeFieldMeta.getAlias());
-		}
-		return jdbcMetadata;
-	}
-	
+
 	
 
 }

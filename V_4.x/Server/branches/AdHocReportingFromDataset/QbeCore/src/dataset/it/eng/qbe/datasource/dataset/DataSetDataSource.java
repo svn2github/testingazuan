@@ -40,6 +40,7 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	public static final String EMPTY_MODEL_NAME = "";
 	public static final String DATASETS = "DATASETS";
 	public static final String SPAGOBI_DATA_SOURCE = "SPAGOBI_DATA_SOURCE";
+	public ConnectionDescriptor connection;
 	public Class statementType=SQLStatement.class;
 	
 	private static transient Logger logger = Logger.getLogger(JPADataSource.class);
@@ -94,7 +95,19 @@ public class DataSetDataSource  extends AbstractDataSource implements ISQLDataSo
 	}
 	
 	public ConnectionDescriptor getConnection() {
-		return null;
+		connection = (ConnectionDescriptor)configuration.loadDataSourceProperties().get("connection");	
+		if(this.connection==null){
+			this.connection = new ConnectionDescriptor();			
+			connection.setName( getDataSourceForReading().getLabel() );
+			connection.setDialect( getDataSourceForReading().getHibDialectClass() );			
+			connection.setJndiName( getDataSourceForReading().getJndi() );			
+			connection.setDriverClass( getDataSourceForReading().getDriver() );			
+			connection.setPassword( getDataSourceForReading().getPwd());
+			connection.setUrl( getDataSourceForReading().getUrlConnection() );
+			connection.setUsername( getDataSourceForReading().getUser() );	
+		}
+		
+		return connection;
 	}
 	
 	

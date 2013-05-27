@@ -11,6 +11,7 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.WhereField.Operand;
 import it.eng.qbe.serializer.SerializationManager;
 import it.eng.qbe.statement.AbstractStatement;
+import it.eng.qbe.statement.hive.HiveQLDataSet;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.worksheet.WorksheetEngineInstance;
@@ -38,6 +39,7 @@ import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
 import it.eng.spagobi.tools.dataset.persist.DataSetTableDescriptor;
 import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
+import it.eng.spagobi.tools.dataset.persist.PersistedTableManager;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
@@ -293,7 +295,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 		//drop the temporary table if one exists
 		try {
 			logger.debug("Signature does not match: dropping TemporaryTable " + tableName + " if it exists...");
-			TemporaryTableManager.dropTableIfExists(tableName, getEngineInstance().getDataSource());
+			TemporaryTableManager.dropTableIfExists(tableName, getEngineInstance().getDataSourceForWriting());
 		} catch (Exception e) {
 			logger.error("Impossible to drop the temporary table with name " + tableName, e);
 			throw new SpagoBIEngineRuntimeException("Impossible to drop the temporary table with name " + tableName, e);
@@ -315,9 +317,23 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 				logger.error("Cannot set autocommit to true", e);
 			}
 			logger.debug("Persisting dataset ...");
-			td = dataset.persist(tableName, connection);
+			
+			if(dataset instanceof HiveQLDataSet){
+				UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
+				PersistedTableManager ptm = new PersistedTableManager(userProfile);
+				ptm.persistDataSet(dataset,  getEngineInstance().getDataSourceForWriting(), tableName);
+				td = new DataSetTableDescriptor(dataset);
+				td.setTableName(tableName);
+			}else{
+				td = dataset.persist(tableName, connection);
+				this.recordTemporaryTable(tableName, getEngineInstance().getDataSourceForWriting());
+				IDataSource dataSource = this.getDataSource();
+				td.setDataSource(dataSource);
 
-			this.recordTemporaryTable(tableName, getEngineInstance().getDataSource());
+				logger.debug("Dataset persisted successfully. Table descriptor : " + td);
+				TemporaryTableManager.setLastDataSetSignature(tableName, signature);
+				TemporaryTableManager.setLastDataSetTableDescriptor(tableName, td);
+			}
 
 			try {
 				if (!connection.getAutoCommit() && !connection.isClosed()) {
@@ -344,12 +360,7 @@ public abstract class AbstractWorksheetEngineAction extends AbstractEngineAction
 			}
 		}
 
-		IDataSource dataSource = this.getDataSource();
-		td.setDataSource(dataSource);
 
-		logger.debug("Dataset persisted successfully. Table descriptor : " + td);
-		TemporaryTableManager.setLastDataSetSignature(tableName, signature);
-		TemporaryTableManager.setLastDataSetTableDescriptor(tableName, td);
 		return td;
 	}
 

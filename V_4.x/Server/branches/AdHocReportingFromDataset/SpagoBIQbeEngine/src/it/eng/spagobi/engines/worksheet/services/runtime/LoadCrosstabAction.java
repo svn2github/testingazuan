@@ -123,7 +123,7 @@ public class LoadCrosstabAction extends AbstractWorksheetEngineAction {
 			// deserialize crosstab definition
 			crosstabDefinition = (CrosstabDefinition) SerializationManager.deserialize(crosstabDefinitionJSON, "application/json", CrosstabDefinition.class);
 						
-			String worksheetQuery = this.buildSqlStatement(crosstabDefinition, descriptor, whereFields, engineInstance.getDataSource());
+			String worksheetQuery = this.buildSqlStatement(crosstabDefinition, descriptor, whereFields, engineInstance.getDataSourceForWriting());
 			// execute SQL query against temporary table
 			logger.debug("Executing query on temporary table : " + worksheetQuery);
 			valuesDataStore = this.executeWorksheetQuery(worksheetQuery, null, null);

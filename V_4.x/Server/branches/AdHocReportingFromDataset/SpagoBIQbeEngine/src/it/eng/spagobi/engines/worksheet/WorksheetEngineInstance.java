@@ -9,6 +9,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.qbe.QbeEngineException;
 import it.eng.spagobi.engines.qbe.QbeEngineInstance;
+import it.eng.spagobi.engines.qbe.services.initializers.BuildQbeDatasetStartAction;
 import it.eng.spagobi.engines.worksheet.bo.WorkSheetDefinition;
 import it.eng.spagobi.engines.worksheet.template.WorksheetTemplate;
 import it.eng.spagobi.engines.worksheet.template.WorksheetTemplateParser;
@@ -30,6 +31,7 @@ import org.apache.log4j.Logger;
 public class WorksheetEngineInstance extends AbstractEngineInstance {
 
 	IDataSource dataSource;
+	IDataSource dataSourceForWriting;
 	IDataSet dataSet;
 	WorksheetTemplate template;
 	/** The temporary table name to be considered for this analysis */
@@ -41,6 +43,7 @@ public class WorksheetEngineInstance extends AbstractEngineInstance {
 
 	protected WorksheetEngineInstance(Object template, Map env) throws WorksheetEngineException {
 		this( WorksheetTemplateParser.getInstance().parse(template, env), env );
+		setDataSourceForWriting((IDataSource)env.get(EngineConstants.ENGINE_DATASOURCE));
 	}
 
 	protected WorksheetEngineInstance(WorksheetTemplate template, Map env) throws WorksheetEngineException {
@@ -127,4 +130,21 @@ public class WorksheetEngineInstance extends AbstractEngineInstance {
 		return temporaryTableName;
 	}
 
+	public IDataSource getDataSourceForWriting() {
+		if(dataSource.getHibDialectClass().toLowerCase().contains("hive")){
+			if(dataSet.isPersisted()){
+				return dataSet.getDataSourceForReading();
+			}
+			return dataSourceForWriting;
+		}
+		return dataSource;
+	}
+
+	public void setDataSourceForWriting(IDataSource dataSourceForWriting) {
+		
+		this.dataSourceForWriting = dataSourceForWriting;
+	}
+
+	
+	
 }

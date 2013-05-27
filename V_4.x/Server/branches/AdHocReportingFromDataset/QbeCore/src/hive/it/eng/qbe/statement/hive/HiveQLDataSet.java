@@ -10,7 +10,7 @@ import it.eng.qbe.datasource.dataset.DataSetDataSource;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCHiveDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
-import it.eng.spagobi.tools.dataset.common.metadata.MetaData;
+import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import org.apache.log4j.Logger;
@@ -47,11 +47,18 @@ public class HiveQLDataSet extends AbstractQbeDataSet {
 
 		dataStore = dataset.getDataStore();
 		int resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
-		MetaData md = getDataStoreMeta(this.getStatement().getQuery());
 		
-		//Update the metadata (use the qbe alias, type,..)
-		((DataStore)dataStore).setMetaData(md);
+		
+		
+		IMetaData jdbcMetadata = dataStore.getMetaData();
+		IMetaData qbeQueryMetaData = getDataStoreMeta(this.getStatement().getQuery());
+		IMetaData merged = mergeMetadata(jdbcMetadata, qbeQueryMetaData);
+		((DataStore)dataStore).setMetaData(merged);
+		
 		dataStore.getMetaData().setProperty("resultNumber",resultNumber);
+
+		
+		((DataStore)dataStore).setMetaData(merged);
 				
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);

@@ -135,24 +135,26 @@ public class JDBCHiveDataReader extends AbstractDataReader {
 			throws SQLException {
 		logger.debug("IN");
 		
-		int toReturn =recCount;
+		int toReturn = recCount;
+		int remaining = 0;
 		
 		logger.debug("resultset type [" + rs.getType() + "] (" + (rs.getType()  == ResultSet.TYPE_FORWARD_ONLY) + ")");
 		if (rs.getType()  == ResultSet.TYPE_FORWARD_ONLY) {
 
-			int recordsCount = 0;
+			int recordsReaded = 0;
 			if (recCount < maxRecToParse) {
 				// records read where less then max records to read, therefore the resultset has been completely read
-				recordsCount = getOffset() + recCount;
+				recordsReaded = recCount;
 			} else {
+				recordsReaded = getFetchSize();
 				//recordsCount = rs.getRow();
 				while (rs.next()) {
-					recordsCount++;
+					remaining++;
 					// do nothing, just scroll result set
 				}
 			}
 
-			toReturn = recordsCount;
+			toReturn = getOffset() + recordsReaded + remaining;
 		}
 		
 		logger.debug("Reading total record numeber is equal to [" + toReturn + "]");

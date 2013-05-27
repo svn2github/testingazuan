@@ -24,6 +24,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,13 +200,29 @@ public class PersistedTableManager {
 					}else if (fmd.getType().toString().contains("Timestamp")){
 						toReturn.setTimestamp(i2+1,  (Timestamp)field.getValue());
 					}else if(fmd.getType().toString().contains("Integer")) {
-						toReturn.setInt(i2+1, (Integer)field.getValue());
+						if (field.getValue() == null) {
+							toReturn.setNull(i2+1, Types.INTEGER);
+						} else {
+							toReturn.setInt(i2+1, (Integer)field.getValue());
+						}
 					}else if(fmd.getType().toString().contains("Double")) {
-						toReturn.setDouble(i2+1, (Double)field.getValue());
+						if (field.getValue() == null) {
+							toReturn.setNull(i2+1, Types.DOUBLE);
+						} else {
+							toReturn.setDouble(i2+1, (Double)field.getValue());
+						}
 					}else if(fmd.getType().toString().contains("Long")) {
-						toReturn.setLong(i2+1, (Long)field.getValue());
+						if (field.getValue() == null) {
+							toReturn.setNull(i2+1, Types.BIGINT);
+						} else {
+							toReturn.setLong(i2+1, (Long)field.getValue());
+						}
 					}else if(fmd.getType().toString().contains("Boolean")) {
-						toReturn.setBoolean(i2+1, (Boolean)field.getValue());
+						if (field.getValue() == null) {
+							toReturn.setNull(i2+1, Types.BOOLEAN);
+						} else {
+							toReturn.setBoolean(i2+1, (Boolean)field.getValue());
+						}
 					}else if(fmd.getType().toString().contains("BigDecimal")) {
 						toReturn.setBigDecimal(i2+1, (BigDecimal)field.getValue());
 					}else{				

@@ -132,7 +132,7 @@ public class WorksheetEngineInstance extends AbstractEngineInstance {
 
 	public IDataSource getDataSourceForWriting() {
 		if(dataSource.getHibDialectClass().toLowerCase().contains("hive")){
-			if(dataSet.isPersisted()){
+			if(dataSourceForWriting==null || dataSet.isPersisted()){
 				return dataSet.getDataSourceForReading();
 			}
 			return dataSourceForWriting;

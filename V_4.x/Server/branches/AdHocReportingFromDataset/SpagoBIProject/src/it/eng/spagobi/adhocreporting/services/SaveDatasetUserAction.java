@@ -77,7 +77,11 @@ public class SaveDatasetUserAction extends ManageDatasets {
 	}
 
 	private String saveIntoTilabConsole(GuiGenericDataSet ds) {
-//		return ds.getLabel();
+		
+//		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+//		UUID uuid = uuidGen.generateTimeBasedUUID();
+//		return uuid.toString();
+		
 		try {
 			TilabClientAPI api = new TilabClientAPI();
 			String datasourceLabel = ds.getActiveDetail().getDataSourcePersist();

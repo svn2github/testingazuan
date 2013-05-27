@@ -144,7 +144,7 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 	                 "margin-left": "4px",
 	                 "margin-top": "25px"
 	             }
-	             , items : [this.labelField, this.nameField, this.descriptionField, this.datasourceField]
+	             , items : [this.nameField, this.descriptionField, this.datasourceField] // removed this.labelField
 	    	}
 	    });
 	    
@@ -153,7 +153,7 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 	,
 	getFormState : function() {      
       	var formState = {};
-      	formState.label = this.labelField.getValue();
+      	formState.label = ''; //this.labelField.getValue();
       	formState.name = this.nameField.getValue();
       	formState.description = this.descriptionField.getValue();
       	formState.dataSourcePersist = this.datasourceField.getValue();

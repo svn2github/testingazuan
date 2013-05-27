@@ -3,11 +3,13 @@
 	<SERVICE name="SAVE_DATASET_USER_ACTION" type="ACTION">
 		<VALIDATION blocking="false" validators="">
 			<FIELDS>
+			    <!-- 
                 <FIELD name="label" label="#sbi.generic.label">
                     <VALIDATOR validatorName="MANDATORY"/>
                     <VALIDATOR validatorName="ALFANUMERIC"/>
                     <VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
                 </FIELD>
+                -->
 				<FIELD name="name" label="#sbi.generic.name">
 		 	 		<VALIDATOR validatorName="MANDATORY"/>
 				  	<VALIDATOR validatorName="EXTENDED_ALFANUMERIC" />

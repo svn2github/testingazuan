@@ -27,19 +27,25 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 
 	@Override
 	public Object deserialize(JSONObject o) throws SerializationException {
+		
+		GuiGenericDataSet guiGenericDataSet;
+		
+		logger.debug("IN");
+		
 		if(o == null){
 			return null;
 		}
-
-		GuiGenericDataSet guiGenericDataSet = new GuiGenericDataSet();
-		GuiDataSetDetail guiDataSetDetail = new GuiDataSetDetail();
 		
+		guiGenericDataSet = null;
 		try {
+			
+			guiGenericDataSet = new GuiGenericDataSet();
+			GuiDataSetDetail guiDataSetDetail = new GuiDataSetDetail();
 
 			String id = (String)o.optString("id");
 			String name = (String)o.optString("name");
 			String description = (String)o.optString("description");
-			Integer creationDate = (Integer)o.opt("creationDate");	
+			Long creationDate = (Long)o.opt("creationDate");	
 			String owner = (String)o.optString("owner");
 			//String userObjectStatus = (String)o.optString("userObjectStatus");
 			
@@ -56,7 +62,7 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 			
 			String ownerObjectStatus = (String)o.optString("ownerObjectStatus");
 			String user = (String)o.optString("user");
-			String lastModifiedDate = (String)o.opt("lastModifiedDate");
+			Long lastModifiedDate = (Long)o.opt("lastModifiedDate");
 			JSONObject details = (JSONObject)o.opt("details");
 			JSONObject structure = (JSONObject)details.opt("structure");
 			JSONArray columns = (JSONArray)structure.opt("columns");	
@@ -72,8 +78,24 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 				DataSource dataSourceObj = (DataSource)des.deserialize(datasource);
 				
 				queryDatasetDetail.setDataSourceLabel(dataSourceObj.getLabel());//datasource label
-				String resource = ((JSONObject)datasource.opt("details")).optString("resource");
-				queryDatasetDetail.setQuery("select * from "+resource);//query
+				
+				JSONObject datasourceDetails = (JSONObject)datasource.opt("details");
+				String resourceType = datasourceDetails.optString("resourceType");
+				if("TABLE".equalsIgnoreCase(resourceType)) {
+					String resource = datasourceDetails.optString("resource");
+					queryDatasetDetail.setQuery("select * from " + resource);
+					queryDatasetDetail.setFlatDataset(true);
+					queryDatasetDetail.setDataSourceFlat(queryDatasetDetail.getDataSourceLabel());
+					queryDatasetDetail.setFlatTableName(resource);
+				} else if("QUERY".equalsIgnoreCase(resourceType)) {
+					String resource = datasourceDetails.optString("resource");
+					queryDatasetDetail.setQuery(resource);
+					//queryDatasetDetail.setPersisted(true);
+					//queryDatasetDetail.setPersistTableName(???);
+				} else {
+					throw new SerializationException("Value [" + resourceType + "] is not a valid resourceType for a datasource attribute");
+				}
+				
 				
 				guiDataSetDetail.setDsType(JDBC_DS_TYPE);
 				guiDataSetDetail =(GuiDataSetDetail)queryDatasetDetail;
@@ -84,10 +106,15 @@ public class JsonDatasetSerDeser  implements ObjectsSerDeser{
 			guiDataSetDetail.setDsMetadata(meta);
 			
 			guiGenericDataSet.setActiveDetail(guiDataSetDetail);
+			
+			
 
-		}catch(Exception ex){
-			logger.error(ex);
+		}catch(Throwable t){
+			logger.error("An unexpected error occured while deserializing dataset [" + o.toString()+ "]", t);
+		} finally {
+			logger.debug("OUT");
 		}
+		
 		return guiGenericDataSet;
 	}
 

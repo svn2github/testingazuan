@@ -43,6 +43,23 @@ public class SerDeserUtil {
 					},
 					'biType' : 'attribute'
 					}]*/
+	
+	/*
+	 "<?xml version="1.0" encoding="ISO-8859-1"?>
+<COLUMNLIST>
+  <COLUMN fieldType="ATTRIBUTE" name="timestamp_cdr" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="lac_cella" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="ci_cella" type="java.lang.String"/>
+  <COLUMN fieldType="MEASURE" name="durata_chiamata" type="java.lang.Long"/>
+  <COLUMN fieldType="ATTRIBUTE" name="tipo_chiamante" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="tipo_chiamato" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="country_code" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="area_code" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="hash" type="java.lang.String"/>
+  <COLUMN fieldType="ATTRIBUTE" name="data_cdr" type="java.lang.String"/>
+</COLUMNLIST>
+"
+	 */
 	public static String deserMetadata(JSONArray columns) throws JSONException, SourceBeanException{
 		String meta = "";
 		SourceBean metadata = new SourceBean("COLUMNLIST");
@@ -72,7 +89,7 @@ public class SerDeserUtil {
 			
 			column.setAttribute("type", type);
 			column.setAttribute("fieldType", fieldType.toUpperCase());
-			metadata.setBean(column);
+			metadata.setAttribute(column);
 		}
 		meta = metadata.toString();
 		return meta;

@@ -5,6 +5,7 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.rest.objects.serDeser;
 
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.tools.dataset.bo.GuiGenericDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -70,6 +71,11 @@ public class JsonDatasourceSerDeser  implements ObjectsSerDeser{
 			String resourceType = detail.optString("resourceType");
 			String resource = detail.getString("resource");
 			String label =detail.optString("biId");
+			
+			
+			if(StringUtilities.isEmpty(label)) {
+				throw new SerializationException("Attribute [biId] of datasource object is not defined");
+			}
 			
 			dataSourceSpagoBI.setLabel(label);
 			dataSourceSpagoBI.setUser(username);

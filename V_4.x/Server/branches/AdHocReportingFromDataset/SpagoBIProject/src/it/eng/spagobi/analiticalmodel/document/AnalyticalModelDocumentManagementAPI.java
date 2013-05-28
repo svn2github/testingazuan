@@ -481,6 +481,9 @@ public class AnalyticalModelDocumentManagementAPI {
 		try {
 			datasetDetail = dataset.getActiveDetail();
 			parametersRawData = datasetDetail.getParameters();
+			if (parametersRawData == null) {
+				return datasetParameters;
+			}
 			parametersRawData = parametersRawData.trim();
 			
 			SourceBean parametersSourceBean;

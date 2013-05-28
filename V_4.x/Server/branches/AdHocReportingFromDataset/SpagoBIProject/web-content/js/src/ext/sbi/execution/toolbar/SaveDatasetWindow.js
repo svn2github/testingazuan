@@ -14,7 +14,7 @@ Sbi.execution.toolbar.SaveDatasetWindow = function(config) {
 		title : LN('sbi.execution.toolbar.savedatasetwindow.title')
 		, layout : 'fit'
 		, width : 640
-		, height : 350
+		, height : 450
 		, closeAction : 'close'
 		, frame : true
 		// private
@@ -57,6 +57,15 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 	
 	datasetForm : null
 	, queryDefinition : null
+	, services: null
+    , mainPanel: null
+    , generalConfFields: null
+	, cronConfFields: null
+    , generalInfoFieldSet: null
+    , hourlyOptionsFieldSet: null
+    , dailyOptionsFieldSet: null
+    , weeklyOptionsFieldSet: null
+    , monthlyOptionsFieldSet: null
 	
 	,
 	initServices: function() {
@@ -128,23 +137,42 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
 			, frame : true
 		});
 	    
-	    this.datasetForm = new Ext.Panel({
+    	this.generalInfoFieldSet = new Ext.form.FieldSet({
+            collapsible: true,
+            collapsed: false,
+            title: 'General info',
+            autoHeight:true,
+            defaults: {width: 210},
+            defaultType: 'textfield',
+            items : [this.nameField, this.descriptionField, this.datasourceField] // removed this.labelField
+    	});
+		
+		this.initCronConfFiledSet();
+		
+	    this.datasetForm = new Ext.FormPanel({
 	        columnWidth: 0.6
+	        , frame : true
+	        , autoScroll : true
 	        , items: {
 	 		   	 columnWidth : 0.4
 	             , xtype : 'fieldset'
 	             , labelWidth : 80
-	             , defaults : { border : false }
+	             //, defaults : { border : false }
 	             , defaultType : 'textfield'
 	             , autoHeight : true
 	             , autoScroll : true
 	             , bodyStyle : Ext.isIE ? 'padding:0 0 5px 5px;' : 'padding:0px 5px;'
 	             , border : false
 	             , style : {
-	                 "margin-left": "4px",
-	                 "margin-top": "25px"
+	                 //"margin-left": "4px",
+	                 //"margin-top": "10px"
 	             }
-	             , items : [this.nameField, this.descriptionField, this.datasourceField] // removed this.labelField
+	             , items : [this.generalInfoFieldSet
+	                        , new Ext.Panel({html : '<label class="x-form-item" style="margin-bottom:10px;">Settings for data refreshing:</label>'})
+	        				, this.hourlyOptionsFieldSet
+	        				, this.dailyOptionsFieldSet
+	        				, this.weeklyOptionsFieldSet
+	        				, this.monthlyOptionsFieldSet]
 	    	}
 	    });
 	    
@@ -210,5 +238,149 @@ Ext.extend(Sbi.execution.toolbar.SaveDatasetWindow, Ext.Window, {
   			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
   		}  	
 	}
+	
+    ,
+    initCronConfFiledSet: function() {
+    	this.cronConfFields = {};
+    	this.initHourlyConfFieldSet();
+    	this.initDailyConfFieldSet();
+    	this.initWeeklyConfFieldSet();
+    	this.initMonthlyConfFieldSet();
+    }
+	
+    ,
+    initHourlyConfFieldSet: function() {
+    	var field;
+    	
+    	this.cronConfFields['hourly'] = [];
+    	
+    	field = new Ext.form.NumberField({
+    		fieldLabel: 'Every n houres',
+            name: 'houres',
+            allowBlank:false
+    	});
+    	this.cronConfFields['hourly'].push(field);
+    	
+    	this.hourlyOptionsFieldSet = new Ext.form.FieldSet({
+    		checkboxToggle:true,
+            title: 'Hourly',
+            name: 'hourly',
+            autoHeight:true,
+            defaults: {width: 210},
+            defaultType: 'textfield',
+            collapsed: true,
+            items : this.cronConfFields['hourly']
+    	});
+    	this.hourlyOptionsFieldSet.on('expand', this.onExpand, this);
+    }
+    
+    ,
+    initDailyConfFieldSet: function() {
+    	var field;
+    	
+    	this.cronConfFields['daily'] = [];
+    	
+    	field = new Ext.form.NumberField({
+    		fieldLabel: 'Every n days',
+            name: 'days',
+            allowBlank:false
+    	});
+    	this.cronConfFields['daily'].push(field);
+    	
+    	this.dailyOptionsFieldSet = new Ext.form.FieldSet({
+    		checkboxToggle:true,
+            title: 'Daily',
+            name: 'daily',
+            autoHeight:true,
+            defaults: {width: 210},
+            defaultType: 'textfield',
+            collapsed: true,
+            items : this.cronConfFields['daily']
+    	});	
+    	this.dailyOptionsFieldSet.on('expand', this.onExpand, this);
+    }
+    
+    ,
+    initWeeklyConfFieldSet: function() {
+    	var field;
+    	
+    	this.cronConfFields['weekly'] = [];
+    	
+    	var dayOfTheWeekName = ['Monday', 'Tuesday', 'Wednesday'
+    	                    , 'Thursday', 'Friday', 'Saturday'
+    	                    , 'Sunday'];
+    	
+    	var dayOfTheWeekId = ['MON', 'TUE', 'WED'
+        	                  , 'THU', 'FRI', 'SAT'
+        	                  , 'SUN'];
+    	
+    	field = new Ext.form.Checkbox({
+    		fieldLabel: 'In day',
+    		boxLabel: dayOfTheWeekName[0],
+    		data: dayOfTheWeekId[0],
+            name: 'inDays',
+            allowBlank:false
+    	});
+    	this.cronConfFields['weekly'].push(field);
+    	
+    	for(var i = 1; i < dayOfTheWeekName.length; i++)  {
+	    	field = new Ext.form.Checkbox({
+	    		boxLabel: dayOfTheWeekName[i],
+	    		data: dayOfTheWeekId[i],
+	    		fieldLabel: '',
+	            labelSeparator: '',
+	            name: 'inDays',
+	            allowBlank:false
+	    	});
+	    	this.cronConfFields['weekly'].push(field);
+    	}
+    	
+    	
+    	this.weeklyOptionsFieldSet = new Ext.form.FieldSet({
+    		checkboxToggle:true,
+            title: 'Weekly',
+            name: 'weekly',
+            autoHeight:true,
+            defaults: {width: 210},
+            defaultType: 'textfield',
+            collapsed: true,
+            items : this.cronConfFields['weekly']
+    	});	
+    	this.weeklyOptionsFieldSet.on('expand', this.onExpand, this);
+    }
+    
+    ,
+    initMonthlyConfFieldSet: function() {
+    	var field;
+    	
+    	this.cronConfFields['monthly'] = [];
+    	
+    	field = new Ext.form.NumberField({
+    		fieldLabel: 'In day [1-31]',
+    		minValue: 0,
+    		maxValue: 31,    		
+            name: 'inDay',
+            allowBlank:false
+    	});
+    	this.cronConfFields['monthly'].push(field);
+    	
+    	this.monthlyOptionsFieldSet = new Ext.form.FieldSet({
+    		checkboxToggle:true,
+            title: 'Monthly',
+            name: 'monthly',
+            autoHeight:true,
+            defaults: {width: 210},
+            defaultType: 'textfield',
+            collapsed: true,
+            items : this.cronConfFields['monthly']
+    	});	
+    	this.monthlyOptionsFieldSet.on('expand', this.onExpand, this);
+    }
+    
+    ,
+    onExpand: function(fieldSet) {
+    	if(this.activeFieldSet) this.activeFieldSet.collapse();
+    	this.activeFieldSet = fieldSet;
+    }
 	
 });

@@ -46,19 +46,13 @@ public class HiveQLDataSet extends AbstractQbeDataSet {
 		dataset.loadData(offset, fetchSize, maxResults);
 
 		dataStore = dataset.getDataStore();
-		int resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
-		
-		
+
 		
 		IMetaData jdbcMetadata = dataStore.getMetaData();
 		IMetaData qbeQueryMetaData = getDataStoreMeta(this.getStatement().getQuery());
 		IMetaData merged = mergeMetadata(jdbcMetadata, qbeQueryMetaData);
 		((DataStore)dataStore).setMetaData(merged);
 		
-		dataStore.getMetaData().setProperty("resultNumber",resultNumber);
-
-		
-		((DataStore)dataStore).setMetaData(merged);
 				
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);

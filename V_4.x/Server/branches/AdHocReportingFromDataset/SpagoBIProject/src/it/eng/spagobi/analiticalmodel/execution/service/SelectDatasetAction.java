@@ -109,6 +109,9 @@ public class SelectDatasetAction extends CreateDatasetForWorksheetAction {
 			IDataSource datasource = dataset.getDataSource();
 			if ( target.equals(WORKSHEET) ) {
 				editActionParameters.put("datasource_label" , datasource.getLabel());
+				Engine worksheetEngine = getWorksheetEngine();
+				int defEngineDataSource = worksheetEngine.getDataSourceId();
+				editActionParameters.put("ENGINE_DATASOURCE_ID", defEngineDataSource);
 			} else {
 				editActionParameters.put("selected_datasource_label" , datasource.getLabel());
 				//add the data default datasource of teh engine

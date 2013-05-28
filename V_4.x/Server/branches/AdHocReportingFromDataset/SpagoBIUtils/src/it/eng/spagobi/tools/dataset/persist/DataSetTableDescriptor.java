@@ -6,6 +6,7 @@
 package it.eng.spagobi.tools.dataset.persist;
 
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
@@ -33,8 +34,14 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 		String fieldName;
 		
 		dataSource =  dataSet.getDataSourceForReading();
-		
+
 		IMetaData metaData =  dataSet.getMetadata();
+		
+		IDataStore dataStore = dataSet.getDataStore();
+		if(dataStore!=null && dataStore.getMetaData()!=null){
+			metaData =  dataStore.getMetaData();
+		}
+
 		if(metaData!=null){
 			for(int i=0; i<metaData.getFieldCount(); i++){
 				fieldMetadata = metaData.getFieldMeta(i);
@@ -44,7 +51,7 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 				}
 				field2ColumnMap.put(fieldMetadata.getName(), fieldName);
 				column2fieldMap.put(fieldName, fieldMetadata.getName());
-				field2ClassMap.put(fieldName, fieldMetadata.getType());
+				field2ClassMap.put(fieldMetadata.getName(), fieldMetadata.getType());
 			}
 		}
 		tableName = dataSet.getPeristedTableName();

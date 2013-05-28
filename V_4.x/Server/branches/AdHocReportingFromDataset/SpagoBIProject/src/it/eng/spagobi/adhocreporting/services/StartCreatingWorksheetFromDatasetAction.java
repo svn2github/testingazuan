@@ -39,9 +39,12 @@ public class StartCreatingWorksheetFromDatasetAction extends CreateDatasetForWor
 			
 			String executionId = createNewExecutionId();
 			worksheetEditActionParameters.put("SBI_EXECUTION_ID" , executionId);
+			
 						
 			Engine worksheetEngine = getWorksheetEngine();
 			LogMF.debug(logger, "Engine label is equal to [{0}]", worksheetEngine.getLabel());
+			int defEngineDataSourceWork = worksheetEngine.getDataSourceId();
+			worksheetEditActionParameters.put("ENGINE_DATASOURCE_ID", defEngineDataSourceWork);
 			
 			// create the WorkSheet Edit Service's URL
 			String worksheetEditActionUrl = GeneralUtilities.getUrl(worksheetEngine.getUrl(), worksheetEditActionParameters);

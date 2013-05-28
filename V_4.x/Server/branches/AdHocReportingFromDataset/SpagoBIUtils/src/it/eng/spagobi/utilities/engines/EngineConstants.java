@@ -43,6 +43,7 @@ public class EngineConstants {
 	public static final Object ENV_METAMODEL_PROXY = "ENV_METAMODEL_PROXY";	
 	
 	public static final String ENGINE_DATASOURCE = "ENGINE_DATASOURCE";
+	public static final String ENGINE_DATASOURCE_ID = "ENGINE_DATASOURCE_ID";
 	
 
 

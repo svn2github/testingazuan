@@ -194,7 +194,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     	String schema = null;
         String attrname = null;
     
-        Integer datasourceId = this.getAttributeAsInteger(BuildQbeDatasetStartAction.ENGINE_DATASOURCE_ID);
+        Integer datasourceId = this.getAttributeAsInteger(EngineConstants.ENGINE_DATASOURCE_ID);
         IDataSource dataSource = getDataSourceServiceProxy().getDataSourceById( datasourceId );  	
         if(dataSource!=null){
         	if (dataSource.checkIsMultiSchema()){

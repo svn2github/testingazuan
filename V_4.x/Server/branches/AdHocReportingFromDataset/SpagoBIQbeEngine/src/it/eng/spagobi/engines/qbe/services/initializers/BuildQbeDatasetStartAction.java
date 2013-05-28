@@ -38,7 +38,7 @@ public class BuildQbeDatasetStartAction extends AbstractEngineStartAction {
 	// INPUT PARAMETERS
 	public static final String DATAMART_NAME = "DATAMART_NAME";
 	public static final String DATASOURCE_LABEL = "DATASOURCE_LABEL";
-	public static final String ENGINE_DATASOURCE_ID = "ENGINE_DATASOURCE_ID";
+	
 	
 	// OUTPUT PARAMETERS
 	public static final String LANGUAGE = "LANGUAGE";

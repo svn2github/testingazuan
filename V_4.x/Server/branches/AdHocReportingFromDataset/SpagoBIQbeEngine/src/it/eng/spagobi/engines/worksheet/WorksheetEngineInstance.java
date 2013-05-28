@@ -48,10 +48,12 @@ public class WorksheetEngineInstance extends AbstractEngineInstance {
 
 	protected WorksheetEngineInstance(WorksheetTemplate template, Map env) throws WorksheetEngineException {
 		super( env );
+		setDataSourceForWriting((IDataSource)env.get(EngineConstants.ENGINE_DATASOURCE));
 		logger.debug("IN");
 		this.template = template;
 		this.setTemporaryTableName();
 		logger.debug("OUT");
+		
 	}
 
 	public void validate() throws QbeEngineException {

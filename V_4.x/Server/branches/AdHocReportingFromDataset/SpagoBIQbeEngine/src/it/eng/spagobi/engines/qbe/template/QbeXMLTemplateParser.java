@@ -152,9 +152,9 @@ public class QbeXMLTemplateParser implements IQbeTemplateParser{
 					Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
 					
 					qbeTemplate.addDatamartName( dmName );
-				} else {
-					Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
-				}
+				}// else {
+					//Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
+				//}
 				
 				// MODALITY block
 				if(template.containsAttribute(TAG_MODALITY)) {

@@ -30,6 +30,7 @@ import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -140,7 +141,9 @@ public class WorksheetDriver extends AbstractDriver implements IEngineDriver {
 			parameters.put("descriptionSubObject", subObject.getDescription() != null? subObject.getDescription(): "");
 			parameters.put("visibilitySubObject", subObject.getIsPublic().booleanValue()?"Public":"Private" );
 			parameters.put("subobjectId", subObject.getId());
-
+					
+			
+			
 			parameters = applySecurity(parameters, profile);
 			//parameters = addDocumentParametersInfo(parameters, biObject);
 			parameters = applyService(parameters, biObject);
@@ -190,6 +193,11 @@ public class WorksheetDriver extends AbstractDriver implements IEngineDriver {
 			addBIParameterDescriptions(biObject, parameters);
 
 			addMetadataAndContent(biObject, parameters);
+			Integer engineDataSource =  biObject.getEngine().getDataSourceId();
+			if(engineDataSource!=null){
+				parameters.put(EngineConstants.ENGINE_DATASOURCE_ID,engineDataSource);
+			}
+			
 
 		} finally {
 			logger.debug("OUT");

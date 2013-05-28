@@ -365,10 +365,12 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 			IDataSource dataSource = getDataSource();
 			String sql = getSQLQuery();
 			IDataSetTableDescriptor tableDescriptor = null;
+					
 			if (sql.equals(TemporaryTableManager.getLastDataSetSignature(tableName))) {
 				// signature matches: no need to create a TemporaryTable
 				tableDescriptor = TemporaryTableManager.getLastDataSetTableDescriptor(tableName);
 			} else {
+				
 				List<String> fields = getDataSetSelectedFields(statement.getQuery());
 				tableDescriptor = TemporaryTableManager.createTable(fields, sql, tableName, dataSource);
 			}
@@ -516,6 +518,7 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 	}
 
 	public IMetaData getMetadata() {
+
 		return getDataStoreMeta(statement.getQuery());
 	}
 

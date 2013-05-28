@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.worksheet.services.runtime;
 
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.serializer.SerializationManager;
+import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.QbeEngineStaticVariables;
 import it.eng.spagobi.engines.qbe.crosstable.CrossTab;
@@ -123,7 +124,15 @@ public class LoadCrosstabAction extends AbstractWorksheetEngineAction {
 			// deserialize crosstab definition
 			crosstabDefinition = (CrosstabDefinition) SerializationManager.deserialize(crosstabDefinitionJSON, "application/json", CrosstabDefinition.class);
 						
-			String worksheetQuery = this.buildSqlStatement(crosstabDefinition, descriptor, whereFields, engineInstance.getDataSourceForWriting());
+			String worksheetQuery = null;
+			IDataSource dsForTheTemporaryTable;
+			if(engineInstance.getDataSet() instanceof AbstractQbeDataSet){
+				dsForTheTemporaryTable =  engineInstance.getDataSourceForWriting();
+			}else{
+				dsForTheTemporaryTable = engineInstance.getDataSet().getDataSourceForReading();
+			}
+			
+			worksheetQuery = this.buildSqlStatement(crosstabDefinition, descriptor, whereFields,dsForTheTemporaryTable);
 			// execute SQL query against temporary table
 			logger.debug("Executing query on temporary table : " + worksheetQuery);
 			valuesDataStore = this.executeWorksheetQuery(worksheetQuery, null, null);

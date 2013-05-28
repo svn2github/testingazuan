@@ -179,6 +179,21 @@ Ext.define('app.views.TableExecutionPanel',{
 
 					/*	RELATIVE AND ABSOLUTE PARAMETERS ARE MANAGED SERVER SIDE */
 					if(type == 'SERIE'){
+						
+						try{
+							var parentNode = cell.parentNode  ;
+							if(parentNode){
+								var childNodes = parentNode.childNodes;
+								for(var u=0; u<childNodes.length; u++){
+									var node = childNodes[u];
+									if(node.attributes.dataindex.nodeValue==name){
+										serie = node.textContent;
+										break;
+									}
+								}
+							}
+						}catch(e){}
+						
 						crossParams.push({name : name, value : serie});
 					}else if(type == 'CATEGORY'){
 						crossParams.push({name : name, value : category});

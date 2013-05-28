@@ -109,6 +109,7 @@ public class PersistedTableManager {
 			IDataStore datastore = dataset.getDataStore();
 			perstistNoQueryDatasetType(tableName, datastore, dsPersist);
 		}	*/	
+		dataset.setPersisted(false);
 		dataset.loadData();
 		IDataStore datastore = dataset.getDataStore();		
 		persistDataset(datastore, dsPersist);

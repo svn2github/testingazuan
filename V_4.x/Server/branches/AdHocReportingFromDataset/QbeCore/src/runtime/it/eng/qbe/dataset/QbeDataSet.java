@@ -181,6 +181,14 @@ public static String DS_TYPE = "SbiQbeDataSet";
 		return sbd;
 	}
 	
+	@Override
+	public void setPersisted(boolean persisted) {
+		super.setPersisted(persisted);
+		if (ds != null) {
+			ds.setPersisted(persisted);
+		}
+	}
+	
 	public it.eng.qbe.datasource.IDataSource getQbeDataSource() {
 
         Map<String, Object> dataSourceProperties = new HashMap<String, Object>();

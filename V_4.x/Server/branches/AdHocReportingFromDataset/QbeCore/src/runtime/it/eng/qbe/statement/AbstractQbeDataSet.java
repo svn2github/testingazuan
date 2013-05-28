@@ -336,7 +336,9 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 
 	public IDataStore getDomainValues(String fieldName, Integer start, Integer limit, IDataStoreFilter filter) {
 		if(isPersisted() || isFlatDataset()){
-			return  getDomainValuesForPersistedOrFlat(fieldName, start, limit, filter);
+			int index = this.getStatement().getQuery().getSelectFieldIndex(fieldName);
+			String alias = (this.getStatement().getQuery().getSelectFieldByIndex(index)).getAlias();
+			return  getDomainValuesForPersistedOrFlat(alias, start, limit, filter);
 		}else{
 			return getDomainValuesFromTemporaryTable(fieldName, start, limit, filter);
 		}

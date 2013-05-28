@@ -9,6 +9,7 @@ import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.metadata.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
+import it.eng.spagobi.tools.dataset.exceptions.DataSetNotLoadedYetException;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.HashMap;
@@ -37,7 +38,14 @@ public class DataSetTableDescriptor implements IDataSetTableDescriptor {
 
 		IMetaData metaData =  dataSet.getMetadata();
 		
-		IDataStore dataStore = dataSet.getDataStore();
+		IDataStore dataStore = null;
+		try {
+			dataStore = dataSet.getDataStore();
+		} catch (DataSetNotLoadedYetException e) {
+			dataSet.loadData();
+			dataStore = dataSet.getDataStore();
+		}
+		
 		if(dataStore!=null && dataStore.getMetaData()!=null){
 			metaData =  dataStore.getMetaData();
 		}

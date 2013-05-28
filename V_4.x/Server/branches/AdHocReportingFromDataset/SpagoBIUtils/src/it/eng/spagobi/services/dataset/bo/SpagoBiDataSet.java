@@ -76,6 +76,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String persistTableName;
 
+    private it.eng.spagobi.services.dataset.bo.SpagoBiDataSet sourceDataSet;
+
     public SpagoBiDataSet() {
     }
 
@@ -113,7 +115,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            java.lang.String queryScript,
            java.lang.String queryScriptLanguage,
            it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSourceForReading,
-           java.lang.String persistTableName) {
+           java.lang.String persistTableName,
+           it.eng.spagobi.services.dataset.bo.SpagoBiDataSet sourceDataSet) {
            this.adress = adress;
            this.categoryId = categoryId;
            this.dataSource = dataSource;
@@ -148,6 +151,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.queryScriptLanguage = queryScriptLanguage;
            this.dataSourceForReading = dataSourceForReading;
            this.persistTableName = persistTableName;
+           this.sourceDataSet = sourceDataSet;
     }
 
 
@@ -830,6 +834,26 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.persistTableName = persistTableName;
     }
 
+
+    /**
+     * Gets the sourceDataSet value for this SpagoBiDataSet.
+     * 
+     * @return sourceDataSet
+     */
+    public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getSourceDataSet() {
+        return sourceDataSet;
+    }
+
+
+    /**
+     * Sets the sourceDataSet value for this SpagoBiDataSet.
+     * 
+     * @param sourceDataSet
+     */
+    public void setSourceDataSet(it.eng.spagobi.services.dataset.bo.SpagoBiDataSet sourceDataSet) {
+        this.sourceDataSet = sourceDataSet;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSet)) return false;
@@ -935,7 +959,10 @@ public class SpagoBiDataSet  implements java.io.Serializable {
               this.dataSourceForReading.equals(other.getDataSourceForReading()))) &&
             ((this.persistTableName==null && other.getPersistTableName()==null) || 
              (this.persistTableName!=null &&
-              this.persistTableName.equals(other.getPersistTableName())));
+              this.persistTableName.equals(other.getPersistTableName()))) &&
+            ((this.sourceDataSet==null && other.getSourceDataSet()==null) || 
+             (this.sourceDataSet!=null &&
+              this.sourceDataSet.equals(other.getSourceDataSet())));
         __equalsCalc = null;
         return _equals;
     }
@@ -1040,6 +1067,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         }
         if (getPersistTableName() != null) {
             _hashCode += getPersistTableName().hashCode();
+        }
+        if (getSourceDataSet() != null) {
+            _hashCode += getSourceDataSet().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -1253,6 +1283,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setFieldName("persistTableName");
         elemField.setXmlName(new javax.xml.namespace.QName("", "persistTableName"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("sourceDataSet");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "sourceDataSet"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.dataset.services.spagobi.eng.it", "SpagoBiDataSet"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

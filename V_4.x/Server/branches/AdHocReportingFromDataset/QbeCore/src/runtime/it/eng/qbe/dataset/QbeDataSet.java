@@ -18,11 +18,13 @@ import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreFilter;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
+import it.eng.spagobi.tools.dataset.exceptions.DataSetNotLoadedYetException;
 import it.eng.spagobi.tools.dataset.persist.IDataSetTableDescriptor;
 import it.eng.spagobi.tools.dataset.utils.DatasetMetadataParser;
 import it.eng.spagobi.tools.datasource.bo.DataSourceFactory;
@@ -102,6 +104,12 @@ public static String DS_TYPE = "SbiQbeDataSet";
     		ds.setPivotRowName(pivotRowName);
     		ds.setNumRows(numRows);
     		ds.setDataStoreTransformer(dataSetTransformer);
+    		((AbstractDataSet)ds).setPersisted(persisted);
+    		((AbstractDataSet)ds).setPersistTableName(persistTableName);
+    		ds.setDataSourceForReading(getDataSourceForReading());
+    		ds.setFlatDataset(flatDataset);
+    		ds.setFlatTableName(flatTableName);
+    		
     	}
     }
     
@@ -124,6 +132,9 @@ public static String DS_TYPE = "SbiQbeDataSet";
     }
     
     public IDataStore getDataStore() {
+    	if (ds == null) {
+    		throw new DataSetNotLoadedYetException();
+    	}
     	return ds.getDataStore();
     }
     

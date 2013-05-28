@@ -5,23 +5,22 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.dataset.bo;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spagobi.commons.SingletonConfig;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
 import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /**
  * @authors 
@@ -110,6 +109,12 @@ public abstract class AbstractDataSet implements IDataSet {
 		setDataSourceFlatId(dataSetConfig.getDataSourceFlatId());
 		setDataSourcePersistId(dataSetConfig.getDataSourcePersistId());
 		
+		SpagoBiDataSet source = dataSetConfig.getSourceDataSet();
+		if (source != null) {
+			IDataSet sourceDS = DataSetFactory.getDataSet(source);
+			this.setSourceDataset(sourceDS);
+		}
+		
 		if(this.getPivotColumnName() != null 
 				&& this.getPivotColumnValue() != null
 				&& this.getPivotRowName() != null){
@@ -142,6 +147,10 @@ public abstract class AbstractDataSet implements IDataSet {
 		sbd.setFlatDataset(isFlatDataset());
 		sbd.setDataSourceFlatId(getDataSourceFlatId());
 		sbd.setDataSourcePersistId(getDataSourcePersistId());
+		IDataSet source = this.getSourceDataset();
+		if (source != null) {
+			sbd.setSourceDataSet(source.toSpagoBiDataSet());
+		}
 		
 		return sbd;
 	}

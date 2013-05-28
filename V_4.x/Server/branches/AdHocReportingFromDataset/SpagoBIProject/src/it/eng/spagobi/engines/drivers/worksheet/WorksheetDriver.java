@@ -404,7 +404,7 @@ public class WorksheetDriver extends AbstractDriver implements IEngineDriver {
 		SourceBean worksheetDefinitionSB = new SourceBean(TAG_WORKSHEET_DEFINITION);
 		worksheetDefinitionSB.setCharacters(worksheetDefinition);
 		templateSB.setAttribute(worksheetDefinitionSB);
-		if (query != null) {
+		if (query != null && !query.trim().equals("")) {
 			SourceBean qbeSB = new SourceBean(TAG_QBE);
 			SourceBean queryDefinitionSB = new SourceBean(QUERY);
 			queryDefinitionSB.setCharacters(query);

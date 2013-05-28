@@ -63,6 +63,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="queryScriptLanguage" nillable="true" type="soapenc:string"/>
      <element name="dataSourceForReading" nillable="true" type="tns3:SpagoBiDataSource"/>
      <element name="persistTableName" nillable="true" type="soapenc:string"/>
+     <element name="sourceDataSet" nillable="true" type="tns2:SpagoBiDataSet"/>
     </sequence>
    </complexType>
   </schema>

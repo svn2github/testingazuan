@@ -252,8 +252,10 @@ Ext.extend(Sbi.worksheet.WorksheetEditorIframePanel, Ext.ux.ManagedIframePanel, 
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got window');
 		var qbePanel = qbeWindow.qbe;
 		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got qbe panel object');
-		var queries = qbePanel.getQueriesCatalogue();
-		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries');
+		var queries = qbePanel.getQueriesCatalogueAsString();
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries as string');
+		queries = Ext.util.JSON.decode(queries);
+		Sbi.debug('[WorksheetEditorIframePanel.getQbeQueryDefinition]: got queries as JSON object');
 		var toReturn = {};
 		toReturn.queries = queries;
 		toReturn.datasourceLabel = this.getDatasourceLabel();

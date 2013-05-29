@@ -536,6 +536,7 @@ public class ManageDatasets extends AbstractSpagoBIAction {
 							parametersMap = getDataSetParametersAsMap();
 							
 							IEngUserProfile profile = getUserProfile();
+							ds.setPersisted(false);
 							dsMetadata = getDatasetTestMetadata(ds,	parametersMap, profile, meta);
 							LogMF.debug(logger, "Dataset executed, metadata are [{0}]", dsMetadata);
 						} else {

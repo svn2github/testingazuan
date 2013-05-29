@@ -24,6 +24,7 @@ import it.eng.spagobi.tools.dataset.common.metadata.IMetaData;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -592,9 +593,11 @@ public class CrossTab {
 			
 			//BigInteger, Integer, Long, Short, Byte
 			if(Integer.class.isAssignableFrom(clazz) 
-		       || BigInteger.class.isAssignableFrom(clazz) 
+		       || BigInteger.class.isAssignableFrom(clazz)
+		       || BigDecimal.class.isAssignableFrom(clazz) 
 			   || Long.class.isAssignableFrom(clazz) 
 			   || Short.class.isAssignableFrom(clazz)
+			    || BigDecimal.class.isAssignableFrom(clazz)
 			   || Byte.class.isAssignableFrom(clazz)) {
 				return new MeasureInfo(fieldName, measure.getEntityId(), "int", null);
 			} else {
@@ -799,7 +802,12 @@ public class CrossTab {
 		}
 		
 		if(horizontal){
-			fathersOfTheNodesOfTheLevel = rootNode.getLevel(level-2);//because of the title of the headers
+			if(!measuresOnRow && level%2==1){
+				fathersOfTheNodesOfTheLevel = rootNode.getLevel(level/2);//because of the title of the headers
+			}else{
+				fathersOfTheNodesOfTheLevel = rootNode.getLevel(level/2-1);//because of the title of the headers
+			}
+			
 		}else{
 			fathersOfTheNodesOfTheLevel = rootNode.getLevel(level-1);
 		}

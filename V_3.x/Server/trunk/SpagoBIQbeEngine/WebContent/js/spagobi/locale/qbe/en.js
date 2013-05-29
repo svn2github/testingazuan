@@ -36,10 +36,11 @@ Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
 
 
 //===================================================================
-//SESSION EXPIRED
+//ERRORS
 //===================================================================
+//SESSION EXPIRED
 Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'Session has expired. Try re-executing the document';
-
+Sbi.locale.ln['sbi.qbe.error.noquery.msg'] = 'No query has been defined or executed yet';
 
 //===================================================================
 //QBE PANEL

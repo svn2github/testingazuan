@@ -59,7 +59,9 @@ Sbi.exception.ExceptionHandler = function(){
         			var content = Ext.util.JSON.decode( response.responseText );
         			if(content.errors !== undefined && content.errors.length > 0) {
         				errMessage = '';
-        				if (content.errors[0].message === 'session-expired') {
+        				if (content.errors[0].message.indexOf('SPAGOBIERRORCODE0005')>0) {
+        					errMessage = LN('sbi.qbe.error.noquery.msg');
+        				} else if (content.errors[0].message === 'session-expired') {
         					errMessage = LN('sbi.qbe.sessionexpired.msg');
         				} else {
 	        				for(var i = 0; i < content.errors.length; i++) {
@@ -75,7 +77,7 @@ Sbi.exception.ExceptionHandler = function(){
         		
         	errMessage = errMessage || 'An error occurred while processing the server error response';
         	
-        	Sbi.exception.ExceptionHandler.showErrorMessage(errMessage, 'Service Error');
+        	Sbi.exception.ExceptionHandler.showErrorMessage(errMessage, LN('sbi.qbe.error.service.msg'));
        	
         },
 

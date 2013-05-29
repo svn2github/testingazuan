@@ -38,8 +38,8 @@ Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Information';
 //===================================================================
 //SESSION EXPIRED
 //===================================================================
-Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'Votre session a expir\u00E9. Essayer de r\u00E9-ex\u00E9cuter le document';
-
+Sbi.locale.ln['sbi.qbe.error.service.msg'] = 'Erreur du service' 
+Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'Votre session a expir\u00E9e. Essayer de r\u00E9-ex\u00E9cuter le document';
 
 //===================================================================
 //QBE PANEL

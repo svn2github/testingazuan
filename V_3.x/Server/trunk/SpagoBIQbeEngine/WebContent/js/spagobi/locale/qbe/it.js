@@ -37,9 +37,13 @@ Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Informazione';
 
 
 //===================================================================
-//SESSION EXPIRED
+//ERRORS
 //===================================================================
+Sbi.locale.ln['sbi.qbe.error.service.msg'] = 'Service Error' 
+
+//SESSION EXPIRED
 Sbi.locale.ln['sbi.qbe.sessionexpired.msg'] = 'La sessione di lavoro è scaduta. Prova a rieseguire il documento';
+Sbi.locale.ln['sbi.qbe.error.noquery.msg'] = 'La query non è stata ancora eseguita o creata';
 
 
 //===================================================================

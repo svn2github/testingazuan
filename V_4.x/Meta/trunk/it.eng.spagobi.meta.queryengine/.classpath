@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/jtds-1.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/mysql-connector-java-3.1.13-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/ojdbc14.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/postgresql-9.0-801.jdbc4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/sqljdbc4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/tdgssconfig.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/jdbc/terajdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jdbc/"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/javax.persistence_2.0.1.v201006031150.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jaxen-1.1-beta-4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbi.utils.json-3.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/log4j-over-slf4j-1.5.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-3.0.jar" sourcepath="/QbeCore"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/hibernate3.6.jar" sourcepath="/hibernate"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/hibernate/required/commons-collections-3.1.jar"/>
@@ -28,7 +20,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="libs/jdbc/db2jcc.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-annotations-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-core-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jackson-databind-2.0.2.jar"/>

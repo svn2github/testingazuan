@@ -77,6 +77,15 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 			throw t;
 		}
 	}
+	
+	private IDataStore executeQuery(Query query) {
+		IStatement statement = dataSource.createStatement(query);
+		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
+		int offset=0; int pageSize= 25; int maxResults = -1;
+		dataSet.loadData(offset,pageSize,maxResults);
+		IDataStore dataStore = dataSet.getDataStore();
+		return dataStore;
+	}
 
 	// =============================================
 	// TESTS ON STANDARD MODEL
@@ -172,11 +181,14 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		query.addSelectFiled("it.eng.spagobi.meta.Promotion:promotion_name", "NONE", "promotion_name", true, true, false, "NONE", null);
 		query.addSelectFiled("it.eng.spagobi.meta.Promotion:media_type", "NONE", "media_type", true, true, false, "NONE", null);
 		
-		IStatement statement = dataSource.createStatement(query);
-		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
-		int offset=0; int pageSize= 25; int maxResults = -1;
-		dataSet.loadData(offset,pageSize,maxResults);
-		IDataStore dataStore = dataSet.getDataStore();
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
 		int resultSize = DataStoreReader.getMaxResult(dataStore);
 		
 		assertEquals(1864, resultSize);
@@ -194,14 +206,70 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		ExpressionNode filterExp = new ExpressionNode("NODE_CONST", "$F{Filter1}");
 		query.setWhereClauseStructure( filterExp );
 		
-		IStatement statement = dataSource.createStatement(query);
-		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
-		int offset=0; int pageSize= 25; int maxResults = -1;
-		dataSet.loadData(offset,pageSize,maxResults);
-		IDataStore dataStore = dataSet.getDataStore();
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
 		int resultSize = DataStoreReader.getMaxResult(dataStore);
 		
 		assertEquals(90, resultSize);
+	}
+	
+	public void _testGroupSmoke() {
+		// TODO Implement
+	}
+
+	/**
+	 * Test auto join between to tables not directly linked by a relationship (i.e. store and customer)
+	 */
+	public void testUndirectAutoJoinSmoke() {
+		Query query = new Query();
+		query.addSelectFiled("it.eng.spagobi.meta.Customer:fname", "NONE", "fname", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Store:store_name", "NONE", "store_name", true, true, false, "NONE", null);
+		
+		
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
+		int resultSize = DataStoreReader.getMaxResult(dataStore);
+		
+		assertEquals(164500, resultSize);
+	}
+	
+	
+	/**
+	 * Test auto join between to tables directly linked by a relationship (i.e. sales_fact and customer)
+	 */
+	public void testDirectAutoJoin() {
+		Query query = new Query();
+		query.addSelectFiled("it.eng.spagobi.meta.Customer:fname", "NONE", "fname", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Sales_fact_1998:unit_sales", "NONE", "unit_sales", true, true, false, "NONE", null);
+		
+		
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
+		int resultSize = DataStoreReader.getMaxResult(dataStore);
+		
+		assertEquals(164500, resultSize);
+	}
+	
+	public void _testCartesianProduct() {
+		// TODO Implement
 	}
 
 	// =============================================
@@ -361,11 +429,16 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 				, "NONE", "family", true, true, false, "NONE", null);
 		query.addSelectFiled("it.eng.spagobi.meta.Product::Product:it.eng.spagobi.meta.Product_product:compId.product_id", "NONE"
 				, "id", true, true, false, "NONE", null);
-		IStatement statement = dataSource.createStatement(query);
-		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
-		int offset=0; int pageSize= 25; int maxResults = -1;
-		dataSet.loadData(offset,pageSize,maxResults);
-		IDataStore dataStore = dataSet.getDataStore();
+		
+		
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
 		int resultSize = DataStoreReader.getMaxResult(dataStore);
 		
 		assertEquals(1560, resultSize);
@@ -378,11 +451,15 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 		query.addSelectFiled("it.eng.spagobi.meta.Product::Product:it.eng.spagobi.meta.Product_product:compId.product_id", "NONE"
 				, "id", true, true, false, "NONE", null);
 		
-		IStatement statement = dataSource.createStatement(query);
-		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
-		int offset=0; int pageSize= 25; int maxResults = -1;
-		dataSet.loadData(offset,pageSize,maxResults);
-		IDataStore dataStore = dataSet.getDataStore();
+		
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
 		int resultSize = DataStoreReader.getMaxResult(dataStore);
 		
 		assertEquals(1560, resultSize);
@@ -419,11 +496,14 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 				"it.eng.spagobi.meta.Product::Product:it.eng.spagobi.meta.Product_product:compId.product_id"
 				, "NONE" , "id", true, true, false, "NONE", null);
 		
-		IStatement statement = dataSource.createStatement(query);
-		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
-		int offset=0; int pageSize= 25; int maxResults = -1;
-		dataSet.loadData(offset,pageSize,maxResults);
-		IDataStore dataStore = dataSet.getDataStore();
+		IDataStore dataStore = null;
+		try  {
+			dataStore = this.executeQuery(query);
+		} catch (Throwable t) {
+			fail();
+		}
+		assertNotNull(dataStore);
+		
 		int resultSize = DataStoreReader.getMaxResult(dataStore);
 		
 		assertEquals(1560, resultSize);

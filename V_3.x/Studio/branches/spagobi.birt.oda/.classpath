@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/spagobi-qbecore-4.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagobi-utils-4.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagobi-utils-json-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/eclipselink-2.1.2.v20101206-r8635.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-annotations-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-databind-2.0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/qbe.core-3.5.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/sbi.utils-3.5.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/sbi.utils.json-3.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis-ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cas-client-core-3.1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/casclient.jar"/>

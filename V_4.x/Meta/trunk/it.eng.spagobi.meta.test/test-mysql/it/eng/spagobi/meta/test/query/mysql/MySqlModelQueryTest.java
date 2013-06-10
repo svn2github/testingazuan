@@ -17,7 +17,9 @@ import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.ModelEntity;
 import it.eng.qbe.model.structure.ModelViewEntity;
 import it.eng.qbe.model.structure.ModelViewEntity.ViewRelationship;
+import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.spagobi.commons.utilities.StringUtilities;
@@ -151,7 +153,7 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 			for(IModelField field : fields) {
 				label = labels.getProperty(field, "label");
 				label = StringUtilities.isEmpty(label)? field.getName(): label;
-				assertTrue(label.endsWith( COLUMN_TAG ));
+				assertTrue("Column label [" + label + "] does not end with [" + COLUMN_TAG + "]", label.endsWith( COLUMN_TAG ));
 			}
 			
 			List<IModelEntity> subEntities = modelEntity.getSubEntities();
@@ -162,6 +164,44 @@ public class MySqlModelQueryTest extends AbstractModelQueryTest {
 						label.endsWith( RELATIONSHIP_TAG ));
 			}
 		}
+	}
+	
+	public void testQuerySmoke() {
+		Query query = new Query();
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:promotion_id", "NONE", "promotion_id", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:promotion_name", "NONE", "promotion_name", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:media_type", "NONE", "media_type", true, true, false, "NONE", null);
+		
+		IStatement statement = dataSource.createStatement(query);
+		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
+		int offset=0; int pageSize= 25; int maxResults = -1;
+		dataSet.loadData(offset,pageSize,maxResults);
+		IDataStore dataStore = dataSet.getDataStore();
+		int resultSize = DataStoreReader.getMaxResult(dataStore);
+		
+		assertEquals(1864, resultSize);
+	}
+	
+	public void testWhereSmoke() {
+		Query query = new Query();
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:promotion_id", "NONE", "promotion_id", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:promotion_name", "NONE", "promotion_name", true, true, false, "NONE", null);
+		query.addSelectFiled("it.eng.spagobi.meta.Promotion:media_type", "NONE", "media_type", true, true, false, "NONE", null);
+		
+		WhereField.Operand leftOperand = new WhereField.Operand(new String[]{"it.eng.spagobi.meta.Promotion:media_type"}, "Promotion : Media type", "Field Content", new String[1], new String[1]);
+		WhereField.Operand rightOperand = new WhereField.Operand(new String[]{"TV"}, "TV", "Static Content", new String[]{""}, new String[]{""});
+		query.addWhereField("Filter1", "Filter1", false, leftOperand, "EQUALS TO", rightOperand, "AND");
+		ExpressionNode filterExp = new ExpressionNode("NODE_CONST", "$F{Filter1}");
+		query.setWhereClauseStructure( filterExp );
+		
+		IStatement statement = dataSource.createStatement(query);
+		IDataSet dataSet =  QbeDatasetFactory.createDataSet(statement);
+		int offset=0; int pageSize= 25; int maxResults = -1;
+		dataSet.loadData(offset,pageSize,maxResults);
+		IDataStore dataStore = dataSet.getDataStore();
+		int resultSize = DataStoreReader.getMaxResult(dataStore);
+		
+		assertEquals(90, resultSize);
 	}
 
 	// =============================================

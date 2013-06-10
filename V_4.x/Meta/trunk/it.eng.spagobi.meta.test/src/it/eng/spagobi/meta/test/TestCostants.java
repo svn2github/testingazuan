@@ -25,7 +25,7 @@ public class TestCostants {
 	public static boolean enableUITests = true;
 	
 	public static boolean enableTestsOnMySql = true;
-	public static boolean enableTestsOnPostgres = true;
+	public static boolean enableTestsOnPostgres = false;
 	public static boolean enableTestsOnOracle = false;
 	
 	// =======================================================

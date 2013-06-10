@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/sbi.utils.json-3.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.jface.source_3.6.0.I20100601-0800.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spagobi-utils-json-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>

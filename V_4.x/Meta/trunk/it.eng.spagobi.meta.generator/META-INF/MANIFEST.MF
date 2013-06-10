@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.generator
 Bundle-SymbolicName: it.eng.spagobi.meta.generator;singleton:=true
-Bundle-Version: 3.6.0
+Bundle-Version: 4.0.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.6.0",
  it.eng.spagobi.meta.model;bundle-version="1.0.0",
@@ -30,12 +30,14 @@ Bundle-ClassPath: libs/velocity/commons-collections-3.2.1.jar,
  libs/velocity/velocity-1.6.4.jar,
  .,
  templates/,
- libs/sbi.utils.json-3.5.1.jar,
  libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
  libs/logback/org.slf4j.api_1.5.11.v20100519-1910.jar,
  libs/jackson-annotations-2.0.2.jar,
  libs/jackson-core-2.0.2.jar,
- libs/jackson-databind-2.0.2.jar
+ libs/jackson-databind-2.0.2.jar,
+ libs/eclipselink/javax.persistence_2.0.1.jar,
+ libs/eclipselink/org.eclipse.persistence.core_2.1.2.jar,
+ libs/spagobi-utils-json-4.0.0.jar
 Bundle-Vendor: Engineering Group

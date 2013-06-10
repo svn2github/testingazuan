@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/eclipselink/javax.persistence_2.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/eclipselink/org.eclipse.persistence.core_2.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/spagobi-utils-json-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>
@@ -14,7 +17,6 @@
 	<classpathentry kind="lib" path="libs/velocity/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="libs/velocity/velocity-1.6.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry exported="true" kind="lib" path="libs/sbi.utils.json-3.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jackson-annotations-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jackson-core-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jackson-databind-2.0.2.jar"/>

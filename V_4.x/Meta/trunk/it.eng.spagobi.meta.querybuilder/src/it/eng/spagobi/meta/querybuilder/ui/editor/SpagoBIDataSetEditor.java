@@ -132,7 +132,7 @@ public class SpagoBIDataSetEditor extends MultiPageEditorPart implements IResour
 				//set the dirty property to false cause the mapping has just been created
 				modelFile.setPersistentProperty(SpagoBIMetaConstants.DIRTY_MODEL, "false");
 			} else {
-				logger.debug("Mappings are uptodate with the model. The wont be regenerated");
+				logger.debug("Mappings are uptodate with the model. They wont be regenerated");
 				dataSource = modelManager.createDataSource();
 			}
 		

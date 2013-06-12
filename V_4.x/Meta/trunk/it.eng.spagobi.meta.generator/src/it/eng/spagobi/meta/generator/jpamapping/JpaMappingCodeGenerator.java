@@ -470,8 +470,10 @@ public class JpaMappingCodeGenerator implements IGenerator {
 			context.put("jpaTables", model.getTables() ); //$NON-NLS-1$
 			context.put("jpaViews", model.getViews() ); //$NON-NLS-1$
 
-			File outputFile = new File(distDir, "cfields_meta.xml");
-
+			//File outputFile = new File(distDir, "cfields_meta.xml");
+			// move cFields inside datamart.jar
+			File outputFile = new File(srcDir, "cfields_meta.xml");
+			
 			createFile(templateFile, outputFile, context);
 		} catch(Throwable t) {
 			logger.error("Impossible to create cfields_meta.xml", t);

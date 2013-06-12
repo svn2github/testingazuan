@@ -489,6 +489,7 @@
 				<file name="./src/ext/sbi/tools/ManageDatasetParameters.js" />
 				<file name="./src/ext/sbi/tools/ParametersFillGrid.js" />
 				<file name="./src/ext/sbi/tools/dataset/DatasetManagementPanel.js" />
+				<file name="./src/ext/sbi/tools/dataset/FileDatasetPanel.js" />
 				<file name="./src/ext/sbi/tools/dataset/QueryDatasetConfigurationPanel.js" />
 				<file name="./src/ext/sbi/tools/dataset/QueryDatasetScriptWizard.js" />
 

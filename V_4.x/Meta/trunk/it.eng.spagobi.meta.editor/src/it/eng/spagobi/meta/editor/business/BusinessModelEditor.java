@@ -442,7 +442,14 @@ public class BusinessModelEditor
 				}
 				//treeViewer.setExpandedElements(elements);
 			}
+		} else {
+			//if there are no viewer set current viewer to the modelTreeViewer and refresh it
+			if (modelTreeViewer != null){
+				setCurrentViewer(modelTreeViewer);
+				refreshViewer();
+			}
 		}
+		
 	}
 
 	

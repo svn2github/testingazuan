@@ -1,0 +1,284 @@
+/** SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+
+  
+
+/**
+ * 
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ */
+
+Ext.ns("Sbi.browser");
+
+Sbi.browser.DocumentsBrowser = function(config) {    
+   
+	// sub-components   
+	
+	this.tabbedBrowser = config.parentTab;
+	this.rootFolderId = config.rootFolderId || null;
+	this.selectedFolderId = this.rootFolderId;
+
+	this.detailPanel = new Sbi.browser.FolderDetailPanel({ 
+		layout: 'fit'
+        , metaFolder: config.metaFolder
+        , metaDocument: config.metaDocument	
+        , folderId: this.selectedFolderId
+    });
+
+	this.centerContainerPanel = new Ext.Panel({
+		 region: 'center'
+//		 , enableTabScroll:true
+//		 , defaults: {autoScroll:true}	
+
+		 , items: [this.detailPanel]
+		 , layout: 'fit'
+	});
+	config.baseLayout = config.baseLayout || {}; 	
+	var c = Ext.apply({}, config.baseLayout, {
+		layout: 'border',
+	    border: false,
+	    title:'Document browser',
+	    items: [ 
+	            // CENTER REGION ---------------------------------------------------------
+	            this.centerContainerPanel, 
+	           
+	            // NORTH HREGION -----------------------------------------------------------
+	            /*
+	          	,new Sbi.browser.Toolbar({
+	            	region: 'north',
+	            	margins: '3 3 3 3',
+	            	autoScroll: false,
+	            	height: 30,
+	            	layout: 'fit'
+	          	})
+	          	*/
+	        ]
+	});   
+	
+	if (Sbi.settings.browser.showLeftPanels !== undefined && Sbi.settings.browser.showLeftPanels){
+		 // WEST REGION -----------------------------------------------------------
+		this.treePanel = new Sbi.browser.DocumentsTree({
+	        border: true
+	        , rootNodeId: this.selectedFolderId 
+	    });
+	    this.treePanel.addListener('click', this.onTreeNodeClick, this);
+		
+		this.filterPanel = new Sbi.browser.FilterPanel({
+	        title: LN('sbi.browser.filtrpanel.title')
+	        , border:true
+	        , metaFolder: config.metaFolder
+	        , metaDocument: config.metaDocument	
+	    });
+		this.filterPanel.addListener('onsort', this.onSort, this);
+	    this.filterPanel.addListener('ongroup', this.onGroup, this);
+	    this.filterPanel.addListener('onfilter', this.onFilter, this);
+		    
+		if (Sbi.user.functionalities.contains('DoMassiveExportFunctionality')) {
+			this.progressPanel = new Sbi.browser.ProgressPanel({
+				title: LN('sbi.browser.progresspanel.title')
+				, border:true
+				, metaFolder: config.metaFolder
+				, metaDocument: config.metaDocument	
+			});
+			this.progressPanel.addListener('click', this.onTreeNodeClick, this);
+		}		
+		
+		this.searchPanel = new Sbi.browser.SearchPanel({
+	        title: LN('sbi.browser.searchpanel.title')
+	        , border:true
+	        , metaDocument: config.metaDocument	
+	    });
+	    this.searchPanel.addListener('onsearch', this.onSearch, this);
+	    this.searchPanel.addListener('onreset', this.onReset, this);
+
+			
+		this.westRegionContainer = new Ext.Panel({
+		       id:'westRegionContainer',
+		       split:true,
+		       border:true,
+		       frame:true,
+		       collapsible: true,
+		       //margins:'0 0 0 15',
+		       layout:'accordion',
+		       layoutConfig:{
+		          animate:true
+		       },
+		       items: [
+		               this.treePanel
+		               , this.filterPanel
+		               , this.searchPanel
+		       ]
+		});
+	
+		if(this.progressPanel){
+		// defined and added only if user has massive export functionality	
+			this.westRegionContainer.add(this.progressPanel);
+		}
+		
+		var westRegion = 
+            new Ext.Panel({               
+                region: 'west',
+                border: false,
+                frame: false,
+                //margins: '0 0 3 3',
+                collapsible: true,
+                collapsed: false,
+                hideCollapseTool: true,
+                titleCollapse: true,
+                collapseMode: 'mini',
+                split: true,
+                autoScroll: false,
+                width: 280,
+                minWidth: 280,
+                layout: 'fit',
+                items: [this.westRegionContainer]
+              });
+		c.items.push(westRegion);
+	}
+	config.baseLayout = config.baseLayout || {}; 	
+   
+    Sbi.browser.DocumentsBrowser.superclass.constructor.call(this, c);
+
+ 
+    this.detailPanel.addListener('onfolderload', this.onFolderLoad, this);
+    this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
+    
+    this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
+    if (Sbi.settings.browser.showBreadCrumbs !== undefined && Sbi.settings.browser.showBreadCrumbs){
+    	this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
+    }
+}
+
+
+Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
+    	
+	rootFolderId: null
+    , selectedFolderId: null
+    
+	, westRegionContainer: null
+    , treePanel: null
+    , filterPanel: null
+    , searchPanel: null
+    , progressPanel: null
+    
+    , centerRegionContainer: null
+    , detailPanel: null
+    , executionPanel: null
+
+    
+    , selectFolder: function(folderId) {
+		this.detailPanel.loadFolder(folderId, this.rootFolderId);
+		this.selectedFolderId = folderId;
+		this.searchPanel.selectedFolderId = folderId;
+	}
+	
+	, onFolderLoad: function(panel) {
+//		if(this.brTab.getActiveTab() != this.detailPanel) {
+//			this.brTab.setActiveTab(this.detailPanel);
+//			
+//		}
+//		this.detailPanel.show();
+	}
+    
+    
+    , onTreeNodeClick: function(node, e) {
+		this.selectFolder(node.id);
+	}
+    
+    , onOpenFavourite: function(doc){
+    	var executionPanel = new Sbi.execution.ExecutionPanel({
+			title: doc.title !== undefined ? doc.title : doc.name
+			, closable: true
+		}, doc);
+		executionPanel.tabType = 'document';
+		
+		executionPanel.addListener('crossnavigationonothertab', this.onCrossNavigation, this);
+		executionPanel.addListener('openfavourite', this.onOpenFavourite, this);
+		
+		
+		this.tabbedBrowser.brTab.add(executionPanel).show();
+		
+		executionPanel.execute();
+	}
+    
+	, onCrossNavigation: function(config){
+		this.onCrossNavigationDocumentClick(config);
+		return false;
+	}
+	
+	, onCrossNavigationDocumentClick: function(r) {
+
+		var config = Ext.apply({
+			//title: (r.document.title !== undefined || r.document.title != null)? r.document.title : r.document.name, 
+			closable: true
+		}, r);
+		
+		var name = r.document.name;
+		var title = r.document.title;
+		if(title !== undefined){
+			config.title = title;
+		}else{
+			config.title = name;
+		}
+		
+		var executionPanel = new Sbi.execution.ExecutionPanel(config, r.document);
+		executionPanel.tabType = 'document';
+		
+		executionPanel.addListener('crossnavigationonothertab', this.onCrossNavigation, this);
+		executionPanel.addListener('openfavourite', this.onOpenFavourite, this);
+		
+		this.tabbedBrowser.brTab.add(executionPanel).show();
+		
+		executionPanel.execute();
+	}
+
+	, onDocumentClick: function(panel, doc) {
+		
+		var executionPanel = new Sbi.execution.ExecutionPanel({
+			title: doc.title !== undefined ? doc.title : doc.name
+			, closable: true
+		}, doc);
+		executionPanel.tabType = 'document';
+		
+		executionPanel.addListener('crossnavigationonothertab', this.onCrossNavigation, this);
+		executionPanel.addListener('openfavourite', this.onOpenFavourite, this);
+		
+		
+		this.tabbedBrowser.brTab.add(executionPanel).show();
+		
+		executionPanel.execute();
+	}
+	
+	, onFolderClick: function(panel, r) {
+		this.selectFolder(r.id);
+	}
+	
+	
+	, onBreadCrumbClick: function(panel, b) {
+		this.selectFolder(b.id);
+	}
+	
+	, onSearch: function(panel, q) {
+		if(this.rootFolderId) q.rootFolderId = this.rootFolderId;
+		this.detailPanel.searchFolder(q);
+	}
+	
+	, onSort: function(panel, cb) {
+		this.detailPanel.sort('Documents', cb.inputValue);
+	}
+	
+	, onReset: function(panel, cb) {
+		this.selectFolder(this.selectedFolderId);
+	}
+	
+	, onGroup: function(panel, cb) {
+		this.detailPanel.group('Documents', cb.inputValue);
+	}
+	
+	, onFilter: function(panel, cb) {
+		this.detailPanel.filter(cb.inputValue);
+	}
+});

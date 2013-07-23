@@ -45,7 +45,7 @@ public class DocumentDispatcher {
 			documentDispatchChannels.add(dispatchChannel);
 		}
 
-		if(dispatchContext.isMailDispatchChannelEnabled() && dispatchContext.isGlobalUniqueMail()){
+		if(dispatchContext.isGlobalUniqueMail()){
 			dispatchChannel = new UniqueMailDocumentDispatchChannel(dispatchContext);
 			documentDispatchChannels.add(dispatchChannel);			
 		}

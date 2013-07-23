@@ -45,10 +45,16 @@ public class DocumentDispatcher {
 			documentDispatchChannels.add(dispatchChannel);
 		}
 
-		if(dispatchContext.isMailDispatchChannelEnabled()) {							
+		if(dispatchContext.isMailDispatchChannelEnabled() && dispatchContext.isGlobalUniqueMail()){
+			dispatchChannel = new UniqueMailDocumentDispatchChannel(dispatchContext);
+			documentDispatchChannels.add(dispatchChannel);			
+		}
+
+		if(dispatchContext.isMailDispatchChannelEnabled() && !dispatchContext.isGlobalUniqueMail()) {							
 			dispatchChannel = new MailDocumentDispatchChannel(dispatchContext);
 			documentDispatchChannels.add(dispatchChannel);
 		}
+		
 		if(dispatchContext.isDistributionListDispatchChannelEnabled()) {
 			dispatchChannel = new DistributionListDocumentDispatchChannel(dispatchContext);
 			documentDispatchChannels.add(dispatchChannel);

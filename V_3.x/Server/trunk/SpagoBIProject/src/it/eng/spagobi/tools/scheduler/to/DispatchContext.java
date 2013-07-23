@@ -94,12 +94,23 @@ public class DispatchContext implements Serializable {
 	private int totalNumberOfDocumentsToDispatch;
 	private int indexNumberOfDocumentToDispatch;
 	
+	private String documentLabels;
+	
+	// indicate if this dispatch context establish settings for unique mail
+	private boolean uniqueMail;
+	// indicate if in present scheduling there is a unique mail logic
+	private boolean globalUniqueMail;
+	
 
 	//property set to zip document in case of file
 	private boolean zipFileDocument = false;	
 	// property to set name of file
 	private String fileName;
 	private String zipFileName;
+	
+	//folder to pass inc ase of unique mail case
+	private String tempFolderName;
+	private String tempFolderPath;
 
 	
 	//property set to zip document in case of e-mail
@@ -160,16 +171,12 @@ public class DispatchContext implements Serializable {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public boolean isUniqueMail() {
+		return uniqueMail;
+	}
+	public void setUniqueMail(boolean uniqueMail) {
+		this.uniqueMail = uniqueMail;
+	}
 	public boolean isReportNameInSubject() {
 		return reportNameInSubject;
 	}
@@ -698,6 +705,30 @@ public class DispatchContext implements Serializable {
 	}
 	public void setZipMailName(String zipMailName) {
 		this.zipMailName = zipMailName;
+	}
+	public boolean isGlobalUniqueMail() {
+		return globalUniqueMail;
+	}
+	public void setGlobalUniqueMail(boolean globalUniqueMail) {
+		this.globalUniqueMail = globalUniqueMail;
+	}
+	public String getTempFolderName() {
+		return tempFolderName;
+	}
+	public void setTempFolderName(String tempFolderPath) {
+		this.tempFolderName = tempFolderPath;
+	}
+	public String getTempFolderPath() {
+		return tempFolderPath;
+	}
+	public void setTempFolderPath(String tempFolderPath) {
+		this.tempFolderPath = tempFolderPath;
+	}
+	public String getDocumentLabels() {
+		return documentLabels;
+	}
+	public void setDocumentLabels(String documentLabels) {
+		this.documentLabels = documentLabels;
 	}
 	
 	

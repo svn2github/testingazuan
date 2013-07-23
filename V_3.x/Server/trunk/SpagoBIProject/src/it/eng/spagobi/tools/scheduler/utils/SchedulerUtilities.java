@@ -454,6 +454,9 @@ public class SchedulerUtilities {
 				dispatchContext.setReportNameInSubject(true);
 			}
 
+			if(name.equals("uniqueMail")) {
+				dispatchContext.setUniqueMail(true);
+			}
 			
 			// File
 			if(name.equals("zipFileDocument")) {

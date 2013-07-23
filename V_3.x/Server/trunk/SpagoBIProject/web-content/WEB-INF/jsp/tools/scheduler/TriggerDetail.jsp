@@ -121,7 +121,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			//current date
 			var currentDt = new Date();
 			if(newTimestamp.getElapsed(oldDate) == 0 || newTimestamp < currentDt ){
-				answer = confirm('<%=message%>');
+				answer = false;
 				if(!answer){			
 					chronStr = getRepetitionString();	
 					$('chronstring').value=chronStr;
@@ -1316,10 +1316,18 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
+				
 				<div id="mail_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;"> 
 				
+				  <input id="uniqueMail_<%=biobj.getId()%>__<%=index%>" type="checkbox" name="uniqueMail_<%=biobj.getId()%>__<%=index%>" value="true"
+                        <%= sInfo.isUniqueMail() ? "checked='checked'" : "" %> />
+                  <span class='portlet-form-field-label'>
+                     <spagobi:message key="scheduler.uniqueMail" bundle="component_scheduler_messages" />
+                  </span>
+				<br/>
+				<br/>			
 				
-				  <input  type="checkbox" name="zipMailDocument_<%=biobj.getId()%>__<%=index%>" value="true"
+				  <input id="zipMailDocument_<%=biobj.getId()%>__<%=index%>" type="checkbox" name="zipMailDocument_<%=biobj.getId()%>__<%=index%>" value="true"
                         <%= sInfo.isZipMailDocument() ? "checked='checked'" : "" %> />
                   <span class='portlet-form-field-label'>
                      <spagobi:message key="scheduler.zipMailDocument" bundle="component_scheduler_messages" />
@@ -1543,6 +1551,8 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 	<script>
 	toggle('mail_<%=biobj.getId()%>__<%=index%>', 'sendmail_<%=biobj.getId()%>__<%=index%>', <%= sInfo.isMailDispatchChannelEnabled() %>);
+	
+		
 	</script> 
 
 	<!-- ======================================================================================== -->

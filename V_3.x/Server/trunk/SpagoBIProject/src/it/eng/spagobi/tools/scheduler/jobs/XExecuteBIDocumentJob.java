@@ -18,6 +18,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.events.EventsManager;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetacontent;
 import it.eng.spagobi.tools.objmetadata.bo.ObjMetadata;
 import it.eng.spagobi.tools.objmetadata.dao.IObjMetacontentDAO;
@@ -26,6 +27,7 @@ import it.eng.spagobi.tools.scheduler.Formula;
 import it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.dispatcher.DocumentDispatcher;
+import it.eng.spagobi.tools.scheduler.dispatcher.UniqueMailDocumentDispatchChannel;
 import it.eng.spagobi.tools.scheduler.to.DispatchContext;
 import it.eng.spagobi.tools.scheduler.utils.BIObjectParametersIterator;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
@@ -33,6 +35,8 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.mime.MimeUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +51,8 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 
 public class XExecuteBIDocumentJob extends AbstractSpagoBIJob implements Job {
@@ -123,6 +129,64 @@ public class XExecuteBIDocumentJob extends AbstractSpagoBIJob implements Job {
 				globalDocumentDispatcher = new DocumentDispatcher(globalDispatchContext); 
 			}
 					
+			String tempFolderName = null;
+			String tempFolderPath = null;
+			String documentLabelsString = "";
+			
+			boolean uniqueMailForAll = false; 
+			
+			
+			// search if we are in unique mail case
+			
+			for(int documentIndex = 0; documentIndex < documentLabels.length; documentIndex++) {
+
+				documentInstanceName = documentLabels[documentIndex];
+				documentLabel = documentInstanceName.substring(0, documentInstanceName.lastIndexOf("__"));
+				document = documentDAO.loadBIObjectByLabel(documentLabel);
+				
+				String encodedDispatchContext = jobDataMap.getString("biobject_id_" + document.getId() + "__"+ (documentIndex+1));
+
+				DispatchContext dispatchContext = SchedulerUtilities.decodeDispatchContext(encodedDispatchContext);
+				
+				boolean is = dispatchContext.isUniqueMail();
+				if(is){
+					uniqueMailForAll = true;
+					UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+					UUID uuid_local = uuidGen.generateTimeBasedUUID();
+					String folderName = uuid_local.toString();
+					tempFolderName= folderName.replaceAll("-", "");
+					logger.debug("found unique mail case");
+					break;
+				}
+			}
+
+			// create temporary folder
+			if(uniqueMailForAll){
+			logger.debug("Unique mail case");
+				File folder = createTempDirectory(tempFolderName);
+				tempFolderPath = folder.getAbsolutePath();
+				logger.debug("Tempporary directory created in "+tempFolderPath);
+
+				// fillDocumentLabels
+				for(int documentIndex = 0; documentIndex < documentLabels.length; documentIndex++) {
+
+					documentInstanceName = documentLabels[documentIndex];
+					documentLabel = documentInstanceName.substring(0, documentInstanceName.lastIndexOf("__"));
+					documentLabelsString += " "+documentLabel+",";
+				}
+				if(documentLabelsString.endsWith(",")){
+					documentLabelsString = documentLabelsString.substring(0, documentLabelsString.length()-1);
+				}
+				
+			}
+			else{
+				logger.debug("No uniuqe mail case");
+
+			}
+			
+
+			//map for unique mail case
+			Map<String, Object> mailOptions = null;
 			
 			for(int documentIndex = 0; documentIndex < documentLabels.length; documentIndex++) {
 				documentInstanceName = documentLabels[documentIndex];
@@ -245,8 +309,16 @@ public class XExecuteBIDocumentJob extends AbstractSpagoBIJob implements Job {
 							String encodedDispatchContext = jobDataMap.getString("biobject_id_" + document.getId() + "__"+ (documentIndex+1));
 							dispatchContext = SchedulerUtilities.decodeDispatchContext(encodedDispatchContext);
 							dispatchContext.setUserProfile(userProfile);
+							dispatchContext.setGlobalUniqueMail(uniqueMailForAll);
 							documentDispatcher = new DocumentDispatcher(dispatchContext); 
 						}
+						
+						// this settings are for unique mail case and must be inserted equals for all disptchers. Not read in other use cases
+						dispatchContext.setTempFolderName(tempFolderName);
+						dispatchContext.setTempFolderPath(tempFolderPath);
+						dispatchContext.setGlobalUniqueMail(uniqueMailForAll);
+						dispatchContext.setDocumentLabels(documentLabelsString);
+						
 						
 						logger.debug("Dispatch to a snapshot is equal to [" + dispatchContext.isSnapshootDispatchChannelEnabled() + "]");
 						logger.debug("Dispatch to a file is equal to [" + dispatchContext.isFileSystemDispatchChannelEnabled() + "]");
@@ -303,8 +375,22 @@ public class XExecuteBIDocumentJob extends AbstractSpagoBIJob implements Job {
 						dispatchContext.setParametersMap(parametersMap);
 						dispatchContext.setTotalNumberOfDocumentsToDispatch(documentLabels.length);
 						dispatchContext.setIndexNumberOfDocumentToDispatch(documentIndex);
+						// unique mail is calculated one for all
+						dispatchContext.setGlobalUniqueMail(uniqueMailForAll);
 						
 						documentDispatcher.setDispatchContext(dispatchContext);
+		
+						
+						
+						// if we are in unique mail option and this is unique mail dispatcher take mail options settings, put here with dispatch context updated
+						if( uniqueMailForAll
+								&& dispatchContext.isUniqueMail()
+								){
+							mailOptions = getMailOptionsFromUniqueMaildispatcher(document, dispatchContext);
+							logger.debug("Mail options filled with values");
+						}
+						
+						
 						String documentStateCode = document.getStateCode();
 						//Execute dispatchers only if document is Released
 						if (documentStateCode.equals("REL")){
@@ -323,10 +409,17 @@ public class XExecuteBIDocumentJob extends AbstractSpagoBIJob implements Job {
 					}
 				}
 				
-				String endExecMsg = "${scheduler.endexecsched} " + document.getName();
-				eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
-
+					String endExecMsg = "${scheduler.endexecsched} " + document.getName();
+					eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
 			}
+			
+			//if we are in unique mail mode send zip
+			if(uniqueMailForAll){
+
+				new UniqueMailDocumentDispatchChannel().sendFiles(mailOptions);
+			}
+
+			
 			
 			if(globalDocumentDispatcher != null) {
 				globalDocumentDispatcher.dispose();
@@ -534,4 +627,95 @@ private void loadDocumentMetadata(BIObject document) {
 			logger.debug("OUT");
 		}
 	}
+	
+	/** This method fills maiLOptions Map, whose aim is to contain mails ettings store d in tab that flags the unique mail options
+	 * 
+	 * @param document
+	 * @param dispatchContext
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> getMailOptionsFromUniqueMaildispatcher(BIObject document, DispatchContext dispatchContext) throws Exception{
+		
+		Map<String, Object> mailOptions = new HashMap<String, Object>();
+		
+		IDataStore emailDispatchDataStore = dispatchContext.getEmailDispatchDataStore();
+		Map parametersMap = dispatchContext.getParametersMap();
+		String contentType = dispatchContext.getContentType(); 
+		String fileExtension = dispatchContext.getFileExtension(); 
+		//String nameSuffix = dispatchContext.getNameSuffix();
+		String nameSuffix = dispatchContext.getDocumentLabels();
+
+		// appending the current date
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.applyPattern("dd-MM-yyyy");
+		String dateStr = sdf.format(date);
+		nameSuffix+="_" + dateStr;
+		
+		String descriptionSuffix = dispatchContext.getDescriptionSuffix();
+		String containedFileName = dispatchContext.getContainedFileName() != null && !dispatchContext.getContainedFileName().equals("")? dispatchContext.getContainedFileName() : document.getName();
+		String zipFileName = dispatchContext.getZipMailName() != null && !dispatchContext.getZipMailName().equals("")? dispatchContext.getZipMailName() : "Zipped_Documents";
+		boolean reportNameInSubject = dispatchContext.isReportNameInSubject();
+		String tempFolderPath = dispatchContext.getTempFolderPath();
+		String tempFolderName = dispatchContext.getTempFolderName();
+		String documentLabels = dispatchContext.getDocumentLabels();
+		boolean isZipDocument = dispatchContext.isZipMailDocument();
+		
+
+
+		String mailSubj = dispatchContext.getMailSubj();
+		mailSubj = StringUtilities.substituteParametersInString(mailSubj, parametersMap, null, false);
+
+		mailOptions.put(UniqueMailDocumentDispatchChannel.MAIL_SUBJECT, mailSubj);
+		
+		String mailTxt = dispatchContext.getMailTxt();
+
+		String[] recipients = UniqueMailDocumentDispatchChannel.findRecipients(dispatchContext, document, emailDispatchDataStore);
+		if (recipients == null || recipients.length == 0) {
+			logger.error("No recipients found for email sending!!!");
+			return null;
+		}
+
+		mailOptions.put(UniqueMailDocumentDispatchChannel.RECIPIENTS, recipients);
+
+		mailOptions.put(UniqueMailDocumentDispatchChannel.DOCUMENT_NAME, document.getName());
+		mailOptions.put(UniqueMailDocumentDispatchChannel.NAME_SUFFIX, nameSuffix);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.MAIL_TXT, mailTxt);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.DESCRIPTION_SUFFIX, descriptionSuffix);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.CONTAINED_FILE_NAME, containedFileName);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.ZIP_FILE_NAME, zipFileName);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.FILE_EXTENSION, fileExtension);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.CONTENT_TYPE, contentType);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.DOCUMENT_STATE_CODE, document.getStateCode());
+		mailOptions.put(UniqueMailDocumentDispatchChannel.REPORT_NAME_IN_SUBJECT, reportNameInSubject);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.TEMP_FOLDER_PATH, tempFolderPath);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.TEMP_FOLDER_NAME, tempFolderName);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.DOCUMENT_LABELS, documentLabels);
+		mailOptions.put(UniqueMailDocumentDispatchChannel.IS_ZIP_DOCUMENT, isZipDocument);
+		
+				
+		return mailOptions;
+	}
+
+	   public static File createTempDirectory(String tempFolderName)
+	    	    throws IOException
+	    	{
+	    	    final File temp;
+
+	    	    temp = File.createTempFile("temp", tempFolderName);
+
+	    	    if(!(temp.delete()))
+	    	    {
+	    	        throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+	    	    }
+
+	    	    if(!(temp.mkdir()))
+	    	    {
+	    	        throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+	    	    }
+
+	    	    return (temp);
+	    	}
+	
 }

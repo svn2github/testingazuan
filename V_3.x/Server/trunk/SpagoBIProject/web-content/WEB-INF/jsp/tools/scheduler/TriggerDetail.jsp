@@ -120,8 +120,10 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			var answer = false;
 			//current date
 			var currentDt = new Date();
-			if(newTimestamp.getElapsed(oldDate) == 0 || newTimestamp < currentDt ){
-				answer = false;
+			//alert(oldDate+'  '+currentDt);
+					if(newTimestamp.getElapsed(oldDate) == 0 || newTimestamp < currentDt ){
+				//answer = false;
+				answer = confirm('<%=message%>');
 				if(!answer){			
 					chronStr = getRepetitionString();	
 					$('chronstring').value=chronStr;

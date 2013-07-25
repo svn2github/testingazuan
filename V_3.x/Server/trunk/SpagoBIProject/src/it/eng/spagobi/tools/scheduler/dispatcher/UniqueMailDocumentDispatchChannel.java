@@ -363,7 +363,8 @@ public class UniqueMailDocumentDispatchChannel implements IDocumentDispatchChann
 
 						bodyPart = new MimeBodyPart();
 
-						sds = new SchedulerDataSource(content, contentType, entries[i] + fileExtension);
+						sds = new SchedulerDataSource(content, contentType, entries[i]);
+						//sds = new SchedulerDataSource(content, contentType, entries[i] + fileExtension);
 
 						bodyPart.setDataHandler(new DataHandler(sds));
 						bodyPart.setFileName(sds.getName());
@@ -381,8 +382,10 @@ public class UniqueMailDocumentDispatchChannel implements IDocumentDispatchChann
 
 			// add the Multipart to the message
 			msg.setContent(mp);
+			logger.debug("Preparing to send mail");
 			// send message
 			if ((smtpssl.equals("true")) && (!StringUtilities.isEmpty(user)) &&  (!StringUtilities.isEmpty(pass))){
+				logger.debug("Smtps mode active user "+user);
 				//USE SSL Transport comunication with SMTPS
 				Transport transport = session.getTransport("smtps");
 				transport.connect(smtphost,smtpPort,user,pass);
@@ -390,9 +393,15 @@ public class UniqueMailDocumentDispatchChannel implements IDocumentDispatchChann
 				transport.close(); 
 			}
 			else {
+				logger.debug("Smtp mode");
 				//Use normal SMTP
 				Transport.send(msg);
 			}
+			
+//			logger.debug("delete tempFolder path "+tempFolder.getPath());
+//			boolean deleted = tempFolder.delete();
+//			logger.debug("Temp folder deleted "+deleted);
+			
 		} catch (Exception e) {
 			logger.error("Error while sending schedule result mail",e);
 			return false;

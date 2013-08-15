@@ -37,6 +37,7 @@
 <DOMAIN valueCd="SUSP" valueNm="sbidomains.nm.susp" domainCd="STATE" domainNm="Object state" valueDs="sbidomains.ds.susp"/>
 <DOMAIN valueCd="LOW_FUNCT" valueNm="sbidomains.nm.low_funct" domainCd="FUNCT_TYPE" domainNm="Functionality" valueDs="sbidomains.ds.low_funct"/>
 <DOMAIN valueCd="USER_FUNCT" valueNm="sbidomains.nm.user_funct" domainCd="FUNCT_TYPE" domainNm="Functionality" valueDs="sbidomains.ds.user_funct"/>
+<DOMAIN valueCd="COMMUNITY_FUNCT" valueNm="sbidomains.nm.community_funct" domainCd="FUNCT_TYPE" domainNm="Functionality" valueDs="sbidomains.ds.community_funct"/>
 <DOMAIN valueCd="DEV" valueNm="sbidomains.nm.dev" domainCd="STATE" domainNm="Object state" valueDs="sbidomains.ds.dev"/>
 <DOMAIN valueCd="TEST" valueNm="sbidomains.nm.test" domainCd="STATE" domainNm="Object state" valueDs="sbidomains.ds.test"/>
 <DOMAIN valueCd="REL" valueNm="sbidomains.nm.rel" domainCd="STATE" domainNm="Object state" valueDs="sbidomains.ds.rel"/>
@@ -50,13 +51,15 @@
 <DOMAIN valueCd="NUMERIC" valueNm="sbidomains.nm.numeric" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.numeric"/>
 <DOMAIN valueCd="ALFANUMERIC" valueNm="sbidomains.nm.alfanumeric" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.alfanumeric"/>
 <DOMAIN valueCd="LETTERSTRING" valueNm="sbidomains.nm.letterstring" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.letterstring"/>
-<DOMAIN valueCd="MANDATORY" valueNm="sbidomains.nm.mandatory" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.mandatory"/>
+<!-- DOMAIN valueCd="MANDATORY" valueNm="sbidomains.nm.mandatory" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.mandatory"/-->
 <DOMAIN valueCd="FISCALCODE" valueNm="sbidomains.nm.fiscalcode" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.fiscalcode"/>
 <DOMAIN valueCd="EMAIL" valueNm="sbidomains.nm.email" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="sbidomains.ds.email"/>
 <DOMAIN valueCd="EXT" valueNm="sbidomains.nm.ext" domainCd="ENGINE_TYPE" domainNm="Engine types" valueDs="sbidomains.ds.ext"/>
 <DOMAIN valueCd="INT" valueNm="sbidomains.nm.int" domainCd="ENGINE_TYPE" domainNm="Engine types" valueDs="sbidomains.ds.int"/>
 <DOMAIN valueCd="LIST" valueNm="sbidomains.nm.list" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.list"/>
-<DOMAIN valueCd="CHECK_LIST" valueNm="sbidomains.nm.check_list" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.check_list"/>
+<DOMAIN valueCd="LOOKUP" valueNm="sbidomains.nm.lookup" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.lookup"/>
+<DOMAIN valueCd="SLIDER" valueNm="sbidomains.nm.slider" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.slider"/>
+<DOMAIN valueCd="TREE" valueNm="sbidomains.nm.tree" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.tree"/>
 <DOMAIN valueCd="COMBOBOX" valueNm="sbidomains.nm.combobox" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="sbidomains.ds.combobox"/>
 <DOMAIN valueCd="-1" valueNm="sbidomains.nm.default" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.default"/>
 <DOMAIN valueCd="org.hibernate.dialect.OracleDialect" valueNm="sbidomains.nm.oracle" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.oracle"/>
@@ -66,6 +69,8 @@
 <DOMAIN valueCd="org.hibernate.dialect.MySQLInnoDBDialect" valueNm="sbidomains.nm.mysql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.mysql"/>
 <DOMAIN valueCd="org.hibernate.dialect.PostgreSQLDialect" valueNm="sbidomains.nm.postgresql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.postgresql"/>
 <DOMAIN valueCd="org.hibernate.dialect.IngresDialect" valueNm="sbidomains.nm.ingres" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.ingres"/>
+<DOMAIN valueCd="hbase" valueNm="sbidomains.nm.hbase" domainCd="DIALECT_HIB" domainNm="HBQL HBase dialect" valueDs="sbidomains.ds.hbase"/>
+<DOMAIN valueCd="hive" valueNm="sbidomains.nm.hive" domainCd="DIALECT_HIB" domainNm="HQL Hive dialect" valueDs="sbidomains.ds.hive"/>
 <DOMAIN valueCd="RANGE" valueNm="sbidomains.nm.range" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs="sbidomains.ds.range"/>
 <DOMAIN valueCd="MINIMUM" valueNm="sbidomains.nm.minimum" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs="sbidomains.ds.minimum"/>
 <DOMAIN valueCd="MAXIMUM" valueNm="sbidomains.nm.maximum" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs="sbidomains.ds.maximum"/>
@@ -136,4 +141,31 @@
 <DOMAIN valueCd="SPA" valueNm="Spanish" domainCd="LANG" domainNm="Language ISO code" valueDs="Spanish"/>
 <DOMAIN valueCd="ENG" valueNm="English" domainCd="LANG" domainNm="Language ISO code" valueDs="English"/>
 <DOMAIN valueCd="FRA" valueNm="French" domainCd="LANG" domainNm="Language ISO code" valueDs="French"/>
+<DOMAIN valueCd="fieldType" valueNm="fieldType" domainCd="DS_META_PROPERTY" domainNm="Data Set Metadata Property" valueDs="Data Set Metadata Property"/>
+<DOMAIN valueCd="type" valueNm="type" domainCd="DS_META_PROPERTY" domainNm="Data Set Metadata Property" valueDs="Data Set Metadata Property"/>
+<DOMAIN valueCd="MEASURE" valueNm="MEASURE" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="ATTRIBUTE" valueNm="ATTRIBUTE" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="String" valueNm="String" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Integer" valueNm="Integer" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Double" valueNm="Double" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="SBI Model Category 1" valueNm="SBI Model Category 1" domainCd="BM_CATEGORY" domainNm="Category Meta Model" valueDs="Category Meta Model"/>
+<DOMAIN valueCd="SBI Model Category 2" valueNm="SBI Model Category 2" domainCd="BM_CATEGORY" domainNm="Category Meta Model" valueDs="Category Meta Model"/>
+
+<DOMAIN valueCd="GEOBI" valueNm="GEOBI" domainCd="CATEGORY_TYPE" domainNm="Category Type" valueDs="GEOBI"/>
+<DOMAIN valueCd="hierarchy" valueNm="hierarchy" domainCd="DS_META_PROPERTY" domainNm="Data Set Metadata Property" valueDs="Data Set Metadata Property"/>
+<DOMAIN valueCd="hierarchy_level" valueNm="hierarchy_level" domainCd="DS_META_PROPERTY" domainNm="Data Set Metadata Property" valueDs="Data Set Metadata Property"/>
+<DOMAIN valueCd="geo" valueNm="geo" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="time" valueNm="time" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+
+<DOMAIN valueCd="State" valueNm="State" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Comune ita" valueNm="Comune ita" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Year num" valueNm="Year num" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Month name" valueNm="Month name" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+<DOMAIN valueCd="Day num" valueNm="Day num" domainCd="DS_META_VALUE" domainNm="Data Set Metadata Value" valueDs="Data Set Metadata Value"/>
+
+
+
+<DOMAIN valueCd="FILE" valueNm="FILE" domainCd="LAYER_TYPE" domainNm="Layer Type" valueDs="Layer Type"/>
+<DOMAIN valueCd="WFS" valueNm="WFS" domainCd="LAYER_TYPE" domainNm="Layer Type" valueDs="Layer Type"/>
+
 </DOMAINS>

@@ -638,24 +638,33 @@ private void loadDocumentMetadata(BIObject document) {
 	public Map<String, Object> getMailOptionsFromUniqueMaildispatcher(BIObject document, DispatchContext dispatchContext) throws Exception{
 		
 		Map<String, Object> mailOptions = new HashMap<String, Object>();
+	
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.applyPattern("dd-MM-yyyy");
+		String dateStr = sdf.format(date);
 		
 		IDataStore emailDispatchDataStore = dispatchContext.getEmailDispatchDataStore();
 		Map parametersMap = dispatchContext.getParametersMap();
 		String contentType = dispatchContext.getContentType(); 
 		String fileExtension = dispatchContext.getFileExtension(); 
 		//String nameSuffix = dispatchContext.getNameSuffix();
-		String nameSuffix = dispatchContext.getDocumentLabels();
+		String nameSuffix = "";
+		if(dispatchContext.isReportNameInSubject()){
+			nameSuffix = dispatchContext.getDocumentLabels();
+			// appending the current date
 
-		// appending the current date
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.applyPattern("dd-MM-yyyy");
-		String dateStr = sdf.format(date);
-		nameSuffix+="_" + dateStr;
+			nameSuffix+="_" + dateStr;
+
+		}
+		
+		//String nameSuffix = "";
+		
 		
 		String descriptionSuffix = dispatchContext.getDescriptionSuffix();
 		String containedFileName = dispatchContext.getContainedFileName() != null && !dispatchContext.getContainedFileName().equals("")? dispatchContext.getContainedFileName() : document.getName();
 		String zipFileName = dispatchContext.getZipMailName() != null && !dispatchContext.getZipMailName().equals("")? dispatchContext.getZipMailName() : "Zipped_Documents";
+		zipFileName = zipFileName+"_"+dateStr;
 		boolean reportNameInSubject = dispatchContext.isReportNameInSubject();
 		String tempFolderPath = dispatchContext.getTempFolderPath();
 		String tempFolderName = dispatchContext.getTempFolderName();

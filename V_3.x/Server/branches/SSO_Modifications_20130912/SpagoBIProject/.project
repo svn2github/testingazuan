@@ -3,9 +3,9 @@
 	<name>SpagoBIProject</name>
 	<comment></comment>
 	<projects>
-		<project>SpagoBIUtils</project>
 		<project>SpagoBIUtilsJSON</project>
 		<project>QbeCore</project>
+		<project>SpagoBIUtils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

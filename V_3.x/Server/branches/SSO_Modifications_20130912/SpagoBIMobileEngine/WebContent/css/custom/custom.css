@@ -1,0 +1,154 @@
+/* log-in page image */
+.login-fieldset-top{
+	 background-image:url('../../img/custom/home_page_top.png') !important;
+	 background-repeat:no-repeat !important;
+	 background-position: center top !important;
+	 padding-top: 75px !important;
+}
+
+/*red color to items of the document browser*/
+.table-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}  
+.chart-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+.composed-item {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+.navigate {
+	text-shadow:none;
+	font-weight: bold;
+	color: #f01b2d;
+}
+
+
+
+
+.x-toolbar-dark .x-button, .x-toolbar-dark .x-button.x-button-back:after, .x-toolbar-dark .x-button.x-button-forward:after, .x-toolbar .x-toolbar-dark .x-button, .x-toolbar .x-toolbar-dark .x-button.x-button-back:after, .x-toolbar .x-toolbar-dark .x-button.x-button-forward:after, .x-toolbar-dark .x-field-select .x-component-outer, .x-toolbar-dark .x-field-select .x-component-outer.x-button-back:after, .x-toolbar-dark .x-field-select .x-component-outer.x-button-forward:after, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer.x-button-back:after, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer.x-button-forward:after, .x-toolbar-dark .x-field-select .x-component-outer:before, .x-toolbar-dark .x-field-select .x-component-outer:before.x-button-back:after, .x-toolbar-dark .x-field-select .x-component-outer:before.x-button-forward:after, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer:before, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer:before.x-button-back:after, .x-toolbar .x-toolbar-dark .x-field-select .x-component-outer:before.x-button-forward:after{
+	background-color: #444 !important;
+	background-image: none !important;
+}
+
+/*custom button*/
+.x-toolbar-dark .x-button-pressing, .x-button-pressing, .x-list .x-list-item.x-item-selected, .x-list .x-list-item.x-item-selected .x-dock-horizontal {
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A12833)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A12833) !important;
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A12833)!important; 
+}
+
+
+
+/* log in toolbar */
+.log-in-toolbar.x-toolbar-dark {
+  background-image: none;
+  background-color: #D8061D;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A12833));
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A12833);
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A12833);
+  border-color: #B6BCBC;
+}
+
+/* parameters toolbar */
+.parameters-toolbar.x-toolbar-dark {
+  background-image: none;
+  background-color: #D8061D;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A12833));
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A12833);
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A12833);
+  border-color: #B6BCBC;
+}
+
+
+
+
+/* toolbars*/
+.x-toolbar-dark {
+  background-image: none;
+  background-color: #DADADA;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #FFFFFF), color-stop(3%, #FFFFFF), color-stop(100%, #DBD9DA));
+  background-image: -webkit-linear-gradient(top,   #DADADA,#FFFFFF 7%,#DBD9DA);
+  background-image: linear-gradient(top, #DADADA,#FFFFFF 7%,#DBD9DA);
+  border-color: #B6BCBC;
+}
+
+
+/* white background color in the document browser*/
+.x-scroll-scroller{
+	 background-color: white !important;
+}
+
+/* log in toolbar */
+.x-button-normal.x-button.x-layout-box-item.x-stretched.toolbar-document-browser.x-first.x-last{
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A12833)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A12833) !important;
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A12833)!important; 
+}
+
+
+/* log in toolbar */
+.x-button-normal.x-button.x-layout-box-item.x-stretched.toolbar-document-browser.x-first.x-last.x-button-pressed{
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A19863)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A19863) !important;
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A19863)!important; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*custom button*/
+.toolbar-navigation.x-layout-box-item.x-stretched {
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #D8061D), color-stop(100%, #A12833)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#D8061D 7%,#A12833) !important;
+  background-image: linear-gradient(top, #D8061D,#D8061D 7%,#A12833)!important; 
+}
+
+
+/*custom button*/
+.toolbar-navigation.x-layout-box-item.x-stretched.x-button-pressed {
+  background-color: #D8061D !important;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #D8061D), color-stop(3%, #A0061D), color-stop(100%, #712833)) !important;
+  background-image: -webkit-linear-gradient(top, #DADADA,#A0061D 7%,#712833) !important;
+  background-image: linear-gradient(top, #D8061D,#A0061D 7%,#712833)!important; 
+}
+
+.touchgridpanel .x-grid-cell-hd{
+color: black !important;
+text-shadow: none !important
+font-size: 8px !important;
+font-family: Verdana !important;
+}
+.x-grid-cell{
+text-shadow: none !important;
+font-size: 16px !important;
+}
+.x-container .x-list-item .x-stretched .x-touchgrid-item .x-item-selected .x-list-item-first .x-list-header-wrap{
+min-height: 20px !important;
+-webkit-transform: translate3d(0px, 0px, 0px);
+}
+.x-legend-item{
+text-shadow: none !important;
+font-size: 12px !important;
+font-family: Verdana !important;
+}

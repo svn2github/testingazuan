@@ -16,6 +16,8 @@ Sbi.locale.ln['sbi.general.yes'] = 'Yes';
 Sbi.locale.ln['sbi.general.No'] = 'No';
 Sbi.locale.ln['sbi.general.close'] = 'Close';
 Sbi.locale.ln['sbi.general.ok'] = 'OK';
+Sbi.locale.ln['sbi.general.sessionexpired.title'] = 'Session expired!';
+Sbi.locale.ln['sbi.general.sessionexpired.message'] = 'Session has expired, please log-in again';
 
 Sbi.locale.ln['sbidomains.ds.Generic_Node'] = 'Generic Node';
 Sbi.locale.ln['sbidomains.ds.Generic_root'] = 'Generic Root';

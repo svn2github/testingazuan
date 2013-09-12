@@ -48,11 +48,11 @@ if (user != null && password != null) {
 			User cannot execute document
 			<%
 		} else if (validRoles.length == 1) {
-			response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
+			response.sendRedirect("execution.jsp?role=" + validRoles[0]);
 		} else {
 			%>
 			<span><b>Choose the role</b></span>
-			<form action="documentParameters.jsp" method="post">
+			<form action="execution.jsp" method="post">
 				Choose role: 
 				<select name="role">
 				<%

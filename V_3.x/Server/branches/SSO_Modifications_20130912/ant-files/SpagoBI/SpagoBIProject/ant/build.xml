@@ -79,6 +79,7 @@
 		<copy file="${sbiutils.json.dir}/dist/sbi.utils.json-${project.version}.jar" todir="${web.dir}/WEB-INF/lib" overwrite="true" />
 		<copy file="${sbiutils.dir}/dist/sbi.utils-${project.version}.jar" todir="${web.dir}/WEB-INF/lib" overwrite="true" />
 
+		<!--
 		<antcall target="copy.sbi.security.liferay" />
 		<antcall target="copy.sbi.security.exo" />
 		<antcall target="copy.sbi.security.xml" />
@@ -88,6 +89,8 @@
   	<copy file="${exo.security.dir}/dist/sbi.security.exo-${project.version}.jar" todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   	<copy file="${xml.security.dir}/dist/sbi.security.xml-${project.version}.jar" todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   	<copy file="${ldap.security.dir}/dist/sbi.security.ldap-${project.version}.jar" todir="${web.dir}/WEB-INF/lib" overwrite="true" />
+  	
+  	-->
 
 	</target>
 
@@ -377,7 +380,7 @@
 				<file name="./src/ext/sbi/execution/ViewpointsPanel.js" />
 				<file name="./src/ext/sbi/execution/ShortcutsPanel.js" />
 				<file name="./src/ext/sbi/execution/InfoPage.js" />
-				<file name="./src/ext/sbi/execution/DocumentPanel.js" />
+				<!-- file name="./src/ext/sbi/execution/DocumentPanel.js" /-->
 				<file name="./src/ext/sbi/execution/ParametersPanel.js" />
 				<file name="./src/ext/sbi/execution/LookupFieldWithMaximize.js" />
 				<file name="./src/ext/sbi/execution/SessionParametersManager.js" />
@@ -489,7 +492,7 @@
 				<file name="./src/ext/sbi/tools/ManageDatasetParameters.js" />
 				<file name="./src/ext/sbi/tools/ParametersFillGrid.js" />
 				<file name="./src/ext/sbi/tools/dataset/DatasetManagementPanel.js" />
-				<file name="./src/ext/sbi/tools/dataset/FileDatasetPanel.js" />
+				<!--file name="./src/ext/sbi/tools/dataset/FileDatasetPanel.js" /-->
 				<file name="./src/ext/sbi/tools/dataset/QueryDatasetConfigurationPanel.js" />
 				<file name="./src/ext/sbi/tools/dataset/QueryDatasetScriptWizard.js" />
 

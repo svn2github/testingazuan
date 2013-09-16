@@ -25,6 +25,7 @@ public interface SsoServiceInterface {
 	public static final String PASSWORD_REQUEST_PARAMETER = "PASSWORD";
 	public static final String PASSWORD_MODE_REQUEST_PARAMETER = "PASSWORD_MODE";
 	public static final String PASSWORD_MODE_ENCRYPTED = "ENC";
+	public static final String SILENT_LOGIN = "SILENT_LOGIN";
 	
     /**
      * 

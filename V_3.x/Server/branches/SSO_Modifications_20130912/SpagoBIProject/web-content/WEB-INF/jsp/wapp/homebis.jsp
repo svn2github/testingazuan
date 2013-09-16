@@ -103,6 +103,11 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 	viewTrackPath=true;	
 	}
 	
+	boolean showExitButton = true;
+	if (session.getAttribute(SsoServiceInterface.SILENT_LOGIN) != null && Boolean.TRUE.equals(session.getAttribute(SsoServiceInterface.SILENT_LOGIN))) {
+		showExitButton = false;
+	}
+	
 	Boolean userHasChanged = (Boolean) moduleResponse.getAttribute("USER_HAS_CHANGED"); 
 %>
 
@@ -390,7 +395,7 @@ if(showfooter){%>
       Ext.QuickTips.init();              
       var menuList = <%=jsonMenuList%>;
       var firstUrl =  '<%= StringEscapeUtils.escapeJavaScript(firstUrlToCall) %>';
-     northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList});
+     northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList, showExitButton : <%= showExitButton %>});
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'
       					,xtype: 'panel'

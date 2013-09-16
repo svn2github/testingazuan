@@ -37,6 +37,19 @@ Ext.ns("Sbi.home");
 
 Sbi.home.Banner = function(config) {
 		
+	// init properties...
+	var defaultSettings = {
+		// set default values here
+		showExitButton: true
+	};
+
+	if (Sbi.settings && Sbi.settings.home && Sbi.settings.home.banner) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.home.banner);
+	}
+	
+	config = Ext.apply(defaultSettings, config || {});	
+	Ext.apply(this, config);
+	
 		this.initButtons(config);
 		this.initToolbar();
 		
@@ -108,6 +121,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 menuArray: null,
 	//array containing all possible themes (>1) 
 	 menuThemesArray: null,
+	 // true to display exit button, false otherwise
+	 showExitButton : null,
 	 
 	// ---------------------------------------------------------------------------
     // public methods
@@ -398,7 +413,9 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			if(this.tbRoleButton && this.tbRoleButton != null) {
 	 	    	this.tbx.addButton(this.tbRoleButton);
 	 	    }
-			this.tbx.add(this.tbExitButton);
+			if (this.showExitButton) {
+				this.tbx.add(this.tbExitButton);
+			}
 
 		}, this);
 

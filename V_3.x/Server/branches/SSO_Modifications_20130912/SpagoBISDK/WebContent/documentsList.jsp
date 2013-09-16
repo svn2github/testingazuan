@@ -22,6 +22,7 @@ When the authentication succeeds, the user can choose the document he wants to e
 <%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
 <%@page import="it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <%@page import="org.apache.axis.AxisFault"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -40,7 +41,7 @@ String user = request.getParameter("user");
 String password = request.getParameter("password");
 if (user != null && password != null) {
 	TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(user, password);
-    proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/TestConnectionService");
+    proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/TestConnectionService");
 	boolean result = proxy.connect();
 	if (result) {
 		// connection successful
@@ -64,7 +65,7 @@ if (user != null && password != null) {
 	<%
 	// gets all visible documents list
 	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
-	proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
+	proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DocumentsService");
 	SDKDocument[] documents = proxy.getDocumentsAsList(null, null, null);
 	session.setAttribute("spagobi_documents", documents);
 	for (int i = 0; i < documents.length; i++) {

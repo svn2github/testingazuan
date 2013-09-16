@@ -5,7 +5,8 @@
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
  
- <%@page import="java.io.InputStream"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
+<%@page import="java.io.InputStream"%>
 <%@page import="java.util.Random"%>
 <%@page import="it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.datasets.bo.SDKDataSet"%>
@@ -41,7 +42,7 @@ if (user != null && password != null) {
 	InputStream is = null;
 	try { 
 		DataSetsSDKServiceProxy proxy = new DataSetsSDKServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DataSetsSDKService");		
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DataSetsSDKService");		
 		
 
 		String dataset = null;

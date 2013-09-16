@@ -20,6 +20,7 @@ This page use the SpagoBI execution tag, that displays an iframe pointing to Spa
 <%@page import="java.util.*"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -65,7 +66,7 @@ if (user != null && password != null) {
 	}
 	%>
 	<spagobi:execution 
-			spagobiContext="http://localhost:8080/SpagoBI/"
+			spagobiContext="<%= SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/" %>"
 			userId="<%= user %>" 
 			password="<%= password %>" 
 	        documentId="<%= documentId.toString() %>"

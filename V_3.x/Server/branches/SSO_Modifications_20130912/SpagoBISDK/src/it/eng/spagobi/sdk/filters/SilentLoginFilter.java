@@ -7,6 +7,7 @@ package it.eng.spagobi.sdk.filters;
 
 import it.eng.spago.security.DefaultCipher;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.sdk.config.SpagoBISDKConfig;
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 
@@ -43,32 +44,39 @@ public class SilentLoginFilter implements Filter {
 		try {
 			if (request instanceof HttpServletRequest) {
 				HttpServletRequest httpRequest = (HttpServletRequest) request;
-				UsernamePasswordCredentials credentials = this.findUserCredentials(httpRequest);
+				HttpSession session = ((HttpServletRequest) request).getSession();
+				UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) session.getAttribute(UsernamePasswordCredentials.class.getName());
 				if (credentials != null) {
-					try {
-						logger.debug("User credentials found.");
-						if (!httpRequest.getMethod().equalsIgnoreCase("POST")) {
-							logger.error("Request method is not POST!!!");
-							throw new InvalidMethodException();
-						}
-						logger.debug("Authenticating user ...");
-						try {
-							this.doAuthenticate(credentials);
-							logger.debug("User authenticated");
-							HttpSession session = httpRequest.getSession();
-							session.setAttribute("spagobi_user", credentials.getUserName());
-							session.setAttribute("spagobi_pwd", credentials.getPassword());
-						} catch (Throwable t) {
-							logger.error("Authentication failed", t);
-							throw new SilentAuthenticationFailedException();
-						}
-					} catch (Exception e) {
-						logger.error("Error authenticating user", e);
-						httpRequest.getRequestDispatcher("silentLoginFailed.jsp").forward(request, response);
-					}
+					logger.debug("User credentials found on session, user is already authenticated");
 				} else {
-					logger.debug("User credentials not found.");
+					credentials = this.findUserCredentials(httpRequest);
+					if (credentials != null) {
+						try {
+							logger.debug("User credentials found.");
+							if (!httpRequest.getMethod().equalsIgnoreCase("POST")) {
+								logger.error("Request method is not POST!!!");
+								throw new InvalidMethodException();
+							}
+							logger.debug("Authenticating user ...");
+							try {
+								this.doAuthenticate(credentials);
+								logger.debug("User authenticated");
+								session.setAttribute(UsernamePasswordCredentials.class.getName(), credentials);
+								session.setAttribute("spagobi_user", credentials.getUserName());
+								session.setAttribute("spagobi_pwd", credentials.getPassword());
+							} catch (Throwable t) {
+								logger.error("Authentication failed", t);
+								throw new SilentAuthenticationFailedException();
+							}
+						} catch (Exception e) {
+							logger.error("Error authenticating user", e);
+							httpRequest.getRequestDispatcher("silentLoginFailed.jsp").forward(request, response);
+						}
+					} else {
+						logger.debug("User credentials not found.");
+					}
 				}
+
 				chain.doFilter(request, response);
 			}
 		} catch (Exception e) {
@@ -80,7 +88,7 @@ public class SilentLoginFilter implements Filter {
 		logger.debug("IN: userId = " + credentials.getUserName());
 		try {
 			TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(credentials.getUserName(), credentials.getPassword());
-		    proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/TestConnectionService");
+		    proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/TestConnectionService");
 			boolean result = proxy.connect();
 			if (!result) {
 				logger.error("Authentication failed for user " + credentials.getUserName());

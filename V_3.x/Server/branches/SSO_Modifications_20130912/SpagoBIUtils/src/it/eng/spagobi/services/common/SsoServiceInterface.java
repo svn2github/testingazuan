@@ -21,8 +21,8 @@ import javax.servlet.http.HttpSession;
 public interface SsoServiceInterface {
 	
 	public static final String USER_ID="user_id";
-	public static final String USER_NAME_REQUEST_PARAMETER = "USERNAME";
-	public static final String PASSWORD_REQUEST_PARAMETER = "PASSWORD";
+	public static final String USER_NAME_REQUEST_PARAMETER = "username";
+	public static final String PASSWORD_REQUEST_PARAMETER = "password";
 	public static final String PASSWORD_MODE_REQUEST_PARAMETER = "PASSWORD_MODE";
 	public static final String PASSWORD_MODE_ENCRYPTED = "ENC";
 	public static final String SILENT_LOGIN = "SILENT_LOGIN";

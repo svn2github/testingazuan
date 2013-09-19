@@ -78,8 +78,9 @@ public class QueryBuilder {
 	
 	public QueryBuilder(IDataSource dataSource){
 		
-		logger.debug("Creating QueryBuilder with DataSource [{}]",dataSource.getName());
+		logger.debug("IN: Creating QueryBuilder with DataSource [{}]",dataSource.getName());
 		this.dataSource = dataSource;
+		logger.debug("Creating Model Label Provider");
 		labelProvider = new ModelLabelProvider(this.dataSource);
 		IQbeTreeEntityFilter entityFilter = null;
 		IQbeTreeFieldFilter fieldFilter = null;
@@ -88,11 +89,14 @@ public class QueryBuilder {
 		fieldFilter = new QbeTreeAccessModalityFieldFilter();
 		fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
 		QbeTreeFilter filters =  new QbeTreeFilter(entityFilter, fieldFilter);
+		logger.debug("Get Datamart Model Structure from Datasource");
 		IModelStructure iDatamartModelStructure = dataSource.getModelStructure();
+		logger.debug("Get Model Names From Datamart Model Structure");
 		Set modelnames = iDatamartModelStructure.getModelNames();
 		//iDatamartModelStructure.getRootEntities(modelName)
 		this.modelView =  new FilteredModelStructure(iDatamartModelStructure, dataSource, filters);
 		this.query = new Query();
+		logger.debug("OUT: Finish Creation of QueryBuilder with DataSource [{}]",dataSource.getName());
 	}
 
 
@@ -101,6 +105,8 @@ public class QueryBuilder {
 	 * @return the composite populated with widgets
 	 */
 	public Composite createEditComponents(Composite parent){
+		logger.debug("IN: Create UI components for Query Edit");
+
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 
@@ -109,10 +115,14 @@ public class QueryBuilder {
 		composite.setLayout(new GridLayout(2, false));
 
 		//Create Business Model Tree 
+		logger.debug("Creating Business Model Tree UI");
 		createEditBusinessModelTree(composite);
 
 		//Create Query Filters
+		logger.debug("Creating Query Filters UI");
 		createEditGroup(composite);
+		logger.debug("OUT: Finish creation of UI components for Query Edit");
+
 
 		return container;
 	}
@@ -121,6 +131,8 @@ public class QueryBuilder {
 	 * Create UI for Query Edit - Business Model Tree
 	 */
 	public void createEditBusinessModelTree(Composite composite){
+		logger.debug("IN: Create UI for Query Edit - Business Model Tree");
+
 		Composite compositeTree = new Composite(composite, SWT.NONE);
 		GridData gd_compositeTree = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
 		gd_compositeTree.widthHint = 180;
@@ -134,14 +146,22 @@ public class QueryBuilder {
 		//*******************************************
 		// Business Model Tree Viewer 
 		//*******************************************
+		logger.debug("Creating Business Model Tree Viewer");
 		ModelTreeViewer businessModelTreeViewer = new ModelTreeViewer(groupBusinessModelTree, dataSource, modelView, this);
+		logger.debug("Finished creation of Business Model Tree Viewer");
 		Transfer[] transferTypes = new Transfer[]{ TextTransfer.getInstance(),LocalSelectionTransfer.getTransfer()  };
 		businessModelTreeViewer.addDragSupport(DND.DROP_MOVE, transferTypes, new QueryBuilderDragListener(businessModelTreeViewer));
+		logger.debug("OUT: Finish Creation UI for Query Edit - Business Model Tree");
+
 	}
 
 	public QueryEditGroup createEditGroup(Composite composite){
+		logger.debug("IN: Creating Query Edit Group");
+
 		compositeFilters = new QueryEditGroup(composite, this);
 		refreshQueryEditGroup();
+		logger.debug("OUT: Created Query Edit Group");
+
 		return compositeFilters;
 	}
 
@@ -150,6 +170,8 @@ public class QueryBuilder {
 	 *  @return the composite populated with widgets
 	 */
 	public Composite createResultsComponents(Composite parent){		
+		logger.debug("IN: Creating Query Results UI Component");
+
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 
@@ -170,6 +192,8 @@ public class QueryBuilder {
 
 		//Create Table widget to host results
 		createResultsTableViewer(groupQueryResult);
+		logger.debug("OUT: Created Query Results UI Component");
+
 
 		return container;
 	}

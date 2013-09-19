@@ -63,10 +63,13 @@ public class ModelTreeViewer extends TreeViewer {
 		Iterator<String> modelNamesIter = modelView.getModelNames().iterator();
 		// TODO GENERICO PER PIU DATAMART
 		String modelName = modelNamesIter.next();
+		logger.debug("Getting roots Entities of model []",modelName);
 		List<IModelEntity> modelViewEntities = modelView.getRootEntities(modelName);	
 		List<IModelEntity> modelViewFilteredEntities = new ArrayList<IModelEntity>();
 	
 		modelViewFilteredEntities = modelViewEntities;
+		logger.debug("OUT: Done Getting the datamart structure roots");
+
 
 		return modelViewFilteredEntities;
 	}

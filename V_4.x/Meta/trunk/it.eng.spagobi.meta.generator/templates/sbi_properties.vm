@@ -16,21 +16,7 @@ ${jpaColumn.uniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
 ${jpaColumn.uniqueName}.position = $velocityCount
 #end
 
-# ------------------------------------------------------------------
-# Subentities
-# ------------------------------------------------------------------
-#foreach ($jpaSubEntity in $jpaTable.getSubEntities())
-${jpaSubEntity.uniqueName}.visible = $jpaSubEntity.getAttribute("structural.visible")
-${jpaSubEntity.uniqueName}.type = $jpaSubEntity.getAttribute("structural.tabletype")
-${jpaSubEntity.uniqueName}.position = $velocityCount
 
-#foreach ($jpaColumn in $jpaSubEntity.getColumns())
-${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.visible = $jpaColumn.getAttribute("structural.visible")
-${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.type = $jpaColumn.getAttribute("structural.columntype")
-${jpaSubEntity.uniqueName}/${jpaColumn.UnqualifiedUniqueName}.position = $velocityCount
-
-#end
-#end
 
 #end
 

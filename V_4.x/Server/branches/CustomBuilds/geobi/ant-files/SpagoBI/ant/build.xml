@@ -1,6 +1,6 @@
 <project name="SpagoBI" default="create.all" basedir=".">
 
-  <property file="build.properties"/>
+  <property file="build.dev.properties"/>
 
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
   <!--   PATH PER ANT-SVN					                                                    -->

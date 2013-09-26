@@ -411,15 +411,85 @@
 	</target>
 	
 	<target name="runtime.setup.conf">
+		
+		<!-- context files -->
+		<copy file="${runtime.conf}/SpagoBI.context.xml" tofile="${tomcat.home}/webapps/SpagoBI/META-INF/context.xml" overwrite="true" />
+		<copy file="${runtime.conf}/SpagoBIQbeEngine.context.xml" tofile="${tomcat.home}/webapps/SpagoBIQbeEngine/META-INF/context.xml" overwrite="true" />
+		<copy file="${runtime.conf}/SpagoBIGeoReportEngine.context.xml" tofile="${tomcat.home}/webapps/SpagoBIGeoReportEngine/META-INF/context.xml" overwrite="true" />
+		
+		<copy file="${runtime.conf}/SpagoBI.Settings.js" tofile="${tomcat.home}/webapps/SpagoBI/themes/geobi/js/commons/Settings.js" overwrite="true" />
+		<copy file="${runtime.conf}/SpagoBIGeoReportEngine.Settings.js" tofile="${tomcat.home}/webapps/SpagoBIGeoReportEngine/js/src/ext/sbi/commons/Settings.js" overwrite="true" />
+		
+		<copy file="${runtime.conf}/comuni_sudtirol.json" tofile="${tomcat.home}/resources/georeport/comuni_sudtirol.json" overwrite="true" />
+		
+		<!-- server.xml-->
 		<delete file="${tomcat.home}/conf/server.xml" />
 		<copy file="${runtime.conf}/server.xml" todir="${tomcat.home}/conf" overwrite="true" />
-
-		<replace file="${tomcat.home}/conf/server.xml"  propertyFile="./build.dev.properties">
-			<replacefilter token="$SERVER_HOST$" property="runtime.host"/>
-			<replacefilter token="$SERVER_PORT$" property="runtime.port"/>
-		</replace>
 		
 		<antcall target="${specific.database.ant.task}" />
+
+		<replace file="${tomcat.home}/conf/server.xml"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="$SERVER_HOST$" property="runtime.host"/>
+			<replacefilter token="$SERVER_PORT$" property="runtime.port"/>
+			<replacefilter token="$SERVER_SHUTDOWN_PORT$" property="runtime.shutdown.port"/>
+			<replacefilter token="$SERVER_REDIRECT_PORT$" property="runtime.redirect.port"/>
+			<replacefilter token="$SERVER_AJP_PORT$" property="runtime.ajp.port"/>
+		</replace>
+		
+		
+	</target>
+	
+	<target name="hasqldb">
+		
+		<replace file="${tomcat.home}/conf/server.xml">
+			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
+			<replacevalue>
+				<![CDATA[<!-- SPAGOBI DB on HSQLDB -->
+				<Resource name="jdbc/spagobi" auth="Container"
+				type="javax.sql.DataSource" driverClassName="org.hsqldb.jdbcDriver"
+				url="jdbc:hsqldb:file:${catalina.base}/database/spagobi"
+				username="sa" password="" maxActive="20" maxIdle="10"
+				maxWait="-1"/>]]></replacevalue>
+		</replace>
+		
+		<replace file="${tomcat.home}/conf/server.xml">
+			<replacetoken> $DATASOURCE_MASTERDATA$</replacetoken>
+			<replacevalue>
+				<![CDATA[<!-- MASERDATA DB on HSQLDB -->
+				<Resource name="jdbc/tismasterdata" auth="Container"
+				type="javax.sql.DataSource" driverClassName="org.hsqldb.jdbcDriver"
+				url="jdbc:hsqldb:hsql://localhost:9001/tismasterdata"
+				username="sa" password="" maxActive="20" maxIdle="10"
+				maxWait="-1" validationQuery="select 1 from INFORMATION_SCHEMA.SYSTEM_USERS"
+				removeAbandoned="true" removeAbandonedTimeout="3600"/>]]></replacevalue>
+		</replace>
+	</target>
+
+	<target name="postgres">
+	
+		<replace file="${tomcat.home}/conf/server.xml">
+			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
+			<replacevalue>
+				<![CDATA[<!-- SPAGOBI DB on POSTGRES -->
+				<Resource name="jdbc/spagobi" auth="Container" 
+				type="javax.sql.DataSource"  driverClassName="org.postgresql.Driver"
+				url="jdbc:postgresql://localhost:5433/geodata?searchpath=spagobi"
+				username="geodata" password="asdfgh" 
+				maxWait="-1" validationQuery="select 1"
+				removeAbandoned="true" removeAbandonedTimeout="3600"  />]]></replacevalue>
+		</replace>
+		
+		<replace file="${tomcat.home}/conf/server.xml">
+			<replacetoken> $DATASOURCE_MASTERDATA$</replacetoken>
+			<replacevalue>
+				<![CDATA[<!-- MASTERDATA DB on POSTGRES -->
+				<Resource name="jdbc/masterdata" auth="Container" 
+				type="javax.sql.DataSource"  driverClassName="org.postgresql.Driver"
+				url="jdbc:postgresql://localhost:5433/geodata?searchpath=masterdata"
+				username="geodata" password="asdfgh" 
+				maxWait="-1" validationQuery="select 1"
+				removeAbandoned="true" removeAbandonedTimeout="3600"  />]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="clean-bin.all">
@@ -482,36 +552,6 @@
 		<delete dir="../../../SpagoBINetworkEngine/ant-build" />
 		<delete dir="../../../SpagoBINetworkEngine/dist" />
 	</target>
-
-	<target name="hasqldb">
-		
-		<replace file="${tomcat.home}/conf/server.xml">
-			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
-			<replacevalue>
-				<![CDATA[<!-- DB HSQLDB -->
-				<Resource name="jdbc/spagobi" auth="Container"
-		  type="javax.sql.DataSource" driverClassName="org.hsqldb.jdbcDriver"
-		  url="jdbc:hsqldb:file:${catalina.base}/database/spagobi"
-		  username="sa" password="" maxActive="20" maxIdle="10"
-		  maxWait="-1"/>]]></replacevalue>
-		</replace>
-	</target>
-
-	<target name="postgres">
-	
-		<replace file="${tomcat.home}/conf/server.xml">
-			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
-			<replacevalue>
-				<![CDATA[<!-- DB Postgres -->
-				<Resource name="jdbc/spagobi" auth="Container" 
-		type="javax.sql.DataSource"  driverClassName="org.postgresql.Driver"
-		url="jdbc:postgresql://localhost:5433/geodata?searchpath=spagobi"
-		username="geodata" password="asdfgh" 
-		maxWait="-1" validationQuery="select 1"
-		removeAbandoned="true" removeAbandonedTimeout="3600"  />]]></replacevalue>
-		</replace>
-	</target>
-
 
 	<target name="copy.ss">
 		<copy todir="${apache.dir}/js">

@@ -43,9 +43,25 @@
     <Environment name="spagobi_host_url" type="java.lang.String" value="http://$SERVER_HOST$:$SERVER_PORT$"/>
     
     $DATASOURCE_SPAGOBI$
-    
-     $DATASOURCE_MASTERDATA$
   
+    $DATASOURCE_MASTERDATA$
+    
+   <!--
+   <Resource name="jdbc/tismasterdata" auth="Container"
+          type="javax.sql.DataSource" driverClassName="org.hsqldb.jdbcDriver"
+          url="jdbc:hsqldb:file:${catalina.base}/database/tismasterdata"
+          username="sa" password="" maxActive="20" maxIdle="10"
+          maxWait="-1"/>
+	-->	  
+<!--
+   <Resource name="jdbc/foodmart" auth="Container"
+          type="javax.sql.DataSource" driverClassName="org.hsqldb.jdbcDriver"
+          url="jdbc:hsqldb:hsql://localhost:9001/foodmart"
+          username="sa" password="" maxActive="20" maxIdle="10"
+          maxWait="-1" validationQuery="select 1 from INFORMATION_SCHEMA.SYSTEM_USERS"
+      removeAbandoned="true" removeAbandonedTimeout="3600"/>
+     -->
+
 
     <Resource auth="Container" factory="de.myfoo.commonj.work.FooWorkManagerFactory" 
           maxThreads="5" name="wm/SpagoWorkManager" 
@@ -82,12 +98,12 @@
                connectionTimeout="20000" 
                redirectPort="$SERVER_REDIRECT_PORT$" />
     -->           
-    <!-- Define a SSL HTTP/1.1 Connector on port $SERVER_REDIRECT_PORT$
+    <!-- Define a SSL HTTP/1.1 Connector on port 8443
          This connector uses the JSSE configuration, when using APR, the 
          connector should be using the OpenSSL style configuration
          described in the APR documentation -->
     <!--
-    <Connector port="$SERVER_REDIRECT_PORT$" protocol="HTTP/1.1" SSLEnabled="true"
+    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS" />
     -->

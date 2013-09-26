@@ -407,6 +407,18 @@
 		<antcall target="deploy.SpagoBINetworkEngine.war" />
 		-->
 
+		<antcall target="runtime.setup.conf" />
+	</target>
+	
+	<target name="runtime.setup.conf">
+		<delete file="${tomcat.home}/conf/server.xml" />
+		<copy file="${runtime.conf}/server.xml" todir="${tomcat.home}/conf" overwrite="true" />
+
+		<replace file="${tomcat.home}/conf/server.xml"  propertyFile="./build.dev.properties">
+			<replacefilter token="$SERVER_HOST$" property="runtime.host"/>
+			<replacefilter token="$SERVER_PORT$" property="runtime.port"/>
+		</replace>
+		
 		<antcall target="${specific.database.ant.task}" />
 	</target>
 
@@ -472,9 +484,7 @@
 	</target>
 
 	<target name="hasqldb">
-		<delete file="${tomcat.home}/conf/server.xml" />
-		<copy file="${runtime.conf}/server.xml" todir="${tomcat.home}/conf" overwrite="true" />
-
+		
 		<replace file="${tomcat.home}/conf/server.xml">
 			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
 			<replacevalue>
@@ -488,17 +498,15 @@
 	</target>
 
 	<target name="postgres">
-		<delete file="${tomcat.home}/conf/server.xml" />
-		<copy file="${runtime.conf}/server.xml" todir="${tomcat.home}/conf" overwrite="true" />
-
+	
 		<replace file="${tomcat.home}/conf/server.xml">
 			<replacetoken> $DATASOURCE_SPAGOBI$</replacetoken>
 			<replacevalue>
 				<![CDATA[<!-- DB Postgres -->
 				<Resource name="jdbc/spagobi" auth="Container" 
 		type="javax.sql.DataSource"  driverClassName="org.postgresql.Driver"
-		url="jdbc:postgresql://localhost:5433/spagobi"
-		username="postgres" password="postgres" 
+		url="jdbc:postgresql://localhost:5433/geodata?searchpath=spagobi"
+		username="geodata" password="asdfgh" 
 		maxWait="-1" validationQuery="select 1"
 		removeAbandoned="true" removeAbandonedTimeout="3600"  />]]></replacevalue>
 		</replace>

@@ -39,8 +39,8 @@
     
     <Environment name="spagobi_resource_path" type="java.lang.String" value="${catalina.base}/resources"/>
     <Environment name="spagobi_sso_class" type="java.lang.String" value="it.eng.spagobi.services.common.FakeSsoService"/>
-    <Environment name="spagobi_service_url" type="java.lang.String" value="http://maps.geobi.info:8080/SpagoBI"/>   
-    <Environment name="spagobi_host_url" type="java.lang.String" value="http://maps.geobi.info:8080"/>
+    <Environment name="spagobi_service_url" type="java.lang.String" value="http://$SERVER_HOST$:$SERVER_PORT$/SpagoBI"/>   
+    <Environment name="spagobi_host_url" type="java.lang.String" value="http://$SERVER_HOST$:$SERVER_PORT$"/>
     
     $DATASOURCE_SPAGOBI$
   
@@ -92,13 +92,13 @@
          Java HTTP Connector: /docs/config/http.html (blocking & non-blocking)
          Java AJP  Connector: /docs/config/ajp.html
          APR (HTTP/AJP) Connector: /docs/apr.html
-         Define a non-SSL HTTP/1.1 Connector on port 8080
+         Define a non-SSL HTTP/1.1 Connector on port $SERVER_PORT$
     -->
-    <Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+    <Connector connectionTimeout="20000" port="$SERVER_PORT$" protocol="HTTP/1.1" redirectPort="8443"/>
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
-               port="8080" protocol="HTTP/1.1" 
+               port="$SERVER_PORT$" protocol="HTTP/1.1" 
                connectionTimeout="20000" 
                redirectPort="8443" />
     -->           

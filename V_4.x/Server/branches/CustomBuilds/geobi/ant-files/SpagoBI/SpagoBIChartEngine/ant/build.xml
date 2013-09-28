@@ -253,7 +253,7 @@
 	</target>
 
 	<target name="package">
-		<zip destfile="../../../../dist/${project.name}-bin-${project.version}_${project.date}.zip" basedir="${dist}" />
+		<zip destfile=".${package.dir}/${project.name}-bin-${project.version}_${project.date}.zip" basedir="${dist}" />
 	</target>
 
 	<target name="makeDist">

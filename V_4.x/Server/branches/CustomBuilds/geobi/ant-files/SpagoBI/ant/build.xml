@@ -604,6 +604,9 @@
 	</target>
 
 	<target name="javadoc">
+	
+		<mkdir dir="${package.dir}"/>
+		
 		<ant dir="../SpagoBIUtils/ant" target="javadoc" />
 		<ant dir="../SpagoBIUtilsJSON/ant" target="javadoc" />
 		<ant dir="../QbeCore/ant" target="javadoc" />
@@ -632,7 +635,10 @@
 		-->
 	</target>
 
-	<target name="package.all">
+	<target name="package.all" depends="override.properties.all">
+		
+		<mkdir dir="${package.dir}"/>
+		
 		<ant dir="../SpagoBIProject/ant" target="package" />
 		<ant dir="../SpagoBIBirtReportEngine/ant" target="package" />
 		<ant dir="../SpagoBIJPivotEngine/ant" target="package" />
@@ -653,6 +659,47 @@
 		<ant dir="../SpagoBIMobileEngine/ant" target="package" />
 		<ant dir="../SpagoBINetworkEngine/ant" target="package" />
 		-->
+		
+		<move file="../SpagoBIProject/ant/build.properties.bkp" tofile="../SpagoBIProject/ant/build.properties"/>
+		<move file="../SpagoBIBirtReportEngine/ant/build.properties.bkp" tofile="../SpagoBIBirtReportEngine/ant/build.properties"/>
+		<move file="../SpagoBIJPivotEngine/ant/build.properties.bkp" tofile="../SpagoBIJPivotEngine/ant/build.properties"/>
+		<move file="../SpagoBIGeoReportEngine/ant/build.properties.bkp" tofile="../SpagoBIGeoReportEngine/ant/build.properties"/>
+		<move file="../SpagoBIJasperReportEngine/ant/build.properties.bkp" tofile="../SpagoBIJasperReportEngine/ant/build.properties"/>
+		<move file="../SpagoBIQbeEngine/ant/build.properties.bkp" tofile="../SpagoBIQbeEngine/ant/build.properties"/>
+		
+	</target>
+	
+	<target name="override.properties.all">
+	
+		<copy file="../SpagoBIProject/ant/build.properties" tofile="../SpagoBIProject/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIProject/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
+		
+		<copy file="../SpagoBIBirtReportEngine/ant/build.properties" tofile="../SpagoBIBirtReportEngine/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIBirtReportEngine/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
+		
+		<copy file="../SpagoBIJPivotEngine/ant/build.properties" tofile="../SpagoBIJPivotEngine/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIJPivotEngine/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
+		
+		<copy file="../SpagoBIGeoReportEngine/ant/build.properties" tofile="../SpagoBIGeoReportEngine/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIGeoReportEngine/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
+		
+		<copy file="../SpagoBIJasperReportEngine/ant/build.properties" tofile="../SpagoBIJasperReportEngine/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIJasperReportEngine/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
+		
+		<copy file="../SpagoBIQbeEngine/ant/build.properties" tofile="../SpagoBIQbeEngine/ant/build.properties.bkp"/>
+		<replace file="../SpagoBIQbeEngine/ant/build.properties"  propertyFile="${runtime.conf.properties}">
+			<replacefilter token="../../../../dist" property="package.dir"/>
+		</replace>
 	</target>
 
 	<target name="package.all.src" depends="clean.all">

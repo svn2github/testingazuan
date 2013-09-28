@@ -787,7 +787,7 @@
 	</target>
 
 	<target name="package">
-		<zip destfile="../../../../dist/SpagoBI-bin-${project.version}_${project.date}.zip" basedir="${dist}" />
+		<zip destfile="${package.dir}/SpagoBI-bin-${project.version}_${project.date}.zip" basedir="${dist}" />
 	</target>
 
 	<target name="makeDist">

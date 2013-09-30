@@ -8,7 +8,9 @@ package it.eng.spagobi.tools.importexport.typesmanager;
 import org.apache.log4j.Logger;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.drivers.birt.BirtReportDriver;
 import it.eng.spagobi.tools.importexport.ExportManager;
 import it.eng.spagobi.tools.importexport.ExporterMetadata;
 
@@ -88,6 +90,10 @@ public class TypesExportManagerFactory {
 				toReturn = new OlapExportManager(type, exporter, manager);
 			}
 
+		}
+		
+		if (BirtReportDriver.class.getName().equals(engine.getDriverName())) {
+			toReturn = new BirtReportExportManager(type, exporter, manager);
 		}
 
 		// type has not a specific export manager

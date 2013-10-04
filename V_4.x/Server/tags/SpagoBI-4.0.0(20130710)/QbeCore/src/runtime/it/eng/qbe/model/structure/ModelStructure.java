@@ -21,7 +21,7 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.Multigraph;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -80,7 +80,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 		
 		public RootEntitiesGraph() {
 			rootEntitiesMap = new HashMap<String, IModelEntity>();
-			rootEntitiesGraph = new SimpleGraph<IModelEntity, DefaultEdge>(Relationship.class);
+			rootEntitiesGraph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
 		}
 		
 		public void addRootEntity(IModelEntity entity) {

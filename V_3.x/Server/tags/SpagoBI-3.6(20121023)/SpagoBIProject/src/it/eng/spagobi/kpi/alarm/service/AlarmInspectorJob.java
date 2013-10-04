@@ -6,6 +6,7 @@
 package it.eng.spagobi.kpi.alarm.service;
 
 import it.eng.spagobi.commons.SingletonConfig;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.kpi.alarm.bo.AlertSendingItem;
 import it.eng.spagobi.kpi.alarm.dao.SbiAlarmContactDAOHibImpl;
 import it.eng.spagobi.kpi.alarm.dao.SbiAlarmEventDAOHibImpl;
@@ -89,59 +90,58 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 			activeSbiAlarmEventList = sae.findActive(hsession);
 			for (SbiAlarmEvent sbiAlarmEvent : activeSbiAlarmEventList) {
 
-				if (logger.isInfoEnabled())
-					logger.info("Found AlarmEvent: "
-							+ sbiAlarmEvent.getKpiName());
-
+				logger.info("Found allarm event on kpi [" + sbiAlarmEvent.getKpiName() + "]");
 				sbiAlarm = sbiAlarmEvent.getSbiAlarms();
+				logger.info("The allarm that trigger the event is [" + sbiAlarm.getName() + "]");
 				String resource = sbiAlarmEvent.getResources();
+				logger.info("The allarm that trigger the event is associated to resource [" + resource + "]");
 
-				// creo un item e gli imposto l'evento e l'allarme
 				alertSendingItem = new AlertSendingItem(sbiAlarm, sbiAlarmEvent);
-
-				if (logger.isDebugEnabled())
-					logger.debug("Created AlertSendingItem: "
-							+ alertSendingItem);
-
 				List<SbiAlarmContact> sbiAlarmContactList = new ArrayList<SbiAlarmContact>();
-				List<SbiAlarmContact> associatedContactList = new ArrayList<SbiAlarmContact>(
-						sbiAlarm.getSbiAlarmContacts());
+				List<SbiAlarmContact> associatedContactList = new ArrayList<SbiAlarmContact>(sbiAlarm.getSbiAlarmContacts());
 
+				logger.debug("Alert sending item succesfully created");
+				logger.info("The contact list associated to the allarm contains [" + ((sbiAlarm.getSbiAlarmContacts() !=  null)? sbiAlarm.getSbiAlarmContacts().size(): -1) + "] items");
+					
+
+			
 				if (resource != null) {
-					if (logger.isDebugEnabled())
-						logger.debug("Resource enhanced: " + resource);
-
+					logger.debug("Resource enhanced: " + resource);
+						
 					for (SbiAlarmContact associatedContact : associatedContactList) {
 						if (resource.equals(associatedContact.getResources())
 								|| associatedContact.getResources() == null) {
 							sbiAlarmContactList.add(associatedContact);
 
-							if (logger.isDebugEnabled())
-								logger.debug("Contact '" + associatedContact
-										+ "' added.");
+							logger.debug("Contact '" + associatedContact + "' added.");
+								
 						}
 					}
 				} else {
-					if (logger.isDebugEnabled())
-						logger.debug("Resource not enhanced.");
+					logger.debug("Resource not enhanced.");
 
 					for (SbiAlarmContact associatedContact : associatedContactList) {
-						if (associatedContact.getResources() == null) {
+						if (StringUtilities.isEmpty(associatedContact.getResources())) {
 							sbiAlarmContactList.add(associatedContact);
-
-							if (logger.isDebugEnabled())
-								logger.debug("Contact '" + associatedContact
-										+ "' added.");
-						}
+							logger.debug("Contact '" + associatedContact + "' added.");	
+						} else {
+							logger.debug("Contact '" + associatedContact + "' not added because resources is equal to [" + associatedContact.getResources() + "]");	
+						}	
 					}
 				}
+				
+				logger.info("The filtered contact list associated to the alarm contains [" + sbiAlarmContactList.size() + "] items");
+				
+				
+				
+				
 				if (logger.isDebugEnabled())
 					logger.debug("Distribution list: " + sbiAlarmContactList
 							+ "\n");
 
 				for (SbiAlarmContact sbiAlarmContact : sbiAlarmContactList) {
-					alertSendingSessionList = alertSendingSessionMap
-							.get(sbiAlarmContact);
+					alertSendingSessionList = alertSendingSessionMap.get(sbiAlarmContact);
+					
 					if (alertSendingSessionList == null) {
 
 						if (logger.isDebugEnabled())
@@ -183,23 +183,20 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 		}
 	}
 
-	private void startEmailSession(
-			Map<SbiAlarmContact, List<AlertSendingItem>> alertSendingSessionMap) {
+	private void startEmailSession(Map<SbiAlarmContact, List<AlertSendingItem>> alertSendingSessionMap) {
+		
+		
 		logger.debug("IN");
 
 		Set<SbiAlarmContact> keySet = alertSendingSessionMap.keySet();
 		DispatchContext sInfo = new DispatchContext();
 
-		if (logger.isDebugEnabled())
-			logger.debug("Distribution list parsing.");
+		logger.debug("Distribution list parsing.");
 
 		for (SbiAlarmContact sbiAlarmContact : keySet) {
-			if (logger.isDebugEnabled())
-				logger.debug("Found contact '" + sbiAlarmContact.getName()
-						+ "'.");
+			logger.debug("Found contact [" + sbiAlarmContact.getName() + "]");
 
-			List<AlertSendingItem> alertSendingList = alertSendingSessionMap
-					.get(sbiAlarmContact);
+			List<AlertSendingItem> alertSendingList = alertSendingSessionMap.get(sbiAlarmContact);
 
 			SbiAlarm sbiAlarm = null;
 			SbiAlarmEvent sbiAlarmEvent = null;
@@ -210,8 +207,7 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 				sbiAlarm = alertSendingItem.getSbiAlarm();
 				sbiAlarmEvent = alertSendingItem.getSbiAlarmEvent();
 
-				if (logger.isDebugEnabled())
-					logger.debug("Found alarm " + sbiAlarm.getName() + ".");
+				logger.debug("Found alarm " + sbiAlarm.getName() + ".");
 
 				subject.append(sbiAlarm.getLabel());
 
@@ -219,7 +215,7 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 				text.append(sbiAlarm.getName());
 				text.append("</b></font><ul>");
 
-				text.append("<li><font size=\"2\">Lable: ");
+				text.append("<li><font size=\"2\">Label: ");
 				text.append(sbiAlarm.getLabel());
 				text.append("</font></li>");
 				text.append("<li><font size=\"2\">Text: ");
@@ -280,11 +276,9 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 		logger.debug("IN");
 		try {
 
-			String smtphost = SingletonConfig.getInstance().getConfigValue(
-					"MAIL.PROFILES.kpi_alarm.smtphost");
+			String smtphost = SingletonConfig.getInstance().getConfigValue("MAIL.PROFILES.kpi_alarm.smtphost");
 
-			String smtpport = SingletonConfig.getInstance().getConfigValue(
-					"MAIL.PROFILES.kpi_alarm.smtpport");
+			String smtpport = SingletonConfig.getInstance().getConfigValue("MAIL.PROFILES.kpi_alarm.smtpport");
 			int smptPort = 25;
 
 			if ((smtphost == null) || smtphost.trim().equals(""))
@@ -295,23 +289,23 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 				smptPort = Integer.parseInt(smtpport);
 			}
 
-			String from = SingletonConfig.getInstance().getConfigValue(
-					"MAIL.PROFILES.kpi_alarm.from");
+			String from = SingletonConfig.getInstance().getConfigValue("MAIL.PROFILES.kpi_alarm.from");
 
 			if ((from == null) || from.trim().equals(""))
 				from = "spagobi.scheduler@eng.it";
 
-			String user = SingletonConfig.getInstance().getConfigValue(
-					"MAIL.PROFILES.kpi_alarm.user");
-
-			if ((user == null) || user.trim().equals(""))
-				throw new Exception("Smtp user not configured");
+			String user = SingletonConfig.getInstance().getConfigValue("MAIL.PROFILES.kpi_alarm.user");			
+			if( (user==null) || user.trim().equals("")){
+				logger.debug("Smtp user not configured");	
+				user=null;
+			}
 
 			String pass = SingletonConfig.getInstance().getConfigValue(
 					"MAIL.PROFILES.kpi_alarm.password");
-
-			if ((pass == null) || pass.trim().equals(""))
-				throw new Exception("Smtp password not configured");
+			if( (pass==null) || pass.trim().equals("")){
+				logger.debug("Smtp password not configured");	
+				pass = null;
+			}
 
 			String mailTos = sInfo.getMailTos();
 
@@ -328,13 +322,19 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 			Properties props = new Properties();
 			props.put("mail.smtp.host", smtphost);
 			props.put("mail.smtp.port", smptPort);
-			props.put("mail.smtp.auth", "true");
-
+			
 			// create autheticator object
-			Authenticator auth = new SMTPAuthenticator(user, pass);
-
-			// open session
-			Session session = Session.getDefaultInstance(props, auth);
+			Session session = null;
+			Authenticator auth = null;
+			if (user!=null) {
+				auth = new SMTPAuthenticator(user, pass);
+				props.put("mail.smtp.auth", "true");
+				session = Session.getDefaultInstance(props, auth);
+				logger.error("Session.getDefaultInstance(props, auth)");
+			}else{
+				session = Session.getDefaultInstance(props);
+				logger.error("Session.getDefaultInstance(props)");
+			}
 
 			// create a message
 			MimeMessage msg = new MimeMessage(session);
@@ -358,15 +358,7 @@ public class AlarmInspectorJob  extends AbstractSpagoBIJob implements Job {
 			MimeBodyPart mbp1 = new MimeBodyPart();
 			mbp1.setText(mailTxt);
 
-			// create the second message part
-			// MimeBodyPart mbp2 = new MimeBodyPart();
-
-			// attach the file to the message
-			// SchedulerDataSource sds = new SchedulerDataSource(response,
-			// retCT, sbiAlarmEvent.getKpiName() + fileExt);
-			// mbp2.setDataHandler(new DataHandler(sds));
-			// mbp2.setFileName(sds.getName());
-
+			
 			// create the Multipart and add its parts to it
 			MimeMultipart mp = new MimeMultipart();
 			mp.addBodyPart(mbp1);

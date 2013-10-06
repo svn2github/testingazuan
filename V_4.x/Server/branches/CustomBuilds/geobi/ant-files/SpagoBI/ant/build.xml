@@ -707,5 +707,10 @@
 		<zip destfile="../../../dist/SpagoBI-src-${project.version}_${project.date}.zip" excludes="**/*.svn" basedir="../../../">
 		</zip>
 	</target>
+	
+	<target name="backup.server">
+		<tstamp></tstamp>
+		<zip destfile="${backup.dir}/bin/spagobi-${DSTAMP}.zip" basedir="${tomcat.home}"></zip>
+	</target>
 
 </project>

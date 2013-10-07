@@ -43,6 +43,26 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base311.jsp"%>
 <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/service/ServiceRegistry.js")%>'></script>
+
+
+<!--
+ STEP 1:
+ * Very important fix to display and use Highcharts speedometer in case of IE8 or lower
+ * while display and use D3 speedometer for other browsers.
+ * See also STEP 2 in Sbi.kpi.KpiGUIDetail js -->
+
+<!--[if lt IE 9]>
+<!--  HighCharts -->
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/highcharts-2.1.6/highcharts.js")%>"></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/highcharts-2.1.6/modules/exporting.js")%>"></script>
+<![endif]-->
+<!--[if !IE]> -->
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/d3/D3.js")%>'></script>
+<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/lib/d3/D3.layout.js")%>'></script>
+
+<!-- <![endif]-->
+
+
 <LINK rel='StyleSheet' 
       href='<%=urlBuilder.getResourceLinkByTheme(request, "css/kpi/kpi.css",currTheme)%>' 
       type='text/css' />
@@ -75,7 +95,8 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 	String customChartName =(String)sbModuleResponse.getAttribute("custom_chart_name");
 
 	List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
-	KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
+
+	String tickInterval =(String)sbModuleResponse.getAttribute("tickInterval");
 	
 	//START creating resources list
 	if(!kpiRBlocks.isEmpty()){
@@ -90,7 +111,11 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 	
 	ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 	String EXECUTION_ID = instance.getExecutionId();
-	/*String parsToDetailDocs = "";
+	//filter on resources if selected through AD ParKpiResource or ParKpiResources
+	ArrayList parKpiResource = new ArrayList();
+	ArrayList parKpiResources = new ArrayList();
+	String parKpiDateStr = "";
+	String parsToDetailDocs = "";
 	   if(instance!=null && instance.getBIObject()!=null){
 	   List pars = instance.getBIObject().getBiObjectParameters();			
 		if(pars!=null && !pars.isEmpty()){
@@ -98,11 +123,21 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			while(ite.hasNext()){
 				BIObjectParameter p = (BIObjectParameter)ite.next();
 				String url = p.getParameterUrlName();
+
 				String value = p.getParameterValuesAsString();
-				parsToDetailDocs += url+"="+value+"&";
+				if(value != null && !value.equals("null")){
+					if(url.equals("ParKpiResource")){
+						parKpiResource.add(value);
+					}else if(url.equals("ParKpiResources")){
+						parKpiResources.add(value);
+					}else if(url.equals("ParKpiDate")){					
+						parKpiDateStr = "'"+value+"'";
+					}
+				}
+				
 			}		
 		}
-	}*/
+	}
 
 	
 	JSONArray kpiRowsArray = new JSONArray();
@@ -116,13 +151,22 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 		while(blocksIt.hasNext()){			
 			KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
 			String resourceName = null;
+			KpiLine root = block.getRoot();
+			Integer id =null;
 			if(block.getR() != null){
 				resourceName = block.getR().getName();
+				id = block.getR().getId();
 			}
-			KpiLine root = block.getRoot();
-			JSONObject modelInstJson =  util.recursiveGetJsonObject(root);
-			modelInstJson.put("resourceName", resourceName);
-			kpiRowsArray.put(modelInstJson);	
+			if((parKpiResource.isEmpty() && parKpiResources.isEmpty())
+						|| (!parKpiResource.isEmpty() && parKpiResource.contains(resourceName))
+						|| (!parKpiResources.isEmpty() && parKpiResources.contains(id+""))){
+				
+				JSONObject modelInstJson =  util.recursiveGetJsonObject(root);
+				modelInstJson.put("resourceName", resourceName);
+				kpiRowsArray.put(modelInstJson);
+			}
+
+				
 		}			
 	}
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
@@ -153,14 +197,33 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 		var grid = {
 			subtitle: '<%= subTitle%>',		
 			autoScroll	:true,
+			autoHeight : true,
+			//autoWidth: true,
+			border: false,
 			json: <%=kpiRowsArray%>
 		};
+		var dt ='';
+		<%
+		if(parKpiDateStr!= null && !parKpiDateStr.equals("")){
+		%>
+
+			dt = <%=parKpiDateStr%>;
+
+		<%
+		}else{
+		%>
+			dt = Sbi.commons.Format.date(new Date(), Sbi.config.clientServerDateFormat);
+		<% 
+		}
+		%>
 		var accordion ={SBI_EXECUTION_ID: '<%=EXECUTION_ID%>', 
 						customChartName: '<%=customChartName%>',
 						localeExtDateFormat: '<%=localeExtDateFormat%>',
 						serverExtTimestampFormat: '<%=serverExtTimestampFormat%>',
 						serverDateFormat: '<%=serverDateFormat%>',
-						chartBaseUrl: '/<%= engineContext %>/js/lib/ext-3.1.1/resources/charts.swf'
+						chartBaseUrl: '/<%= engineContext %>/js/lib/ext-3.1.1/resources/charts.swf',
+						titleDate: dt+' ',
+						tickInterval: <%=tickInterval%>
 						};
 		
 		var config ={grid: grid, accordion: accordion};
@@ -170,7 +233,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			var item = new Sbi.kpi.KpiGUILayout(config);
 
 		    var viewport = new Ext.Viewport({
-		        layout:'fit',
+		        layout:'fit',		        
 		        items:[item]
 		    });
 
@@ -178,7 +241,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 </script>
 
+<span id="chartContainer" style="border:1px solid red;"></span>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>
-
-		

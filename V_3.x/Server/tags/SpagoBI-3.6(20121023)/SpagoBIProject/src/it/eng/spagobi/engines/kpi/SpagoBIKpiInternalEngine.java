@@ -90,7 +90,7 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 	public KpiTemplateConfiguration templateConfiguration = new KpiTemplateConfiguration(
 			"KPI_DEFAULT_PUB", "KPI_METADATA_DEFAULT_PUB", "TREND_DEFAULT_PUB", false, "MODEL", null, null, null, null, null, false, true,
 			false, false, false, false, true, false, false, false, false,
-			false, null);
+			false, null, null);
 	
 	public KpiEnginData data;	
 	
@@ -421,7 +421,11 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 				if(customChartName != null){
 					response.setAttribute("custom_chart_name", customChartName);
 				}
-				
+				String tickInterval = templateConfiguration.getTickInterval();
+				if(tickInterval != null){
+					response.setAttribute("tickInterval", tickInterval);
+				}
+
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, templateConfiguration.getPublisher_Name());
 				response.setAttribute("metadata_publisher_Name", templateConfiguration.getMetadata_publisher_Name());
@@ -610,21 +614,6 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 					}	
 
 				}
-/*				if(ouList != null && !ouList.isEmpty()){
-					for(int i = 0; i<ouList.size(); i++){
-
-						OrganizationalUnitGrantNode grantNode = ouList.get(i);
-						String ouLabel = grantNode.getOuNode().getOu().getLabel();
-						String hierLabel = grantNode.getOuNode().getHierarchy().getLabel();
-
-						kVal.setGrantNodeOU(grantNode);
-						kVal = recursiveGetKpiValueFromKpiRel(kpi,dataSet,temp,kVal,dateOfKPI,kVal.getEndDate(), modI.getModelInstanceNodeId());
-						kVal = getKpiValueFromDataset(dataSet,temp,kVal,dateOfKPI,kVal.getEndDate(), true, modI.getModelInstanceNodeId());
-					}
-				}else{
-					kVal = recursiveGetKpiValueFromKpiRel(kpi,dataSet,temp,kVal,dateOfKPI,kVal.getEndDate(), modI.getModelInstanceNodeId());
-					kVal = getKpiValueFromDataset(dataSet,temp,kVal,dateOfKPI,kVal.getEndDate(), true, modI.getModelInstanceNodeId());
-				}*/
 
 			}
 		} 
@@ -639,7 +628,6 @@ public class SpagoBIKpiInternalEngine extends AbstractDriver implements Internal
 		if (value == null ) return;
 		Integer modelInstId = kpiLine.getModelInstanceNodeId();
 		try {
-			//ModelInstanceNode node = DAOFactory.getModelInstanceDAO().loadModelInstanceById(modelInstId, null);
 			KpiInstance kpiInst= node.getKpiInstanceAssociated();
 			if(kpiInst != null){
 				Integer kpiInstId = kpiInst.getKpiInstanceId();

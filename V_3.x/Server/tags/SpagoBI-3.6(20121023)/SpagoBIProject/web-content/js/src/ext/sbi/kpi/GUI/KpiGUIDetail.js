@@ -35,6 +35,11 @@ Ext.ns("Sbi.kpi");
 Sbi.kpi.KpiGUIDetail =  function(config) {
 	
 		this.customChartName= config.customChartName;
+		this.tickInterval= config.tickInterval;
+		if(this.tickInterval == null || this.tickInterval== undefined){
+			this.tickInterval=0;
+		}
+		
 		var defaultSettings = {};
 
 		if (Sbi.settings && Sbi.settings.kpi && Sbi.settings.kpi.kpiGUIDetail) {
@@ -62,11 +67,13 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 	//chart
 	dial: null,
 	maxChartValue: 0,
+	minChartValue: 0,
 	ranges: new Array(),
 	customChartName: null,
 	//custom chart
 	selectedThr: null,
 	val: null,
+	ticksNumber: 10,
 	
 	initDetail: function(){	
 		this.chartid = Ext.id();
@@ -126,46 +133,85 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 			this.maxChartValue = threshold.max;
 		}
 	}
+	,calculateMin: function(threshold){
+		if(threshold.min < this.minChartValue){
+			this.minChartValue = threshold.min;
+		}
+	}
 	, calculateRange: function(thr){
 		var range = {from: thr.min, to: thr.max, color: thr.color};
 		this.ranges.push(range);
 	}
 	
-	, drawChart: function(value){
-		var y = 130;
-		if(Ext.isIE && (this.customChartName === undefined || this.customChartName == null || this.customChartName === 'null')){
-			y = 155;
+	, drawD3Chart: function(value){
+
+		if(this.dial != null){
+			
+			var gaugeEl = Ext.get(this.chartid);
+			gaugeEl.update('');
+
 		}
-		if(this.dial == null){
-			// Build the dial
-			this.dial = drawDial({
-			    renderTo: this.chartid,
-			    value: value,
-			    centerX: 135,
-			    centerY: y,
-			    min: 0,
-			    max: this.maxChartValue,
-			    
-			    minAngle: -Math.PI,
-			    maxAngle: 0,
-			    tickInterval: 20,
-			    ranges: this.ranges
-			    , pivotLength: 70 //arrow length
-			    , backgroundRadius: 120
-			    , arcMinRadius : 70
-			    , arcMaxRadius : 100
-			    , textRadius : 105
-			    , renderX : 300 //width of the area of the chart
-			    , renderY : 145 //height of the area of the chart
-			});
-		}else{
-			this.dial.setMax(this.maxChartValue);			
-			this.dial.setRanges(this.ranges);
-			this.dial.setTicks(this.maxChartValue);
-			this.dial.setValue(value);
-			this.dial.setCircle();
+		if(this.tickInterval && this.tickInterval != null){
+			this.ticksNumber = ((this.maxChartValue - this.minChartValue)/this.tickInterval)+1;
 		}
-		
+		var config = 
+		{
+			size: 250,
+			minorTicks: 2,
+			majorTicks: this.ticksNumber,
+			renderTo: this.chartid,
+			max: this.maxChartValue,
+			min: this.minChartValue
+		}
+		config.ranges= this.ranges;
+
+		this.dial = new Gauge("chartContainer", config);			
+		this.dial.render();
+		this.dial.redraw(value);
+	}
+	, drawHighChart: function(value){
+
+			var y = 130;
+			if(Ext.isIE && (this.customChartName === undefined || this.customChartName == null || this.customChartName === 'null')){
+				y = 155;
+			}
+			if(!this.tickInterval || this.tickInterval == null || this.tickInterval == 0){
+				this.tickInterval = 20;
+			}
+			if(this.dial == null){
+				// Build the dial
+				this.dial = drawDial({
+				    renderTo: this.chartid,
+				    value: value,
+				    centerX: 135,
+				    centerY: y,
+				    min: 0,
+				    max: this.maxChartValue,
+				    
+				    minAngle: -Math.PI,
+				    maxAngle: 0,
+				    tickInterval: this.tickInterval,
+				    ranges: this.ranges
+				    , pivotLength: 70 //arrow length
+				    , backgroundRadius: 120
+				    , arcMinRadius : 70
+				    , arcMaxRadius : 100
+				    , textRadius : 105
+				    , renderX : 300 //width of the area of the chart
+				    , renderY : 145 //height of the area of the chart
+				});
+			}else{
+				this.dial.setMax(this.maxChartValue);			
+				this.dial.setRanges(this.ranges);
+				this.dial.setTicks(this.maxChartValue);
+				this.dial.setValue(value);
+				this.dial.setCircle();
+			}
+			
+		}	
+	,  updateGauge: function(value)
+	{
+		this.dial.redraw(value);
 	}
 	, cleanPanel: function(){
 
@@ -185,7 +231,11 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 		if(this.targetItem != null){
 			this.detailFields.remove(this.targetItem);
 		}
+		if(this.validityItem != null){
+			this.detailFields.remove(this.validityItem);
+		}
 		this.maxChartValue =0;
+		this.minChartValue =0;
 		this.ranges = new Array();
 	}
 	, updateEmpy: function(){
@@ -204,7 +254,20 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 			this.detailFields.addClass( 'rounded-box' ) ;
 			if(this.customChartName === undefined || this.customChartName == null || this.customChartName === 'null'){
 				this.on('afterlayout',function(){
-					this.drawChart(this.val);
+					/***
+					 * STEP 2:
+					 * Very important fix to display and use Highcharts speedometer in case of IE8 or lower
+					 * while display and use D3 speedometer for other browsers.
+					 * See also STEP 1 in custom/kpi.jsp					 * 
+					 * */
+					if(typeof d3 !== 'undefined'){	
+						console.log('Not using IE');
+						this.drawD3Chart(this.val);
+					}else{
+						console.log('Using IE < 9');
+						this.drawHighChart(this.val);
+					}
+					
 				},this);
 			}else{
 				var x = this.calculateInnerThrChart(field);
@@ -268,13 +331,14 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 				this.threshFields.add(thrLine);
 				//calculate chart options
 				this.calculateMax(thr);
+				this.calculateMin(thr);
 				this.calculateRange(thr);
 
 			}
 			this.threshFields.doLayout();
 		}
 		//value
-		this.valueItem = new Ext.form.DisplayField({fieldLabel: 'Valore', 
+		this.valueItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.thresholds.value'), 
 													value: this.val, 
 													width: 0.49,
 													style: 'margin-left:5px; padding-left:5px; font-style: italic; font-weight: bold;'
@@ -283,26 +347,38 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 
 		//target
 		var target = field.attributes.target;
-		this.targetItem = new Ext.form.DisplayField({fieldLabel: 'Target', 
-													style: 'padding-left:5px;',
-													width: 145,
-													labelWidth:45,
-													value: target});
+		this.targetItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.modelinstances.target'), 
+													style: 'padding-left:15px;',
+													//width: 150,
+													//labelWidth:50,
+													value:  "  "+target});
 		this.detailFields.add(this.targetItem );
 		
 		//weight
 		var weight = field.attributes.weight;
 		
-		this.weightItem = new Ext.form.DisplayField({fieldLabel: 'Peso',
-													style: 'margin-left:5px;',
-													width: 145,
-													labelWidth:45,
-													value: weight});
+		this.weightItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.kpis.weight'),
+													style: 'margin-left:15px;',
+													width: 150,
+													labelWidth:50,
+													value:  "  "+weight});
 		
 		if(weight !== undefined && weight != null && weight  != ''){
 			this.detailFields.add(this.weightItem );
 		}
 		
+		//validity
+		var beginDt = field.attributes.beginDt ;
+		var endDt = field.attributes.endDt ;
+		if(beginDt !== undefined && beginDt != null && endDt !== undefined && endDt != null ){
+
+			this.validityItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.kpi.validity'), 
+														style: 'padding-left:15px;',
+														width: 145,
+														labelWidth:50,
+														value: "  "+beginDt+" - "+endDt});
+			this.detailFields.add(this.validityItem );
+		}
 		this.doLayout();
         this.render();
 	}
@@ -340,4 +416,5 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 		}
 		return newX;
 	}
+	
 });

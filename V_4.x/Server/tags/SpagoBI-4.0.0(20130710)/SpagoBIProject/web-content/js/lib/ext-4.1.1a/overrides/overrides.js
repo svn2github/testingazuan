@@ -69,3 +69,20 @@ Ext.override(Ext.menu.Menu, {
     }
 
 });
+
+/* =============================================================================
+* Added by Davide Zerbetto (July 2013)
+* IE9 does not support createContextualFragment function
+* See https://spagobi.eng.it/jira/browse/SPAGOBI-1266#comment-33990
+* See http://www.marcolecce.com/blog/2011/05/19/sencha-extjs-createcontextualfragment-non-supportato-in-ie-9/
+============================================================================= */
+if(Ext.isIE && !Array.indexOf){
+    Array.prototype.indexOf = function(obj){
+        for(var i=0; i<this.length; i++){
+            if(this[i]==obj){
+                return i;
+            }
+    }
+    return -1;
+    }
+}

@@ -36,6 +36,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			private static final long serialVersionUID = 1L;
 			
 			private String type;
+			private String name;
 			
 			List<IModelField> sourceFields;
 			List<IModelField> targetFields;
@@ -49,7 +50,11 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			}
 			
 			public IModelEntity getSourceEntity() {
-				return (IModelEntity)this.getSource();
+				IModelEntity toreturn = (IModelEntity)this.getSource();
+				if(toreturn==null && sourceFields!=null && sourceFields.size()>0){
+					toreturn = sourceFields.get(0).getParent();
+				}
+				return toreturn;
 			} 
 			
 			public List<IModelField> getSourceFields() {
@@ -61,7 +66,11 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			}
 			
 			public IModelEntity getTargetEntity() {
-				return (IModelEntity)this.getTarget();
+				IModelEntity toreturn = (IModelEntity)this.getTarget();
+				if(toreturn==null && targetFields!=null && targetFields.size()>0){
+					toreturn = targetFields.get(0).getParent();
+				}
+				return toreturn;
 			}
 
 			public List<IModelField> getTargetFields() {
@@ -71,8 +80,14 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			public void setTargetFields(List<IModelField> targetFields) {
 				this.targetFields = targetFields;
 			}
-			
-			
+
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
 		}
 	
 		Map<String, IModelEntity> rootEntitiesMap;
@@ -134,11 +149,12 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 //		}
 
 		public Relationship addRelationship(IModelEntity fromEntity, List<IModelField> fromFields,
-				IModelEntity toEntity, List<IModelField> toFields, String type) {
+				IModelEntity toEntity, List<IModelField> toFields, String type, String relationName) {
 			Relationship relationship = new RootEntitiesGraph.Relationship();
 			relationship.setType(type); // MANY_TO_ONE : FK da 1 a 2
 			relationship.setSourceFields(fromFields);
 			relationship.setTargetFields(toFields); 
+			relationship.setName(relationName);
 			boolean added = rootEntitiesGraph.addEdge(fromEntity, toEntity, relationship);
 			return added? relationship: null;
 		}
@@ -329,7 +345,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 	public void addRootEntityRelationship(String modelName, 
 			IModelEntity fromEntity, List<IModelField> fromFields,
 			IModelEntity toEntity, List<IModelField> toFields,
-			String type) {
+			String type, String relationName) {
 		RootEntitiesGraph rootEntitiesGraph;
 		
 		rootEntitiesGraph = modelRootEntitiesMap.getRootEntities(modelName);
@@ -338,7 +354,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			modelRootEntitiesMap.setRootEntities(modelName, rootEntitiesGraph);
 		}
 		
-		rootEntitiesGraph.addRelationship(fromEntity, fromFields, toEntity, toFields, type);
+		rootEntitiesGraph.addRelationship(fromEntity, fromFields, toEntity, toFields, type, relationName);
 	}
 	
 	

@@ -165,8 +165,8 @@ public class FilteredModelStructure extends AbstractModelObject implements IMode
 	public void addRootEntityRelationship(String modelName, 
 			IModelEntity fromEntity, List<IModelField> fromFields,
 			IModelEntity toEntity, List<IModelField> toFields,
-			String type) {
-		wrappedModelStructure.addRootEntityRelationship(modelName, fromEntity, fromFields, toEntity, toFields, type);
+			String type, String relationName) {
+		wrappedModelStructure.addRootEntityRelationship(modelName, fromEntity, fromFields, toEntity, toFields, type, relationName);
 	}
 
 	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities) {

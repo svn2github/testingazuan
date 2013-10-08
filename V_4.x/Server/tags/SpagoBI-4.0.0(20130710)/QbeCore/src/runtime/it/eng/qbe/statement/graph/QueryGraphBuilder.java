@@ -11,6 +11,8 @@ import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -36,17 +38,21 @@ public class QueryGraphBuilder {
 		vertexes = new ArrayList<IModelEntity>();
 	}
 	
-	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraph(List<GraphPath<IModelEntity, DefaultEdge>> paths){
+	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraph(Collection<GraphPath<IModelEntity, DefaultEdge>> paths){
 		logger.debug("IN");
 		Assert.assertNotNull(paths, "The list of paths is null. Impossbile to create a graph");
 		logger.debug("The number of paths is "+paths.size());
 		
 		UndirectedGraph<IModelEntity, DefaultEdge> graph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
 		
-		for(int i=0; i<paths.size(); i++){
-			GraphPath<IModelEntity, DefaultEdge> path = paths.get(i);
-			addPathToGraph(graph, path);
+		if(paths!=null){
+			Iterator<GraphPath<IModelEntity, DefaultEdge>> pathIter = paths.iterator();
+			while(pathIter.hasNext()){
+				GraphPath<IModelEntity, DefaultEdge> path = pathIter.next();
+				addPathToGraph(graph, path);
+			}
 		}
+
 		logger.debug("OUT");
 		return graph;
 	}

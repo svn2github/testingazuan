@@ -122,7 +122,7 @@ public interface IModelStructure extends IModelObject {
 		void addRootEntityRelationship(String modelName, 
 				IModelEntity fromEntity, List<IModelField> fromFields,
 				IModelEntity toEntity, List<IModelField> toFields,
-				String type);
+				String type, String relationName);
 		
 		
 		// ----------------------------------

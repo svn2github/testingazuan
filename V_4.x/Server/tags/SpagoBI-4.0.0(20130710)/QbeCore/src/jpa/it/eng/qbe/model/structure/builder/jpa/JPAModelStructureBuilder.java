@@ -51,6 +51,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 	private EntityManager entityManager;
 	private int maxRecursionLevel;
 	IModelStructurePropertiesInitializer propertiesInitializer;
+	public static final String VIEWS_INNER_JOINS_RELATION_NAME = "VIEWS_INNER_JOINS";
 
 	private static int DEFAULT_MAX_RECURSION_LEVEL = 0;
 	
@@ -137,7 +138,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 				List<IModelField> destinationFields = join.getDestinationFileds();
 
 				try {
-					modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, "many-to-one");
+					modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, "many-to-one", VIEWS_INNER_JOINS_RELATION_NAME);
 					logger.debug("Succesfully added relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]");
 				} catch (Throwable t) {
 					logger.error("Impossible to add relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]", t);
@@ -155,7 +156,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 				List<IModelField> destinationFields = relationship.getDestinationFileds();
 
 				try {
-					modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, "many-to-one");
+					modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, "many-to-one", VIEWS_INNER_JOINS_RELATION_NAME);
 					logger.debug("Succesfully added relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]");
 				} catch (Throwable t) {
 					logger.error("Impossible to add relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]", t);
@@ -230,7 +231,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 				destinationFields.add(field);
 			}
 			try {
-				modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, relationship.getType());
+				modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, relationship.getType(), relationship.getName());
 				logger.debug("Succesfully added relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]");
 			} catch (Throwable t) {
 				logger.error("Impossible to add relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]", t);

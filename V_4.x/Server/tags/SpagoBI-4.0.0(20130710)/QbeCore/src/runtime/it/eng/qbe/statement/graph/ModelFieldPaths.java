@@ -1,3 +1,8 @@
+/* SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
@@ -7,7 +12,6 @@ import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,10 +22,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 

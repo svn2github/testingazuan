@@ -10,24 +10,20 @@ import it.eng.qbe.model.accessmodality.IModelAccessModality;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelViewEntity;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
-import it.eng.qbe.model.structure.ModelViewEntity.Join;
-import it.eng.qbe.query.CriteriaConstants;
-import it.eng.qbe.query.SimpleSelectField;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Filter;
-import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.qbe.statement.StatementCompositionException;
+import it.eng.qbe.statement.graph.GraphValidatorInspector;
+import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.jpa.JPQLStatementConditionalOperators.IConditionalOperator;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +40,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.Multigraph;
 
 /**
  * This class builds the where clause part of the statement
@@ -392,7 +390,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 	*/
 	
 	
-	protected String injectAutoJoins(String whereClause, Query query, Map entityAliasesMaps) {
+	protected String injectAutoJoins(String whereClause, Query query, Map entityAliasesMaps,  QueryGraph queryGraph) {
 		logger.debug("IN");
 		
 		try {
@@ -404,9 +402,9 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 			
 			Set<IModelEntity> unjoinedEntities = getUnjoinedRootEntities(rootEntityAlias);
 			if(unjoinedEntities.size() > 0) {
-				boolean areConnected = parentStatement.getDataSource().getModelStructure().areRootEntitiesConnected(unjoinedEntities);
+				boolean areConnected = GraphValidatorInspector.isValid(queryGraph);
 				if(areConnected) {
-					Set<Relationship> relationships = parentStatement.getDataSource().getModelStructure().getRootEntitiesConnections(unjoinedEntities);
+					List<Relationship> relationships = queryGraph.getConnections();
 					for(Relationship relationship : relationships) {
 						IModelEntity sourceEntity = relationship.getSourceEntity();
 						Assert.assertNotNull(sourceEntity, "In a relationship source entity cannot be null");

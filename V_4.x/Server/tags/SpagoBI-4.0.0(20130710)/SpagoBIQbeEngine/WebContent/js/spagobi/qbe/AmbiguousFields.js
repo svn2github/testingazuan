@@ -98,33 +98,33 @@ Ext.extend(Sbi.qbe.AmbiguousFields, Ext.util.Observable, {
 
 	,
 	mergeChoices : function (aRecord, other, otherRecord) {
-		var activeOption = other.getActiveOption(otherRecord);
-		this.setActiveOptionIfExists(aRecord, activeOption);
+		var activeOptions = other.getActiveOptions(otherRecord);
+		this.setActiveOptionsIfExist(aRecord, activeOptions);
 	}
 	
 	,
-	getActiveOption : function (record) {
+	getActiveOptions : function (record) {
 		var choices = record.data.choices;
-		if (choices.length == 1) {
-			return choices[0];
-		}
+		var toReturn = [];
 		for (var i = 0; i < choices.length; i++) {
 			var anOption = choices[i];
 			if (anOption.active) {
-				return anOption;
+				toReturn.push( anOption );
 			}
 		}
+		return toReturn;
 	}
 	
 	,
-	setActiveOptionIfExists : function (aRecord, option) {
+	setActiveOptionsIfExist : function (aRecord, options) {
 		var choices = aRecord.data.choices;
 		for (var i = 0; i < choices.length; i++) {
-			var anOption = choices[i];
-			delete anOption.active;
-			delete option.active;
-			if (Ext.encode(option.nodes) == Ext.encode(anOption.nodes)) {
-				anOption.active = true;
+			var left = choices[i];
+			for (var j = 0; j < options.length; j++) {
+				var right = options[j];
+				if (right.active && Ext.encode(left.nodes) == Ext.encode(right.nodes)) {
+					left.active = true;
+				}
 			}
 		}
 	}

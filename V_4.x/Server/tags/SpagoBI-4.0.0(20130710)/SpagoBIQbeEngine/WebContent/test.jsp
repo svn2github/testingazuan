@@ -11,7 +11,7 @@ for (int i = 1; i < 5; i++) {
 	obj.put("name", "name campo " + i);
 	obj.put("entity", "entity campo " + i);
 	JSONArray choices = new JSONArray();
-	for (; j % 5 == 0; j++) {
+	for (; j % 5 != 0; j++) {
 		JSONObject aChoice = new JSONObject();
 		JSONArray nodes = new JSONArray();
 		for (int m = 0; m < 3; m++) {
@@ -22,8 +22,12 @@ for (int i = 1; i < 5; i++) {
 			nodes.put(aNode);
 		}
 		aChoice.put("nodes", nodes);
+		if (j % 5 == 1) {
+			aChoice.put("active", true);
+		}
 		choices.put(aChoice);
 	}
+	j++;
 	obj.put("choices", choices);
 	
 	array.put(obj);

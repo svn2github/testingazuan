@@ -372,6 +372,7 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 		if (ambiguousFields.length == 0) {
 			this.doExecuteQuery(query, promptableFilters);
 		} else {
+			ambiguousFields = this.mergeAmbiguousFieldsWithCache(query, ambiguousFields);
 			var relationshipsWindow = new Sbi.qbe.RelationshipsWizardWindow({
 				ambiguousFields : ambiguousFields
 				, closeAction : 'close'
@@ -385,8 +386,29 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 	}
 }
 
+,
+mergeAmbiguousFieldsWithCache : function (query, ambiguousFields) {
+	var cached = this.getAmbiguousFieldsFromCache(query);
+	var ambiguousFieldsObj = new Sbi.qbe.AmbiguousFields({ ambiguousFields : ambiguousFields });
+	var cachedObj = new Sbi.qbe.AmbiguousFields({ ambiguousFields : cached });
+	ambiguousFieldsObj.merge(cachedObj);
+	return ambiguousFieldsObj.getAmbiguousFieldsAsJSONArray();
+}
+
+,
+putAmbiguousFieldsSolvedOnCache : function (query, ambiguousFieldsSolved) {
+	Sbi.cache.memory.put(query.id, ambiguousFieldsSolved);
+}
+
+,
+getAmbiguousFieldsFromCache : function (query) {
+	var cached = Sbi.cache.memory.get(query.id);
+	return cached;
+}
+
 , onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, query, promptableFilters) {
 	theWindow.close();
+	this.putAmbiguousFieldsSolvedOnCache(query, ambiguousFieldsSolved);
 	this.doExecuteQuery(query, promptableFilters, ambiguousFieldsSolved);
 }
 

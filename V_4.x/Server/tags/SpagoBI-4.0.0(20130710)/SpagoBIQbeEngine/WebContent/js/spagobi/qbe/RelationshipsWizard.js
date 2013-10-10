@@ -172,7 +172,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	                , renderer: this.getCellTooltip
 	            }]
 	        })
-	        , sm : new Ext.grid.RowSelectionModel()
+	        , sm : new Ext.grid.RowSelectionModel({singleSelect : true})
 	        , frame : true
 	        , border : true  
 	        , collapsible : false
@@ -208,14 +208,15 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     
     ,
     detailGridOnRowdblclickHandler : function ( theGrid, rowIndex, e ) {
-    	this.selectChoiseByIndex(rowIndex);
+    	this.toggleOptionByIndex(rowIndex);
     }
     
     ,
-    selectChoiseByIndex : function ( rowIndex ) {
-    	this.removeCurrentActive();
+    toggleOptionByIndex : function ( rowIndex ) {
+    	//this.removeCurrentActive();
 		var activeRecord = this.detailStore.getAt(rowIndex);
-		activeRecord.set('active', true);
+		var active = activeRecord.get('active');
+		activeRecord.set('active', !active);
 		this.storeChangesInMainStore();
     }
     
@@ -235,6 +236,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	return toReturn;
     }
     
+    /*
     ,
     removeCurrentActive : function () {
     	var activeIndex = this.detailStore.find( 'active', true );
@@ -243,21 +245,23 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     		activeRecord.set('active', false);
     	}
     }
+    */
     
+    /*
 	,
 	getUserChoiceForField : function (theFieldRecord) {
-		var toReturn = null;
+		var toReturn = [];
 		var choices = theFieldRecord.data.choices;
 		var length = choices.length, element = null;
 		for ( var i = 0; i < length; i++) {
 			element = choices[i];
 			if (element.active) {
-				toReturn = element;
-				break;
+				toReturn.push(element);
 			}
 		}
 		return toReturn;
 	}
+	*/
 	
 	,
 	getCellTooltip: function (value, cell, record) {
@@ -268,6 +272,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	 	return value;
 	}
 	
+	/*
 	,
 	removeNonActiveOptions : function (aFieldData) {
 		var newArray = [];
@@ -277,11 +282,11 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 			if (option.active) {
 				delete option.active;
 				newArray.push(option);
-				break;
 			}
 		}
 		aFieldData['choices'] = newArray;
 	}
+	*/
 	
 	// public methods
 	,
@@ -289,7 +294,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	var toReturn = [];
     	this.mainStore.each(function (aRecord) {
     		var clone = Ext.apply({}, aRecord.data);
-    		this.removeNonActiveOptions(clone);
+    		//this.removeNonActiveOptions(clone);
     		toReturn.push(clone);
     	}, this);
     	return toReturn;

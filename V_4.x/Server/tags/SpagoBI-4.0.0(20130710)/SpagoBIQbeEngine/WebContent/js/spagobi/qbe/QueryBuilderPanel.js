@@ -102,9 +102,6 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	this.initCenterRegionPanel(c.centerConfig || {});
 	this.initEastRegionPanel(c.eastConfig || {});
 	
-	// cache initialization
-	this.cache = new Sbi.widgets.Cache({});
-		
 	c = Ext.apply(c, {
       	layout: 'border',  
 		/*
@@ -715,7 +712,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	,
 	putAmbiguousFieldsSolvedOnCache : function (ambiguousFieldsSolved) {
 		var query = this.getQuery(true);
-		this.cache.put(query.id, ambiguousFieldsSolved);
+		Sbi.cache.memory.put(query.id, ambiguousFieldsSolved);
 	}
 	
 	,
@@ -730,7 +727,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	,
 	getAmbiguousFieldsFromCache : function () {
 		var query = this.getQuery(true);
-		var cached = this.cache.get(query.id);
+		var cached = Sbi.cache.memory.get(query.id);
 		return cached;
 	}
 	

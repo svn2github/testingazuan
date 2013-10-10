@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultEdge;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -29,12 +28,12 @@ public class ModelFieldPaths {
 	private IModelField field;
 	private Set<PathChoice> choices;
 
-	public ModelFieldPaths(IModelField field, Set<GraphPath<IModelEntity, DefaultEdge>> paths ){
+	public ModelFieldPaths(IModelField field, Set<GraphPath<IModelEntity, Relationship>> paths ){
 		this.field = field;
 
 		choices = new HashSet<PathChoice>();
 		if(paths!=null){
-			Iterator<GraphPath<IModelEntity, DefaultEdge>> pathsiter = paths.iterator();
+			Iterator<GraphPath<IModelEntity, Relationship>> pathsiter = paths.iterator();
 			while (pathsiter.hasNext()) {
 				choices.add(new PathChoice(pathsiter.next()));
 			}
@@ -82,7 +81,7 @@ public class ModelFieldPaths {
 		return  s; 
 	}
 
-	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, DefaultEdge> graph, IModelStructure modelStructure){
+	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
 		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));

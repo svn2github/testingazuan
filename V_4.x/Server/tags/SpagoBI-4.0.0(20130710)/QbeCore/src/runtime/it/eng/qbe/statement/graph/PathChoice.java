@@ -5,22 +5,21 @@ import it.eng.qbe.model.structure.IModelEntity;
 import java.util.List;
 
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultEdge;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class PathChoice {
-	GraphPath<IModelEntity, DefaultEdge> path;
+	GraphPath<IModelEntity, Relationship> path;
 	private boolean active;
-	private List<DefaultEdge> relations;
+	private List<Relationship> relations;
 	
-	public PathChoice( List<DefaultEdge> relations, boolean active) {
+	public PathChoice( List<Relationship> relations, boolean active) {
 		super();
 		this.relations = relations;
 		this.active = active;
 	}
 
-	public PathChoice(GraphPath<IModelEntity, DefaultEdge> path) {
+	public PathChoice(GraphPath<IModelEntity, Relationship> path) {
 		super();
 		this.path = path;
 		this.active =  false;
@@ -38,7 +37,7 @@ public class PathChoice {
 		return path.getEndVertex().getUniqueName();
 	}
 	
-	public List<DefaultEdge> getNodes() {
+	public List<Relationship> getNodes() {
 		if(path!=null){
 			return (path.getEdgeList());
 		}
@@ -46,7 +45,7 @@ public class PathChoice {
 	}
 
 	@JsonIgnore
-	public  List<DefaultEdge> getRelations() {
+	public  List<Relationship> getRelations() {
 		if(this.relations==null){
 			this.relations = this.path.getEdgeList();
 		}

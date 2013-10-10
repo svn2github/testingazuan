@@ -4,6 +4,7 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathInspector;
+import it.eng.qbe.statement.graph.Relationship;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultEdge;
 
 public class AmbiguousPathsTestCase  extends AbstractGraphTestCase {
 	
@@ -21,14 +21,14 @@ public class AmbiguousPathsTestCase  extends AbstractGraphTestCase {
 //	public void testAmbiguousPaths() {
 //		
 //		PathInspector pathInspector = new PathInspector(graph);
-//		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge>>> map = pathInspector.getAmbiguousEntitiesPathsMap();
+//		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> map = pathInspector.getAmbiguousEntitiesPathsMap();
 //		assertEquals(map.keySet().size(), 3);
 //		Iterator<IModelEntity> iter = map.keySet().iterator();
 //		while(iter.hasNext()){
 //			IModelEntity myMe = iter.next();
 //			assertTrue(mappaths.containsKey(myMe));
-//			Set<GraphPath<IModelEntity, DefaultEdge>> paths = map.get(myMe);
-//			Set<GraphPath<IModelEntity, DefaultEdge>> paths2 = mappaths.get(myMe);
+//			Set<GraphPath<IModelEntity, Relationship>> paths = map.get(myMe);
+//			Set<GraphPath<IModelEntity, Relationship>> paths2 = mappaths.get(myMe);
 //			assertEquals(paths.size(), paths2.size());
 //
 //		}
@@ -42,22 +42,22 @@ public class AmbiguousPathsTestCase  extends AbstractGraphTestCase {
 		
 		PathInspector pathInspector = new PathInspector(graph, entities);
 		String s;
-		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge>>> map = pathInspector.getAmbiguousEntitiesAllPathsMap();
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> map = pathInspector.getAmbiguousEntitiesAllPathsMap();
 		//assertEquals(map.keySet().size(), 3);
 		Iterator<IModelEntity> iter = map.keySet().iterator();
 		while(iter.hasNext()){
 			IModelEntity myMe = iter.next();
 			assertTrue(mappaths.containsKey(myMe));
-			Set<GraphPath<IModelEntity, DefaultEdge>> paths = map.get(myMe);
-			Iterator<GraphPath<IModelEntity, DefaultEdge>> iter2 = paths.iterator();
+			Set<GraphPath<IModelEntity, Relationship>> paths = map.get(myMe);
+			Iterator<GraphPath<IModelEntity, Relationship>> iter2 = paths.iterator();
 			int y=0;
 			while (iter2.hasNext()) {
-				GraphPath<IModelEntity, DefaultEdge> path3 =  iter2.next();
-				List<DefaultEdge> de = path3.getEdgeList();
+				GraphPath<IModelEntity, Relationship> path3 =  iter2.next();
+				List<Relationship> de = path3.getEdgeList();
 				ModelFieldPaths mp = new ModelFieldPaths(myMe.getAllFields().get(0), paths);
 				y++;
 			}
-//			Set<GraphPath<IModelEntity, DefaultEdge>> paths2 = mappaths.get(myMe);
+//			Set<GraphPath<IModelEntity, Relationship>> paths2 = mappaths.get(myMe);
 			
 
 		}
@@ -68,18 +68,18 @@ public class AmbiguousPathsTestCase  extends AbstractGraphTestCase {
 		
 		PathInspector pathInspector = new PathInspector(graph, entities);
 		String s;
-		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge>>> map = pathInspector.getAmbiguousEntitiesAllPathsMap();
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> map = pathInspector.getAmbiguousEntitiesAllPathsMap();
 		//assertEquals(map.keySet().size(), 3);
 		Iterator<IModelEntity> iter = map.keySet().iterator();
 		while(iter.hasNext()){
 			IModelEntity myMe = iter.next();
 			assertTrue(mappaths.containsKey(myMe));
-			Set<GraphPath<IModelEntity, DefaultEdge>> paths = map.get(myMe);
-			Iterator<GraphPath<IModelEntity, DefaultEdge>> iter2 = paths.iterator();
+			Set<GraphPath<IModelEntity, Relationship>> paths = map.get(myMe);
+			Iterator<GraphPath<IModelEntity, Relationship>> iter2 = paths.iterator();
 			int y=0;
 			while (iter2.hasNext()) {
-				GraphPath<IModelEntity, DefaultEdge> path3 =  iter2.next();
-				List<DefaultEdge> de = path3.getEdgeList();
+				GraphPath<IModelEntity, Relationship> path3 =  iter2.next();
+				List<Relationship> de = path3.getEdgeList();
 				ModelFieldPaths mp = new ModelFieldPaths(myMe.getAllFields().get(0), paths);
 				ModelFieldPaths deserialized = null;
 				try {
@@ -92,7 +92,7 @@ public class AmbiguousPathsTestCase  extends AbstractGraphTestCase {
 				}
 				y++;
 			}
-//			Set<GraphPath<IModelEntity, DefaultEdge>> paths2 = mappaths.get(myMe);
+//			Set<GraphPath<IModelEntity, Relationship>> paths2 = mappaths.get(myMe);
 			
 
 		}

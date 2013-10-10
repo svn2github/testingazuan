@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +29,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelFieldPaths>{
 	private Collection<Relationship> relationShips;
-	private Graph<IModelEntity, DefaultEdge> graph;
+	private Graph<IModelEntity, Relationship> graph;
 	private IModelStructure modelStructure;
 	
 	private static final int defaultPathWeight = 1;
@@ -44,7 +43,7 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 	private static final String ACTIVE ="active";
 	
 
-	public ModelFieldPathsJSONDeserializer(Collection<Relationship> relationShips, Graph<IModelEntity, DefaultEdge> graph, IModelStructure modelStructure){
+	public ModelFieldPathsJSONDeserializer(Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
 		this.relationShips = relationShips;
 		this.graph = graph;
 		this.modelStructure = modelStructure;
@@ -79,7 +78,7 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 		BooleanNode active = (BooleanNode)node.get(ACTIVE);
 		boolean activebool = active!=null && active.asBoolean();
         if(nodes!=null && start!=null && end!=null){
-        	List<DefaultEdge> relations = new ArrayList<DefaultEdge>();
+        	List<Relationship> relations = new ArrayList<Relationship>();
         	for(int i=0; i<nodes.size(); i++){
         		relations.add(deserializeRelationship(nodes.get(i)));
         	}

@@ -6,7 +6,7 @@
 package it.eng.qbe.model.structure;
 
 
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 
 import java.util.Iterator;
 import java.util.List;
@@ -104,6 +104,8 @@ public interface IModelStructure extends IModelObject {
 		public List<IModelEntity> getRootEntities(String modelName) ;
 		
 		public boolean areRootEntitiesConnected(Set<IModelEntity> entities);
+		
+		public RootEntitiesGraph getRootEntitiesGraph(String modelName, boolean createIfNotExist);
 		
 	//	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities);
 		

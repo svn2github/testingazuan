@@ -10,17 +10,13 @@ import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.Multigraph;
 
 /**
@@ -33,11 +29,11 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 		
 	
 		Map<String, IModelEntity> rootEntitiesMap;
-		UndirectedGraph<IModelEntity, DefaultEdge> rootEntitiesGraph;
+		UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph;
 		
 		public RootEntitiesGraph() {
 			rootEntitiesMap = new HashMap<String, IModelEntity>();
-			rootEntitiesGraph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
+			rootEntitiesGraph = new Multigraph<IModelEntity, Relationship>(Relationship.class);
 		}
 		
 		public void addRootEntity(IModelEntity entity) {
@@ -70,7 +66,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 				ConnectivityInspector inspector = new ConnectivityInspector(rootEntitiesGraph);
 				Iterator<IModelEntity> it = entities.iterator();
 				IModelEntity entity = it.next();
-				Set<DefaultEdge> edges = rootEntitiesGraph.edgesOf(entity);
+				Set<Relationship> edges = rootEntitiesGraph.edgesOf(entity);
 				Set<IModelEntity> connectedEntitySet = inspector.connectedSetOf(entity);
 				while(it.hasNext()) {
 					entity = it.next();
@@ -100,8 +96,13 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			boolean added = rootEntitiesGraph.addEdge(fromEntity, toEntity, relationship);
 			return added? relationship: null;
 		}
+
+		public UndirectedGraph<IModelEntity, Relationship> getRootEntitiesGraph() {
+			return rootEntitiesGraph;
+		}
 		
 
+		
 	}
 	
 	

@@ -7,6 +7,7 @@ package it.eng.qbe.model.structure;
 
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.model.structure.filter.QbeTreeFilter;
 
 import java.util.ArrayList;
@@ -277,6 +278,11 @@ public class FilteredModelStructure extends AbstractModelObject implements IMode
 
 	public int getMaxRecursionLevel() {
 		return this.maxRecursionLevel;
+	}
+
+	public RootEntitiesGraph getRootEntitiesGraph(String modelName,
+			boolean createIfNotExist) {
+		return wrappedModelStructure.getRootEntitiesGraph(modelName, createIfNotExist);
 	}
 	
 

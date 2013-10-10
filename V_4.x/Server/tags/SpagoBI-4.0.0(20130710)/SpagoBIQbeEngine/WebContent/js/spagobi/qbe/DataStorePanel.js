@@ -104,10 +104,13 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
     // public methods
 	// ---------------------------------------------------------------------------------------------------
 	
-	, execQuery:  function(query, freeFiltersForm) {
+	, execQuery:  function(query, freeFiltersForm, ambiguousFieldsPaths) {
 		this.firstPage= true;
 		this.store.removeAll();
-		this.store.baseParams = Ext.apply({id: query.id}, freeFiltersForm || {});
+		this.store.baseParams = Ext.apply({
+			id : query.id
+			, ambiguousFieldsPaths : Sbi.commons.JSON.encode(ambiguousFieldsPaths)
+		}, freeFiltersForm || {});
 		var requestParameters = {start: 0, limit: 25 };
 		this.store.load({params: requestParameters});
 	}

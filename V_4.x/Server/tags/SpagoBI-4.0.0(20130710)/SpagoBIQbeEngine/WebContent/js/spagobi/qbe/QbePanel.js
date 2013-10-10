@@ -64,6 +64,10 @@ Sbi.qbe.QbePanel = function(config) {
 		serviceName: 'SET_WORKSHEET_DEFINITION_ACTION'
 			, baseParams: params
 	});
+	this.services['getAmbiguousFields'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_AMBIGUOUS_FIELDS_ACTION'
+			, baseParams: params
+	});
 
 	this.addEvents();
 
@@ -348,8 +352,47 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 }
 
 , executeQuery: function(query, promptableFilters) {
+	this.checkAmbiguousFields(query, promptableFilters);
+}
+
+, checkAmbiguousFields: function(query, promptableFilters) {
+	// call the server to get ambiguous fields
+	Ext.Ajax.request({
+		url: '/SpagoBIQbeEngine/test.jsp',//this.services['getAmbiguousFields'],
+		params: {id: query.id},
+		success : this.onAmbiguousFieldsLoaded.createDelegate(this, [query, promptableFilters], true),
+		scope: this,
+		failure: Sbi.exception.ExceptionHandler.handleFailure      
+	});
+}
+
+, onAmbiguousFieldsLoaded : function (response, opts, query, promptableFilters) {
+	try {
+		var ambiguousFields = Ext.util.JSON.decode( response.responseText );
+		if (ambiguousFields.length == 0) {
+			this.doExecuteQuery(query, promptableFilters);
+		} else {
+			var relationshipsWindow = new Sbi.qbe.RelationshipsWizardWindow({
+				ambiguousFields : ambiguousFields
+				, closeAction : 'close'
+				, modal : true
+			});
+			relationshipsWindow.show();
+			relationshipsWindow.on('apply', this.onAmbiguousFieldsSolved.createDelegate(this, [query, promptableFilters], true), this);
+		}
+	} catch (err) {
+		Sbi.exception.ExceptionHandler.handleFailure();
+	}
+}
+
+, onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, query, promptableFilters) {
+	theWindow.close();
+	this.doExecuteQuery(query, promptableFilters, ambiguousFieldsSolved);
+}
+
+, doExecuteQuery: function(query, promptableFilters, ambiguousFieldsSolved) {
 	var newPromptableFilters = { promptableFilters : Ext.encode(promptableFilters)};
-	this.queryResultPanel.execQuery(query, newPromptableFilters);
+	this.queryResultPanel.execQuery(query, newPromptableFilters, ambiguousFieldsSolved);
 }
 
 , getPromptableFilters : function(query) {

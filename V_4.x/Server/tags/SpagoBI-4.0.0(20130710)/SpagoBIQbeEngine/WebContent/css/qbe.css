@@ -647,3 +647,7 @@ See also http://www.sencha.com/deploy/dev/examples/form/check-radio.html */
     padding-right:0px;
 }
 
+/*******************************************************************************************************
+ * Sbi.qbe.RelationshipsWizard
+ ********************************************************************************************************/
+.green-row { background-color: #99CC99 !important; background-image: none !important }

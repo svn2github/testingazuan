@@ -80,6 +80,9 @@ Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.view'] = 'Salva come vista
 //Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.execute'] = 'Esegui la query';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.validate'] = 'Valida la  query';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.help'] = 'Help me please';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.buttons.relationshipswizard'] = 'Dettaglio relazioni';
+Sbi.locale.ln['sbi.qbe.queryeditor.noambiguousfields.title'] = 'Non ci sono ambiguit\u00e0';
+Sbi.locale.ln['sbi.qbe.queryeditor.noambiguousfields.msg'] = 'Tra le entit\u00e0 coinvolte nella query non ci sono ambiguit\u00e0';
 
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Catalogo delle query';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Cancella';
@@ -463,3 +466,15 @@ Sbi.locale.ln['sbi.qbe.bands.wizard.invalid.operation.edit.msg'] = 'Il nodo di t
 Sbi.locale.ln['sbi.qbe.bands.wizard.invalid.node'] = 'Il nodo non e\' una fascia';
 Sbi.locale.ln['sbi.qbe.bands.range.title'] = 'Definizione limiti';
 Sbi.locale.ln['sbi.qbe.bands.range.invalid'] = 'Range invalido!';
+
+
+//===================================================================
+//RELATIONSHIPS WIZARD
+//===================================================================
+Sbi.locale.ln['sbi.qbe.relationshipswizard.title'] = 'Dettaglio relazioni';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.title'] = 'Dettaglio relazioni';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.buttons.apply'] = 'Applica';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.buttons.cancel'] = 'Annulla';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.name'] = 'Nome';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entita\'';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Percorso di join';

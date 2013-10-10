@@ -79,6 +79,9 @@ Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.view'] = 'Save query as vi
 //Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.execute'] = 'Execute query';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.validate'] = 'Validate query';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.help'] = 'Help me please';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.buttons.relationshipswizard'] = 'Relationships wizard';
+Sbi.locale.ln['sbi.qbe.queryeditor.noambiguousfields.title'] = 'No ambiguous fieds';
+Sbi.locale.ln['sbi.qbe.queryeditor.noambiguousfields.msg'] = 'There are no ambiguous fieds in the current query';
 
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Query Catalogue';
 Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Delete query';
@@ -465,3 +468,16 @@ Sbi.locale.ln['sbi.qbe.bands.wizard.invalid.operation.edit.msg'] = 'Node of type
 Sbi.locale.ln['sbi.qbe.bands.wizard.invalid.node'] = 'The node isn\'t a band';
 Sbi.locale.ln['sbi.qbe.bands.range.title'] = 'Limit definition';
 Sbi.locale.ln['sbi.qbe.bands.range.invalid'] = 'Range not correctly set';
+
+
+
+//===================================================================
+//RELATIONSHIPS WIZARD
+//===================================================================
+Sbi.locale.ln['sbi.qbe.relationshipswizard.title'] = 'Relationships wizard';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.title'] = 'Relationships wizard';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.buttons.apply'] = 'Apply';
+Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.buttons.cancel'] = 'Cancel';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.name'] = 'Name';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entity';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Join path';

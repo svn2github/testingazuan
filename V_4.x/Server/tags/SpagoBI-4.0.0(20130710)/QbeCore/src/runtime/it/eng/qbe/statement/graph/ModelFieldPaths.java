@@ -85,21 +85,19 @@ public class ModelFieldPaths {
 		return  s; 
 	}
 
-	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
+	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
 		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
 		mapper.registerModule(simpleModule);
 		try {
-			return  mapper.readValue(serialized, ModelFieldPaths.class);
+			return mapper.readValue(serialized, ModelFieldPaths.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new SerializationException("Error deserializing the ModelFieldPaths", e);
 		}
-		return null;
-
 	}
 	
-	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
+	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
 		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
@@ -108,9 +106,8 @@ public class ModelFieldPaths {
 		try {
 			return mapper.readValue(serialized, type);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new SerializationException("Error deserializing the list of ModelFieldPaths", e);
 		}
-		return null;
 	}
 
 

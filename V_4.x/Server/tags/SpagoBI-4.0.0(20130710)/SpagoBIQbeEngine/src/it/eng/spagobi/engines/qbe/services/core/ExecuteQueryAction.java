@@ -11,6 +11,7 @@ import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
+import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.IStatement;
 import it.eng.qbe.statement.graph.GraphValidatorInspector;
@@ -27,6 +28,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datawriter.JSONDataWriter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -156,7 +158,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		logger.debug("Set<Relationship> retrieved");
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
-		List<ModelFieldPaths> list = ModelFieldPaths.deserializeList(serialized, relationships, graph, modelStructure);
+		List<ModelFieldPaths> list;
+		try {
+			list = ModelFieldPaths.deserializeList(serialized, relationships, graph, modelStructure);
+		} catch (SerializationException e) {
+			throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
+		}
 		logger.debug("Paths deserialized");
 		Iterator<ModelFieldPaths> it = list.iterator();
 		while (it.hasNext()) {

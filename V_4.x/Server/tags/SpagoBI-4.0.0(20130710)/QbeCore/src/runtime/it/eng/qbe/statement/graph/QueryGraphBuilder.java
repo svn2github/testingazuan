@@ -30,21 +30,21 @@ import org.jgrapht.graph.Multigraph;
  */
 
 public class QueryGraphBuilder {
-	
+
 	private static transient Logger logger = Logger.getLogger(QueryGraphBuilder.class);
 	private List<IModelEntity> vertexes;
-	
+
 	public QueryGraphBuilder(){
 		vertexes = new ArrayList<IModelEntity>();
 	}
-	
-	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraph(Collection<GraphPath<IModelEntity, DefaultEdge>> paths){
+
+	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraphFromPaths(Collection<GraphPath<IModelEntity, DefaultEdge>> paths){
 		logger.debug("IN");
 		Assert.assertNotNull(paths, "The list of paths is null. Impossbile to create a graph");
 		logger.debug("The number of paths is "+paths.size());
-		
+
 		UndirectedGraph<IModelEntity, DefaultEdge> graph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
-		
+
 		if(paths!=null){
 			Iterator<GraphPath<IModelEntity, DefaultEdge>> pathIter = paths.iterator();
 			while(pathIter.hasNext()){
@@ -56,34 +56,61 @@ public class QueryGraphBuilder {
 		logger.debug("OUT");
 		return graph;
 	}
-	
-	public void addPathToGraph(UndirectedGraph<IModelEntity, DefaultEdge> graph, GraphPath<IModelEntity, DefaultEdge> path ){
+
+	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraphFromEdges(Collection<DefaultEdge> edges){
+		logger.debug("IN");
+		Assert.assertNotNull(edges, "The list of edges is null. Impossbile to create a graph");
+		logger.debug("The number of paths is "+edges.size());
+
+		UndirectedGraph<IModelEntity, DefaultEdge> graph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
+
+		if(edges!=null){
+			Iterator< DefaultEdge> pathIter = edges.iterator();
+			while(pathIter.hasNext()){
+				DefaultEdge edge = pathIter.next();
+				addEdgeToGraph(graph, edge);
+			}
+		}
+
+		logger.debug("OUT");
+		return graph;
+	}
+
+	private void addPathToGraph(UndirectedGraph<IModelEntity, DefaultEdge> graph, GraphPath<IModelEntity, DefaultEdge> path ){
 		logger.debug("IN");
 		List<DefaultEdge> edges = path.getEdgeList();
 		if(edges!=null){
 			for(int i=0; i<edges.size(); i++){
 				Relationship edge = (Relationship)edges.get(i);
-				IModelEntity src= edge.getSourceEntity();
-				IModelEntity target= edge.getTargetEntity();
-				
-				if(!vertexes.contains(src)){
-					logger.debug("Add the vertex "+src.getName());
-					vertexes.add(src);
-					graph.addVertex(src);
-				}
-				if(!vertexes.contains(target)){
-					logger.debug("Add the vertex "+src.getName());
-					vertexes.add(target);
-					graph.addVertex(target);
-				}
-				
-				logger.debug("Add the edge "+src.getName()+"--"+target.getName());
-				graph.addEdge(src, target, edge);
+				addEdgeToGraph(graph, edge);
 			}
 		}
 		logger.debug("OUT");
 	}
-	
 
-	
+	private void addEdgeToGraph(UndirectedGraph<IModelEntity, DefaultEdge> graph, DefaultEdge edefEdge){
+		if(edefEdge!=null){
+			Relationship edge = (Relationship)edefEdge;
+			IModelEntity src= edge.getSourceEntity();
+			IModelEntity target= edge.getTargetEntity();
+
+			if(!vertexes.contains(src)){
+				logger.debug("Add the vertex "+src.getName());
+				vertexes.add(src);
+				graph.addVertex(src);
+			}
+			if(!vertexes.contains(target)){
+				logger.debug("Add the vertex "+src.getName());
+				vertexes.add(target);
+				graph.addVertex(target);
+			}
+
+			logger.debug("Add the edge "+src.getName()+"--"+target.getName());
+			graph.addEdge(src, target, edge);
+		}
+		logger.debug("OUT");
+	}
+
+
+
 }

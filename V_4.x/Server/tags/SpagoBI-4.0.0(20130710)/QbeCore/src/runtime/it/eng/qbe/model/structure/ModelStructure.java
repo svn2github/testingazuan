@@ -84,6 +84,10 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			public String getName() {
 				return name;
 			}
+			
+			public String getId(){
+				return name;
+			}
 
 			public void setName(String name) {
 				this.name = name;
@@ -142,11 +146,6 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			return areConnected;
 		}
 		
-//		public Relationship addRelationship(String fromEntityName, String toEntityName, String type) {
-//			IModelEntity fromEntity = getRootEntityByName(fromEntityName);
-//			IModelEntity toEntity = getRootEntityByName(toEntityName);	
-//			return addRelationship(fromEntity, toEntity, type);
-//		}
 
 		public Relationship addRelationship(IModelEntity fromEntity, List<IModelField> fromFields,
 				IModelEntity toEntity, List<IModelField> toFields, String type, String relationName) {

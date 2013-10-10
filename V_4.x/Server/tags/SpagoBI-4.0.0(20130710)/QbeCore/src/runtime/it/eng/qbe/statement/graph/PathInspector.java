@@ -10,6 +10,7 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,81 +37,103 @@ public class PathInspector {
 	private static transient Logger logger = Logger.getLogger(PathInspector.class);
 	private Graph<IModelEntity, DefaultEdge> graph;
 	private static final int maxPathLength = 10;
+	
 	private Set<EntitiesPath> paths;
-	private Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> pathsInvolvingEntityMap;
 	private Set<GraphPath<IModelEntity, DefaultEdge>> allGraphPaths; // all the paths of the graph
 
-	public PathInspector( Graph<IModelEntity, DefaultEdge> graph){
+	public PathInspector( Graph<IModelEntity, DefaultEdge> graph, Collection<IModelEntity> queryEntities){
 		this.graph = graph;
-
-		buildPaths();
+		buildPaths(queryEntities);
 	}
 
 	/**
 	 * Builds the set of paths between all the couple of vertexes
 	 */
-	private void buildPaths(){
+	private void buildPaths( Collection<IModelEntity> queryEntities){
 
 		logger.debug("IN");
 
-		pathsInvolvingEntityMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >>();
+		allGraphPaths = new HashSet<GraphPath<IModelEntity, DefaultEdge>>();
 		paths = new HashSet<EntitiesPath>();
 
 		//build all the path between entities
-		Iterator<IModelEntity> vertexesIter =  this.graph.vertexSet().iterator();
+		Iterator<IModelEntity> vertexesIter =  queryEntities.iterator();
 
 		//First loop for the source of the path
 		while(vertexesIter.hasNext()){
 			IModelEntity startVertex = vertexesIter.next();
 			logger.debug("Building the list of path starting from "+startVertex.getName());
 			//inner loop for the target of the path
-			Iterator<IModelEntity> vertexesInnerIter =  this.graph.vertexSet().iterator();
+			Iterator<IModelEntity> vertexesInnerIter =  queryEntities.iterator();
 			while(vertexesInnerIter.hasNext()){
 				IModelEntity endVertex = vertexesInnerIter.next();
-				if(startVertex!=endVertex){
+				if(!startVertex.equals(endVertex)){
 					EntitiesPath entitiesPath = new EntitiesPath(startVertex, endVertex);
 					if(!this.paths.contains(entitiesPath)){
 						logger.debug("Building the list of path between the vertexes ["+startVertex.getName()+","+endVertex.getName()+"]");
 						KShortestPaths<IModelEntity, DefaultEdge> kshortestPath = new KShortestPaths<IModelEntity, DefaultEdge>(graph,startVertex,maxPathLength );
 						List<GraphPath<IModelEntity, DefaultEdge>> graphPaths = kshortestPath.getPaths(endVertex);
-
+						
 						//if there is at least one path between the 2 vertex
 						if(graphPaths!=null){
 							entitiesPath.setPaths(graphPaths);
 
 							//updating the class variables	
-							addEntitiesPath(entitiesPath);
+							this.paths.add(entitiesPath);
+							for(int i=0; i<graphPaths.size(); i++){
+								GraphPath<IModelEntity, DefaultEdge> path = graphPaths.get(i);
+								if(!containsPath(this.allGraphPaths, path)){
+									this.allGraphPaths.add(path);
+								}
+							}							
 						}
 					}
 				}
 			}		
 		}	
-
 		logger.debug("OUT");
 	}
 
 	/**
-	 * gets the ambiguous paths: we have an ambiguous path
-	 * where there is more than one path that connects
-	 * two entities.
-	 * @return the ambiguous paths. If there is no ambiguous path the set is empty 
+	 * Checks if the path is already contained in the map
+	 * @param map
+	 * @param path
+	 * @return
 	 */
-	public  Set<EntitiesPath> getAmbiguousEntitiesPaths(){
-		logger.debug("IN: finding the ambiguous paths");
-		Set<EntitiesPath> ambiguouPaths = new HashSet<EntitiesPath>();
-		if(pathsInvolvingEntityMap!=null){
-			logger.debug("Checking if there is more than one path between all the connected entities");
-			Iterator<EntitiesPath> iter = paths.iterator();
-
-			while(iter.hasNext()){
-				EntitiesPath path = iter.next();
-				if(path.getPaths()!=null && path.getPaths().size()>1){
-					ambiguouPaths.add(path);
-				}
-			} 
+	private static boolean containsPath(Set<GraphPath<IModelEntity, DefaultEdge>> map, GraphPath<IModelEntity, DefaultEdge> path){
+		logger.debug("IN");
+		Iterator<GraphPath<IModelEntity, DefaultEdge>> iter = map.iterator();
+		while(iter.hasNext()){
+			GraphPath<IModelEntity, DefaultEdge> graphPath = iter.next();
+			if(arePathsEquals(graphPath, path)){
+				logger.debug("Adding the path in the map"+path.toString());
+				return true;
+			}
 		}
 		logger.debug("OUT");
-		return ambiguouPaths;
+		return false;
+	}
+	
+	/**
+	 * Checks if the 2 paths are equals
+	 * @param path1
+	 * @param path2
+	 * @return
+	 */
+	private static boolean arePathsEquals(GraphPath<IModelEntity, DefaultEdge> path1, GraphPath<IModelEntity, DefaultEdge> path2){
+		Set<String> relationsPath1 = getRelationsSet(path1);
+		Set<String> relationsPath2 = getRelationsSet(path2);
+		return relationsPath1.equals(relationsPath2);
+	}
+	
+	private static Set<String> getRelationsSet(GraphPath<IModelEntity, DefaultEdge> path1){
+		Set<String> relations = new HashSet<String>();
+		List<DefaultEdge> edges =  path1.getEdgeList();
+		for(int i=0; i<edges.size();i++){
+			relations.add(((Relationship)edges.get(i)).getId());
+		}
+		return relations;
+		
 	}
 	
 	
@@ -130,20 +153,45 @@ public class PathInspector {
 			while(iter.hasNext()){
 				EntitiesPath entitiesPath = iter.next();
 				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingStartEntity;
-				if(!ambiguouPathsMap.containsKey(entitiesPath.getSource())){
-					pathsInvolvingStartEntity = getPathsOfAmbigousEntities(entitiesPath.getSource());
-					ambiguouPathsMap.put(entitiesPath.getSource(), pathsInvolvingStartEntity);
+				if(!ambiguouPathsMap.containsKey(entitiesPath.getEndPoints().get(0))){
+					pathsInvolvingStartEntity = getPathsOfAmbigousEntities(entitiesPath.getEndPoints().get(0));
+					ambiguouPathsMap.put(entitiesPath.getEndPoints().get(0), pathsInvolvingStartEntity);
 				}
 
 				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingEndEntity;
-				if(!ambiguouPathsMap.containsKey(entitiesPath.getTarget())){
-					pathsInvolvingEndEntity = getPathsOfAmbigousEntities(entitiesPath.getTarget());
-					ambiguouPathsMap.put(entitiesPath.getTarget(), pathsInvolvingEndEntity);
+				if(!ambiguouPathsMap.containsKey(entitiesPath.getEndPoints().get(1))){
+					pathsInvolvingEndEntity = getPathsOfAmbigousEntities(entitiesPath.getEndPoints().get(1));
+					ambiguouPathsMap.put(entitiesPath.getEndPoints().get(1), pathsInvolvingEndEntity);
 				}
 			} 
 		}
 		logger.debug("OUT");
 		return ambiguouPathsMap;
+	}
+	
+
+	/**
+	 * gets the ambiguous paths: we have an ambiguous path
+	 * where there is more than one path that connects
+	 * two entities.
+	 * @return the ambiguous paths. If there is no ambiguous path the set is empty 
+	 */
+	private  Set<EntitiesPath> getAmbiguousEntitiesPaths(){
+		logger.debug("IN: finding the ambiguous paths");
+		Set<EntitiesPath> ambiguouPaths = new HashSet<EntitiesPath>();
+		if(paths!=null){
+			logger.debug("Checking if there is more than one path between all the connected entities");
+			Iterator<EntitiesPath> iter = paths.iterator();
+
+			while(iter.hasNext()){
+				EntitiesPath path = iter.next();
+				if(path.getPaths()!=null && path.getPaths().size()>1){
+					ambiguouPaths.add(path);
+				}
+			} 
+		}
+		logger.debug("OUT");
+		return ambiguouPaths;
 	}
 	
 	/**
@@ -183,64 +231,14 @@ public class PathInspector {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
-	/**
-	 * Add the entitiesPath to the internal structures
-	 * @param entitiesPath
-	 */
-	public void addEntitiesPath(EntitiesPath entitiesPath){
-		this.paths.add(entitiesPath);
-		addEntitiesPath(pathsInvolvingEntityMap, entitiesPath);
-	}
 
-	/**
-	 * Add the entitiesPath to the internal map "map"
-	 * @param map
-	 * @param entitiesPath
-	 */
-	public void addEntitiesPath(Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> map, EntitiesPath entitiesPath){
-
-		Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingStartEntity;
-		if(!map.containsKey(entitiesPath.getSource())){
-			pathsInvolvingStartEntity = new HashSet<GraphPath<IModelEntity,DefaultEdge>>();
-			map.put(entitiesPath.getSource(), pathsInvolvingStartEntity);
-		}else{
-			pathsInvolvingStartEntity = map.get(entitiesPath.getSource());
-		}
-
-		Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingEndEntity;
-		if(!map.containsKey(entitiesPath.getTarget())){
-			pathsInvolvingEndEntity = new HashSet<GraphPath<IModelEntity,DefaultEdge>>();
-			map.put(entitiesPath.getTarget(), pathsInvolvingEndEntity);
-		}else{
-			pathsInvolvingEndEntity = map.get(entitiesPath.getTarget());
-		}
-
-		pathsInvolvingStartEntity.addAll(entitiesPath.getPaths());
-		pathsInvolvingEndEntity.addAll(entitiesPath.getPaths());
-
-	}
-
-	public Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> getPathsInvolvingEntityMap(){
-		return pathsInvolvingEntityMap;
-	}
 
 	public Set<GraphPath<IModelEntity, DefaultEdge>> getAllGraphPaths() {
-		return getAllGraphPaths(false);
-	}
-
-	public Set<GraphPath<IModelEntity, DefaultEdge>> getAllGraphPaths(boolean refresh) {
-		
-		if(pathsInvolvingEntityMap!=null && (refresh || allGraphPaths==null )){
-			allGraphPaths = new HashSet<GraphPath<IModelEntity, DefaultEdge>>();
-			Iterator<Set<GraphPath<IModelEntity, DefaultEdge>>> iter = pathsInvolvingEntityMap.values().iterator();
-
-			while(iter.hasNext()){
-				allGraphPaths.addAll(iter.next());
-			}
-		}
 		return allGraphPaths;
 	}
+
+
+
 
 	public static class EntitiesPath{
 
@@ -269,13 +267,14 @@ public class PathInspector {
 			this.paths = paths;
 		}
 
-		public IModelEntity getSource() {
-			return source;
+		public List<IModelEntity> getEndPoints() {
+			List<IModelEntity> vertexes = new ArrayList<IModelEntity>();
+			vertexes.add(source);
+			vertexes.add(target);
+			return vertexes;
 		}
 
-		public IModelEntity getTarget() {
-			return target;
-		}
+
 
 		@Override
 		public int hashCode() {

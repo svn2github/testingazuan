@@ -10,7 +10,6 @@ import it.eng.qbe.model.accessmodality.IModelAccessModality;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.statement.graph.Relationship;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.Filter;
 import it.eng.qbe.query.Query;
@@ -19,6 +18,7 @@ import it.eng.qbe.statement.AbstractStatement;
 import it.eng.qbe.statement.StatementCompositionException;
 import it.eng.qbe.statement.graph.GraphValidatorInspector;
 import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.qbe.statement.jpa.JPQLStatementConditionalOperators.IConditionalOperator;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -40,8 +40,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 
 import org.apache.log4j.Logger;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.Multigraph;
 
 /**
  * This class builds the where clause part of the statement
@@ -390,7 +388,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 	*/
 	
 	
-	protected String injectAutoJoins(String whereClause, Query query, Map entityAliasesMaps,  QueryGraph queryGraph) {
+	protected String injectAutoJoins(String whereClause, Query query, Map entityAliasesMaps) {
 		logger.debug("IN");
 		
 		try {
@@ -402,6 +400,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 			
 			Set<IModelEntity> unjoinedEntities = getUnjoinedRootEntities(rootEntityAlias);
 			if(unjoinedEntities.size() > 0) {
+				QueryGraph queryGraph = query.getQueryGraph();
 				boolean areConnected = GraphValidatorInspector.isValid(queryGraph);
 				if(areConnected) {
 					List<Relationship> relationships = queryGraph.getConnections();

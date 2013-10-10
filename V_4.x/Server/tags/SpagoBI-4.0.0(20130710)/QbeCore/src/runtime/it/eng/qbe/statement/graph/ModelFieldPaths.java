@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
@@ -19,6 +20,7 @@ import org.jgrapht.GraphPath;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -88,18 +90,25 @@ public class ModelFieldPaths {
 		mapper.registerModule(simpleModule);
 		try {
 			return  mapper.readValue(serialized, ModelFieldPaths.class);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 
+	}
+	
+	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
+		ObjectMapper mapper = new ObjectMapper();
+		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
+		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
+		mapper.registerModule(simpleModule);
+		TypeReference<List<ModelFieldPaths>> type = new TypeReference<List<ModelFieldPaths>>() {};
+		try {
+			return mapper.readValue(serialized, type);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

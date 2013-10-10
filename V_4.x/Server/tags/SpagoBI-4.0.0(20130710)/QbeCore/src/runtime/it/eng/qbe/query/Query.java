@@ -5,6 +5,7 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.query;
 
+import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class Query {
 	
 	Query parentQuery;
 	Map subqueries;
+	
+	QueryGraph graph;
 	
 	public Query() {
 		selectFields = new ArrayList();		
@@ -435,6 +438,14 @@ public class Query {
 		if(havingFieldMap!=null){
 			havingFieldMap.clear();
 		}
+	}
+	
+	public void setQueryGraph(QueryGraph graph) {
+		this.graph = graph;
+	}
+
+	public QueryGraph getQueryGraph() {
+		return graph;
 	}
 
 }

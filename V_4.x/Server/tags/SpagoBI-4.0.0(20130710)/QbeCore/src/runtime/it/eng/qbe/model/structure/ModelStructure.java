@@ -10,6 +10,7 @@ import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,12 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 	
 	public static class RootEntitiesGraph {
 		
-	
+		Set<Relationship> relationships;
 		Map<String, IModelEntity> rootEntitiesMap;
 		UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph;
 		
 		public RootEntitiesGraph() {
+			relationships = new HashSet<Relationship>();
 			rootEntitiesMap = new HashMap<String, IModelEntity>();
 			rootEntitiesGraph = new Multigraph<IModelEntity, Relationship>(Relationship.class);
 		}
@@ -94,6 +96,9 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			relationship.setTargetFields(toFields); 
 			relationship.setName(relationName);
 			boolean added = rootEntitiesGraph.addEdge(fromEntity, toEntity, relationship);
+			if (added) {
+				relationships.add(relationship);
+			}
 			return added? relationship: null;
 		}
 
@@ -101,7 +106,9 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			return rootEntitiesGraph;
 		}
 		
-
+		public Set<Relationship> getRelationships() {
+			return relationships;
+		}
 		
 	}
 	

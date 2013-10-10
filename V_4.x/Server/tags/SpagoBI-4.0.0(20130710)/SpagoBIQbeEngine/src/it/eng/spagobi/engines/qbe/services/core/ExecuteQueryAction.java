@@ -5,11 +5,20 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.engines.qbe.services.core;
 
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.IStatement;
+import it.eng.qbe.statement.graph.GraphValidatorInspector;
+import it.eng.qbe.statement.graph.ModelFieldPaths;
+import it.eng.qbe.statement.graph.PathChoice;
+import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.QueryGraphBuilder;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.engines.qbe.QbeEngineConfig;
@@ -23,10 +32,14 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
+import org.jgrapht.UndirectedGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +59,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
 	public static final String QUERY_ID = "id";
-	
+	public static final String AMBIGUOUS_FIELDS_PATHS = "ambiguousFieldsPaths";
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
@@ -128,8 +141,39 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			if(totalTimeMonitor != null) totalTimeMonitor.stop();
 			logger.debug("OUT");
 		}	
+		
 	}
 	
+	private QueryGraph getQueryGraph() {
+		List<Relationship> toReturn = new ArrayList<Relationship>();
+		IModelStructure modelStructure = getDataSource().getModelStructure();
+		logger.debug("IModelStructure retrieved");
+		RootEntitiesGraph rootEntitiesGraph = modelStructure.getRootEntitiesGraph(getDataSource().getConfiguration().getModelName(), false);
+		logger.debug("RootEntitiesGraph retrieved");
+		UndirectedGraph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
+		logger.debug("UndirectedGraph retrieved");
+		Set<Relationship> relationships = rootEntitiesGraph.getRelationships();
+		logger.debug("Set<Relationship> retrieved");
+		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
+		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
+		List<ModelFieldPaths> list = ModelFieldPaths.deserializeList(serialized, relationships, graph, modelStructure);
+		logger.debug("Paths deserialized");
+		Iterator<ModelFieldPaths> it = list.iterator();
+		while (it.hasNext()) {
+			ModelFieldPaths modelFieldPaths = it.next();
+			Set<PathChoice> set = modelFieldPaths.getChoices();
+			Iterator<PathChoice> pathChoiceIterator = set.iterator();
+			while (pathChoiceIterator.hasNext()) {
+				PathChoice choice = pathChoiceIterator.next();
+				toReturn.addAll(choice.getRelations());
+			}
+		}
+		QueryGraphBuilder builder = new QueryGraphBuilder();
+		QueryGraph queryGraph = builder.buildGraphFromEdges(toReturn);
+		logger.debug("QueryGraph created");
+		return queryGraph;
+	}
+
 	protected IStatement getStatement(Query query){
 		IStatement statement =  getDataSource().createStatement( query );
 		return statement;
@@ -201,7 +245,15 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public IDataStore executeQuery(Integer start, Integer limit){
 		IDataStore dataStore = null;
 		IDataSet dataSet = this.getEngineInstance().getActiveQueryAsDataSet();
-		IStatement statement = ((AbstractQbeDataSet) dataSet).getStatement();
+		QueryGraph graph = getQueryGraph();
+		boolean valid = GraphValidatorInspector.isValid(graph);
+		logger.debug("QueryGraph valid = " + valid);
+		if (!valid) {
+			throw new SpagoBIEngineServiceException(getActionName(), "The specified relationships are not enough to link all entities");
+		}
+		AbstractQbeDataSet qbeDataSet = (AbstractQbeDataSet) dataSet;
+		IStatement statement = qbeDataSet.getStatement();
+		statement.getQuery().setQueryGraph(graph);
 		try {
 			logger.debug("Executing query ...");
 			Integer maxSize = QbeEngineConfig.getInstance().getResultLimit();			

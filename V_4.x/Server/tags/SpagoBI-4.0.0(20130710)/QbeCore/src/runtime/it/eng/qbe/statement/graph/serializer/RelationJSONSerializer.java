@@ -6,7 +6,7 @@
 
 package it.eng.qbe.statement.graph.serializer;
 
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+import it.eng.qbe.statement.graph.Relationship;
 
 import java.io.IOException;
 

@@ -6,11 +6,8 @@
 
 package it.eng.qbe.statement.graph;
 
-import it.eng.qbe.model.structure.IModelEntity;
-
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  * This implementation of the Graph Validator check if the Graph is connected
@@ -26,8 +23,8 @@ public class ConnectionValidator implements IGraphValidator {
 	/**
 	 * Check if the graph is connected
 	 */
-	public boolean validate(UndirectedGraph<IModelEntity, DefaultEdge> G) {
-		ConnectivityInspector<IModelEntity, DefaultEdge> inspector = new ConnectivityInspector<IModelEntity, DefaultEdge>(G);
+	public boolean validate(UndirectedGraph G) {
+		ConnectivityInspector inspector = new ConnectivityInspector(G);
 		return inspector.isGraphConnected() ;
 	}
 

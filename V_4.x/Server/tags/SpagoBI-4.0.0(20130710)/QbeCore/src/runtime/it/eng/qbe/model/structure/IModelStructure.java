@@ -5,7 +5,8 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.model.structure;
 
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+
+import it.eng.qbe.statement.graph.Relationship;
 
 import java.util.Iterator;
 import java.util.List;
@@ -104,7 +105,7 @@ public interface IModelStructure extends IModelObject {
 		
 		public boolean areRootEntitiesConnected(Set<IModelEntity> entities);
 		
-		public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities);
+	//	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities);
 		
 		// ----------------------------------
 		// RootEntityRelationship

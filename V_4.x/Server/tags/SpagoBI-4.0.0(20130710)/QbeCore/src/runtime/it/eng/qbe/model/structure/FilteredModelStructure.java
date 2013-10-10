@@ -6,7 +6,7 @@
 package it.eng.qbe.model.structure;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.qbe.model.structure.filter.QbeTreeFilter;
 
 import java.util.ArrayList;
@@ -169,9 +169,9 @@ public class FilteredModelStructure extends AbstractModelObject implements IMode
 		wrappedModelStructure.addRootEntityRelationship(modelName, fromEntity, fromFields, toEntity, toFields, type, relationName);
 	}
 
-	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities) {
-		return wrappedModelStructure.getRootEntitiesConnections(entities);
-	}
+//	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities) {
+//		return wrappedModelStructure.getRootEntitiesConnections(entities);
+//	}
 	
 	public IModelEntity getEntity(String entityUniqueName) {
 		List<IModelEntity> list = new ArrayList<IModelEntity>();

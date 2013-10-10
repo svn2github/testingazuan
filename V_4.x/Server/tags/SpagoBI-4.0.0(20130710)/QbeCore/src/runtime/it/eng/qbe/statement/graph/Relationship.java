@@ -1,0 +1,95 @@
+package it.eng.qbe.statement.graph;
+
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelField;
+
+import java.util.List;
+
+import org.jgrapht.graph.DefaultEdge;
+
+public class Relationship extends DefaultEdge {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String type;
+	private String name;
+	
+	List<IModelField> sourceFields;
+	List<IModelField> targetFields;
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public IModelEntity getSourceEntity() {
+		IModelEntity toreturn = (IModelEntity)this.getSource();
+		if(toreturn==null && sourceFields!=null && sourceFields.size()>0){
+			toreturn = sourceFields.get(0).getParent();
+		}
+		return toreturn;
+	} 
+	
+	public List<IModelField> getSourceFields() {
+		return sourceFields;
+	}
+
+	public void setSourceFields(List<IModelField> sourceFields) {
+		this.sourceFields = sourceFields;
+	}
+	
+	public IModelEntity getTargetEntity() {
+		IModelEntity toreturn = (IModelEntity)this.getTarget();
+		if(toreturn==null && targetFields!=null && targetFields.size()>0){
+			toreturn = targetFields.get(0).getParent();
+		}
+		return toreturn;
+	}
+
+	public List<IModelField> getTargetFields() {
+		return targetFields;
+	}
+
+	public void setTargetFields(List<IModelField> targetFields) {
+		this.targetFields = targetFields;
+	}
+
+	
+	public String getId(){
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Relationship other = (Relationship) obj;
+		if (getId() == null) {
+			if (other.getId() != null)
+				return false;
+		} else if (!getId().equals(other.getId()))
+			return false;
+		return true;
+	}
+	
+	
+}

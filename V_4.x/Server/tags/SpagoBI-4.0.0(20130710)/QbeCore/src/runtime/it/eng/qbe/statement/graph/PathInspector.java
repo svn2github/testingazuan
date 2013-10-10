@@ -7,7 +7,7 @@
 package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+import it.eng.qbe.statement.graph.Relationship;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.KShortestPaths;
-import org.jgrapht.graph.DefaultEdge;
+
 
 /**
  * 
@@ -35,45 +35,46 @@ import org.jgrapht.graph.DefaultEdge;
 public class PathInspector {
 
 	private static transient Logger logger = Logger.getLogger(PathInspector.class);
-	private Graph<IModelEntity, DefaultEdge> graph;
+	private Graph<IModelEntity, Relationship> graph;
 	private static final int maxPathLength = 10;
-	
 	private Set<EntitiesPath> paths;
-	private Set<GraphPath<IModelEntity, DefaultEdge>> allGraphPaths; // all the paths of the graph
+	private Collection<IModelEntity> entities;
+	private Set<GraphPath<IModelEntity, Relationship>> allGraphPaths; // all the paths of the graph
 
-	public PathInspector( Graph<IModelEntity, DefaultEdge> graph, Collection<IModelEntity> queryEntities){
+	public PathInspector( Graph<IModelEntity, Relationship> graph, Collection<IModelEntity> entities){
 		this.graph = graph;
-		buildPaths(queryEntities);
+		this.entities = entities;
+		buildPaths();
 	}
 
 	/**
 	 * Builds the set of paths between all the couple of vertexes
 	 */
-	private void buildPaths( Collection<IModelEntity> queryEntities){
+	private void buildPaths(){
 
 		logger.debug("IN");
 
-		allGraphPaths = new HashSet<GraphPath<IModelEntity, DefaultEdge>>();
+		allGraphPaths = new HashSet<GraphPath<IModelEntity, Relationship>>();
 		paths = new HashSet<EntitiesPath>();
 
 		//build all the path between entities
-		Iterator<IModelEntity> vertexesIter =  queryEntities.iterator();
+		Iterator<IModelEntity> vertexesIter =  entities.iterator();
 
 		//First loop for the source of the path
 		while(vertexesIter.hasNext()){
 			IModelEntity startVertex = vertexesIter.next();
 			logger.debug("Building the list of path starting from "+startVertex.getName());
 			//inner loop for the target of the path
-			Iterator<IModelEntity> vertexesInnerIter =  queryEntities.iterator();
+			Iterator<IModelEntity> vertexesInnerIter =  entities.iterator();
 			while(vertexesInnerIter.hasNext()){
 				IModelEntity endVertex = vertexesInnerIter.next();
 				if(!startVertex.equals(endVertex)){
 					EntitiesPath entitiesPath = new EntitiesPath(startVertex, endVertex);
 					if(!this.paths.contains(entitiesPath)){
 						logger.debug("Building the list of path between the vertexes ["+startVertex.getName()+","+endVertex.getName()+"]");
-						KShortestPaths<IModelEntity, DefaultEdge> kshortestPath = new KShortestPaths<IModelEntity, DefaultEdge>(graph,startVertex,maxPathLength );
-						List<GraphPath<IModelEntity, DefaultEdge>> graphPaths = kshortestPath.getPaths(endVertex);
-						
+						KShortestPaths<IModelEntity, Relationship> kshortestPath = new KShortestPaths<IModelEntity, Relationship>(graph,startVertex,maxPathLength );
+						List<GraphPath<IModelEntity, Relationship>> graphPaths = kshortestPath.getPaths(endVertex);
+
 						//if there is at least one path between the 2 vertex
 						if(graphPaths!=null){
 							entitiesPath.setPaths(graphPaths);
@@ -81,7 +82,7 @@ public class PathInspector {
 							//updating the class variables	
 							this.paths.add(entitiesPath);
 							for(int i=0; i<graphPaths.size(); i++){
-								GraphPath<IModelEntity, DefaultEdge> path = graphPaths.get(i);
+								GraphPath<IModelEntity, Relationship> path = graphPaths.get(i);
 								if(!containsPath(this.allGraphPaths, path)){
 									this.allGraphPaths.add(path);
 								}
@@ -100,11 +101,11 @@ public class PathInspector {
 	 * @param path
 	 * @return
 	 */
-	private static boolean containsPath(Set<GraphPath<IModelEntity, DefaultEdge>> map, GraphPath<IModelEntity, DefaultEdge> path){
+	private static boolean containsPath(Set<GraphPath<IModelEntity, Relationship>> map, GraphPath<IModelEntity, Relationship> path){
 		logger.debug("IN");
-		Iterator<GraphPath<IModelEntity, DefaultEdge>> iter = map.iterator();
+		Iterator<GraphPath<IModelEntity, Relationship>> iter = map.iterator();
 		while(iter.hasNext()){
-			GraphPath<IModelEntity, DefaultEdge> graphPath = iter.next();
+			GraphPath<IModelEntity, Relationship> graphPath = iter.next();
 			if(arePathsEquals(graphPath, path)){
 				logger.debug("Adding the path in the map"+path.toString());
 				return true;
@@ -113,52 +114,76 @@ public class PathInspector {
 		logger.debug("OUT");
 		return false;
 	}
-	
+
 	/**
 	 * Checks if the 2 paths are equals
 	 * @param path1
 	 * @param path2
 	 * @return
 	 */
-	private static boolean arePathsEquals(GraphPath<IModelEntity, DefaultEdge> path1, GraphPath<IModelEntity, DefaultEdge> path2){
+	private static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
 		Set<String> relationsPath1 = getRelationsSet(path1);
 		Set<String> relationsPath2 = getRelationsSet(path2);
 		return relationsPath1.equals(relationsPath2);
 	}
-	
-	private static Set<String> getRelationsSet(GraphPath<IModelEntity, DefaultEdge> path1){
+
+	private static Set<String> getRelationsSet(GraphPath<IModelEntity, Relationship> path1){
 		Set<String> relations = new HashSet<String>();
-		List<DefaultEdge> edges =  path1.getEdgeList();
+		List<Relationship> edges =  path1.getEdgeList();
 		for(int i=0; i<edges.size();i++){
 			relations.add(((Relationship)edges.get(i)).getId());
 		}
 		return relations;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Gets the map where the key are ambiguous Entities and the values
 	 * are all the paths that pass through the ambiguous entities 
 	 * @return
 	 */
-	public  Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> getAmbiguousEntitiesAllPathsMap(){
+	public  Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> getAllEntitiesPathsMap(){
 		logger.debug("IN");
-		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >>();
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>();
+
+		Iterator<IModelEntity> iter = entities.iterator();
+
+		//add the paths to the ambiguous path map
+		while(iter.hasNext()){
+			IModelEntity entity = iter.next();
+			
+			Set<GraphPath<IModelEntity, Relationship>> 	pathsInvolvingEntity = getPathsOfAmbigousEntities(entity);
+			ambiguouPathsMap.put(entity, pathsInvolvingEntity);
+		} 
+
+		logger.debug("OUT");
+		return ambiguouPathsMap;
+	}
+
+
+	/**
+	 * Gets the map where the key are ambiguous Entities and the values
+	 * are all the paths that pass through the ambiguous entities 
+	 * @return
+	 */
+	public  Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> getAmbiguousEntitiesAllPathsMap(){
+		logger.debug("IN");
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>();
 		Set<EntitiesPath> ambiguouPaths = getAmbiguousEntitiesPaths();
 		if(ambiguouPaths!=null){
 			Iterator<EntitiesPath> iter = ambiguouPaths.iterator();
-		
+
 			//add the paths to the ambiguous path map
 			while(iter.hasNext()){
 				EntitiesPath entitiesPath = iter.next();
-				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingStartEntity;
+				Set<GraphPath<IModelEntity, Relationship>> pathsInvolvingStartEntity;
 				if(!ambiguouPathsMap.containsKey(entitiesPath.getEndPoints().get(0))){
 					pathsInvolvingStartEntity = getPathsOfAmbigousEntities(entitiesPath.getEndPoints().get(0));
 					ambiguouPathsMap.put(entitiesPath.getEndPoints().get(0), pathsInvolvingStartEntity);
 				}
 
-				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingEndEntity;
+				Set<GraphPath<IModelEntity, Relationship>> pathsInvolvingEndEntity;
 				if(!ambiguouPathsMap.containsKey(entitiesPath.getEndPoints().get(1))){
 					pathsInvolvingEndEntity = getPathsOfAmbigousEntities(entitiesPath.getEndPoints().get(1));
 					ambiguouPathsMap.put(entitiesPath.getEndPoints().get(1), pathsInvolvingEndEntity);
@@ -168,7 +193,7 @@ public class PathInspector {
 		logger.debug("OUT");
 		return ambiguouPathsMap;
 	}
-	
+
 
 	/**
 	 * gets the ambiguous paths: we have an ambiguous path
@@ -193,15 +218,15 @@ public class PathInspector {
 		logger.debug("OUT");
 		return ambiguouPaths;
 	}
-	
+
 	/**
 	 * 
 	 * @param path
 	 * @param vertex
 	 * @return
 	 */
-	private boolean containsVertex(GraphPath<IModelEntity,DefaultEdge> path, IModelEntity vertex){
-		List<DefaultEdge> edges = path.getEdgeList();
+	private boolean containsVertex(GraphPath<IModelEntity,Relationship> path, IModelEntity vertex){
+		List<Relationship> edges = path.getEdgeList();
 		for (int i = 0; i < edges.size(); i++) {
 			Relationship r =(Relationship) edges.get(i);
 			if(r.getSourceEntity().equals(vertex) || r.getTargetEntity().equals(vertex) ){
@@ -210,19 +235,19 @@ public class PathInspector {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get all the paths passing from the passed vertex
 	 * @param vertex 
 	 * @return
 	 */
-	private Set<GraphPath<IModelEntity, DefaultEdge>> getPathsOfAmbigousEntities(IModelEntity vertex){
+	private Set<GraphPath<IModelEntity, Relationship>> getPathsOfAmbigousEntities(IModelEntity vertex){
 		logger.debug("IN");
 		logger.debug("Getting all the paths passing through the vertex "+vertex.getName());
-		Iterator<GraphPath<IModelEntity, DefaultEdge>> iter = getAllGraphPaths().iterator();
-		Set<GraphPath<IModelEntity, DefaultEdge>> toReturn = new HashSet<GraphPath<IModelEntity,DefaultEdge>>();
+		Iterator<GraphPath<IModelEntity, Relationship>> iter = getAllGraphPaths().iterator();
+		Set<GraphPath<IModelEntity, Relationship>> toReturn = new HashSet<GraphPath<IModelEntity,Relationship>>();
 		while(iter.hasNext()){
-			GraphPath<IModelEntity, DefaultEdge> path = iter.next();
+			GraphPath<IModelEntity, Relationship> path = iter.next();
 			if(containsVertex(path, vertex)){
 				toReturn.add(path);
 			}
@@ -233,7 +258,7 @@ public class PathInspector {
 	}
 
 
-	public Set<GraphPath<IModelEntity, DefaultEdge>> getAllGraphPaths() {
+	public Set<GraphPath<IModelEntity, Relationship>> getAllGraphPaths() {
 		return allGraphPaths;
 	}
 
@@ -247,23 +272,23 @@ public class PathInspector {
 		 */
 		private IModelEntity source;
 		private IModelEntity target;
-		private List<GraphPath<IModelEntity, DefaultEdge> > paths;
+		private List<GraphPath<IModelEntity, Relationship> > paths;
 
 		public EntitiesPath(IModelEntity source, IModelEntity target){
 			this.source = source;
 			this.target = target;
-			paths = new ArrayList<GraphPath<IModelEntity, DefaultEdge> >();
+			paths = new ArrayList<GraphPath<IModelEntity, Relationship> >();
 		}
 
-		public void addPath(GraphPath<IModelEntity, DefaultEdge> path){
+		public void addPath(GraphPath<IModelEntity, Relationship> path){
 			paths.add(path);
 		}
 
-		public List<GraphPath<IModelEntity, DefaultEdge>> getPaths() {
+		public List<GraphPath<IModelEntity, Relationship>> getPaths() {
 			return paths;
 		}
 
-		public void setPaths(List<GraphPath<IModelEntity, DefaultEdge>> paths) {
+		public void setPaths(List<GraphPath<IModelEntity, Relationship>> paths) {
 			this.paths = paths;
 		}
 
@@ -309,69 +334,69 @@ public class PathInspector {
 			return true;
 		}
 	}
-	
-//	
-//	
-//	
-//	
-//	/**
-//	 * Gets the map where the key are ambiguous Entities and the values
-//	 * are the ambiguous paths that pass through the ambiguous entities 
-//	 * @return
-//	 */
-//	private  Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> getOnlyAmbiguousEntitiesPathsMap(){
-//		logger.debug("IN");
-//		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >>();
-//		Set<EntitiesPath> ambiguouPaths = getAmbiguousEntitiesPaths();
-//		if(ambiguouPaths!=null){
-//			Iterator<EntitiesPath> iter = ambiguouPaths.iterator();
-//			while(iter.hasNext()){
-//				EntitiesPath path = iter.next();
-//				addEntitiesPath(ambiguouPathsMap, path);
-//				ambiguouPaths.add(path);
-//			} 
-//		}
-//		logger.debug("OUT");
-//		return ambiguouPathsMap;
-//	}
-//
-//	/**
-//	 * Gets the map where the key are ambiguous Entities and the values
-//	 * are all the paths that pass through the ambiguous entities 
-//	 * @return
-//	 */
-//	private  Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> getAmbiguousEntitiesPathsMap(){
-//		logger.debug("IN");
-//		Map<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, DefaultEdge> >>();
-//		Set<EntitiesPath> ambiguouPaths = getAmbiguousEntitiesPaths();
-//		if(ambiguouPaths!=null){
-//			Iterator<EntitiesPath> iter = ambiguouPaths.iterator();
-//			while(iter.hasNext()){
-//				EntitiesPath entitiesPath = iter.next();
-//				
-//				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingStartEntity;
-//				if(!ambiguouPathsMap.containsKey(entitiesPath.getSource())){
-//					pathsInvolvingStartEntity = new HashSet<GraphPath<IModelEntity,DefaultEdge>>();
-//					ambiguouPathsMap.put(entitiesPath.getSource(), pathsInvolvingStartEntity);
-//				}else{
-//					pathsInvolvingStartEntity = ambiguouPathsMap.get(entitiesPath.getSource());
-//				}
-//
-//				Set<GraphPath<IModelEntity, DefaultEdge>> pathsInvolvingEndEntity;
-//				if(!ambiguouPathsMap.containsKey(entitiesPath.getTarget())){
-//					pathsInvolvingEndEntity = new HashSet<GraphPath<IModelEntity,DefaultEdge>>();
-//					ambiguouPathsMap.put(entitiesPath.getTarget(), pathsInvolvingEndEntity);
-//				}else{
-//					pathsInvolvingEndEntity = ambiguouPathsMap.get(entitiesPath.getTarget());
-//				}
-//
-//				pathsInvolvingStartEntity.addAll(getPathsInvolvingEntityMap().get(entitiesPath.getSource()));
-//				pathsInvolvingEndEntity.addAll(getPathsInvolvingEntityMap().get(entitiesPath.getTarget()));
-//				
-//			} 
-//		}
-//		logger.debug("OUT");
-//		return ambiguouPathsMap;
-//	}
+
+	//	
+	//	
+	//	
+	//	
+	//	/**
+	//	 * Gets the map where the key are ambiguous Entities and the values
+	//	 * are the ambiguous paths that pass through the ambiguous entities 
+	//	 * @return
+	//	 */
+	//	private  Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> getOnlyAmbiguousEntitiesPathsMap(){
+	//		logger.debug("IN");
+	//		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>();
+	//		Set<EntitiesPath> ambiguouPaths = getAmbiguousEntitiesPaths();
+	//		if(ambiguouPaths!=null){
+	//			Iterator<EntitiesPath> iter = ambiguouPaths.iterator();
+	//			while(iter.hasNext()){
+	//				EntitiesPath path = iter.next();
+	//				addEntitiesPath(ambiguouPathsMap, path);
+	//				ambiguouPaths.add(path);
+	//			} 
+	//		}
+	//		logger.debug("OUT");
+	//		return ambiguouPathsMap;
+	//	}
+	//
+	//	/**
+	//	 * Gets the map where the key are ambiguous Entities and the values
+	//	 * are all the paths that pass through the ambiguous entities 
+	//	 * @return
+	//	 */
+	//	private  Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> getAmbiguousEntitiesPathsMap(){
+	//		logger.debug("IN");
+	//		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguouPathsMap = new HashMap<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>();
+	//		Set<EntitiesPath> ambiguouPaths = getAmbiguousEntitiesPaths();
+	//		if(ambiguouPaths!=null){
+	//			Iterator<EntitiesPath> iter = ambiguouPaths.iterator();
+	//			while(iter.hasNext()){
+	//				EntitiesPath entitiesPath = iter.next();
+	//				
+	//				Set<GraphPath<IModelEntity, Relationship>> pathsInvolvingStartEntity;
+	//				if(!ambiguouPathsMap.containsKey(entitiesPath.getSource())){
+	//					pathsInvolvingStartEntity = new HashSet<GraphPath<IModelEntity,Relationship>>();
+	//					ambiguouPathsMap.put(entitiesPath.getSource(), pathsInvolvingStartEntity);
+	//				}else{
+	//					pathsInvolvingStartEntity = ambiguouPathsMap.get(entitiesPath.getSource());
+	//				}
+	//
+	//				Set<GraphPath<IModelEntity, Relationship>> pathsInvolvingEndEntity;
+	//				if(!ambiguouPathsMap.containsKey(entitiesPath.getTarget())){
+	//					pathsInvolvingEndEntity = new HashSet<GraphPath<IModelEntity,Relationship>>();
+	//					ambiguouPathsMap.put(entitiesPath.getTarget(), pathsInvolvingEndEntity);
+	//				}else{
+	//					pathsInvolvingEndEntity = ambiguouPathsMap.get(entitiesPath.getTarget());
+	//				}
+	//
+	//				pathsInvolvingStartEntity.addAll(getPathsInvolvingEntityMap().get(entitiesPath.getSource()));
+	//				pathsInvolvingEndEntity.addAll(getPathsInvolvingEntityMap().get(entitiesPath.getTarget()));
+	//				
+	//			} 
+	//		}
+	//		logger.debug("OUT");
+	//		return ambiguouPathsMap;
+	//	}
 
 }

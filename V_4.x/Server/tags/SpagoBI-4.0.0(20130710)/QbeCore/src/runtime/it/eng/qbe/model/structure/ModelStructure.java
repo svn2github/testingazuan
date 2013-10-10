@@ -5,7 +5,7 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.model.structure;
 
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
@@ -31,68 +31,6 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 	
 	public static class RootEntitiesGraph {
 		
-		public static class Relationship extends DefaultEdge {
-	
-			private static final long serialVersionUID = 1L;
-			
-			private String type;
-			private String name;
-			
-			List<IModelField> sourceFields;
-			List<IModelField> targetFields;
-			
-			public String getType() {
-				return type;
-			}
-
-			public void setType(String type) {
-				this.type = type;
-			}
-			
-			public IModelEntity getSourceEntity() {
-				IModelEntity toreturn = (IModelEntity)this.getSource();
-				if(toreturn==null && sourceFields!=null && sourceFields.size()>0){
-					toreturn = sourceFields.get(0).getParent();
-				}
-				return toreturn;
-			} 
-			
-			public List<IModelField> getSourceFields() {
-				return sourceFields;
-			}
-
-			public void setSourceFields(List<IModelField> sourceFields) {
-				this.sourceFields = sourceFields;
-			}
-			
-			public IModelEntity getTargetEntity() {
-				IModelEntity toreturn = (IModelEntity)this.getTarget();
-				if(toreturn==null && targetFields!=null && targetFields.size()>0){
-					toreturn = targetFields.get(0).getParent();
-				}
-				return toreturn;
-			}
-
-			public List<IModelField> getTargetFields() {
-				return targetFields;
-			}
-
-			public void setTargetFields(List<IModelField> targetFields) {
-				this.targetFields = targetFields;
-			}
-
-			public String getName() {
-				return name;
-			}
-			
-			public String getId(){
-				return name;
-			}
-
-			public void setName(String name) {
-				this.name = name;
-			}
-		}
 	
 		Map<String, IModelEntity> rootEntitiesMap;
 		UndirectedGraph<IModelEntity, DefaultEdge> rootEntitiesGraph;
@@ -146,10 +84,15 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			return areConnected;
 		}
 		
+//		public Relationship addRelationship(String fromEntityName, String toEntityName, String type) {
+//			IModelEntity fromEntity = getRootEntityByName(fromEntityName);
+//			IModelEntity toEntity = getRootEntityByName(toEntityName);	
+//			return addRelationship(fromEntity, toEntity, type);
+//		}
 
 		public Relationship addRelationship(IModelEntity fromEntity, List<IModelField> fromFields,
 				IModelEntity toEntity, List<IModelField> toFields, String type, String relationName) {
-			Relationship relationship = new RootEntitiesGraph.Relationship();
+			Relationship relationship = new Relationship();
 			relationship.setType(type); // MANY_TO_ONE : FK da 1 a 2
 			relationship.setSourceFields(fromFields);
 			relationship.setTargetFields(toFields); 
@@ -158,44 +101,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			return added? relationship: null;
 		}
 		
-		public Set<Relationship> getConnectingRelatiosnhips(Set<IModelEntity> entities) {
-			
-			Set<Relationship> connectingRelatiosnhips = new HashSet<Relationship>();
-			
-			Set<IModelEntity> connectedEntities = new HashSet<IModelEntity>();
-			
-			Iterator<IModelEntity> it = entities.iterator();
-			connectedEntities.add( it.next() );
-			
-			while(it.hasNext()) {
-				IModelEntity entity = it.next();
-				if(connectedEntities.contains(entity)) continue;
-				GraphPath minimumPath = null;
-				double minPathLength = Double.MAX_VALUE;
-				for(IModelEntity connectedEntity : connectedEntities) {
-					DijkstraShortestPath dsp = new DijkstraShortestPath(rootEntitiesGraph, entity, connectedEntity);
-					double pathLength = dsp.getPathLength();
-					if(minPathLength > pathLength) {
-						minPathLength = pathLength;
-						minimumPath = dsp.getPath();
-					}
-				}
-				List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
-				connectingRelatiosnhips.addAll(relationships);
-				for(Relationship relatioship: relationships) {
-					connectedEntities.add( rootEntitiesGraph.getEdgeSource(relatioship) );
-					connectedEntities.add( rootEntitiesGraph.getEdgeTarget(relatioship) );
-				}
-			}
-			
-			for(Relationship r : connectingRelatiosnhips) {
-				IModelEntity source = rootEntitiesGraph.getEdgeSource(r);
-				IModelEntity target = rootEntitiesGraph.getEdgeTarget(r);
-				System.err.println(source.getName() + " -> " + target.getName());
-			}
-			
-			return connectingRelatiosnhips;
-		}
+
 	}
 	
 	
@@ -327,13 +233,13 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 		return rootEntitiesGraph.areRootEntitiesConnected(entities);
 	}
 	
-	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities) {
-		RootEntitiesGraph rootEntitiesGraph;
-		Iterator<IModelEntity> it = entities.iterator();
-		IModelEntity entity = it.next();
-		rootEntitiesGraph = getRootEntitiesGraph(entity.getModelName(), true);
-		return rootEntitiesGraph.getConnectingRelatiosnhips(entities); 
-	}
+//	public Set<Relationship> getRootEntitiesConnections(Set<IModelEntity> entities) {
+//		RootEntitiesGraph rootEntitiesGraph;
+//		Iterator<IModelEntity> it = entities.iterator();
+//		IModelEntity entity = it.next();
+//		rootEntitiesGraph = getRootEntitiesGraph(entity.getModelName(), true);
+//		return rootEntitiesGraph.getConnectingRelatiosnhips(entities); 
+//	}
 	
 	// Root Entities Relationship -------------------------------------------------
 

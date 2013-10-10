@@ -15,12 +15,9 @@ package it.eng.qbe.statement.graph;
  *  Alberto Ghedin (alberto.ghedin@eng.it)
  *
  */
-import it.eng.qbe.model.structure.IModelEntity;
-
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 public interface IGraphValidator {
 
-	public boolean validate(UndirectedGraph<IModelEntity, DefaultEdge>  G); 
+	public boolean validate(UndirectedGraph G); 
 }

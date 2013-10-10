@@ -3,7 +3,6 @@ package it.eng.qbe.statement.graph;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;

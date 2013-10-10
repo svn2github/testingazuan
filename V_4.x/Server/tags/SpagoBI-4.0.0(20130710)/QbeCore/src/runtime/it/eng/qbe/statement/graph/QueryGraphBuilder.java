@@ -7,7 +7,7 @@
 package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
+import it.eng.qbe.statement.graph.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;
@@ -37,18 +37,19 @@ public class QueryGraphBuilder {
 	public QueryGraphBuilder(){
 		vertexes = new ArrayList<IModelEntity>();
 	}
+	
 
-	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraphFromPaths(Collection<GraphPath<IModelEntity, DefaultEdge>> paths){
+	public UndirectedGraph<IModelEntity, Relationship> buildGraphFromPaths(Collection<GraphPath<IModelEntity, Relationship>> paths){
 		logger.debug("IN");
 		Assert.assertNotNull(paths, "The list of paths is null. Impossbile to create a graph");
 		logger.debug("The number of paths is "+paths.size());
 
-		UndirectedGraph<IModelEntity, DefaultEdge> graph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
-
+		UndirectedGraph<IModelEntity, Relationship> graph = new Multigraph<IModelEntity, Relationship>(Relationship.class);
+		
 		if(paths!=null){
-			Iterator<GraphPath<IModelEntity, DefaultEdge>> pathIter = paths.iterator();
+			Iterator<GraphPath<IModelEntity, Relationship>> pathIter = paths.iterator();
 			while(pathIter.hasNext()){
-				GraphPath<IModelEntity, DefaultEdge> path = pathIter.next();
+				GraphPath<IModelEntity, Relationship> path = pathIter.next();
 				addPathToGraph(graph, path);
 			}
 		}
@@ -57,17 +58,17 @@ public class QueryGraphBuilder {
 		return graph;
 	}
 
-	public UndirectedGraph<IModelEntity, DefaultEdge> buildGraphFromEdges(Collection<DefaultEdge> edges){
+	public QueryGraph buildGraphFromEdges(Collection<Relationship> edges){
 		logger.debug("IN");
 		Assert.assertNotNull(edges, "The list of edges is null. Impossbile to create a graph");
 		logger.debug("The number of paths is "+edges.size());
 
-		UndirectedGraph<IModelEntity, DefaultEdge> graph = new Multigraph<IModelEntity, DefaultEdge>(Relationship.class);
+		QueryGraph graph = new QueryGraph(Relationship.class);
 
 		if(edges!=null){
-			Iterator< DefaultEdge> pathIter = edges.iterator();
+			Iterator< Relationship> pathIter = edges.iterator();
 			while(pathIter.hasNext()){
-				DefaultEdge edge = pathIter.next();
+				Relationship edge = pathIter.next();
 				addEdgeToGraph(graph, edge);
 			}
 		}
@@ -76,9 +77,9 @@ public class QueryGraphBuilder {
 		return graph;
 	}
 
-	private void addPathToGraph(UndirectedGraph<IModelEntity, DefaultEdge> graph, GraphPath<IModelEntity, DefaultEdge> path ){
+	private void addPathToGraph(UndirectedGraph<IModelEntity, Relationship> graph, GraphPath<IModelEntity, Relationship> path ){
 		logger.debug("IN");
-		List<DefaultEdge> edges = path.getEdgeList();
+		List<Relationship> edges = path.getEdgeList();
 		if(edges!=null){
 			for(int i=0; i<edges.size(); i++){
 				Relationship edge = (Relationship)edges.get(i);
@@ -88,7 +89,7 @@ public class QueryGraphBuilder {
 		logger.debug("OUT");
 	}
 
-	private void addEdgeToGraph(UndirectedGraph<IModelEntity, DefaultEdge> graph, DefaultEdge edefEdge){
+	private void addEdgeToGraph(UndirectedGraph<IModelEntity, Relationship> graph, DefaultEdge edefEdge){
 		if(edefEdge!=null){
 			Relationship edge = (Relationship)edefEdge;
 			IModelEntity src= edge.getSourceEntity();

@@ -3,9 +3,9 @@ package it.eng.qbe.statement.graph.serializer;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph.Relationship;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathChoice;
+import it.eng.qbe.statement.graph.Relationship;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.GraphPathImpl;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -95,24 +93,24 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 	public Relationship deserializeRelationship(JsonNode node) throws  JsonProcessingException {
         TextNode source = (TextNode)node.get(RelationJSONSerializer.SOURCE);
         TextNode target = (TextNode)node.get(RelationJSONSerializer.TARGET);
-        TextNode name = (TextNode)node.get(RelationJSONSerializer.RELATIONSHIP);
-        if(name!=null){
-        	return getRelationship(name.textValue(), source, target);
+        TextNode id = (TextNode)node.get(RelationJSONSerializer.RELATIONSHIP);
+        if(id!=null){
+        	return getRelationship(id.textValue(), source, target);
         }else{
         	throw new JsonProcessingExceptionImpl("The relation name is mandatory in the relation definition "+node.toString());
         }
 	}
 	
-	public Relationship getRelationship(String name, Object source, Object target) throws  JsonProcessingException {
+	public Relationship getRelationship(String id, Object source, Object target) throws  JsonProcessingException {
 		if(relationShips!=null){
 			Iterator<Relationship> iter = relationShips.iterator();
 			while (iter.hasNext()) {
 				Relationship relationship = (Relationship) iter.next();
-				if(relationship.getName().equals(name)){
+				if(relationship.getId().equals(id)){
 					return relationship;
 				}
 			}
 		}
-		throw new JsonProcessingExceptionImpl("Can not find the relation with name "+name+" in the graph");
+		throw new JsonProcessingExceptionImpl("Can not find the relation with name "+id+" in the graph");
 	}
 }

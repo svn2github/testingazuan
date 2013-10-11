@@ -52,7 +52,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
  * See also STEP 2 in Sbi.kpi.KpiGUIDetail js -->
 
 <!--[if lt IE 9]>
-<!--  HighCharts -->
+
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/highcharts-2.1.6/highcharts.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/highcharts-2.1.6/modules/exporting.js")%>"></script>
 <![endif]-->

@@ -81,6 +81,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     , detailGrid : null
     , mainStore : null
     , detailStore : null
+    , ambiguousFields : null // must be set in the object passed to the constructor
    
     // private methods
     ,
@@ -130,11 +131,11 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	for (var i = 0; i < nodes.length; i++) {
     		var node = nodes[i];
     		if (i == 0) {
-    			toReturn += node.sourceName + ' -- ' + node.relationshipName + ' -- ' + node.targetName;
+    			toReturn += node.sourceName + ' -- <i>' + node.relationshipName + '</i> -- ' + node.targetName;
     			lastTarget = node.targetName;
     		} else {
     			var nextTarget = node.targetName == lastTarget ? node.sourceName : node.targetName;
-    			toReturn += ' -- ' + node.relationshipName + ' -- ' + nextTarget;
+    			toReturn += ' -- <i>' + node.relationshipName + '</i> -- ' + nextTarget;
     			lastTarget = nextTarget;
     		}
     	}
@@ -284,7 +285,15 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	
 	,
 	getCellTooltip: function (value, cell, record) {
-	 	var tooltipString = record.data.path;
+	 	var path = record.data.path;
+	 	var items = path.split(' -- ');
+	 	var tooltipString = '';
+	 	for (var i = 0; i < items.length; i++) {
+	 		for (var j = 0; j < i; j++) {
+	 			tooltipString += '&nbsp;&nbsp;&nbsp;';
+	 		}
+	 		tooltipString += items[i] + '<br/>';
+	 	}
 	 	if (tooltipString !== undefined && tooltipString != null) {
 	 		cell.attr = ' ext:qtip="'  + Sbi.qbe.commons.Utils.encodeEscapes(tooltipString)+ '"';
 	 	}

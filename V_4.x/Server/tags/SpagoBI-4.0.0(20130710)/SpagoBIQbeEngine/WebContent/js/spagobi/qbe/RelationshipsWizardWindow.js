@@ -41,8 +41,8 @@ Sbi.qbe.RelationshipsWizardWindow = function(config) {
 	 
 	var defaultSettings = {
 		title : LN('sbi.qbe.relationshipswizardwindow.title')
-		, width : 720
-		, height : 480
+		, width : 820
+		, height : 520
 		, closeAction : 'hide'
 	};
 	  
@@ -84,6 +84,7 @@ Sbi.qbe.RelationshipsWizardWindow = function(config) {
 Ext.extend(Sbi.qbe.RelationshipsWizardWindow, Ext.Window, {
     
 	relationshipsWizard : null
+	, ambiguousFields : null // must be set in the object passed to the constructor
 	
 	,
 	init : function () {

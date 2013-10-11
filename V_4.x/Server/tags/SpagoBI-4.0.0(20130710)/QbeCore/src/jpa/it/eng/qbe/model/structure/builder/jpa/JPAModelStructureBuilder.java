@@ -223,7 +223,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 			
 
 			for(int i =0; i<destinationFieldNames.size(); i++) {
-				String destinationFieldName =  sourceFieldNames.get(i);
+				String destinationFieldName =  destinationFieldNames.get(i);
 				IModelField field = destinationEntity.getField(destinationFieldName);
 				if(field == null) {
 					String generatedFieldName = relationship.getName() + "."  + sourceFieldNames.get(i).split(":")[1];

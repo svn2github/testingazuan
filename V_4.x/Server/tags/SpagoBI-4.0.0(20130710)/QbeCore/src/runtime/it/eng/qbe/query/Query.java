@@ -5,6 +5,10 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.query;
 
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.statement.StatementTockenizer;
 import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.spagobi.utilities.assertion.Assert;
 
@@ -446,6 +450,68 @@ public class Query {
 
 	public QueryGraph getQueryGraph() {
 		return graph;
+	}
+	
+	public Set<IModelField> getQueryFields(IDataSource dataSource){
+		Set<IModelField> mf = new HashSet<IModelField>();
+		getIModelFields(mf, dataSource);
+		return mf;
+	}
+
+	public void getIModelFields(Set<IModelField> modelFieldsInvolved, IDataSource dataSource) {
+
+		List<ISelectField> selectFields;
+
+		selectFields = this.getSelectFields(true);
+
+		for(ISelectField selectAbstractField : selectFields){										
+			if(selectAbstractField.isSimpleField()){
+				IModelField datamartField = dataSource.getModelStructure().getField(((SimpleSelectField)selectAbstractField).getUniqueName());
+
+				modelFieldsInvolved.add(datamartField);
+
+			} else if(selectAbstractField.isInLineCalculatedField()){
+				replaceFields((InLineCalculatedSelectField)selectAbstractField, modelFieldsInvolved, dataSource);
+			}
+		}
+	}
+	
+	private void replaceFields(InLineCalculatedSelectField cf, Set<IModelField> modelFieldsInvolved, IDataSource dataSource) {
+		IModelField modelField;
+
+		try  {		
+			StatementTockenizer tokenizer = new StatementTockenizer(cf.getExpression());
+			while(tokenizer.hasMoreTokens()) {
+
+				String token = tokenizer.nextTokenInStatement();
+
+				modelField = null;
+				String decodedToken = token;
+				decodedToken = decodedToken.replaceAll("\\[", "(");
+				decodedToken = decodedToken.replaceAll("\\]", ")");
+				modelField = dataSource.getModelStructure().getField(decodedToken);
+
+				if(modelField != null) {
+					modelFieldsInvolved.add(modelField);
+				}
+			}
+
+		} catch(Throwable t) {
+			throw new RuntimeException("An unpredicted error occurred while parsing expression [" + cf.getExpression() + "]", t);
+		}
+
+	}
+	
+	public Set<IModelEntity> getQueryEntities(IDataSource dataSource){
+		Set<IModelField> mf = this.getQueryFields(dataSource);
+		Set<IModelEntity> me = new HashSet<IModelEntity>();
+		Iterator<IModelField> mfi = mf.iterator();
+		while (mfi.hasNext()) {
+			IModelField iModelField = (IModelField) mfi.next();
+			me.add(iModelField.getParent());
+			
+		}
+		return me;
 	}
 
 }

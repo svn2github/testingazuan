@@ -12,4 +12,9 @@ public class DefaultCover {
 		IDefaultCoverGraph sp = new ShortestPathsCoverGraph();
 		sp.applyDefault(ambiguousModelField, rootEntitiesGraph, entities);
 	}
+	
+	public static QueryGraph getCoverGraph(UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
+		IDefaultCoverGraph sp = new ShortestPathsCoverGraph();
+		return sp.getCoverGraph(rootEntitiesGraph, entities);
+	}
 }

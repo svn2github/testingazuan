@@ -14,6 +14,7 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.IStatement;
+import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.GraphValidatorInspector;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathChoice;
@@ -153,7 +154,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 
 	}
 
-	private QueryGraph getQueryGraph() {
+	private QueryGraph getQueryGraph(Query query) {
 		List<Relationship> toReturn = new ArrayList<Relationship>();
 		IModelStructure modelStructure = getDataSource().getModelStructure();
 		logger.debug("IModelStructure retrieved");
@@ -172,18 +173,24 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
 		}
 		logger.debug("Paths deserialized");
-		Iterator<ModelFieldPaths> it = list.iterator();
-		while (it.hasNext()) {
-			ModelFieldPaths modelFieldPaths = it.next();
-			Set<PathChoice> set = modelFieldPaths.getChoices();
-			Iterator<PathChoice> pathChoiceIterator = set.iterator();
-			while (pathChoiceIterator.hasNext()) {
-				PathChoice choice = pathChoiceIterator.next();
-				toReturn.addAll(choice.getRelations());
+		QueryGraph queryGraph = null;
+		if (list != null && !list.isEmpty()) {
+			Iterator<ModelFieldPaths> it = list.iterator();
+			while (it.hasNext()) {
+				ModelFieldPaths modelFieldPaths = it.next();
+				Set<PathChoice> set = modelFieldPaths.getChoices();
+				Iterator<PathChoice> pathChoiceIterator = set.iterator();
+				while (pathChoiceIterator.hasNext()) {
+					PathChoice choice = pathChoiceIterator.next();
+					toReturn.addAll(choice.getRelations());
+				}
 			}
+			QueryGraphBuilder builder = new QueryGraphBuilder();
+			queryGraph = builder.buildGraphFromEdges(toReturn);
+		} else {
+			Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
+			queryGraph = DefaultCover.getCoverGraph(graph, entities);
 		}
-		QueryGraphBuilder builder = new QueryGraphBuilder();
-		QueryGraph queryGraph = builder.buildGraphFromEdges(toReturn);
 		logger.debug("QueryGraph created");
 		return queryGraph;
 	}
@@ -284,14 +291,14 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public IDataStore executeQuery(Integer start, Integer limit){
 		IDataStore dataStore = null;
 		IDataSet dataSet = this.getEngineInstance().getActiveQueryAsDataSet();
-		QueryGraph graph = getQueryGraph();
+		AbstractQbeDataSet qbeDataSet = (AbstractQbeDataSet) dataSet;
+		IStatement statement = qbeDataSet.getStatement();
+		QueryGraph graph = getQueryGraph(statement.getQuery());
 		boolean valid = GraphValidatorInspector.isValid(graph);
 		logger.debug("QueryGraph valid = " + valid);
 		if (!valid) {
 			throw new SpagoBIEngineServiceException(getActionName(), "The specified relationships are not enough to link all entities");
 		}
-		AbstractQbeDataSet qbeDataSet = (AbstractQbeDataSet) dataSet;
-		IStatement statement = qbeDataSet.getStatement();
 		statement.getQuery().setQueryGraph(graph);
 		try {
 			logger.debug("Executing query ...");

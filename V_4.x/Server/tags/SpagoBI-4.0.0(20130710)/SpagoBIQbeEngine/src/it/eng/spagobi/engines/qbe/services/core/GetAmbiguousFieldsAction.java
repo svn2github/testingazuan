@@ -7,13 +7,9 @@ package it.eng.spagobi.engines.qbe.services.core;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.SimpleSelectField;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
-import it.eng.qbe.statement.StatementTockenizer;
 import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.ModelObjectI18n;
@@ -30,7 +26,6 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +75,7 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			query = getQuery();
 			
 			String modelName = getDataSource().getConfiguration().getModelName();
-			Set<IModelField> modelFields = getQueryFields(query);
+			Set<IModelField> modelFields = query.getQueryFields(getDataSource());
 			
 			Assert.assertNotNull(modelFields, "No field specified in teh query");
 			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
@@ -187,70 +182,4 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 		return me;
 	}
 	
-	private Set<IModelField> getQueryFields(Query query){
-		Set<IModelField> mf = new HashSet<IModelField>();
-		getIModelFields(query, mf);
-		return mf;
-	}
-
-
-
-	public void getIModelFields(Query query, Set<IModelField> modelFieldsInvolved) {
-
-		List<ISelectField> selectFields;
-
-		logger.debug("IN");
-
-
-
-		selectFields = query.getSelectFields(true);
-
-		for(ISelectField selectAbstractField : selectFields){										
-			if(selectAbstractField.isSimpleField()){
-				IModelField datamartField = getDataSource().getModelStructure().getField(((SimpleSelectField)selectAbstractField).getUniqueName());
-
-				modelFieldsInvolved.add(datamartField);
-
-			} else if(selectAbstractField.isInLineCalculatedField()){
-				replaceFields((InLineCalculatedSelectField)selectAbstractField, modelFieldsInvolved);
-			}
-		}
-	}
-
-
-
-
-	private void replaceFields(InLineCalculatedSelectField cf, Set<IModelField> modelFieldsInvolved) {
-		IModelField modelField;
-		logger.debug("IN");
-
-
-		try  {		
-			StatementTockenizer tokenizer = new StatementTockenizer(cf.getExpression());
-			while(tokenizer.hasMoreTokens()) {
-
-				String token = tokenizer.nextTokenInStatement();
-
-				modelField = null;
-				String decodedToken = token;
-				decodedToken = decodedToken.replaceAll("\\[", "(");
-				decodedToken = decodedToken.replaceAll("\\]", ")");
-				modelField = getDataSource().getModelStructure().getField(decodedToken);
-
-
-
-				if(modelField != null) {
-					modelFieldsInvolved.add(modelField);
-				}
-			}
-
-
-		} catch(Throwable t) {
-			throw new RuntimeException("An unpredicted error occurred while parsing expression [" + cf.getExpression() + "]", t);
-		} finally {
-			logger.debug("OUT");
-		}
-
-	}
-
 }

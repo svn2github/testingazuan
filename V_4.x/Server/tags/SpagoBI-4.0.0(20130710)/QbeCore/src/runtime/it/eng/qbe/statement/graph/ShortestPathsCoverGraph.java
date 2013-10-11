@@ -22,7 +22,8 @@ public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
 
 	public static transient Logger logger = Logger.getLogger(ShortestPathsCoverGraph.class);
 
-	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
+	
+	public QueryGraph  getCoverGraph( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
 
 		Iterator<IModelEntity> it = entities.iterator();
 		Set<Relationship> connectingRelatiosnhips = new HashSet<Relationship>();
@@ -62,6 +63,16 @@ public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
 
 		QueryGraphBuilder qb = new QueryGraphBuilder();
 		QueryGraph monimumGraph = qb.buildGraphFromEdges(connectingRelatiosnhips);
+
+		return monimumGraph;
+	}
+	
+	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
+
+
+
+
+		QueryGraph monimumGraph = getCoverGraph(rootEntitiesGraph, entities);
 		PathInspector pi = new PathInspector(monimumGraph, monimumGraph.vertexSet());
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> minimumPaths = pi.getAllEntitiesPathsMap();
 
@@ -69,6 +80,9 @@ public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
 
 		return minimumPaths;
 	}
+	
+	
+	
 
 
 	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){

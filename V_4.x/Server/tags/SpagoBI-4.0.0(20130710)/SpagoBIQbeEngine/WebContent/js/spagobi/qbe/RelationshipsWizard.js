@@ -148,7 +148,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	        , colModel: new Ext.grid.ColumnModel({
 	            columns: [
 	                {header: LN('sbi.qbe.relationshipswizard.columns.name'), dataIndex: 'name'}
-	                , {header: LN('sbi.qbe.relationshipswizard.columns.entity'), dataIndex: 'entity'}
+	                , {header: LN('sbi.qbe.relationshipswizard.columns.entity'), dataIndex: 'entity', hidden : true}
 	            ]
 	        })
 	        , sm : new Ext.grid.RowSelectionModel({singleSelect : true})

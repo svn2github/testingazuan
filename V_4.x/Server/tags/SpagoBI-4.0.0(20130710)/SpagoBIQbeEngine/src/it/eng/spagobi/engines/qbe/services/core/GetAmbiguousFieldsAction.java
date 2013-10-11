@@ -18,14 +18,11 @@ import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathInspector;
 import it.eng.qbe.statement.graph.Relationship;
-import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
-import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -37,14 +34,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
@@ -93,15 +87,13 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 				Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguousMap = pathInspector.getAmbiguousEntitiesAllPathsMap();
 				
 				Iterator<IModelField> modelFieldsIter = modelFields.iterator();
-				
-				Set<IModelEntity> processedEnities = new HashSet<IModelEntity>();
+
 				
 				while (modelFieldsIter.hasNext()) {
 					IModelField iModelField = (IModelField) modelFieldsIter.next();
 					IModelEntity me = iModelField.getParent();
 					Set<GraphPath<IModelEntity, Relationship>> paths = ambiguousMap.get(me);
-					if(paths!=null && !processedEnities.contains(me)){
-						processedEnities.add(me);
+					if(paths!=null){
 						ambiguousModelField.add(new ModelFieldPaths(iModelField, paths));
 					}
 				}

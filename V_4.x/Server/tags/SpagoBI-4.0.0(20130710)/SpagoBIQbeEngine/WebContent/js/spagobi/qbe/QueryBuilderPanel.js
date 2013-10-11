@@ -671,9 +671,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			url: this.services['getAmbiguousFields'],
 			params: {
 				id: query.id
-				, catalogue : {
-					queries : this.getQueries()
-				}
+				, catalogue : Ext.util.JSON.encode(this.getQueries())
 			},
 			success : this.onAmbiguousFieldsLoaded,
 			scope: this,

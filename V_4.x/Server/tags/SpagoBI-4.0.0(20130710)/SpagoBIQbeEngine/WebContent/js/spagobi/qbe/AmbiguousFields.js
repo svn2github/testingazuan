@@ -73,7 +73,7 @@ Ext.extend(Sbi.qbe.AmbiguousFields, Ext.util.Observable, {
     		var otherRecordIndex = other.getByData(aRecord.data);
     		if (otherRecordIndex > -1) {
     			var otherRecord = other.getAt(otherRecordIndex);
-    			this.mergeChoices(aRecord, other, otherRecord);
+    			this.mergeChoices(aRecord, otherRecord);
     		}
     	}, this);
 	}
@@ -97,36 +97,19 @@ Ext.extend(Sbi.qbe.AmbiguousFields, Ext.util.Observable, {
 	}
 
 	,
-	mergeChoices : function (aRecord, other, otherRecord) {
-		var activeOptions = other.getActiveOptions(otherRecord);
-		this.setActiveOptionsIfExist(aRecord, activeOptions);
-	}
-	
-	,
-	getActiveOptions : function (record) {
-		var choices = record.data.choices;
-		var toReturn = [];
-		for (var i = 0; i < choices.length; i++) {
-			var anOption = choices[i];
-			if (anOption.active) {
-				toReturn.push( anOption );
-			}
-		}
-		return toReturn;
-	}
-	
-	,
-	setActiveOptionsIfExist : function (aRecord, options) {
+	mergeChoices : function (aRecord, otherRecord) {
+		var otherRecordChoices = otherRecord.data.choices;
 		var choices = aRecord.data.choices;
 		for (var i = 0; i < choices.length; i++) {
 			var left = choices[i];
-			for (var j = 0; j < options.length; j++) {
-				var right = options[j];
-				if (right.active && Ext.encode(left.nodes) == Ext.encode(right.nodes)) {
-					left.active = true;
+			for (var j = 0; j < otherRecordChoices.length; j++) {
+				var right = otherRecordChoices[j];
+				if (Ext.encode(left.nodes) == Ext.encode(right.nodes)) {
+					left.active = right.active;
 				}
 			}
 		}
+		
 	}
 	
 	,

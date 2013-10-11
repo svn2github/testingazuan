@@ -107,7 +107,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     initDetailStore : function () {
     	this.detailStore = new Ext.data.JsonStore({
     		idIndex : 0
-    	    , fields : [ 'path', 'active', 'nodes' ]
+    	    , fields : [ 'path', 'active', 'nodes', 'start', 'end' ]
     		, data : []
     	});
     	this.detailStore.on('load', this.setRecordsPath, this);
@@ -231,10 +231,10 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     
     ,
     storeChangesInMainStore : function (applyToEntireEntity) {
+    	var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
     	var options = this.getDetailStoreContent();
     	if (applyToEntireEntity) {
     		// apply modifications on all fields of the same entity of the current selected field
-    		var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
     		this.mainStore.each(function (aRecord) {
     			if (aRecord.get('entity') == selectedRecord.get('entity')) {
     				aRecord.set('choices', options);
@@ -242,7 +242,6 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     		}, this);
     	} else {
     		// apply modifications only on the selected field
-        	var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
         	selectedRecord.set('choices', options);
     	}
     }

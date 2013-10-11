@@ -18,6 +18,7 @@
 		 	"name": '${jpaRelationship.propertyName}'
 			, "bidirectional": $jpaRelationship.isBidirectional()
 			, "cardinality": '${jpaRelationship.cardinality}'
+			, "label": '${jpaRelationship.businessRelationship.name}'
 		
 			, "sourceTable": {
 				"name": '${jpaRelationship.jpaTable.name}'

@@ -126,12 +126,16 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     getRecordPath : function (aRecord) {
     	var toReturn = '';
     	var nodes = aRecord.get('nodes');
+    	var lastTarget = null; // this is useful because the relations are undirected, therefore I have to understand the target of a node
     	for (var i = 0; i < nodes.length; i++) {
     		var node = nodes[i];
     		if (i == 0) {
-    			toReturn += node.source + ' -- ' + node.relationship + ' -- ' + node.target;
+    			toReturn += node.sourceName + ' -- ' + node.relationshipName + ' -- ' + node.targetName;
+    			lastTarget = node.targetName;
     		} else {
-    			toReturn += ' -- ' + node.relationship + ' -- ' + node.target;
+    			var nextTarget = node.targetName == lastTarget ? node.sourceName : node.targetName;
+    			toReturn += ' -- ' + node.relationshipName + ' -- ' + nextTarget;
+    			lastTarget = nextTarget;
     		}
     	}
     	return toReturn;

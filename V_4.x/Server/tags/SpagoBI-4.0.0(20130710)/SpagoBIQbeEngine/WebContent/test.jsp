@@ -17,9 +17,12 @@ for (int k = 0; k < 4; k++) {
 			JSONArray nodes = new JSONArray();
 			for (int m = 0; m < 3; m++) {
 				JSONObject aNode = new JSONObject();
-				aNode.put("source", "source " + j);
-				aNode.put("target", "target " + j);
-				aNode.put("relationship", "relationship " + j);
+				aNode.put("sourceId", "id source " + j);
+				aNode.put("sourceName", "name source " + j);
+				aNode.put("targetId", "id target " + j);
+				aNode.put("targetName", "name target " + j);
+				aNode.put("relationshipId", "id relationship " + j);
+				aNode.put("relationshipName", "name relationship " + j);
 				nodes.put(aNode);
 			}
 			aChoice.put("nodes", nodes);

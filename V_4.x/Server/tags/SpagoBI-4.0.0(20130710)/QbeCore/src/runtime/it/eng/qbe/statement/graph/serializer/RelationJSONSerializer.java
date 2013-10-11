@@ -18,16 +18,22 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class RelationJSONSerializer extends JsonSerializer<Relationship> {
 
 	
-	public static final String SOURCE = "source";
-	public static final String TARGET = "target";
-	public static final String RELATIONSHIP = "relationship";
+	public static final String SOURCE_NAME = "sourceName";
+	public static final String SOURCE_ID = "sourceId";
+	public static final String TARGET_NAME = "targetName";
+	public static final String TARGET_ID = "targetId";
+	public static final String RELATIONSHIP_NAME = "relationshipName";
+	public static final String RELATIONSHIP_ID = "relationshipId";
 	
 	@Override
 	public void serialize(Relationship value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException{
 		jgen.writeStartObject();
-		jgen.writeStringField(SOURCE, value.getSourceEntity().getName());
-		jgen.writeStringField(TARGET, value.getTargetEntity().getName());
-		jgen.writeStringField(RELATIONSHIP, value.getName());
+		jgen.writeStringField(SOURCE_NAME, value.getSourceEntity().getName());
+		jgen.writeStringField(SOURCE_ID, value.getSourceEntity().getUniqueName());
+		jgen.writeStringField(TARGET_NAME, value.getTargetEntity().getName());
+		jgen.writeStringField(TARGET_ID, value.getTargetEntity().getUniqueName());
+		jgen.writeStringField(RELATIONSHIP_NAME, value.getName());
+		jgen.writeStringField(RELATIONSHIP_ID, value.getId());
 		jgen.writeEndObject();
 	}
 }

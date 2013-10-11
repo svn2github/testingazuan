@@ -68,10 +68,10 @@ public class Relationship extends DefaultEdge {
 
 	public String getId(){
 		String id = name;
-		if(getSourceEntity().getUniqueName().hashCode()>getTargetEntity().getName().hashCode()){
-			 id = id+"-"+getSourceEntity().getName()+"-"+getTargetEntity().getName();
+		if(getSourceEntity().getUniqueName().hashCode()>getTargetEntity().getUniqueName().hashCode()){
+			 id = id+"-"+getSourceEntity().getUniqueName()+"-"+getTargetEntity().getUniqueName();
 		}else{
-			 id = id+"-"+getTargetEntity().getName()+"-"+getSourceEntity().getName();
+			 id = id+"-"+getTargetEntity().getUniqueName()+"-"+getSourceEntity().getUniqueName();
 		}
 		return id;
 	}

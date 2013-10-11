@@ -95,11 +95,11 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 	}
 	
 	public Relationship deserializeRelationship(JsonNode node) throws  JsonProcessingException {
-        TextNode source = (TextNode)node.get(RelationJSONSerializer.SOURCE);
-        TextNode target = (TextNode)node.get(RelationJSONSerializer.TARGET);
-        TextNode id = (TextNode)node.get(RelationJSONSerializer.RELATIONSHIP);
-        if(id!=null){
-        	return getRelationship(id.textValue(), source, target);
+        TextNode sourceId = (TextNode)node.get(RelationJSONSerializer.SOURCE_ID);
+        TextNode targetId = (TextNode)node.get(RelationJSONSerializer.TARGET_ID);
+        TextNode relationId = (TextNode)node.get(RelationJSONSerializer.RELATIONSHIP_ID);
+        if(relationId!=null){
+        	return getRelationship(relationId.textValue(), sourceId, targetId);
         }else{
         	throw new JsonProcessingExceptionImpl("The relation name is mandatory in the relation definition "+node.toString());
         }

@@ -665,13 +665,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	,
 	getAmbiguousFields: function() {
+		this.applyChanges();
 		var query = this.getQuery(true);
+		var queries = this.getQueries();
 		// call the server to get ambiguous fields
 		Ext.Ajax.request({
 			url: this.services['getAmbiguousFields'],
 			params: {
 				id: query.id
-				, catalogue : Ext.util.JSON.encode(this.getQueries())
+				, catalogue : Ext.util.JSON.encode(queries)
 			},
 			success : this.onAmbiguousFieldsLoaded,
 			scope: this,

@@ -38,6 +38,10 @@ public class PathChoice {
 		return active;
 	}
 
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public String getEnd(){
 		return path.getEndVertex().getUniqueName();
 	}
@@ -57,7 +61,12 @@ public class PathChoice {
 		return relations;
 	}
 
-	
-	
+	@JsonIgnore
+	public boolean isTheSamePath(GraphPath<IModelEntity, Relationship> path2){
+		if(path == null){
+			return false;
+		}
+		return PathInspector.arePathsEquals(path, path2);
+	}	
 	
 }

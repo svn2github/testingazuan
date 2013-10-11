@@ -358,7 +358,7 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 , checkAmbiguousFields: function(query, promptableFilters) {
 	// call the server to get ambiguous fields
 	Ext.Ajax.request({
-		url: '/SpagoBIQbeEngine/test.jsp',//this.services['getAmbiguousFields'],
+		url: this.services['getAmbiguousFields'],
 		params: {id: query.id},
 		success : this.onAmbiguousFieldsLoaded.createDelegate(this, [query, promptableFilters], true),
 		scope: this,

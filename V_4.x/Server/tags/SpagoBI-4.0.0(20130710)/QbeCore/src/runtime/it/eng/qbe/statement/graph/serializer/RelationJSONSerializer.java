@@ -25,9 +25,9 @@ public class RelationJSONSerializer extends JsonSerializer<Relationship> {
 	@Override
 	public void serialize(Relationship value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException{
 		jgen.writeStartObject();
-		jgen.writeStringField(SOURCE, value.getSourceEntity().getUniqueName());
-		jgen.writeStringField(TARGET, value.getTargetEntity().getUniqueName());
-		jgen.writeStringField(RELATIONSHIP, value.getId());
+		jgen.writeStringField(SOURCE, value.getSourceEntity().getName());
+		jgen.writeStringField(TARGET, value.getTargetEntity().getName());
+		jgen.writeStringField(RELATIONSHIP, value.getName());
 		jgen.writeEndObject();
 	}
 }

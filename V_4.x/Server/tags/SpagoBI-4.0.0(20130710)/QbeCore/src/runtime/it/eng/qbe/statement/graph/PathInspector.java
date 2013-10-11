@@ -121,7 +121,7 @@ public class PathInspector {
 	 * @param path2
 	 * @return
 	 */
-	private static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
+	public static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
 		Set<String> relationsPath1 = getRelationsSet(path1);
 		Set<String> relationsPath2 = getRelationsSet(path2);
 		return relationsPath1.equals(relationsPath2);

@@ -30,7 +30,7 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 		
 		Set<Relationship> relationships;
 		Map<String, IModelEntity> rootEntitiesMap;
-		UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph;
+		Multigraph<IModelEntity, Relationship> rootEntitiesGraph;
 		
 		public RootEntitiesGraph() {
 			relationships = new HashSet<Relationship>();

@@ -62,9 +62,18 @@ public class Relationship extends DefaultEdge {
 		this.targetFields = targetFields;
 	}
 
-	
-	public String getId(){
+	public String getName() {
 		return name;
+	}
+
+	public String getId(){
+		String id = name;
+		if(getSourceEntity().getUniqueName().hashCode()>getTargetEntity().getName().hashCode()){
+			 id = id+"-"+getSourceEntity().getName()+"-"+getTargetEntity().getName();
+		}else{
+			 id = id+"-"+getTargetEntity().getName()+"-"+getSourceEntity().getName();
+		}
+		return id;
 	}
 
 	public void setName(String name) {

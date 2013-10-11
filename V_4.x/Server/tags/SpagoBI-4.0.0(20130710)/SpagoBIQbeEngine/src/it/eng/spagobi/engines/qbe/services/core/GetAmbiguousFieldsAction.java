@@ -5,9 +5,21 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.engines.qbe.services.core;
 
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.ISelectField;
+import it.eng.qbe.query.InLineCalculatedSelectField;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.SimpleSelectField;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
+import it.eng.qbe.statement.StatementTockenizer;
+import it.eng.qbe.statement.graph.DefaultCover;
+import it.eng.qbe.statement.graph.ModelFieldPaths;
+import it.eng.qbe.statement.graph.PathInspector;
+import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
+import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -16,46 +28,94 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.GraphPath;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 
 public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {	
-	
+
 	private static final long serialVersionUID = -3367673458706691427L;
 
 	// INPUT PARAMETERS
 	public static final String QUERY_ID = "id";
 	public static final String CATALOGUE = "catalogue";
-	
+
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(GetAmbiguousFieldsAction.class);
-    
-	
+	public static transient Logger logger = Logger.getLogger(GetAmbiguousFieldsAction.class);
+
+
 	public void service(SourceBean request, SourceBean response)  {				
 		Query query = null;
-		
+
 		Monitor totalTimeMonitor = null;
 		Monitor errorHitsMonitor = null;
-					
+
 
 		logger.debug("IN");
-		
+
 		try {
-		
+
 			super.service(request, response);	
-			
+
 			totalTimeMonitor = MonitorFactory.start("QbeEngine.getAmbiguousFieldsAction.totalTime");
-						
+
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-						
+
 			query = getQuery();
+			
+			String modelName = getDataSource().getConfiguration().getModelName();
+			Set<IModelField> modelFields = getQueryFields(query);
+			
+			Assert.assertNotNull(modelFields, "No field specified in teh query");
+			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
+			if(modelFields!=null){
+				Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
+				UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+				
+				PathInspector pathInspector = new PathInspector(graph, modelEntities);
+				Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguousMap = pathInspector.getAmbiguousEntitiesAllPathsMap();
+				
+				Iterator<IModelField> modelFieldsIter = modelFields.iterator();
+				
+				Set<IModelEntity> processedEnities = new HashSet<IModelEntity>();
+				
+				while (modelFieldsIter.hasNext()) {
+					IModelField iModelField = (IModelField) modelFieldsIter.next();
+					IModelEntity me = iModelField.getParent();
+					Set<GraphPath<IModelEntity, Relationship>> paths = ambiguousMap.get(me);
+					if(paths!=null && !processedEnities.contains(me)){
+						processedEnities.add(me);
+						ambiguousModelField.add(new ModelFieldPaths(iModelField, paths));
+					}
+				}
+				
+				DefaultCover.applyDefault(ambiguousModelField, graph, modelEntities);
+			}
+			
+			
+			
+			ObjectMapper om = ModelFieldPaths.getObjectMapperForSerialization();
+			String serialized = om.writeValueAsString((Set<ModelFieldPaths>)ambiguousModelField);
+
+
+
 			Assert.assertNotNull(query, "Query object not specified");
 			if (getEngineInstance().getActiveQuery() == null 
 					|| !getEngineInstance().getActiveQuery().getId().equals(query.getId())) {
@@ -64,12 +124,12 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			}
 
 			try {
-				writeBackToClient( new JSONSuccess(new JSONArray()) );
+				writeBackToClient( serialized);
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-			
+
 		} catch(Throwable t) {
 			errorHitsMonitor = MonitorFactory.start("QbeEngine.errorHits");
 			errorHitsMonitor.stop();
@@ -79,7 +139,7 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			logger.debug("OUT");
 		}	
 	}
-	
+
 	/**
 	 * Get the query to be evaluated
 	 * @return
@@ -105,9 +165,88 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 		Query query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
 		return query;
 	}
-	
+
 	private Query deserializeQuery(JSONObject queryJSON) throws SerializationException, JSONException {
 		return SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON.toString(), getEngineInstance().getDataSource());
 	}
+
+
+
+	private Set<IModelEntity> getQueryEntities(Set<IModelField> mf){
+		Set<IModelEntity> me = new HashSet<IModelEntity>();
+		Iterator<IModelField> mfi = mf.iterator();
+		while (mfi.hasNext()) {
+			IModelField iModelField = (IModelField) mfi.next();
+			me.add(iModelField.getParent());
+			
+		}
+		return me;
+	}
 	
+	private Set<IModelField> getQueryFields(Query query){
+		Set<IModelField> mf = new HashSet<IModelField>();
+		getIModelFields(query, mf);
+		return mf;
+	}
+
+
+
+	public void getIModelFields(Query query, Set<IModelField> modelFieldsInvolved) {
+
+		List<ISelectField> selectFields;
+
+		logger.debug("IN");
+
+
+
+		selectFields = query.getSelectFields(true);
+
+		for(ISelectField selectAbstractField : selectFields){										
+			if(selectAbstractField.isSimpleField()){
+				IModelField datamartField = getDataSource().getModelStructure().getField(((SimpleSelectField)selectAbstractField).getUniqueName());
+
+				modelFieldsInvolved.add(datamartField);
+
+			} else if(selectAbstractField.isInLineCalculatedField()){
+				replaceFields((InLineCalculatedSelectField)selectAbstractField, modelFieldsInvolved);
+			}
+		}
+	}
+
+
+
+
+	private void replaceFields(InLineCalculatedSelectField cf, Set<IModelField> modelFieldsInvolved) {
+		IModelField modelField;
+		logger.debug("IN");
+
+
+		try  {		
+			StatementTockenizer tokenizer = new StatementTockenizer(cf.getExpression());
+			while(tokenizer.hasMoreTokens()) {
+
+				String token = tokenizer.nextTokenInStatement();
+
+				modelField = null;
+				String decodedToken = token;
+				decodedToken = decodedToken.replaceAll("\\[", "(");
+				decodedToken = decodedToken.replaceAll("\\]", ")");
+				modelField = getDataSource().getModelStructure().getField(decodedToken);
+
+
+
+				if(modelField != null) {
+					modelFieldsInvolved.add(modelField);
+				}
+			}
+
+
+		} catch(Throwable t) {
+			throw new RuntimeException("An unpredicted error occurred while parsing expression [" + cf.getExpression() + "]", t);
+		} finally {
+			logger.debug("OUT");
+		}
+
+	}
+
 }

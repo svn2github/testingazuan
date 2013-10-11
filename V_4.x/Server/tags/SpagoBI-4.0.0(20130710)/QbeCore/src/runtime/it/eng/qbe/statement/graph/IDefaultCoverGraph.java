@@ -12,10 +12,9 @@ import java.util.Set;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 public interface IDefaultCoverGraph {
 
-	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, DefaultEdge> rootEntitiesGraph, Set<IModelEntity> entities);
-	
+	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 }

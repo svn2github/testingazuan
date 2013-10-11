@@ -49,13 +49,17 @@ public class ModelFieldPaths {
 		this.choices = choices;
 	}
 	
-
+	@JsonIgnore
+	public IModelEntity getModelEntity(){
+		return field.getParent();
+	}
+	
 	public String getEntity(){
-		return field.getParent().getUniqueName();
+		return field.getParent().getName();
 	}
 
 	public String getName(){
-		return field.getUniqueName();
+		return field.getName();
 	}
 
 	public String getId(){
@@ -68,12 +72,10 @@ public class ModelFieldPaths {
 
 	@JsonIgnore
 	public String getModelFieldPatsAsString() throws SerializationException{
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = getObjectMapperForSerialization();
 		String s ="";
 		try {
-			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-			simpleModule.addSerializer(Relationship.class, new RelationJSONSerializer());
-			mapper.registerModule(simpleModule);
+			
 			s = mapper.writeValueAsString((ModelFieldPaths)this);
 
 
@@ -108,6 +110,15 @@ public class ModelFieldPaths {
 		} catch (Exception e) {
 			throw new SerializationException("Error deserializing the list of ModelFieldPaths", e);
 		}
+	}
+	
+	@JsonIgnore
+	public static ObjectMapper getObjectMapperForSerialization(){
+		ObjectMapper mapper = new ObjectMapper();
+		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
+		simpleModule.addSerializer(Relationship.class, new RelationJSONSerializer());
+		mapper.registerModule(simpleModule);
+		return mapper;
 	}
 
 

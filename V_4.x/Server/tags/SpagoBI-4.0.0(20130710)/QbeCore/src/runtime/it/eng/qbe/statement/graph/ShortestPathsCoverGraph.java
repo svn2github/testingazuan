@@ -7,7 +7,6 @@ package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,30 +17,88 @@ import org.apache.log4j.Logger;
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultEdge;
 
 public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
-	
+
 	public static transient Logger logger = Logger.getLogger(ShortestPathsCoverGraph.class);
-	
-	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, DefaultEdge> rootEntitiesGraph, Set<IModelEntity> entities) {
-		
+
+	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
+
 		Iterator<IModelEntity> it = entities.iterator();
-		IModelEntity entity = it.next();
-		DijkstraShortestPath dsp = new DijkstraShortestPath(rootEntitiesGraph, entity, entities);
-		
-		GraphPath minimumPath = dsp.getPath();
-		
-		List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
+		Set<Relationship> connectingRelatiosnhips = new HashSet<Relationship>();
+
+		Set<IModelEntity> connectedEntities = new HashSet<IModelEntity>();
+		connectedEntities.add( it.next() );
+
+		while(it.hasNext()) {
+			IModelEntity entity = it.next();
+			if(connectedEntities.contains(entity)) continue;
+			GraphPath minimumPath = null;
+			double minPathLength = Double.MAX_VALUE;
+			for(IModelEntity connectedEntity : connectedEntities) {
+				DijkstraShortestPath dsp = new DijkstraShortestPath(rootEntitiesGraph, entity, connectedEntity);
+				double pathLength = dsp.getPathLength();
+				if(minPathLength > pathLength) {
+					minPathLength = pathLength;
+					minimumPath = dsp.getPath();
+				}
+			}
+			List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
+			connectingRelatiosnhips.addAll(relationships);
+			for(Relationship relatioship: relationships) {
+				connectedEntities.add( rootEntitiesGraph.getEdgeSource(relatioship) );
+				connectedEntities.add( rootEntitiesGraph.getEdgeTarget(relatioship) );
+			}
+		}
+
+		for(Relationship r : connectingRelatiosnhips) {
+			IModelEntity source = rootEntitiesGraph.getEdgeSource(r);
+			IModelEntity target = rootEntitiesGraph.getEdgeTarget(r);
+		}
+
+
+
+
+
 		QueryGraphBuilder qb = new QueryGraphBuilder();
-		QueryGraph monimumGraph = qb.buildGraphFromEdges(relationships);
+		QueryGraph monimumGraph = qb.buildGraphFromEdges(connectingRelatiosnhips);
 		PathInspector pi = new PathInspector(monimumGraph, monimumGraph.vertexSet());
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> minimumPaths = pi.getAllEntitiesPathsMap();
-		
-		
-		
+
+
+
 		return minimumPaths;
 	}
-	
+
+
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   getConnectingRelatiosnhips(rootEntitiesGraph, entities);	
+		if(ambiguousModelField!=null && defaultConnections!=null){
+			Iterator<ModelFieldPaths> mfpIter = ambiguousModelField.iterator();
+			while (mfpIter.hasNext()) {
+				ModelFieldPaths modelFieldPaths = (ModelFieldPaths) mfpIter.next();
+				IModelEntity entity = modelFieldPaths.getModelEntity();
+				if(modelFieldPaths.getChoices()!=null){
+					Iterator<PathChoice> amfpChoicesIter =modelFieldPaths.getChoices().iterator();
+					while (amfpChoicesIter.hasNext()) {
+						PathChoice pathChoice = (PathChoice) amfpChoicesIter.next();
+						Set<GraphPath<IModelEntity, Relationship>> shortest = defaultConnections.get(entity);
+						if(shortest!=null){
+							Iterator<GraphPath<IModelEntity, Relationship>> pathIter = shortest.iterator();
+							while (pathIter.hasNext()) {
+								GraphPath<IModelEntity, Relationship> graphPath = (GraphPath<IModelEntity, Relationship>) pathIter.next();
+								boolean activeChoice = pathChoice.isTheSamePath(graphPath);
+								pathChoice.setActive(activeChoice);
+								if(activeChoice){
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
 
 }

@@ -5,17 +5,15 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.statement.graph.PathInspector;
 import it.eng.qbe.statement.graph.QueryGraphBuilder;
 import it.eng.qbe.statement.graph.Relationship;
 
-import org.jgrapht.Graph;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jgrapht.GraphPath;
-import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.GraphPathImpl;
 
 public class PathInspectorTestCase  extends AbstractGraphTestCase {

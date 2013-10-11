@@ -668,7 +668,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		var query = this.getQuery(true);
 		// call the server to get ambiguous fields
 		Ext.Ajax.request({
-			url: '/SpagoBIQbeEngine/test.jsp',//this.services['getAmbiguousFields'],
+			url: this.services['getAmbiguousFields'],
 			params: {
 				id: query.id
 				, catalogue : {

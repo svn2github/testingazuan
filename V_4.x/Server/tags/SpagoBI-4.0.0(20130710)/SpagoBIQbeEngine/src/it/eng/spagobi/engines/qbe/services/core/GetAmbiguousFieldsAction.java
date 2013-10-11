@@ -16,8 +16,11 @@ import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.StatementTockenizer;
 import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
+import it.eng.qbe.statement.graph.ModelObjectI18n;
 import it.eng.qbe.statement.graph.PathInspector;
 import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
+import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -38,7 +41,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
@@ -103,8 +108,15 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			
 			
 			
-			ObjectMapper om = ModelFieldPaths.getObjectMapperForSerialization();
-			String serialized = om.writeValueAsString((Set<ModelFieldPaths>)ambiguousModelField);
+			ObjectMapper mapper = new ObjectMapper();
+			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
+			simpleModule.addSerializer(Relationship.class, new RelationJSONSerializer(getDataSource(), getLocale()));
+			simpleModule.addSerializer(ModelObjectI18n.class, new ModelObjectInternationalizedSerializer(getDataSource(), getLocale()));
+			
+			
+			
+			mapper.registerModule(simpleModule);
+			String serialized = mapper.writeValueAsString((Set<ModelFieldPaths>)ambiguousModelField);
 
 
 

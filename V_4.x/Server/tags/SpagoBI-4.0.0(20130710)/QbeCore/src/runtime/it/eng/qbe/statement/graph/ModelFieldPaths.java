@@ -7,25 +7,14 @@ package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
-import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.serializer.SerializationException;
-import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
-import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class ModelFieldPaths {
 
@@ -54,12 +43,12 @@ public class ModelFieldPaths {
 		return field.getParent();
 	}
 	
-	public String getEntity(){
-		return field.getParent().getName();
+	public ModelObjectI18n getEntity(){
+		return new ModelObjectI18n (field.getParent());
 	}
 
-	public String getName(){
-		return field.getName();
+	public ModelObjectI18n getName(){
+		return new ModelObjectI18n (field);
 	}
 
 	public String getId(){
@@ -70,56 +59,7 @@ public class ModelFieldPaths {
 		return choices;
 	}
 
-	@JsonIgnore
-	public String getModelFieldPatsAsString() throws SerializationException{
-		ObjectMapper mapper = getObjectMapperForSerialization();
-		String s ="";
-		try {
-			
-			s = mapper.writeValueAsString((ModelFieldPaths)this);
 
-
-		} catch (Exception e) {
-
-			throw new SerializationException("Error serializing the ModelFieldPaths",e);
-		}
-
-		return  s; 
-	}
-
-	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
-		mapper.registerModule(simpleModule);
-		try {
-			return mapper.readValue(serialized, ModelFieldPaths.class);
-		} catch (Exception e) {
-			throw new SerializationException("Error deserializing the ModelFieldPaths", e);
-		}
-	}
-	
-	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
-		mapper.registerModule(simpleModule);
-		TypeReference<List<ModelFieldPaths>> type = new TypeReference<List<ModelFieldPaths>>() {};
-		try {
-			return mapper.readValue(serialized, type);
-		} catch (Exception e) {
-			throw new SerializationException("Error deserializing the list of ModelFieldPaths", e);
-		}
-	}
-	
-	@JsonIgnore
-	public static ObjectMapper getObjectMapperForSerialization(){
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-		simpleModule.addSerializer(Relationship.class, new RelationJSONSerializer());
-		mapper.registerModule(simpleModule);
-		return mapper;
-	}
 
 
 }

@@ -331,25 +331,10 @@ public class ModelEntity extends AbstractModelNode implements IModelEntity {
 		StringBuffer buffer = new StringBuffer();
 		
 		String line = getName().toUpperCase() + "(id="+getId()
-			+";path="+path
-			+";parent:" + (getParent()==null?"NULL": getParent().getName())
-			+";role="+ role;
+			+";role="+ role+")";
 		
 		
-		buffer.append(line + "\n");
-		String key = null;
-		for(Iterator<String> it = fields.keySet().iterator(); it.hasNext(); ) {
-			key = it.next();
-			Object o = fields.get(key);
-			buffer.append(" - " + (o==null? "NULL": o.toString()) + "\n");
-		}
-		
-		for(Iterator<String> it = subEntities.keySet().iterator(); it.hasNext();) {
-			key = it.next();
-			Object o = subEntities.get(key);
-			buffer.append(" + " + (o==null? "NULL": o.toString()));
-		}
-		return buffer.toString();
+		return line;
 	}
 
 	

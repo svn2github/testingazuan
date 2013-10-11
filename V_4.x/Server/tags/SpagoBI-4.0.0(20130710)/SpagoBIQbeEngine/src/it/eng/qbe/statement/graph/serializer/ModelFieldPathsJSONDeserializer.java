@@ -66,7 +66,10 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
         ArrayNode choicesJson = (ArrayNode) node.get(CHOICES);
         if(choicesJson!=null && name!=null){
         	for(int i=0; i<choicesJson.size(); i++){
-        		choices.add(deserializePath(choicesJson.get(i)));
+        		PathChoice pc = deserializePath(choicesJson.get(i));
+        		if(pc!=null){
+            		choices.add(pc);
+        		}
         	}
         	IModelField field = modelStructure.getField(name.textValue());
         	return new ModelFieldPaths(field, choices, true);
@@ -82,16 +85,19 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 		TextNode end = (TextNode)node.get(END);
 		BooleanNode active = (BooleanNode)node.get(ACTIVE);
 		boolean activebool = active!=null && active.asBoolean();
-        if(nodes!=null && start!=null && end!=null){
-        	List<Relationship> relations = new ArrayList<Relationship>();
-        	for(int i=0; i<nodes.size(); i++){
-        		relations.add(deserializeRelationship(nodes.get(i)));
-        	}
-        	return new PathChoice(relations, activebool);
-        }else{
-        	throw new JsonProcessingExceptionImpl("The nodes, start and end values of a path must be valorized. Error processing node "+node.toString());
-        }
-        	
+		if(activebool){
+	        if(nodes!=null && start!=null && end!=null){
+	        	List<Relationship> relations = new ArrayList<Relationship>();
+	        	for(int i=0; i<nodes.size(); i++){
+	        		relations.add(deserializeRelationship(nodes.get(i)));
+	        	}
+	        	return new PathChoice(relations, activebool);
+	        }else{
+	        	throw new JsonProcessingExceptionImpl("The nodes, start and end values of a path must be valorized. Error processing node "+node.toString());
+	        }
+		}
+
+        return null;	
 	}
 	
 	public Relationship deserializeRelationship(JsonNode node) throws  JsonProcessingException {

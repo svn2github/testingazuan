@@ -236,7 +236,7 @@ public class JPAModelStructureBuilder implements IModelStructureBuilder {
 				destinationFields.add(field);
 			}
 			try {
-				modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, relationship.getType(), relationship.getName());
+				modelStructure.addRootEntityRelationship(modelName, sourceEntity, sourceFields, destinationEntity, destinationFields, relationship.getType(), relationship.getLabel());
 				logger.debug("Succesfully added relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]");
 			} catch (Throwable t) {
 				logger.error("Impossible to add relationship between [" + sourceEntity.getName() + "] and [" + destinationEntity.getName() + "]", t);

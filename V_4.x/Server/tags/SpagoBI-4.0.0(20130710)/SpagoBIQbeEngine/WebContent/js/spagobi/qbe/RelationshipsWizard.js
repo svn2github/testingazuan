@@ -193,6 +193,11 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 				}
 	        }
 	    	, region : 'center'
+	    	, tbar: ['->', {
+				text: LN('sbi.qbe.relationshipswizard.buttons.applytoentity'),
+				handler: this.applyToEntityHandler,
+				scope: this
+			 }]
 		}));
  	   this.detailGrid.on('rowdblclick', this.detailGridOnRowdblclickHandler, this);
     }
@@ -221,14 +226,25 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 		var activeRecord = this.detailStore.getAt(rowIndex);
 		var active = activeRecord.get('active');
 		activeRecord.set('active', !active);
-		this.storeChangesInMainStore();
+		this.storeChangesInMainStore(false);
     }
     
     ,
-    storeChangesInMainStore : function () {
-    	var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
+    storeChangesInMainStore : function (applyToEntireEntity) {
     	var options = this.getDetailStoreContent();
-    	selectedRecord.set('choices', options);
+    	if (applyToEntireEntity) {
+    		// apply modifications on all fields of the same entity of the current selected field
+    		var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
+    		this.mainStore.each(function (aRecord) {
+    			if (aRecord.get('entity') == selectedRecord.get('entity')) {
+    				aRecord.set('choices', options);
+    			}
+    		}, this);
+    	} else {
+    		// apply modifications only on the selected field
+        	var selectedRecord = this.mainGrid.getSelectionModel().getSelected();
+        	selectedRecord.set('choices', options);
+    	}
     }
     
     ,
@@ -291,6 +307,11 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 		aFieldData['choices'] = newArray;
 	}
 	*/
+	
+	,
+	applyToEntityHandler : function () {
+		this.storeChangesInMainStore(true);
+	}
 	
 	// public methods
 	,

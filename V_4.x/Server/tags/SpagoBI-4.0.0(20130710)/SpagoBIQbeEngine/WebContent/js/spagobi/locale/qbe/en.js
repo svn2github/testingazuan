@@ -481,3 +481,4 @@ Sbi.locale.ln['sbi.qbe.relationshipswizardwindow.buttons.cancel'] = 'Cancel';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.name'] = 'Name';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Join path';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.applytoentity'] = 'Apply selection to all fields of this entity';

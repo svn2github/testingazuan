@@ -61,7 +61,7 @@ import com.jamonapi.MonitorFactory;
 
 
 /**
- * Commit all the modifications made to the catalogue on the client side
+ * Commit all the modifications made to the catalogue on the client side 
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
@@ -104,7 +104,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(jsonEncodedCatalogue, "Input parameter [" + CATALOGUE + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-			
+
 			try {
 				queries = new JSONArray( jsonEncodedCatalogue );
 				for(int i = 0; i < queries.length(); i++) {
@@ -119,8 +119,17 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				String message = "Impossible to syncronize the query with the server. Query passed by the client is malformed";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
+
+			Set<ModelFieldPaths> ambiguousFields = new HashSet<ModelFieldPaths>();
 			
-			Set<ModelFieldPaths> ambiguousFields = this.getAmbiguousFields();
+			query = this.getCurrentQuery();
+			if (query != null) {
+				QueryGraph queryGraph = updateQueryGraphInQuery(query);
+				if(queryGraph!=null){
+					ambiguousFields = getAmbiguousFields(queryGraph, query);
+				}
+			}
+
 			
 			ObjectMapper mapper = new ObjectMapper();
 			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
@@ -150,19 +159,60 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	}
 
 
-	public Set<ModelFieldPaths> getAmbiguousFields() {				
-		Query query = null;
+	/**
+	 * Get the graph from the request:
+	 * - if exist:
+	 * 		- checks it is valid for the query
+	 * 			- if its valid update the graph in the query and return null
+	 * 			- if its not valid calculate the default graph and update the graph in the query
+	 * - if not exists  calculate the default graph and update the graph in the query
+	 * @param query
+	 * @return
+	 */
+	public QueryGraph updateQueryGraphInQuery(Query query) {				
+		boolean isTheOldQueryGraphValid = false;
+		logger.debug("IN");
+		QueryGraph queryGraph = null;
+		try {
+			
+			queryGraph = this.getQueryGraphFromRequest(query);
+			
+			if(queryGraph!=null){
+				//check if the graph selected by the user is still valid
+				isTheOldQueryGraphValid = isTheOldQueryGraphValid(queryGraph,query);
+				query.setQueryGraph(queryGraph);
+				return null;
+			}
+			
+			if(queryGraph==null || !isTheOldQueryGraphValid){
+				//calculate the default cover graph
+				logger.debug("Calculating the default graph");
+				IModelStructure modelStructure = getDataSource().getModelStructure();
+				RootEntitiesGraph rootEntitiesGraph = modelStructure.getRootEntitiesGraph(getDataSource().getConfiguration().getModelName(), false);
+				UndirectedGraph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
+				logger.debug("UndirectedGraph retrieved");
+				
+				Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
+				queryGraph = DefaultCover.getCoverGraph(graph, entities);
+				
+			}
+			
+			query.setQueryGraph(queryGraph);
+			return queryGraph;
+			
+		} catch (Throwable t) {
+			throw new SpagoBIRuntimeException("Error while loading the not ambigous graph", t);
+		} finally {
+			logger.debug("OUT");
+		}	
+		
+	}
 
+	public Set<ModelFieldPaths> getAmbiguousFields(QueryGraph queryGraph, Query query) {				
 		logger.debug("IN");
 
 		try {
 
-			query = this.getCurrentQuery();
-			if (query == null) {
-				return new HashSet<ModelFieldPaths>();
-			}
-			QueryGraph queryGraph = this.getQueryGraph(query);
-			query.setQueryGraph(queryGraph);
 			String modelName = getDataSource().getConfiguration().getModelName();
 			
 			Map<IModelField, Set<IQueryField>> modelFieldsMap = query.getQueryFields(getDataSource());
@@ -207,14 +257,13 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		}	
 	}
 
-	private QueryGraph getQueryGraph(Query query) {
+	private QueryGraph getQueryGraphFromRequest(Query query) {
 		List<Relationship> toReturn = new ArrayList<Relationship>();
 		IModelStructure modelStructure = getDataSource().getModelStructure();
 		logger.debug("IModelStructure retrieved");
 		RootEntitiesGraph rootEntitiesGraph = modelStructure.getRootEntitiesGraph(getDataSource().getConfiguration().getModelName(), false);
 		logger.debug("RootEntitiesGraph retrieved");
-		UndirectedGraph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
-		logger.debug("UndirectedGraph retrieved");
+
 		Set<Relationship> relationships = rootEntitiesGraph.getRelationships();
 		logger.debug("Set<Relationship> retrieved");
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
@@ -227,6 +276,8 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		}
 		logger.debug("Paths deserialized");
 		QueryGraph queryGraph = null;
+
+		
 		if (list != null && !list.isEmpty()) {
 			Iterator<ModelFieldPaths> it = list.iterator();
 			while (it.hasNext()) {
@@ -240,14 +291,45 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			}
 			QueryGraphBuilder builder = new QueryGraphBuilder();
 			queryGraph = builder.buildGraphFromEdges(toReturn);
-		} else {
-			Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
-			queryGraph = DefaultCover.getCoverGraph(graph, entities);
 		}
 		logger.debug("QueryGraph created");
 		return queryGraph;
 	}
+	
 
+
+	/**
+	 * checks if the query graph covers all the entities in the query
+	 * @param oldQueryGraph
+	 * @param newQuery
+	 * @return
+	 */
+	public boolean isTheOldQueryGraphValid(QueryGraph oldQueryGraph, Query newQuery){
+
+
+		if(oldQueryGraph ==null){
+			return false;
+		}
+
+		Set<IModelEntity> oldVertexes = oldQueryGraph.vertexSet();
+		if(oldVertexes==null){
+			return false;
+		}
+		Set<IModelEntity> newQueryEntities = newQuery.getQueryEntities(getDataSource());
+		if(newQueryEntities==null){
+			return true;
+		}
+		
+		Iterator<IModelEntity> newQueryEntitiesIter = newQueryEntities.iterator();
+		while (newQueryEntitiesIter.hasNext()) {
+			IModelEntity iModelEntity = (IModelEntity) newQueryEntitiesIter.next();
+			if(!oldVertexes.contains(iModelEntity)){
+				return false;//if at least one entity contained in the query is not covered by the old cover graph the old graph is not valid
+			}
+		}
+		return true;
+	}
+	
 	private Query getCurrentQuery() {
 		String queryId = this.getAttributeAsString(CURRENT_QUERY_ID);
 		Query query = null;

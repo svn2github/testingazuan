@@ -281,13 +281,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		IDataSet dataSet = this.getEngineInstance().getActiveQueryAsDataSet();
 		AbstractQbeDataSet qbeDataSet = (AbstractQbeDataSet) dataSet;
 		IStatement statement = qbeDataSet.getStatement();
-		QueryGraph graph = getQueryGraph(statement.getQuery());
+		QueryGraph graph = statement.getQuery().getQueryGraph();
 		boolean valid = GraphValidatorInspector.isValid(graph);
 		logger.debug("QueryGraph valid = " + valid);
 		if (!valid) {
 			throw new SpagoBIEngineServiceException(getActionName(), "The specified relationships are not enough to link all entities");
 		}
-		statement.getQuery().setQueryGraph(graph);
 		try {
 			logger.debug("Executing query ...");
 			Integer maxSize = QbeEngineConfig.getInstance().getResultLimit();			

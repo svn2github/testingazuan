@@ -107,17 +107,73 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 
 	, commit: function(callback, scope) {
 		
+		var currentQuery = this.getSelectedQuery();
+		var ambiguousFields = [];
+		if (currentQuery) {
+			ambiguousFields = this.getStoredAmbiguousFields();
+		}
+		
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.getQueries())
+				, currentQueryId : (currentQuery) ? currentQuery.id : ''
+				, ambiguousFieldsPaths : Ext.util.JSON.encode(ambiguousFields)
 		};
 
 		Ext.Ajax.request({
 		    url: this.services['setCatalogue'],
-		    success: callback,
+		    success: this.onCommitSuccessHandler.createDelegate(this, [callback, scope], true), // before invoking callback, we have to resolve ambiguous fields, if any
 		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
-		    scope: scope,
+		    scope: this,
 		    params: params
-		});   
+		});
+		
+	}
+	
+	,
+	onCommitSuccessHandler : function (response, options, callback, scope) {
+		var ambiguousFields = Ext.util.JSON.decode( response.responseText );
+		if (ambiguousFields.length == 0) {
+			if (callback) {
+				callback.call(scope);  // proceed execution with the specified callback function
+			}
+		} else {
+			ambiguousFields = this.mergeAmbiguousFields(ambiguousFields);
+			var relationshipsWindow = new Sbi.qbe.RelationshipsWizardWindow({
+				ambiguousFields : ambiguousFields
+				, closeAction : 'close'
+				, modal : true
+			});
+			relationshipsWindow.show();
+			relationshipsWindow.on('apply', this.onAmbiguousFieldsSolved.createDelegate(this, [callback, scope], true), this);
+		}
+	}
+	
+	,
+	mergeAmbiguousFields : function (ambiguousFields) {
+		var previousAmbiguousFields = this.getStoredAmbiguousFields();
+		var ambiguousFieldsObj = new Sbi.qbe.AmbiguousFields({ ambiguousFields : ambiguousFields });
+		var cachedObj = new Sbi.qbe.AmbiguousFields({ ambiguousFields : previousAmbiguousFields });
+		ambiguousFieldsObj.merge(cachedObj);
+		return ambiguousFieldsObj.getAmbiguousFieldsAsJSONArray();
+	}
+	
+	,
+	onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, callback, scope) {
+		theWindow.close();
+		this.storeAmbiguousFields(ambiguousFieldsSolved);
+		this.commit(callback, scope); // oppure callback.call(scope);
+	}
+
+	,
+	storeAmbiguousFields : function (ambiguousFields) {
+		var query = this.getSelectedQuery();
+		query.ambiguousFields = ambiguousFields;
+	}
+	
+	,
+	getStoredAmbiguousFields : function () {
+		var query = this.getSelectedQuery();
+		return query.ambiguousFields || [];
 	}
 	
 	, validate: function(callback, scope) {

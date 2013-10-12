@@ -104,6 +104,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
     // public methods
 	// ---------------------------------------------------------------------------------------------------
 	
+	/*
 	, execQuery:  function(query, freeFiltersForm, ambiguousFieldsPaths) {
 		this.firstPage= true;
 		this.store.removeAll();
@@ -114,7 +115,15 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		var requestParameters = {start: 0, limit: 25 };
 		this.store.load({params: requestParameters});
 	}
-
+	*/
+	
+	, execQuery:  function(query, freeFiltersForm) {
+		this.firstPage = true;
+		this.store.removeAll();
+		this.store.baseParams = Ext.apply({ id : query.id }, freeFiltersForm || {});
+		var requestParameters = {start: 0, limit: 25 };
+		this.store.load({params: requestParameters});
+	}
 
 	, exportResult: function(mimeType) {
 		var form = document.getElementById('export-form');

@@ -91,10 +91,12 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		serviceName: 'GET_SQL_QUERY_ACTION'
 		, baseParams: params
 	});
+	/*
 	this.services['getAmbiguousFields'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_AMBIGUOUS_FIELDS_ACTION'
 		, baseParams: params
 	});
+	*/
 		
 	this.addEvents('save');
 		
@@ -824,7 +826,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 
 			this.setQuery( newquery );
 			// required in order to be sure to have all query stored at the server side while
-			// joining a subquery to a parent query selected entity
+			// joining a subquery to a parent query selected entity, but only if previousQuery is defined (i.e. not the first time)
 			this.queryCataloguePanel.commit(function() {
 				// do nothings after commit for the moment
 				// todo: implement hidingMask in order to block edinting while commiting

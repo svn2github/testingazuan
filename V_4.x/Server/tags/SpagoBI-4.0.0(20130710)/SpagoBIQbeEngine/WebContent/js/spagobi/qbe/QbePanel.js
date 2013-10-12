@@ -64,10 +64,12 @@ Sbi.qbe.QbePanel = function(config) {
 		serviceName: 'SET_WORKSHEET_DEFINITION_ACTION'
 			, baseParams: params
 	});
+	/*
 	this.services['getAmbiguousFields'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_AMBIGUOUS_FIELDS_ACTION'
 			, baseParams: params
 	});
+	*/
 
 	this.addEvents();
 
@@ -352,6 +354,12 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 }
 
 , executeQuery: function(query, promptableFilters) {
+	var newPromptableFilters = { promptableFilters : Ext.encode(promptableFilters)};
+	this.queryResultPanel.execQuery(query, newPromptableFilters);
+}
+
+/*
+, executeQuery: function(query, promptableFilters) {
 	this.checkAmbiguousFields(query, promptableFilters);
 }
 
@@ -416,6 +424,7 @@ getAmbiguousFieldsFromCache : function (query) {
 	var newPromptableFilters = { promptableFilters : Ext.encode(promptableFilters)};
 	this.queryResultPanel.execQuery(query, newPromptableFilters, ambiguousFieldsSolved);
 }
+*/
 
 , getPromptableFilters : function(query) {
 	var filters = [];

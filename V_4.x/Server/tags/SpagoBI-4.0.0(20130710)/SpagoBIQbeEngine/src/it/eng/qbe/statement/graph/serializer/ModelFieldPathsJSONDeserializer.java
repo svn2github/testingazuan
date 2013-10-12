@@ -8,6 +8,8 @@ package it.eng.qbe.statement.graph.serializer;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.query.IQueryField;
+import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathChoice;
 import it.eng.qbe.statement.graph.Relationship;
@@ -34,13 +36,16 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelFieldPaths>{
 	private Collection<Relationship> relationShips;
-	private Graph<IModelEntity, Relationship> graph;
+//	private Graph<IModelEntity, Relationship> graph;
 	private IModelStructure modelStructure;
+	private Query query;
 	
-	private static final int defaultPathWeight = 1;
+//	private static final int defaultPathWeight = 1;
 	private static final String ID = "id";
 	private static final String NAME = "name";
-	private static final String ENTITY = "entity";
+	private static final String QUERY_FIELD_NAME = "queryFieldName";
+//	private static final String QUERY_FIELD_ALIAS = "queryFieldAlias";
+//	private static final String ENTITY = "entity";
 	private static final String CHOICES = "choices";
 	private static final String NODES = "nodes";
 	private static final String START = "start";
@@ -48,9 +53,10 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
 	private static final String ACTIVE ="active";
 	
 
-	public ModelFieldPathsJSONDeserializer(Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure){
+	public ModelFieldPathsJSONDeserializer(Collection<Relationship> relationShips, IModelStructure modelStructure, Query query){
 		this.relationShips = relationShips;
-		this.graph = graph;
+//		this.graph = graph;
+		this.query = query;
 		this.modelStructure = modelStructure;
 	}
 	
@@ -62,21 +68,58 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
         JsonNode node = oc.readTree(jsonParser);
         TextNode id = (TextNode)node.get(ID);
         TextNode name = (TextNode)node.get(NAME);
-        TextNode entity = (TextNode)node.get(ENTITY);
+        TextNode queryFieldName = (TextNode)node.get(QUERY_FIELD_NAME);
+       // TextNode entity = (TextNode)node.get(ENTITY);
         ArrayNode choicesJson = (ArrayNode) node.get(CHOICES);
-        if(choicesJson!=null && name!=null){
+        if(queryFieldName==null){
+        	throw new JsonProcessingExceptionImpl("Error parsoing the field choices: The "+QUERY_FIELD_NAME+" must be valorized for each field"+node.toString());
+        }
+        if(choicesJson!=null && id!=null){
         	for(int i=0; i<choicesJson.size(); i++){
         		PathChoice pc = deserializePath(choicesJson.get(i));
         		if(pc!=null){
             		choices.add(pc);
         		}
         	}
-        	IModelField field = modelStructure.getField(name.textValue());
-        	return new ModelFieldPaths(field, choices, true);
+        	IModelField field = modelStructure.getField(id.textValue());
+        	IQueryField qf = getQueryField(queryFieldName.textValue());
+        	
+            if(field==null){
+            	throw new JsonProcessingExceptionImpl("Error parsoing the field choices: can not find the field with id"+name.textValue()+" and name "+id.textValue()+" in the model structure");
+            }
+            
+            if(qf==null){
+            	throw new JsonProcessingExceptionImpl("Error parsoing the field choices: can not find the field "+queryFieldName.textValue()+"in the model query");
+            }
+        	
+
+        	return new ModelFieldPaths(qf,field, choices, true);
         }
         throw new JsonProcessingExceptionImpl("Can not deserialize the ModelFieldPaths. The mandatory fields are name and paths "+node.toString());
 	}
 	
+	private IQueryField getQueryField(String queryFieldName){
+		IQueryField qf=null;
+		if(queryFieldName!=null){
+
+			
+			//check if it is a select field
+			int fieldIndex = query.getSelectFieldIndex(queryFieldName);
+			if(fieldIndex>=0){
+				qf = query.getSelectFieldByIndex(fieldIndex);
+			}
+			//check if it is a where field
+			if(qf==null){
+				qf = query.getWhereFieldByName(queryFieldName);
+			}
+			//check if it is a having field
+			if(qf==null){
+				qf = query.getHavingFieldByName(queryFieldName);
+			}
+
+		}
+		return qf;
+	}
 	
 	public PathChoice deserializePath(JsonNode node) throws  JsonProcessingException {
 		

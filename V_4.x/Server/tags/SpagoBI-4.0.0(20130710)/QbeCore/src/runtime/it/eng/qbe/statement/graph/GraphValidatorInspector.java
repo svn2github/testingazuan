@@ -16,6 +16,12 @@ public class GraphValidatorInspector {
 	public static boolean isValid(UndirectedGraph G){
 
 		List<IGraphValidator> validators = getValidatorsList();
+		
+		// the empty graph is always valid
+		if(G==null || G.vertexSet().size()==0){
+			return true;
+		}
+		
 		for(int i=0; i<validators.size(); i++){
 			if(!validators.get(i).validate(G)){
 				return false;

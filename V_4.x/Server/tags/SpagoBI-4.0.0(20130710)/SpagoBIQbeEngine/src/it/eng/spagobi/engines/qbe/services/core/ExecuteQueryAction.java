@@ -44,7 +44,6 @@ import java.util.Set;
 
 import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
-import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,7 +167,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
 		List<ModelFieldPaths> list;
 		try {
-			list = deserializeList(serialized, relationships, graph, modelStructure);
+			list = deserializeList(serialized, relationships, modelStructure, query);
 		} catch (SerializationException e) {
 			throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
 		}
@@ -195,22 +194,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		return queryGraph;
 	}
 
-	public static ModelFieldPaths deserialize(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
-		mapper.registerModule(simpleModule);
-		try {
-			return mapper.readValue(serialized, ModelFieldPaths.class);
-		} catch (Exception e) {
-			throw new SerializationException("Error deserializing the ModelFieldPaths", e);
-		}
-	}
 
-	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips, Graph<IModelEntity, Relationship> graph, IModelStructure modelStructure) throws SerializationException{
+	public static List<ModelFieldPaths> deserializeList(String serialized, Collection<Relationship> relationShips,  IModelStructure modelStructure, Query query) throws SerializationException{
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
-		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips,graph, modelStructure));
+		simpleModule.addDeserializer(ModelFieldPaths.class, new ModelFieldPathsJSONDeserializer(relationShips, modelStructure, query));
 		mapper.registerModule(simpleModule);
 		TypeReference<List<ModelFieldPaths>> type = new TypeReference<List<ModelFieldPaths>>() {};
 		try {

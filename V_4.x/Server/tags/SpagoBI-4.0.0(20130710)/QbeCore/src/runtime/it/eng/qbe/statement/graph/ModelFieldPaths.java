@@ -7,6 +7,7 @@ package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.IQueryField;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,10 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ModelFieldPaths {
 
 	private IModelField field;
+	private IQueryField queryField;
 	private Set<PathChoice> choices;
 
-	public ModelFieldPaths(IModelField field, Set<GraphPath<IModelEntity, Relationship>> paths ){
-		this.field = field;
+
+
+	public ModelFieldPaths(IQueryField queryField, IModelField field, Set<GraphPath<IModelEntity, Relationship>> paths ){
+		this(field, queryField);
 
 		choices = new HashSet<PathChoice>();
 		if(paths!=null){
@@ -33,9 +37,15 @@ public class ModelFieldPaths {
 		}
 	}
 
-	public ModelFieldPaths(IModelField field, Set<PathChoice> choices, boolean choicesBoolean){
-		this.field = field;
+	public ModelFieldPaths(IQueryField queryField, IModelField field, Set<PathChoice> choices, boolean choicesBoolean){
+		this(field, queryField);
 		this.choices = choices;
+	}
+	
+	private ModelFieldPaths(IModelField field, IQueryField queryField) {
+		super();
+		this.field = field;
+		this.queryField = queryField;
 	}
 	
 	@JsonIgnore
@@ -59,6 +69,14 @@ public class ModelFieldPaths {
 		return choices;
 	}
 
+	public String getQueryFieldName() {
+		return queryField.getName();
+	}
+
+
+	public String getQueryFieldAlias() {
+		return queryField.getAlias();
+	}
 
 
 

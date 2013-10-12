@@ -399,7 +399,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 			}
 			
 			Set<IModelEntity> unjoinedEntities = getUnjoinedRootEntities(rootEntityAlias);
-			if(unjoinedEntities.size() > 0) {
+			if(unjoinedEntities.size() > 1) {
 				QueryGraph queryGraph = query.getQueryGraph();
 				boolean areConnected = GraphValidatorInspector.isValid(queryGraph);
 				if(areConnected) {

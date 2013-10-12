@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.qbe.services.core;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
@@ -75,7 +76,9 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			query = getQuery();
 			
 			String modelName = getDataSource().getConfiguration().getModelName();
-			Set<IModelField> modelFields = query.getQueryFields(getDataSource());
+			
+			Map<IModelField, Set<IQueryField>> modelFieldsMap = query.getQueryFields(getDataSource());
+			Set<IModelField> modelFields = modelFieldsMap.keySet();
 			
 			Assert.assertNotNull(modelFields, "No field specified in teh query");
 			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
@@ -94,7 +97,13 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 					IModelEntity me = iModelField.getParent();
 					Set<GraphPath<IModelEntity, Relationship>> paths = ambiguousMap.get(me);
 					if(paths!=null){
-						ambiguousModelField.add(new ModelFieldPaths(iModelField, paths));
+						Set<IQueryField> queryFields = modelFieldsMap.get(iModelField);
+						if(queryFields!=null){
+							Iterator<IQueryField> queryFieldsIter  = queryFields.iterator();
+							while (queryFieldsIter.hasNext()) {
+								ambiguousModelField.add(new ModelFieldPaths(queryFieldsIter.next(),iModelField, paths));
+							}
+						}
 					}
 				}
 				

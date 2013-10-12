@@ -198,12 +198,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				DefaultCover.applyDefault(ambiguousModelField, graph, modelEntities);
 			}
 			
-			// per Albi: da RIMUOVERE
-			String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
-			if (StringUtilities.isNotEmpty(serialized) && !serialized.trim().equals("[]")) {
-				return new HashSet<ModelFieldPaths>();
-			}
-			
 			return ambiguousModelField;
 
 		} catch (Throwable t) {

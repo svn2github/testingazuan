@@ -30,7 +30,9 @@ public class RelationJSONSerializer extends JsonSerializer<Relationship> {
 	public static final String RELATIONSHIP_NAME = "relationshipName";
 	public static final String RELATIONSHIP_ID = "relationshipId";
 	
-	
+	protected RelationJSONSerializer() {
+		super();
+	}
 	
 	public RelationJSONSerializer(IDataSource dataSource, Locale locale) {
 		super();
@@ -49,7 +51,7 @@ public class RelationJSONSerializer extends JsonSerializer<Relationship> {
 		jgen.writeEndObject();
 	}
 	
-	private String getLabel(IModelObject item){
+	protected String getLabel(IModelObject item){
 		String name = datamartLabels.getProperty(item, "label");
 		if (name==null){
 			name = item.getName();

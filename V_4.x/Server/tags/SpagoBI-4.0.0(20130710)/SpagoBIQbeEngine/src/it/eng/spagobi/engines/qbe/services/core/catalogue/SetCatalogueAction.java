@@ -268,13 +268,15 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		logger.debug("Set<Relationship> retrieved");
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
-		List<ModelFieldPaths> list;
-		try {
-			list = deserializeList(serialized, relationships, modelStructure, query);
-		} catch (SerializationException e) {
-			throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
+		List<ModelFieldPaths> list = null;
+		if (StringUtilities.isNotEmpty(serialized)) {
+			try {
+				list = deserializeList(serialized, relationships, modelStructure, query);
+			} catch (SerializationException e) {
+				throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
+			}
+			logger.debug("Paths deserialized");
 		}
-		logger.debug("Paths deserialized");
 		QueryGraph queryGraph = null;
 
 		

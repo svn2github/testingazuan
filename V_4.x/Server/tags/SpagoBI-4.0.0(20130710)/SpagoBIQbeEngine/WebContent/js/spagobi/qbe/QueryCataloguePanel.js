@@ -129,6 +129,25 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		
 	}
 	
+	, manageAmbiguousFields: function(callback, scope) {
+		
+		var currentQuery = this.getSelectedQuery();
+		
+		var params = {
+				catalogue: Ext.util.JSON.encode(this.getQueries())
+				, currentQueryId : (currentQuery) ? currentQuery.id : ''
+		};
+
+		Ext.Ajax.request({
+		    url: this.services['setCatalogue'],
+		    success: this.onCommitSuccessHandler.createDelegate(this, [callback, scope], true), // before invoking callback, we have to resolve ambiguous fields, if any
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+		    scope: this,
+		    params: params
+		});
+		
+	}
+	
 	,
 	onCommitSuccessHandler : function (response, options, callback, scope) {
 		var ambiguousFields = Ext.util.JSON.decode( response.responseText );
@@ -161,7 +180,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, callback, scope) {
 		theWindow.close();
 		this.storeAmbiguousFields(ambiguousFieldsSolved);
-		this.commit(callback, scope); // oppure callback.call(scope);
+		this.commit(callback, scope);
 	}
 
 	,

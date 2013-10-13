@@ -668,6 +668,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	,
 	getAmbiguousFields: function() {
 		this.applyChanges();
+		this.queryCataloguePanel.manageAmbiguousFields(function() {
+			// do nothings after commit for the moment
+		}, this);
+	}
+	
+	/*
+	,
+	getAmbiguousFields: function() {
+		this.applyChanges();
 		var query = this.getQuery(true);
 		var queries = this.getQueries();
 		// call the server to get ambiguous fields
@@ -732,7 +741,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		var cached = Sbi.cache.memory.get(query.id);
 		return cached;
 	}
-	
+	*/
 	
 	/**
 	 * activate panel specified by the index in input by toggling the relevant button

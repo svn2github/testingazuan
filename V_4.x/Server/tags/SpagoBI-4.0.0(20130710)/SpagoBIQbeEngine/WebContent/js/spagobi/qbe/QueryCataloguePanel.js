@@ -167,13 +167,16 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	,
 	storeAmbiguousFields : function (ambiguousFields) {
 		var query = this.getSelectedQuery();
-		query.ambiguousFields = ambiguousFields;
+		Sbi.cache.memory.put(query.id, ambiguousFields);
+		//query.ambiguousFields = ambiguousFields;
 	}
 	
 	,
 	getStoredAmbiguousFields : function () {
 		var query = this.getSelectedQuery();
-		return query.ambiguousFields || [];
+		var cached = Sbi.cache.memory.get(query.id);
+		return cached || [];
+		//return query.ambiguousFields || [];
 	}
 	
 	, validate: function(callback, scope) {

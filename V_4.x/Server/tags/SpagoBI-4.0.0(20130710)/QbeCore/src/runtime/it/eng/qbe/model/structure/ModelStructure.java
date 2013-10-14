@@ -5,6 +5,8 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.model.structure;
 
+import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.QueryGraphBuilder;
 import it.eng.qbe.statement.graph.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
@@ -26,7 +28,7 @@ import org.jgrapht.graph.Multigraph;
 public class ModelStructure extends AbstractModelObject implements IModelStructure {
 	
 	
-	public static class RootEntitiesGraph {
+	public static class RootEntitiesGraph implements Cloneable{
 		
 		Set<Relationship> relationships;
 		Map<String, IModelEntity> rootEntitiesMap;
@@ -82,11 +84,20 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 			return areConnected;
 		}
 		
-//		public Relationship addRelationship(String fromEntityName, String toEntityName, String type) {
-//			IModelEntity fromEntity = getRootEntityByName(fromEntityName);
-//			IModelEntity toEntity = getRootEntityByName(toEntityName);	
-//			return addRelationship(fromEntity, toEntity, type);
-//		}
+		
+
+		private void setRelationships(Set<Relationship> relationships) {
+			this.relationships = relationships;
+		}
+
+		private void setRootEntitiesMap(Map<String, IModelEntity> rootEntitiesMap) {
+			this.rootEntitiesMap = rootEntitiesMap;
+		}
+
+		private void setRootEntitiesGraph(
+				Multigraph<IModelEntity, Relationship> rootEntitiesGraph) {
+			this.rootEntitiesGraph = rootEntitiesGraph;
+		}
 
 		public Relationship addRelationship(IModelEntity fromEntity, List<IModelField> fromFields,
 				IModelEntity toEntity, List<IModelField> toFields, String type, String relationName) {
@@ -108,6 +119,16 @@ public class ModelStructure extends AbstractModelObject implements IModelStructu
 		
 		public Set<Relationship> getRelationships() {
 			return relationships;
+		}
+		
+		public RootEntitiesGraph clone(){
+			RootEntitiesGraph reg = new RootEntitiesGraph();
+			reg.setRootEntitiesMap(rootEntitiesMap);
+			reg.setRelationships(relationships);
+			QueryGraphBuilder qgb = new QueryGraphBuilder();
+			QueryGraph qg = qgb.buildGraphFromEdges(relationships);
+			reg.setRootEntitiesGraph(qg);
+			return reg;
 		}
 		
 	}

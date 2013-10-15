@@ -5,6 +5,11 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.statement.graph;
 
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
+import it.eng.qbe.query.Query;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +19,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GraphUtilities {
+	
+	public static final String RELATIONSHIP_ID = "relationshipId";
 	
 	/**
 	 * Removes the subpaths
@@ -135,9 +146,49 @@ public class GraphUtilities {
 			}
 			return arg0rel.compareTo(arg1rel);
 		}
-
+	}
+	
+	
+	public static QueryGraph deserializeGraph(JSONArray relationshipsJSON, Query query, IDataSource dataSource) throws JSONException {
+		if (relationshipsJSON == null || relationshipsJSON.length() == 0) {
+			return null;
+		}
+		String modelName = dataSource.getConfiguration().getModelName();
+		IModelStructure modelStructure =dataSource.getModelStructure();
+		RootEntitiesGraph rootEntitiesGraph  = modelStructure.getRootEntitiesGraph(modelName, true);
 		
+		Set<String> relationshipsNames = new HashSet<String>();
+		Set<PathChoice> choices = new HashSet<PathChoice>();
+		for (int i = 0; i < relationshipsJSON.length(); i++) {
+			JSONObject relationshipJSON = relationshipsJSON.getJSONObject(i);
+			relationshipsNames.add(relationshipJSON.getString(RELATIONSHIP_ID));
+		}
 		
+		List<Relationship> queryRelationships = new ArrayList<Relationship>();
+		Set<Relationship> allRelationships = rootEntitiesGraph.getRelationships();
+		Iterator<String> it = relationshipsNames.iterator();
+		while (it.hasNext()) {
+			String id = it.next();
+			Relationship relationship = getRelationshipById(allRelationships, id);
+			queryRelationships.add(relationship);
+		}
+		
+		QueryGraphBuilder builder = new QueryGraphBuilder();
+		QueryGraph queryGraph = builder.buildGraphFromEdges(queryRelationships);
+		
+		return queryGraph;
+	}
+	
+	private static Relationship getRelationshipById(
+			Set<Relationship> allRelationships, String id) {
+		Iterator<Relationship> it = allRelationships.iterator();
+		while (it.hasNext()) {
+			Relationship relationship = it.next();
+			if (relationship.getId().equals(id)) {
+				return relationship;
+			}
+		}
+		return null;
 	}
 	
 }

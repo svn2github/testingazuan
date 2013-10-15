@@ -46,6 +46,15 @@ Sbi.qbe.QbePanel = function(config) {
 		, displayWorksheetPanel: true
 	}, config || {});
 
+	
+	if(!Sbi.cache){
+		Sbi.cache = {};
+	}
+	
+	if(!Sbi.cache.memory){
+		Sbi.cache.memory = new Sbi.widgets.Cache({});
+	}
+	
 	this.services = new Array();
 	var params = {};
 	this.services['getFirstQuery'] = Sbi.config.serviceRegistry.getServiceUrl({

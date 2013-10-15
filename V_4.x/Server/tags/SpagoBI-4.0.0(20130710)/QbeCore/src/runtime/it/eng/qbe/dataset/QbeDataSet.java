@@ -13,6 +13,8 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.catalogue.QueryCatalogue;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.QbeDatasetFactory;
+import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.container.ObjectUtils;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
@@ -303,7 +305,8 @@ public static String DS_TYPE = "SbiQbeDataSet";
 			for(int i = 0; i < queriesJSON.length(); i++) {
 				queryJSON = queriesJSON.getJSONObject(i);
 				query = it.eng.qbe.query.serializer.SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, dataSource);
-								
+				QueryGraph graph = GraphUtilities.deserializeGraph((JSONArray) queryJSON.opt("graph"), query, dataSource);
+				query.setQueryGraph(graph);
 				catalogue.addQuery(query);
 			}
 		} catch (Throwable e) {

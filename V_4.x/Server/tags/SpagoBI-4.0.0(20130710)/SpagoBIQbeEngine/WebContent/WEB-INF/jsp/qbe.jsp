@@ -220,7 +220,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        	Ext.QuickTips.init();   
 	
 		        Ext.ns("Sbi.cache");
-		        Sbi.cache.memory = new Sbi.widgets.Cache({});
+		        
 	        	
 	        	var parametersStore = new Sbi.qbe.DocumentParametersStore({});
 	        	var parametersInfo = <%=jSonPars%>;	        	

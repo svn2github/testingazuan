@@ -5,7 +5,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.statement.graph.serializer;
 
-import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.query.IQueryField;
@@ -21,8 +20,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.jgrapht.Graph;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,7 +86,8 @@ public class ModelFieldPathsJSONDeserializer extends JsonDeserializer<ModelField
             }
             
             if(qf==null){
-            	throw new JsonProcessingExceptionImpl("Error parsoing the field choices: can not find the field "+queryFieldName.textValue()+"in the model query");
+            	return null;
+            	//throw new FieldNotAttendInTheQuery("Error parsoing the field choices: can not find the field "+queryFieldName.textValue()+"in the model query");
             }
         	
 

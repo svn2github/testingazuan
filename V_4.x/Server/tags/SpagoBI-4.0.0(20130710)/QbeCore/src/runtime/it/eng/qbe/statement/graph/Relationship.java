@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.jgrapht.graph.DefaultEdge;
 
-public class Relationship extends DefaultEdge {
+public class Relationship extends DefaultEdge implements Comparable<Relationship>{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -103,6 +103,21 @@ public class Relationship extends DefaultEdge {
 		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString(){
+		return getId();
+	}
+
+	public int compareTo(Relationship arg0) {
+		if(arg0.getId()==null){
+			return 1;
+		}
+		if(this.getId()==null){
+			return -1;
+		}
+		return this.getId().compareTo(arg0.getId());
 	}
 	
 	

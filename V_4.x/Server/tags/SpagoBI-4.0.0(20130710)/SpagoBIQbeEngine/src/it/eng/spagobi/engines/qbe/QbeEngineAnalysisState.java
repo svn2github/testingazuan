@@ -6,14 +6,16 @@
 package it.eng.spagobi.engines.qbe;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.structure.IModelObject;
+import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.catalogue.QueryCatalogue;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationManager;
+import it.eng.qbe.statement.graph.PathChoice;
 import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.QueryGraphBuilder;
 import it.eng.qbe.statement.graph.Relationship;
-import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spagobi.commons.QbeEngineStaticVariables;
 import it.eng.spagobi.engines.qbe.analysisstateloaders.IQbeEngineAnalysisStateLoader;
 import it.eng.spagobi.engines.qbe.analysisstateloaders.QbeEngineAnalysisStateLoaderFactory;
@@ -22,8 +24,11 @@ import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Locale;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -31,8 +36,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
@@ -142,7 +151,7 @@ public class QbeEngineAnalysisState extends EngineAnalysisState {
 			for(int i = 0; i < queriesJSON.length(); i++) {
 				queryJSON = queriesJSON.getJSONObject(i);
 				query = SerializerFactory.getDeserializer("application/json").deserializeQuery(queryJSON, getDataSource());
-				QueryGraph graph = deserializeGraph(queryJSON.opt("graph"));
+				QueryGraph graph = deserializeGraph((JSONArray) queryJSON.opt("graph"), query);
 				query.setQueryGraph(graph);
 				catalogue.addQuery(query);
 			}
@@ -153,8 +162,45 @@ public class QbeEngineAnalysisState extends EngineAnalysisState {
 		return catalogue;
 	}
 
-	private QueryGraph deserializeGraph(Object opt) {
-		// TODO Auto-generated method stub
+	private QueryGraph deserializeGraph(JSONArray relationshipsJSON, Query query) throws JSONException {
+		if (relationshipsJSON == null || relationshipsJSON.length() == 0) {
+			return null;
+		}
+		String modelName = this.getDataSource().getConfiguration().getModelName();
+		IModelStructure modelStructure = this.getDataSource().getModelStructure();
+		RootEntitiesGraph rootEntitiesGraph  = modelStructure.getRootEntitiesGraph(modelName, true);
+		
+		Set<String> relationshipsNames = new HashSet<String>();
+		Set<PathChoice> choices = new HashSet<PathChoice>();
+		for (int i = 0; i < relationshipsJSON.length(); i++) {
+			JSONObject relationshipJSON = relationshipsJSON.getJSONObject(i);
+			relationshipsNames.add(relationshipJSON.getString(RelationJSONSerializerForAnalysisState.RELATIONSHIP_ID));
+		}
+		
+		List<Relationship> queryRelationships = new ArrayList<Relationship>();
+		Set<Relationship> allRelationships = rootEntitiesGraph.getRelationships();
+		Iterator<String> it = relationshipsNames.iterator();
+		while (it.hasNext()) {
+			String id = it.next();
+			Relationship relationship = getRelationshipById(allRelationships, id);
+			queryRelationships.add(relationship);
+		}
+		
+		QueryGraphBuilder builder = new QueryGraphBuilder();
+		QueryGraph queryGraph = builder.buildGraphFromEdges(queryRelationships);
+		
+		return queryGraph;
+	}
+
+	private Relationship getRelationshipById(
+			Set<Relationship> allRelationships, String id) {
+		Iterator<Relationship> it = allRelationships.iterator();
+		while (it.hasNext()) {
+			Relationship relationship = it.next();
+			if (relationship.getId().equals(id)) {
+				return relationship;
+			}
+		}
 		return null;
 	}
 
@@ -197,7 +243,7 @@ public class QbeEngineAnalysisState extends EngineAnalysisState {
 				new RelationJSONSerializerForAnalysisState());
 
 		mapper.registerModule(simpleModule);
-		String serialized = mapper.writeValueAsString(graph);
+		String serialized = mapper.writeValueAsString(graph.getConnections());
 		JSONArray array = new JSONArray(serialized);
 		return array;
 	}
@@ -241,20 +287,17 @@ public class QbeEngineAnalysisState extends EngineAnalysisState {
 		
 	}
 	
-	public class RelationJSONSerializerForAnalysisState extends RelationJSONSerializer {
+	public class RelationJSONSerializerForAnalysisState extends JsonSerializer<Relationship> {
 
-		private RelationJSONSerializerForAnalysisState() {
-			super();
-		}
+		public static final String RELATIONSHIP_ID = "relationshipId";
 		
 		@Override
-		protected String getLabel(IModelObject item) {
-			return item.getName();
-		}
-
-		public RelationJSONSerializerForAnalysisState(IDataSource dataSource,
-				Locale locale) {
-			super();
+		public void serialize(Relationship value, JsonGenerator jgen, SerializerProvider provider) throws IOException,
+				JsonProcessingException {
+			jgen.writeStartObject();
+			jgen.writeStringField(RELATIONSHIP_ID, value.getId());
+			jgen.writeEndObject();
+			
 		}
 		
 	}

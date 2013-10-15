@@ -84,35 +84,4 @@ public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
 	
 	
 
-
-	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
-		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   getConnectingRelatiosnhips(rootEntitiesGraph, entities);	
-		if(ambiguousModelField!=null && defaultConnections!=null){
-			Iterator<ModelFieldPaths> mfpIter = ambiguousModelField.iterator();
-			while (mfpIter.hasNext()) {
-				ModelFieldPaths modelFieldPaths = (ModelFieldPaths) mfpIter.next();
-				IModelEntity entity = modelFieldPaths.getModelEntity();
-				if(modelFieldPaths.getChoices()!=null){
-					Iterator<PathChoice> amfpChoicesIter =modelFieldPaths.getChoices().iterator();
-					while (amfpChoicesIter.hasNext()) {
-						PathChoice pathChoice = (PathChoice) amfpChoicesIter.next();
-						Set<GraphPath<IModelEntity, Relationship>> shortest = defaultConnections.get(entity);
-						if(shortest!=null){
-							Iterator<GraphPath<IModelEntity, Relationship>> pathIter = shortest.iterator();
-							while (pathIter.hasNext()) {
-								GraphPath<IModelEntity, Relationship> graphPath = (GraphPath<IModelEntity, Relationship>) pathIter.next();
-								boolean activeChoice = pathChoice.isTheSamePath(graphPath);
-								pathChoice.setActive(activeChoice);
-								if(activeChoice){
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-	}
-
 }

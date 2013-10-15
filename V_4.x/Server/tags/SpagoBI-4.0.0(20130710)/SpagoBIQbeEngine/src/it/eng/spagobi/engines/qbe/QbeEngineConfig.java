@@ -272,6 +272,17 @@ public class QbeEngineConfig {
 		return cellLimit;
 	}
 	
+	
+	public boolean isRemoveSubpaths() {
+		boolean remove = true;
+		try {
+			remove = new Boolean((String) ConfigSingleton.getInstance().getAttribute("GRAPH-PATH.removeSubPaths")) ;
+		} catch (Exception e) {
+			logger.debug("No GRAPH PATH configuration has been specified in the qbe.xml");
+		}
+		return remove;
+	}
+	
 	public int getCrosstabCFDecimalPrecision() {
 		int precision = 2;
 		try {

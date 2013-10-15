@@ -82,4 +82,6 @@
 		</PARAMETERS>
 	</TEMPLATE-BUILDER>
 	
+	<GRAPH-PATH removeSubPaths="true"/>
+	
 </QBE>

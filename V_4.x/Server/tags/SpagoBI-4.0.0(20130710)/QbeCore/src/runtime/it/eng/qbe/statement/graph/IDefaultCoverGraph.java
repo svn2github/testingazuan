@@ -18,5 +18,4 @@ public interface IDefaultCoverGraph {
 	
 	public QueryGraph  getCoverGraph( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
-	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 }

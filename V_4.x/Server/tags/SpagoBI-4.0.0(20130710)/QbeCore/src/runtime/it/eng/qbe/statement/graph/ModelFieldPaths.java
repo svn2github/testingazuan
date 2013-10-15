@@ -69,6 +69,10 @@ public class ModelFieldPaths {
 		return choices;
 	}
 
+	public void setChoices(Set<PathChoice> choices) {
+		this.choices = choices;
+	}
+
 	public String getQueryFieldName() {
 		return queryField.getName();
 	}

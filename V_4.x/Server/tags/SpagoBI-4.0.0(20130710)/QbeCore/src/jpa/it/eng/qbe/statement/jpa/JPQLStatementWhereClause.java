@@ -16,6 +16,7 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.qbe.statement.StatementCompositionException;
+import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.GraphValidatorInspector;
 import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.graph.Relationship;
@@ -40,6 +41,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.UndirectedGraph;
 
 /**
  * This class builds the where clause part of the statement
@@ -401,6 +403,12 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 			Set<IModelEntity> unjoinedEntities = getUnjoinedRootEntities(rootEntityAlias);
 			if(unjoinedEntities.size() > 1) {
 				QueryGraph queryGraph = query.getQueryGraph();
+				if(queryGraph==null){
+					logger.debug("NO GRAPH FOUND IN THE QUERY. creating a default one");
+					String modelName = parentStatement.getDataSource().getConfiguration().getModelName();
+					UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph = parentStatement.getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+					queryGraph = DefaultCover.getCoverGraph(rootEntitiesGraph, unjoinedEntities);
+				}
 				boolean areConnected = GraphValidatorInspector.isValid(queryGraph);
 				if(areConnected) {
 					List<Relationship> relationships = queryGraph.getConnections();

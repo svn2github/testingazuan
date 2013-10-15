@@ -250,11 +250,17 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		if(queryNode) {
 			query = queryNode.props.query;
 			query.name = queryNode.text;
+			var cachedGraph = this.getqueryGraph(queryId);
+			if(cachedGraph){
+				query.graph =cachedGraph;
+			}
 			query.subqueries = [];
 			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
 				for(var i = 0; i < queryNode.childNodes.length; i++) {
 					var subquery = this.getQueryById( queryNode.childNodes[i].id );
 					query.subqueries.push( subquery );
+
+					
 				}
 			}
 		}
@@ -645,6 +651,36 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	clear : function () {
 		var root = this.tree.getRootNode();
 		root.removeAll(true);
+	}
+	
+	, getqueryGraph: function(queryId){
+		var relationships = this.parseGraph(Sbi.cache.memory.get(queryId));
+		return relationships;
+	}
+	
+	, parseGraph: function(graph){
+		var relationships = new Array();
+		if(graph){
+			for(var i=0; i<graph.length; i++){
+				var choices = graph[i].choices;
+				if(choices){
+					for(var j=0; j<choices.length; j++){
+						var choice = choices[j];
+						if(choice.active && choice.active && choice.nodes){
+							var nodes =choice.nodes;
+							for(var k=0; k<nodes.length; k++){
+								var node = nodes[k];
+								if(node){
+									relationships.push({relationshipId: node.relationshipId});
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+		return relationships;
 	}
 	
 });

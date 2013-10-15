@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.qbe.services.core.catalogue;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
+import it.eng.qbe.model.structure.ModelField;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
@@ -15,6 +16,7 @@ import it.eng.qbe.query.QueryMeta;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.DefaultCover;
+import it.eng.qbe.statement.graph.GraphUtilities;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.ModelObjectI18n;
 import it.eng.qbe.statement.graph.PathChoice;
@@ -22,11 +24,13 @@ import it.eng.qbe.statement.graph.PathInspector;
 import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.graph.QueryGraphBuilder;
 import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.serializer.FieldNotAttendInTheQuery;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
 import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.engines.qbe.services.core.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
@@ -45,7 +49,6 @@ import java.util.Set;
 
 import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
 import org.json.JSONArray;
@@ -69,11 +72,14 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	
 	public static final String SERVICE_NAME = "SET_CATALOGUE_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
+
 	
 	// INPUT PARAMETERS
 	public static final String CATALOGUE = "catalogue";
 	public static final String CURRENT_QUERY_ID = "currentQueryId";
 	public static final String AMBIGUOUS_FIELDS_PATHS = "ambiguousFieldsPaths";
+	public static final String MESSAGE = "message";
+	public static final String MESSAGE_SAVE = "save";
 	
 	
 	/** Logger component. */
@@ -89,14 +95,33 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		JSONArray queries;
 		JSONObject queryJSON;
 		Query query;
+		QueryGraph oldQueryGraph = null;
+		
+		boolean forceReturnGraph = false;
 		
 		logger.debug("IN");
 		
 		try {
 			
+
+			
+			
 			totalTimeMonitor = MonitorFactory.start("QbeEngine.setCatalogueAction.totalTime");
 		
 			super.service(request, response);		
+			
+//			String requestMessage = this.getAttributeAsString(MESSAGE);
+//			if(requestMessage!=null && requestMessage.equals(MESSAGE_SAVE)){
+//				forceReturnGraph = true;
+//			}
+			
+			query = this.getCurrentQuery();
+			
+			
+			if (query == null) {
+				query = this.getEngineInstance().getQueryCatalogue().getFirstQuery();
+				oldQueryGraph = query.getQueryGraph();
+			}
 			
 			jsonEncodedCatalogue = getAttributeAsString( CATALOGUE );			
 			logger.debug(CATALOGUE + " = [" + jsonEncodedCatalogue + "]");
@@ -104,7 +129,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(jsonEncodedCatalogue, "Input parameter [" + CATALOGUE + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-
 			try {
 				queries = new JSONArray( jsonEncodedCatalogue );
 				for(int i = 0; i < queries.length(); i++) {
@@ -123,11 +147,34 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Set<ModelFieldPaths> ambiguousFields = new HashSet<ModelFieldPaths>();
 			
 			query = this.getCurrentQuery();
-			if (query != null) {
-				QueryGraph queryGraph = updateQueryGraphInQuery(query);
+			
+			if (query == null) {
+				query = this.getEngineInstance().getQueryCatalogue().getFirstQuery();
+			}else{
+				oldQueryGraph =null;
+			}
+			
+			Map<IModelField, Set<IQueryField>> modelFieldsMap = query.getQueryFields(getDataSource());
+			Set<IModelField> modelFields = modelFieldsMap.keySet();
+			Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
+			
+			
+			if (oldQueryGraph == null && query!=null) {
+				QueryGraph queryGraph = updateQueryGraphInQuery(query, forceReturnGraph);
 				if(queryGraph!=null){
-					ambiguousFields = getAmbiguousFields(queryGraph, query);
+					String modelName = getDataSource().getConfiguration().getModelName();
+					UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+					ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
+					boolean removeSubPaths = QbeEngineConfig.getInstance().isRemoveSubpaths();
+					if(removeSubPaths){
+						GraphUtilities.cleanSubPaths(ambiguousFields, true);
+					}
+					
+					DefaultCover.applyDefault(ambiguousFields, graph, modelEntities);
 				}
+			}else{
+				ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
+				applySavedGraphPaths(oldQueryGraph,  ambiguousFields);
 			}
 
 			
@@ -169,7 +216,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	 * @param query
 	 * @return
 	 */
-	public QueryGraph updateQueryGraphInQuery(Query query) {				
+	public QueryGraph updateQueryGraphInQuery(Query query, boolean forceReturnGraph) {				
 		boolean isTheOldQueryGraphValid = false;
 		logger.debug("IN");
 		QueryGraph queryGraph = null;
@@ -193,7 +240,11 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				logger.debug("UndirectedGraph retrieved");
 				
 				Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
-				queryGraph = DefaultCover.getCoverGraph(graph, entities);
+				if(entities.size()>0){
+					queryGraph = DefaultCover.getCoverGraph(graph, entities);
+				}
+				
+				
 				
 			}
 			
@@ -207,21 +258,28 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		}	
 		
 	}
+	
+	public void applySavedGraphPaths(QueryGraph queryGraph, Set<ModelFieldPaths> ambiguousFields){
 
-	public Set<ModelFieldPaths> getAmbiguousFields(QueryGraph queryGraph, Query query) {				
+		PathInspector pi = new PathInspector(queryGraph, queryGraph.vertexSet());
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> paths = pi.getAllEntitiesPathsMap();
+		DefaultCover.applyDefault(paths, ambiguousFields);
+	}
+
+	public Set<ModelFieldPaths> getAmbiguousFields(Query query, Set<IModelEntity> modelEntities, Map<IModelField, Set<IQueryField>> modelFieldsMap) {				
 		logger.debug("IN");
 
 		try {
 
 			String modelName = getDataSource().getConfiguration().getModelName();
 			
-			Map<IModelField, Set<IQueryField>> modelFieldsMap = query.getQueryFields(getDataSource());
+
 			Set<IModelField> modelFields = modelFieldsMap.keySet();
-			
+
 			Assert.assertNotNull(modelFields, "No field specified in teh query");
 			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
 			if(modelFields!=null){
-				Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
+				
 				UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 				
 				PathInspector pathInspector = new PathInspector(graph, modelEntities);
@@ -245,7 +303,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 					}
 				}
 				
-				DefaultCover.applyDefault(ambiguousModelField, graph, modelEntities);
 			}
 			
 			return ambiguousModelField;
@@ -268,10 +325,25 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		logger.debug("Set<Relationship> retrieved");
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
+		
+		
+//		if(serialized==null){
+//			LogMF.debug(logger, "There is no graph of ambiguos path in the request. Check if a graph exist in the query", "");
+//			
+//			
+//			if(oldQueryGraph!=null){
+//				LogMF.debug(logger, "The query contains a graph.. Whe use it", "");
+//				return oldQueryGraph;
+//			}
+//		}
+//		
 		List<ModelFieldPaths> list = null;
 		if (StringUtilities.isNotEmpty(serialized)) {
 			try {
 				list = deserializeList(serialized, relationships, modelStructure, query);
+			} catch (FieldNotAttendInTheQuery e1){
+				logger.debug("The query has been updated and in the previous ambiguos paths selection there is some field don't exist in teh query");
+				return null;
 			} catch (SerializationException e) {
 				throw new SpagoBIEngineRuntimeException("Error while deserializing list of relationships", e);
 			}
@@ -284,12 +356,15 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Iterator<ModelFieldPaths> it = list.iterator();
 			while (it.hasNext()) {
 				ModelFieldPaths modelFieldPaths = it.next();
-				Set<PathChoice> set = modelFieldPaths.getChoices();
-				Iterator<PathChoice> pathChoiceIterator = set.iterator();
-				while (pathChoiceIterator.hasNext()) {
-					PathChoice choice = pathChoiceIterator.next();
-					toReturn.addAll(choice.getRelations());
+				if(modelFieldPaths!=null){
+					Set<PathChoice> set = modelFieldPaths.getChoices();
+					Iterator<PathChoice> pathChoiceIterator = set.iterator();
+					while (pathChoiceIterator.hasNext()) {
+						PathChoice choice = pathChoiceIterator.next();
+						toReturn.addAll(choice.getRelations());
+					}
 				}
+
 			}
 			QueryGraphBuilder builder = new QueryGraphBuilder();
 			queryGraph = builder.buildGraphFromEdges(toReturn);

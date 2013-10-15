@@ -172,6 +172,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 				forceFit : true
 				, groupTextTpl : '{text}'
 			})
+	    	, collapsible: true
 	    	, region : 'west'
 		}));
 	    this.mainGrid.on('rowclick', this.mainGridOnRowclickHandler, this);
@@ -184,6 +185,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	        , colModel: new Ext.grid.ColumnModel({
 	            columns: [{
 	            	header: LN('sbi.qbe.relationshipswizard.columns.path')
+	            	, autoWidth: true
 	                , dataIndex: 'path'
 	                , renderer: this.getCellTooltip
 	                , scope: this
@@ -307,7 +309,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	 		tooltipString += items[i] + '<br/>';
 	 	}
 	 	if (tooltipString !== undefined && tooltipString != null) {
-	 		cell.attr = ' ext:qtip="'  + Sbi.qbe.commons.Utils.encodeEscapes(tooltipString)+ '"';
+	 		cell.attr = ' ext:hide="user" ext:qtip="'  + Sbi.qbe.commons.Utils.encodeEscapes(tooltipString)+ '"';
 	 	}
 	 	return value;
 	}

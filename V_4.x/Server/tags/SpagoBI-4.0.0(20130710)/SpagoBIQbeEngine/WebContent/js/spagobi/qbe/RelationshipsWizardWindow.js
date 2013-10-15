@@ -44,6 +44,7 @@ Sbi.qbe.RelationshipsWizardWindow = function(config) {
 		, width : 820
 		, height : 520
 		, closeAction : 'hide'
+		, maximizable: true
 	};
 	  
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.relationshipswizardwindow) {

@@ -82,6 +82,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     , mainStore : null
     , detailStore : null
     , ambiguousFields : null // must be set in the object passed to the constructor
+    , pathSeparator: ' - '
    
     // private methods
     ,
@@ -131,11 +132,20 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	for (var i = 0; i < nodes.length; i++) {
     		var node = nodes[i];
     		if (i == 0) {
-    			toReturn += node.sourceName + ' -- <i>' + node.relationshipName + '</i> -- ' + node.targetName;
+    			toReturn = '<b>'+node.sourceName+'</b>' + this.pathSeparator+'<i>' + node.relationshipName + '</i>'+this.pathSeparator + '<b>'+node.targetName+'</b>';
     			lastTarget = node.targetName;
+    			if(nodes.length>1){
+    				var secondNode = nodes[1];
+    				// if in the first relation the source and the target are inverse ordered
+    				if(secondNode.sourceName==node.sourceName || secondNode.targetName==node.sourceName){
+    	    			toReturn = '<b>'+node.targetName+'</b>' + this.pathSeparator+'<i>' + node.relationshipName + '</i>'+this.pathSeparator + '<b>'+node.sourceName+'</b>';
+    	    			lastTarget = node.sourceName;
+    				}
+    			}
+
     		} else {
     			var nextTarget = node.targetName == lastTarget ? node.sourceName : node.targetName;
-    			toReturn += ' -- <i>' + node.relationshipName + '</i> -- ' + nextTarget;
+    			toReturn += this.pathSeparator+'<i>' + node.relationshipName + '</i>'+this.pathSeparator+ '<b>'+nextTarget+'</b>';
     			lastTarget = nextTarget;
     		}
     	}
@@ -176,6 +186,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	            	header: LN('sbi.qbe.relationshipswizard.columns.path')
 	                , dataIndex: 'path'
 	                , renderer: this.getCellTooltip
+	                , scope: this
 	            }]
 	        })
 	        , sm : new Ext.grid.RowSelectionModel({singleSelect : true})
@@ -287,7 +298,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	,
 	getCellTooltip: function (value, cell, record) {
 	 	var path = record.data.path;
-	 	var items = path.split(' -- ');
+	 	var items = path.split(this.pathSeparator);
 	 	var tooltipString = '';
 	 	for (var i = 0; i < items.length; i++) {
 	 		for (var j = 0; j < i; j++) {

@@ -110,11 +110,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);		
 			
-//			String requestMessage = this.getAttributeAsString(MESSAGE);
-//			if(requestMessage!=null && requestMessage.equals(MESSAGE_SAVE)){
-//				forceReturnGraph = true;
-//			}
-			
+		
 			query = this.getCurrentQuery();
 			
 			
@@ -167,7 +163,8 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 					ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
 					boolean removeSubPaths = QbeEngineConfig.getInstance().isRemoveSubpaths();
 					if(removeSubPaths){
-						GraphUtilities.cleanSubPaths(ambiguousFields, true);
+						String orderDirection = QbeEngineConfig.getInstance().getPathsOrder();
+						GraphUtilities.cleanSubPaths(ambiguousFields, orderDirection);
 					}
 					
 					DefaultCover.applyDefault(ambiguousFields, graph, modelEntities);
@@ -227,8 +224,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			if(queryGraph!=null){
 				//check if the graph selected by the user is still valid
 				isTheOldQueryGraphValid = isTheOldQueryGraphValid(queryGraph,query);
-				query.setQueryGraph(queryGraph);
-				return null;
+				
 			}
 			
 			if(queryGraph==null || !isTheOldQueryGraphValid){
@@ -242,10 +238,10 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
 				if(entities.size()>0){
 					queryGraph = DefaultCover.getCoverGraph(graph, entities);
-				}
-				
-				
-				
+				}				
+			}else{
+				query.setQueryGraph(queryGraph);
+				return null;
 			}
 			
 			query.setQueryGraph(queryGraph);
@@ -325,18 +321,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		logger.debug("Set<Relationship> retrieved");
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
-		
-		
-//		if(serialized==null){
-//			LogMF.debug(logger, "There is no graph of ambiguos path in the request. Check if a graph exist in the query", "");
-//			
-//			
-//			if(oldQueryGraph!=null){
-//				LogMF.debug(logger, "The query contains a graph.. Whe use it", "");
-//				return oldQueryGraph;
-//			}
-//		}
-//		
+
 		List<ModelFieldPaths> list = null;
 		if (StringUtilities.isNotEmpty(serialized)) {
 			try {

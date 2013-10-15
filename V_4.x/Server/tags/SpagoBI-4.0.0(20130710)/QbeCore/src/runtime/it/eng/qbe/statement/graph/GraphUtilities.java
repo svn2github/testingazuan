@@ -21,9 +21,9 @@ public class GraphUtilities {
 	 * @param ambiguousModelField
 	 * @param sort
 	 */
-	public static void cleanSubPaths( Set<ModelFieldPaths> ambiguousModelField, boolean sort){
+	public static void cleanSubPaths( Set<ModelFieldPaths> ambiguousModelField, String orderDirection){
 		StringComparator stringComparator = new StringComparator();
-		PathChoiceComparator pathChoiceComparator = new PathChoiceComparator();
+		
 		
 		if(ambiguousModelField!=null){
 			Iterator<ModelFieldPaths> iter = ambiguousModelField.iterator();
@@ -35,7 +35,8 @@ public class GraphUtilities {
 				if(pathChoices!=null){
 					
 					Set<PathChoice> pathChoicesFiltered;
-					if(sort){
+					if(orderDirection != null){
+						PathChoiceComparator pathChoiceComparator = new PathChoiceComparator(orderDirection);
 						pathChoicesFiltered= new TreeSet(pathChoiceComparator);	
 					}else{
 						pathChoicesFiltered= new HashSet<PathChoice>();
@@ -101,15 +102,34 @@ public class GraphUtilities {
 	
 	private static class PathChoiceComparator implements Comparator<PathChoice>{
 
+		private String order;//ASC o DESC
+
+		public PathChoiceComparator(String order) {
+			super();
+			this.order = order;
+		}
+
+
+
 		public int compare(PathChoice arg1, PathChoice arg0) {
+			String arg0rel, arg1rel;
+			
 			if(arg0==null){
 				return -1;
 			}
 			if(arg1==null){
 				return 1;
 			}
-			String arg0rel = arg0.getRelations().toString();
-			String arg1rel = arg1.getRelations().toString();
+
+			
+			if(order.equals("ASC")){
+				arg1rel = arg0.getRelations().toString();
+				arg0rel = arg1.getRelations().toString();
+			}else{
+				arg0rel = arg0.getRelations().toString();
+				arg1rel = arg1.getRelations().toString();
+			}
+			
 			if(arg0rel.length()!=arg1rel.length()){
 				return arg0rel.length()-arg1rel.length();
 			}

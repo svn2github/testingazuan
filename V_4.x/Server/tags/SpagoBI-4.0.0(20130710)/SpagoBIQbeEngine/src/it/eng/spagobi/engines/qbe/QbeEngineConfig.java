@@ -275,13 +275,25 @@ public class QbeEngineConfig {
 	
 	public boolean isRemoveSubpaths() {
 		boolean remove = true;
-		try {
-			remove = new Boolean((String) ConfigSingleton.getInstance().getAttribute("GRAPH-PATH.removeSubPaths")) ;
+		try {																		 
+			remove = new Boolean((String) ConfigSingleton.getInstance().getAttribute("QBE.GRAPH-PATH.removeSubPaths")) ;
 		} catch (Exception e) {
 			logger.debug("No GRAPH PATH configuration has been specified in the qbe.xml");
 		}
 		return remove;
 	}
+	
+	public String getPathsOrder() {
+		String pathsOrder = "ASC";
+		try {																		 
+			pathsOrder = ((String) ConfigSingleton.getInstance().getAttribute("QBE.GRAPH-PATH.pathsOrder")) ;
+		} catch (Exception e) {
+			logger.debug("No GRAPH PATH configuration has been specified in the qbe.xml");
+		}
+		return pathsOrder;
+	}
+	
+	
 	
 	public int getCrosstabCFDecimalPrecision() {
 		int precision = 2;

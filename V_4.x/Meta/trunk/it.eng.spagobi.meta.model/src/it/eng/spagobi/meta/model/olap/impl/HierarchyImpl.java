@@ -9,17 +9,29 @@
 **/
 package it.eng.spagobi.meta.model.olap.impl;
 
+import it.eng.spagobi.meta.model.Model;
 import it.eng.spagobi.meta.model.ModelPropertyType;
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.meta.model.business.SimpleBusinessColumn;
+import it.eng.spagobi.meta.model.business.impl.BusinessTableImpl;
 
 import it.eng.spagobi.meta.model.impl.ModelObjectImpl;
 
 import it.eng.spagobi.meta.model.olap.Dimension;
 import it.eng.spagobi.meta.model.olap.Hierarchy;
 import it.eng.spagobi.meta.model.olap.Level;
+import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
+import it.eng.spagobi.meta.model.physical.PhysicalTable;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -318,6 +330,67 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 	@Override
 	public EList<ModelPropertyType> getPropertyTypes() {
 		return getDimension().getModel().getParentModel().getPropertyTypes();
+	}
+	
+
+	
+	public IDataStore getMembers(String levelName){
+		BusinessColumnSet table;
+		PhysicalTable physicalTable;
+		String tableName,  query, columnName;
+		
+		table = getTable();
+		EList<Level> levels = getLevels();
+		for(int i=0; i<levels.size(); i++){
+			Level l = levels.get(i);
+			if(l.getName().equals(levelName)){
+				columnName = l.getColumn().getUniqueName();
+				
+				physicalTable = ((BusinessTableImpl)table).getPhysicalTable();
+				tableName = physicalTable.getName();
+			
+				query = "Select distinct "+columnName+" as val from "+tableName;
+				
+				JDBCDataSet dataSet = new JDBCDataSet();
+				dataSet.setDataSource(getDimension().getModel().getParentModel().getDataSource());
+				dataSet.setQuery(query);
+				dataSet.loadData();
+				return dataSet.getDataStore();
+			}
+		}
+		
+		throw new RuntimeException("The levelName is not a name valid for this hierarchy");
+
+	}
+	/**
+	 * columnName1 must is in a lower level of the hierarchy
+	 */
+	public Map<Object, Object> getMembersMapBetweenLevels(String columnName1, String columnName2){
+		BusinessColumnSet table;
+		PhysicalTable physicalTable;
+		String tableName,  query;
+		Map<Object, Object> toReturn= new HashMap<Object, Object> ();
+		
+		table = getTable();
+		physicalTable = ((BusinessTableImpl)table).getPhysicalTable();
+		tableName = physicalTable.getName();
+	
+		query = "Select distinct "+columnName1+" as col1 ,"+columnName2+" from  as col2 "+tableName;
+		
+		JDBCDataSet dataSet = new JDBCDataSet();
+		dataSet.setDataSource(getDimension().getModel().getParentModel().getDataSource());
+		dataSet.setQuery(query);
+		dataSet.loadData();
+		IDataStore dataStore = dataSet.getDataStore();
+		
+		for(int i=0; i<dataStore.getRecordsCount(); i++){
+			IRecord aRecord = dataStore.getRecordAt(i);
+			Object obj1 = aRecord.getFieldAt(0).getValue();
+			Object obj2 = aRecord.getFieldAt(1).getValue();
+			toReturn.put(obj1, obj2);
+		}
+		
+		return toReturn;
 	}
 
 } //HierarchyImpl

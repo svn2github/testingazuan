@@ -12,6 +12,7 @@ package it.eng.spagobi.meta.model;
 import it.eng.spagobi.meta.model.business.BusinessModel;
 import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -130,6 +131,6 @@ public interface Model extends ModelObject {
 	
 	ModelPropertyCategory getPropertyCategory(String name);
 	
-	
+	DataSource getDataSource();
 
 } // Model

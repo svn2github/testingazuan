@@ -9,9 +9,12 @@
 **/
 package it.eng.spagobi.meta.model.olap;
 
+import java.util.Map;
+
 import it.eng.spagobi.meta.model.ModelObject;
 
 import it.eng.spagobi.meta.model.business.BusinessColumnSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -106,4 +109,8 @@ public interface Hierarchy extends ModelObject {
 	 */
 	EList<Level> getLevels();
 
+	IDataStore getMembers(String columnName);
+	
+	Map<Object, Object> getMembersMapBetweenLevels(String columnName1, String columnName2);
+	
 } // Hierarchy

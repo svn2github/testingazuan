@@ -19,6 +19,7 @@ import it.eng.spagobi.meta.model.olap.OlapModel;
 import it.eng.spagobi.meta.model.olap.OlapModelPackage;
 import it.eng.spagobi.meta.model.physical.PhysicalModel;
 import it.eng.spagobi.meta.model.physical.PhysicalModelPackage;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.Collection;
 
@@ -331,6 +332,18 @@ public class ModelImpl extends ModelObjectImpl implements Model {
 			}
 		}
 		return null;
+	}
+	
+	public DataSource getDataSource(){
+		DataSource dataSource = new DataSource();
+		dataSource.setLabel(getPropertyType("connection.name").getDefaultValue());
+		dataSource.setUrlConnection(getPropertyType("connection.url").getDefaultValue());
+		dataSource.setDriver(getPropertyType("connection.driver").getDefaultValue());
+		dataSource.setUser(getPropertyType("connection.username").getDefaultValue());
+		dataSource.setPwd(getPropertyType("connection.password").getDefaultValue());
+		dataSource.setHibDialectClass("");
+		dataSource.setHibDialectName("");
+		return dataSource;
 	}
 
 } //ModelImpl

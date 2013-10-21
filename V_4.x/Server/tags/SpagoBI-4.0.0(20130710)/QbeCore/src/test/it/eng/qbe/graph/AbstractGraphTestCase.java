@@ -12,7 +12,7 @@ import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriver;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.io.File;
 import java.util.ArrayList;

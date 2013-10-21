@@ -16,10 +16,9 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.qbe.statement.StatementCompositionException;
-import it.eng.qbe.statement.graph.DefaultCover;
-import it.eng.qbe.statement.graph.GraphValidatorInspector;
-import it.eng.qbe.statement.graph.QueryGraph;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.GraphManager;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.qbe.statement.jpa.JPQLStatementConditionalOperators.IConditionalOperator;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -407,9 +406,9 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 					logger.debug("NO GRAPH FOUND IN THE QUERY. creating a default one");
 					String modelName = parentStatement.getDataSource().getConfiguration().getModelName();
 					UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph = parentStatement.getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
-					queryGraph = DefaultCover.getCoverGraph(rootEntitiesGraph, unjoinedEntities);
+					queryGraph = GraphManager.getDefaultCoverGraphInstance(null).getCoverGraph(rootEntitiesGraph, unjoinedEntities);
 				}
-				boolean areConnected = GraphValidatorInspector.isValid(queryGraph, unjoinedEntities);
+				boolean areConnected = GraphManager.getGraphValidatorInstance(null).isValid(queryGraph, unjoinedEntities);
 				if(areConnected) {
 					List<Relationship> relationships = queryGraph.getConnections();
 					for(Relationship relationship : relationships) {

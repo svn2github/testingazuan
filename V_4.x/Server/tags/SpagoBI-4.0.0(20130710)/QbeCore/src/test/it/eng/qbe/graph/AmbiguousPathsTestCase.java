@@ -9,7 +9,7 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathInspector;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.util.Iterator;
 import java.util.List;

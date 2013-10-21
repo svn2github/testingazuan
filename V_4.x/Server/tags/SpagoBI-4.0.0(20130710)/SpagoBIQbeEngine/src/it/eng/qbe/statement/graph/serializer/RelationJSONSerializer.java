@@ -9,7 +9,7 @@ package it.eng.qbe.statement.graph.serializer;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.properties.IModelProperties;
 import it.eng.qbe.model.structure.IModelObject;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.io.IOException;
 import java.util.Locale;

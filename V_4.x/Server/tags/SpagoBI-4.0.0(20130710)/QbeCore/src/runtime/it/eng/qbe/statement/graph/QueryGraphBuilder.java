@@ -7,7 +7,8 @@
 package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;

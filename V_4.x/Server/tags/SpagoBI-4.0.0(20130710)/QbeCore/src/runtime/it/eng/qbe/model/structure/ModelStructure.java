@@ -5,9 +5,9 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.model.structure;
 
-import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.graph.QueryGraphBuilder;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;

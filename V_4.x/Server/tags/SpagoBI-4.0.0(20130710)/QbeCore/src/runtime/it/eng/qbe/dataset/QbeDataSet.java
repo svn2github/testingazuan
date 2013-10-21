@@ -14,7 +14,7 @@ import it.eng.qbe.query.catalogue.QueryCatalogue;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.QbeDatasetFactory;
 import it.eng.qbe.statement.graph.GraphUtilities;
-import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.container.ObjectUtils;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;

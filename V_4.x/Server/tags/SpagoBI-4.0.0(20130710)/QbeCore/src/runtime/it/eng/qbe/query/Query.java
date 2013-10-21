@@ -11,7 +11,7 @@ import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.statement.AbstractStatement;
 import it.eng.qbe.statement.StatementCompositionException;
 import it.eng.qbe.statement.StatementTockenizer;
-import it.eng.qbe.statement.graph.QueryGraph;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.ArrayList;

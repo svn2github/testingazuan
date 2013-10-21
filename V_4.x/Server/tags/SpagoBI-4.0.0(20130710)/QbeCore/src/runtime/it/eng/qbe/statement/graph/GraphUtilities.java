@@ -10,6 +10,10 @@ import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.PathChoicePathTextLengthComparator;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.util.ArrayList;
 import java.util.Collections;

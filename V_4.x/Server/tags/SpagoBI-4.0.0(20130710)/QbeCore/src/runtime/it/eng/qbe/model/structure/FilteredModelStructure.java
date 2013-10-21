@@ -6,7 +6,7 @@
 package it.eng.qbe.model.structure;
 
 import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.model.structure.filter.QbeTreeFilter;
 

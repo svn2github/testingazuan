@@ -3,9 +3,15 @@
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package it.eng.qbe.statement.graph;
+package it.eng.qbe.statement.graph.cover;
 
 import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.ModelFieldPaths;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.PathChoicePathLengthComparator;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,27 +23,19 @@ import java.util.Set;
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
 
-public class DefaultCover {
+public abstract class AbstractDefaultCover implements IDefaultCoverGraph {
 
-	public static void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
-		IDefaultCoverGraph sp = new ShortestPathsCoverGraph();
-		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   sp.getConnectingRelatiosnhips(rootEntitiesGraph, entities);	
-		DefaultCover.applyDefault(defaultConnections, ambiguousModelField);
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   getConnectingRelatiosnhips(rootEntitiesGraph, entities);	
+		applyDefault(defaultConnections, ambiguousModelField);
 	}
-	
-	public static QueryGraph getCoverGraph(UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities){
-		IDefaultCoverGraph sp = new ShortestPathsCoverGraph();
-		return sp.getCoverGraph(rootEntitiesGraph, entities);
-	}
-	
-	
-	
-	public static void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField){			
+
+	public void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField){			
 		applyDefault(defaultConnections, ambiguousModelField, false);
 	}
 	
 	
-	public static void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField, boolean withSubpaths){			
+	public void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField, boolean withSubpaths){			
 		if(ambiguousModelField!=null && defaultConnections!=null){
 			Iterator<ModelFieldPaths> mfpIter = ambiguousModelField.iterator();
 			//for each ambiguous field
@@ -90,5 +88,10 @@ public class DefaultCover {
 			}
 		}
 	}
+	
+	public abstract Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+		
+	public abstract QueryGraph  getCoverGraph( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	
 	
 }

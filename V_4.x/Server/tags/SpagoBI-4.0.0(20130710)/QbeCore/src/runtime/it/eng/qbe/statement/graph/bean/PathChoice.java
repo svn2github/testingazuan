@@ -3,15 +3,24 @@
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package it.eng.qbe.statement.graph;
+package it.eng.qbe.statement.graph.bean;
 
 import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.statement.graph.GraphUtilities;
 
 import java.util.List;
 
 import org.jgrapht.GraphPath;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * 
+ * A choice is a Path with some utilities method
+ * 
+ * @author Alberto Ghedin (alberto.ghedin@eng.it)
+ *
+ */
 
 public class PathChoice {
 	GraphPath<IModelEntity, Relationship> path;

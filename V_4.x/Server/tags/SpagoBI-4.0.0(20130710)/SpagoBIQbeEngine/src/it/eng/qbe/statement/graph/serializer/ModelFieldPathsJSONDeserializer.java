@@ -10,8 +10,8 @@ import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
-import it.eng.qbe.statement.graph.PathChoice;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.io.IOException;
 import java.util.ArrayList;

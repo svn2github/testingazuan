@@ -14,13 +14,12 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.AbstractQbeDataSet;
 import it.eng.qbe.statement.IStatement;
-import it.eng.qbe.statement.graph.DefaultCover;
-import it.eng.qbe.statement.graph.GraphValidatorInspector;
+import it.eng.qbe.statement.graph.GraphManager;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
-import it.eng.qbe.statement.graph.PathChoice;
-import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.graph.QueryGraphBuilder;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -188,7 +187,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			queryGraph = builder.buildGraphFromEdges(toReturn);
 		} else {
 			Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
-			queryGraph = DefaultCover.getCoverGraph(graph, entities);
+			queryGraph = GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).getCoverGraph(graph, entities);
 		}
 		logger.debug("QueryGraph created");
 		return queryGraph;
@@ -282,7 +281,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		AbstractQbeDataSet qbeDataSet = (AbstractQbeDataSet) dataSet;
 		IStatement statement = qbeDataSet.getStatement();
 		QueryGraph graph = statement.getQuery().getQueryGraph();
-		boolean valid = GraphValidatorInspector.isValid(graph, statement.getQuery().getQueryEntities(getDataSource()));
+		boolean valid = GraphManager.getGraphValidatorInstance(QbeEngineConfig.getInstance().getGraphValidatorImpl()).isValid(graph, statement.getQuery().getQueryEntities(getDataSource()));
 		logger.debug("QueryGraph valid = " + valid);
 		if (!valid) {
 			throw new SpagoBIEngineServiceException(getActionName(), "error.mesage.description.relationship.not.enough");

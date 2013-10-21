@@ -14,16 +14,15 @@ import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
-import it.eng.qbe.statement.graph.DefaultCover;
+import it.eng.qbe.statement.graph.GraphManager;
 import it.eng.qbe.statement.graph.GraphUtilities;
-import it.eng.qbe.statement.graph.GraphValidatorInspector;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
-import it.eng.qbe.statement.graph.ModelObjectI18n;
-import it.eng.qbe.statement.graph.PathChoice;
 import it.eng.qbe.statement.graph.PathInspector;
-import it.eng.qbe.statement.graph.QueryGraph;
 import it.eng.qbe.statement.graph.QueryGraphBuilder;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.qbe.statement.graph.serializer.FieldNotAttendInTheQuery;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
@@ -170,7 +169,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 						GraphUtilities.cleanSubPaths(ambiguousFields, orderDirection);
 					}
 					
-					DefaultCover.applyDefault(ambiguousFields, graph, modelEntities);
+					GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(ambiguousFields, graph, modelEntities);
 				}
 			}else{
 				ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
@@ -178,12 +177,16 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				queryGraph = oldQueryGraph;
 			}
 			
-			boolean valid = GraphValidatorInspector.isValid(queryGraph, modelEntities);
-			logger.debug("QueryGraph valid = " + valid);
-			
-			if (!valid) {
-				throw new SpagoBIEngineServiceException(getActionName(), "error.mesage.description.relationship.not.enough");
+			if(queryGraph!=null){
+				boolean valid = GraphManager.getGraphValidatorInstance(QbeEngineConfig.getInstance().getGraphValidatorImpl()).isValid(queryGraph, modelEntities);
+				logger.debug("QueryGraph valid = " + valid);
+				if (!valid) {
+					throw new SpagoBIEngineServiceException(getActionName(), "error.mesage.description.relationship.not.enough");
+				}
 			}
+
+			
+
 			
 			ObjectMapper mapper = new ObjectMapper();
 			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
@@ -247,7 +250,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				
 				Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
 				if(entities.size()>0){
-					queryGraph = DefaultCover.getCoverGraph(graph, entities);
+					queryGraph = GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).getCoverGraph(graph, entities);
 				}				
 			}else{
 				query.setQueryGraph(queryGraph);
@@ -269,7 +272,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 
 		PathInspector pi = new PathInspector(queryGraph, queryGraph.vertexSet());
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> paths = pi.getAllEntitiesPathsMap();
-		DefaultCover.applyDefault(paths, ambiguousFields);
+		GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(paths, ambiguousFields);
 	}
 
 	public Set<ModelFieldPaths> getAmbiguousFields(Query query, Set<IModelEntity> modelEntities, Map<IModelField, Set<IQueryField>> modelFieldsMap) {				

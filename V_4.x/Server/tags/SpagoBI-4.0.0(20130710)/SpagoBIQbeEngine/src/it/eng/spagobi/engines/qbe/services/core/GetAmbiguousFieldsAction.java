@@ -11,15 +11,17 @@ import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
-import it.eng.qbe.statement.graph.DefaultCover;
+import it.eng.qbe.statement.graph.GraphManager;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
-import it.eng.qbe.statement.graph.ModelObjectI18n;
 import it.eng.qbe.statement.graph.PathInspector;
-import it.eng.qbe.statement.graph.Relationship;
+import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
+import it.eng.qbe.statement.graph.bean.Relationship;
+import it.eng.qbe.statement.graph.cover.AbstractDefaultCover;
 import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
 import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -107,7 +109,7 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 					}
 				}
 				
-				DefaultCover.applyDefault(ambiguousModelField, graph, modelEntities);
+				GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(ambiguousModelField, graph, modelEntities);
 			}
 			
 			

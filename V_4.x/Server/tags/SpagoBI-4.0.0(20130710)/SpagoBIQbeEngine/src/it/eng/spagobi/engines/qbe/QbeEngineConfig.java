@@ -294,7 +294,27 @@ public class QbeEngineConfig {
 		return pathsOrder;
 	}
 	
+	public String getGraphValidatorImpl() {
+		String validatorClassName = null;
+		try {																		 
+			validatorClassName = (String) ConfigSingleton.getInstance().getAttribute("QBE.GRAPH-PATH.graphValidatorImpl");
+		} catch (Exception e) {
+			logger.debug("No Graph Validator class name specified in the qbe.xml");
+		}
+		return validatorClassName;
+	}
 	
+	
+	public String getDefaultCoverImpl() {
+		String defaultCoverClass = null;
+		try {																		 
+			defaultCoverClass = ((String) ConfigSingleton.getInstance().getAttribute("QBE.GRAPH-PATH.defaultCoverImpl")) ;
+		} catch (Exception e) {
+			logger.debug("No Default cover graph algorithm class specified in the qbe.xml");
+		}
+		return defaultCoverClass;
+	}
+
 	
 	public int getCrosstabCFDecimalPrecision() {
 		int precision = 2;

@@ -8,6 +8,9 @@ package it.eng.qbe.statement.graph;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.IQueryField;
+import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
+import it.eng.qbe.statement.graph.bean.PathChoice;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.util.HashSet;
 import java.util.Iterator;

@@ -106,7 +106,7 @@ public class PathInspector {
 		Iterator<GraphPath<IModelEntity, Relationship>> iter = map.iterator();
 		while(iter.hasNext()){
 			GraphPath<IModelEntity, Relationship> graphPath = iter.next();
-			if(arePathsEquals(graphPath, path)){
+			if(GraphUtilities.arePathsEquals(graphPath, path)){
 				logger.debug("Adding the path in the map"+path.toString());
 				return true;
 			}
@@ -115,27 +115,27 @@ public class PathInspector {
 		return false;
 	}
 
-	/**
-	 * Checks if the 2 paths are equals
-	 * @param path1
-	 * @param path2
-	 * @return
-	 */
-	public static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
-		Set<String> relationsPath1 = getRelationsSet(path1);
-		Set<String> relationsPath2 = getRelationsSet(path2);
-		return relationsPath1.equals(relationsPath2);
-	}
-
-	private static Set<String> getRelationsSet(GraphPath<IModelEntity, Relationship> path1){
-		Set<String> relations = new HashSet<String>();
-		List<Relationship> edges =  path1.getEdgeList();
-		for(int i=0; i<edges.size();i++){
-			relations.add(((Relationship)edges.get(i)).getId());
-		}
-		return relations;
-
-	}
+//	/**
+//	 * Checks if the 2 paths are equals
+//	 * @param path1
+//	 * @param path2
+//	 * @return
+//	 */
+//	public static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
+//		Set<String> relationsPath1 = getRelationsSet(path1);
+//		Set<String> relationsPath2 = getRelationsSet(path2);
+//		return relationsPath1.equals(relationsPath2);
+//	}
+//
+//	private static Set<String> getRelationsSet(GraphPath<IModelEntity, Relationship> path1){
+//		Set<String> relations = new HashSet<String>();
+//		List<Relationship> edges =  path1.getEdgeList();
+//		for(int i=0; i<edges.size();i++){
+//			relations.add(((Relationship)edges.get(i)).getId());
+//		}
+//		return relations;
+//
+//	}
 
 
 	/**

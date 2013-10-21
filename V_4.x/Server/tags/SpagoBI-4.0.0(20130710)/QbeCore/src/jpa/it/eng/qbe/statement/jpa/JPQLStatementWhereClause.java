@@ -409,7 +409,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 					UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph = parentStatement.getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 					queryGraph = DefaultCover.getCoverGraph(rootEntitiesGraph, unjoinedEntities);
 				}
-				boolean areConnected = GraphValidatorInspector.isValid(queryGraph);
+				boolean areConnected = GraphValidatorInspector.isValid(queryGraph, unjoinedEntities);
 				if(areConnected) {
 					List<Relationship> relationships = queryGraph.getConnections();
 					for(Relationship relationship : relationships) {

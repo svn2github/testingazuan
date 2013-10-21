@@ -6,6 +6,7 @@
 package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.Query;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jgrapht.GraphPath;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +49,7 @@ public class GraphUtilities {
 					
 					Set<PathChoice> pathChoicesFiltered;
 					if(orderDirection != null){
-						PathChoiceComparator pathChoiceComparator = new PathChoiceComparator(orderDirection);
+						PathChoicePathTextLengthComparator pathChoiceComparator = new PathChoicePathTextLengthComparator(orderDirection);
 						pathChoicesFiltered= new TreeSet(pathChoiceComparator);	
 					}else{
 						pathChoicesFiltered= new HashSet<PathChoice>();
@@ -67,7 +69,7 @@ public class GraphUtilities {
 					while (pathChoicesIter.hasNext()) {
 						PathChoice pathChoice2 = (PathChoice) pathChoicesIter.next();
 						String relation = pathChoice2.getRelations().toString();
-						if(!isSubPath(listRelations, relation)){
+						if(!isSubPath(relation,listRelations)){
 							pathChoicesFiltered.add(pathChoice2);
 						}
 					}
@@ -79,18 +81,7 @@ public class GraphUtilities {
 		}
 	}
 	
-	private static boolean isSubPath(List<String> listRelations, String relation){
-		relation = relation.substring(1, relation.length()-1);
-		for(int i=listRelations.size()-1; i>0; i--){
-			String aRelation = (listRelations.get(i));
-			aRelation = aRelation.substring(1, aRelation.length()-1);
-			
-			if(aRelation.length()>relation.length() && aRelation.indexOf(relation)>=0){
-				return true;
-			}
-		}
-		return false;
-	}
+
 	
 	
 	private static class StringComparator implements Comparator<String>{
@@ -111,42 +102,7 @@ public class GraphUtilities {
 	}
 	
 	
-	private static class PathChoiceComparator implements Comparator<PathChoice>{
 
-		private String order;//ASC o DESC
-
-		public PathChoiceComparator(String order) {
-			super();
-			this.order = order;
-		}
-
-
-
-		public int compare(PathChoice arg1, PathChoice arg0) {
-			String arg0rel, arg1rel;
-			
-			if(arg0==null){
-				return -1;
-			}
-			if(arg1==null){
-				return 1;
-			}
-
-			
-			if(order.equals("ASC")){
-				arg1rel = arg0.getRelations().toString();
-				arg0rel = arg1.getRelations().toString();
-			}else{
-				arg0rel = arg0.getRelations().toString();
-				arg1rel = arg1.getRelations().toString();
-			}
-			
-			if(arg0rel.length()!=arg1rel.length()){
-				return arg0rel.length()-arg1rel.length();
-			}
-			return arg0rel.compareTo(arg1rel);
-		}
-	}
 	
 	
 	public static QueryGraph deserializeGraph(JSONArray relationshipsJSON, Query query, IDataSource dataSource) throws JSONException {
@@ -189,6 +145,76 @@ public class GraphUtilities {
 			}
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * Checks if the 2 paths are equals
+	 * @param path1
+	 * @param path2
+	 * @return
+	 */
+	public static boolean arePathsEquals(GraphPath<IModelEntity, Relationship> path1, GraphPath<IModelEntity, Relationship> path2){
+		Set<String> relationsPath1 = getRelationsSet(path1);
+		Set<String> relationsPath2 = getRelationsSet(path2);
+		return relationsPath1.equals(relationsPath2);
+	}
+
+	private static Set<String> getRelationsSet(GraphPath<IModelEntity, Relationship> path1){
+		Set<String> relations = new HashSet<String>();
+		List<Relationship> edges =  path1.getEdgeList();
+		for(int i=0; i<edges.size();i++){
+			relations.add(((Relationship)edges.get(i)).getId());
+		}
+		return relations;
+
+	}
+	
+	/**
+	 * Checks if the pathChoice1 is a subpath of pathChoice2
+	 * @param pathChoice1
+	 * @param pathChoice2
+	 * @return
+	 */
+	public static boolean isSubPath(PathChoice pathChoice1, PathChoice pathChoice2){
+		
+		String path1 = pathChoice1.getRelations().toString();
+		String path2 = pathChoice2.getRelations().toString();
+		
+		return isSubPath(path1, path2);
+	}
+	
+	
+	/**
+	 * Checks if the string relations is a subpath of at least one of the paths in listRelations
+	 * @param relations
+	 * @param listRelations
+	 * @return
+	 */
+	public static boolean isSubPath(String relations, List<String> listRelations){
+		for(int i=listRelations.size()-1; i>0; i--){
+			String aRelation = (listRelations.get(i));
+			if( isSubPath(relations, aRelation) ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the list of relations in the path1 is a subpath of path2
+	 * @param path1
+	 * @param path2
+	 * @return
+	 */
+	public static boolean isSubPath(String path1, String path2){
+		path1 = path1.substring(1, path1.length()-1);
+		path2 = path2.substring(1, path2.length()-1);
+			
+		if(path2.length()>path1.length() && path2.indexOf(path1)>=0){
+			return true;
+		}
+		return false;
 	}
 	
 }

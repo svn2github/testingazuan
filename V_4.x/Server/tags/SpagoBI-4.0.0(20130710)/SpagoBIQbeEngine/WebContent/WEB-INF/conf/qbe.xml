@@ -82,6 +82,6 @@
 		</PARAMETERS>
 	</TEMPLATE-BUILDER>
 	
-	<GRAPH-PATH removeSubPaths="true" pathsOrder="ASC"/>
+	<GRAPH-PATH removeSubPaths="false" pathsOrder="ASC"/>
 	
 </QBE>

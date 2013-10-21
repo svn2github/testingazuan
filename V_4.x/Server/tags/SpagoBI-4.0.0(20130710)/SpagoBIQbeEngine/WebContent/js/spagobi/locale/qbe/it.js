@@ -49,6 +49,12 @@ Sbi.locale.ln['sbi.qbe.qbepanel.worksheetdesignerpanel.tools.preview'] = 'Visual
 Sbi.locale.ln['sbi.qbe.qbepanel.emptyquerytitle'] = 'La query è vuota';
 Sbi.locale.ln['sbi.qbe.qbepanel.emptyquerymessage'] = 'La query è vuota e non hai i privilegi per poter creare nuove query. Seleziona una query salvata dalla lista delle viste customizzate';
 
+//===================================================================
+//Error messages
+//===================================================================
+Sbi.locale.ln['error.mesage.description.relationship.not.enough'] = 'le relazioni specificate non sono sufficienti a collegare tutte le entit\u00e0';
+
+
 
 //===================================================================
 //Sbi.qbe.QbeCardsPanel
@@ -480,3 +486,4 @@ Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.fieldName'] = 'Campo del mode
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entit\u00e0';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Percorso di join';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.applytoentity'] = 'Applica selezione a tutti i campi di questa entit\u00e0';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.filter.otherentities'] = 'Nascondi relazioni con entit\u00e0 non presenti nella query';

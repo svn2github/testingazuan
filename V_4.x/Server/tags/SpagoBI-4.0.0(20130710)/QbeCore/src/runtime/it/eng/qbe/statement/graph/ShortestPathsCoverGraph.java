@@ -44,12 +44,15 @@ public class ShortestPathsCoverGraph implements IDefaultCoverGraph{
 					minimumPath = dsp.getPath();
 				}
 			}
-			List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
-			connectingRelatiosnhips.addAll(relationships);
-			for(Relationship relatioship: relationships) {
-				connectedEntities.add( rootEntitiesGraph.getEdgeSource(relatioship) );
-				connectedEntities.add( rootEntitiesGraph.getEdgeTarget(relatioship) );
+			if(minimumPath!=null){
+				List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
+				connectingRelatiosnhips.addAll(relationships);
+				for(Relationship relatioship: relationships) {
+					connectedEntities.add( rootEntitiesGraph.getEdgeSource(relatioship) );
+					connectedEntities.add( rootEntitiesGraph.getEdgeTarget(relatioship) );
+				}
 			}
+
 		}
 
 		for(Relationship r : connectingRelatiosnhips) {

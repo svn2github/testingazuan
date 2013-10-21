@@ -8,7 +8,6 @@ package it.eng.spagobi.engines.qbe.services.core.catalogue;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelField;
 import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
@@ -17,6 +16,7 @@ import it.eng.qbe.query.serializer.SerializerFactory;
 import it.eng.qbe.serializer.SerializationException;
 import it.eng.qbe.statement.graph.DefaultCover;
 import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.GraphValidatorInspector;
 import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.ModelObjectI18n;
 import it.eng.qbe.statement.graph.PathChoice;
@@ -70,6 +70,8 @@ import com.jamonapi.MonitorFactory;
  */
 public class SetCatalogueAction extends AbstractQbeEngineAction {
 	
+
+	private static final long serialVersionUID = 4576121408010108119L;
 	public static final String SERVICE_NAME = "SET_CATALOGUE_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
 
@@ -96,6 +98,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		JSONObject queryJSON;
 		Query query;
 		QueryGraph oldQueryGraph = null;
+		QueryGraph queryGraph = null; //the query graph (the graph that involves all the entities of the query)
 		
 		boolean forceReturnGraph = false;
 		
@@ -156,7 +159,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			
 			
 			if (oldQueryGraph == null && query!=null) {
-				QueryGraph queryGraph = updateQueryGraphInQuery(query, forceReturnGraph);
+				queryGraph = updateQueryGraphInQuery(query, forceReturnGraph);
 				if(queryGraph!=null){
 					String modelName = getDataSource().getConfiguration().getModelName();
 					UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
@@ -172,8 +175,15 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			}else{
 				ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
 				applySavedGraphPaths(oldQueryGraph,  ambiguousFields);
+				queryGraph = oldQueryGraph;
 			}
-
+			
+			boolean valid = GraphValidatorInspector.isValid(queryGraph, modelEntities);
+			logger.debug("QueryGraph valid = " + valid);
+			
+			if (!valid) {
+				throw new SpagoBIEngineServiceException(getActionName(), "error.mesage.description.relationship.not.enough");
+			}
 			
 			ObjectMapper mapper = new ObjectMapper();
 			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));

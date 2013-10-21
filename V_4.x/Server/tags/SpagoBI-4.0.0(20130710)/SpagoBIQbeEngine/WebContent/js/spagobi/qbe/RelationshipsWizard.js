@@ -83,6 +83,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     , detailStore : null
     , ambiguousFields : null // must be set in the object passed to the constructor
     , pathSeparator: ' - '
+    , detailFilterOtherEntities: false//filter activation flag linked to the button that filter the paths on the detail panel if exists in the path an entity not present in the fields of the query
    
     // private methods
     ,
@@ -208,7 +209,12 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 				}
 	        }
 	    	, region : 'center'
-	    	, tbar: ['->', {
+	    	, tbar: [
+			{
+				text: LN('sbi.qbe.relationshipswizard.buttons.filter.otherentities'),
+				handler: this.filterPathWithOtherEntities,
+				scope: this
+				}	,'->', {
 				text: LN('sbi.qbe.relationshipswizard.buttons.applytoentity'),
 				handler: this.applyToEntityHandler,
 				scope: this
@@ -217,10 +223,59 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
  	   this.detailGrid.on('rowdblclick', this.detailGridOnRowdblclickHandler, this);
     }
     
+    /**
+     * Filters the store of the detail panel:
+     * remove from the view all the paths with entities not contained in the entities involved by the query 
+     */
+    , filterPathWithOtherEntities: function(button,event,keepFilterActive){
+    	var entities = this.getMainStroreEntities();
+    	if(!keepFilterActive){
+    		//toggle the filter activation
+    		this.detailFilterOtherEntities = !this.detailFilterOtherEntities;
+    	}
+    	this.detailStore.filter([
+    	                         {
+    	                        	 fn   : function(aRecord) {
+    	                        		 if(!this.detailFilterOtherEntities){
+    	                        			 return true;
+    	                        		 }
+    	                        		 var nodes = aRecord.get('nodes');
+    	                        		 for (var i = 0; i < nodes.length; i++) {
+    	                        			 var node = nodes[i];
+    	                        			 var source = node.sourceName;
+    	                        			 var target = node.targetName;
+    	                        			 if(entities.indexOf(source)<0 || entities.indexOf(target)<0){
+    	                        				 return false;
+    	                        			 }
+    	                        		 }
+    	                        		 return true;
+
+    	                        	 },
+    	                        	 scope: this
+    	                         }
+    	                         ]);
+
+
+    }
+    ,
+    getMainStroreEntities: function(){
+    	var entities = new Array();
+    	if(this.mainStore){
+        	this.mainStore.each(function (aRecord) {
+    			if (aRecord.get('entity')) {
+    				entities.push(aRecord.get('entity'));
+    			}
+    		},this);
+    	}
+    	return entities;
+    }
+
     ,
     mainGridOnRowclickHandler : function ( theGrid, rowIndex, e ) {
     	var choises = this.getOptionsByIndex(rowIndex);
     	this.detailStore.loadData(choises);
+    	//apply active filters on the choices in the detail panel 
+    	this.filterPathWithOtherEntities(null,null,true);
     }
     
     ,
@@ -261,6 +316,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	}
     }
     
+
     ,
     getDetailStoreContent: function () {
     	var toReturn = [];

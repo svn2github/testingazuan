@@ -66,7 +66,7 @@ public class PathChoice {
 		if(path == null){
 			return false;
 		}
-		return PathInspector.arePathsEquals(path, path2);
+		return GraphUtilities.arePathsEquals(path, path2);
 	}	
 	
 }

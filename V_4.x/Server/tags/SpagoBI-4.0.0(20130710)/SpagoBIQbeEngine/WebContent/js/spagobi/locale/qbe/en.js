@@ -58,6 +58,14 @@ Sbi.locale.ln['sbi.qbe.qbecardspanel.designer'] = 'Designer';
 
 
 //===================================================================
+//Error messages
+//===================================================================
+Sbi.locale.ln['error.mesage.description.relationship.not.enough'] = 'The specified relationships are not enough to link all entities';
+
+
+
+
+//===================================================================
 //QUERY EDITOR PANEL
 //===================================================================
 Sbi.locale.ln['sbi.qbe.queryeditor.title'] = 'Query';
@@ -483,3 +491,4 @@ Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.fieldName'] = 'Model Field';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Join path';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.applytoentity'] = 'Apply selection to all fields of this entity';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.filter.otherentities'] = 'Removes paths with not involved entities';

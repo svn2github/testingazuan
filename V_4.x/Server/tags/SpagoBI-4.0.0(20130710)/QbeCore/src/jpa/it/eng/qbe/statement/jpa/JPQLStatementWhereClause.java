@@ -402,7 +402,7 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 			Set<IModelEntity> unjoinedEntities = getUnjoinedRootEntities(rootEntityAlias);
 			if(unjoinedEntities.size() > 1) {
 				QueryGraph queryGraph = query.getQueryGraph();
-				if(queryGraph==null){
+				if(queryGraph==null){ 
 					logger.debug("NO GRAPH FOUND IN THE QUERY. creating a default one");
 					String modelName = parentStatement.getDataSource().getConfiguration().getModelName();
 					UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph = parentStatement.getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();

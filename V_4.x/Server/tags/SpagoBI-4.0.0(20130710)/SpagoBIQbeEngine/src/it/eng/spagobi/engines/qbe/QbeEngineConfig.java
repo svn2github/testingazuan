@@ -316,6 +316,18 @@ public class QbeEngineConfig {
 	}
 
 	
+	public String getPathsFiltersImpl() {
+		String pathFilters = null;
+		try {																		 
+			pathFilters = ((String) ConfigSingleton.getInstance().getAttribute("QBE.GRAPH-PATH.pathsFiltersImpl")) ;
+		} catch (Exception e) {
+			logger.debug("No PATH filters defined in the qbe.xml");
+		}
+		return pathFilters;
+	}
+	
+	
+	
 	public int getCrosstabCFDecimalPrecision() {
 		int precision = 2;
 		try {

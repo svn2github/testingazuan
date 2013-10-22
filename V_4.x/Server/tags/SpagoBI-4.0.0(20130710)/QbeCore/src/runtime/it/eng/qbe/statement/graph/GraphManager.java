@@ -7,8 +7,15 @@ package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.statement.graph.cover.IDefaultCoverGraph;
 import it.eng.qbe.statement.graph.cover.ShortestPathsCoverGraph;
+import it.eng.qbe.statement.graph.filter.IPathsFilter;
 import it.eng.qbe.statement.graph.validator.ConnectionValidator;
 import it.eng.qbe.statement.graph.validator.IGraphValidator;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +30,7 @@ public class GraphManager {
 	
 	private static IDefaultCoverGraph defaultCoverGraph;
 	private static IGraphValidator validator;
+	private static List<IPathsFilter> pathFilters;
 	private static transient Logger logger = Logger.getLogger(GraphManager.class);
 	
 	public synchronized static IDefaultCoverGraph getDefaultCoverGraphInstance(String className) {
@@ -48,4 +56,36 @@ public class GraphManager {
 		}
 		return validator;
 	}
+	
+	public synchronized static List<IPathsFilter> getPathFilters(String classNames) {
+		
+		try{
+			if (pathFilters == null){
+				pathFilters = new ArrayList<IPathsFilter>();
+				String[] classes = classNames.split(",");
+				if(classes!=null){
+					for(int i=0; i<classes.length; i++){
+						pathFilters.add((IPathsFilter)Class.forName(classes[i]).newInstance());
+					}
+				}
+			}
+		}catch(Exception e) {
+			logger.debug("Impossible to load filters. The IPathsFilter implementations should be defined in the qbe.xml. The property is QBE.GRAPH-PATH.pathsFiltersImpl.",e);
+			throw new SpagoBIEngineRuntimeException("Impossible to load filters. The IPathsFilter implementations should be defined in the qbe.xml. The property is QBE.GRAPH-PATH.pathsFiltersImpl.", e);
+		}
+		return pathFilters;
+	}
+	
+	public static void filterPaths(Set<ModelFieldPaths> paths, Map<String, Object> properties, String filterNames){
+		if(filterNames!=null && filterNames.length()>0){
+			List<IPathsFilter> filters = getPathFilters(filterNames); 
+			if(filters!=null){
+				for(int i=0; i<filters.size(); i++){
+					filters.get(i).filterPaths(paths, properties);
+				}
+			}
+		}
+	}
+	
+	
 }

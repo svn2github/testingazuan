@@ -23,6 +23,7 @@ import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
 import it.eng.qbe.statement.graph.bean.PathChoice;
 import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.qbe.statement.graph.bean.Relationship;
+import it.eng.qbe.statement.graph.filter.CubeFilter;
 import it.eng.qbe.statement.graph.serializer.FieldNotAttendInTheQuery;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
 import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
@@ -40,6 +41,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -156,6 +158,9 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Set<IModelField> modelFields = modelFieldsMap.keySet();
 			Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
 			
+			Map<String, Object> pathFiltersMap = new HashMap<String, Object>();
+			pathFiltersMap.put(CubeFilter.PROPERTY_MODEL_STRUCTURE,  getDataSource().getModelStructure());
+			pathFiltersMap.put(CubeFilter.PROPERTY_ENTITIES, modelEntities);
 			
 			if (oldQueryGraph == null && query!=null) {
 				queryGraph = updateQueryGraphInQuery(query, forceReturnGraph);
@@ -163,6 +168,9 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 					String modelName = getDataSource().getConfiguration().getModelName();
 					UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 					ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
+					//filter paths
+					GraphManager.filterPaths(ambiguousFields, pathFiltersMap, (QbeEngineConfig.getInstance().getPathsFiltersImpl()));
+					
 					boolean removeSubPaths = QbeEngineConfig.getInstance().isRemoveSubpaths();
 					if(removeSubPaths){
 						String orderDirection = QbeEngineConfig.getInstance().getPathsOrder();
@@ -173,6 +181,8 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				}
 			}else{
 				ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
+				//filter paths
+				GraphManager.filterPaths(ambiguousFields, pathFiltersMap, (QbeEngineConfig.getInstance().getPathsFiltersImpl()));
 				applySavedGraphPaths(oldQueryGraph,  ambiguousFields);
 				queryGraph = oldQueryGraph;
 			}

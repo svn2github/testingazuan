@@ -236,13 +236,14 @@ public class SelectFieldTable extends AbstractQueryEditTable {
 //				}
 				boolean isGroupBy = false;
 				
-				if (element instanceof SimpleSelectField){
+				if (element instanceof SimpleSelectField){ 
 					SimpleSelectField field = (SimpleSelectField) element;
 					isGroupBy = field.isGroupByField();
 				} else if (element instanceof InLineCalculatedSelectField){
 					InLineCalculatedSelectField field = (InLineCalculatedSelectField) element;
 					isGroupBy = field.isGroupByField();
 				}
+				queryBuilder.setDirtyEditor();
 				
 				if (isGroupBy){
 					return CHECKED;

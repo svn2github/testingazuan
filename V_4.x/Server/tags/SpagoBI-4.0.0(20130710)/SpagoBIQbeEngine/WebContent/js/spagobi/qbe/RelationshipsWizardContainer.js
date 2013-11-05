@@ -115,9 +115,24 @@ Ext.extend(Sbi.qbe.RelationshipsWizardContainer, Ext.Panel, {
     }
     
     , updateRoleWizard: function(roles){
-    	
     	this.rolesWizard.destroy();
     	this.rolesWizard = new Sbi.qbe.RelationshipsWizardRole({entities: roles});
+    	var roleSignature = "";
+    	if(roles!=null){
+    		for(var i=0; i<roles.length; i++){
+    			var fields = roles[i].fields;
+    			for(var j=0; j<fields.length; j++){
+    				roleSignature = roleSignature+fields[j].queryFieldAlias;
+    			}
+    			
+    		}
+    	}
+    	
+    	
+    	if(this.ambiguousRoles && this.ambiguousRoles.signature && roleSignature==this.ambiguousRoles.signature){
+        	this.rolesWizard.setFormState(this.ambiguousRoles.entities);
+    	}
+
     	this.add(this.rolesWizard);
     }
     

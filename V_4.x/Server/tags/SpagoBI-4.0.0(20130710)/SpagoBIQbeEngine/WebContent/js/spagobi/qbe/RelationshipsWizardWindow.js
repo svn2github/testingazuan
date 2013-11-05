@@ -100,11 +100,13 @@ Ext.extend(Sbi.qbe.RelationshipsWizardWindow, Ext.Window, {
 
 	relationshipsWizard : null
 	, ambiguousFields : null // must be set in the object passed to the constructor
+	, ambiguousRoles: null
 
 	,
 	init : function () {
 		this.relationshipsWizard = new Sbi.qbe.RelationshipsWizardContainer({
 			ambiguousFields : this.ambiguousFields
+			, ambiguousRoles: this.ambiguousRoles
 			, title : ''
 		});
 	}

@@ -110,10 +110,25 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRole, Ext.TabPanel, {
 		}
 	}
 
-	, getFormState: function(){
-		var state = new Array();
+	, setFormState: function(state){
 		for(var i=0; i<this.relationshipsWizardsRoleForEntity.length; i++){
-			state.push(this.relationshipsWizardsRoleForEntity[i].getFormState());
+			state.push(this.relationshipsWizardsRoleForEntity[i].setFormState(state[i]));
+		}
+	}
+
+	, getFormState: function(){
+		var stateArray = new Array();
+		var signature = "";
+		for(var i=0; i<this.relationshipsWizardsRoleForEntity.length; i++){
+			stateArray.push(this.relationshipsWizardsRoleForEntity[i].getFormState());
+    		var fields =this.entities[i].fields;
+    		for(var j=0; j<fields.length; j++){
+    			signature = signature+fields[j].queryFieldAlias;
+    		}
+		}
+		var state ={
+				entities : stateArray,
+				signature: signature
 		}
 		return state;
 	}

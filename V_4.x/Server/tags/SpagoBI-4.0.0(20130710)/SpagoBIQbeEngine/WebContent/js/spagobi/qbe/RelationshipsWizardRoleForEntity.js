@@ -83,6 +83,9 @@ Sbi.qbe.RelationshipsWizardRoleForEntity = function(config) {
 
 	this.on("afterlayout",function(){
 		this.entitiesGrid.getSelectionModel().selectFirstRow();
+		if(this.previous){
+			this.setFormState(this.previous);
+		}
 	},this)
 
 };
@@ -247,13 +250,25 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRoleForEntity, Ext.Panel, {
 		return entitiyFieldsGrid;
 
 	},
+		
+	setFormState: function(state){
+		for(var i=0; i<state.length; i++){
+			var aState = state[i];
+			var aEntitiyFieldsGrids = this.entitiyFieldsGrids[i];
+			var store = aEntitiyFieldsGrids.getStore();
+			store.loadData(aState);	
+		}
+		this.fieldGrid.getStore().removeAll();
+	},
 	
 	getFormState: function(){
 		var state = new Array();
 		for(var i=0; i<this.entitiyFieldsGrids.length; i++){
 			var aEntitiyFieldsGrids = this.entitiyFieldsGrids[i];
 			var aState = {
-				entity : aEntitiyFieldsGrids.myEntityAlias,
+				name : aEntitiyFieldsGrids.myEntityAlias.name,
+				role : aEntitiyFieldsGrids.myEntityAlias.role,
+				alias : aEntitiyFieldsGrids.myEntityAlias.alias,
 				fields : this.getFields(aEntitiyFieldsGrids.store.data.items)
 			}
 			state.push(aState);
@@ -267,11 +282,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRoleForEntity, Ext.Panel, {
 		if(items){
 			for(var i=0; i<items.length; i++){
 				var field = items[i];
-				var serializedField={
-						data: field.data,
-						id: field.json.id,
-						json: field.json
-				}
+				var serializedField= field.json;
 				fieldsSerialized.push(serializedField);
 			}
 		}

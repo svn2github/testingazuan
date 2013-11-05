@@ -342,8 +342,8 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		
 		cleanFieldsRolesMapInEntity(modelEntities);
 		try {
-			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("")){
-				JSONArray serializedRolesJson = JSONUtils.toJSONArray(serializedRoles);
+			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("[]") && !serializedRoles.trim().equals("")){
+				JSONObject serializedRolesJson = JSONUtils.toJSONObject(serializedRoles);
 				updateFieldsRolesMapInEntity(serializedRolesJson, modelEntities);
 			}
 			
@@ -403,15 +403,16 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	 * @param modelEntities
 	 * @throws JSONException
 	 */
-	private void updateFieldsRolesMapInEntity(JSONArray serializedEntityRoles, Set<IModelEntity> modelEntities) throws JSONException{
-		if(serializedEntityRoles!=null && modelEntities!=null){
-			for(int k=0; k<serializedEntityRoles.length(); k++){
-				JSONArray serializedFieldsRoles = serializedEntityRoles.getJSONArray(k);
+	private void updateFieldsRolesMapInEntity(JSONObject serializedEntityRoles, Set<IModelEntity> modelEntities) throws JSONException{
+		if(serializedEntityRoles!=null && modelEntities!=null && serializedEntityRoles.getJSONArray("entities")!=null){
+			JSONArray serializedEntityRolesArray = serializedEntityRoles.getJSONArray("entities");
+			for(int k=0; k<serializedEntityRolesArray.length(); k++){
+				JSONArray serializedFieldsRoles = serializedEntityRolesArray.getJSONArray(k);
 				for(int i=0; i<serializedFieldsRoles.length(); i++){
 					JSONObject serializedRole = serializedFieldsRoles.getJSONObject(i);
 					
-					JSONObject entity = serializedRole.getJSONObject("entity");
-					String role = entity.getString("role");
+					//JSONObject entity = serializedRole.getJSONObject("entity");
+					String role = serializedRole.getString("role");
 					JSONArray fields =  serializedRole.getJSONArray("fields");
 					
 					if(fields.length()>0){
@@ -427,7 +428,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 						
 						for(int j=0; j<fields.length(); j++){
 							JSONObject field = fields.getJSONObject(j);
-							String fieldId = field.getJSONObject("data").getString("queryFieldAlias");
+							String fieldId = field.getString("queryFieldAlias");
 							fieldsForRole.add(fieldId);
 						}
 						

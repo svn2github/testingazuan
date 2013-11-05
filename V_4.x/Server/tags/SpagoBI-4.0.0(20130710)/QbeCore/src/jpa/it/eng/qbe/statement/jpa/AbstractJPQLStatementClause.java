@@ -20,6 +20,8 @@ import it.eng.qbe.query.serializer.json.QuerySerializationConstants;
 import it.eng.qbe.serializer.SerializationManager;
 import it.eng.qbe.statement.IStatementClause;
 import it.eng.qbe.statement.StatementTockenizer;
+import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -82,7 +84,7 @@ public abstract class AbstractJPQLStatementClause implements IStatementClause {
 		String newExpression;
 		IModelEntity rootEntity;
 		IModelField modelField;
-		String queryName;
+		String fieldName;
 		String rootEntityAlias;
 		Map entityAliases;
 		
@@ -119,29 +121,13 @@ public abstract class AbstractJPQLStatementClause implements IStatementClause {
 						}
 					}
 					logger.debug("Expression token [" + token + "] references the model field whose unique name is [" + modelField.getUniqueName()+ "]");
+
+					fieldName = parentStatement.getFieldAliasWithRoles(modelField, entityAliases, entityAliasesMaps);
 					
-					Couple queryNameAndRoot = modelField.getQueryName();
-					queryName = (String) queryNameAndRoot.getFirst();
-					logger.debug("select field query name [" + queryName + "]");
-					
-					if(queryNameAndRoot.getSecond()!=null){
-						rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
-					}else{
-						rootEntity = modelField.getParent().getRoot(); 	
-					}
-					
-					rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-					if(rootEntityAlias == null) {
-						rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-						entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
-					}
-					
-					
-					queryName = rootEntityAlias + "." + queryName;
-					logger.debug("Expression token [" + token + "] query name is equal to [" + queryName + "]");
+					logger.debug("Expression token [" + token + "] query name is equal to [" + fieldName + "]");
 					
 						
-					fieldQueryNames.add(queryName);
+					fieldQueryNames.add(fieldName);
 					fieldExpressionNames.add(token);
 				} else {
 					logger.debug("Expression token [" + token + "] does not references any model field");
@@ -442,5 +428,8 @@ public abstract class AbstractJPQLStatementClause implements IStatementClause {
 		
 		return toReturn;
 	}
+	
+	
+
 	
 }

@@ -63,24 +63,8 @@ public class JPQLStatementOrderByClause  extends AbstractJPQLStatementClause {
 				SimpleSelectField simpleField = (SimpleSelectField)orderByField;
 				
 				IModelField modelField = parentStatement.getDataSource().getModelStructure().getField(simpleField.getUniqueName());
-				Couple queryNameAndRoot = modelField.getQueryName();
-				
-				String queryName = (String) queryNameAndRoot.getFirst();
-				logger.debug("select field query name [" + queryName + "]");
-				
-				IModelEntity root;
-				if(queryNameAndRoot.getSecond()!=null){
-					root = (IModelEntity)queryNameAndRoot.getSecond(); 	
-				} else {
-					root = modelField.getParent().getRoot(); 	
-				}
-				
-				if(!entityAliases.containsKey(root.getUniqueName())) {
-					entityAliases.put(root.getUniqueName(), parentStatement.getNextAlias(entityAliasesMaps));
-				}
-				
-				String entityAlias = (String)entityAliases.get( root.getUniqueName() );
-				String fieldName = entityAlias + "." + queryName;
+
+				String fieldName = parentStatement.getFieldAliasWithRoles(modelField, entityAliases, entityAliasesMaps, simpleField);
 				
 				buffer.append(" " + simpleField.getFunction().apply(fieldName));
 			

@@ -9,17 +9,24 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.jpa.IJpaDataSource;
 import it.eng.qbe.datasource.jpa.JPADataSource;
 import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
+import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
+import it.eng.spagobi.utilities.objects.Couple;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -207,6 +214,185 @@ public class JPQLStatement extends AbstractStatement {
 		return clause.getValueBounded(operandValueToBound, operandType);
 	}
 	
+	
+	public String getFieldAliasWithRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps){
+		
+		IModelEntity rootEntity;
+		
+		Couple queryNameAndRoot = datamartField.getQueryName();
+		
+		String queryName = (String) queryNameAndRoot.getFirst();
+		
+		if(queryNameAndRoot.getSecond()!=null){
+			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
+		}else{
+			rootEntity = datamartField.getParent().getRoot(); 	
+		}
 
+		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+		if(rootEntityAlias == null) {
+			rootEntityAlias = getNextAlias(entityAliasesMaps);
+			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+		}
+		
+
+		return rootEntityAlias + "." + queryName;//queryName.substring(0,1).toLowerCase()+queryName.substring(1);
+	}
+	
+public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, String roleName){
+		
+		List<String> toReturn = new ArrayList<String>();
+		
+		IModelEntity rootEntity;
+		
+		Couple queryNameAndRoot = datamartField.getQueryName();
+		
+		String queryName = (String) queryNameAndRoot.getFirst();
+		
+		if(queryNameAndRoot.getSecond()!=null){
+			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
+		}else{
+			rootEntity = datamartField.getParent().getRoot(); 	
+		}
+		
+		List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
+		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+		if(rootEntityAlias == null) {
+			rootEntityAlias = getNextAlias(entityAliasesMaps);
+			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+		}
+		
+		if(roleAlias!=null && roleAlias.size()>1){
+
+			for(int j=0; j<roleAlias.size(); j++){
+				
+				List<Relationship> r = roleAlias.get(j);
+				Assert.assertTrue(r.size()>0, "For etity "+rootEntity.getName()+" there should be some path with more than one node");
+				String firstRole =  r.get(0).getName();
+				if(roleName.equals(firstRole)){
+					String rootEntityAliasWithRole = buildEntityAliasWithRoles(rootEntity, r, rootEntityAlias);
+					toReturn.add(rootEntityAliasWithRole + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1));
+				}
+
+			}
+		}else{
+			toReturn.add(rootEntityAlias + "." + queryName);//queryName.substring(0,1).toLowerCase()+queryName.substring(1));
+		}
+
+		return toReturn;
+	}
+	
+	
+	public String getFieldAliasWithRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, IQueryField queryField){
+		
+		IModelEntity rootEntity;
+		
+		Couple queryNameAndRoot = datamartField.getQueryName();
+		
+		String queryName = (String) queryNameAndRoot.getFirst();
+		
+		if(queryNameAndRoot.getSecond()!=null){
+			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
+		}else{
+			rootEntity = datamartField.getParent().getRoot(); 	
+		}
+		
+		//List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
+		Map<String, List<String>> mapRoleField = (Map<String, List<String>>) rootEntity.getProperties().get(GraphUtilities.fieldRolePropery);
+		
+		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+		if(rootEntityAlias == null) {
+			rootEntityAlias = getNextAlias(entityAliasesMaps);
+			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+		}
+		
+//		if(roleAlias!=null && roleAlias.size()>1){
+//
+//			for(int j=0; j<roleAlias.size(); j++){
+//				List<Relationship> r = roleAlias.get(j);
+//				Assert.assertTrue(r.size()>0, "For etity "+rootEntity.getName()+" there should be some path with more than one node");
+//				String firstRole =  r.get(0).getName();
+//				List<String> fieldsWithRole = mapRoleField.get(firstRole);
+//				if(fieldsWithRole!=null && fieldsWithRole.contains(queryField.getAlias())){
+//					rootEntityAlias = buildEntityAliasWithRoles(rootEntity, r, rootEntityAlias);
+//					break;
+//				}
+//				//List<Relationship> r = roleAlias.get(new Double((Math.random()*roleAlias.size())%roleAlias.size()).intValue());
+//			}
+//		}
+		
+		if(mapRoleField!=null && mapRoleField.keySet().size()>0){
+			Iterator<String> iter = mapRoleField.keySet().iterator();
+			while (iter.hasNext()) {
+				String role = (String) iter.next();
+				List<String> fieldsWithRole = mapRoleField.get(role);
+				if(fieldsWithRole!=null && fieldsWithRole.contains(queryField.getAlias())){
+					rootEntityAlias = buildEntityAliasWithRoles(rootEntity, role, rootEntityAlias);
+					break;
+				}
+			}
+		}
+
+			
+
+		return rootEntityAlias + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1);
+	}
+	
+	public String getEntityAliasWithRoles(IModelEntity rootEntity, Map entityAliases, Map entityAliasesMaps){
+		
+		List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
+		
+		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+		if(rootEntityAlias == null) {
+			rootEntityAlias = getNextAlias(entityAliasesMaps);
+			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+		}
+		
+		return rootEntityAlias;
+
+	}
+	
+	
+//	public String getEntityAliasWithRoles(IModelEntity rootEntity, Map entityAliases, Map entityAliasesMaps){
+//		
+//		List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
+//		
+//		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+//		if(rootEntityAlias == null) {
+//			rootEntityAlias = getNextAlias(entityAliasesMaps);
+//			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+//		}
+//		
+//		if(roleAlias!=null && roleAlias.size()>1){
+//
+////			for(int j=0; j<roleAlias.size(); j++){
+////			List<Relationship> r = roleAlias.get(j);
+//				List<Relationship> r = roleAlias.get(new Double((Math.random()*roleAlias.size())%roleAlias.size()).intValue());
+//				return buildEntityAliasWithRoles(rootEntity, r, rootEntityAlias);
+////			}
+//			
+//		}else{
+//			return rootEntityAlias;
+//		}
+//	}
+	
+	public String buildFromEntityAliasWithRoles(IModelEntity me, List<Relationship> rel, String entityAlias){
+		String fromClauseElement =  me.getName() + " "+ entityAlias;
+		//for(int i=0; i<rel.size(); i++){
+			fromClauseElement = fromClauseElement+("_"+rel.get(0).getName()).replace(" ", "");
+		//}
+		return fromClauseElement;
+	}
+	
+	public String buildEntityAliasWithRoles(IModelEntity me, List<Relationship> rel, String entityAlias){
+
+		return  (entityAlias+"_"+rel.get(0).getName()).replace(" ", "");
+	}
+	
+	
+	public String buildEntityAliasWithRoles(IModelEntity me, String role, String entityAlias){
+		String fromClauseElement = (entityAlias+"_"+role).replace(" ", "");;
+		return fromClauseElement;
+	}
 	
 }

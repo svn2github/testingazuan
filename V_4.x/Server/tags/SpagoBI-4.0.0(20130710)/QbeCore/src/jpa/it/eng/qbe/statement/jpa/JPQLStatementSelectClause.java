@@ -231,28 +231,9 @@ public class JPQLStatementSelectClause extends AbstractJPQLStatementClause {
 		
 		datamartField = parentStatement.getDataSource().getModelStructure().getField(selectField.getUniqueName());
 		
-		Couple queryNameAndRoot = datamartField.getQueryName();
+
 		
-		queryName = (String) queryNameAndRoot.getFirst();
-		logger.debug("select field query name [" + queryName + "]");
-		
-		if(queryNameAndRoot.getSecond()!=null){
-			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
-		}else{
-			rootEntity = datamartField.getParent().getRoot(); 	
-		}
-		
-			
-		logger.debug("select field root entity unique name [" + rootEntity.getUniqueName() + "]");
-		
-		rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-		if(rootEntityAlias == null) {
-			rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
-		}
-		logger.debug("select field root entity alias [" + rootEntityAlias + "]");
-		
-		selectClauseElement = rootEntityAlias + "." + queryName;
+		selectClauseElement =parentStatement.getFieldAliasWithRoles(datamartField, entityAliases, entityAliasesMaps, selectField);
 		logger.debug("select clause element before aggregation [" + selectClauseElement + "]");
 		
 		selectClauseElement = selectField.getFunction().apply(selectClauseElement);

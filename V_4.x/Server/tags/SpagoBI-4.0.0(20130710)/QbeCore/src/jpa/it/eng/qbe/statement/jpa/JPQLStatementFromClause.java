@@ -7,6 +7,8 @@ package it.eng.qbe.statement.jpa;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.query.Query;
+import it.eng.qbe.statement.graph.GraphUtilities;
+import it.eng.qbe.statement.graph.bean.Relationship;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,12 +63,10 @@ public class JPQLStatementFromClause extends AbstractJPQLStatementClause {
 				String entityUniqueName = (String) it.next();
 				logger.debug("entity [" + entityUniqueName + "]");
 
-				String entityAlias = (String) entityAliases
-						.get(entityUniqueName);
-				logger.debug("entity alias [" + entityAlias + "]");
+				
 
-				IModelEntity modelEntity = parentStatement.getDataSource()
-						.getModelStructure().getEntity(entityUniqueName);
+				IModelEntity modelEntity = parentStatement.getDataSource().getModelStructure().getEntity(entityUniqueName);
+				
 				String type = (String) modelEntity.getProperty("type");
 				if ("cube".equalsIgnoreCase( type )) {
 					cubes.add(modelEntity);
@@ -74,43 +74,57 @@ public class JPQLStatementFromClause extends AbstractJPQLStatementClause {
 					normalEntities.add(modelEntity);
 				}
 
-				String fromClauseElement = modelEntity.getName() + " "
-						+ entityAlias;
-				logger.debug("from clause element [" + fromClauseElement + "]");
-
-				clauses.put(entityUniqueName, " " + fromClauseElement);
+				
 
 			}
 
-			Iterator<IModelEntity> cubesIt = cubes.iterator();
-			while (cubesIt.hasNext()) {
-				IModelEntity cube = cubesIt.next();
-				buffer.append(clauses.get(cube.getUniqueName()));
-				if (cubesIt.hasNext()) {
-					buffer.append(",");
-				}
-			}
+			addEntityAliases(cubes, buffer, entityAliases);
+
 
 			if (normalEntities.size() > 0 && cubes.size() > 0)
 				buffer.append(",");
 
-			Iterator<IModelEntity> normalEntitiesIt = normalEntities.iterator();
-			while (normalEntitiesIt.hasNext()) {
-				IModelEntity normalEntity = normalEntitiesIt.next();
-				buffer.append(clauses.get(normalEntity.getUniqueName()));
-				if (normalEntitiesIt.hasNext()) {
-					buffer.append(",");
-				}
-			}
+			addEntityAliases(normalEntities, buffer, entityAliases);
 
-			for (IModelEntity cube : cubes) {
 
-			}
+
 		} finally {
 			logger.debug("OUT");
 		}
 
 		return buffer.toString().trim();
 	}
+	
+	private void addEntityAliases(List<IModelEntity> entities, StringBuffer buffer, Map entityAliases){
+		if(entities!=null){
+			for(int i=0; i<entities.size(); i++){
+				IModelEntity me = entities.get(i);
+				List<List<Relationship>> roleAlias = (List<List<Relationship>>) me.getProperty(GraphUtilities.roleRelationsProperty);
+				String entityAlias = (String) entityAliases.get(me.getUniqueName());
+				
+				if(roleAlias!=null && roleAlias.size()>1){
+
+					for(int j=0; j<roleAlias.size(); j++){
+						List<Relationship> r = roleAlias.get(j);
+						String fromClauseElement = parentStatement.buildFromEntityAliasWithRoles(me, r, entityAlias);
+						buffer.append(fromClauseElement);
+						if(j<roleAlias.size()-1){
+							buffer.append(",");
+						}
+					}
+					
+				}else{
+					String fromClauseElement = me.getName() + " "+ entityAlias;
+					buffer.append(fromClauseElement);
+				}
+				if (i<entities.size()-1) {
+					buffer.append(",");
+				}
+			}
+		}
+
+	} 
+	
+
 
 }

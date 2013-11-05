@@ -66,25 +66,7 @@ public class JPQLStatementGroupByClause  extends AbstractJPQLStatementClause {
 			} else if(groupByField.isSimpleField()){			
 				SimpleSelectField simpleField = (SimpleSelectField)groupByField;
 				IModelField datamartField = parentStatement.getDataSource().getModelStructure().getField(simpleField.getUniqueName());
-				
-						
-				Couple queryNameAndRoot = datamartField.getQueryName();
-				IModelEntity root;
-				String queryName = (String) queryNameAndRoot.getFirst();
-				logger.debug("select field query name [" + queryName + "]");
-				
-				if(queryNameAndRoot.getSecond()!=null){
-					root = (IModelEntity)queryNameAndRoot.getSecond(); 	
-				}else{
-					root = datamartField.getParent().getRoot(); 	
-				}
-				
-				
-				if(!entityAliases.containsKey(root.getUniqueName())) {
-					entityAliases.put(root.getUniqueName(), parentStatement.getNextAlias(entityAliasesMaps));
-				}
-				String entityAlias = (String)entityAliases.get( root.getUniqueName() );
-				fieldName = entityAlias + "." + queryName;
+				fieldName = parentStatement.getFieldAliasWithRoles(datamartField, entityAliases, entityAliasesMaps, simpleField);
 			} else {
 				// TODO throw an exception here
 			}

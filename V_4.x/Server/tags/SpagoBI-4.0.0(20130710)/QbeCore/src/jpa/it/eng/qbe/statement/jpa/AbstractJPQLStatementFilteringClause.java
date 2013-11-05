@@ -160,9 +160,7 @@ public abstract class AbstractJPQLStatementFilteringClause  extends AbstractJPQL
 	String buildFieldOperand(Operand operand, Query query, Map entityAliasesMaps) {
 		String operandElement;
 		IModelField datamartField;
-		IModelEntity rootEntity;
-		String queryName;
-		String rootEntityAlias;
+		String fieldName;
 		Map targetQueryEntityAliasesMap;
 		
 		logger.debug("IN");
@@ -174,35 +172,17 @@ public abstract class AbstractJPQLStatementFilteringClause  extends AbstractJPQL
 			
 			datamartField = parentStatement.getDataSource().getModelStructure().getField( operand.values[0] );
 			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.values[0] + "]");
-			Couple queryNameAndRoot = datamartField.getQueryName();
-			
-			queryName = (String) queryNameAndRoot.getFirst();
-			logger.debug("select field query name [" + queryName + "]");
-			
-			if(queryNameAndRoot.getSecond()!=null){
-				rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
-			}else{
-				rootEntity = datamartField.getParent().getRoot(); 	
-			}
-			logger.debug("where field query name [" + queryName + "]");
-			
-			logger.debug("where field root entity unique name [" + rootEntity.getUniqueName() + "]");
-			
-			if(!targetQueryEntityAliasesMap.containsKey(rootEntity.getUniqueName())) {
-				logger.debug("Entity [" + rootEntity.getUniqueName() + "] require a new alias");
-				rootEntityAlias = parentStatement.getNextAlias(entityAliasesMaps);
-				logger.debug("A new alias has been generated [" + rootEntityAlias + "]");				
-				targetQueryEntityAliasesMap.put(rootEntity.getUniqueName(), rootEntityAlias);
-			}
-			rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );
-			logger.debug("where field root entity alias [" + rootEntityAlias + "]");
+		
+
+			fieldName = parentStatement.getFieldAliasWithRoles(datamartField, targetQueryEntityAliasesMap, entityAliasesMaps);
+
 			
 			if (operand instanceof HavingField.Operand) {
 				HavingField.Operand havingFieldOperand = (HavingField.Operand) operand;
 				IAggregationFunction function = havingFieldOperand.function;
-				operandElement = function.apply(rootEntityAlias + "." + queryName);
+				operandElement = function.apply(fieldName);
 			} else {
-				operandElement = rootEntityAlias + "." + queryName;
+				operandElement = fieldName;
 			}
 			logger.debug("where element operand value [" + operandElement + "]");
 		} finally {

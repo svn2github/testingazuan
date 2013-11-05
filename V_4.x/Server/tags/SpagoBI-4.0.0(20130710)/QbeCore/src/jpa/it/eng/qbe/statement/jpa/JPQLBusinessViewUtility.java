@@ -328,29 +328,9 @@ public class JPQLBusinessViewUtility {
 	 * @return
 	 */
 	private String getFieldString(IModelField datamartField, Map entityAliasesMaps, Query query){
-		String queryName;
-		
-		IModelEntity rootEntity;
-		
-		Couple queryNameAndRoot = datamartField.getQueryName();
-		
-		queryName = (String) queryNameAndRoot.getFirst();
-		
-		if(queryNameAndRoot.getSecond()!=null){
-			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
-		}else{
-			rootEntity = datamartField.getParent().getRoot(); 	
-		}
-	
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
-		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-				
-		if(rootEntityAlias == null) {
-			rootEntityAlias = statement.getNextAlias(entityAliasesMaps);
-			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
-		}
-				
-		return rootEntityAlias + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1);
+	
+		return statement.getFieldAliasWithRoles(datamartField, entityAliases, entityAliasesMaps);
 	}
 	
 	/**

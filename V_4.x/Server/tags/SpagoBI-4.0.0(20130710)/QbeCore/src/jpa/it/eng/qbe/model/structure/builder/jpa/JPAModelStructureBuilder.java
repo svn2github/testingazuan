@@ -17,7 +17,7 @@ import it.eng.qbe.model.structure.IModelViewEntityDescriptor.IModelViewRelations
 import it.eng.qbe.model.structure.ModelCalculatedField;
 import it.eng.qbe.model.structure.ModelEntity;
 import it.eng.qbe.model.structure.ModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
+import it.eng.qbe.statement.graph.bean.RootEntitiesGraph;
 import it.eng.qbe.model.structure.ModelViewEntity.Join;
 import it.eng.qbe.model.structure.ModelViewEntity.ViewRelationship;
 import it.eng.qbe.model.structure.ModelViewEntity;

@@ -96,12 +96,9 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 
     ,
     initMainStore : function () {
-    	this.mainStore = new Ext.data.GroupingStore({
-    		idIndex : 0
-    		, reader: new  Ext.data.JsonReader({
-				fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias' ]
-    		})
-    		, groupField : 'entity'
+    	this.mainStore = new Ext.data.JsonStore({
+    		idProperty : 'queryFieldAlias' 
+    		,fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias' ]
     		, data : this.ambiguousFields 
     	});
     }
@@ -169,10 +166,6 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	        , border : true  
 	        , collapsible : false
 	        , layout : 'fit'
-			, view : new Ext.grid.GroupingView({
-				forceFit : true
-				, groupTextTpl : '{text}'
-			})
 	    	, collapsible: true
 	    	, region : 'west'
 		}));

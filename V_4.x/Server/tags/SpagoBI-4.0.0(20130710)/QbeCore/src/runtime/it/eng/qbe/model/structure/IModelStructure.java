@@ -6,7 +6,7 @@
 package it.eng.qbe.model.structure;
 
 
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
+import it.eng.qbe.statement.graph.bean.RootEntitiesGraph;
 
 import java.util.Iterator;
 import java.util.List;

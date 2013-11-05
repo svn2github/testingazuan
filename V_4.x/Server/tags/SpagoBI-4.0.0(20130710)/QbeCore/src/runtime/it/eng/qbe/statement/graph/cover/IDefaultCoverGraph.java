@@ -13,6 +13,7 @@ import it.eng.qbe.statement.graph.bean.Relationship;
 import java.util.Map;
 import java.util.Set;
 
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.UndirectedGraph;
 
@@ -24,7 +25,7 @@ public interface IDefaultCoverGraph {
 	 * @param rootEntitiesGraph the graph
 	 * @param entities the set of entities involved in the cover graph
 	 */
-	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,  Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 	
 	/**
 	 * Activate the paths of ambiguousModelField that exist in defaultConnections
@@ -47,5 +48,5 @@ public interface IDefaultCoverGraph {
 	 * @param entities the set of entities involved in the cover graph
 	 * @return
 	 */
-	public QueryGraph getCoverGraph(UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	public QueryGraph getCoverGraph(Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 }

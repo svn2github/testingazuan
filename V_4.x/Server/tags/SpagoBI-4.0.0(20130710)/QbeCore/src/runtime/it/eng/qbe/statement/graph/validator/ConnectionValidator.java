@@ -7,6 +7,12 @@
 package it.eng.qbe.statement.graph.validator;
 
 
+import it.eng.qbe.model.structure.IModelEntity;
+
+import java.util.Set;
+
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 
@@ -24,8 +30,25 @@ public class ConnectionValidator extends AbstractGraphValidator {
 	/**
 	 * Check if the graph is connected
 	 */
-	public boolean validate(UndirectedGraph G) {
-		ConnectivityInspector inspector = new ConnectivityInspector(G);
+	public boolean validate(Graph G) {
+		
+		if(G==null){
+			return false;
+		}
+		
+		Set<IModelEntity> vertex = G.vertexSet();
+		
+		if(vertex==null || vertex.size()<2){
+			return true;
+		}
+		
+		ConnectivityInspector inspector = null;
+		if(G instanceof DirectedGraph){
+			inspector = new ConnectivityInspector((DirectedGraph)G);
+		} else if(G instanceof UndirectedGraph){
+			inspector = new ConnectivityInspector((UndirectedGraph)G);
+		}
+		
 		return inspector.isGraphConnected() ;
 	}
 

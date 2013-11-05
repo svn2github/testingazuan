@@ -16,7 +16,6 @@ import it.eng.qbe.statement.graph.ModelFieldPaths;
 import it.eng.qbe.statement.graph.PathInspector;
 import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
 import it.eng.qbe.statement.graph.bean.Relationship;
-import it.eng.qbe.statement.graph.cover.AbstractDefaultCover;
 import it.eng.qbe.statement.graph.serializer.ModelObjectInternationalizedSerializer;
 import it.eng.qbe.statement.graph.serializer.RelationJSONSerializer;
 import it.eng.spago.base.SourceBean;
@@ -33,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.UndirectedGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +85,7 @@ public class GetAmbiguousFieldsAction extends AbstractQbeEngineAction {
 			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
 			if(modelFields!=null){
 				Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
-				UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+				Graph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 				
 				PathInspector pathInspector = new PathInspector(graph, modelEntities);
 				Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguousMap = pathInspector.getAmbiguousEntitiesAllPathsMap();

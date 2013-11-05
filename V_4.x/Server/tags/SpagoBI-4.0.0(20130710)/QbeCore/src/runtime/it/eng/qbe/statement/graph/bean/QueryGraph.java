@@ -7,11 +7,10 @@ package it.eng.qbe.statement.graph.bean;
 
 import it.eng.qbe.model.structure.IModelEntity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jgrapht.graph.Multigraph;
+import org.jgrapht.graph.DirectedMultigraph;
 
 /**
  * 
@@ -21,7 +20,7 @@ import org.jgrapht.graph.Multigraph;
  */
 
 
-public class QueryGraph extends Multigraph<IModelEntity, Relationship> {
+public class QueryGraph extends DirectedMultigraph<IModelEntity, Relationship> {
 
 
 	private static final long serialVersionUID = 4245741171067061646L;

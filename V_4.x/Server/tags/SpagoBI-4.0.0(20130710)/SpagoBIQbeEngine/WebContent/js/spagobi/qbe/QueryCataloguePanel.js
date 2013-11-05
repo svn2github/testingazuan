@@ -109,14 +109,17 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		
 		var currentQuery = this.getSelectedQuery();
 		var ambiguousFields = [];
+		var ambiguousRoles = [];
 		if (currentQuery) {
 			ambiguousFields = this.getStoredAmbiguousFields();
+			ambiguousRoles = this.getStoredRoles();
 		}
 		
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.getQueries())
 				, currentQueryId : (currentQuery) ? currentQuery.id : ''
 				, ambiguousFieldsPaths : Ext.util.JSON.encode(ambiguousFields)
+				, ambiguousRoles : Ext.util.JSON.encode(ambiguousRoles)
 		};
 
 		Ext.Ajax.request({
@@ -177,16 +180,17 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	}
 	
 	,
-	onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, callback, scope) {
+	onAmbiguousFieldsSolved : function (theWindow, ambiguousFieldsSolved, userRolesSolved, callback, scope) {
 		theWindow.close();
-		this.storeAmbiguousFields(ambiguousFieldsSolved);
+		this.storeAmbiguousFields(ambiguousFieldsSolved, userRolesSolved);
 		this.commit(callback, scope);
 	}
 
 	,
-	storeAmbiguousFields : function (ambiguousFields) {
+	storeAmbiguousFields : function (ambiguousFields, userRolesSolved) {
 		var query = this.getSelectedQuery();
 		Sbi.cache.memory.put(query.id, ambiguousFields);
+		Sbi.cache.memory.put(query.id+"_roles",  userRolesSolved);
 		//query.ambiguousFields = ambiguousFields;
 	}
 	
@@ -194,6 +198,14 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	getStoredAmbiguousFields : function () {
 		var query = this.getSelectedQuery();
 		var cached = Sbi.cache.memory.get(query.id);
+		return cached || [];
+		//return query.ambiguousFields || [];
+	}
+	
+	,
+	getStoredRoles : function () {
+		var query = this.getSelectedQuery();
+		var cached = Sbi.cache.memory.get(query.id+"_roles");
 		return cached || [];
 		//return query.ambiguousFields || [];
 	}

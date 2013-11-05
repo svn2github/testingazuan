@@ -9,12 +9,12 @@ import it.eng.qbe.model.structure.IModelEntity;
 
 import java.util.Set;
 
-import org.jgrapht.UndirectedGraph;
+import org.jgrapht.Graph;
 
 public abstract class AbstractGraphValidator implements IGraphValidator {
 
 	
-	public boolean isValid(UndirectedGraph G, Set<IModelEntity> unjoinedEntities){
+	public boolean isValid(Graph G, Set<IModelEntity> unjoinedEntities){
 
 		
 		// the empty graph is always valid
@@ -26,6 +26,6 @@ public abstract class AbstractGraphValidator implements IGraphValidator {
 		
 	}
 
-	public abstract boolean validate(UndirectedGraph G);
+	public abstract boolean validate(Graph G);
 	
 }

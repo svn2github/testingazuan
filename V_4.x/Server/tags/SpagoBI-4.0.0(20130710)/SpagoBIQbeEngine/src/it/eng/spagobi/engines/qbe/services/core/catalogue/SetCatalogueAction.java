@@ -8,7 +8,6 @@ package it.eng.spagobi.engines.qbe.services.core.catalogue;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
 import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
@@ -23,6 +22,7 @@ import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
 import it.eng.qbe.statement.graph.bean.PathChoice;
 import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.qbe.statement.graph.bean.Relationship;
+import it.eng.qbe.statement.graph.bean.RootEntitiesGraph;
 import it.eng.qbe.statement.graph.filter.CubeFilter;
 import it.eng.qbe.statement.graph.serializer.FieldNotAttendInTheQuery;
 import it.eng.qbe.statement.graph.serializer.ModelFieldPathsJSONDeserializer;
@@ -37,6 +37,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
+import it.eng.spagobi.utilities.json.JSONUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,8 +51,8 @@ import java.util.Set;
 
 import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.UndirectedGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +82,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	public static final String CATALOGUE = "catalogue";
 	public static final String CURRENT_QUERY_ID = "currentQueryId";
 	public static final String AMBIGUOUS_FIELDS_PATHS = "ambiguousFieldsPaths";
+	public static final String AMBIGUOUS_ROLES = "ambiguousRoles";
 	public static final String MESSAGE = "message";
 	public static final String MESSAGE_SAVE = "save";
 	
@@ -106,15 +108,11 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		logger.debug("IN");
 		
 		try {
-			
 
-			
-			
 			totalTimeMonitor = MonitorFactory.start("QbeEngine.setCatalogueAction.totalTime");
 		
 			super.service(request, response);		
-			
-		
+
 			query = this.getCurrentQuery();
 			
 			
@@ -163,10 +161,10 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			pathFiltersMap.put(CubeFilter.PROPERTY_ENTITIES, modelEntities);
 			
 			if (oldQueryGraph == null && query!=null) {
-				queryGraph = updateQueryGraphInQuery(query, forceReturnGraph);
+				queryGraph = updateQueryGraphInQuery(query, forceReturnGraph,modelEntities);
 				if(queryGraph!=null){
 					String modelName = getDataSource().getConfiguration().getModelName();
-					UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+					Graph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 					ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
 					//filter paths
 					GraphManager.filterPaths(ambiguousFields, pathFiltersMap, (QbeEngineConfig.getInstance().getPathsFiltersImpl()));
@@ -195,9 +193,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				}
 			}
 
-			
-
-			
 			ObjectMapper mapper = new ObjectMapper();
 			SimpleModule simpleModule = new SimpleModule("SimpleModule", new Version(1,0,0,null));
 			simpleModule.addSerializer(Relationship.class, new RelationJSONSerializer(getDataSource(), getLocale()));
@@ -221,8 +216,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			if(totalTimeMonitor != null) totalTimeMonitor.stop();
 			logger.debug("OUT");
 		}
-		
-		
 	}
 
 
@@ -236,13 +229,13 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	 * @param query
 	 * @return
 	 */
-	public QueryGraph updateQueryGraphInQuery(Query query, boolean forceReturnGraph) {				
+	public QueryGraph updateQueryGraphInQuery(Query query, boolean forceReturnGraph, Set<IModelEntity> modelEntities) {				
 		boolean isTheOldQueryGraphValid = false;
 		logger.debug("IN");
 		QueryGraph queryGraph = null;
 		try {
 			
-			queryGraph = this.getQueryGraphFromRequest(query);
+			queryGraph = this.getQueryGraphFromRequest(query, modelEntities);
 			
 			if(queryGraph!=null){
 				//check if the graph selected by the user is still valid
@@ -255,7 +248,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				logger.debug("Calculating the default graph");
 				IModelStructure modelStructure = getDataSource().getModelStructure();
 				RootEntitiesGraph rootEntitiesGraph = modelStructure.getRootEntitiesGraph(getDataSource().getConfiguration().getModelName(), false);
-				UndirectedGraph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
+				Graph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
 				logger.debug("UndirectedGraph retrieved");
 				
 				Set<IModelEntity> entities = query.getQueryEntities( getDataSource() );
@@ -299,7 +292,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			Set<ModelFieldPaths> ambiguousModelField = new HashSet<ModelFieldPaths>();
 			if(modelFields!=null){
 				
-				UndirectedGraph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
+				Graph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
 				
 				PathInspector pathInspector = new PathInspector(graph, modelEntities);
 				Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> ambiguousMap = pathInspector.getAmbiguousEntitiesAllPathsMap();
@@ -321,7 +314,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 						}
 					}
 				}
-				
 			}
 			
 			return ambiguousModelField;
@@ -333,7 +325,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		}	
 	}
 
-	private QueryGraph getQueryGraphFromRequest(Query query) {
+	private QueryGraph getQueryGraphFromRequest(Query query,Set<IModelEntity> modelEntities) {
 		List<Relationship> toReturn = new ArrayList<Relationship>();
 		IModelStructure modelStructure = getDataSource().getModelStructure();
 		logger.debug("IModelStructure retrieved");
@@ -345,6 +337,20 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
 		LogMF.debug(logger, AMBIGUOUS_FIELDS_PATHS + "is {0}", serialized);
 
+		String serializedRoles = this.getAttributeAsString(AMBIGUOUS_ROLES);
+		LogMF.debug(logger, AMBIGUOUS_ROLES + "is {0}", serialized);
+		
+		cleanFieldsRolesMapInEntity(modelEntities);
+		try {
+			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("")){
+				JSONArray serializedRolesJson = JSONUtils.toJSONArray(serializedRoles);
+				updateFieldsRolesMapInEntity(serializedRolesJson, modelEntities);
+			}
+			
+		} catch (Exception e2) {
+			logger.error("Error deserializing the list of roles of the entities", e2);
+			throw new SpagoBIEngineRuntimeException("Error deserializing the list of roles of the entities", e2);
+		}
 		List<ModelFieldPaths> list = null;
 		if (StringUtilities.isNotEmpty(serialized)) {
 			try {
@@ -372,7 +378,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 						toReturn.addAll(choice.getRelations());
 					}
 				}
-
 			}
 			QueryGraphBuilder builder = new QueryGraphBuilder();
 			queryGraph = builder.buildGraphFromEdges(toReturn);
@@ -381,6 +386,58 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		return queryGraph;
 	}
 	
+	
+	private void cleanFieldsRolesMapInEntity(Set<IModelEntity> modelEntities){
+		if(modelEntities!=null){
+			Iterator<IModelEntity> modelEntitiesIter = modelEntities.iterator();
+			while (modelEntitiesIter.hasNext()) {
+				IModelEntity iModelEntity = (IModelEntity) modelEntitiesIter.next();
+				iModelEntity.getProperties().put(GraphUtilities.fieldRolePropery,null);
+			}
+		}
+	}
+	
+	/**
+	 * For each entity creates a property taht contains the map role-->fields associated to that role 
+	 * @param serializedEntityRoles
+	 * @param modelEntities
+	 * @throws JSONException
+	 */
+	private void updateFieldsRolesMapInEntity(JSONArray serializedEntityRoles, Set<IModelEntity> modelEntities) throws JSONException{
+		if(serializedEntityRoles!=null && modelEntities!=null){
+			for(int k=0; k<serializedEntityRoles.length(); k++){
+				JSONArray serializedFieldsRoles = serializedEntityRoles.getJSONArray(k);
+				for(int i=0; i<serializedFieldsRoles.length(); i++){
+					JSONObject serializedRole = serializedFieldsRoles.getJSONObject(i);
+					
+					JSONObject entity = serializedRole.getJSONObject("entity");
+					String role = entity.getString("role");
+					JSONArray fields =  serializedRole.getJSONArray("fields");
+					
+					if(fields.length()>0){
+						IModelField datamartField = getDataSource().getModelStructure().getField(fields.getJSONObject(0).getString("id"));
+						IModelEntity me = datamartField.getParent();
+
+						Map<String, List<String>> mapRoleField = (Map<String, List<String>>) me.getProperties().get(GraphUtilities.fieldRolePropery);
+						if(mapRoleField==null){
+							mapRoleField = new HashMap<String, List<String>>();
+						}
+
+						List<String> fieldsForRole = new ArrayList<String>();
+						
+						for(int j=0; j<fields.length(); j++){
+							JSONObject field = fields.getJSONObject(j);
+							String fieldId = field.getJSONObject("data").getString("queryFieldAlias");
+							fieldsForRole.add(fieldId);
+						}
+						
+						mapRoleField.put(role, fieldsForRole);
+						me.getProperties().put(GraphUtilities.fieldRolePropery,mapRoleField);
+					}
+				}
+			}
+		}
+	}
 
 
 	/**

@@ -60,7 +60,7 @@ Ext.extend(Sbi.qbe.AmbiguousFields, Ext.util.Observable, {
 	init: function () {
 		
     	this.store = new Ext.data.JsonStore({
-    		idIndex : 0
+    		idProperty : 'queryFieldAlias' 
     	    , fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias'  ]
     		, data : this.ambiguousFields || []
     	});

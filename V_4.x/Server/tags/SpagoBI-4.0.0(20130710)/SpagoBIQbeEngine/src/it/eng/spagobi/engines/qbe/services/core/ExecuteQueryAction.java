@@ -7,7 +7,7 @@ package it.eng.spagobi.engines.qbe.services.core;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
+import it.eng.qbe.statement.graph.bean.RootEntitiesGraph;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
@@ -43,7 +43,9 @@ import java.util.Set;
 
 import org.apache.log4j.LogMF;
 import org.apache.log4j.Logger;
+import org.jgrapht.Graph;
 import org.jgrapht.UndirectedGraph;
+import org.jgrapht.graph.DirectedMultigraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +160,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		logger.debug("IModelStructure retrieved");
 		RootEntitiesGraph rootEntitiesGraph = modelStructure.getRootEntitiesGraph(getDataSource().getConfiguration().getModelName(), false);
 		logger.debug("RootEntitiesGraph retrieved");
-		UndirectedGraph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
+		Graph<IModelEntity, Relationship> graph = rootEntitiesGraph.getRootEntitiesGraph();
 		logger.debug("UndirectedGraph retrieved");
 		Set<Relationship> relationships = rootEntitiesGraph.getRelationships();
 		logger.debug("Set<Relationship> retrieved");

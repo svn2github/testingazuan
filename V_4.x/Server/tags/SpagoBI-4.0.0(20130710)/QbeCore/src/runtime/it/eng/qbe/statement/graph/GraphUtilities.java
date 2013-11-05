@@ -8,7 +8,7 @@ package it.eng.qbe.statement.graph;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelStructure;
-import it.eng.qbe.model.structure.ModelStructure.RootEntitiesGraph;
+import it.eng.qbe.statement.graph.bean.RootEntitiesGraph;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.graph.bean.PathChoice;
 import it.eng.qbe.statement.graph.bean.PathChoicePathTextLengthComparator;
@@ -18,13 +18,19 @@ import it.eng.qbe.statement.graph.bean.Relationship;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.alg.CycleDetector;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +38,9 @@ import org.json.JSONObject;
 public class GraphUtilities {
 	
 	public static final String RELATIONSHIP_ID = "relationshipId";
+	public static final int maxPathLength = 5;
+	public static final String roleRelationsProperty = "roleRelationsProperty";
+	public static final String fieldRolePropery = "fieldRolePropery";
 	
 	/**
 	 * Removes the subpaths
@@ -219,6 +228,109 @@ public class GraphUtilities {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Check if the graph contains 2 nodes connected with more than 1 vertex
+	 * @param G the graph
+	 * @return the node connected with more than one relation with another node. Null if there is no node connected with more than one relation to another node 
+	 */
+	public static IModelEntity isMultiGraph(Graph G){
+		
+		Set<IModelEntity> vertexes = G.vertexSet();
+		if(vertexes!=null){
+			Iterator<IModelEntity> vertexIter = vertexes.iterator();
+
+			//For every node check if there is more than one edge that connect it with another node
+			while (vertexIter.hasNext()) {
+				IModelEntity vertex = (IModelEntity) vertexIter.next();
+				Set<Relationship> vertexConnection = G.edgesOf(vertex);
+				if(vertexConnection!=null && vertex.getProperties().get(GraphUtilities.roleRelationsProperty)==null){
+					Iterator<Relationship> vertexConnectionIter = vertexConnection.iterator();
+					List<IModelEntity> checkedEntites = new ArrayList<IModelEntity>();
+					
+					while (vertexConnectionIter.hasNext()) {
+						Relationship relationship = (Relationship) vertexConnectionIter.next();
+						IModelEntity src = relationship.getSourceEntity();
+						IModelEntity target = relationship.getTargetEntity();
+						IModelEntity otherEntity = src;//the entity not equal to vertex
+						
+						if(vertex.equals(src)){
+							otherEntity = target;
+						}
+						
+						if(checkedEntites.contains(otherEntity)){
+							return vertex;//there is more than one connection between 2 entities
+						}else{
+							checkedEntites.add(otherEntity);
+						}
+					}
+				}
+			}
+		}
+		return null;	
+	}
+	
+	public static boolean isCyclic(DirectedGraph G){
+		CycleDetector cd = new CycleDetector(G);
+		return cd.detectCycles();
+	}
+	
+	public static IModelEntity getRoot(DirectedGraph G){
+		
+		Set<IModelEntity> vertexes = G.vertexSet();
+		if(vertexes!=null){
+			Iterator<IModelEntity> vertexIter = vertexes.iterator();
+
+			//For every node check if there is more than one edge that connect it with another node
+			while (vertexIter.hasNext()) {
+				IModelEntity vertex = (IModelEntity) vertexIter.next();
+				Set<Relationship> vertexConnection = G.incomingEdgesOf(vertex);
+				if(vertexConnection==null || vertexConnection.size()==0){
+					return vertex;
+				}
+			}
+		}
+		return null;	
+	}
+	
+	/**
+	 * Get the map of the relation between the node vertex and the other nodes. 
+	 * This map is useful for the role analysis. If a node has more than one role with the vertex node
+	 * in the map the linked list has one relation for each role
+	 * @param G
+	 * @param vertex
+	 * @return
+	 */
+	public static Map<IModelEntity, List<Relationship>> getEdgeMap(Graph G, IModelEntity vertex){
+		
+		Map<IModelEntity, List<Relationship>> vertexRelationsMap = new HashMap<IModelEntity, List<Relationship>>();
+		
+		Set<Relationship> vertexConnection = G.edgesOf(vertex);
+		if(vertexConnection!=null){
+			Iterator<Relationship> vertexConnectionIter = vertexConnection.iterator();
+			
+			while (vertexConnectionIter.hasNext()) {
+				Relationship relationship = (Relationship) vertexConnectionIter.next();
+
+				IModelEntity otherEntity = relationship.getTargetEntity();//the entity not equal to vertex
+				
+				if(vertex.equals(otherEntity) && (G instanceof UndirectedGraph)){
+					otherEntity = relationship.getSourceEntity();
+				}
+				if(!vertex.equals(otherEntity)){
+					List<Relationship> relationsWithOther = vertexRelationsMap.get(otherEntity);
+					
+					if(relationsWithOther == null){
+						relationsWithOther = new ArrayList<Relationship>();
+						vertexRelationsMap.put(otherEntity, relationsWithOther);
+					}
+					relationsWithOther.add(relationship);
+				}
+
+			}
+		}
+		return vertexRelationsMap;
 	}
 	
 }

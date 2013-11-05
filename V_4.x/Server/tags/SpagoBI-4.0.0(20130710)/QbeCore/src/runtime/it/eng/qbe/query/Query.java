@@ -554,7 +554,7 @@ public class Query {
 	}
 	
 	private static void addFieldIntoMap(IQueryField queryField, IModelField datamartField,  Map<IModelField, Set<IQueryField>> modelFieldsInvolved){
-		Set<IQueryField> queryfields = modelFieldsInvolved.get(queryField);
+		Set<IQueryField> queryfields = modelFieldsInvolved.get(datamartField);
 		if(queryfields==null){
 			queryfields = new HashSet<IQueryField>();
 			modelFieldsInvolved.put(datamartField, queryfields);

@@ -18,8 +18,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 
 public class ShortestPathsCoverGraph extends AbstractDefaultCover{
@@ -27,7 +28,7 @@ public class ShortestPathsCoverGraph extends AbstractDefaultCover{
 	public static transient Logger logger = Logger.getLogger(ShortestPathsCoverGraph.class);
 
 	
-	public QueryGraph  getCoverGraph( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
+	public QueryGraph getCoverGraph( Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
 
 		Iterator<IModelEntity> it = entities.iterator();
 		Set<Relationship> connectingRelatiosnhips = new HashSet<Relationship>();
@@ -41,12 +42,25 @@ public class ShortestPathsCoverGraph extends AbstractDefaultCover{
 			GraphPath minimumPath = null;
 			double minPathLength = Double.MAX_VALUE;
 			for(IModelEntity connectedEntity : connectedEntities) {
+				
+				//check the path from entity to connectedEntity
 				DijkstraShortestPath dsp = new DijkstraShortestPath(rootEntitiesGraph, entity, connectedEntity);
 				double pathLength = dsp.getPathLength();
 				if(minPathLength > pathLength) {
 					minPathLength = pathLength;
 					minimumPath = dsp.getPath();
 				}
+				
+				if(rootEntitiesGraph instanceof DirectedGraph){
+					//check the path from connectedEntity to entity
+					DijkstraShortestPath dsp2 = new DijkstraShortestPath(rootEntitiesGraph, connectedEntity, entity);
+					double pathLength2 = dsp2.getPathLength();
+					if(minPathLength > pathLength2) {
+						minPathLength = pathLength2;
+						minimumPath = dsp2.getPath();
+					}
+				} 
+				
 			}
 			if(minimumPath!=null){
 				List<Relationship> relationships = (List<Relationship>)minimumPath.getEdgeList();
@@ -74,7 +88,7 @@ public class ShortestPathsCoverGraph extends AbstractDefaultCover{
 		return monimumGraph;
 	}
 	
-	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( UndirectedGraph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
+	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
 
 
 

@@ -10,6 +10,7 @@ import it.eng.qbe.model.structure.IModelEntity;
 
 import java.util.Set;
 
+import org.jgrapht.Graph;
 /**
  * This is the interface of the graph validators. In general a graph validator
  * should check if a Graph represent a valid query
@@ -29,6 +30,6 @@ public interface IGraphValidator {
 	 * @param unjoinedEntities
 	 * @return
 	 */
-	public boolean isValid(UndirectedGraph G, Set<IModelEntity> unjoinedEntities);
+	public boolean isValid(Graph G, Set<IModelEntity> unjoinedEntities);
 
 }

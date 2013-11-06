@@ -492,3 +492,7 @@ Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Join path';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.applytoentity'] = 'Apply selection to all fields of this entity';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.filter.otherentities'] = 'Removes paths with not involved entities';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.no.all.fields'] = 'You should map all fields with one of the aliases';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.alias.no.fieds'] = 'This alias does not contain any field';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.error'] = 'Validation Error';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.no.fields.alias'] = 'Attention if you are interested to use different roles for the same entity and if you are using the same field more than once in the select statement you should define different alias for every occurrence of the field';

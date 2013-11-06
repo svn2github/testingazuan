@@ -493,6 +493,24 @@ public class Query {
 			}
 		}
 	}
+	
+	public boolean isAliasDefinedInSelectFields() {
+		List<String> checkedFields = new ArrayList<String>();
+		List<ISelectField> selectFields = this.getSelectFields(true);
+
+		for(ISelectField selectAbstractField : selectFields){										
+			if(selectAbstractField.isSimpleField()){
+				String fieldToString = selectAbstractField.getName()+selectAbstractField.getNature()+selectAbstractField.getType()+selectAbstractField.getAlias();
+				int index = checkedFields.indexOf(fieldToString);
+				if(index>=0){//if in the select fields there is the same field with the same alias there could be some misunderstanding
+					return false;
+				}else{
+					checkedFields.add(fieldToString);
+				}
+			} 
+		}
+		return true;
+	}
 
 	private void replaceFieldsIncalculatedFields(InLineCalculatedSelectField cf,  Map<IModelField, Set<IQueryField>> modelFieldsInvolved, IDataSource dataSource) {
 		IModelField modelField;

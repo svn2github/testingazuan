@@ -84,6 +84,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	public static final String AMBIGUOUS_FIELDS_PATHS = "ambiguousFieldsPaths";
 	public static final String AMBIGUOUS_ROLES = "ambiguousRoles";
 	public static final String EXECUTE_DIRECTLY = "executeDirectly";
+	public static final String AMBIGUOUS_WARING = "ambiguousWarinig";
 	public static final String MESSAGE = "message";
 	public static final String MESSAGE_SAVE = "save";
 	
@@ -105,7 +106,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		String roleSelection = null;
 		boolean isDierctlyExecutable = false;
 		QueryGraph queryGraph = null; //the query graph (the graph that involves all the entities of the query)
-		
+		String ambiguousWarinig=null;
 		boolean forceReturnGraph = false;
 		
 		logger.debug("IN");
@@ -211,10 +212,16 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			mapper.registerModule(simpleModule);
 			String serialized = mapper.writeValueAsString((Set<ModelFieldPaths>) ambiguousFields);
 			
+			if(!query.isAliasDefinedInSelectFields()){
+				ambiguousWarinig="sbi.qbe.relationshipswizard.roles.validation.no.fields.alias";
+			}
+			
+			
 			JSONObject toReturn = new JSONObject();
 			toReturn.put(AMBIGUOUS_FIELDS_PATHS, serialized);
 			toReturn.put(AMBIGUOUS_ROLES, roleSelection);
 			toReturn.put(EXECUTE_DIRECTLY, isDierctlyExecutable);
+			toReturn.put(AMBIGUOUS_WARING, ambiguousWarinig);
 			
 			
 			

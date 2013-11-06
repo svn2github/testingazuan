@@ -146,9 +146,19 @@ Ext.extend(Sbi.qbe.RelationshipsWizardWindow, Ext.Window, {
 	}
 	
 	, applyFinishHandler: function(){
-		var userChoices = this.relationshipsWizard.getUserChoices();
-		var userRoles = this.relationshipsWizard.getUserSelectedRoles();
-		this.fireEvent('apply', this, userChoices, userRoles);
+		var errors = this.relationshipsWizard.validate();
+		if(errors.length==0){
+			var userChoices = this.relationshipsWizard.getUserChoices();
+			var userRoles = this.relationshipsWizard.getUserSelectedRoles();
+			this.fireEvent('apply', this, userChoices, userRoles);
+		}else{
+			var errorStr = "";
+			for(var i=0; i<errors.length; i++){
+				errorStr = errorStr+errors[i]+"<br>";
+			}
+			Sbi.exception.ExceptionHandler.showErrorMessage(errorStr,LN('sbi.qbe.relationshipswizard.roles.validation.error'));
+		}
+
 	}
 
 });

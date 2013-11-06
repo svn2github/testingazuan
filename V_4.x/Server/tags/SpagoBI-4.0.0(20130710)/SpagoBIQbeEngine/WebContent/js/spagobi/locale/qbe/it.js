@@ -487,3 +487,7 @@ Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.entity'] = 'Entit\u00e0';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.columns.path'] = 'Percorso di join';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.applytoentity'] = 'Applica selezione a tutti i campi di questa entit\u00e0';
 Sbi.locale.ln['sbi.qbe.relationshipswizard.buttons.filter.otherentities'] = 'Nascondi relazioni con entit\u00e0 non presenti nella query';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.no.all.fields'] = '\u00C8 necessario mappare tutti i campi con un\'entit\u00e0';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.alias.no.fieds'] = 'L\'alias non contiene alcun campo';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.error'] = 'Errore di validazione';
+Sbi.locale.ln['sbi.qbe.relationshipswizard.roles.validation.no.fields.alias'] = 'Attenzione, se si ha intenzione di usare delle entit\u00e0 con ruoli differenti e lo stesso campo \u00E8 presente pi\00FA volte tra i select fields, \u00E8 necessario definire alias differti per quel campo';

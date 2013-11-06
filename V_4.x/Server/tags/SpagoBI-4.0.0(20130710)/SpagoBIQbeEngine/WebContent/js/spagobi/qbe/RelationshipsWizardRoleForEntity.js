@@ -289,6 +289,18 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRoleForEntity, Ext.Panel, {
 		return fieldsSerialized;
 	}
 	
-	
+	, validate: function(){
+		var errors = new Array();
+		if(this.fieldGrid && this.fieldGrid.getStore() && this.fieldGrid.getStore().getCount()>0 ){
+			errors.push(this.roleEntityConfig.name+": "+LN('sbi.qbe.relationshipswizard.roles.validation.no.all.fields'));
+		}
+		for(var i=0; i<this.entitiyFieldsGrids.length; i++){
+			var aEntitiyFieldsGrids = this.entitiyFieldsGrids[i];
+			if(aEntitiyFieldsGrids.getStore().getCount()==0){
+				errors.push(aEntitiyFieldsGrids.myEntityAlias.alias+": "+LN('sbi.qbe.relationshipswizard.roles.validation.alias.no.fieds'));
+			}
+		}
+		return errors;
+	}
 
 });

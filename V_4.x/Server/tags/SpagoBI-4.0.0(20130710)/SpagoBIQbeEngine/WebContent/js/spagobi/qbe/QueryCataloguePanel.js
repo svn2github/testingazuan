@@ -159,6 +159,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		var decodedResponce = Ext.util.JSON.decode( response.responseText );
 		var ambiguousFields  = Ext.util.JSON.decode(decodedResponce.ambiguousFieldsPaths);
 		var userRolesSolved = Ext.util.JSON.decode(decodedResponce.ambiguousRoles);
+		var ambiguousWarinig =(decodedResponce.ambiguousWarinig);
 
 		//open the ambiguous fields wizard but there is no ambiguous fields
 		if (forceOpenAmbiguous && (ambiguousFields.length == 0 )) {
@@ -170,6 +171,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 				callback.call(scope);  // proceed execution with the specified callback function
 			}
 		} else {
+			
 			ambiguousFields = this.mergeAmbiguousFields(ambiguousFields);
 			var relationshipsWindow = new Sbi.qbe.RelationshipsWizardWindow({
 				ambiguousFields : ambiguousFields
@@ -179,6 +181,9 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 			});
 			relationshipsWindow.show();
 			relationshipsWindow.on('apply', this.onAmbiguousFieldsSolved.createDelegate(this, [callback, scope], true), this);
+			if(ambiguousWarinig!=null && ambiguousWarinig!="null" && ambiguousWarinig!=""){
+				Sbi.exception.ExceptionHandler.showInfoMessage(LN(ambiguousWarinig));
+			}
 		}
 
 	}

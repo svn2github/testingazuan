@@ -272,4 +272,8 @@ Ext.extend(Sbi.qbe.RelationshipsWizardContainer, Ext.Panel, {
     	return entityFieldsMap;
     }
     
+    ,validate: function(){
+    	return this.rolesWizard.validate();
+    }
+    
 });

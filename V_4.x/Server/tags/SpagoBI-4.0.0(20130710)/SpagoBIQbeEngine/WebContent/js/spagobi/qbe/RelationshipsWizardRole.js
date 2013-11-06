@@ -128,5 +128,18 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRole, Ext.TabPanel, {
 		}
 		return state;
 	}
+	
+	, validate: function(){
+		var errors= new Array();
+		for(var i=0; i<this.relationshipsWizardsRoleForEntity.length; i++){
+			var entityErrors = this.relationshipsWizardsRoleForEntity[i].validate();
+			if(entityErrors){
+				for(var j=0; j<entityErrors.length; j++){
+					errors.push(entityErrors[j]);
+				}
+			}
+		}
+		return errors;
+	}
 
 });

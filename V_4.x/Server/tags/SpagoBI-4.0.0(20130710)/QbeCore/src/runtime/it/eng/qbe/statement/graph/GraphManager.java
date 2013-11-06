@@ -5,6 +5,8 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.qbe.statement.graph;
 
+import it.eng.qbe.model.structure.IModelEntity;
+import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.qbe.statement.graph.cover.IDefaultCoverGraph;
 import it.eng.qbe.statement.graph.cover.ShortestPathsCoverGraph;
 import it.eng.qbe.statement.graph.filter.IPathsFilter;
@@ -13,6 +15,7 @@ import it.eng.qbe.statement.graph.validator.IGraphValidator;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,6 +88,22 @@ public class GraphManager {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * If the query graph contains only the selected entities return true
+	 * @param modelEntities the collection of the entities involved in the query 
+	 * @param queryGraph the query graph
+	 * @return
+	 */
+	public static boolean isDirectlyExecutable(Collection<IModelEntity> modelEntities, QueryGraph queryGraph){
+		if(modelEntities==null || queryGraph==null){
+			return false;
+		}
+		if(queryGraph.vertexSet()==null || queryGraph.vertexSet().size()==0 ){
+			return true;//the case when the user select only an entity
+		}
+		return queryGraph.vertexSet().size() == modelEntities.size();
 	}
 	
 	

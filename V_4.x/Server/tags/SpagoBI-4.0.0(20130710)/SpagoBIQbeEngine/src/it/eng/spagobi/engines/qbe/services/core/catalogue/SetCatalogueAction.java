@@ -83,6 +83,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	public static final String CURRENT_QUERY_ID = "currentQueryId";
 	public static final String AMBIGUOUS_FIELDS_PATHS = "ambiguousFieldsPaths";
 	public static final String AMBIGUOUS_ROLES = "ambiguousRoles";
+	public static final String EXECUTE_DIRECTLY = "executeDirectly";
 	public static final String MESSAGE = "message";
 	public static final String MESSAGE_SAVE = "save";
 	
@@ -101,6 +102,8 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		JSONObject queryJSON;
 		Query query;
 		QueryGraph oldQueryGraph = null;
+		String roleSelection = null;
+		boolean isDierctlyExecutable = false;
 		QueryGraph queryGraph = null; //the query graph (the graph that involves all the entities of the query)
 		
 		boolean forceReturnGraph = false;
@@ -119,6 +122,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			if (query == null) {
 				query = this.getEngineInstance().getQueryCatalogue().getFirstQuery();
 				oldQueryGraph = query.getQueryGraph();
+				roleSelection = query.getRelationsRoles();
 			}
 			
 			jsonEncodedCatalogue = getAttributeAsString( CATALOGUE );			
@@ -160,8 +164,9 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			pathFiltersMap.put(CubeFilter.PROPERTY_MODEL_STRUCTURE,  getDataSource().getModelStructure());
 			pathFiltersMap.put(CubeFilter.PROPERTY_ENTITIES, modelEntities);
 			
-			if (oldQueryGraph == null && query!=null) {
+			if (oldQueryGraph == null && query!=null) {//normal execution
 				queryGraph = updateQueryGraphInQuery(query, forceReturnGraph,modelEntities);
+				roleSelection = this.getAttributeAsString(AMBIGUOUS_ROLES);
 				if(queryGraph!=null){
 					String modelName = getDataSource().getConfiguration().getModelName();
 					Graph<IModelEntity, Relationship> graph = getDataSource().getModelStructure().getRootEntitiesGraph(modelName, false).getRootEntitiesGraph();
@@ -175,14 +180,19 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 						GraphUtilities.cleanSubPaths(ambiguousFields, orderDirection);
 					}
 					
-					GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(ambiguousFields, graph, modelEntities);
+					GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(ambiguousFields, queryGraph, modelEntities);
+					isDierctlyExecutable = GraphManager.isDirectlyExecutable(modelEntities, queryGraph);
+				}else{
+					//no ambigous fields found
+					isDierctlyExecutable = true;
 				}
-			}else{
+			}else{//saved query
 				ambiguousFields = getAmbiguousFields(query, modelEntities, modelFieldsMap);
 				//filter paths
 				GraphManager.filterPaths(ambiguousFields, pathFiltersMap, (QbeEngineConfig.getInstance().getPathsFiltersImpl()));
 				applySavedGraphPaths(oldQueryGraph,  ambiguousFields);
 				queryGraph = oldQueryGraph;
+				applySelectedRoles(roleSelection, modelEntities);
 			}
 			
 			if(queryGraph!=null){
@@ -201,8 +211,15 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			mapper.registerModule(simpleModule);
 			String serialized = mapper.writeValueAsString((Set<ModelFieldPaths>) ambiguousFields);
 			
+			JSONObject toReturn = new JSONObject();
+			toReturn.put(AMBIGUOUS_FIELDS_PATHS, serialized);
+			toReturn.put(AMBIGUOUS_ROLES, roleSelection);
+			toReturn.put(EXECUTE_DIRECTLY, isDierctlyExecutable);
+			
+			
+			
 			try {
-				writeBackToClient( serialized );
+				writeBackToClient( toReturn.toString() );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
@@ -240,7 +257,6 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			if(queryGraph!=null){
 				//check if the graph selected by the user is still valid
 				isTheOldQueryGraphValid = isTheOldQueryGraphValid(queryGraph,query);
-				
 			}
 			
 			if(queryGraph==null || !isTheOldQueryGraphValid){
@@ -275,7 +291,22 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 
 		PathInspector pi = new PathInspector(queryGraph, queryGraph.vertexSet());
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> paths = pi.getAllEntitiesPathsMap();
-		GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl()).applyDefault(paths, ambiguousFields);
+		(GraphManager.getDefaultCoverGraphInstance(QbeEngineConfig.getInstance().getDefaultCoverImpl())).applyDefault(paths, ambiguousFields);
+		
+	}
+	
+	public void applySelectedRoles(String serializedRoles, Set<IModelEntity> modelEntities){
+		cleanFieldsRolesMapInEntity(modelEntities);
+		try {
+			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("[]") && !serializedRoles.trim().equals("")){
+				JSONObject serializedRolesJson = JSONUtils.toJSONObject(serializedRoles);
+				updateFieldsRolesMapInEntity(serializedRolesJson, modelEntities);
+			}
+			
+		} catch (Exception e2) {
+			logger.error("Error deserializing the list of roles of the entities", e2);
+			throw new SpagoBIEngineRuntimeException("Error deserializing the list of roles of the entities", e2);
+		}
 	}
 
 	public Set<ModelFieldPaths> getAmbiguousFields(Query query, Set<IModelEntity> modelEntities, Map<IModelField, Set<IQueryField>> modelFieldsMap) {				
@@ -316,6 +347,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				}
 			}
 			
+
 			return ambiguousModelField;
 
 		} catch (Throwable t) {
@@ -339,18 +371,10 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 
 		String serializedRoles = this.getAttributeAsString(AMBIGUOUS_ROLES);
 		LogMF.debug(logger, AMBIGUOUS_ROLES + "is {0}", serialized);
+		query.setRelationsRoles(serializedRoles);
 		
-		cleanFieldsRolesMapInEntity(modelEntities);
-		try {
-			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("[]") && !serializedRoles.trim().equals("")){
-				JSONObject serializedRolesJson = JSONUtils.toJSONObject(serializedRoles);
-				updateFieldsRolesMapInEntity(serializedRolesJson, modelEntities);
-			}
-			
-		} catch (Exception e2) {
-			logger.error("Error deserializing the list of roles of the entities", e2);
-			throw new SpagoBIEngineRuntimeException("Error deserializing the list of roles of the entities", e2);
-		}
+		applySelectedRoles(serializedRoles, modelEntities);
+		
 		List<ModelFieldPaths> list = null;
 		if (StringUtilities.isNotEmpty(serialized)) {
 			try {

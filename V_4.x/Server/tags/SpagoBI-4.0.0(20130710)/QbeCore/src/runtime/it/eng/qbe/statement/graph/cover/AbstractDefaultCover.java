@@ -29,6 +29,11 @@ public abstract class AbstractDefaultCover implements IDefaultCoverGraph {
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   getConnectingRelatiosnhips(rootEntitiesGraph, entities);	
 		applyDefault(defaultConnections, ambiguousModelField);
 	}
+	
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField,   QueryGraph monimumGraph, Set<IModelEntity> entities){
+		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections =   getConnectingRelatiosnhips( monimumGraph, entities);	
+		applyDefault(defaultConnections, ambiguousModelField);
+	}
 
 	public void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField){			
 		applyDefault(defaultConnections, ambiguousModelField, false);
@@ -89,9 +94,12 @@ public abstract class AbstractDefaultCover implements IDefaultCoverGraph {
 		}
 	}
 	
+	public abstract  Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( QueryGraph monimumGraph, Set<IModelEntity> entities);
+	
 	public abstract Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
 		
 	public abstract QueryGraph  getCoverGraph( Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	
 	
 	
 }

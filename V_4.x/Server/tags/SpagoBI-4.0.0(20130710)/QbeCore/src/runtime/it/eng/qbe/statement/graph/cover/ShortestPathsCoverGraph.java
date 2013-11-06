@@ -89,20 +89,16 @@ public class ShortestPathsCoverGraph extends AbstractDefaultCover{
 	}
 	
 	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities) {
-
-
-
-
 		QueryGraph monimumGraph = getCoverGraph(rootEntitiesGraph, entities);
+		return getConnectingRelatiosnhips(monimumGraph, entities);
+	}
+	
+	public Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>>  getConnectingRelatiosnhips( QueryGraph monimumGraph, Set<IModelEntity> entities) {
 		PathInspector pi = new PathInspector(monimumGraph, monimumGraph.vertexSet());
 		Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship> >> minimumPaths = pi.getAllEntitiesPathsMap();
 
-
-
 		return minimumPaths;
 	}
-	
-	
 	
 
 }

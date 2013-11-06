@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -47,6 +48,7 @@ public class Query {
 	Map subqueries;
 
 	QueryGraph graph;
+	String relationsRoles;
 
 	public Query() {
 		selectFields = new ArrayList();		
@@ -80,6 +82,15 @@ public class Query {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getRelationsRoles() {
+		return relationsRoles;
+	}
+
+
+	public void setRelationsRoles(String relationsRoles) {
+		this.relationsRoles = relationsRoles;
 	}
 
 

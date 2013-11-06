@@ -135,15 +135,18 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, manageAmbiguousFields: function(callback, scope) {
 		
 		var currentQuery = this.getSelectedQuery();
-		
+		if (currentQuery) {
+			ambiguousRoles = this.getStoredRoles();
+		}
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.getQueries())
+				, ambiguousRoles : Ext.util.JSON.encode(ambiguousRoles)
 				, currentQueryId : (currentQuery) ? currentQuery.id : ''
 		};
 
 		Ext.Ajax.request({
 		    url: this.services['setCatalogue'],
-		    success: this.onCommitSuccessHandler.createDelegate(this, [callback, scope], true), // before invoking callback, we have to resolve ambiguous fields, if any
+		    success: this.onCommitSuccessHandler.createDelegate(this, [callback, scope, true], true), // before invoking callback, we have to resolve ambiguous fields, if any
 		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
 		    scope: this,
 		    params: params
@@ -152,9 +155,17 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	}
 	
 	,
-	onCommitSuccessHandler : function (response, options, callback, scope) {
-		var ambiguousFields = Ext.util.JSON.decode( response.responseText );
-		if (ambiguousFields.length == 0) {
+	onCommitSuccessHandler : function (response, options, callback, scope, forceOpenAmbiguous) {
+		var decodedResponce = Ext.util.JSON.decode( response.responseText );
+		var ambiguousFields  = Ext.util.JSON.decode(decodedResponce.ambiguousFieldsPaths);
+		var userRolesSolved = Ext.util.JSON.decode(decodedResponce.ambiguousRoles);
+
+		//open the ambiguous fields wizard but there is no ambiguous fields
+		if (forceOpenAmbiguous && (ambiguousFields.length == 0 )) {
+			Sbi.exception.ExceptionHandler.showInfoMessage(LN('sbi.qbe.queryeditor.noambiguousfields.msg'),LN('sbi.qbe.queryeditor.noambiguousfields.title'));
+		}
+
+		if ((!forceOpenAmbiguous && decodedResponce.executeDirectly) || (forceOpenAmbiguous && (ambiguousFields.length == 0 ) )) {
 			if (callback) {
 				callback.call(scope);  // proceed execution with the specified callback function
 			}
@@ -162,13 +173,14 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 			ambiguousFields = this.mergeAmbiguousFields(ambiguousFields);
 			var relationshipsWindow = new Sbi.qbe.RelationshipsWizardWindow({
 				ambiguousFields : ambiguousFields
-				, ambiguousRoles : this.userRolesSolved 
+				, ambiguousRoles : userRolesSolved 
 				, closeAction : 'close'
 				, modal : true
 			});
 			relationshipsWindow.show();
 			relationshipsWindow.on('apply', this.onAmbiguousFieldsSolved.createDelegate(this, [callback, scope], true), this);
 		}
+
 	}
 	
 	,

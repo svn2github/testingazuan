@@ -69,6 +69,8 @@ public class QueryJSONDeserializer implements IQueryDeserializer {
 				query.setName(queryJSON.optString(QuerySerializationConstants.NAME));
 				query.setDescription(queryJSON.optString(QuerySerializationConstants.DESCRIPTION));
 				query.setDistinctClauseEnabled(queryJSON.optBoolean( QuerySerializationConstants.DISTINCT ));
+				query.setRelationsRoles(queryJSON.optString( QuerySerializationConstants.RELATIONS_ROLES ));
+				
 				// TODO: move this in AnalysisStateLoader class
 				try {
 					query.setNestedExpression(queryJSON.getBoolean( QuerySerializationConstants.IS_NESTED_EXPRESSION ));

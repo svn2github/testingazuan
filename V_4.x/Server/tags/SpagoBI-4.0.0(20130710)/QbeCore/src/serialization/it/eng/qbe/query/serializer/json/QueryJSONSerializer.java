@@ -85,7 +85,8 @@ public class QueryJSONSerializer implements IQuerySerializer {
 			result.put(QuerySerializationConstants.DESCRIPTION, query.getDescription());
 			result.put(QuerySerializationConstants.DISTINCT, query.isDistinctClauseEnabled());
 			result.put(QuerySerializationConstants.IS_NESTED_EXPRESSION, query.isNestedExpression());
-
+			result.put(QuerySerializationConstants.RELATIONS_ROLES, query.getRelationsRoles());
+			
 			result.put(QuerySerializationConstants.FIELDS, recordsJOSN);
 
 			result.put(QuerySerializationConstants.FILTERS, filtersJSON);

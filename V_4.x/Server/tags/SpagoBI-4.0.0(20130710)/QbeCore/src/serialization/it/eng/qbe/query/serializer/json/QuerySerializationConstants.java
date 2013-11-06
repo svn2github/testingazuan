@@ -40,6 +40,8 @@ public class QuerySerializationConstants {
 	
 	public static final String DISTINCT = "distinct";
 	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";
+	public static final String RELATIONS_ROLES = "relationsRoles";
+	
 	
 	public static final String FILTERS = "filters";
 	public static final String HAVINGS = "havings";

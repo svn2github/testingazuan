@@ -43,10 +43,20 @@ public interface IDefaultCoverGraph {
 	public void applyDefault(Map<IModelEntity, Set<GraphPath<IModelEntity, Relationship>>> defaultConnections, Set<ModelFieldPaths> ambiguousModelField, boolean withSubpaths);
 	
 	/**
+	 * Activate the paths of ambiguousModelField that exist in defaultConnections
+	 * @param ambiguousModelField the set of Ambiguous paths to activate if containd in the cover graph
+	 * @param monimumGraph the graph cover graph
+	 * @param entities the set of entities involved in the cover graph
+	 */
+	public void applyDefault(Set<ModelFieldPaths> ambiguousModelField, QueryGraph monimumGraph, Set<IModelEntity> entities);
+	
+	/**
 	 * Calculate the cover graph  that involves all the entities "entities" of the graph rootEntitiesGraph
 	 * @param rootEntitiesGraph the graph
 	 * @param entities the set of entities involved in the cover graph
 	 * @return
 	 */
 	public QueryGraph getCoverGraph(Graph<IModelEntity, Relationship> rootEntitiesGraph, Set<IModelEntity> entities);
+	
+	
 }

@@ -83,7 +83,8 @@ Sbi.qbe.RelationshipsWizardRole = function(config) {
 
 Ext.extend(Sbi.qbe.RelationshipsWizardRole, Ext.TabPanel, {
 
-	relationshipsWizardsRoleForEntity: null
+	relationshipsWizardsRoleForEntity: null,
+	signature: null//from caller
 	
 	, init: function(){
 		if(!this.entities){
@@ -118,17 +119,12 @@ Ext.extend(Sbi.qbe.RelationshipsWizardRole, Ext.TabPanel, {
 
 	, getFormState: function(){
 		var stateArray = new Array();
-		var signature = "";
 		for(var i=0; i<this.relationshipsWizardsRoleForEntity.length; i++){
 			stateArray.push(this.relationshipsWizardsRoleForEntity[i].getFormState());
-    		var fields =this.entities[i].fields;
-    		for(var j=0; j<fields.length; j++){
-    			signature = signature+fields[j].queryFieldAlias;
-    		}
 		}
 		var state ={
 				entities : stateArray,
-				signature: signature
+				signature: this.signature
 		}
 		return state;
 	}

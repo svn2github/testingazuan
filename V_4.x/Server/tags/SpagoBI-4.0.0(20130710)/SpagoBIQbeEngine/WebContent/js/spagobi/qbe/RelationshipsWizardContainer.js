@@ -116,7 +116,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizardContainer, Ext.Panel, {
     
     , updateRoleWizard: function(roles){
     	this.rolesWizard.destroy();
-    	this.rolesWizard = new Sbi.qbe.RelationshipsWizardRole({entities: roles});
+    	
     	var roleSignature = "";
     	if(roles!=null){
     		for(var i=0; i<roles.length; i++){
@@ -128,15 +128,27 @@ Ext.extend(Sbi.qbe.RelationshipsWizardContainer, Ext.Panel, {
     		}
     	}
     	
-    	
-    	if(this.ambiguousRoles && this.ambiguousRoles.signature && roleSignature==this.ambiguousRoles.signature){
+    	this.rolesWizard = new Sbi.qbe.RelationshipsWizardRole({entities: roles, signature: roleSignature});
+
+    	if(this.ambiguousRoles && this.ambiguousRoles.signature && this.checkSignatures(roleSignature, this.ambiguousRoles.signature)){
         	this.rolesWizard.setFormState(this.ambiguousRoles.entities);
     	}
 
     	this.add(this.rolesWizard);
     }
     
-    ,getUserGraph: function(){
+
+	, checkSignatures: function(signature1, signature2){
+		if(signature1 == null || signature2 == null || signature1.length!=signature2.length){
+			return false;
+		}
+		if(signature1.length>10){
+			var substr = signature1.substring(0,9);
+			return signature2.indexOf(substr)>=0;
+		}
+	}
+    
+    , getUserGraph: function(){
     	var graph = {};
     	var userChoices = this.getUserChoices();
     	if(userChoices){

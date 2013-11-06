@@ -97,7 +97,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     ,
     initMainStore : function () {
     	this.mainStore = new Ext.data.JsonStore({
-    		idProperty : 'queryFieldAlias' 
+    		idProperty : 'entity' 
     		,fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias' ]
     		, data : this.ambiguousFields 
     	});
@@ -156,15 +156,16 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
 	        store : this.mainStore
 	        , colModel: new Ext.grid.ColumnModel({
 	            columns: [
-	                {header: LN('sbi.qbe.relationshipswizard.columns.queryName'), dataIndex: 'queryFieldAlias'}
-	                , {header: LN('sbi.qbe.relationshipswizard.columns.fieldName'), dataIndex: 'name'}
-	                , {header: LN('sbi.qbe.relationshipswizard.columns.entity'), dataIndex: 'entity', hidden : true}
+	             //   {header: LN('sbi.qbe.relationshipswizard.columns.queryName'), dataIndex: 'queryFieldAlias'}
+	              //  , {header: LN('sbi.qbe.relationshipswizard.columns.fieldName'), dataIndex: 'name'}
+	                 {header: LN('sbi.qbe.relationshipswizard.columns.entity'), dataIndex: 'entity', id: 'entity'}
 	            ]
 	        })
 	        , sm : new Ext.grid.RowSelectionModel({singleSelect : true})
 	        , frame : true
 	        , border : true  
 	        , collapsible : false
+	        , autoExpandColumn: 'entity'
 	        , layout : 'fit'
 	    	, collapsible: true
 	    	, region : 'west'
@@ -390,8 +391,14 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     	var toReturn = [];
     	this.mainStore.each(function (aRecord) {
     		var clone = Ext.apply({}, aRecord.data);
-    		//this.removeNonActiveOptions(clone);
-    		toReturn.push(clone);
+    		//the store contains only a field for each entity
+    		for(var i=0; i<this.ambiguousFields.length; i++){
+    			var field = this.ambiguousFields[i];
+    			if(field.entity == clone.entity){
+    				field.choices = clone.choices;
+    				toReturn.push(field);
+    			}
+    		}
     	}, this);
     	return toReturn;
 	}

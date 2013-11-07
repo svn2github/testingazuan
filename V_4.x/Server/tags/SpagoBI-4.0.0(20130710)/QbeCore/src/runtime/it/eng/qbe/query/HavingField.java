@@ -152,7 +152,7 @@ public class HavingField implements IQueryField{
 		
 		public Operand(String[] values, String description, String type,
 				String[] defaulttValues, String[] lastValues, IAggregationFunction function) {
-			super(values, description, type, defaulttValues, lastValues);
+			super(values, description, type, defaulttValues, lastValues, "");
 			this.function = function;
 		}
 	}

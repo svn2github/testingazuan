@@ -174,7 +174,7 @@ public abstract class AbstractJPQLStatementFilteringClause  extends AbstractJPQL
 			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.values[0] + "]");
 		
 
-			fieldName = parentStatement.getFieldAliasWithRoles(datamartField, targetQueryEntityAliasesMap, entityAliasesMaps);
+			fieldName = parentStatement.getFieldAliasWithRolesFromAlias(datamartField, targetQueryEntityAliasesMap, entityAliasesMaps, operand.alias);
 
 			
 			if (operand instanceof HavingField.Operand) {

@@ -13,6 +13,7 @@ import it.eng.qbe.statement.StatementCompositionException;
 import it.eng.qbe.statement.StatementTockenizer;
 import it.eng.qbe.statement.graph.bean.QueryGraph;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -49,6 +54,8 @@ public class Query {
 
 	QueryGraph graph;
 	String relationsRoles;
+	
+	Map<IModelEntity,Map<String, List<String>>> mapEntityRoleField;
 
 	public Query() {
 		selectFields = new ArrayList();		
@@ -91,6 +98,99 @@ public class Query {
 
 	public void setRelationsRoles(String relationsRoles) {
 		this.relationsRoles = relationsRoles;
+	}
+
+	public Map<IModelEntity, Map<String, List<String>>> getMapEntityRoleField(IDataSource datasource) {
+		if(mapEntityRoleField==null){
+			mapEntityRoleField = new HashMap<IModelEntity, Map<String,List<String>>>();
+			try {
+				initFieldsRolesMapInEntity(datasource);
+			} catch (Exception e) {
+				throw new SpagoBIEngineRuntimeException("Error parsing the roles of the query");
+			}
+			
+		}
+		return mapEntityRoleField;
+	}
+	
+	
+	public static Set<IModelEntity> getQueryEntities(Set<IModelField> mf){
+		Set<IModelEntity> me = new HashSet<IModelEntity>();
+		Iterator<IModelField> mfi = mf.iterator();
+		while (mfi.hasNext()) {
+			IModelField iModelField = (IModelField) mfi.next();
+			me.add(iModelField.getParent());
+			
+		}
+		return me;
+	}
+	
+	public void initFieldsRolesMapInEntity( IDataSource datasource) throws JSONException{
+		Map<IModelField, Set<IQueryField>> modelFieldsMap = getQueryFields(datasource);
+		Set<IModelField> modelFields = modelFieldsMap.keySet();
+		Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
+		initFieldsRolesMapInEntity(modelEntities, datasource);
+	}
+	
+	/**
+	 * For each entity creates a property taht contains the map role-->fields associated to that role 
+	 * @param serializedEntityRoles
+	 * @param modelEntities
+	 * @throws JSONException
+	 */
+	public void initFieldsRolesMapInEntity( Set<IModelEntity> modelEntities, IDataSource datasource) throws JSONException{
+		JSONObject serializedEntityRoles=null;
+		if(relationsRoles!=null && !relationsRoles.equals("[]")){
+			serializedEntityRoles = new JSONObject(relationsRoles);
+		}
+		if(serializedEntityRoles!=null && modelEntities!=null && serializedEntityRoles.getJSONArray("entities")!=null){
+			JSONArray serializedEntityRolesArray = serializedEntityRoles.getJSONArray("entities");
+			for(int k=0; k<serializedEntityRolesArray.length(); k++){
+				JSONArray serializedFieldsRoles = serializedEntityRolesArray.getJSONArray(k);
+				for(int i=0; i<serializedFieldsRoles.length(); i++){
+					JSONObject serializedRole = serializedFieldsRoles.getJSONObject(i);
+					
+					//JSONObject entity = serializedRole.getJSONObject("entity");
+					String role = serializedRole.getString("role");
+					JSONArray fields =  serializedRole.getJSONArray("fields");
+					
+					if(fields.length()>0){
+						IModelField datamartField = datasource.getModelStructure().getField(fields.getJSONObject(0).getString("id"));
+						IModelEntity me = datamartField.getParent();
+
+						Map<String, List<String>> mapRoleField = getMapEntityRoleField(datasource).get(me);
+						if(mapRoleField==null){
+							mapRoleField = new HashMap<String, List<String>>();
+						}
+
+						List<String> fieldsForRole = new ArrayList<String>();
+						
+						for(int j=0; j<fields.length(); j++){
+							JSONObject field = fields.getJSONObject(j);
+							String fieldId = field.getString("queryFieldAlias");
+							fieldsForRole.add(fieldId);
+						}
+						
+						mapRoleField.put(role, fieldsForRole);
+						getMapEntityRoleField(datasource).put(me,mapRoleField);
+					}
+				}
+			}
+		}
+	}
+	
+	public Set<String> getEntityRoleAlias(IModelEntity entity, IDataSource datasource) {
+		Map<String, List<String>> roleAliasMap = getMapEntityRoleField(datasource).get(entity);
+		Set<String> roleAlias = null;
+		if(roleAliasMap!=null){
+			roleAlias = roleAliasMap.keySet();
+		}
+		return roleAlias;
+	}
+
+	public void setMapEntityRoleField(
+			Map<IModelEntity, Map<String, List<String>>> mapEntityRoleField) {
+		this.mapEntityRoleField = mapEntityRoleField;
 	}
 
 

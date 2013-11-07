@@ -39,8 +39,7 @@ public class GraphUtilities {
 	
 	public static final String RELATIONSHIP_ID = "relationshipId";
 	public static final int maxPathLength = 5;
-	public static final String roleRelationsProperty = "roleRelationsProperty";
-	public static final String fieldRolePropery = "fieldRolePropery";
+
 	
 	/**
 	 * Removes the subpaths
@@ -230,47 +229,47 @@ public class GraphUtilities {
 		return false;
 	}
 	
-	/**
-	 * Check if the graph contains 2 nodes connected with more than 1 vertex
-	 * @param G the graph
-	 * @return the node connected with more than one relation with another node. Null if there is no node connected with more than one relation to another node 
-	 */
-	public static IModelEntity isMultiGraph(Graph G){
-		
-		Set<IModelEntity> vertexes = G.vertexSet();
-		if(vertexes!=null){
-			Iterator<IModelEntity> vertexIter = vertexes.iterator();
-
-			//For every node check if there is more than one edge that connect it with another node
-			while (vertexIter.hasNext()) {
-				IModelEntity vertex = (IModelEntity) vertexIter.next();
-				Set<Relationship> vertexConnection = G.edgesOf(vertex);
-				if(vertexConnection!=null && vertex.getProperties().get(GraphUtilities.roleRelationsProperty)==null){
-					Iterator<Relationship> vertexConnectionIter = vertexConnection.iterator();
-					List<IModelEntity> checkedEntites = new ArrayList<IModelEntity>();
-					
-					while (vertexConnectionIter.hasNext()) {
-						Relationship relationship = (Relationship) vertexConnectionIter.next();
-						IModelEntity src = relationship.getSourceEntity();
-						IModelEntity target = relationship.getTargetEntity();
-						IModelEntity otherEntity = src;//the entity not equal to vertex
-						
-						if(vertex.equals(src)){
-							otherEntity = target;
-						}
-						
-						if(checkedEntites.contains(otherEntity)){
-							return vertex;//there is more than one connection between 2 entities
-						}else{
-							checkedEntites.add(otherEntity);
-						}
-					}
-				}
-			}
-		}
-		return null;	
-	}
-	
+//	/**
+//	 * Check if the graph contains 2 nodes connected with more than 1 vertex
+//	 * @param G the graph
+//	 * @return the node connected with more than one relation with another node. Null if there is no node connected with more than one relation to another node 
+//	 */
+//	public static IModelEntity isMultiGraph(Graph G){
+//		
+//		Set<IModelEntity> vertexes = G.vertexSet();
+//		if(vertexes!=null){
+//			Iterator<IModelEntity> vertexIter = vertexes.iterator();
+//
+//			//For every node check if there is more than one edge that connect it with another node
+//			while (vertexIter.hasNext()) {
+//				IModelEntity vertex = (IModelEntity) vertexIter.next();
+//				Set<Relationship> vertexConnection = G.edgesOf(vertex);
+//				if(vertexConnection!=null && vertex.getProperties().get(GraphUtilities.roleRelationsProperty)==null){
+//					Iterator<Relationship> vertexConnectionIter = vertexConnection.iterator();
+//					List<IModelEntity> checkedEntites = new ArrayList<IModelEntity>();
+//					
+//					while (vertexConnectionIter.hasNext()) {
+//						Relationship relationship = (Relationship) vertexConnectionIter.next();
+//						IModelEntity src = relationship.getSourceEntity();
+//						IModelEntity target = relationship.getTargetEntity();
+//						IModelEntity otherEntity = src;//the entity not equal to vertex
+//						
+//						if(vertex.equals(src)){
+//							otherEntity = target;
+//						}
+//						
+//						if(checkedEntites.contains(otherEntity)){
+//							return vertex;//there is more than one connection between 2 entities
+//						}else{
+//							checkedEntites.add(otherEntity);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return null;	
+//	}
+//	
 	public static boolean isCyclic(DirectedGraph G){
 		CycleDetector cd = new CycleDetector(G);
 		return cd.detectCycles();

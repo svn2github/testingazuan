@@ -441,22 +441,27 @@ public class JPQLStatementWhereClause extends AbstractJPQLStatementFilteringClau
 							//							String sourceFieldName = (String)sourceField.getQueryName().getFirst();
 							IModelField destinationField =  destinationFields.get(i);
 							//							String destinationFieldName = (String)destinationField.getQueryName().getFirst();
-							List<String> sourceEntityAliases = parentStatement.getFieldAliasWithRolesList(sourceField, rootEntityAlias, entityAliasesMaps,relationship.getName());
-							List<String> targetEntityAliases = parentStatement.getFieldAliasWithRolesList(destinationField, rootEntityAlias, entityAliasesMaps,relationship.getName());
+							
+							Set<String> entityRoleAlias = parentStatement.getQuery().getEntityRoleAlias(sourceField.getParent(),parentStatement.getDataSource());
 
-							if(sourceEntityAliases.size()==1){//fist node of the fork
-								for(int j=0; j<targetEntityAliases.size();j++){
-									joinCondition = buildJoinClause(sourceEntityAliases.get(0), targetEntityAliases.get(j), relationship.getType());
-									logger.debug("succesful added auto-join condition [" + joinCondition + "]");
-									if(whereClause == null || whereClause.equals("")) {
-										whereClause = "WHERE ";
-									} else {
-										whereClause = whereClause + " AND ";
-									}						
-									whereClause += joinCondition;
+							if(entityRoleAlias==null || entityRoleAlias.size()==1){//no roles or source is the fist node of the fork
+								String sourceEntityAliases = parentStatement.getFieldAliasWithRoles(sourceField, rootEntityAlias, entityAliasesMaps, relationship.getName());
+								String targetEntityAliases = parentStatement.getFieldAliasWithRoles(destinationField, rootEntityAlias, entityAliasesMaps,relationship.getName());
 
-								} 
+								
+								joinCondition = buildJoinClause(sourceEntityAliases, targetEntityAliases, relationship.getType());
+								logger.debug("succesful added auto-join condition [" + joinCondition + "]");
+								if(whereClause == null || whereClause.equals("")) {
+									whereClause = "WHERE ";
+								} else {
+									whereClause = whereClause + " AND ";
+								}						
+								whereClause += joinCondition;
+
 							}else{
+								List<String> sourceEntityAliases = parentStatement.getFieldAliasWithRolesList(sourceField, rootEntityAlias, entityAliasesMaps);
+								List<String> targetEntityAliases = parentStatement.getFieldAliasWithRolesList(destinationField, rootEntityAlias, entityAliasesMaps);
+
 								for(int j=0; j<targetEntityAliases.size();j++){
 									joinCondition = buildJoinClause(sourceEntityAliases.get(j), targetEntityAliases.get(j), relationship.getType());
 									logger.debug("succesful added auto-join condition [" + joinCondition + "]");

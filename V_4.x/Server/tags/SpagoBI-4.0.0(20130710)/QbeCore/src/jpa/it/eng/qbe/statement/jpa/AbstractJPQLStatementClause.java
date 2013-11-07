@@ -122,7 +122,7 @@ public abstract class AbstractJPQLStatementClause implements IStatementClause {
 					}
 					logger.debug("Expression token [" + token + "] references the model field whose unique name is [" + modelField.getUniqueName()+ "]");
 
-					fieldName = parentStatement.getFieldAliasWithRoles(modelField, entityAliases, entityAliasesMaps);
+					fieldName = parentStatement.getFieldAliasNoRoles(modelField, entityAliases, entityAliasesMaps);
 					
 					logger.debug("Expression token [" + token + "] query name is equal to [" + fieldName + "]");
 					

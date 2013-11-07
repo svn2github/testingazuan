@@ -621,7 +621,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    		leftOperandValue: record.data.id
 				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
 				, leftOperandType: operandType
-				, leftOperandLongDescription: record.data.longDescription
+				, leftOperandLongDescription: record.data.entity + ' : ' + record.data.alias
+				, leftOperandAlias: record.data.alias
 
 			};
 	    	this.toggleCenterPanelToItem(1);

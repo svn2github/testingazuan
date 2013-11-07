@@ -159,7 +159,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			
 			Map<IModelField, Set<IQueryField>> modelFieldsMap = query.getQueryFields(getDataSource());
 			Set<IModelField> modelFields = modelFieldsMap.keySet();
-			Set<IModelEntity> modelEntities = getQueryEntities(modelFields);
+			Set<IModelEntity> modelEntities = query.getQueryEntities(modelFields);
 			
 			Map<String, Object> pathFiltersMap = new HashMap<String, Object>();
 			pathFiltersMap.put(CubeFilter.PROPERTY_MODEL_STRUCTURE,  getDataSource().getModelStructure());
@@ -193,7 +193,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 				GraphManager.filterPaths(ambiguousFields, pathFiltersMap, (QbeEngineConfig.getInstance().getPathsFiltersImpl()));
 				applySavedGraphPaths(oldQueryGraph,  ambiguousFields);
 				queryGraph = oldQueryGraph;
-				applySelectedRoles(roleSelection, modelEntities);
+				applySelectedRoles(roleSelection, modelEntities, query);
 			}
 			
 			if(queryGraph!=null){
@@ -210,7 +210,11 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			simpleModule.addSerializer(ModelObjectI18n.class, new ModelObjectInternationalizedSerializer(getDataSource(), getLocale()));
 			
 			mapper.registerModule(simpleModule);
-			String serialized = mapper.writeValueAsString((Set<ModelFieldPaths>) ambiguousFields);
+			
+			String serialized = this.getAttributeAsString(AMBIGUOUS_FIELDS_PATHS);
+			if(ambiguousFields.size()>0 || serialized==null){
+				serialized= mapper.writeValueAsString((Set<ModelFieldPaths>) ambiguousFields);	
+			}
 			
 			if(!query.isAliasDefinedInSelectFields()){
 				ambiguousWarinig="sbi.qbe.relationshipswizard.roles.validation.no.fields.alias";
@@ -302,12 +306,11 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		
 	}
 	
-	public void applySelectedRoles(String serializedRoles, Set<IModelEntity> modelEntities){
-		cleanFieldsRolesMapInEntity(modelEntities);
+	public void applySelectedRoles(String serializedRoles, Set<IModelEntity> modelEntities, Query query){
+		cleanFieldsRolesMapInEntity(query);
 		try {
 			if(serializedRoles!=null && !serializedRoles.trim().equals("{}") && !serializedRoles.trim().equals("[]") && !serializedRoles.trim().equals("")){
-				JSONObject serializedRolesJson = JSONUtils.toJSONObject(serializedRoles);
-				updateFieldsRolesMapInEntity(serializedRolesJson, modelEntities);
+				query.initFieldsRolesMapInEntity(getDataSource());
 			}
 			
 		} catch (Exception e2) {
@@ -380,7 +383,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 		LogMF.debug(logger, AMBIGUOUS_ROLES + "is {0}", serialized);
 		query.setRelationsRoles(serializedRoles);
 		
-		applySelectedRoles(serializedRoles, modelEntities);
+		applySelectedRoles(serializedRoles, modelEntities, query);
 		
 		List<ModelFieldPaths> list = null;
 		if (StringUtilities.isNotEmpty(serialized)) {
@@ -418,56 +421,9 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	}
 	
 	
-	private void cleanFieldsRolesMapInEntity(Set<IModelEntity> modelEntities){
-		if(modelEntities!=null){
-			Iterator<IModelEntity> modelEntitiesIter = modelEntities.iterator();
-			while (modelEntitiesIter.hasNext()) {
-				IModelEntity iModelEntity = (IModelEntity) modelEntitiesIter.next();
-				iModelEntity.getProperties().put(GraphUtilities.fieldRolePropery,null);
-			}
-		}
-	}
-	
-	/**
-	 * For each entity creates a property taht contains the map role-->fields associated to that role 
-	 * @param serializedEntityRoles
-	 * @param modelEntities
-	 * @throws JSONException
-	 */
-	private void updateFieldsRolesMapInEntity(JSONObject serializedEntityRoles, Set<IModelEntity> modelEntities) throws JSONException{
-		if(serializedEntityRoles!=null && modelEntities!=null && serializedEntityRoles.getJSONArray("entities")!=null){
-			JSONArray serializedEntityRolesArray = serializedEntityRoles.getJSONArray("entities");
-			for(int k=0; k<serializedEntityRolesArray.length(); k++){
-				JSONArray serializedFieldsRoles = serializedEntityRolesArray.getJSONArray(k);
-				for(int i=0; i<serializedFieldsRoles.length(); i++){
-					JSONObject serializedRole = serializedFieldsRoles.getJSONObject(i);
-					
-					//JSONObject entity = serializedRole.getJSONObject("entity");
-					String role = serializedRole.getString("role");
-					JSONArray fields =  serializedRole.getJSONArray("fields");
-					
-					if(fields.length()>0){
-						IModelField datamartField = getDataSource().getModelStructure().getField(fields.getJSONObject(0).getString("id"));
-						IModelEntity me = datamartField.getParent();
-
-						Map<String, List<String>> mapRoleField = (Map<String, List<String>>) me.getProperties().get(GraphUtilities.fieldRolePropery);
-						if(mapRoleField==null){
-							mapRoleField = new HashMap<String, List<String>>();
-						}
-
-						List<String> fieldsForRole = new ArrayList<String>();
-						
-						for(int j=0; j<fields.length(); j++){
-							JSONObject field = fields.getJSONObject(j);
-							String fieldId = field.getString("queryFieldAlias");
-							fieldsForRole.add(fieldId);
-						}
-						
-						mapRoleField.put(role, fieldsForRole);
-						me.getProperties().put(GraphUtilities.fieldRolePropery,mapRoleField);
-					}
-				}
-			}
+	public static void cleanFieldsRolesMapInEntity(Query query){
+		if(query!=null){
+			query.setMapEntityRoleField(null);
 		}
 	}
 
@@ -514,16 +470,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	}
 
 
-	private Set<IModelEntity> getQueryEntities(Set<IModelField> mf){
-		Set<IModelEntity> me = new HashSet<IModelEntity>();
-		Iterator<IModelField> mfi = mf.iterator();
-		while (mfi.hasNext()) {
-			IModelField iModelField = (IModelField) mfi.next();
-			me.add(iModelField.getParent());
-			
-		}
-		return me;
-	}
+
 
 	private QueryMeta deserializeMeta(JSONObject metaJSON) throws JSONException {
 		QueryMeta meta = new QueryMeta();

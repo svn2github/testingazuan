@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -91,7 +92,7 @@ public class JPQLStatementFromClause extends AbstractJPQLStatementClause {
 		} finally {
 			logger.debug("OUT");
 		}
-
+		
 		return buffer.toString().trim();
 	}
 	
@@ -99,19 +100,29 @@ public class JPQLStatementFromClause extends AbstractJPQLStatementClause {
 		if(entities!=null){
 			for(int i=0; i<entities.size(); i++){
 				IModelEntity me = entities.get(i);
-				List<List<Relationship>> roleAlias = (List<List<Relationship>>) me.getProperty(GraphUtilities.roleRelationsProperty);
+				
+				Map<String, List<String>> roleAliasMap = parentStatement.getQuery().getMapEntityRoleField( parentStatement.getDataSource()).get(me);
+				Set<String> roleAlias = null;
+				if(roleAliasMap!=null){
+					roleAlias = roleAliasMap.keySet();
+				}
+				
+				
 				String entityAlias = (String) entityAliases.get(me.getUniqueName());
 				
 				if(roleAlias!=null && roleAlias.size()>1){
 
-					for(int j=0; j<roleAlias.size(); j++){
-						List<Relationship> r = roleAlias.get(j);
-						String fromClauseElement = parentStatement.buildFromEntityAliasWithRoles(me, r, entityAlias);
+					Iterator<String> iter = roleAlias.iterator();
+					while(iter.hasNext()){
+						
+						String firstRole = iter.next();
+						String fromClauseElement = parentStatement.buildFromEntityAliasWithRoles(me, firstRole, entityAlias);
 						buffer.append(fromClauseElement);
-						if(j<roleAlias.size()-1){
+						if(iter.hasNext()){
 							buffer.append(",");
 						}
 					}
+
 					
 				}else{
 					String fromClauseElement = me.getName() + " "+ entityAlias;

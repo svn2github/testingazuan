@@ -7,6 +7,7 @@ package it.eng.qbe.statement.graph;
 
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
+import it.eng.qbe.query.AbstractSelectField;
 import it.eng.qbe.query.IQueryField;
 import it.eng.qbe.statement.graph.bean.ModelObjectI18n;
 import it.eng.qbe.statement.graph.bean.PathChoice;
@@ -85,6 +86,11 @@ public class ModelFieldPaths {
 		return queryField.getAlias();
 	}
 
-
+	public String getQueryFieldType() {
+		if(queryField instanceof AbstractSelectField){
+			return "select";
+		}
+		return "filter";
+	}
 
 }

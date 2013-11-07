@@ -284,7 +284,7 @@ public class ExtJsQbeTreeBuilder  {
 		//DatamartProperties datamartProperties = dataSource.getDataMartProperties();
 		String iconCls = field.getPropertyAsString("type");		
 		String fieldLabel = geFieldLabel( field );
-		String longDescription = QueryJSONSerializer.getFieldLongDescription( field, getDatamartLabels() );
+		String longDescription = QueryJSONSerializer.getFieldLongDescription( field, getDatamartLabels(), null );
 		String fieldTooltip = geFieldTooltip( field );
 		String entityLabel = geEntityLabel( parentEntity );
 		

@@ -11,9 +11,9 @@ import it.eng.qbe.datasource.jpa.JPADataSource;
 import it.eng.qbe.model.structure.IModelEntity;
 import it.eng.qbe.model.structure.IModelField;
 import it.eng.qbe.query.IQueryField;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.statement.AbstractStatement;
-import it.eng.qbe.statement.graph.GraphUtilities;
 import it.eng.qbe.statement.graph.bean.Relationship;
 import it.eng.spagobi.utilities.StringUtils;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Parent;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -215,13 +216,11 @@ public class JPQLStatement extends AbstractStatement {
 	}
 	
 	
-	public String getFieldAliasWithRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps){
-		
+	private String getEntityAlias(IModelField datamartField, Map entityAliases, Map entityAliasesMaps){
 		IModelEntity rootEntity;
 		
 		Couple queryNameAndRoot = datamartField.getQueryName();
-		
-		String queryName = (String) queryNameAndRoot.getFirst();
+
 		
 		if(queryNameAndRoot.getSecond()!=null){
 			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
@@ -235,11 +234,71 @@ public class JPQLStatement extends AbstractStatement {
 			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
 		}
 		
+		return rootEntityAlias;
+	}
+	
+	public String getFieldAliasNoRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps){
+		
+
+		
+		Couple queryNameAndRoot = datamartField.getQueryName();
+		
+		String queryName = (String) queryNameAndRoot.getFirst();
+		
+
+		String rootEntityAlias = getEntityAlias(datamartField, entityAliases, entityAliasesMaps);
+
 
 		return rootEntityAlias + "." + queryName;//queryName.substring(0,1).toLowerCase()+queryName.substring(1);
 	}
 	
-public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, String roleName){
+	/**
+	 * Creates a list of clauses. for each role of the entity create this clause part: role+.+field name.
+	 * This function is used to create the joins for the entities 
+	 * @param datamartField
+	 * @param entityAliases
+	 * @param entityAliasesMaps
+	 * @param roleName
+	 * @return
+	 */
+	public String getFieldAliasWithRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, String roleName){
+		
+		IModelEntity rootEntity;
+		
+		Couple queryNameAndRoot = datamartField.getQueryName();
+		
+		String queryName = (String) queryNameAndRoot.getFirst();
+		
+		if(queryNameAndRoot.getSecond()!=null){
+			rootEntity = (IModelEntity)queryNameAndRoot.getSecond(); 	
+		}else{
+			rootEntity = datamartField.getParent().getRoot(); 	
+		}
+		
+		
+		Set<String> entityRoleAlias = getQuery().getEntityRoleAlias(rootEntity, getDataSource());
+		
+		String rootEntityAlias = getEntityAlias(datamartField, entityAliases, entityAliasesMaps);
+
+		//if there is no role for this field
+		if(entityRoleAlias!=null){
+			rootEntityAlias = buildEntityAliasWithRoles(rootEntity, roleName, rootEntityAlias);
+		}
+
+		
+		return  rootEntityAlias + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1);
+	}
+	
+	/**
+	 * Creates a list of clauses. for each role of the entity create this clause part: role+.+field name.
+	 * This function is used to create the joins for the entities 
+	 * @param datamartField
+	 * @param entityAliases
+	 * @param entityAliasesMaps
+	 * @param roleName
+	 * @return
+	 */
+	public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map entityAliases, Map entityAliasesMaps){
 		
 		List<String> toReturn = new ArrayList<String>();
 		
@@ -255,25 +314,21 @@ public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map en
 			rootEntity = datamartField.getParent().getRoot(); 	
 		}
 		
-		List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
-		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
-		if(rootEntityAlias == null) {
-			rootEntityAlias = getNextAlias(entityAliasesMaps);
-			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+		
+		Map<String, List<String>> roleAliasMap = getQuery().getMapEntityRoleField( getDataSource()).get(rootEntity);
+		Set<String> roleAlias = null;
+		if(roleAliasMap!=null){
+			roleAlias = roleAliasMap.keySet();
 		}
 		
+		String rootEntityAlias = getEntityAlias(datamartField, entityAliases, entityAliasesMaps);
+		
 		if(roleAlias!=null && roleAlias.size()>1){
-
-			for(int j=0; j<roleAlias.size(); j++){
-				
-				List<Relationship> r = roleAlias.get(j);
-				Assert.assertTrue(r.size()>0, "For etity "+rootEntity.getName()+" there should be some path with more than one node");
-				String firstRole =  r.get(0).getName();
-				if(roleName.equals(firstRole)){
-					String rootEntityAliasWithRole = buildEntityAliasWithRoles(rootEntity, r, rootEntityAlias);
-					toReturn.add(rootEntityAliasWithRole + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1));
-				}
-
+			Iterator<String> iter = roleAlias.iterator();
+			while(iter.hasNext()){
+				String firstRole = iter.next();
+				String rootEntityAliasWithRole = buildEntityAliasWithRoles(rootEntity, firstRole, rootEntityAlias);
+				toReturn.add(rootEntityAliasWithRole + "." + queryName.substring(0,1).toLowerCase()+queryName.substring(1));
 			}
 		}else{
 			toReturn.add(rootEntityAlias + "." + queryName);//queryName.substring(0,1).toLowerCase()+queryName.substring(1));
@@ -282,13 +337,34 @@ public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map en
 		return toReturn;
 	}
 	
+	/**
+	 * Check if a select field with the alias exist and if so take it as field to get the query name.
+	 * @param datamartField
+	 * @param entityAliases
+	 * @param entityAliasesMaps
+	 * @param alias
+	 * @return
+	 */
+	public String getFieldAliasWithRolesFromAlias(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, String alias){
+		Query query = this.getQuery();
+		List<ISelectField> fields = query.getSelectFields(true);
+		if(alias!=null){
+			for(int i=0; i<fields.size();i++){
+				ISelectField field = fields.get(i);
+				if(field.getAlias().equals(alias) && field.getName().equals(datamartField.getUniqueName())){
+					return getFieldAliasWithRoles(datamartField, entityAliases, entityAliasesMaps, field);
+				}
+			}
+		}
+
+		return getFieldAliasNoRoles(datamartField, entityAliases, entityAliasesMaps);
+	}
 	
 	public String getFieldAliasWithRoles(IModelField datamartField, Map entityAliases, Map entityAliasesMaps, IQueryField queryField){
 		
 		IModelEntity rootEntity;
 		
 		Couple queryNameAndRoot = datamartField.getQueryName();
-		
 		String queryName = (String) queryNameAndRoot.getFirst();
 		
 		if(queryNameAndRoot.getSecond()!=null){
@@ -298,28 +374,13 @@ public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map en
 		}
 		
 		//List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
-		Map<String, List<String>> mapRoleField = (Map<String, List<String>>) rootEntity.getProperties().get(GraphUtilities.fieldRolePropery);
+		Map<String, List<String>> mapRoleField = getQuery().getMapEntityRoleField( getDataSource()).get(rootEntity);
 		
 		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
 		if(rootEntityAlias == null) {
 			rootEntityAlias = getNextAlias(entityAliasesMaps);
 			entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
 		}
-		
-//		if(roleAlias!=null && roleAlias.size()>1){
-//
-//			for(int j=0; j<roleAlias.size(); j++){
-//				List<Relationship> r = roleAlias.get(j);
-//				Assert.assertTrue(r.size()>0, "For etity "+rootEntity.getName()+" there should be some path with more than one node");
-//				String firstRole =  r.get(0).getName();
-//				List<String> fieldsWithRole = mapRoleField.get(firstRole);
-//				if(fieldsWithRole!=null && fieldsWithRole.contains(queryField.getAlias())){
-//					rootEntityAlias = buildEntityAliasWithRoles(rootEntity, r, rootEntityAlias);
-//					break;
-//				}
-//				//List<Relationship> r = roleAlias.get(new Double((Math.random()*roleAlias.size())%roleAlias.size()).intValue());
-//			}
-//		}
 		
 		if(mapRoleField!=null && mapRoleField.keySet().size()>0){
 			Iterator<String> iter = mapRoleField.keySet().iterator();
@@ -339,8 +400,6 @@ public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map en
 	}
 	
 	public String getEntityAliasWithRoles(IModelEntity rootEntity, Map entityAliases, Map entityAliasesMaps){
-		
-		List<List<Relationship>> roleAlias = (List<List<Relationship>>) rootEntity.getProperty(GraphUtilities.roleRelationsProperty);
 		
 		String rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
 		if(rootEntityAlias == null) {
@@ -376,17 +435,12 @@ public List<String> getFieldAliasWithRolesList(IModelField datamartField, Map en
 //		}
 //	}
 	
-	public String buildFromEntityAliasWithRoles(IModelEntity me, List<Relationship> rel, String entityAlias){
+	public String buildFromEntityAliasWithRoles(IModelEntity me, String rel, String entityAlias){
 		String fromClauseElement =  me.getName() + " "+ entityAlias;
 		//for(int i=0; i<rel.size(); i++){
-			fromClauseElement = fromClauseElement+("_"+rel.get(0).getName()).replace(" ", "");
+			fromClauseElement = fromClauseElement+("_"+rel).replace(" ", "");
 		//}
 		return fromClauseElement;
-	}
-	
-	public String buildEntityAliasWithRoles(IModelEntity me, List<Relationship> rel, String entityAlias){
-
-		return  (entityAlias+"_"+rel.get(0).getName()).replace(" ", "");
 	}
 	
 	

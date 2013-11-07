@@ -330,7 +330,7 @@ public class JPQLBusinessViewUtility {
 	private String getFieldString(IModelField datamartField, Map entityAliasesMaps, Query query){
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 	
-		return statement.getFieldAliasWithRoles(datamartField, entityAliases, entityAliasesMaps);
+		return statement.getFieldAliasNoRoles(datamartField, entityAliases, entityAliasesMaps);
 	}
 	
 	/**

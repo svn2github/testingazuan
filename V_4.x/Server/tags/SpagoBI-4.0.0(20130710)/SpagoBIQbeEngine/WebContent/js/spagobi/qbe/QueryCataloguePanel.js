@@ -168,7 +168,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 
 		if ((!forceOpenAmbiguous && decodedResponce.executeDirectly) || (forceOpenAmbiguous && (ambiguousFields.length == 0 ) )) {
 			if (callback) {
-				callback.call(scope);  // proceed execution with the specified callback function
+				callback.call(scope);  // proced execution with the specified callback function
 			}
 		} else {
 			
@@ -229,6 +229,12 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		//return query.ambiguousFields || [];
 	}
 	
+	,getQueryRoles : function (queryId) {
+		var cached = Sbi.cache.memory.get(queryId+"_roles");
+		return cached || [];
+		//return query.ambiguousFields || [];
+	}
+	
 	, validate: function(callback, scope) {
 		var params = {};
 		Ext.Ajax.request({
@@ -282,9 +288,16 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 			query = queryNode.props.query;
 			query.name = queryNode.text;
 			var cachedGraph = this.getqueryGraph(queryId);
+			var cachedRoles = this.getQueryRoles(queryId);
+			
 			if(cachedGraph){
 				query.graph =cachedGraph;
 			}
+
+			if(cachedRoles){
+				query.relationsRoles = cachedRoles;
+			}
+			
 			query.subqueries = [];
 			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
 				for(var i = 0; i < queryNode.childNodes.length; i++) {

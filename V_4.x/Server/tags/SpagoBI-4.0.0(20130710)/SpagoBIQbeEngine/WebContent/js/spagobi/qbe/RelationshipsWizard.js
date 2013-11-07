@@ -98,7 +98,7 @@ Ext.extend(Sbi.qbe.RelationshipsWizard, Ext.Panel, {
     initMainStore : function () {
     	this.mainStore = new Ext.data.JsonStore({
     		idProperty : 'entity' 
-    		,fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias' ]
+    		,fields : [ 'id', 'name', 'entity', 'choices','queryFieldName','queryFieldAlias','queryFieldType' ]
     		, data : this.ambiguousFields 
     	});
     }

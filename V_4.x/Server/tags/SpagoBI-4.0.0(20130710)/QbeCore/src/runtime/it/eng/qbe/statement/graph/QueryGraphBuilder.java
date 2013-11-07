@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jgrapht.Graph;
@@ -54,107 +52,107 @@ public class QueryGraphBuilder {
 			return null;
 		}
 		
-		cleanRoleRelationsPropert(multigraph);
-		IModelEntity nodeConnectedWithMoreThan1Connection =  GraphUtilities.isMultiGraph(multigraph);
-		if(nodeConnectedWithMoreThan1Connection!=null){
-			IModelEntity root = GraphUtilities.getRoot(multigraph);
-			List<List<Relationship>> previousRolePath  =  new ArrayList<List<Relationship>>();
-			previousRolePath.add(new ArrayList<Relationship>());
-			root.getProperties().put(GraphUtilities.roleRelationsProperty,previousRolePath);
-			logger.debug("There is more than one edge that starts from the entity "+nodeConnectedWithMoreThan1Connection.getUniqueName());
-			addOneAliasToGraph(multigraph, root, 0);
-			nodeConnectedWithMoreThan1Connection =  GraphUtilities.isMultiGraph(multigraph);
-		}
+//		cleanRoleRelationsPropert(multigraph);
+//		IModelEntity nodeConnectedWithMoreThan1Connection =  GraphUtilities.isMultiGraph(multigraph);
+//		if(nodeConnectedWithMoreThan1Connection!=null){
+//			IModelEntity root = GraphUtilities.getRoot(multigraph);
+//			List<List<Relationship>> previousRolePath  =  new ArrayList<List<Relationship>>();
+//			previousRolePath.add(new ArrayList<Relationship>());
+//			root.getProperties().put(GraphUtilities.roleRelationsProperty,previousRolePath);
+//			logger.debug("There is more than one edge that starts from the entity "+nodeConnectedWithMoreThan1Connection.getUniqueName());
+//			addOneAliasToGraph(multigraph, root, 0);
+//			nodeConnectedWithMoreThan1Connection =  GraphUtilities.isMultiGraph(multigraph);
+//		}
 
 		return multigraph;
 	}
 	
-	private void cleanRoleRelationsPropert(QueryGraph G){
-		logger.debug("IN");
-		logger.debug("Clean the lis");
-		Set<IModelEntity> vertexes = G.vertexSet();
-		if(vertexes!=null){
-			Iterator<IModelEntity> vertexIter = vertexes.iterator();
+//	private void cleanRoleRelationsPropert(QueryGraph G){
+//		logger.debug("IN");
+//		logger.debug("Clean the lis");
+//		Set<IModelEntity> vertexes = G.vertexSet();
+//		if(vertexes!=null){
+//			Iterator<IModelEntity> vertexIter = vertexes.iterator();
+//
+//			//For every node check if there is more than one edge that connect it with another node
+//			while (vertexIter.hasNext()) {
+//				IModelEntity vertex = (IModelEntity) vertexIter.next();
+//				vertex.getProperties().put(GraphUtilities.roleRelationsProperty, null);
+//			}
+//		}
+//		
+//	}
+//	
+//	private void addOneAliasToGraph(QueryGraph multigraph, IModelEntity forkNode, int deep){
+//		logger.debug("IN");
+//		logger.debug("Getting the map of the roles");
+//		Map<IModelEntity, List<Relationship>> edgeMap = GraphUtilities.getEdgeMap(multigraph, forkNode);
+//		
+//		//check to avoid infinite loops
+//		if(deep>GraphUtilities.maxPathLength){
+//			return;
+//		}
+//		deep++;
+//		
+//		//update the relations of the node
+//		List<List<Relationship>> previousRolePath  = (List<List<Relationship>>)forkNode.getProperties().get(GraphUtilities.roleRelationsProperty);
+//		
+//		
+//		Set<IModelEntity> keysList = edgeMap.keySet();
+//		if(keysList!=null){
+//			Iterator<IModelEntity> iter = keysList.iterator();
+//			while (iter.hasNext()) {
+//				IModelEntity iModelEntity = (IModelEntity) iter.next();
+//				List<Relationship> listRelations = edgeMap.get(iModelEntity);
+//				
+//				if(listRelations.size()==1){//only one relation between forkNode and iModelentity, so no other forks 
+//					logger.debug("There is only one relation between nodes["+forkNode.getName()+","+iModelEntity.getName() +"]");
+//					addRelationOnRolePath(iModelEntity, previousRolePath, listRelations.get(0));
+//					addOneAliasToGraph(multigraph, iModelEntity,deep);
+//				}else{
+//					logger.debug("There is more than one relation between nodes["+forkNode.getName()+","+iModelEntity.getName() +"]");
+//					forkRelationOnRolePath(iModelEntity, previousRolePath, listRelations);
+//					addOneAliasToGraph(multigraph, iModelEntity,deep);
+//				}
+//			}
+//		}
+//	}
+//	
+//	
+//	private void addRelationOnRolePath(IModelEntity iModelEntity, List<List<Relationship>> previousRolePath, Relationship relation){
+//
+//		List<List<Relationship>> newRoleRelations = new ArrayList<List<Relationship>>();
+//		
+//		for(int i=0; i<previousRolePath.size(); i++){
+//			List<Relationship> rolePath = previousRolePath.get(i);
+//			List<Relationship> newRolePath = new ArrayList<Relationship>();
+//			newRolePath.addAll(rolePath);
+//			newRolePath.add(relation);
+//			newRoleRelations.add(newRolePath);
+//		}
+//		
+//		iModelEntity.getProperties().put(GraphUtilities.roleRelationsProperty,newRoleRelations);
+//	}
 
-			//For every node check if there is more than one edge that connect it with another node
-			while (vertexIter.hasNext()) {
-				IModelEntity vertex = (IModelEntity) vertexIter.next();
-				vertex.getProperties().put(GraphUtilities.roleRelationsProperty, null);
-			}
-		}
-		
-	}
-	
-	private void addOneAliasToGraph(QueryGraph multigraph, IModelEntity forkNode, int deep){
-		logger.debug("IN");
-		logger.debug("Getting the map of the roles");
-		Map<IModelEntity, List<Relationship>> edgeMap = GraphUtilities.getEdgeMap(multigraph, forkNode);
-		
-		//check to avoid infinite loops
-		if(deep>GraphUtilities.maxPathLength){
-			return;
-		}
-		deep++;
-		
-		//update the relations of the node
-		List<List<Relationship>> previousRolePath  = (List<List<Relationship>>)forkNode.getProperties().get(GraphUtilities.roleRelationsProperty);
-		
-		
-		Set<IModelEntity> keysList = edgeMap.keySet();
-		if(keysList!=null){
-			Iterator<IModelEntity> iter = keysList.iterator();
-			while (iter.hasNext()) {
-				IModelEntity iModelEntity = (IModelEntity) iter.next();
-				List<Relationship> listRelations = edgeMap.get(iModelEntity);
-				
-				if(listRelations.size()==1){//only one relation between forkNode and iModelentity, so no other forks 
-					logger.debug("There is only one relation between nodes["+forkNode.getName()+","+iModelEntity.getName() +"]");
-					addRelationOnRolePath(iModelEntity, previousRolePath, listRelations.get(0));
-					addOneAliasToGraph(multigraph, iModelEntity,deep);
-				}else{
-					logger.debug("There is more than one relation between nodes["+forkNode.getName()+","+iModelEntity.getName() +"]");
-					forkRelationOnRolePath(iModelEntity, previousRolePath, listRelations);
-					addOneAliasToGraph(multigraph, iModelEntity,deep);
-				}
-			}
-		}
-	}
-	
-	
-	private void addRelationOnRolePath(IModelEntity iModelEntity, List<List<Relationship>> previousRolePath, Relationship relation){
 
-		List<List<Relationship>> newRoleRelations = new ArrayList<List<Relationship>>();
-		
-		for(int i=0; i<previousRolePath.size(); i++){
-			List<Relationship> rolePath = previousRolePath.get(i);
-			List<Relationship> newRolePath = new ArrayList<Relationship>();
-			newRolePath.addAll(rolePath);
-			newRolePath.add(relation);
-			newRoleRelations.add(newRolePath);
-		}
-		
-		iModelEntity.getProperties().put(GraphUtilities.roleRelationsProperty,newRoleRelations);
-	}
-
-
-	private void forkRelationOnRolePath(IModelEntity iModelEntity,  List<List<Relationship>> previousPath, List<Relationship> listRelations){
-		
-		List<List<Relationship>> newRoleRelations = new ArrayList<List<Relationship>>();
-		
-		
-		for(int i=0; i<previousPath.size(); i++){
-			List<Relationship> rolePath = previousPath.get(i);
-			for(int j=0; j<listRelations.size(); j++){
-				//creates a new path for each forking relation 
-				List<Relationship> clonedRelations = new ArrayList<Relationship>();
-				clonedRelations.addAll(rolePath);
-				clonedRelations.add(listRelations.get(j));
-				newRoleRelations.add(clonedRelations);
-			}
-		}
-		
-		iModelEntity.getProperties().put(GraphUtilities.roleRelationsProperty,newRoleRelations);
-	}
+//	private void forkRelationOnRolePath(IModelEntity iModelEntity,  List<List<Relationship>> previousPath, List<Relationship> listRelations){
+//		
+//		List<List<Relationship>> newRoleRelations = new ArrayList<List<Relationship>>();
+//		
+//		
+//		for(int i=0; i<previousPath.size(); i++){
+//			List<Relationship> rolePath = previousPath.get(i);
+//			for(int j=0; j<listRelations.size(); j++){
+//				//creates a new path for each forking relation 
+//				List<Relationship> clonedRelations = new ArrayList<Relationship>();
+//				clonedRelations.addAll(rolePath);
+//				clonedRelations.add(listRelations.get(j));
+//				newRoleRelations.add(clonedRelations);
+//			}
+//		}
+//		
+//		iModelEntity.getProperties().put(GraphUtilities.roleRelationsProperty,newRoleRelations);
+//	}
 	
 	
 	/**

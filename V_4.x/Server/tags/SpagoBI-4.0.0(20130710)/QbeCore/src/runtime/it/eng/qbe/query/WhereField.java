@@ -128,8 +128,12 @@ public class WhereField implements IQueryField{
 	public static class Operand extends it.eng.qbe.query.Operand {
 
 		public Operand(String[] values, String description, String type,
+				String[] defaulttValues, String[] lastValues, String alias) {
+			super(values, description, type, defaulttValues, lastValues, alias);
+		}
+		public Operand(String[] values, String description, String type,
 				String[] defaulttValues, String[] lastValues) {
-			super(values, description, type, defaulttValues, lastValues);
+			super(values, description, type, defaulttValues, lastValues, "");
 		}
 	}
 	

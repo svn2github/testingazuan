@@ -266,7 +266,10 @@ Ext.extend(Sbi.qbe.RelationshipsWizardContainer, Ext.Panel, {
     				entityFieldsMap[aAmbiguousField.entity]=new Array();
     			} 
     			var field = Ext.apply({},aAmbiguousField);
-    			entityFieldsMap[aAmbiguousField.entity].push(field);
+    			if(field.queryFieldType!="filter"){
+    				entityFieldsMap[aAmbiguousField.entity].push(field);
+    			}
+    			
     		}
     	}
     	return entityFieldsMap;

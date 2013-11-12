@@ -11,7 +11,7 @@ Bundle-ClassPath: .,
  libs/jackson-annotations-2.0.2.jar,
  libs/jackson-core-2.0.2.jar,
  libs/jackson-databind-2.0.2.jar,
- libs/spagobi-utils-json-4.0.0.jar
+ libs/spagobi-utils-json-4.1.0.jar
 Bundle-Activator: it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin$Implementation
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

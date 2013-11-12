@@ -375,7 +375,7 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 		physicalTable = ((BusinessTableImpl)table).getPhysicalTable();
 		tableName = physicalTable.getName();
 	
-		query = "Select distinct "+columnName1+" as col1 ,"+columnName2+" from  as col2 "+tableName;
+		query = "Select distinct "+columnName1+" as col1 ,"+columnName2+" as col2 from "+tableName;
 		
 		JDBCDataSet dataSet = new JDBCDataSet();
 		dataSet.setDataSource(getDimension().getModel().getParentModel().getDataSource());
@@ -391,6 +391,54 @@ public class HierarchyImpl extends ModelObjectImpl implements Hierarchy {
 		}
 		
 		return toReturn;
+	}
+
+	/** 
+	 * 	Return the values of the siblingColumnName on the table used for this hierarchy
+	 * 	
+	 */
+	@Override
+	public IDataStore getSiblingValues(String siblingColumnName) {
+		BusinessColumnSet table;
+		PhysicalTable physicalTable;
+		String tableName, query;
+
+		table = getTable();
+
+		physicalTable = ((BusinessTableImpl)table).getPhysicalTable();
+		tableName = physicalTable.getName();
+
+		query = "Select distinct "+siblingColumnName+" as val from "+tableName;
+
+		JDBCDataSet dataSet = new JDBCDataSet();
+		dataSet.setDataSource(getDimension().getModel().getParentModel().getDataSource());
+		dataSet.setQuery(query);
+		dataSet.loadData();
+		return dataSet.getDataStore();
+
+
+	}
+
+	/* 
+	 * Return the corresponding values on the default level column for each sibling column values
+	 */
+	@Override
+	public Map<Object, Object> getMembersAndSibling(String levelName,
+			String siblingColumnName) {
+		String levelColumnName;
+		
+		table = getTable();
+		EList<Level> levels = getLevels();
+		for(int i=0; i<levels.size(); i++){
+			Level l = levels.get(i);
+			if(l.getName().equals(levelName)){
+				levelColumnName = l.getColumn().getUniqueName();
+
+				return getMembersMapBetweenLevels(siblingColumnName,levelColumnName);
+			}
+		}
+		
+		throw new RuntimeException("The levelName is not a name valid for this hierarchy");
 	}
 
 } //HierarchyImpl

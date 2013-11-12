@@ -108,9 +108,15 @@ public interface Hierarchy extends ModelObject {
 	 * @generated
 	 */
 	EList<Level> getLevels();
+	
+	//Utility Methods ******************************** //
 
 	IDataStore getMembers(String columnName);
 	
 	Map<Object, Object> getMembersMapBetweenLevels(String columnName1, String columnName2);
+	
+	IDataStore getSiblingValues(String siblingColumnName);
+	
+	Map<Object, Object> getMembersAndSibling(String levelName, String columnName);
 	
 } // Hierarchy

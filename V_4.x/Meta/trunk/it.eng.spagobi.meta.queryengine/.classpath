@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-json-4.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jgrapht-jdk1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/db2jcc.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/hsqldb1_8_0_2.jar"/>
@@ -10,9 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/sqljdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/tdgssconfig.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/terajdbc4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-4.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-json-4.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-4.0.0.jar" sourcepath="/QbeCore"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.classic_0.9.19.v20100519-1505.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.core_0.9.19.v20100419-1216.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/logback/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar"/>

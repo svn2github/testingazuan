@@ -106,6 +106,7 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		, layout: 'border'
 		, tbar: this.toolbar
 		, items: items
+		, border: false
 	});	    
 	
 	// constructor
@@ -263,6 +264,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, initCenterPanel: function( config, doc ) {
 		this.miframe = new Ext.ux.ManagedIframePanel({
 			region:'center'
+			, border: false
 	        , frameConfig : {
 				// setting an initial iframe height in IE, to fix resize problem
 				autoCreate : Ext.isIE ? {style: 'height:500'} : { },

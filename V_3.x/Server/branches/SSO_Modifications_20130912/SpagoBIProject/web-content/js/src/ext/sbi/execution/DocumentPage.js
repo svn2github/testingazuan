@@ -33,6 +33,7 @@ Sbi.execution.DocumentPage = function(config, doc) {
 		id: 'documentexecutionpage' + Ext.id()
 		, layout: 'border'
 		, items: [this.miframe]
+		, border : false
 	});
 	
 	// constructor
@@ -120,6 +121,7 @@ Ext.extend(Sbi.execution.DocumentPage, Ext.Panel, {
 	        //, fitToParent: true  // not valid in a layout
 	        , disableMessaging :false
 	        , listeners: listeners
+	        , border : false
 	    });
 		
 		if(doc.refreshSeconds !== undefined && doc.refreshSeconds > 0){

@@ -65,6 +65,7 @@ Sbi.execution.RoleSelectionPage = function(config, doc) {
 		bodyStyle:'padding:16px 16px 16px 16px;'  	
 		, tbar: this.toolbar
 		, items :[this.roleComboBox]
+		, border : false
 		, listeners: {
 		    'render': {
 	        	fn: function() {

@@ -53,6 +53,7 @@ Sbi.kpi.KpiGUIDetail =  function(config) {
 		this.initDetail(c);
    
 		Sbi.kpi.KpiGUIDetail.superclass.constructor.call(this, c);
+
 };
 
 Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
@@ -74,6 +75,7 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 	selectedThr: null,
 	val: null,
 	ticksNumber: 10,
+	scaleNm : new Array(),
 	
 	initDetail: function(){	
 		this.chartid = Ext.id();
@@ -126,7 +128,20 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 		}
 
 		this.items =[this.titleItem, this.chartPanel, this.detailFields, this.threshFields];
-		
+	
+	    this.scaleNm['Day scale'] =' gg';
+		this.scaleNm['Ratio scale']=' %';	 
+	    this.scaleNm['Bytes/s']=' B/s';
+	    this.scaleNm['Mega Bytes']=' MB';
+	    this.scaleNm['Bytes']=' B';
+	    this.scaleNm['Kilo Bytes']=' KB';
+	    this.scaleNm['Giga Bytes']=' GB';
+	    this.scaleNm['Tera Bytes']=' TB';
+	    this.scaleNm['Milliseconds']=' ms';
+	    this.scaleNm['Seconds']=' s';
+	    this.scaleNm['Minutes']=' m';
+	    this.scaleNm['Hours']=' h';
+	    this.scaleNm['KBit/s']=' Kb/s';
 	}
 	, calculateMax: function(threshold){
 		if(threshold.max > this.maxChartValue){
@@ -152,7 +167,7 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 
 		}
 		if(this.tickInterval && this.tickInterval != null){
-			this.ticksNumber = ((this.maxChartValue - this.minChartValue)/this.tickInterval)+1;
+			this.ticksNumber = this.tickInterval + 1;
 		}
 		var config = 
 		{
@@ -175,9 +190,11 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 			if(Ext.isIE && (this.customChartName === undefined || this.customChartName == null || this.customChartName === 'null')){
 				y = 155;
 			}
-			if(!this.tickInterval || this.tickInterval == null || this.tickInterval == 0){
-				this.tickInterval = 20;
+			this.ticksNumber = 20;
+			if(this.tickInterval && this.tickInterval != null && this.maxChartValue != this.minChartValue){
+				this.ticksNumber = ((this.maxChartValue - this.minChartValue)/this.tickInterval);
 			}
+			console.log(this.ticksNumber);
 			if(this.dial == null){
 				// Build the dial
 				this.dial = drawDial({
@@ -190,7 +207,7 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 				    
 				    minAngle: -Math.PI,
 				    maxAngle: 0,
-				    tickInterval: this.tickInterval,
+				    tickInterval: this.ticksNumber,
 				    ranges: this.ranges
 				    , pivotLength: 70 //arrow length
 				    , backgroundRadius: 120
@@ -203,7 +220,7 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 			}else{
 				this.dial.setMax(this.maxChartValue);			
 				this.dial.setRanges(this.ranges);
-				this.dial.setTicks(this.maxChartValue);
+				this.dial.setTicks(this.maxChartValue, this.ticksNumber);
 				this.dial.setValue(value);
 				this.dial.setCircle();
 			}
@@ -338,15 +355,23 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 			this.threshFields.doLayout();
 		}
 		//value
+		var un='';
+		if(field.attributes && field.attributes.scaleName && field.attributes.scaleName != null){
+			un = this.scaleNm[field.attributes.scaleName];
+		}
 		this.valueItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.thresholds.value'), 
-													value: this.val, 
-													width: 0.49,
+													value: this.val +un, 
+													//width: 0.49,
 													style: 'margin-left:5px; padding-left:5px; font-style: italic; font-weight: bold;'
 														});
-		this.detailFields.add(this.valueItem );
+
+		this.detailFields.add(this.valueItem);
 
 		//target
-		var target = field.attributes.target;
+		var target = field.attributes.target  +un;
+		if(target === undefined){
+			target='';
+		}
 		this.targetItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.modelinstances.target'), 
 													style: 'padding-left:15px;',
 													//width: 150,
@@ -356,7 +381,9 @@ Ext.extend(Sbi.kpi.KpiGUIDetail , Ext.form.FormPanel, {
 		
 		//weight
 		var weight = field.attributes.weight;
-		
+		if(weight === undefined){
+			weight='';
+		}
 		this.weightItem = new Ext.form.DisplayField({fieldLabel: LN('sbi.kpis.weight'),
 													style: 'margin-left:15px;',
 													width: 150,

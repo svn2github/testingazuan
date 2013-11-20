@@ -340,3 +340,4 @@ commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext Man
 </script>
 
 <%@ include file="/WEB-INF/jsp/commons/importSbiJS410.jspf"%>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/ext-4.1.1a/overrides/overrides.js"/></script>

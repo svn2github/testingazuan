@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.model
 Bundle-SymbolicName: it.eng.spagobi.meta.model;singleton:=true
-Bundle-Version: 4.0.0
+Bundle-Version: 4.1.0
 Bundle-ClassPath: .,
  libs/misc/commons-lang-2.5.jar,
  libs/misc/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  libs/misc/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
  libs/misc/ch.qos.logback.slf4j_0.9.19.v20100519-1910.jar,
  libs/misc/org.slf4j.api_1.5.11.v20100519-1910.jar,
- libs/utils/spagobi-utils-4.0.0.jar,
- libs/utils/spagobi-utils-json-4.0.0.jar
+ libs/utils/spagobi-utils-4.1.0.jar,
+ libs/utils/spagobi-utils-json-4.1.0.jar
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: it.eng.spagobi.meta.model,

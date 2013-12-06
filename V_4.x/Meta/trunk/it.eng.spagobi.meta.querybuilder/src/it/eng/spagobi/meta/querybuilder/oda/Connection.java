@@ -9,8 +9,8 @@
 **/
 package it.eng.spagobi.meta.querybuilder.oda;
 
-import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,16 +55,17 @@ public class Connection implements IConnection
 			List<String> modelNames = new ArrayList<String>();
 			modelNames.add( modelName );
 		
-			ConnectionDescriptor connection = new ConnectionDescriptor();
-			connection.setName( modelName );
-			connection.setDialect( connProperties.getProperty("database_dialect") );			
-			connection.setJndiName( null );			
-			connection.setDriverClass( connProperties.getProperty("database_driver") );			
-			connection.setPassword( connProperties.getProperty("database_password") );
-			connection.setUrl( connProperties.getProperty("database_url") );
-			connection.setUsername( connProperties.getProperty("database_user") );	
+			
+			it.eng.spagobi.tools.datasource.bo.IDataSource dataSource = new it.eng.spagobi.tools.datasource.bo.DataSource();				
+			dataSource.setLabel(modelName);
+			dataSource.setHibDialectClass( connProperties.getProperty("database_dialect") );			
+			dataSource.setDriver( connProperties.getProperty("database_driver") );			
+			dataSource.setPwd( connProperties.getProperty("database_password") );
+			dataSource.setUrlConnection( connProperties.getProperty("database_url"));
+			dataSource.setUser( connProperties.getProperty("database_user") );
+			
 	
-			dataSourceProperties.put("connection", connection);
+			dataSourceProperties.put("datasource", dataSource);
 			dataSourceProperties.put("dblinkMap", new HashMap());
 			
 			String resourceFolderName = connProperties.getProperty("resource_folder");

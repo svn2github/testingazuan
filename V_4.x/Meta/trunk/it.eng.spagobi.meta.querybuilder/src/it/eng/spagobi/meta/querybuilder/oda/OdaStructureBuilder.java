@@ -13,6 +13,7 @@ import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.CompositeDataSourceConfiguration;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
+import it.eng.qbe.datasource.jpa.JPADataSource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +64,8 @@ public class OdaStructureBuilder {
 		compositeConfiguration.addSubConfiguration(new FileDataSourceConfiguration(persistenceUnitNames.get(0), modelJarFile));
 
 		logger.debug("OUT: Finish to load the data source for the model names "+persistenceUnitNames+"..");
-		IDataSource ds = DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, false); 
+		IDataSource ds = DriverManager.getDataSource(getDriverName(modelJarFile), compositeConfiguration, false);
+		//((JPADataSource)ds).getConfiguration().loadDataSourceProperties().put("datasource", ds);
 		return ds;
 	}
 

@@ -90,7 +90,7 @@ public class JarFilelLockAfterConfLoadedTestCase extends AbtractQueryBuilderTest
 		
 		IDataSourceConfiguration configuration;
 		configuration = new FileDataSourceConfiguration(modelName, jarFile);
-		configuration.loadDataSourceProperties().put("connection", connectionDescriptor);
+		configuration.loadDataSourceProperties().put("connection", dataSource);
 		
 		configuration.loadCalculatedFields();
 		configuration.loadDataSourceProperties();

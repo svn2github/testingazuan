@@ -9,7 +9,6 @@
 **/
 package it.eng.spagobi.meta.querybuilder.stress;
 
-import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
@@ -17,6 +16,7 @@ import it.eng.qbe.datasource.configuration.IDataSourceConfiguration;
 import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.querybuilder.TestCaseConstants;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,18 +41,19 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
 
 	// a model with no keys but with relationships
 	private static final File TEST_JAR_FILE = new File(TEST_INPUT_FOLDER, "datamart.jar");
-    ConnectionDescriptor connection;
+    it.eng.spagobi.tools.datasource.bo.IDataSource dataSource;
    
 
 
     protected void setUp() throws Exception {
-        connection = new ConnectionDescriptor();           
-        connection.setName( "a" );
-        connection.setDialect( TestCaseConstants.CONNECTION_DIALECT );           
-        connection.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );   
-        connection.setUrl( TestCaseConstants.CONNECTION_URL );
-        connection.setUsername( TestCaseConstants.CONNECTION_USER );       
-        connection.setPassword( TestCaseConstants.CONNECTION_PWD );
+		dataSource = new DataSource();			
+		
+		dataSource.setLabel("a");
+		dataSource.setHibDialectClass( TestCaseConstants.CONNECTION_DIALECT  );			
+		dataSource.setDriver( TestCaseConstants.CONNECTION_DRIVER );			
+		dataSource.setPwd( TestCaseConstants.CONNECTION_PWD  );
+		dataSource.setUrlConnection( TestCaseConstants.CONNECTION_URL );
+		dataSource.setUser(TestCaseConstants.CONNECTION_USER );
     }
 
     protected void tearDown() throws Exception {
@@ -63,7 +64,7 @@ public class JarFileLockEclipseLinkInitTestCase extends TestCase {
     private IDataSource getDataSource(File file) {
         IDataSourceConfiguration configuration;
         configuration = new FileDataSourceConfiguration("a", file);
-        configuration.loadDataSourceProperties().put("connection", connection);
+        configuration.loadDataSourceProperties().put("connection", dataSource);
         IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration,false);
         logger.debug("Datasource is [{}]",dataSource );
         return dataSource;

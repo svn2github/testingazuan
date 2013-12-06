@@ -9,7 +9,6 @@
 **/
 package it.eng.spagobi.meta.querybuilder;
 
-import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.DriverManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.configuration.FileDataSourceConfiguration;
@@ -18,6 +17,7 @@ import it.eng.qbe.datasource.jpa.JPADriverWithClassLoader;
 import it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator;
 import it.eng.spagobi.meta.model.serializer.EmfXmiSerializer;
 import it.eng.spagobi.meta.model.serializer.IModelSerializer;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 public abstract class AbtractQueryBuilderTestCase extends TestCase {
 	
 	protected ClassLoader classLoader;
-	protected ConnectionDescriptor connectionDescriptor;
+	protected it.eng.spagobi.tools.datasource.bo.IDataSource dataSource;
 	protected IModelSerializer serializer;
 	protected JpaMappingJarGenerator jarGenerator;	
 	protected String modelName;
@@ -85,23 +85,25 @@ public abstract class AbtractQueryBuilderTestCase extends TestCase {
 	}
 	
 	protected void setUpConncetion() {
-		connectionDescriptor = new ConnectionDescriptor();			
-		connectionDescriptor.setName( "My Model" );
-		connectionDescriptor.setDialect( TestCaseConstants.CONNECTION_DIALECT );			
-		connectionDescriptor.setDriverClass( TestCaseConstants.CONNECTION_DRIVER  );	
-		connectionDescriptor.setUrl( TestCaseConstants.CONNECTION_URL );
-		connectionDescriptor.setUsername( TestCaseConstants.CONNECTION_USER );		
-		connectionDescriptor.setPassword( TestCaseConstants.CONNECTION_PWD );
+		dataSource = new DataSource();			
+		
+		dataSource.setLabel(modelName);
+		dataSource.setHibDialectClass( TestCaseConstants.CONNECTION_DIALECT  );			
+		dataSource.setDriver( TestCaseConstants.CONNECTION_DRIVER );			
+		dataSource.setPwd( TestCaseConstants.CONNECTION_PWD  );
+		dataSource.setUrlConnection( TestCaseConstants.CONNECTION_URL );
+		dataSource.setUser(TestCaseConstants.CONNECTION_USER );
+		
 	}
 	
 	protected void tearDownConncetion() {
-		connectionDescriptor = null;
+		dataSource = null;
 	}
 	
 	protected IDataSource createDataSource(File jarFile) {
 		IDataSourceConfiguration configuration;
 		configuration = new FileDataSourceConfiguration(modelName, jarFile);
-		configuration.loadDataSourceProperties().put("connection", connectionDescriptor);
+		configuration.loadDataSourceProperties().put("datasource", dataSource);
 		IDataSource dataSource = DriverManager.getDataSource(JPADriverWithClassLoader.DRIVER_ID, configuration, false);
 		
 		return dataSource;

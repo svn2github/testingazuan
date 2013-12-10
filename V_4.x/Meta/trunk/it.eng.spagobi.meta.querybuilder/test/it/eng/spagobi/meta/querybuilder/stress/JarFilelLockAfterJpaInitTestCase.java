@@ -133,13 +133,13 @@ public class JarFilelLockAfterJpaInitTestCase extends AbtractQueryBuilderTestCas
 	
 	private Map<String,Object> buildEmptyConfiguration() {
 		Map<String,Object> cfg = new HashMap<String,Object>();
-		if(dataSource.checkIsJndi()) {
-			cfg.put("javax.persistence.nonJtaDataSource", dataSource.getJndi());
+		if(connectionDescriptor.isJndiConncetion()) {
+			cfg.put("javax.persistence.nonJtaDataSource", connectionDescriptor.getJndiName());
 		} else {
-			cfg.put("javax.persistence.jdbc.url", dataSource.getUrlConnection());
-			cfg.put("javax.persistence.jdbc.password", dataSource.getPwd());
-			cfg.put("javax.persistence.jdbc.user", dataSource.getUser());
-			cfg.put("javax.persistence.jdbc.driver", dataSource.getDriver());
+			cfg.put("javax.persistence.jdbc.url", connectionDescriptor.getUrl());
+			cfg.put("javax.persistence.jdbc.password", connectionDescriptor.getPassword());
+			cfg.put("javax.persistence.jdbc.user", connectionDescriptor.getUsername());
+			cfg.put("javax.persistence.jdbc.driver", connectionDescriptor.getDriverClass());
 		}
 		return cfg;
 	}

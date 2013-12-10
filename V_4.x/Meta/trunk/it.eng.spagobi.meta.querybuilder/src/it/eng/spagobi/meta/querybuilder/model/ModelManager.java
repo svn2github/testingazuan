@@ -9,6 +9,7 @@
 **/
 package it.eng.spagobi.meta.querybuilder.model;
 
+import it.eng.qbe.datasource.ConnectionDescriptor;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.spagobi.commons.exception.SpagoBIPluginException;
 import it.eng.spagobi.meta.generator.GeneratorDescriptor;
@@ -23,7 +24,6 @@ import it.eng.spagobi.meta.querybuilder.model.dao.IModelDAO;
 import it.eng.spagobi.meta.querybuilder.model.dao.ModelDAOFileImpl;
 import it.eng.spagobi.meta.querybuilder.oda.OdaStructureBuilder;
 import it.eng.spagobi.meta.querybuilder.ui.editor.DatabaseConnectionManager;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -164,10 +164,11 @@ public class ModelManager {
 	}
 	
 	public IDataSource createDataSource(String persistenceUnitName) {
-		it.eng.spagobi.tools.datasource.bo.IDataSource dataSource = getToolsDataSource();
+		ConnectionDescriptor connectionDescriptor = getConnectionDescriptor();
+		connectionDescriptor.setName( getBusinessModel().getName() );
 		
 		Map<String,Object> dataSourceProperties = new HashMap<String,Object>();
-		dataSourceProperties.put("datasource", dataSource);
+		dataSourceProperties.put("connection", connectionDescriptor);
 		
 		
 		File mappingDistFolder = new File(getModelMappingFolder(), "dist");
@@ -214,7 +215,7 @@ public class ModelManager {
 		return persistenceName;
 	}
 	
-	private it.eng.spagobi.tools.datasource.bo.IDataSource getToolsDataSource() {
+	private ConnectionDescriptor getConnectionDescriptor() {
 		
 		PhysicalModel physicalModel = getPhysicalModel();
 		
@@ -253,15 +254,15 @@ public class ModelManager {
 		
 		
 		//Create Connection
-		it.eng.spagobi.tools.datasource.bo.IDataSource dataSource = new DataSource();			
-		dataSource.setLabel( getBusinessModel().getName());
-		dataSource.setHibDialectClass( connectionDialect );			
-		dataSource.setDriver( connectionDriver );			
-		dataSource.setPwd( connectionPassword );
-		dataSource.setUrlConnection( connectionUrl);
-		dataSource.setUser( connectionUsername );
+		ConnectionDescriptor connectionDescriptor = new ConnectionDescriptor();			
+		connectionDescriptor.setName( getBusinessModel().getName());
+		connectionDescriptor.setDialect( connectionDialect );			
+		connectionDescriptor.setDriverClass( connectionDriver );			
+		connectionDescriptor.setPassword( connectionPassword );
+		connectionDescriptor.setUrl( connectionUrl);
+		connectionDescriptor.setUsername( connectionUsername );
 		
-		return dataSource;
+		return connectionDescriptor;
 	}
 	
 	private String getProperty(PhysicalModel physicalModel, String propertyName) {

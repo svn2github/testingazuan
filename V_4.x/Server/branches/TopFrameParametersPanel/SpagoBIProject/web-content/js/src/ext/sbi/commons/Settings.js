@@ -91,6 +91,12 @@ Sbi.settings.execution = {
 		, toolbar:{
 			hideForEngineLabels:[]	//list of engines without toolbar 
 		}
+		
+		, parametersselectionpage : {
+			parametersRegion : "north" // admissible values: east/north
+			, parametersSliderWidth : 300 // valid in case of east region
+			, parametersSliderHeight : 550 // valid in case of north region
+		}
 };
 
 /**

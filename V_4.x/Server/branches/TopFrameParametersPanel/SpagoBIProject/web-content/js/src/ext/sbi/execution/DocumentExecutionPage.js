@@ -30,9 +30,11 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		labelAlign: 'left'
 		, maskOnRender: true
 		, parametersSliderWidth: 300
+		, parametersSliderHeight: 250
 		, collapseParametersSliderOnExecution: false
 		, shortcutsHidden: false
-		
+		, parametersRegion : "east"
+
 		// private...
 		, isParameterPanelReady: false
 		, isParameterPanelReadyForExecution: false
@@ -131,6 +133,9 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
  */
 /**
  * @cfg {Object} subobject an object that contains information related to the subobject to execute. It is optional.
+ */
+/**
+ * @cfg {String} parametersRegion a String representing the region where parameters are placed; admissible values are "east" or "north"
  */
 
 Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
@@ -411,12 +416,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		this.infoPage = new Sbi.execution.InfoPage(config, doc);
 		this.documentPage = new Sbi.execution.DocumentPage(config, doc);
 		this.documentPage.on('crossnavigation', function(config) {
-			Sbi.trace('[ParametersSelectionPage.documentPage.on(\'crossnavigation\')]: IN');
+			Sbi.trace('[DocumentExecutionPage.documentPage.on(\'crossnavigation\')]: IN');
 			this.fireEvent('crossnavigation', config);
-			Sbi.trace('[ParametersSelectionPage.documentPage.on(\'crossnavigation\')]: OUT');
+			Sbi.trace('[DocumentExecutionPage.documentPage.on(\'crossnavigation\')]: OUT');
 		}, this);
 		this.documentPage.on('loadurlfailure', function(errors ) {
-			Sbi.trace('[ParametersSelectionPage.documentPage.on(\'loadurlfailure\')]: IN');
+			Sbi.trace('[DocumentExecutionPage.documentPage.on(\'loadurlfailure\')]: IN');
 			this.showInfo();
 			var messageBox = Ext.MessageBox.show({
 				title: 'Error',
@@ -428,7 +433,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				animEl: 'root-menu'        			
 			});
 			this.fireEvent('loadurlfailure', errors);
-			Sbi.trace('[ParametersSelectionPage.documentPage.on(\'loadurlfailure\')]: OUT');
+			Sbi.trace('[DocumentExecutionPage.documentPage.on(\'loadurlfailure\')]: OUT');
 		}, this);
 		//event comung from the document
 		this.documentPage.on('managebutton', function(button, property, value ) {
@@ -478,7 +483,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		}
 		
 		this.parametersSlider = new Ext.Panel({
-			region:'east'
+			region: config.parametersRegion
 			, title: LN('sbi.execution.parametersselection.parameters')
 			, border: true
 			, frame: false
@@ -489,7 +494,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			//, collapseMode: 'mini'
 			//, split: true
 			, autoScroll: true
-			, width: this.parametersSliderWidth 
+			, width: config.parametersRegion == 'east' ?  this.parametersSliderWidth : undefined
+			, height: config.parametersRegion == 'north' ? config.parametersSliderHeight : undefined
 			, layout: 'fit'
 			, items: [this.parametersPanel]
 		});
@@ -626,7 +632,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @method
 	 */
     , synchronize: function( executionInstance ) {
-    	Sbi.trace('[ParametersSelectionPage.synchronize]: IN');
+    	Sbi.trace('[DocumentExecutionPage.synchronize]: IN');
 		if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
 			this.executionInstance = executionInstance;
 			
@@ -641,16 +647,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			this.shortcutsPanelSynchronizationPending = true;
 			this.shortcutsPanel.synchronize( this.executionInstance );
 		}
-		Sbi.trace('[ParametersSelectionPage.synchronize]: OUT');
+		Sbi.trace('[DocumentExecutionPage.synchronize]: OUT');
 	}
 
     , synchronizeToolbar: function( executionInstance, documentMode ){
-    	Sbi.trace('[ParametersSelectionPage.synchronizeToolbar]: IN');
+    	Sbi.trace('[DocumentExecutionPage.synchronizeToolbar]: IN');
 		if(this.toolbar){
 			this.toolbar.documentMode = documentMode || 'INFO';
 			this.toolbar.synchronize( this, executionInstance);
 		}
-		Sbi.trace('[ParametersSelectionPage.synchronizeToolbar]: OUT');
+		Sbi.trace('[DocumentExecutionPage.synchronizeToolbar]: OUT');
     }
     
 	// ----------------------------------------------------------------------------------------
@@ -662,12 +668,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @method
 	 */
 	, showInfo: function() {
-		Sbi.trace('[ParametersSelectionPage.showInfo]: IN');
+		Sbi.trace('[DocumentExecutionPage.showInfo]: IN');
 		this.documentVisualizationModality = 'INFO';
 		this.synchronizeToolbar( this.executionInstance, this.documentVisualizationModality );
 		
 		this.documentPanel.getLayout().setActiveItem( 0 );
-		Sbi.trace('[ParametersSelectionPage.showInfo]: OUT');
+		Sbi.trace('[DocumentExecutionPage.showInfo]: OUT');
 	}
 	
 	/**
@@ -677,13 +683,13 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @method
 	 */
 	, showDocument: function() {
-		Sbi.trace('[ParametersSelectionPage.showDocument]: IN');
+		Sbi.trace('[DocumentExecutionPage.showDocument]: IN');
 		
 		this.documentVisualizationModality = 'VIEW';
 		this.synchronizeToolbar( this.executionInstance, this.documentVisualizationModality );
 		
 		this.documentPanel.getLayout().setActiveItem( 1 );
-		Sbi.trace('[ParametersSelectionPage.showDocument]: OUT');
+		Sbi.trace('[DocumentExecutionPage.showDocument]: OUT');
 	}
 	
 
@@ -694,7 +700,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 */
 	, collapseParametersSlider: function() {
 		this.parametersSlider.collapse(false);
-		Sbi.trace('[ParametersSelectionPage.collapseParametersSlider]: slider succesfully collapsed');
+		Sbi.trace('[DocumentExecutionPage.collapseParametersSlider]: slider succesfully collapsed');
 	}
 	
 	/**
@@ -704,7 +710,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 */
 	, expandParametersSlider: function() {
 		this.parametersSlider.expand(false);
-		Sbi.trace('[ParametersSelectionPage.expandParametersSlider]: slider succesfully expanded');
+		Sbi.trace('[DocumentExecutionPage.expandParametersSlider]: slider succesfully expanded');
 	}
 	
 	/**
@@ -714,7 +720,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 */
 	, showParametersSlider: function() {
 		this.parametersSlider.show();
-		Sbi.trace('[ParametersSelectionPage.showParametersSlider]: slider succesfully shown');
+		Sbi.trace('[DocumentExecutionPage.showParametersSlider]: slider succesfully shown');
 	}
 	
 	/**
@@ -724,7 +730,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 */
 	, hideParametersSlider: function() {
 		this.parametersSlider.hide();
-		Sbi.trace('[ParametersSelectionPage.hideParametersSlider]: slider succesfully hided');
+		Sbi.trace('[DocumentExecutionPage.hideParametersSlider]: slider succesfully hided');
 	}
 	
 	
@@ -889,7 +895,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @method
 	 */
 	, executeDocument: function(executionInstance) {
-		Sbi.trace('[ParametersSelectionPage.executeDocument]: IN');
+		Sbi.trace('[DocumentExecutionPage.executeDocument]: IN');
 		
 		var formState = this.parametersPanel.getFormState();
 		if(this.fireEvent('beforeexecution', this, this.executionInstance, formState) !== false){
@@ -898,7 +904,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			this.doExecuteDocumunt(executionInstance, formState);
 		}
 		this.showDocument();
-		Sbi.trace('[ParametersSelectionPage.executeDocument]: OUT');
+		Sbi.trace('[DocumentExecutionPage.executeDocument]: OUT');
 	}
 	
 	/**
@@ -909,20 +915,20 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @method
 	 */
 	, refreshDocument: function(executionInstance) {
-		Sbi.trace('[ParametersSelectionPage.refreshDocument]: IN');
+		Sbi.trace('[DocumentExecutionPage.refreshDocument]: IN');
 		
 		var formState = this.parametersPanel.getFormState();
 		if(this.fireEvent('beforeexecution', this, this.executionInstance, formState) !== false){
 			this.doExecuteDocumunt(executionInstance, formState);
 		}		
 		this.showDocument();
-		Sbi.trace('[ParametersSelectionPage.refreshDocument]: OUT');
+		Sbi.trace('[DocumentExecutionPage.refreshDocument]: OUT');
 	}
 	
 	, doExecuteDocumunt: function(executionInstance, formState) {
 		this.memorizeParametersInSession();
 		this.executionInstance.PARAMETERS = Sbi.commons.JSON.encode( formState );
-		Sbi.trace('[ParametersSelectionPage.doExecuteDocumunt]: Executing document with these parameters: ' + this.executionInstance.PARAMETERS);
+		Sbi.trace('[DocumentExecutionPage.doExecuteDocumunt]: Executing document with these parameters: ' + this.executionInstance.PARAMETERS);
 		this.documentPage.synchronize( this.executionInstance );
 	}
 

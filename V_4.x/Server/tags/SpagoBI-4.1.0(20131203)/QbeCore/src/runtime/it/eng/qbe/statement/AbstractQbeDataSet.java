@@ -17,7 +17,6 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.query.serializer.json.QueryJSONSerializer;
 import it.eng.qbe.query.serializer.json.QuerySerializationConstants;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
-import it.eng.spagobi.tools.dataset.bo.AbstractJDBCDataset;
 import it.eng.spagobi.tools.dataset.bo.DataSetVariable;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -133,6 +132,7 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setName(claculatedQueryField.getAlias());
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
+				dataStoreFieldMeta.setProperty("calculatedExpert", new Boolean(true));	
 				// FIXME also calculated field must have uniquename for uniformity
 				dataStoreFieldMeta.setProperty("uniqueName", claculatedQueryField.getAlias());
 				DataSetVariable variable = new DataSetVariable(claculatedQueryField.getAlias(), claculatedQueryField.getType(), claculatedQueryField.getExpression());
@@ -503,3 +503,4 @@ public abstract class AbstractQbeDataSet extends AbstractDataSet {
 	}
 	
 }
+		

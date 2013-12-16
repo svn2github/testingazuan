@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="generator" name="Generator" schema="schema/generator.exsd"/>
+   <extension
+         point="it.eng.spagobi.meta.generator.generator">
+      <generator
+            class="it.eng.spagobi.meta.generator.jpamapping.JpaMappingJarGenerator"
+            id="it.eng.spagobi.meta.generator.jpamapping"
+            name="Jpa Mapping Generator">
+      </generator>
+      <generator
+            class="it.eng.spagobi.meta.generator.mondrianschema.MondrianSchemaGenerator"
+            id="it.eng.spagobi.meta.generator.mondrianschema"
+            name="Mondrian Template Generator">
+      </generator>
+
+      </extension>
+
+</plugin>

@@ -206,7 +206,8 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
                           </div>
                           <div class="submit">
                               <input type="submit" value="<%=msgBuilder.getMessage("login")%>" />                              
-                              <p><%=msgBuilder.getMessage("noAccount")%> <a href="#" onclick="signup();"><%=msgBuilder.getMessage("signup")%></a></p> 
+                              <p><%=msgBuilder.getMessage("noAccount")%> <a href="#" onclick="signup();"></p>
+                              <p><%=msgBuilder.getMessage("signup")%></a> <%=msgBuilder.getMessage("or")%> <a href="AdapterHTTP?ACTION_NAME=START_ACTION_PUBLIC_USER&NEW_SESSION=TRUE"><%=msgBuilder.getMessage("gotopublicpage")%></a></p> 
                              <!--  <p>You don't have an account? <a href="#" onclick="signup();">Register</a></p> -->
                           </div>
                       </fieldset>

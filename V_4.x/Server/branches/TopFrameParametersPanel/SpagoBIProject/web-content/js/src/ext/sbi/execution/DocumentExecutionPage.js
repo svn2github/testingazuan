@@ -34,6 +34,7 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		, collapseParametersSliderOnExecution: false
 		, shortcutsHidden: false
 		, parametersRegion : "east"
+		, parametersInitiallyCollapsed : false
 
 		// private...
 		, isParameterPanelReady: false
@@ -77,6 +78,9 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		//autoScroll : true,
 		items: [{
 			layout: 'border',
+			layoutConfig: {
+				renderHidden: true
+			},
 			listeners: {
 			    'render': {
 	            	fn: function() {
@@ -499,6 +503,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, layout: 'fit'
 			, items: [this.parametersPanel]
 		});
+		
+		// if the parameters panel has to be collapsed, collapse it into a deferred function
+		if (config.parametersInitiallyCollapsed) {
+			this.parametersSlider.on('render', function(thePanel) {this.collapse.defer(2000, thePanel, [true]);}, this);
+		}
 		
 		return this.parametersSlider;
 	}

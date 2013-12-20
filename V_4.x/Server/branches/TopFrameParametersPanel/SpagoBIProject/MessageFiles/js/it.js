@@ -310,6 +310,9 @@ Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.readOnlyUserM
 Sbi.locale.ln['sbi.execution.parametersselection.message.page3.fillFormAndRefresh']  = 'Riempi il form sottostante e clicca sul pulsante di refresh sulla barra per rieseguire il documento';
 Sbi.locale.ln['sbi.execution.parametersselection.message.page3.refresh']  = 'Clicca sul pulsante di refresh sulla barra per rieseguire il documento';
 
+Sbi.locale.ln['sbi.execution.parametersselection.executionbutton.message'] = 'Visualizza i risultati';
+Sbi.locale.ln['sbi.execution.parametersselection.executionbutton.tooltip'] = 'Compila il form e clicca qui per visualizzare il risultato';
+
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.back'] = 'Torna alla pagina di selezione parametri';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.documentView'] = 'Torna alla pagina di vista documenti';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Riesegui il documento';

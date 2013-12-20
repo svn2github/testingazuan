@@ -576,8 +576,34 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			this.doLayout();
 		}, this);
 		
+		this.parametersPanel.on('executionbuttonclicked', this.parametersExecutionButtonHandler, this);
 		
 		return this.parametersPanel;
+	}
+	
+	, parametersExecutionButtonHandler : function () {
+		// if type is QBE inform user that will lose configurations
+		if (this.executionInstance.document.typeCode == 'DATAMART') {
+			if (Sbi.user.functionalities.contains('BuildQbeQueriesFunctionality') && Sbi.user.functionalities.contains('SaveSubobjectFunctionality')) {
+				
+				Ext.MessageBox.confirm(
+				    LN('sbi.generic.warning'),
+					LN('sbi.execution.executionpage.toolbar.qberefresh'),            
+					function(btn, text) {
+    					if (btn=='yes') {
+							this.refreshDocument();
+    					}
+					},
+					this
+				);
+			} else {
+				//user who cannot build qbe queries
+				this.refreshDocument();
+			}
+		} // it 's not a qbe
+		else {
+			this.refreshDocument();
+		}
 	}
 	
 	/**
@@ -775,7 +801,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		subobjectPanel.on('executionrequest', function(subObjectId) {
 			this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 			this.subobjectWin.cardPanel.getLayout().setActiveItem( 1 );
-			this.subobjectWin.executeButton.enable();
 			if(!this.subobjectWin.parametersPanel.sync) {
 				this.subobjectWin.parametersPanel.synchronize( this.executionInstance );
 				this.subobjectWin.parametersPanel.sync = true;
@@ -796,6 +821,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			this.subobjectWin.parametersPanel.setFormState(this.parametersPanel.getFormState());
 		}, this);
 		
+		parametersPanel.on('executionbuttonclicked', function() {
+          	 this.subobjectWin.close();
+             this.parametersPanel.setFormState(this.subobjectWin.parametersPanel.getFormState());
+             this.refreshDocument();
+        }, this);
+		
 		var cardPanel = new Ext.Panel({layout:'card'
 			, border: false
 			, hideMode: !Ext.isIE ? 'nosize' : 'display'
@@ -805,24 +836,13 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			]
 		});
 		
-		var executeButton = new Ext.Button({
-            text:'Execute',
-            disabled:true,
-            scope: this,
-            handler: function(){
-           	 this.subobjectWin.close();
-                this.parametersPanel.setFormState(this.subobjectWin.parametersPanel.getFormState());
-                this.refreshDocument();
-            }
-        });
-		
 		this.subobjectWin = new Ext.Window({
 			title: "Execute customized view...",
 			layout: 'fit',
 			width: 600,
 			height: 400,
 			modal: true,
-			buttons: [executeButton ,{
+			buttons: [{
                  text: 'Close',
                  scope: this,
                  handler: function(){
@@ -833,7 +853,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		});
 		this.subobjectWin.cardPanel = cardPanel;
 		this.subobjectWin.parametersPanel = parametersPanel;
-		this.subobjectWin.executeButton = executeButton;
 		this.subobjectWin.show();
 		
 		subobjectPanel.synchronize( this.executionInstance );		

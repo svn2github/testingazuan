@@ -330,6 +330,9 @@ Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.readOnlyUserM
 Sbi.locale.ln['sbi.execution.parametersselection.message.page3.fillFormAndRefresh']  = 'Riempi il form sottostante e clicca sul pulsante di refresh sulla barra per rieseguire il documento';
 Sbi.locale.ln['sbi.execution.parametersselection.message.page3.refresh']  = 'Clicca sul pulsante di refresh sulla barra per rieseguire il documento';
 
+Sbi.locale.ln['sbi.execution.parametersselection.executionbutton.message'] = 'Visualizza i risultati';
+Sbi.locale.ln['sbi.execution.parametersselection.executionbutton.tooltip'] = 'Compila il form e clicca qui per visualizzare il risultato';
+
 Sbi.locale.ln['sbi.execution.parametersselection.maximizelookup.title']  = 'Si inseriscano i valori o si copi una porzione di un documento xls';
 Sbi.locale.ln['sbi.execution.parametersselection.maximizelookup.ok']  = 'Ok';
 Sbi.locale.ln['sbi.execution.parametersselection.maximizelookup.clear']  = 'Pulisci';

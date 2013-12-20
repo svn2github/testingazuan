@@ -119,39 +119,55 @@ Sbi.execution.ParametersPanel = function(config, doc) {
 		
 	this.initViewpointsPanel(config, doc)
 	this.initTootlbar();
-
+	this.initExecutionButton();
+	
+	
 	c = Ext.apply({}, c, {
 		labelAlign: c.labelAlign,
 		tbar: this.toolbar,
         border: false,
         //bodyStyle:'padding:10px 0px 10px 10px',
         autoScroll: true,
-        items: [{
-            layout:'column',
-            width: this.formWidth, 
-            border: false,
-            items: columnsBaseConfig
-        }]
+        items: [
+            {
+            	items: this.executionButton
+                , border: false
+                , bodyStyle:'padding:5px 5px 5px 5px'
+            }
+	        , {
+	            layout:'column',
+	            width: this.formWidth, 
+	            border: false,
+	            items: columnsBaseConfig
+	        }]
 	});
 	
 	// constructor
     Sbi.execution.ParametersPanel.superclass.constructor.call(this, c);
 	
-	var columnContainer = this.items.get(0);
+	var columnContainer = this.items.get(1);
 	this.columns = [];
 	for(var i = 0; i < c.columnNo; i++) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 	
-	this.addEvents('beforesynchronize', 'synchronize',
-			'parametersForExecutionLoaded', 'viewpointexecutionrequest', 'applyviewpoint','hideparameterspanel');	
+	this.addEvents(
+			'beforesynchronize'
+			, 'synchronize'
+			, 'parametersForExecutionLoaded'
+			, 'viewpointexecutionrequest'
+			, 'applyviewpoint'
+			, 'hideparameterspanel'
+			, 'executionbuttonclicked'
+	);	
 };
 
 Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     
     services: null
     , executionInstance: null
-        
+    , executionButton: null
+    
     /**
      * parameters configuration as returned from getParametersForExecutionService. 
      * @see function loadParametersForExecution()
@@ -241,6 +257,19 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		var state = Ext.apply(defaultValuesFormState, this.preferenceState);
 		Sbi.debug('[ParametersPanel.clearParametersForm] : preference state applied to default values [' + Sbi.toSource(state) + ']');
 		this.setFormState(state);
+	}
+	
+	, initExecutionButton: function () {
+    	this.executionButton = new Ext.Button({
+	        text: LN('sbi.execution.parametersselection.executionbutton.message')
+	        , tooltip: LN('sbi.execution.parametersselection.executionbutton.tooltip')
+	        , handler: this.executionButtonHandler
+	        , scope: this
+		});
+	}
+	
+    , executionButtonHandler : function() {
+    	this.fireEvent('executionbuttonclicked', this);
 	}
 	
 	, initViewpointsPanel: function(config, doc){
@@ -685,12 +714,13 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			Sbi.debug('[ParametersPanel.getDefaultValuesFormState] : default values for field [' + field.name + '] is [' + value + ']');
 			var description = this.concatenateDefaultValuesDescription(behindParameter.defaultValues);
 			Sbi.debug('[ParametersPanel.getDefaultValuesFormState] : default description for field [' + field.name + '] is [' + description + ']');
-			if (value != null) {
+			if (!field.isTransient) {
+				// in case the parameters is transient (i.e. it is single-value and therefore hidden), it is not considered
+				Sbi.debug('[ParametersPanel.getDefaultValuesFormState] : field [' + field.name + '] is not transient');
 				state[field.name] = value;
 				state[field.name + '_field_visible_description'] = description;
 			} else {
-				// in case the default value is not set, we don't set into the state because in that case the null value wuold 
-				// overwrite the value of a single-value driver)
+				Sbi.debug('[ParametersPanel.getDefaultValuesFormState] : field [' + field.name + '] is transient and therefore skipped');
 			}
 		}
 		

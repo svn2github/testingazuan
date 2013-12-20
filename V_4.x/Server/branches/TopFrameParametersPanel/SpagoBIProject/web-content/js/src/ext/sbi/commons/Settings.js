@@ -67,7 +67,7 @@ Sbi.settings.mydata = {
  */
 Sbi.settings.execution = {
 		parametersPanel: {
-			columnNo: 1
+			columnNo: 2
 			, mandatoryFieldAdditionalString: '*' // a String that will be added in the label of the mandatory fields
 			, columnWidth: 290
 			, labelAlign: 'left'
@@ -95,7 +95,7 @@ Sbi.settings.execution = {
 		, parametersselectionpage : {
 			parametersRegion : "north" // admissible values: east/north
 			, parametersSliderWidth : 300 // valid in case of east region
-			, parametersSliderHeight : 550 // valid in case of north region
+			, parametersSliderHeight : 350 // valid in case of north region
 			, parametersInitiallyCollapsed : true
 		}
 };

@@ -199,7 +199,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     , columns: null
     , baseConfig: null
     , modality : null
-    , drawHelpMessage : true
+    , drawHelpMessage : false
     , mandatoryFieldAdditionalString: null
     
     , manageDataDependencies: true // not used so far but reserved for future use
@@ -685,8 +685,6 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				}, this);
 			}
 		}
-		
-		this.insertHelpMessage();
 		
 		this.doLayout();
 		

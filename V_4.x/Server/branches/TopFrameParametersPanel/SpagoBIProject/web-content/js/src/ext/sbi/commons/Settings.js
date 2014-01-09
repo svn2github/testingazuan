@@ -96,7 +96,8 @@ Sbi.settings.execution = {
 			parametersRegion : "north" // admissible values: east/north
 			, parametersSliderWidth : 300 // valid in case of east region
 			, parametersSliderHeight : 350 // valid in case of north region
-			, parametersInitiallyCollapsed : true
+			, parametersInitiallyCollapsed : true // applied only in case there are no parameters to fill
+			, collapseParametersSliderOnExecution : true
 		}
 };
 

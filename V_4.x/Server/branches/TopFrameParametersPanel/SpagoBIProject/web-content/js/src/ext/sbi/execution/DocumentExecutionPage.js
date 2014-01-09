@@ -305,7 +305,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @return {Boolean} true if #documentVisualizationModality is equal to 'INFO'
 	 */
 	, isInfoPageVisible: function() {
-		return getDocumentVisualizationModality() === 'INFO';
+		return this.getDocumentVisualizationModality() === 'INFO';
 	}
 	/**
 	 * @method
@@ -313,7 +313,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @return {Boolean} true if #documentVisualizationModality is equal to 'VIEW'
 	 */
 	, isDocumentPageVisible: function() {
-		return getDocumentVisualizationModality() === 'VIEW';
+		return this.getDocumentVisualizationModality() === 'VIEW';
 	}
 	
 	/**
@@ -505,7 +505,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		});
 		
 		// if the parameters panel has to be collapsed, collapse it into a deferred function
-		if (config.parametersInitiallyCollapsed) {
+		if (config.parametersInitiallyCollapsed  && this.isDocumentPageVisible()) {
 			this.parametersSlider.on('render', function(thePanel) {this.collapse.defer(2000, thePanel, [true]);}, this);
 		}
 		
@@ -958,6 +958,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		this.executionInstance.PARAMETERS = Sbi.commons.JSON.encode( formState );
 		Sbi.trace('[DocumentExecutionPage.doExecuteDocumunt]: Executing document with these parameters: ' + this.executionInstance.PARAMETERS);
 		this.documentPage.synchronize( this.executionInstance );
+		
+		if (this.collapseParametersSliderOnExecution) {
+			this.collapseParametersSlider(true);
+		}
 	}
 
 	

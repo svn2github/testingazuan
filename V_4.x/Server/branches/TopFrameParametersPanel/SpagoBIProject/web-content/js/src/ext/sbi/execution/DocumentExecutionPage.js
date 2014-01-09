@@ -278,7 +278,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
      * in the toolbar. It is hided on close an resynch on show. 
      */
     , favouritesWin: null
-   
+    
+    /**
+     * @property {Object} lastParametersFormState The last parameters form state applied for execution
+     */
+    , lastParametersFormState: null
+    
     , loadingMask: null
     , maskOnRender: null
    
@@ -299,6 +304,27 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
     	return this.documentVisualizationModality;
     }
 
+	/**
+	 * @method
+	 * 
+	 * @return {Object} the value of #lastParametersFormState
+	 */
+	, getLastParametersFormState : function () {
+		return this.lastParametersFormState;
+	}
+
+
+	/**
+	 * @method
+	 * 
+	 * Sets the value of #lastParametersFormState
+	 * 
+	 * @param {Object} state The last parameters form state applied to an execution 
+	 */
+	, setLastParametersFormState : function (state) {
+		this.lastParametersFormState = state;
+	}
+	
 	/**
 	 * @method
 	 * 
@@ -948,10 +974,54 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		var formState = this.parametersPanel.getFormState();
 		if(this.fireEvent('beforeexecution', this, this.executionInstance, formState) !== false){
 			this.doExecuteDocumunt(executionInstance, formState);
+			this.setLastParametersFormState(formState);
 		}		
 		this.showDocument();
 		Sbi.trace('[DocumentExecutionPage.refreshDocument]: OUT');
 	}
+	
+	, refreshLastExecution : function () {
+		Sbi.trace('[DocumentExecutionPage.refreshLastExecution]: IN');
+		if (this.isParametersFormChangedSinceLastExecution()) {
+			Ext.MessageBox.show({
+				title : LN('sbi.generic.warning')
+				, msg : LN('sbi.execution.executionpage.toolbar.refreshlastwarning')
+				, buttons : {ok:LN('sbi.general.continue'), cancel:LN('sbi.general.cancel')}
+				, fn : function(btn, text) {
+					if (btn == 'ok') {
+						this.doRefreshLastExecution();
+					}
+				}
+				, scope: this
+				, icon: Ext.MessageBox.QUESTION
+			});
+		} else {
+			this.doRefreshLastExecution();
+		}
+		Sbi.trace('[DocumentExecutionPage.refreshLastExecution]: OUT');
+	}
+	
+	, isParametersFormChangedSinceLastExecution : function () {
+		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: IN');
+		var lastState = this.getLastParametersFormState();
+		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: last state = ' + Sbi.commons.JSON.encode(lastState));
+		var formState = this.parametersPanel.getFormState();
+		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: current form state = ' + Sbi.commons.JSON.encode(formState));
+		var toReturn = Sbi.commons.JSON.encode(lastState) != Sbi.commons.JSON.encode(formState);
+		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: OUT : ' + toReturn);
+		return toReturn;
+	}
+	
+	, doRefreshLastExecution : function () {
+		Sbi.trace('[DocumentExecutionPage.doRefreshLastExecution]: IN');
+		var lastState = this.getLastParametersFormState();
+		if(this.fireEvent('beforeexecution', this, this.executionInstance, lastState) !== false){
+			this.doExecuteDocumunt(this.executionInstance, lastState);
+		}
+		this.showDocument();
+		Sbi.trace('[DocumentExecutionPage.doRefreshLastExecution]: OUT');
+	}
+	
 	
 	, doExecuteDocumunt: function(executionInstance, formState) {
 		this.memorizeParametersInSession();

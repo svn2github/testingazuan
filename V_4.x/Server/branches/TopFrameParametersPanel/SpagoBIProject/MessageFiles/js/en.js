@@ -8,6 +8,8 @@ Sbi.locale.ln['sbi.general.yes'] = 'Yes';
 Sbi.locale.ln['sbi.general.No'] = 'No';
 Sbi.locale.ln['sbi.general.close'] = 'Close';
 Sbi.locale.ln['sbi.general.ok'] = 'OK';
+Sbi.locale.ln['sbi.general.cancel'] = 'Cancel';
+Sbi.locale.ln['sbi.general.continue'] = 'Continue';
 
 Sbi.locale.ln['sbidomains.ds.Generic_Node'] = 'Generic Node';
 Sbi.locale.ln['sbidomains.ds.Generic_root'] = 'Generic Root';
@@ -308,6 +310,7 @@ Sbi.locale.ln['sbi.execution.parametersselection.executionbutton.tooltip'] = 'Fi
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.back'] = 'Go back to parameters selection page';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.documentView'] = 'Go back to documents selection page';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Refresh document execution';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.refreshlastwarning'] = 'Parameters\' form was changed; if you want to refresh execution with previous parameters\' values click on Continue; if you want to apply new parameters click on Cancel and then on the execution button inside the parameters\' panel.';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.rating'] = 'Rate document';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.print'] = 'Print docuemnt';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.send'] = 'Send document by e-mail';

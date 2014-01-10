@@ -491,6 +491,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, items:[{
 				layout: 'border'
 				, items: [this.documentPanel]
+				, border: false
 			}]
 		});
 		

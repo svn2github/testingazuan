@@ -35,7 +35,8 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		, shortcutsHidden: false
 		, parametersRegion : "east"
 		, parametersInitiallyCollapsed : false
-
+		, parametersSliderFloatable : true
+		
 		// private...
 		, isParameterPanelReady: false
 		, isParameterPanelReadyForExecution: false
@@ -523,6 +524,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			//, titleCollapse: true
 			//, collapseMode: 'mini'
 			//, split: true
+			, floatable : config.parametersSliderFloatable
 			, autoScroll: true
 			, width: config.parametersRegion == 'east' ?  this.parametersSliderWidth : undefined
 			, height: config.parametersRegion == 'north' ? config.parametersSliderHeight : undefined

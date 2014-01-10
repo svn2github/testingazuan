@@ -78,6 +78,7 @@ Sbi.settings.execution = {
 			, width: 295
 			, viewportWindowWidth: 500
 			, viewportWindowHeight: 500
+			, maxFieldHeight : 300  // max height to be available for rendering an input field; in case the field exceeds, scroll bars will appear
 		}
 
 		, shortcutsPanel: {
@@ -97,6 +98,8 @@ Sbi.settings.execution = {
 			, parametersSliderWidth : 300 // valid in case of east region
 			, parametersSliderHeight : 350 // valid in case of north region
 			, parametersInitiallyCollapsed : true // applied only in case there are no parameters to fill
+			, parametersSliderFloatable : false // true to allow clicking on collapsed parameters panel's bar to display the parameters' panel floated above the layout, 
+												// false to force the user to fully expand parameters' panel by clicking the expand button to see it again
 			, collapseParametersSliderOnExecution : true
 		}
 };

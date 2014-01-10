@@ -66,8 +66,13 @@ Sbi.settings.mydata = {
  * Execution  panel settings
  */
 Sbi.settings.execution = {
-		parametersPanel: {
-			columnNo: 2
+		
+		executionPanel : {
+			border : false    // true to display a border around document execution panel
+		}
+
+		, parametersPanel: {
+			columnNo: 1
 			, mandatoryFieldAdditionalString: '*' // a String that will be added in the label of the mandatory fields
 			, columnWidth: 290
 			, labelAlign: 'left'
@@ -94,7 +99,7 @@ Sbi.settings.execution = {
 		}
 		
 		, parametersselectionpage : {
-			parametersRegion : "north" // admissible values: east/north
+			parametersRegion : "east" // admissible values: east/north
 			, parametersSliderWidth : 300 // valid in case of east region
 			, parametersSliderHeight : 350 // valid in case of north region
 			, parametersInitiallyCollapsed : true // applied only in case there are no parameters to fill

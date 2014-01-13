@@ -11,11 +11,33 @@
 <html>
 <head>
 	
-	<script type="text/javascript" src="js/sbisdk-all-production.js"></script>
+		<!-- script type="text/javascript" src="js/sbisdk-all-production.js"></script-->
+	
+	
+	<script type="text/javascript" src="js/commons.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<script type="text/javascript" src="js/jsonp.js"></script>	
+	<script type="text/javascript" src="js/api.js"></script>
+	
 	<!--  script type="text/javascript" src="http://localhost:8080/SpagoBI/js/src/sdk/sbisdk-all-production.js"></script -->
 
 	<script type="text/javascript">
-
+		function exportDoc(outputType){
+			
+			var iframe = document.getElementById("execiframe");
+			
+			var iframeContWin = iframe.contentWindow;
+			var execPanel = iframeContWin.executionPanel;
+	
+			var obj = iframeContWin.config.document;
+			var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
+			if(exportUrl != null){
+	
+				window.open(exportUrl);
+			}
+			
+	
+		};
 		Sbi.sdk.services.setBaseUrl({
 	        protocol: 'http'     
 	        , host: 'localhost'
@@ -26,7 +48,7 @@
 		
 		execTest2 = function() {
 		    var html = Sbi.sdk.api.getDocumentHtml({
-				documentLabel: 'RPT_WAREHOUSE_PROF'
+				documentLabel: 'ReportBirt2'
 				, executionRole: '/spagobi/user'
 				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
@@ -55,7 +77,7 @@
 <PRE>
 example2Function = function() {
 	var html = Sbi.sdk.api.getDocumentHtml({
-		documentLabel: 'RPT_WAREHOUSE_PROF'
+		documentLabel: 'ReportBirt2'
 		, executionRole: '/spagobi/user'
 		, parameters: {warehouse_id: 19}
 		, displayToolbar: false
@@ -73,9 +95,11 @@ example2Function = function() {
 <hr>
 <div height="300px" width="800px" id='targetDiv'></div>
 <hr>
-
+	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
+	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
 <script type="text/javascript">
 	execTest2();
+
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
-
+ 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -32,72 +32,49 @@
 	        , controllerPath: 'servlet/AdapterHTTP'  
 	    });
 		
-		execTest1 = function() {
-		    var url = Sbi.sdk.api.getDocumentUrl({
+		execTest3 = function() {
+		    Sbi.sdk.api.injectDocument({
 				documentLabel: 'ReportBirt2'
 				, executionRole: '/spagobi/user'
 				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
 				, displaySliders: false
+				, target: 'targetDiv'
+				, height: '500px'
+				, width: '800px'
 				, iframe: {
 					style: 'border: 0px;'
 				}
 			});
-		    document.getElementById('execiframe').src = url;
 		};
 	</script>
 </head>
 
 
 <body>
-<h2>Example 1 : getDocumentUrl</h2>
+<h2>Example 3 : injectDocument into existing div</h2>
 <hr>
-<b>Description: </b> Use <i>getDocumentUrl</i> function to create the invocation url used to call execution service asking for a 
-specific execution (i.e. document + execution role + parameters) 
+<b>Description:</b> Use <i>injectDocument</i> function to inject into an existing div an html string that contains the definition of an iframe 
+	pointing to the execution service. The html string is generated internally using <i>getDocumentHtml</i> function.
 <p>
-<b>Code: </b>
-<p>
-<BLOCKQUOTE>
-<PRE>
-example1Function = function() {
-	var url = Sbi.sdk.api.getDocumentUrl({
-		documentLabel: 'ReportBirt2'
-		, executionRole: '/spagobi/user'
-		, parameters: {warehouse_id: 19}
-		, displayToolbar: false
-		, displaySliders: false
-		, iframe: {
-			style: 'border: 0px;'
-		}
-	});
 
-	document.getElementById('execiframe').src = url;
-};
-</PRE>
-</BLOCKQUOTE>
 <hr>
-<iframe id="execiframe" src='' height="400px" width="100%"></iframe>
+<div height="300px" width="100%" id='targetDiv'></div>
 <hr>
-	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
-	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
+
 <script type="text/javascript">
-	execTest1();
-	
+	execTest3();
 	function exportDoc(outputType){
-		
-		var iframe = document.getElementById("execiframe");
+		var iframeId= Sbi.sdk.api.getIframeId();
+		var iframe = document.getElementById(iframeId);
 		
 		var iframeContWin = iframe.contentWindow;
 		var execPanel = iframeContWin.executionPanel;
 
 		var obj = iframeContWin.config.document;
 		var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
-		if(exportUrl != null){
+		return exportUrl;
 
-			window.top.open(exportUrl);
-
-		}
-		
 	};
 </script>
 </body>

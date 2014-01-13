@@ -9,6 +9,7 @@
 Sbi.sdk.apply(Sbi.sdk.api, {
 	
 	elId: 0
+	, iframeId: null
 	
 	/*	
 	config = { 
@@ -66,10 +67,10 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		config.iframe = config.iframe || {};
 		
 		if(config.iframe.id === undefined) {
-			config.iframe.id = 'sbi-docexec-iframe-' + this.elId;
+			config.iframe.id = 'sbi-docexec-iframe-' + this.elId;			
 			this.elId = this.elId +1;
 		}
-		
+		iframeId = config.iframe.id;
 		documentHtml = '';
 		documentHtml += '<iframe';
 		documentHtml += ' id = "' + config.iframe.id + '" ';
@@ -110,6 +111,8 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		
 		targetEl.innerHTML = this.getDocumentHtml( config );
 	}
-
+	, getIframeId: function(){
+		return iframeId;
+	}
 
 });

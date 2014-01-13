@@ -11,11 +11,33 @@
 <html>
 <head>
 	
-	<script type="text/javascript" src="js/sbisdk-all-production.js"></script>
+	<!-- script type="text/javascript" src="js/sbisdk-all-production.js"></script-->
+	
+	
+	<script type="text/javascript" src="js/commons.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<script type="text/javascript" src="js/jsonp.js"></script>	
+	<script type="text/javascript" src="js/api.js"></script>	
+	<script type="text/javascript" src="js/services.js"></script>
+	
 	<!--  script type="text/javascript" src="http://localhost:8080/SpagoBI/js/src/sdk/sbisdk-all-production.js"></script -->
 
 	<script type="text/javascript">
-
+		function exportDoc(outputType){
+			var iframeId= Sbi.sdk.api.getIframeId();
+			var iframe = document.getElementById(iframeId);
+			
+			var iframeContWin = iframe.contentWindow;
+			var execPanel = iframeContWin.executionPanel;
+	
+			var obj = iframeContWin.config.document;
+			var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
+			if(exportUrl != null){
+	
+				window.open(exportUrl);
+			}	
+	
+		};
 		Sbi.sdk.services.setBaseUrl({
 	        protocol: 'http'     
 	        , host: 'localhost'
@@ -26,7 +48,7 @@
 		
 		execTest4 = function() {
 		    Sbi.sdk.api.injectDocument({
-				documentLabel: 'RPT_WAREHOUSE_PROF'
+				documentLabel: 'ReportBirt2'
 				, executionRole: '/spagobi/user'
 				, parameters: {'PARAMETERS': 'warehouse_id=19'}
 				, displayToolbar: false
@@ -57,7 +79,7 @@ differently from the previous the new execution module, fully based on ajax tech
 <PRE>
 example4Function = function() {
 	Sbi.sdk.api.injectDocument({
-		documentLabel: 'RPT_WAREHOUSE_PROF'
+		documentLabel: 'ReportBirt2'
 		, executionRole: '/spagobi/user'
 		, parameters: {'PARAMETERS': 'warehouse_id=19'}
 		, displayToolbar: false
@@ -74,9 +96,10 @@ example4Function = function() {
 <hr>
 <div height="500px" width="100%" id='targetDiv'></div>
 <hr>
-
+	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
+	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
 <script type="text/javascript">
-	execTest4();
+	execTest4();	
 </script>
 </body>
 </html>

@@ -11,7 +11,15 @@
 <html>
 <head>
 	
-	<script type="text/javascript" src="js/sbisdk-all-production.js"></script>
+	<!-- script type="text/javascript" src="js/sbisdk-all-production.js"></script-->
+	
+	
+	<script type="text/javascript" src="js/commons.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<script type="text/javascript" src="js/jsonp.js"></script>	
+	<script type="text/javascript" src="js/api.js"></script>	
+	<script type="text/javascript" src="js/services.js"></script>
+	
 	<!--  script type="text/javascript" src="http://localhost:8080/SpagoBI/js/src/sdk/sbisdk-all-production.js"></script -->
 
 	<script type="text/javascript">
@@ -26,7 +34,7 @@
 		
 		execTest3 = function() {
 		    Sbi.sdk.api.injectDocument({
-				documentLabel: 'RPT_WAREHOUSE_PROF'
+				documentLabel: 'ReportBirt2'
 				, executionRole: '/spagobi/user'
 				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
@@ -55,7 +63,7 @@
 <PRE>
 example3Function = function() {
 	Sbi.sdk.api.injectDocument({
-		documentLabel: 'RPT_WAREHOUSE_PROF'
+		documentLabel: 'ReportBirt2'
 		, executionRole: '/spagobi/user'
 		, parameters: {warehouse_id: 19}
 		, displayToolbar: false
@@ -64,6 +72,7 @@ example3Function = function() {
 		, height: '500px'
 		, width: '800px'
 		, iframe: {
+			id: 'execiframe',
 			style: 'border: 0px;'
 		}
 	});
@@ -73,9 +82,25 @@ example3Function = function() {
 <hr>
 <div height="300px" width="100%" id='targetDiv'></div>
 <hr>
-
+	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
+	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
 <script type="text/javascript">
 	execTest3();
+	function exportDoc(outputType){
+		var iframeId= Sbi.sdk.api.getIframeId();
+		var iframe = document.getElementById(iframeId);
+		
+		var iframeContWin = iframe.contentWindow;
+		var execPanel = iframeContWin.executionPanel;
+
+		var obj = iframeContWin.config.document;
+		var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
+		if(exportUrl != null){
+
+			window.open(exportUrl);
+		}	
+
+	};
 </script>
 </body>
 </html>

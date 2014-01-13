@@ -55,31 +55,11 @@
 <b>Description: </b> Use <i>getDocumentUrl</i> function to create the invocation url used to call execution service asking for a 
 specific execution (i.e. document + execution role + parameters) 
 <p>
-<b>Code: </b>
-<p>
-<BLOCKQUOTE>
-<PRE>
-example1Function = function() {
-	var url = Sbi.sdk.api.getDocumentUrl({
-		documentLabel: 'ReportBirt2'
-		, executionRole: '/spagobi/user'
-		, parameters: {warehouse_id: 19}
-		, displayToolbar: false
-		, displaySliders: false
-		, iframe: {
-			style: 'border: 0px;'
-		}
-	});
 
-	document.getElementById('execiframe').src = url;
-};
-</PRE>
-</BLOCKQUOTE>
 <hr>
 <iframe id="execiframe" src='' height="400px" width="100%"></iframe>
 <hr>
-	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
-	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
+
 <script type="text/javascript">
 	execTest1();
 	
@@ -92,12 +72,7 @@ example1Function = function() {
 
 		var obj = iframeContWin.config.document;
 		var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
-		if(exportUrl != null){
-
-			window.top.open(exportUrl);
-
-		}
-		
+		return exportUrl;
 	};
 </script>
 </body>

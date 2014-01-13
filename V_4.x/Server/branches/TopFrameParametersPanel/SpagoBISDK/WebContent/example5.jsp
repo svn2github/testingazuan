@@ -11,11 +11,35 @@
 <html>
 <head>
 	
-	<script type="text/javascript" src="js/sbisdk-all-production.js"></script>
+	<!-- script type="text/javascript" src="js/sbisdk-all-production.js"></script-->
+	
+	
+	<script type="text/javascript" src="js/commons.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<script type="text/javascript" src="js/jsonp.js"></script>	
+	<script type="text/javascript" src="js/api.js"></script>	
+	<script type="text/javascript" src="js/services.js"></script>
+	
 	<!--  script type="text/javascript" src="http://localhost:8080/SpagoBI/js/src/sdk/sbisdk-all-production.js"></script -->
 
 	<script type="text/javascript">
+	
+	function exportDoc(outputType){
+		var iframeId= Sbi.sdk.api.getIframeId();
+		var iframe = document.getElementById(iframeId);
+		
+		var iframeContWin = iframe.contentWindow;
+		var execPanel = iframeContWin.executionPanel;
 
+		var obj = iframeContWin.config.document;
+		var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
+		if(exportUrl != null){
+
+			window.open(exportUrl);
+		}	
+
+	};
+	
 		Sbi.sdk.services.setBaseUrl({
 	        protocol: 'http'     
 	        , host: 'localhost'
@@ -26,7 +50,7 @@
 		
 		execTest5 = function() {
 		    Sbi.sdk.api.injectDocument({
-				documentLabel: 'RPT_WAREHOUSE_PROF'
+				documentLabel: 'ReportBirt2'
 				, executionRole: '/spagobi/user'
 				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
@@ -56,7 +80,7 @@ pointing to the execution service. In this example the specified target div does
 <PRE>
 example5Function = function() {
 	Sbi.sdk.api.injectDocument({
-		documentLabel: 'RPT_WAREHOUSE_PROF'
+		documentLabel: 'ReportBirt2'
 		, executionRole: '/spagobi/user'
 		, parameters: {warehouse_id: 19}
 		, displayToolbar: false
@@ -72,7 +96,8 @@ example5Function = function() {
 </PRE>
 </BLOCKQUOTE>
 <hr>
-
+	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
+	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
 <script type="text/javascript">
 	execTest5();
 </script>

@@ -167,6 +167,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 			, fromDocTreeOrList : <%=comingFromDocOrTreeList%>
 	    }
 	};
+    executionPanel = null;
 	
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
@@ -179,7 +180,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
            		, modal: false
        		});
 		} else {
-			var executionPanel = new Sbi.execution.ExecutionPanel(config, object);
+			executionPanel = new Sbi.execution.ExecutionPanel(config, object);
 			var viewport = new Ext.Viewport({
 				layout: 'border'
 				, items: [

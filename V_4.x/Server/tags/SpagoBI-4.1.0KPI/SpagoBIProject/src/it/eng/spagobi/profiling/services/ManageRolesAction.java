@@ -79,6 +79,10 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 	private final String CREATE_DOCUMENT="createDocument";
 	private final String BM_CATEGORY_ID="bmCategoryId";
 	private final String BM_CATEGORIES="bmCategories";
+	private final String KPI_COMMENT_EDIT_ALL="kpiCommentEditAll";
+	private final String KPI_COMMENT_EDIT_MY="kpiCommentEditMy";
+	private final String KPI_COMMENT_DELETE="kpiCommentDelete";
+	
 	
 	public static String START = "start";
 	public static String LIMIT = "limit";
@@ -161,7 +165,10 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 			Boolean seeSubscriptions = getAttributeAsBoolean(SEE_SUBSCRIPTIONS);
 			Boolean seeToDoList = getAttributeAsBoolean(SEE_TODO_LIST);
 			Boolean createDocument = getAttributeAsBoolean(CREATE_DOCUMENT);
-			
+			Boolean kpiCommEditAll = getAttributeAsBoolean(KPI_COMMENT_EDIT_ALL);
+			Boolean kpiCommEditMy = getAttributeAsBoolean(KPI_COMMENT_EDIT_MY);
+			Boolean kpiCommDelete = getAttributeAsBoolean(KPI_COMMENT_DELETE);
+
 			List<String> bmCategoryIds = getAttributeAsList(BM_CATEGORIES);
 			if (bmCategoryIds.size() == 1){
 				if(bmCategoryIds.get(0).equals("")){
@@ -243,7 +250,10 @@ public class ManageRolesAction extends AbstractSpagoBIAction{
 				role.setIsAbleToSeeSubscriptions(seeSubscriptions);
 				role.setIsAbleToSeeToDoList(seeToDoList);
 				role.setIsAbleToCreateDocuments(createDocument);				
-				
+				role.setAbleToEditAllKpiComm(kpiCommEditAll);
+				role.setAbleToEditMyKpiComm(kpiCommEditMy);
+				role.setAbleToDeleteKpiComm(kpiCommDelete);
+					
 				try {
 					String id = getAttributeAsString(ID);
 					if(id != null && !id.equals("") && !id.equals("0")){							

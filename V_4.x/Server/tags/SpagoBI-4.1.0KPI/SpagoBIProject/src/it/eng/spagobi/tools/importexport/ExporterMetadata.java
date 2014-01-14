@@ -1731,7 +1731,7 @@ public class ExporterMetadata {
 			SbiDomains roleType = (SbiDomains)session.load(SbiDomains.class, role.getRoleTypeID());
 			hibRole.setRoleType(roleType);
 			hibRole.setRoleTypeCode(role.getRoleTypeCD());
-			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(role.isAbleToSaveIntoPersonalFolder()));
+/*			hibRole.setIsAbleToSaveIntoPersonalFolder(new Boolean(role.isAbleToSaveIntoPersonalFolder()));
 			hibRole.setIsAbleToSaveRememberMe(new Boolean(role.isAbleToSaveRememberMe()));
 			hibRole.setIsAbleToSeeMetadata(new Boolean(role.isAbleToSeeMetadata()));
 			hibRole.setIsAbleToSeeNotes(new Boolean(role.isAbleToSeeNotes()));;
@@ -1742,7 +1742,7 @@ public class ExporterMetadata {
 			hibRole.setIsAbleToBuildQbeQuery(role.isAbleToBuildQbeQuery());
 			hibRole.setIsAbleToDoMassiveExport(role.isAbleToDoMassiveExport());
 			hibRole.setIsAbleToEditWorksheet(role.isAbleToEditWorksheet());
-			hibRole.setIsAbleToManageUsers(role.isAbleToManageUsers());
+			hibRole.setIsAbleToManageUsers(role.isAbleToManageUsers());*/
 			session.save(hibRole);
 			tx.commit();
 		} catch (Exception e) {

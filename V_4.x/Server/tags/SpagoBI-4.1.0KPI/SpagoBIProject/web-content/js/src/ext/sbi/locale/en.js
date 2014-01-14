@@ -454,6 +454,10 @@ Sbi.locale.ln['sbi.attributes.ok.msg'] = 'Operation succeded';
 Sbi.locale.ln['sbi.attributes.result'] = 'Updates saved';
 Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Exit and re-enter SpagoBi';
 Sbi.locale.ln['sbi.roles.resultMsg'] = 'Operation succeeded';
+Sbi.locale.ln['sbi.roles.allKpiComment'] = 'All kpi comments';
+Sbi.locale.ln['sbi.roles.myKpiComment'] = 'Owned kpi comments';
+Sbi.locale.ln['sbi.roles.kpiComment'] = 'Kpi comments';
+Sbi.locale.ln['sbi.roles.delete'] = 'Delete';
 
 Sbi.locale.ln['sbi.roles.save'] = 'Save';
 Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Save into Personal Folder';

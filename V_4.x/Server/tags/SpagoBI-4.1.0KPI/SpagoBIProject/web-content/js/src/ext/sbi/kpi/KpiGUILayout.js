@@ -127,3 +127,7 @@ Ext.extend(Sbi.kpi.KpiGUILayout , Ext.Panel, {
 
 	
 });
+function execCrossNavigation(d,l,p,s,ti,t){
+	sendMessage({'label': l, parameters: p, windowName: d, subobject: s, target: t, title: ti},'crossnavigation');
+	
+};

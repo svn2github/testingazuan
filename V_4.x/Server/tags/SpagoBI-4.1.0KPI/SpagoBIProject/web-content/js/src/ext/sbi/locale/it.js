@@ -448,6 +448,11 @@ Sbi.locale.ln['sbi.attributes.ok.msg'] = 'Operazione avvenuta con successo';
 Sbi.locale.ln['sbi.attributes.result'] = 'Modifiche salvate';
 Sbi.locale.ln['sbi.attributes.resultMsg'] = 'Uscire e rientrare nel sistema';
 Sbi.locale.ln['sbi.roles.resultMsg'] = 'Operazione riuscita';
+Sbi.locale.ln['sbi.roles.allKpiComment'] = 'Tutti commenti kpi';
+Sbi.locale.ln['sbi.roles.myKpiComment'] = 'Propri commenti kpi';
+Sbi.locale.ln['sbi.roles.kpiComment'] = 'Commenti kpi';
+Sbi.locale.ln['sbi.roles.delete'] = 'Elimina';
+
 
 Sbi.locale.ln['sbi.roles.save'] = 'Salva';
 Sbi.locale.ln['sbi.roles.savePersonalFolder'] = 'Salva nella cartella personale';

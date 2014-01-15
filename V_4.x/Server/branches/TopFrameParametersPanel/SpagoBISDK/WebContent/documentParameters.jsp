@@ -18,6 +18,7 @@ If the parameter is manual input, a manul input appears.
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <%@page import="java.util.*"%>
 <%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
@@ -37,7 +38,7 @@ String user = (String) session.getAttribute("spagobi_user");
 String password = (String) session.getAttribute("spagobi_pwd");
 if (user != null && password != null) {
 	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
-	proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
+	proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DocumentsService");
 	Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
 	String role = request.getParameter("role");
 	session.setAttribute("spagobi_role", role);

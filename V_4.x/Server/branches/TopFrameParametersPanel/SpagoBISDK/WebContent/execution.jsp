@@ -20,6 +20,7 @@ This page use the SpagoBI execution tag, that displays an iframe pointing to Spa
 <%@page import="java.util.*"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -44,7 +45,8 @@ if (user != null && password != null) {
 		}
 	}
 	session.setAttribute("spagobi_current_document", document);
-	String role = (String) session.getAttribute("spagobi_role");
+	String role = request.getParameter("role");
+	//String role = (String) session.getAttribute("spagobi_role");
 	SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
 	StringBuffer parameterValues = new StringBuffer();
 	if (parameters != null && parameters.length > 0) {
@@ -64,16 +66,15 @@ if (user != null && password != null) {
 	}
 	%>
 	<spagobi:execution 
-			spagobiContext="http://localhost:8080/SpagoBI/"
+			spagobiContext="<%= SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/" %>"
 			userId="<%= user %>" 
 			password="<%= password %>" 
 	        documentId="<%= documentId.toString() %>"
 	        iframeStyle="height:500px; width:100%" 
 	        executionRole="<%= role %>"
-	        parametersStr="<%= parameterValues.toString() %>"
+	        parametersStr="<%= parameterValues.toString() %>"  
 	        displayToolbar="<%= Boolean.TRUE %>"
 	        displaySliders="<%= Boolean.TRUE %>" />
-
 	<%
 	String documentType = document.getType();
 	if (documentType.equals("REPORT") || documentType.equals("KPI")) {

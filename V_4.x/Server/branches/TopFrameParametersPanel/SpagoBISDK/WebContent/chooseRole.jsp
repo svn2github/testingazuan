@@ -19,6 +19,7 @@ If the user has only one valid role, he is automatically redirected to documentP
 
 <%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -41,18 +42,18 @@ if (user != null && password != null) {
 	String[] validRoles = null;
 	try {
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DocumentsService");
 		validRoles =  proxy.getCorrectRolesForExecution(documentId);
 		if (validRoles.length == 0) {
 			%>
 			User cannot execute document
 			<%
 		} else if (validRoles.length == 1) {
-			response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
+			response.sendRedirect("execution.jsp?role=" + validRoles[0]);
 		} else {
 			%>
 			<span><b>Choose the role</b></span>
-			<form action="documentParameters.jsp" method="post">
+			<form action="execution.jsp" method="post">
 				Choose role: 
 				<select name="role">
 				<%

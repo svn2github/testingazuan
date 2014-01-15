@@ -5,7 +5,8 @@
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
  
- <%@page import="java.io.InputStream"%>
+ <%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
+<%@page import="java.io.InputStream"%>
 <%@page import="java.util.Random"%>
 <%@page import="it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.datasets.bo.SDKDataSet"%>
@@ -41,7 +42,7 @@ if (user != null && password != null) {
 	InputStream is = null;
 	try { 
 		DataSetsSDKServiceProxy proxy = new DataSetsSDKServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DataSetsSDKService");		
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DataSetsSDKService");		
 		
 		//test modifica dataset esistente
 		dsId = (String)request.getParameter("ds_id");
@@ -53,20 +54,14 @@ if (user != null && password != null) {
 			//test inserimento nuovo dataset (tipo qbe)		
 			 Random randomGenerator = new Random();
 			 dataset = new SDKDataSet();		
-			 dataset.setLabel("testDataset_" + randomGenerator.nextInt(100));
-			 dataset.setName("test WS del Dataset ");
+			 dataset.setLabel("testDatasetQbe_" + randomGenerator.nextInt(100));
+			 dataset.setName("test WS del Dataset tipo Qbe ");
 			 //dataset.setDescription("test WS del Dataset tipo Qbe ");
-			 dataset.setType("SbiQbeDataSet");
-			 String configuration = "{\'qbeDatamarts\':\'\',\'qbeDataSource\':\'spagobi\',\'qbeSQLQuery\':\'select * from sbi_engines\',\'qbeJSONQuery\':\'select * from sbi_engines\'}";
-			 
-			// dataset.setType("SbiQueryDataSet");		
-			// String configuration = "{\"Query\":\"select * from sbi_checks \",\"queryScript\":\"\",\"queryScriptLanguage\":\"\",\"dataSource\":\"spagobi\"}";
-			 
-			 //dataset.setType("SbiFileDataSet");		
-			 //String configuration = "{\"Query":\"select * from sbi_checks \",\"queryScript\":\"\",\"queryScriptLanguage\":\"\",\"dataSource\":\"spagobi\"}";
-			 
-			 dataset.setConfiguration(configuration);			 					 
-	 		 //dataset.setJdbcDataSourceId(1);	
+			 dataset.setType("SbiQbeDataSet");		
+			 dataset.setDatamarts("testDatamart");
+	   		 dataset.setJsonQuery("query json test");
+	 	 	 dataset.setJdbcQuery("select * from sbi_engines");
+	 		 dataset.setJdbcDataSourceId(1);	
 		}
 		Integer result = proxy.saveDataset(dataset);
 		

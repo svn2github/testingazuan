@@ -4,6 +4,7 @@
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
 <%@page import="java.io.InputStream"%>
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="java.io.IOException"%>
@@ -30,7 +31,7 @@ if (user != null && password != null) {
 		String role = (String) session.getAttribute("spagobi_role");
 		SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DocumentsService");
 		SDKExecutedDocumentContent export = proxy.executeDocument(document, parameters, role,"text/html");
 		is = export.getContent().getInputStream();
 		ByteArrayOutputStream os = new ByteArrayOutputStream();

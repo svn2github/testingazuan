@@ -5,7 +5,8 @@
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
  
- <%@page import="java.io.InputStream"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
+<%@page import="java.io.InputStream"%>
 <%@page import="java.util.Random"%>
 <%@page import="it.eng.spagobi.sdk.proxy.DataSetsSDKServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.datasets.bo.SDKDataSet"%>
@@ -14,7 +15,8 @@
 /**
 This page invokes a SpagoBI web services in order to execute the dataset's methods.
 It's a JSP for ONLY case tests.
-To call it the url must be: http://localhost:8080/SpagoBISDK/dataset_execute.jsp
+To call it the url must be: http://localhost:8080/SpagoBISDK/dataset.jsp?ds_id=1
+The parameter 'ds_id' defines an existing dataset (modify test), if it isn't setted the insert method is called.
 */
 %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -34,24 +36,22 @@ To call it the url must be: http://localhost:8080/SpagoBISDK/dataset_execute.jsp
 */
 String user = "biadmin";
 String password = "biadmin";
-String message = "Il dataset è stato eseguito correttamente ";
+String message = "Il dataset è stato ";
 
 if (user != null && password != null) {
 	InputStream is = null;
 	try { 
 		DataSetsSDKServiceProxy proxy = new DataSetsSDKServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DataSetsSDKService");		
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DataSetsSDKService");		
 		
 
 		String dataset = null;
 
-			//dataset = proxy.executeDataSet("prova",null);
-			dataset = proxy.executeDataSet("testQBe",null);
-			
+			dataset = proxy.executeDataSet("prova",null);
 			System.out.println("*** dataset: " + dataset);
 
+
 	}  catch (Exception e) {
-		message = "L'esecuzione del dataset è terminata con errori. Guardare il log!";
 		e.printStackTrace();
 			
 	}

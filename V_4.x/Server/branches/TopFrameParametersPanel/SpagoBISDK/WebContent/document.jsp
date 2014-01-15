@@ -5,7 +5,8 @@
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
  
- <%@page import="java.io.*"%>
+<%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
+<%@page import="java.io.*"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Random"%>
@@ -42,7 +43,7 @@ String idCatalogue = "";
 if (user != null && password != null) {
 	try { 
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
-		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");		
+		proxy.setEndpoint(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/sdk/DocumentsService");		
 		//gets request variables
 		doUpload = (String)request.getParameter("doUpload");
 		folderUpload = (String)request.getParameter("folderUpload");

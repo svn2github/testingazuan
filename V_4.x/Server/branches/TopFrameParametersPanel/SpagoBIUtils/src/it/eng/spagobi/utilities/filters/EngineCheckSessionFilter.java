@@ -66,9 +66,9 @@ public class EngineCheckSessionFilter implements Filter {
 				if (!isValidSession && !isRequestedSessionIdValid && !isRequiredNewSession) {
 					// session has expired
 					logger.debug("Session has expired!!");
-					String sessionExpiredUrl = EnginConf.getInstance().getSessionExpiredUrl();
+					String sessionExpiredUrl = this.getSessionExpiredURL();
 					if (sessionExpiredUrl == null) {
-						logger.warn("Session expired URL not set!!! check engine-config.xml configuration");
+						logger.warn("Session expired URL not set!!! check configuration");
 					} else {
 						logger.debug("Forwarding to " + sessionExpiredUrl);
 						httpRequest.getRequestDispatcher(sessionExpiredUrl).forward(request, response);
@@ -97,6 +97,14 @@ public class EngineCheckSessionFilter implements Filter {
 			logger.debug("OUT");
 		}
 	
+    }
+    
+    public String getSessionExpiredURL() {
+    	String sessionExpiredUrl = EnginConf.getInstance().getSessionExpiredUrl();
+		if (sessionExpiredUrl == null) {
+			logger.warn("Session expired URL not set!!! check configuration on engine-config.xml file");
+		}
+    	return sessionExpiredUrl;
     }
     
 }

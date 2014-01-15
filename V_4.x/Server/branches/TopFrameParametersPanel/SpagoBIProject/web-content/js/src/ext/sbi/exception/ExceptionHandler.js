@@ -66,7 +66,7 @@ Sbi.exception.ExceptionHandler = function(){
         			if (content.errors !== undefined  && content.errors.length > 0) {
         				if (content.errors[0].message === 'session-expired') {
         					// session expired
-        		        	Sbi.exception.ExceptionHandler.redirectToLoginUrl();
+        		        	Sbi.exception.ExceptionHandler.showSessionExpiredMessage();
         		        	return;
         				} else if (content.errors[0].message === 'not-enabled-to-call-service') {
         					Sbi.exception.ExceptionHandler.showErrorMessage(LN('not-enabled-to-call-service'), 'Service Error')
@@ -164,6 +164,16 @@ Sbi.exception.ExceptionHandler = function(){
         	if (!sessionExpiredSpagoBIJSFound) {
         		window.location = loginUrl;
         	}
+        }
+        
+        , showSessionExpiredMessage : function () {
+        	Ext.MessageBox.show({
+           		title: LN('sbi.general.sessionexpired.title')
+           		, msg: LN('sbi.general.sessionexpired.message')
+           		, buttons: Ext.MessageBox.OK     
+           		, icon: Ext.MessageBox.WARNING
+           		, modal: true
+       		});
         }
         
         , onStoreLoadException : function(proxy, type, action, options, response, arg) {

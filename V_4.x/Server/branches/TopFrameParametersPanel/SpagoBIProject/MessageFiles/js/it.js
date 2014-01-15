@@ -10,6 +10,8 @@ Sbi.locale.ln['sbi.general.close'] = 'Chiudi';
 Sbi.locale.ln['sbi.general.ok'] = 'OK';
 Sbi.locale.ln['sbi.general.cancel'] = 'Cancella';
 Sbi.locale.ln['sbi.general.continue'] = 'Continua';
+Sbi.locale.ln['sbi.general.sessionexpired.title'] = 'Attenzione: sessione scaduta!';
+Sbi.locale.ln['sbi.general.sessionexpired.message'] = 'La sessione di lavoro è scaduta, è necessario effettuare nuovamente l\'accesso';
 
 Sbi.locale.ln['sbidomains.ds.Generic_Node'] = 'Nodo Generico';
 Sbi.locale.ln['sbidomains.ds.Generic_root'] = 'Radice Generica';

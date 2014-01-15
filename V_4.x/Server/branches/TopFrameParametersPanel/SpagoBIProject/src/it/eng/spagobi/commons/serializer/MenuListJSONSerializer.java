@@ -15,6 +15,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.services.DetailMenuModule;
@@ -22,6 +23,8 @@ import it.eng.spagobi.wapp.util.MenuUtilities;
 
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
@@ -67,16 +70,18 @@ public class MenuListJSONSerializer implements Serializer {
 	private static final String HREF_PENCIL ="/servlet/AdapterHTTP?ACTION_NAME=CREATE_DOCUMENT_START_ACTION&LIGHT_NAVIGATOR_RESET_INSERT=TRUE";
 	private static final String HREF_MYDATA ="/servlet/AdapterHTTP?ACTION_NAME=SELF_SERVICE_DATASET_START_ACTION&LIGHT_NAVIGATOR_RESET_INSERT=TRUE&MYDATA=TRUE";
 	private static final String HREF_LOGIN ="/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
-	private static final String HREF_LOGOUT ="/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
+	private static final String HREF_LOGOUT ="/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE&NEW_SESSION=TRUE";
 	
 	public String contextName = "";
 	public String defaultThemePath="/themes/sbi_default";
 	
 	private IEngUserProfile userProfile;
+	private HttpSession httpSession;
 
-	public MenuListJSONSerializer(IEngUserProfile userProfile) {
+	public MenuListJSONSerializer(IEngUserProfile userProfile, HttpSession session) {
 		Assert.assertNotNull(userProfile, "User profile in input is null");
 		this.setUserProfile(userProfile);
+		this.setHttpSession(session);
 	}
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
@@ -352,12 +357,17 @@ public class MenuListJSONSerializer implements Serializer {
 					HREF_LOGIN,
 					messageBuilder.getMessage("menu.login", locale), false, null);
 			tempMenuList.put(login);
-		}else{
-			JSONObject power = createMenuItem(
-				"power",
-				HREF_LOGOUT,
-				messageBuilder.getMessage("menu.logout", locale), false, null);
-			tempMenuList.put(power);
+		} else {
+			
+			HttpSession session = this.getHttpSession();
+			// we don't show the logout button in case of a silent login
+			if (session.getAttribute(SsoServiceInterface.SILENT_LOGIN) == null || !Boolean.TRUE.equals(session.getAttribute(SsoServiceInterface.SILENT_LOGIN))) {
+				JSONObject power = createMenuItem(
+						"power",
+						HREF_LOGOUT,
+						messageBuilder.getMessage("menu.logout", locale), false, null);
+					tempMenuList.put(power);
+			}
 		}
 		
 		return tempMenuList;
@@ -463,6 +473,14 @@ public class MenuListJSONSerializer implements Serializer {
 
 	public void setUserProfile(IEngUserProfile userProfile) {
 		this.userProfile = userProfile;
+	}
+	
+	public HttpSession getHttpSession() {
+		return httpSession;
+	}
+
+	public void setHttpSession(HttpSession httpSession) {
+		this.httpSession = httpSession;
 	}
 
 }

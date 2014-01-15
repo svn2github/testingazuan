@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  * 
  *         This filter tries to build the user profile object, using the user
- *         identifier
+ *         identifier. In case the request contains credentials, a silent login is performed
  */
 
 public class ProfileFilter implements Filter {
@@ -137,13 +137,14 @@ public class ProfileFilter implements Filter {
 		if (credentials != null) {
 			logger.debug("User credentials found.");
 			if (!httpRequest.getMethod().equalsIgnoreCase("POST")) {
-				logger.error("Request method is not POST!!!");
+				logger.error("Request method is not POST!!! It is " + httpRequest.getMethod());
 				throw new InvalidMethodException();
 			}
 			logger.debug("Authenticating user ...");
 			try {
 				this.authenticate(credentials);
 				logger.debug("User authenticated");
+				httpRequest.getSession().setAttribute(SsoServiceInterface.SILENT_LOGIN, Boolean.TRUE);
 			} catch (Throwable t) {
 				logger.error("Authentication failed", t);
 				throw new SilentAuthenticationFailedException();

@@ -1,39 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
 <head>
-<title>SpagoBI test call export</title>
+<title>SpagoBI test: external invocation of a document's export</title>
 
 </head>
-
 
 <p>Below is SpagoBI iframe.</p>
 <br/>
 	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
 	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
-	
-  <form action="http://localhost:8080/SpagoBI/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&OBJECT_LABEL=ReportBirt2&TOOLBAR_VISIBLE=FALSE&SLIDERS_VISIBLE=FALSE&PARAMETERS=" method="post" target="my_frame">
-    <input type="hidden" name="username" value="biadmin">
-	<input type="hidden" name="password" value="biadmin">
-  </form>
-  <iframe id="frame1" name="my_frame" src="http://localhost:8080/SpagoBI/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&OBJECT_LABEL=ReportBirt2&TOOLBAR_VISIBLE=FALSE&SLIDERS_VISIBLE=FALSE&PARAMETERS=" width="1000" height="800"  sandbox="allow-same-origin allow-scripts allow-popups" >
+  <iframe id="frame1" name="my_frame" style="border: 0px" 
+  	src="http://localhost:8080/SpagoBI/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&OBJECT_LABEL=DOC_001_bis&TOOLBAR_VISIBLE=FALSE&SLIDERS_VISIBLE=FALSE&PARAMETERS=" width="1000" height="800"  sandbox="allow-same-origin allow-scripts allow-popups allow-forms" >
   </iframe>
   
 <script>
 function exportDoc(outputType){
-	
 	var iframe = document.getElementById("frame1");
-	
-	var iframeContWin = iframe.contentWindow;
-	var execPanel = iframeContWin.executionPanel;
-
-	var obj = iframeContWin.config.document;
-	var exportUrl =iframeContWin.exportCurrentDocument(outputType, obj, execPanel);
-	if(exportUrl != null){
-
-		window.open(exportUrl);
-	}
-	
-
+	var spagobiWindow = iframe.contentWindow;
+	spagobiWindow.Sbi.execution.ExporterUtils.exportCurrentDocument(outputType);
 };
 </script>
 </html>

@@ -5,35 +5,39 @@
  License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
  You can obtain one at http://mozilla.org/MPL/2.0/. --%>
 
-<%
-/**
-This page use the SpagoBI execution tag, that displays an iframe pointing to SpagoBI context with all information about document execution 
-(document identifier, role to be used, values for parameters).
-*/
-%>
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="spagobi" tagdir="/WEB-INF/tags/spagobi" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
 <%@page import="java.util.*"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
 <%@page import="it.eng.spagobi.sdk.config.SpagoBISDKConfig"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="java.net.URI"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Document execution</title>
 	<style>
-	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
+	body, html, p { font-family:sans-serif;font-size:11px; padding:0; margin:0; overflow:hidden; background: #f0f0f0; }
 	pre { font-size:8pt; }
+    iframe { border:0; height:100%; width:100%; position:absolute; }
 	</style>
 </head>
 <body>
+
+	<script type="text/javascript" src="js/commons.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<script type="text/javascript" src="js/jsonp.js"></script>	
+	<script type="text/javascript" src="js/api.js"></script>	
+	<script type="text/javascript" src="js/services.js"></script>
+
 <%
 String user = (String) session.getAttribute("spagobi_user");
 String password = (String) session.getAttribute("spagobi_pwd");
+String spagobiserverurl = SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/";
 if (user != null && password != null) {
 	Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
 	SDKDocument document = null;
@@ -46,49 +50,48 @@ if (user != null && password != null) {
 	}
 	session.setAttribute("spagobi_current_document", document);
 	String role = request.getParameter("role");
-	//String role = (String) session.getAttribute("spagobi_role");
-	SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
-	StringBuffer parameterValues = new StringBuffer();
-	if (parameters != null && parameters.length > 0) {
-		for (int i = 0; i < parameters.length; i++) {
-			SDKDocumentParameter aParameter = parameters[i];
-			String value = request.getParameter(aParameter.getUrlName());
-			if (value != null) {
-				aParameter.setValues(new String[]{value});
-				if (parameterValues.length() > 0) {
-					parameterValues.append("&");
-				}
-				parameterValues.append(aParameter.getUrlName() + "=" + value);
+	
+	URI spagobiURI = new URI(SpagoBISDKConfig.getInstance().getSpagoBIServerUrl());
+	%>
+	<script type="text/javascript">
+
+		Sbi.sdk.services.setBaseUrl({
+	        protocol: '<%= spagobiURI.getScheme() %>'
+	        , host: '<%= spagobiURI.getHost() %>'
+	        , port: '<%= spagobiURI.getPort() %>'
+	        , contextPath: '<%= spagobiURI.getRawPath().substring(1) %>'
+	        , controllerPath: 'servlet/AdapterHTTP'
+	    });
+		
+	    authenticationCallback = function (result, args, success) {
+			if (success === true) {
+				diplayDocument();
 			} else {
-				aParameter.setValues(null);
+				alert('ERROR: Wrong username or password');
 			}
-		}
-	}
-	%>
-	<spagobi:execution 
-			spagobiContext="<%= SpagoBISDKConfig.getInstance().getSpagoBIServerUrl() + "/" %>"
-			userId="<%= user %>" 
-			password="<%= password %>" 
-	        documentId="<%= documentId.toString() %>"
-	        iframeStyle="height:500px; width:100%" 
-	        executionRole="<%= role %>"
-	        parametersStr="<%= parameterValues.toString() %>"  
-	        displayToolbar="<%= Boolean.TRUE %>"
-	        displaySliders="<%= Boolean.TRUE %>" />
-	<%
-	String documentType = document.getType();
-	if (documentType.equals("REPORT") || documentType.equals("KPI")) {
-		%>
-		<a href="export.jsp">Export to PDF</a><br/>
-		<%
-	}else if(documentType.equals("ACCESSIBLE_HTML")){
-		%>
-		<a href="viewAccessible.jsp">View ACCESSIBLE HTML</a><br/>
-		<a href="exportAccessible.jsp">Export to ACCESSIBLE HTML</a><br/>
-		<%		
-	}
-	%>
-	<a href="documentsList.jsp">Back to documents list</a>
+	    };
+	    
+		diplayDocument = function() {
+		    Sbi.sdk.api.injectDocument({
+				documentLabel: '<%= StringEscapeUtils.escapeJavaScript(document.getLabel()) %>'
+				, executionRole: '<%= StringEscapeUtils.escapeJavaScript(role) %>'
+				, displayToolbar: false
+				, displaySliders: false
+			});
+		};
+		
+	    Sbi.sdk.api.authenticate({
+			params: {
+				user: '<%= StringEscapeUtils.escapeJavaScript(user) %>'
+				, password: '<%= StringEscapeUtils.escapeJavaScript(password) %>'
+			}
+			, callback: {
+				fn: authenticationCallback
+				, scope: this
+			}
+		});
+		
+	</script>
 	<%
 } else {
 	response.sendRedirect("login.jsp");

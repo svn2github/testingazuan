@@ -110,7 +110,8 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 			alert('ERROR: missing identifier of the iframe containing document execution');
 			return;
 		}
-		var spagobiWindow = iFrameId.contentWindow;
+		var iframe = document.getElementById(iFrameId);
+		var spagobiWindow = iframe.contentWindow;
 		spagobiWindow.Sbi.execution.ExporterUtils.exportCurrentDocument(outputType);
 	}
 	

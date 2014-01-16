@@ -62,6 +62,7 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		documentHtml += ' id = "' + config.iframe.id + '" ';
 		documentHtml += ' name = "' + config.iframe.id + '" ';
 		documentHtml += ' src = "' + serviceUrl + '" ';
+		documentHtml += ' sandbox="allow-same-origin allow-scripts allow-popups allow-forms"';
 		if(config.iframe.style !== undefined) documentHtml += ' style = "' + config.iframe.style + '" ';
 		if(config.iframe.width !== undefined) documentHtml += ' width = "' + config.iframe.width + '" ';
 		if(config.iframe.height !== undefined) documentHtml += ' height = "' + config.iframe.height + '" ';

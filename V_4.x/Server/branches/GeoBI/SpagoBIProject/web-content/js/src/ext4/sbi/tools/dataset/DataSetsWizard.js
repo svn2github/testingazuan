@@ -162,7 +162,8 @@ Ext.define('Sbi.tools.dataset.DataSetsWizard', {
 		config.datasetPropertiesStore = this.datasetPropertiesStore;
 		config.datasetValuesStore = this.datasetValuesStore;
 		config.isOwner = this.isOwner;
-		this.metaInfo = new Sbi.tools.dataset.ManageDatasetFieldMetadata(config);
+		//this.metaInfo = new Sbi.tools.dataset.ManageDatasetFieldMetadata(config);
+		this.metaInfo = new Sbi.tools.dataset.DatasetMetadataMainPage(config);
 		return this.metaInfo;
 	}
 	
@@ -226,6 +227,10 @@ Ext.define('Sbi.tools.dataset.DataSetsWizard', {
 					//If true a new file is uploaded
 					values.fileUploaded = this.fileUploaded;
 					this.fireEvent('getMetaValues', values);
+					
+					var categoryName = this.getFieldsStep1().items.items[0].getRawValue();
+					this.metaInfo.setDatasetCategory(categoryName);
+
 				}
 			 }
 			 if (newTabId == 2){				 

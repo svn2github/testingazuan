@@ -1,3 +1,8 @@
+/** SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
 Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	extend: 'Ext.Panel'
 	
@@ -53,43 +58,45 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 		
 	
 		//Store for Columns Grid Metadata
-		this.storeMetadata = new Ext.data.JsonStore({
-		    id : 'metaStoreData',
-		    fields: ['column', 'pname','pvalue' ],
-		    idIndex: 0,
-		    data: []
-		});
-		
-		//Load Metadata if already present
-		if ((config.meta != undefined) && (config.meta.columns != undefined)){
-			//iterate store to modify type and remove prefix java.lang.
-			var typeValue;
-			for (var i = 0; i < config.meta.columns.length; i++) {
-				var element = config.meta.columns[i];
-				if (element.pname.toUpperCase() == 'type'.toUpperCase()){
-					typeValue = element.pvalue;
-					typeValue = typeValue.replace("java.lang.","");
-					element.pvalue = typeValue;
-				}
-			}
-
-			this.storeMetadata.loadData(config.meta.columns,false); 
-			this.doLayout();	
-		}
+		this.storeMetadata = config.storeMetadata;
+//		this.storeMetadata = new Ext.data.JsonStore({
+//		    id : 'metaStoreData',
+//		    fields: ['column', 'pname','pvalue' ],
+//		    idIndex: 0,
+//		    data: []
+//		});
+//		
+//		//Load Metadata if already present
+//		if ((config.meta != undefined) && (config.meta.columns != undefined)){
+//			//iterate store to modify type and remove prefix java.lang.
+//			var typeValue;
+//			for (var i = 0; i < config.meta.columns.length; i++) {
+//				var element = config.meta.columns[i];
+//				if (element.pname.toUpperCase() == 'type'.toUpperCase()){
+//					typeValue = element.pvalue;
+//					typeValue = typeValue.replace("java.lang.","");
+//					element.pvalue = typeValue;
+//				}
+//			}
+//
+//			this.storeMetadata.loadData(config.meta.columns,false); 
+//			this.doLayout();	
+//		}
 		
 		//Store for Dataset Grid Metadata
-		this.datasetMetadataStore = new Ext.data.JsonStore({
-		    id : 'datasetMetadataStore',
-		    fields: ['pname','pvalue' ],
-		    idIndex: 0,
-		    data: []
-		});
-		
-		//Load Metadata if already present
-		if ((config.meta != undefined) && (config.meta.dataset != undefined)){
-			this.datasetMetadataStore.loadData(config.meta.dataset,false); 			
-			this.doLayout();	
-		}
+		this.datasetMetadataStore = config.datasetMetadataStore;
+//		this.datasetMetadataStore = new Ext.data.JsonStore({
+//		    id : 'datasetMetadataStore',
+//		    fields: ['pname','pvalue' ],
+//		    idIndex: 0,
+//		    data: []
+//		});
+//		
+//		//Load Metadata if already present
+//		if ((config.meta != undefined) && (config.meta.dataset != undefined)){
+//			this.datasetMetadataStore.loadData(config.meta.dataset,false); 			
+//			this.doLayout();	
+//		}
 		
 		
 		//-----------------------------------------
@@ -192,8 +199,8 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	            	var p = {column: '',
 	            			pname: '',
 	            			pvalue: ''}
-	            	
-	            	thisMetadataPanel.gridColumnsMetadata.store.insert(0, p);
+	            	this.gridColumnsMetadata.store.insert(0, p);
+	            	//thisMetadataPanel.gridColumnsMetadata.store.insert(0, p);
 	            },
 	            scope: this
 	        }), '-', new Ext.button.Button({
@@ -315,8 +322,9 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	            	var rec = {
 	            			pname: '',
 	            			pvalue: ''}
-	            	
-	            	thisMetadataPanel.gridDatasetMetadata.store.insert(0, rec);
+	            	this.gridDatasetMetadata.store.insert(0, rec);
+
+	            	//thisMetadataPanel.gridDatasetMetadata.store.insert(0, rec);
 	            },
 	            scope: this
 	        }), '-', new Ext.button.Button({
@@ -460,8 +468,8 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	
 	//This will filter the data of comboValues based on comboProperties' selection
 	,filterValueCombo : function(component, The, eOpts) {
-		propertySelected = thisMetadataPanel.gridColumnsMetadata.getSelectionModel().getSelection()[0].data.pname;
-		var comboValues = thisMetadataPanel.comboValues;
+		propertySelected = this.gridColumnsMetadata.getSelectionModel().getSelection()[0].data.pname;
+		var comboValues = this.comboValues;
 		comboValues.store.clearFilter(false);
 		//filter value combo data
 		if (propertySelected != null && propertySelected.toUpperCase() == 'fieldType'.toUpperCase()) {
@@ -484,7 +492,7 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	
 	//Listeners Toolbars ------------------
 	,onDelete: function() { 
-		var deleteRow = thisMetadataPanel.gridColumnsMetadata.getSelectionModel().getSelection();
+		var deleteRow = this.gridColumnsMetadata.getSelectionModel().getSelection();
 		this.storeMetadata.remove(deleteRow);
 		this.storeMetadata.commitChanges();
 	}
@@ -495,7 +503,7 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	}
 	
 	,onDeleteDs: function() { 
-		var deleteRow = thisMetadataPanel.gridDatasetMetadata.getSelectionModel().getSelection();
+		var deleteRow = this.gridDatasetMetadata.getSelectionModel().getSelection();
 		this.datasetMetadataStore.remove(deleteRow);
 		this.datasetMetadataStore.commitChanges();
 	}

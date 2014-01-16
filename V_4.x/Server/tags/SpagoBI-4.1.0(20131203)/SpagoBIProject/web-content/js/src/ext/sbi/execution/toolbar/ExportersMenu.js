@@ -194,7 +194,7 @@ Ext.extend(Sbi.execution.toolbar.ExportersMenu, Ext.menu.Menu, {
 			,'JPG' : function() { this.exportGeoTo('jpeg'); }
 		},
 		'DOCUMENT_COMPOSITE': {
-			'PDF' : this.exportCompositeDocumentTo
+			'PDF' : function() { this.exportCompositeDocumentTo(); }
 		},
 		'DATAMART': {
 			 'PDF'    : function() { this.exportQbeTo('application/pdf'); }

@@ -644,3 +644,74 @@
 		} 
 	}
 	});
+	
+	
+	/* =============================================================================
+	* Added by Davide Zerbetto (Dicember 2013)
+	* When a panel is initially collapsed into a border layout, there are problem when expanding the panel, 
+	* in particular if the panel is a form and contains comboboxes, lookup fields ....
+	* See http://www.sencha.com/forum/showthread.php?63985-FIXED-2.*-3.0-layout-in-collapsed-Panels
+	============================================================================= */
+	/*
+	Ext.override(Ext.Container, {
+	    doLayout : function(shallow){
+	        if(!this.isVisible() || this.collapsed){
+	            this.deferLayout = this.deferLayout || !shallow;
+	            return;
+	        }
+	        shallow = shallow && !this.deferLayout;
+	        delete this.deferLayout;
+	        if(this.rendered && this.layout){
+	            this.layout.layout();
+	        }
+	        if(shallow !== false && this.items){
+	            var cs = this.items.items;
+	            for(var i = 0, len = cs.length; i < len; i++) {
+	                var c  = cs[i];
+	                if(c.doLayout){
+	                    c.doLayout();
+	                }
+	            }
+	        }
+	    },
+	    onShow : function(){
+	        Ext.Container.superclass.onShow.apply(this, arguments);
+	        if(this.deferLayout !== undefined){
+	            this.doLayout(true);
+	        }
+	    }
+	});
+	Ext.override(Ext.Panel, {
+	    afterExpand : function(){
+	        this.collapsed = false;
+	        this.afterEffect();
+	        if(this.deferLayout !== undefined){
+	            this.doLayout(true);
+	        }
+	        this.fireEvent('expand', this);
+	    }
+	});
+	
+	Ext.override(Ext.Panel, {
+	    afterExpand : function(){
+	        this.collapsed = false;
+	        this.afterEffect();
+	        this.fireEvent('expand', this);
+	        alert("mmmm....");
+	        this.doLayout();
+	    }
+	});
+	*/
+	
+	Ext.override(Ext.layout.TableLayout, {
+	    onLayout : function(ct, target){
+	        var cs = ct.items.items, len = cs.length, c, i;
+	        if(!this.table){
+	            target.addClass('x-table-layout-ct');
+
+	            this.table = target.createChild(
+	                {tag:'table', cls:'x-table-layout', cellspacing: 0, cn: {tag: 'tbody'}}, null, true);
+	        }
+		this.renderAll(ct, target);//move out that can render items more than once.
+	    }
+	});

@@ -31,6 +31,10 @@ Ext.define('Sbi.tools.dataset.DatasetMetadataMainPage', {
 		
 		// ManageDatasetFieldMetadata
 		this.expertGUI = new Sbi.tools.dataset.ManageDatasetFieldMetadata(config)
+		this.expertGUI.on('openSimpleGUI',function(panel){
+			 this.simpleGeoGUI.syncComboWithStore(this.storeMetadata);
+			 this.layout.setActiveItem(1);
+		},this);
 		
 		//Simplified GUI (for GEOBI)
 		this.simpleGeoGUI = new Sbi.tools.dataset.GeoBIDatasetFieldMetadata(config)

@@ -52,7 +52,10 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			this.comboColumn = new Ext.form.ComboBox({
 				name : 'columnCombo',
 				store: this.fieldStore,
-				width : 300,
+				width : 400,
+				style: {
+		            marginTop: '20px'
+		        },
 				displayField : 'columnName', 
 				valueField : 'columnName', 
 				typeAhead : true, 
@@ -64,7 +67,7 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 				allowBlank : true, 
 				validationEvent : false,	
 				queryMode: 'local',
-				fieldLabel: 'Hierarchy Column',
+				fieldLabel: LN('sbi.ds.metadata.dataset.hierarchy.column'),
 				listConfig: {
 			        listeners: {
 			            itemclick: function(list, record) {
@@ -92,7 +95,11 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			this.comboValues = new Ext.form.ComboBox({
 				name : 'comboValues',
 				store: config.datasetValuesStore,
-				width : 300,
+				width : 400,
+				style: {
+		            marginTop: '20px',
+		            marginBottom: '20px'
+		        },
 				displayField : 'VALUE_NM', 
 				valueField : 'VALUE_NM', 
 				typeAhead : true,
@@ -103,7 +110,7 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 				editable : false,
 				allowBlank : true, 
 				validationEvent : false,
-				fieldLabel: 'Hierarchy Level',
+				fieldLabel: LN('sbi.ds.metadata.dataset.hierarchy.level'),
 				listConfig: {
 			        listeners: {
 			            itemclick: function(list, record) {
@@ -136,7 +143,7 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 
 			
 			this.clearButton = new Ext.button.Button({
-				text: 'Clear',
+				text: LN('sbi.ds.metadata.dataset.hierarchy.clear'),
 				handler: function() {
 				    //remove previous hierarchy(geo) and relative hierarchy_level from store
 					thisMetadataPanel.removeAllHierarchyMetadata();
@@ -150,12 +157,13 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			});
 			
 			this.openExpertGUIButton = new Ext.button.Button({
-				text: 'Expert Mode',
+				text: LN('sbi.ds.metadata.dataset.hierarchy.expert'),
 				style: {
 		            marginLeft: '10px'
 		        },
 				handler: function() {
-				    thisMetadataPanel.fireEvent('openExpertGUI', this);
+					thisMetadataPanel.fireEvent('openExpertGUI', this);	
+
 				}
 			});
 			
@@ -167,6 +175,11 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 				  defaultType: 'textfield',
 				  autoScroll: true,
 		          bodyStyle:'padding:20px',
+		          style: {
+			            marginLeft: '100px',
+			            marginTop: '50px'
+			            	
+			        },
 				  border: false,
 				  frame: false,
 				  height: 350,
@@ -177,6 +190,41 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			
 			
 		}
+		
+		//Set the combos values according to the values found in the passed store
+		, syncComboWithStore: function(store){
+			this.comboValues.clearValue();
+			this.comboValues.setDisabled(true);
+			this.comboColumn.clearValue();
+			
+			
+			if (store != undefined && store != null){
+				if (store.data != undefined && store.data != null ){
+					var dataArray = store.data.items;
+					var columnName;
+					for (var i=0; i<dataArray.length; i++){
+						var columnsMetadata = dataArray[i].data
+						if (columnsMetadata.pname == 'hierarchy' && columnsMetadata.pvalue == 'geo'){
+							columnName = columnsMetadata.column;
+							this.comboColumn.setValue(columnName);
+							this.comboValues.setDisabled(false);
+							break;
+						}
+
+					}
+					if (columnName != null){
+						for (var j=0; j<dataArray.length; j++){
+							var columnsMetadata = dataArray[j].data
+							if (columnsMetadata.pname == 'hierarchy_level' && columnsMetadata.column == columnName){
+								this.comboValues.setValue(columnsMetadata.pvalue);
+								break;
+							} 
+						}
+					}	
+
+				}
+			}
+		}		
 		
 		, initializeCombos: function(meta){
 			this.comboValues.clearValue();

@@ -100,6 +100,7 @@ Ext.define('Sbi.tools.dataset.DataSetsWizard', {
 	, getFieldsTab1: function(){
 		
 		this.cmbCategory = new Ext.form.ComboBox({
+			id: 'dsCategoryCombo',
 			fieldLabel: LN('sbi.ds.catType'),
 			store :this.categoriesStore,
 			name : 'catTypeVn',			
@@ -120,6 +121,13 @@ Ext.define('Sbi.tools.dataset.DataSetsWizard', {
 			    	if (!this.rawValue || this.rawValue == ''){
 				        var recordSelected = combo.getStore().getAt(0);                     
 				        combo.setValue(recordSelected.get('VALUE_ID'));
+				        
+				        if (combo.getStore().data.length < 2){
+				        	combo.hidden = true;
+				        } else {
+				        	combo.hidden = false;
+				        }
+				        
 			    	}
 			    }
 			}
@@ -228,7 +236,7 @@ Ext.define('Sbi.tools.dataset.DataSetsWizard', {
 					values.fileUploaded = this.fileUploaded;
 					this.fireEvent('getMetaValues', values);
 					
-					var categoryName = this.getFieldsStep1().items.items[0].getRawValue();
+					var categoryName = this.getFieldsStep1().getComponent('dsCategoryCombo').getRawValue();
 					this.metaInfo.setDatasetCategory(categoryName);
 
 				}

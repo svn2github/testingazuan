@@ -43,6 +43,9 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	    Ext.Ajax.on('requestcomplete', this.hideMask, this);            
 	    // invokes if exception occured 
 	    Ext.Ajax.on('requestexception', this.hideMask, this); 
+	    
+		this.addEvents('openSimpleGUI');	
+
 	}
 	
 	,initMetadataPanel : function(items,config){
@@ -213,6 +216,13 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 	            iconCls: 'icon-clear',
 	            handler: this.onDeleteAll,
 	            scope: this
+	        }), '-', new Ext.button.Button({
+	            text: LN('sbi.ds.metadata.dataset.hierarchy.simple'),
+	            handler: function() {
+					this.fireEvent('openSimpleGUI', this);				
+				},
+	            scope: this,
+	            id: 'simpleModeButton'
 	        })
 	    	]
 	    });
@@ -362,6 +372,20 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 		
 		//-------------------------------------------------
 		
+		//Simple mode button-------------------------
+		
+		
+//		this.openExpertGUIButton = new Ext.button.Button({
+//			text: 'Simple Mode',
+//			handler: function() {
+//				alert('Open Simple GUI')
+//				this.fireEvent('openSimpleGUI', this);				
+//			}
+//		});
+		
+		
+		//-------------------------------------------
+		
 
 		
 		// Main Panel ----------------------
@@ -374,7 +398,7 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 			  height: 330, //320,
 			  autoScroll: true,
 			  layout: 'border',
-			  items: [this.metadataType, this.gridColumnsMetadata, this.gridDatasetMetadata]
+			  items: [ this.metadataType, this.gridColumnsMetadata, this.gridDatasetMetadata]
 			});
 		
 		return this.mainPanel;

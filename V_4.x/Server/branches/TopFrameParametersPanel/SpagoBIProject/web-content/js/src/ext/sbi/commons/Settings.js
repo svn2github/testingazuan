@@ -72,7 +72,7 @@ Sbi.settings.execution = {
 		}
 
 		, parametersPanel: {
-			columnNo: 1
+			columnNo: 2
 			, mandatoryFieldAdditionalString: '*' // a String that will be added in the label of the mandatory fields
 			, columnWidth: 290
 			, labelAlign: 'left'
@@ -80,9 +80,6 @@ Sbi.settings.execution = {
 			, maskOnRender: false
 			, fieldLabelWidth: 100
 			, moveInMementoUsingCtrlKey: false
-			, width: 295
-			, viewportWindowWidth: 500
-			, viewportWindowHeight: 500
 			, maxFieldHeight : 300  // max height to be available for rendering an input field; in case the field exceeds, scroll bars will appear
 		}
 
@@ -99,7 +96,7 @@ Sbi.settings.execution = {
 		}
 		
 		, parametersselectionpage : {
-			parametersRegion : "east" // admissible values: east/north
+			parametersRegion : "north" // admissible values: east/north
 			, parametersSliderWidth : 300 // valid in case of east region
 			, parametersSliderHeight : 350 // valid in case of north region
 			, parametersInitiallyCollapsed : true // applied only in case there are no parameters to fill

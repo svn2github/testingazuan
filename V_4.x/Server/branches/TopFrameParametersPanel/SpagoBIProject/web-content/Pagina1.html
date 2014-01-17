@@ -10,7 +10,11 @@
 	<input type="button" value="Export PDF" onclick="exportDoc('PDF');" > &nbsp;
 	<input type="button" value="Export XLS" onclick="exportDoc('XLS');" ><br/>
   <iframe id="frame1" name="my_frame" style="border: 0px" 
-  	src="http://localhost:8080/SpagoBI/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&OBJECT_LABEL=DOC_001_bis&TOOLBAR_VISIBLE=FALSE&SLIDERS_VISIBLE=FALSE&PARAMETERS=" width="1000" height="800"  sandbox="allow-same-origin allow-scripts allow-popups allow-forms" >
+    src="http://localhost:8080/SpagoBI"
+  	width="1000" height="800" 
+  	sandbox="allow-same-origin allow-scripts allow-forms allow-popups" > 
+  	<!-- sandbox="allow-same-origin allow-scripts allow-popups allow-forms" -->
+  	<!-- src="http://localhost:8080/SpagoBI/servlet/AdapterHTTP?NEW_SESSION=TRUE&ACTION_NAME=EXECUTE_DOCUMENT_ACTION&OBJECT_LABEL=composto&TOOLBAR_VISIBLE=TRUE&SLIDERS_VISIBLE=FALSE&PARAMETERS=" -->
   </iframe>
   
 <script>

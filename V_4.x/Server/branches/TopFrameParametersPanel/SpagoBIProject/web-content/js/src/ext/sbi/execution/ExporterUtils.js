@@ -37,7 +37,8 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.ExporterUtils = {
 	
-	executionPanel : null
+	executionPanel : null  // instance of Sbi.execution.ExecutionPanel
+	, documentsBrowser : null // instance of Sbi.browser.DocBrowserContainer
 	
 	,
 	setExecutionPanel : function ( executionPanel ) {
@@ -46,7 +47,22 @@ Sbi.execution.ExporterUtils = {
 	
 	,
 	getExecutionPanel : function () {
-		return this.executionPanel;
+		if (this.executionPanel != null) {
+			return this.executionPanel;
+		} else {
+			var browser = this.getDocumentsBrowser();
+			return browser.getActiveExecutionPanel();
+		}
+	}
+	
+	,
+	setDocumentsBrowser : function ( documentsBrowser ) {
+		this.documentsBrowser = documentsBrowser;
+	}
+	
+	,
+	getDocumentsBrowser : function () {
+		return this.documentsBrowser;
 	}
 	
 	,

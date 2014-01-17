@@ -40,22 +40,7 @@ Ext.define('Sbi.extjs.chart.ExtJSChartPanel', {
     height: null,
     
     constructor: function(config) {
-    	var defaultSettings = {
-    	};
-
-    	var c = Ext.apply(defaultSettings, config || {});
-    	
-    	c = Ext.apply(c, {id: 'ExtJSGenericChartPanel'});
-    	
-    	c.storeId = c.dsLabel;
-    	
-    	Ext.apply(this, c);
-    	
-    	this.template = c.template || {};
-    	this.template.divId = c.divId || {};
-    	delete c.template;
-    	this.init(c);
-        this.callParent(arguments);
+        this.callParent(arguments); 
     }
 
   , createChart: function(){

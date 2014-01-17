@@ -96,7 +96,6 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		config.iframe.width = targetEl.getAttribute('width');
 		config.iframe.height = targetEl.getAttribute('height');
 		
-		
 		targetEl.innerHTML = this.getDocumentHtml( config );
 	}
 	

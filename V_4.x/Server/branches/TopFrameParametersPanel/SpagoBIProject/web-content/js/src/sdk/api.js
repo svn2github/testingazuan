@@ -1,23 +1,15 @@
+/** SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+ 
 Sbi.sdk.namespace('Sbi.sdk.api');
 
 Sbi.sdk.apply(Sbi.sdk.api, {
 	
 	elId: 0
-	
-	/*	
-	config = { 
-		params: {
-			user: 'biuser'
-			, password: 'biuser'
-		}
-		
-		, callback: {
-			fn: doThis
-			, scope: this
-			, args: {arg1: 'A', arg2: 'B', ...}
-		}
-	}
-	*/
+	, iframeId: null
 	
 	, authenticate:  function (config) {	    
 		var serviceUrl = Sbi.sdk.services.getServiceUrl('authenticate', config.params);
@@ -47,12 +39,8 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		if (config.displaySliders !== undefined) params.SLIDERS_VISIBLE = config.displaySliders;
 		if (config.theme !== undefined)	params.theme = config.theme;
 		
-		//if(config.useExtUI === true) {
-		// no more modality different from ext
-			documentUrl = Sbi.sdk.services.getServiceUrl('executewithext', params);
-//		} else {
-//			documentUrl = Sbi.sdk.services.getServiceUrl('execute', params);
-//		}
+		// the only available modality is with ExtJS based gui (the other previous modality (old execution gui) is deprecated)
+		documentUrl = Sbi.sdk.services.getServiceUrl('executewithext', params);
 		
 		return documentUrl;
 	}
@@ -65,15 +53,16 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		config.iframe = config.iframe || {};
 		
 		if(config.iframe.id === undefined) {
-			config.iframe.id = 'sbi-docexec-iframe-' + this.elId;
+			config.iframe.id = 'sbi-docexec-iframe-' + this.elId;			
 			this.elId = this.elId +1;
 		}
-		
+		this.iframeId = config.iframe.id;
 		documentHtml = '';
 		documentHtml += '<iframe';
 		documentHtml += ' id = "' + config.iframe.id + '" ';
 		documentHtml += ' name = "' + config.iframe.id + '" ';
 		documentHtml += ' src = "' + serviceUrl + '" ';
+		documentHtml += ' sandbox="allow-same-origin allow-scripts allow-popups allow-forms"';
 		if(config.iframe.style !== undefined) documentHtml += ' style = "' + config.iframe.style + '" ';
 		if(config.iframe.width !== undefined) documentHtml += ' width = "' + config.iframe.width + '" ';
 		if(config.iframe.height !== undefined) documentHtml += ' height = "' + config.iframe.height + '" ';
@@ -107,9 +96,23 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		config.iframe.width = targetEl.getAttribute('width');
 		config.iframe.height = targetEl.getAttribute('height');
 		
-		
 		targetEl.innerHTML = this.getDocumentHtml( config );
 	}
+	
+	, getIframeId: function(){
+		return this.iframeId;
+	}
 
-
+	,
+	exportCurrentDocument : function ( outputType ) {
+		var iFrameId = this.getIframeId();
+		if (iFrameId == null) {
+			alert('ERROR: missing identifier of the iframe containing document execution');
+			return;
+		}
+		var iframe = document.getElementById(iFrameId);
+		var spagobiWindow = iframe.contentWindow;
+		spagobiWindow.Sbi.execution.ExporterUtils.exportCurrentDocument(outputType);
+	}
+	
 });

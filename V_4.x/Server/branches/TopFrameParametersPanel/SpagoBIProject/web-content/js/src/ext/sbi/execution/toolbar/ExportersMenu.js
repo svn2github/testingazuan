@@ -194,7 +194,8 @@ Ext.extend(Sbi.execution.toolbar.ExportersMenu, Ext.menu.Menu, {
 			,'JPG' : function() { this.exportGeoTo('jpeg'); }
 		},
 		'DOCUMENT_COMPOSITE': {
-			'PDF' : this.exportCompositeDocumentTo
+			// 'PDF' : this.exportCompositeDocumentTo
+			'PDF' : function() { this.exportCompositeDocumentTo(); }
 		},
 		'DATAMART': {
 			 'PDF'    : function() { this.exportQbeTo('application/pdf'); }
@@ -226,7 +227,18 @@ Ext.extend(Sbi.execution.toolbar.ExportersMenu, Ext.menu.Menu, {
 	// METHODS
 	// =================================================================================================================
 	, getExportationUrl: function(format, documentType){
-		 //alert(format'+'documentType);
+			Sbi.debug('[ExportersMenu.getExportationUrl] : format = [' + format + '], documentType = [' + documentType + ']');
+		 	if (!this.exportationHandlers[documentType]) {
+		 		Sbi.error('[ExportersMenu.getExportationUrl] : no available exporters for documentType = [' + documentType + ']');
+		 		alert('No available exporters for this document');
+		 		throw new Error('No available exporters for document type ' + documentType);
+		 	}
+		 	if (!this.exportationHandlers[documentType][format]) {
+		 		Sbi.error('[ExportersMenu.getExportationUrl] : format [' + format + '] not supported for documentType = [' + documentType + ']');
+		 		alert('Format ' + format + ' not supported for this document');
+		 		throw new Error('Format ' + format + ' not supported for document type ' + documentType);
+		 	}
+		 	
 			if(documentType != null && documentType == 'REPORT'){
 				var documentUrl = this.getDocumentUrl();
 				var exportationUrl = this.getUrlWithAddedParameters(documentUrl, {'outputType': format}, true);

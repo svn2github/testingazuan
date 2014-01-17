@@ -524,19 +524,24 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			//, hideCollapseTool: true
 			//, titleCollapse: true
 			//, collapseMode: 'mini'
-			//, split: true
+			, split: true
 			, floatable : config.parametersSliderFloatable
 			, autoScroll: true
 			, width: config.parametersRegion == 'east' ?  this.parametersSliderWidth : undefined
 			, height: config.parametersRegion == 'north' ? config.parametersSliderHeight : undefined
+			//, autoHeight : true  // uncomment this if you want auto height and comment height
 			, layout: 'fit'
 			, items: [this.parametersPanel]
 		});
 		
 		// if the parameters panel has to be collapsed, collapse it into a deferred function
 		if (config.parametersInitiallyCollapsed  && this.isDocumentPageVisible()) {
-			this.parametersSlider.on('render', function(thePanel) {this.collapse.defer(2000, thePanel, [true]);}, this);
+			this.parametersSlider.on('render', function(thePanel) {this.collapse.defer(5000, thePanel, [true]);}, this);
 		}
+		
+		// uncomment this if you want auto height
+		// workaround: when using autoHeight, the panel is displayed above (NOT on top) the info panel; forcing a deferred doLayout solves the problem 
+		//this.parametersSlider.on('render', function(thePanel) {this.doLayout.defer(1000, this);}, this);
 		
 		return this.parametersSlider;
 	}
@@ -1008,8 +1013,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: IN');
 		var lastState = this.getLastParametersFormState();
 		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: last state = ' + Sbi.commons.JSON.encode(lastState));
+		if (lastState == null) lastState = {}; // Sbi.commons.JSON.encode gives different results for null and {} but we don't have to distinguish
 		var formState = this.parametersPanel.getFormState();
 		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: current form state = ' + Sbi.commons.JSON.encode(formState));
+		if (formState == null) formState = {}; // Sbi.commons.JSON.encode gives different results for null and {} but we don't have to distinguish
 		var toReturn = Sbi.commons.JSON.encode(lastState) != Sbi.commons.JSON.encode(formState);
 		Sbi.trace('[DocumentExecutionPage.isParametersFormChangedSinceLastExecution]: OUT : ' + toReturn);
 		return toReturn;

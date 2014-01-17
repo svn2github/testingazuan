@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@tag import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 <%@tag import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@tag import="it.eng.spago.security.DefaultCipher"%>
+<%@tag import="java.util.UUID"%>
 
 <%@attribute name="spagobiContext" required="true" type="java.lang.String"%>
 <%@attribute name="userId" required="true" type="java.lang.String"%>
@@ -39,6 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@attribute name="iframeStyle" required="false" type="java.lang.String"%>
 <%@attribute name="theme" required="false" type="java.lang.String"%>
 <%@attribute name="authenticationTicket" required="false" type="java.lang.String"%>
+<%@attribute name="target" required="false" type="java.lang.String"%>
 
 <%
 StringBuffer mainUrl = new StringBuffer();
@@ -75,17 +77,23 @@ String encryptedPassword = null;
 DefaultCipher chiper = new DefaultCipher();
 encryptedPassword = chiper.encrypt(this.password);
 
+if (target == null || target.trim().equals("")) {
+	target = "spagobi-sdk-iframe-" + UUID.randomUUID().toString();
+	%>
+	<iframe name="<%= target %>" id="<%= target %>" src="about:blank" style="<%= iframeStyle != null ? iframeStyle : "" %>"></iframe>
+	<%
+}
+
+String formId = "spagobi-sdk-form-" + UUID.randomUUID().toString();
 %>
 
-<form method="post" target="myiframe"
-    action="<%= mainUrl.toString() %>" id="myform" name="myform">
+<form method="post" target="<%= target %>"
+    action="<%= mainUrl.toString() %>" id="<%= formId %>" name="<%= formId %>">
     <input type="hidden" name="<%= SsoServiceInterface.USER_NAME_REQUEST_PARAMETER %>" value="<%= this.userId %>">
     <input type="hidden" name="<%= SsoServiceInterface.PASSWORD_REQUEST_PARAMETER %>" value="<%= encryptedPassword %>">
     <input type="hidden" name="<%= SsoServiceInterface.PASSWORD_MODE_REQUEST_PARAMETER %>" value="<%= SsoServiceInterface.PASSWORD_MODE_ENCRYPTED %>">
 </form>
-
-<iframe name="myiframe" id="myiframe" src="about:blank" style="<%= iframeStyle != null ? iframeStyle : "" %>"></iframe>
-
+	
 <script type="text/javascript">
-document.getElementById("myform").submit();
+document.getElementById("<%= formId %>").submit();
 </script>

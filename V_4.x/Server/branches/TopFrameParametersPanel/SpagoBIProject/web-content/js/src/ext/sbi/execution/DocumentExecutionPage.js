@@ -31,10 +31,10 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 		, maskOnRender: true
 		, parametersSliderWidth: 300
 		, parametersSliderHeight: 250
-		, collapseParametersSliderOnExecution: false
+		//, collapseParametersSliderOnExecution: false
 		, shortcutsHidden: false
 		, parametersRegion : "east"
-		, parametersInitiallyCollapsed : false
+		, parametersSliderCollapsed : false
 		, parametersSliderFloatable : true
 		
 		// private...
@@ -198,7 +198,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	 * @property {Boolean} collapseParametersSliderOnExecution true to collapse parameters panel when the executed document 
 	 * is displayed, false otherwise. The default is false.
 	 */
-	, collapseParametersSliderOnExecution: null
+	//, collapseParametersSliderOnExecution: null
 	/**
      * @property {String} shortcutsHidden true if shortcuts panel is hidden, 
      * false otherwise. The default is false.
@@ -533,11 +533,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, layout: 'fit'
 			, items: [this.parametersPanel]
 		});
-		
-		// if the parameters panel has to be collapsed, collapse it into a deferred function
-		if (config.parametersInitiallyCollapsed  && this.isDocumentPageVisible()) {
-			this.parametersSlider.on('render', function(thePanel) {this.collapse.defer(5000, thePanel, [true]);}, this);
-		}
 		
 		// uncomment this if you want auto height
 		// workaround: when using autoHeight, the panel is displayed above (NOT on top) the info panel; forcing a deferred doLayout solves the problem 
@@ -1039,7 +1034,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		Sbi.trace('[DocumentExecutionPage.doExecuteDocumunt]: Executing document with these parameters: ' + this.executionInstance.PARAMETERS);
 		this.documentPage.synchronize( this.executionInstance );
 		
-		if (this.collapseParametersSliderOnExecution) {
+		if (this.parametersSliderCollapsed) {
 			this.collapseParametersSlider(true);
 		}
 	}

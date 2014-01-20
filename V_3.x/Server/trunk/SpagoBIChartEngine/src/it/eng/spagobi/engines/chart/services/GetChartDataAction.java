@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jamonapi.Monitor;
@@ -114,7 +115,20 @@ public class GetChartDataAction extends AbstractChartEngineAction {
 				
 				Object resultNumber = dataStore.getMetaData().getProperty("resultNumber");
 				if(resultNumber == null) dataStore.getMetaData().setProperty("resultNumber", new Integer((int)dataStore.getRecordsCount()));
-				JSONObject dataSetJSON = (JSONObject)writer.write(dataStore);				
+				JSONObject dataSetJSON = (JSONObject)writer.write(dataStore);	
+				
+				
+				// we set useNull to true for numeric types in order to prevent the 
+				// ExtJs' Model object to convert null values to zero
+				JSONArray fields =  dataSetJSON.getJSONObject("metaData").getJSONArray("fields");
+				for(int i = 1; i < fields.length(); i++) {
+					JSONObject field = fields.getJSONObject(i);
+					String fieldType = field.optString("type");
+					if(fieldType != null && ("float".equalsIgnoreCase(fieldType) || "int".equalsIgnoreCase(fieldType))) {
+						field.put("useNull", true);
+					}	
+				}
+				
 				results = dataSetJSON;
 			} catch (Throwable e) {
 				throw new SpagoBIServiceException("Impossible to serialize datastore", e);

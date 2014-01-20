@@ -98,11 +98,10 @@ Sbi.settings.execution = {
 		, parametersselectionpage : {
 			parametersRegion : "north" // admissible values: east/north
 			, parametersSliderWidth : 300 // valid in case of east region
-			, parametersSliderHeight : 350 // valid in case of north region
-			, parametersSliderCollapsed : false // applied only in case there are no parameters to fill
+			, parametersSliderHeight : 250 // valid in case of north region
+			, parametersSliderCollapsed : true // applied only in case there are no parameters to fill
 			, parametersSliderFloatable : false // true to allow clicking on collapsed parameters panel's bar to display the parameters' panel floated above the layout, 
 												// false to force the user to fully expand parameters' panel by clicking the expand button to see it again
-			//, collapseParametersSliderOnExecution : false
 		}
 };
 

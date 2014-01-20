@@ -88,9 +88,23 @@ public class ChartEngineEXTJSStartAction extends AbstractEngineStartAction {
 			
 			try {
 				parsJSON = getParametersAsJSON();
-				SourceBean content = SourceBean.fromXMLString(getTemplateAsString());
-				JSONObject template = templateUtil.getJSONTemplateFromXml( content, parsJSON); 				
-				//System.out.println(template.toString(4));
+				
+				String t = getTemplateAsString();
+				JSONObject template = null;
+				try {
+					template = new JSONObject(t);
+				} catch(Throwable notJson) {
+					logger.warn("An error occurred while parsing template as json", notJson);
+				}
+				
+				if(template == null) {
+					logger.debug("Template is in XML");
+					SourceBean content = SourceBean.fromXMLString(getTemplateAsString());
+					template = templateUtil.getJSONTemplateFromXml( content, parsJSON); 
+				} else {
+					logger.debug("Template is in JSON");
+				}
+				logger.debug("Template is equal to [" + template.toString(3) + "]");
 				
 				template.append(DOCUMENT_PARAMETERS, parsJSON);
 

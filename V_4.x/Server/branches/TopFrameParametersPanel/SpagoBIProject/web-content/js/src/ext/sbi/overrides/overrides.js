@@ -715,3 +715,29 @@
 		this.renderAll(ct, target);//move out that can render items more than once.
 	    }
 	});
+	
+	
+    /**
+     * Utility method for getting the width of the browser scrollbar. This can differ depending on
+     * operating system settings, such as the theme or font size.
+     * @param {Boolean} force (optional) true to force a recalculation of the value.
+     * @return {Number} The width of the scrollbar.
+     */
+    Ext.getScrollBarWidth = function(force){
+        if(!Ext.isReady){
+            return 0;
+        }
+
+        if(force === true || Ext.scrollWidth === null){
+                // Append our div, do our calculation and then remove it
+            var div = Ext.getBody().createChild('<div class="x-hide-offsets" style="width:100px;height:50px;overflow:hidden;"><div style="height:200px;"></div></div>'),
+                child = div.child('div', true);
+            var w1 = child.offsetWidth;
+            div.setStyle('overflow', (Ext.isWebKit || Ext.isGecko) ? 'auto' : 'scroll');
+            var w2 = child.offsetWidth;
+            div.remove();
+            // Need to add 2 to ensure we leave enough space
+            Ext.scrollWidth = w1 - w2 + 2;
+        }
+        return Ext.scrollWidth;
+    };

@@ -530,9 +530,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, width: config.parametersRegion == 'east' ?  this.parametersSliderWidth : undefined
 			, height: config.parametersRegion == 'north' ? config.parametersSliderHeight : undefined
 			//, autoHeight : true  // uncomment this if you want auto height and comment height
-			, layout: 'fit'
+			//, layout: 'fit'
+			, layoutConfig: {scrollOffset: Ext.getScrollBarWidth()}  // this is to get only the vertical scrollbar and to avoid 
+																	 // the horizontal scrollbar, then we have to force a doLayout, see below
 			, items: [this.parametersPanel]
+			//, bodyStyle : 'overflow-y:scroll;overflow-x:auto;'
 		});
+		
+		// we need this because of layoutConfig: {scrollOffset: Ext.getScrollBarWidth()}; if we don't do this, no parameters are displayed in case the panel is 
+		// initially collapsed
+		this.parametersSlider.on('render', function(thePanel) {this.doLayout.defer(100, this);}, this);
 		
 		// uncomment this if you want auto height
 		// workaround: when using autoHeight, the panel is displayed above (NOT on top) the info panel; forcing a deferred doLayout solves the problem 

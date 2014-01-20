@@ -197,6 +197,7 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			this.comboValues.setDisabled(true);
 			this.comboColumn.clearValue();
 			
+			this.comboValues.store.clearFilter(false);
 			
 			if (store != undefined && store != null){
 				if (store.data != undefined && store.data != null ){
@@ -231,6 +232,8 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			this.comboValues.setDisabled(true);
 			this.comboColumn.clearValue();
 			
+			this.comboValues.store.clearFilter(false);
+
 			
 			if (meta != undefined && meta != null){
 				if (meta.columns != undefined && meta.columns != null ){

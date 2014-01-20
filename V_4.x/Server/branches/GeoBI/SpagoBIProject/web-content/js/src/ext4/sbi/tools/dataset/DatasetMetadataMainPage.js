@@ -170,16 +170,28 @@ Ext.define('Sbi.tools.dataset.DatasetMetadataMainPage', {
 				break;
 			}
 		}
+		//button used to switch from export to simple gui
+		var simpleButton = Ext.getCmp('simpleModeButton');
+		
 		if (guiNameToUse != undefined && guiNameToUse != null){
 			for (var j=0; j < this.items.items.length; j++){
 				if ( this.items.items[j].id.toLowerCase() == guiNameToUse.toLowerCase()){
 					this.layout.setActiveItem(j); //set the active GUI to use
+					if (simpleButton != undefined){
+						simpleButton.setVisible(true); 
+					}
 					break;
 				}
 			}
 		} else {
-			 this.layout.setActiveItem(0);
+			if (simpleButton != undefined){
+				simpleButton.setVisible(false);//hide the simpleModeButton in expertGui
+			}
+			this.layout.setActiveItem(0);
 		}
+		
+
+		
 
 	}
 

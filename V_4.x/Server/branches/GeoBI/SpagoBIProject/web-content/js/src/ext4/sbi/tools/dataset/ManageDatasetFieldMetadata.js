@@ -192,6 +192,7 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 		
 		
 		var toolbarColumnsMetadata = new Ext.Toolbar({
+			id:'columnsGridToolbar',
 	    	buttonAlign : 'left',
 	    	items:[
 	    	    new Ext.button.Button({

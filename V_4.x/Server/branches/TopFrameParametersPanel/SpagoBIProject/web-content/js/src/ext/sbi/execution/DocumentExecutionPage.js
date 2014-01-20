@@ -128,7 +128,7 @@ Sbi.execution.DocumentExecutionPage = function(config, doc) {
 /**
  * @cfg {Boolean} maskOnRender ...
  */
-/**
+/*
  * @cfg {Boolean} collapseParametersSliderOnExecution true to collapse parameters panel when the executed document 
  * is displayed, false otherwise. The default is false.
  */
@@ -194,7 +194,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
      */
 	, snapshotId: null
 	
-	/**
+	/*
 	 * @property {Boolean} collapseParametersSliderOnExecution true to collapse parameters panel when the executed document 
 	 * is displayed, false otherwise. The default is false.
 	 */

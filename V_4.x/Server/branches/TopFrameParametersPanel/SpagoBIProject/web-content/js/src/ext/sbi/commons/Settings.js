@@ -72,7 +72,7 @@ Sbi.settings.execution = {
 		}
 
 		, parametersPanel: {
-			columnNo: 2
+			columnNo: 3
 			, mandatoryFieldAdditionalString: '*' // a String that will be added in the label of the mandatory fields
 			, columnWidth: 290
 			, labelAlign: 'left'
@@ -97,9 +97,9 @@ Sbi.settings.execution = {
 		
 		, parametersselectionpage : {
 			parametersRegion : "north" // admissible values: east/north
-			, parametersSliderWidth : 300 // valid in case of east region
-			, parametersSliderHeight : 250 // valid in case of north region
-			, parametersSliderCollapsed : true // applied only in case there are no parameters to fill
+			, parametersSliderWidth : 320 // valid in case of east region
+			, parametersSliderHeight : 200 // valid in case of north region
+			, parametersSliderCollapsed : false // applied only in case there are no parameters to fill
 			, parametersSliderFloatable : false // true to allow clicking on collapsed parameters panel's bar to display the parameters' panel floated above the layout, 
 												// false to force the user to fully expand parameters' panel by clicking the expand button to see it again
 		}

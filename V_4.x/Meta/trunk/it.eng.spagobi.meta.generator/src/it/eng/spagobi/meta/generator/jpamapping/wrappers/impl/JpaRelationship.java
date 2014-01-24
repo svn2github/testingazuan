@@ -221,7 +221,7 @@ public class JpaRelationship extends AbstractJpaRelationship {
 	}
 	
 	public String getBidirectionalPropertyName(){
-		return StringUtils.pluralise(JavaKeywordsUtils.transformToJavaPropertyName( getBusinessRelationship().getName()));
+		return StringUtils.pluralise(JavaKeywordsUtils.transformToJavaPropertyName( getBusinessRelationship().getName()+"_"+getBusinessRelationship().getSourceTable().getName()));
 	}	
 	
 	public List<IJpaColumn> getSourceColumns(){

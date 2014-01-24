@@ -204,7 +204,7 @@ public class JpaColumn implements IJpaColumn {
 				}
 			}else {
 				isColumnInRelationshipWithView = false;
-				logger.error("The Columns are null");
+				logger.debug("The Columns are null");
 			}
 			
 		} catch (Exception e){

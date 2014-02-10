@@ -133,8 +133,12 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 			        }
 			    }
 			});	
+			//filter values to show
+			this.comboValues.addListener('focus',this.filterValueCombo, this);
+
 			//until a value is selected on the comboColumn, this combo is disabled
 			this.comboValues.setDisabled(true); 
+			
 			
 			//Set combos with values previously set (opening an already saved dataset)
 			if (config.meta != undefined && config.meta != null){
@@ -166,6 +170,12 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 
 				}
 			});
+			if (Sbi.DatasetMetadataEditorMapping.showExpertButton == true){
+				this.openExpertGUIButton.setVisible(true); 
+			} else {
+				this.openExpertGUIButton.setVisible(false); 
+			}
+
 			
 			
 			
@@ -363,6 +373,30 @@ Ext.define('Sbi.tools.dataset.GeoBIDatasetFieldMetadata', {
 				this.storeMetadata.commitChanges();
 
 			}
+
+		}
+		
+		//This will filter the data of comboValues based on comboProperties' selection
+		,filterValueCombo : function(component, The, eOpts) {
+			var comboValues = this.comboValues;
+			comboValues.store.clearFilter(false);
+		    //if no admissibleValues are specified this means no filter at all!
+		    if (Sbi.DatasetMetadataEditorMapping.domainValues.length > 0) {
+				//filter value combo data
+				comboValues.store.filter(function(r) {
+				    var value = r.get('VALUE_NM');
+				    var admissibleValues = Sbi.DatasetMetadataEditorMapping.domainValues;
+				    value = value.toUpperCase();
+				    
+				    for(i=0; i<admissibleValues.length; i++){
+				    	if (value == admissibleValues[i].toUpperCase() ){
+				    		return true
+				    	}
+				    }
+				    return false
+
+				});
+		    }
 
 		}
 		

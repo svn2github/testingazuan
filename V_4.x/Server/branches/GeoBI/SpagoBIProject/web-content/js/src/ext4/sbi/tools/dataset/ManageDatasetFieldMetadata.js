@@ -372,21 +372,6 @@ Ext.define('Sbi.tools.dataset.ManageDatasetFieldMetadata', {
 
 		
 		//-------------------------------------------------
-		
-		//Simple mode button-------------------------
-		
-		
-//		this.openExpertGUIButton = new Ext.button.Button({
-//			text: 'Simple Mode',
-//			handler: function() {
-//				alert('Open Simple GUI')
-//				this.fireEvent('openSimpleGUI', this);				
-//			}
-//		});
-		
-		
-		//-------------------------------------------
-		
 
 		
 		// Main Panel ----------------------

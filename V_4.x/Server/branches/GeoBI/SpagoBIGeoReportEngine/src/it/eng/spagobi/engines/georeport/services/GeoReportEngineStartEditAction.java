@@ -206,7 +206,7 @@ public class GeoReportEngineStartEditAction extends AbstractEngineStartServlet {
 		}
 		
 		if(geoFieldsMeta.size() == 0) {
-			throw new RuntimeException("The dataset [" + dataSet.getName() + "] does not cntain any columns that point to the geographical dimension");
+			throw new RuntimeException("The dataset [" + dataSet.getName() + "] does not contain any columns that point to the geographical dimension");
 		}
 		
 		if(geoFieldsMeta.size() > 1) {

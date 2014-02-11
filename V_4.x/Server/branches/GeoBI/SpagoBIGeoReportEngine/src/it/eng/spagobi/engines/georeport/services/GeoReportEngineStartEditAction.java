@@ -182,7 +182,7 @@ public class GeoReportEngineStartEditAction extends AbstractEngineStartServlet {
 			template.put("zoomLevel", levelProps.getProperty("layer_zoom") );
 		} catch (Throwable t) {
 			throw new RuntimeException(
-					"An unexpected error occured while executing building template: "+t.getMessage(),
+					t.getMessage(),
 					t);
 		} finally {
 			logger.debug("OUT");
@@ -206,7 +206,8 @@ public class GeoReportEngineStartEditAction extends AbstractEngineStartServlet {
 		}
 		
 		if(geoFieldsMeta.size() == 0) {
-			throw new RuntimeException("The dataset [" + dataSet.getName() + "] does not contain any columns that point to the geographical dimension");
+			logger.warn("The dataset [" + dataSet.getName() + "] does not contain any columns that point to the geographical dimension");
+			throw new RuntimeException("sbi.geo.error.template.nogeoinfo");
 		}
 		
 		if(geoFieldsMeta.size() > 1) {

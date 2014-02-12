@@ -67,7 +67,14 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-	
+	<PUBLISHER name="FORM_ENGINE_FROM_DATASET_START_ACTION_PUBLISHER">
+   	 	<RENDERING channel="HTTP" type="JAVA" mode="">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="it.eng.spagobi.commons.presentation.DynamicPublisher"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	
 	<PUBLISHER name="VIEW_FORM_ENGINE_PUBLISHER">		
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>

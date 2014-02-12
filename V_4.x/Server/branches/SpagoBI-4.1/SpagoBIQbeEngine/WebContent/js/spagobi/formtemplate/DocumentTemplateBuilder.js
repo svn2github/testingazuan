@@ -51,6 +51,10 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 	Ext.apply(this, c);
 	
 	this.services = this.services || new Array();	
+	this.services['getDatasets'] = this.services['getDatasets'] || Sbi.config.remoteServiceRegistry.getRestServiceUrl(
+			{serviceName: 'certificateddatasets/getflatdataset',
+				baseUrl:{restServicesPath: 'restful-services'}});
+	
 	this.services['getDocuments'] = this.services['getDocuments'] || Sbi.config.remoteServiceRegistry.getServiceUrl({
 		serviceName: 'FILTER_FOLDER_CONTENT_ACTION'
 		, baseParams: {
@@ -69,7 +73,15 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 		}
 	});
 	
-	
+	this.services['execFormBuilderDataset'] = this.services['execFormBuilderDataset'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'FORM_ENGINE_FROM_DATASET_START_ACTION'
+		, baseParams: {
+			MODALITY: 'EDIT'
+			, NEW_SESSION: 'TRUE'
+			, formDocumentId: this.formDocumentId
+			, IS_NEW_DOCUMENT: 'TRUE'  // this tells the service that the document is new and therefore the template is missing
+		}
+	});
 	
 	this.init();
 	
@@ -79,7 +91,7 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 		, activeItem: 0
 		, hideMode: !Ext.isIE ? 'nosize' : 'display'
 		, layout: 'card'
-		, items: [this.datamartSelectPage, this.formBuilderPage]
+		, items: [this.selectStart,  this.formBuilderPage]
 	});
 	
 	// constructor
@@ -97,6 +109,8 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	services: null
 	, datamartSelectPage: null
 	, formBuilderPage: null
+	, datasetSelectPage: null
+	, selectStart: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
@@ -110,6 +124,12 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	
 	, init: function() {
 		this.initDatamartSelectPage();
+		this.initDatasetSelectPage();
+		this.selectStart = new Ext.Panel({
+			bodyStyle: 'padding:10px',
+			layout: 'form',
+			items: [this.datamartSelectPage, this.datasetSelectPage]
+		});
 		this.initFormBuilderPage();
 	}	   
 
@@ -150,7 +170,7 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	        }
 	        trans.callback.call(trans.scope||window, result, trans.arg, result.success);
 	    };
-	   
+
 	    var store = new Ext.data.Store({
 	        autoLoad: false,
 	        proxy: this.proxy,
@@ -190,14 +210,71 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	    });
 		
 		this.datamartSelectPage = new Ext.Panel({
-			bodyStyle: 'padding:10px',
+			bodyStyle: 'padding:10px;margin: 5px;',
 			layout: 'form',
 			items: [this.documentsCombo, this.submitBtn]
-		});		
+		});	
+		
+
 		
 		//alert('alert');
 	}
-	
+	, initDatasetSelectPage: function() {
+
+		var storeDS = new Ext.data.Store({
+	        autoLoad: false,
+	        url: this.services['getDatasets'],
+		    reader: new Ext.data.JsonReader({
+		    	    idProperty: 'label',
+		    	    root: 'root',
+		    	    totalProperty: 'results',
+		    	    fields: [
+		    	        {name: 'id', mapping: 'id'},
+		    	        {name: 'name', mapping: 'name'},
+		    	        {name: 'label', mapping: 'label'},
+		    	        {name: 'description', mapping: 'description'}
+		    	    ]
+		    })
+ 
+		});
+	    this.datasetCombo = new Ext.form.ComboBox({
+    	   	tpl: '<tpl for="."><div ext:qtip="{name}: {description}" class="x-combo-list-item">{name}</div></tpl>',	
+    	   	editable  : false,
+    	   	//fieldLabel : LN('sbi.formtemplate.documenttemplatebuilder.documentfield.label'),
+    	   	fieldLabel : 'Flat datasets',
+    	   	forceSelection : true,
+    	   	//mode : 'local',
+    	   	name : 'scope',
+    	   	store : storeDS,
+    	   	displayField:'name',
+    	    valueField:'label',
+    	    //emptyText: LN('sbi.formtemplate.documenttemplatebuilder.documentfield.emptytext'),
+    	    emptyText: 'flat datasets...',
+    	    typeAhead: true,    	    
+    	    triggerAction: 'all',
+    	    selectOnFocus:true
+    	});
+	    
+		
+		this.submitDSBtn = new Ext.Button({
+			tooltip: 'Submit',
+			text: 'Start with Dataset' ,
+			disabled: false,
+	        hidden: false,
+	        handler: function() {			
+				var datsetLabel = this.datasetCombo.getValue();
+				this.openFormBuilderDS(datsetLabel);
+			}, 
+			scope: this
+	    });
+		
+		this.datasetSelectPage = new Ext.Panel({
+			bodyStyle: 'padding:10px;margin: 5px;',
+			layout: 'form',
+			items: [this.datasetCombo, this.submitDSBtn]
+		});		
+
+	}
 	, initFormBuilderPage: function() {
 		this.formBuilderPage = new Ext.Panel({
 			html: 'formBuilderPage'
@@ -221,6 +298,20 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 		form.submit();
 	}
 	
-	
+	, openFormBuilderDS: function(datasetLabel) {
+		var form = document.getElementById('submit-form');
+		if(!form) {
+			var dh = Ext.DomHelper;
+			form = dh.append(Ext.getBody(), {
+			    id: 'submit-form'
+			    , tag: 'form'
+			    , method: 'post'
+			    , cls: 'submit-form'
+			});
+		}
+		
+		form.action = this.services['execFormBuilderDataset'] + '&dataset_label=' + datasetLabel;
+		form.submit();
+	}
   	
 });

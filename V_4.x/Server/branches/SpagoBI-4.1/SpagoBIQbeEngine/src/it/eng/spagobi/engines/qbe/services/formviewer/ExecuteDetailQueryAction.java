@@ -102,7 +102,6 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 			filters = getAttributeAsJSONArray( FILTERS );
 			logger.debug("Parameter [" + FILTERS + "] is equals to [" + filters + "]");
 			Assert.assertNotNull(filters, "Parameter [" + FILTERS + "] cannot be null");
-			Assert.assertTrue(filters.length() > 0, "GroupBy fileds list cannot be empty");
 						
 			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.value" + "] is equals to [" + (maxSize != null? maxSize: "none") + "]");

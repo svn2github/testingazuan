@@ -73,17 +73,29 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 	, combo: null
 	, valuesInputs: null
 	, fields: null
+	, hiddenField: null
 	   
 	// private methods
 	   
 	, init: function(dynamicFilter) {
 		this.fields = [];
-		this.combo = this.createFieldCombo( dynamicFilter );
-		var aPanel = new Ext.Panel({
-			items: [this.combo]
-			, layout: 'form' // form layout required: input field labels are displayed only with this layout
-			, width: 300
-		});
+		
+		var aPanel = null;
+		if ( this.hasOnlyOneField( dynamicFilter ) ) {
+			this.hiddenField = this.getFirstField( dynamicFilter );
+			aPanel = new Ext.Panel({
+				html: this.getDynamicFilterTitle( dynamicFilter ) + ":"
+				, width: 300
+				, cls: 'x-form-item'  // to get the same font as the other inputs with options displayed by the combobox
+			});
+		} else {
+			this.combo = this.createFieldCombo( dynamicFilter );
+			aPanel = new Ext.Panel({
+				items: [this.combo]
+				, layout: 'form' // form layout required: input field labels are displayed only with this layout
+				, width: 300
+			});
+		}
 		this.fields.push(aPanel);
 		
 		this.valuesInputs = this.createFieldValuesInput( dynamicFilter );
@@ -124,14 +136,10 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 		    fields: ['field', 'text']
 		});
 		
-		var fieldLabel = (dynamicFilter.title !== undefined && dynamicFilter.title !== '') ? 
-				dynamicFilter.title :
-					LN('sbi.formviewer.dynamicfilterspanel.variable');
-		
 		var combo = new Ext.form.ComboBox({
 			name: 'field'
             , editable: false
-            , fieldLabel: fieldLabel
+            , fieldLabel: this.getDynamicFilterTitle(dynamicFilter)
 		    , forceSelection: false
 		    , store: store
 		    , mode : 'local'
@@ -142,6 +150,14 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 		});
 
 		return combo;
+	}
+	
+	,
+	getDynamicFilterTitle : function ( dynamicFilter ) {
+		var fieldLabel = (dynamicFilter.title !== undefined && dynamicFilter.title !== '') ? 
+				dynamicFilter.title :
+					LN('sbi.formviewer.dynamicfilterspanel.variable');
+		return fieldLabel;
 	}
 	
 	, createFieldValuesInput: function(dynamicFilter) {
@@ -165,16 +181,28 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 			   , name : 'value'
 			   , allowBlank: true
 			   , width: 290
+			   , hideLabel : true
 			});
 		}
 		return valuesInput;
 	}
 
+	,
+	hasOnlyOneField : function (dynamicFilter) {
+		return dynamicFilter.admissibleFields.length == 1;
+	}
+	
+	,
+	getFirstField : function (dynamicFilter) {
+		return dynamicFilter.admissibleFields[0].field;
+	}
 	   
 	// public methods
 	
 	, clear: function() {
-		this.combo.setValue('');
+		if (this.combo != null) {
+			this.combo.setValue('');
+		}
 		for (var i = 0; i < this.valuesInputs.length; i++) {
 			var aValueInput = this.valuesInputs[i];
 			aValueInput.setValue('');
@@ -182,29 +210,52 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 	}
 	
 	, getFormState: function() {
-		var state = {field: this.combo.getValue()};
-		for (var i = 0; i < this.valuesInputs.length; i++) {
-			var aValueInput = this.valuesInputs[i];
-			state[aValueInput.name] = aValueInput.getValue();
+		var state = {};
+		if (this.combo != null) {
+			state.field = this.combo.getValue();
+			for (var i = 0; i < this.valuesInputs.length; i++) {
+				var aValueInput = this.valuesInputs[i];
+				state[aValueInput.name] = aValueInput.getValue();
+			}
+		} else {
+			// in case the filter has no values filled by the user, return an empty object
+			var atLeastOneValue = false;
+			for (var i = 0; i < this.valuesInputs.length; i++) {
+				var aValueInput = this.valuesInputs[i];
+				var aValue = aValueInput.getValue();
+				if (aValue !== null && aValue.trim() !== '') {
+					atLeastOneValue = true;
+				}
+				state[aValueInput.name] = aValueInput.getValue();
+			}
+			if (atLeastOneValue) {
+				state.field = this.hiddenField;
+			} else {
+				state = {};
+			}
 		}
 		return state;
 	}
 	
-	, setFormState: function(value) {	
-		var field = this.combo.setValue(value.field);
+	, setFormState: function(value) {
+		if (this.combo != null) {
+			this.combo.setValue(value.field);
+		}
 		this.getForm().setValues(value);
 	}
 	
-    , isValid: function(){
-        if(this.combo.getValue() === '') {
-        	return true;
-        }
-		for (var i = 0; i < this.valuesInputs.length; i++) {
-			var aValueInput = this.valuesInputs[i];
-			if (aValueInput.getValue() !== null && aValueInput.getValue().trim() === '') {
-				return false;
-			}
-		}
+    , isValid: function() {
+    	if (this.combo != null) {
+            if(this.combo.getValue() === '') {
+            	return true;
+            }
+    		for (var i = 0; i < this.valuesInputs.length; i++) {
+    			var aValueInput = this.valuesInputs[i];
+    			if (aValueInput.getValue() !== null && aValueInput.getValue().trim() === '') {
+    				return false;
+    			}
+    		}
+    	}
         return true;
     }
     

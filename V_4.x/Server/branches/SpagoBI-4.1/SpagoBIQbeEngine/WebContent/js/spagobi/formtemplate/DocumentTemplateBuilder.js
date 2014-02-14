@@ -88,10 +88,7 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 	Ext.apply(c, {
 		closable: false
 		, border: false
-		, activeItem: 0
-		, hideMode: !Ext.isIE ? 'nosize' : 'display'
-		, layout: 'card'
-		, items: [this.selectStart,  this.formBuilderPage]
+		, items: [this.infoPanel, this.selectStart]
 	});
 	
 	// constructor
@@ -107,8 +104,8 @@ Sbi.formtemplate.DocumentTemplateBuilder = function(config) {
 Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
     
 	services: null
+	, infoPanel: null
 	, datamartSelectPage: null
-	, formBuilderPage: null
 	, datasetSelectPage: null
 	, selectStart: null
 	
@@ -123,15 +120,24 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	// --------------------------------------------------------------------------------
 	
 	, init: function() {
+		this.initInfoPanel();
 		this.initDatamartSelectPage();
 		this.initDatasetSelectPage();
 		this.selectStart = new Ext.Panel({
 			bodyStyle: 'padding:10px',
 			layout: 'form',
+			border: false,
 			items: [this.datamartSelectPage, this.datasetSelectPage]
 		});
-		this.initFormBuilderPage();
-	}	   
+	}
+
+	,
+	initInfoPanel : function () {
+		this.infoPanel = new Ext.Panel({
+			html: '<div class="info">' + LN('sbi.formtemplate.documenttemplatebuilder.selectsourceinfo.msg') + '</div>',
+			border: false
+		});
+	}
 
 	, initDatamartSelectPage: function() {
 		
@@ -198,8 +204,7 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
     	});
 		
 		this.submitBtn = new Ext.Button({
-			tooltip: 'Submit',
-			text: LN('sbi.formtemplate.documenttemplatebuilder.startediting'),
+			text: LN('sbi.formtemplate.documenttemplatebuilder.startwithdocument'),
 			disabled: false,
 	        hidden: false,
 	        handler: function() {			
@@ -240,16 +245,14 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	    this.datasetCombo = new Ext.form.ComboBox({
     	   	tpl: '<tpl for="."><div ext:qtip="{name}: {description}" class="x-combo-list-item">{name}</div></tpl>',	
     	   	editable  : false,
-    	   	//fieldLabel : LN('sbi.formtemplate.documenttemplatebuilder.documentfield.label'),
-    	   	fieldLabel : 'Flat datasets',
+    	   	fieldLabel : LN('sbi.formtemplate.documenttemplatebuilder.datasetfield.label'),
     	   	forceSelection : true,
     	   	//mode : 'local',
     	   	name : 'scope',
     	   	store : storeDS,
     	   	displayField:'name',
     	    valueField:'label',
-    	    //emptyText: LN('sbi.formtemplate.documenttemplatebuilder.documentfield.emptytext'),
-    	    emptyText: 'flat datasets...',
+    	    emptyText: LN('sbi.formtemplate.documenttemplatebuilder.datasetfield.emptytext'),
     	    typeAhead: true,    	    
     	    triggerAction: 'all',
     	    selectOnFocus:true
@@ -257,8 +260,7 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 	    
 		
 		this.submitDSBtn = new Ext.Button({
-			tooltip: 'Submit',
-			text: 'Start with Dataset' ,
+			text: LN('sbi.formtemplate.documenttemplatebuilder.startwithdataset'),
 			disabled: false,
 	        hidden: false,
 	        handler: function() {			
@@ -274,11 +276,6 @@ Ext.extend(Sbi.formtemplate.DocumentTemplateBuilder, Ext.Panel, {
 			items: [this.datasetCombo, this.submitDSBtn]
 		});		
 
-	}
-	, initFormBuilderPage: function() {
-		this.formBuilderPage = new Ext.Panel({
-			html: 'formBuilderPage'
-		});
 	}
 	
 	

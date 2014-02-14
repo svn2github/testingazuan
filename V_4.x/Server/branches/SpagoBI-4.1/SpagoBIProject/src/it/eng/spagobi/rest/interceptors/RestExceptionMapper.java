@@ -6,6 +6,7 @@
 
 package it.eng.spagobi.rest.interceptors;
 
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -102,7 +103,7 @@ public class RestExceptionMapper implements ExceptionMapper<Throwable>
         String owner= (String)servletRequest.getParameter("owner");
         String userToAccept= (String)servletRequest.getParameter("userToAccept");
         String url= proto+"://"+addr+":"+port+""+contextName+"/servlet/AdapterHTTP?PAGE=LoginPage&NEW_SESSION=TRUE&"+SpagoBIConstants.BACK_URL+"="+backUrl
-       		 +"&community="+community+"&owner="+owner+"&userToAccept="+userToAccept;
+       		 +"&community="+community+"&owner="+owner+"&userToAccept="+userToAccept+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
         return url;
 		
 	}

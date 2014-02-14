@@ -281,10 +281,18 @@ public class SmartFilterDriver extends AbstractDriver implements IEngineDriver {
 			documentId = obj.getId().toString();
 			engine = obj.getEngine();
 			url = engine.getUrl();
-			//url = url.replaceFirst("/servlet/AdapterHTTP", "");
-			//url += "/templateBuilder.jsp";
-				
+			
 			parameters = new HashMap();
+
+			// getting the dataset label from template, if smart filter is based on a dataset
+			ObjTemplate objectTemplate = obj.getActiveTemplate();
+			byte [] content = objectTemplate.getContent();
+			SourceBean sbTemplate = getTemplateAsSourceBean(content);
+			if (sbTemplate.getName().equals(EngineConstants.SMART_FILTER_TAG)  && sbTemplate.containsAttribute("DATASET")) {
+				String label = (String) ((SourceBean) sbTemplate
+						.getAttribute("DATASET")).getAttribute("label");
+				parameters.put("dataset_label", label);
+			}
 			parameters.put("document", documentId);
 			parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_TEMPLATE_BUILD_ACTION");
 			parameters.put(PARAM_NEW_SESSION, "TRUE");
@@ -292,6 +300,8 @@ public class SmartFilterDriver extends AbstractDriver implements IEngineDriver {
 			applySecurity(parameters, profile);
 			
 			engineURL = new EngineURL(url, parameters);
+		} catch(Throwable t) {
+			throw new RuntimeException("Cannot get engine edit URL", t);
     	} finally {
 			logger.debug("OUT");
 		}
@@ -359,8 +369,6 @@ public class SmartFilterDriver extends AbstractDriver implements IEngineDriver {
 
     
 	private Map applyService(Map parameters, BIObject biObject) {
-		ObjTemplate template;
-		
 		logger.debug("IN");
 		
 		try {
@@ -378,16 +386,14 @@ public class SmartFilterDriver extends AbstractDriver implements IEngineDriver {
 							.getAttribute("DATASET")).getAttribute("label");
 					parameters.put("dataset_label", label);
 				}
-
 			} else {
 				parameters.put(PARAM_SERVICE_NAME, "FORM_ENGINE_START_ACTION");
 			}
 			parameters.put(PARAM_MODALITY, "VIEW");
 			
-			
 			parameters.put(PARAM_NEW_SESSION, "TRUE");
 		} catch(Throwable t) {
-			throw new RuntimeException("Impossible to guess from template extension the engine startup service to call");
+			throw new RuntimeException("Cannot apply service parameters", t);
 		} finally {
 			logger.debug("OUT");
 		}

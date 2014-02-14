@@ -218,7 +218,6 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 				state[aValueInput.name] = aValueInput.getValue();
 			}
 		} else {
-			// in case the filter has no values filled by the user, return an empty object
 			var atLeastOneValue = false;
 			for (var i = 0; i < this.valuesInputs.length; i++) {
 				var aValueInput = this.valuesInputs[i];
@@ -231,7 +230,8 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 			if (atLeastOneValue) {
 				state.field = this.hiddenField;
 			} else {
-				state = {};
+				state.field = ''; // in case the filter has no values filled by the user, return an empty field (no values means no filter); 
+				// case when the filter should consider an empty string as a valid value is ignored.
 			}
 		}
 		return state;

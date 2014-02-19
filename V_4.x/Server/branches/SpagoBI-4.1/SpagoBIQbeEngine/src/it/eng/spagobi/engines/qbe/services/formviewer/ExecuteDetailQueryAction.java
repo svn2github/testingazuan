@@ -191,16 +191,7 @@ public class ExecuteDetailQueryAction extends AbstractQbeEngineAction {
 				auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
 				
 				dataSet = new JDBCDataSet();
-				//Session session = getDatamartModel().getDataSource().getSessionFactory().openSession();
-
-				QbeEngineInstance qbeEngineInstance = (QbeEngineInstance)getAttributeFromSession(EngineConstants.ENGINE_INSTANCE);
-				
 				IDataSource dataSource = (IDataSource)getDataSource().getConfiguration().loadDataSourceProperties().get("datasource"); 
-
-				if(dataSource == null){
-					dataSource = (IDataSource)qbeEngineInstance.getEnv().get(EngineConstants.ENV_DATASOURCE);
-				}	
-
 				dataSet.setDataSource(dataSource);
 				dataSet.setQuery(sqlQuery);
 				dataSet.loadData(start, limit, -1);

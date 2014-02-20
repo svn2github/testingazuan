@@ -16,9 +16,10 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 //VIEWER PANEL
 //===================================================================
 Sbi.locale.ln['sbi.formviewer.formviewerpage.title'] = 'DATA BROWER';
-Sbi.locale.ln['sbi.formviewer.formviewerpage.execute'] = 'Vedi tabelle di sintesi-dettaglio';
+Sbi.locale.ln['sbi.formviewer.formviewerpage.filters.title'] = 'Filtri';
+Sbi.locale.ln['sbi.formviewer.formviewerpage.execute'] = 'Vedi dati';
 Sbi.locale.ln['sbi.formviewer.formviewerpage.execute.tooltip'] = 'Mostra risultati del form usando le tabelle di sintesi e di dettaglio';
-Sbi.locale.ln['sbi.formviewer.formviewerpage.save'] = 'Salva il form';
+Sbi.locale.ln['sbi.formviewer.formviewerpage.save'] = 'Salva';
 Sbi.locale.ln['sbi.formviewer.formviewerpage.save.tooltip'] = 'Salva lo stato del form per esecuzioni successive';
 Sbi.locale.ln['sbi.formviewer.formviewerpage.designworksheet'] = 'Worksheet';
 Sbi.locale.ln['sbi.formviewer.formviewerpage.designworksheet.tooltip'] = 'Apri il designer del documento worksheet';

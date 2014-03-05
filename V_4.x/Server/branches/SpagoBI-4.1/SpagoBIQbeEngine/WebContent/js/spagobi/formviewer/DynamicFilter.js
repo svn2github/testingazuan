@@ -110,11 +110,13 @@ Ext.extend(Sbi.formviewer.DynamicFilter, Ext.form.FormPanel, {
 				items: [this.valuesInputs[0]]
 				, layout: 'form' // form layout required: input field labels are displayed only with this layout
 				, width: 150
+				, labelWidth : 34
 			}));
 			this.fields.push(new Ext.Panel({
 				items: [this.valuesInputs[1]]
 				, layout: 'form' // form layout required: input field labels are displayed only with this layout
 				, width: 150
+				, labelWidth : 34
 			}));
 		}
 		var clearButtonPanel = new Ext.Panel({

@@ -1,0 +1,205 @@
+/* SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+/*******************************************************************************************************
+ * Actions
+ ********************************************************************************************************/
+.x-pivot-header {
+	position: relative !important;
+	border-top-width: 1px !important;
+	border-right-width: 1px !important;
+}
+
+.x-pivot-cell {
+	border-top-width: 1px !important;
+	border-right-width: 1px !important;
+	text-align: right;
+	padding: 2px;
+	vertical-align: middle;
+	border-top-color: #d0d0d0;
+}
+
+.x-pivot-table {
+	border-bottom-width: 1px !important;
+	border-left-width: 1px !important;
+	border-right-width: 0px !important;
+	border-top-width: 0px !important;
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+.rotate span {
+	height: auto !important;
+	-moz-transform: rotate(90.0deg); /* FF3.5+ */
+	-o-transform: rotate(90.0deg); /* Opera 10.5 */
+	-webkit-transform: rotate(90.0deg); /* Saf3.1+, Chrome */
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.917);
+	/* IE6,IE7 */
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.BasicImage(rotation=0.917)";
+	/* IE8 */
+}
+
+.up-arrow {
+	background-image: url(../img/up.png);
+	background-position: top center;
+	background-repeat: no-repeat;
+}
+
+.down-arrow {
+	background-image: url(../img/down.png);
+	background-position: bottom center;
+	background-repeat: no-repeat;
+}
+
+.left-arrow {
+	background-image: url(../img/left.png);
+	background-position: left;
+	background-repeat: no-repeat;
+}
+
+.right-arrow {
+	background-image: url(../img/right.png);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+
+.multi-hierarchy {
+	background-image: url(../img/arrow.gif);
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: 12px 12px;
+}
+
+
+/*------------------*/
+/*expandable members*/
+/*------------------*/
+
+.expanded{
+   		vertical-align:middle;
+   		text-align: left;
+    	background-color: -webkit-linear-gradient(top,#f9f9f9,#e3e4e6);
+}
+.collapsed{
+   		vertical-align:middle;
+   		text-align: left;
+    	background-color: -webkit-linear-gradient(top,#f9f9f9,#e3e4e6);
+}
+.expanded img,
+.collapsed img{
+    position: relative;
+    left: 0px;
+    text-align: left;
+    vertical-align: top;
+    padding: 3px;
+}
+td[contenteditable="true"]:focus {
+    border: 1px solid aqua;
+    cursor: text;
+}
+.dimension-title{
+	border-top: 1px solid #99bce8;
+	border-right: 1px solid #99bce8;
+	font: bold 11px/13px tahoma,arial,verdana,sans-serif;
+	text-align: left;
+	padding-left: 5px;
+	vertical-align: middle;
+}
+.dimension-title img{
+    position: relative;
+    left: 0px;
+    text-align: left;
+    vertical-align: middle;
+    padding: 3px;
+}
+.swapaxes {
+	background-image: url(../img/double-arrow.png);
+	background-color: transparent !important;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+
+/* filter panel*/
+
+.filter-title {
+	background-color: transparent; 
+	border-top: 0px !important; 
+	border-left: 0px !important; 
+	border-right: 0px !important;  
+	padding: 4px; 
+	text-align: center;
+}
+
+.filter-value {
+	font-style:italic;
+	background-color: transparent;
+	padding: 4px; 
+	text-align: center;
+}
+
+.filter-funnel-image {
+	background-image: url(../img/filter_3.png);
+	background-position: center center;
+	background-repeat: no-repeat;
+	width: "90%";
+	height: "90%";
+}
+
+.filter-funnel-image-smalsl {
+	background-image: url(../img/filter_3.png);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 10px 10px;
+}
+
+.filter-funnel-body{
+	background-color: transparent; 
+	border-top: 0px !important; 
+	border-bottom: 0px !important; 
+	border-right: 0px !important;  
+	padding: 4px"
+}
+
+.filter-column {
+	background-image: url(../img/filter_3.png);
+	background-color: transparent; 
+	border-top: 0px !important;
+	border-bottom: 0px !important;  
+	border-right: 0px !important; 
+	margin-left: 4px;
+	padding-left: 10px;  
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 10px 10px;
+	text-align: center;
+}
+
+.filter-row {
+	background-image: url(../img/filter_3.png);
+	background-color: transparent; 
+	border-bottom: 0px !important;
+	border-right: 0px !important;  
+	border-left: 0px !important; 
+	margin-top: 4px; 
+	padding-top: 10px;  
+	text-align: center;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 10px 10px;
+}
+
+
+/* toolbar */
+.drill-mode{
+	background-image: url(../img/drill.png);
+}
+.mdx{
+	background-image: url(../img/mdx.png);
+}

@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 
 Name: SpagoBIChartEngine.war
 Implementation-Title: SpagoBIChartEngine
-Implementation-Version: 3.4.0 
+Implementation-Version: 4.2.0 
 

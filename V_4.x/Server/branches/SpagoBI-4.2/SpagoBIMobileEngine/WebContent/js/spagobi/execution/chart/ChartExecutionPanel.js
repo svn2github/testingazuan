@@ -54,7 +54,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 						var targetDoc;
 						if(resp.config && resp.config.drill){
 							if(resp.config.drill.params){
-								crossParams = resp.config.drill.params;
+								crossParams.push(resp.config.drill.params);
 							}
 							targetDoc = this.setTargetDocument(resp);	
 							if(targetDoc){
@@ -71,7 +71,7 @@ Ext.define('app.views.ChartExecutionPanel',{
 						if(resp.config && resp.config.drill){
 							var crossParams = new Array();
 							if(resp.config.drill.params){
-								crossParams = resp.config.drill.params;
+								crossParams.push(resp.config.drill.params);
 							}
 							this.setCrossNavigation(resp, item, crossParams);
 							var targetDoc;
@@ -83,8 +83,6 @@ Ext.define('app.views.ChartExecutionPanel',{
 					}
 			};
 		}
-		
-
 		
 
 

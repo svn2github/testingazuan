@@ -73,6 +73,7 @@
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiMetaModelContent.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiArtifact.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiArtifactContent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiViewpoints.hbm.xml" />
 
                 <!-- User Defined Attributes -->
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiUdp.hbm.xml" />
@@ -81,5 +82,6 @@
         <mapping resource="it/eng/spagobi/kpi/goal/metadata/mapping/SbiGoal.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/goal/metadata/mapping/SbiGoalKpi.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/goal/metadata/mapping/SbiGoalHierarchy.hbm.xml" />
+
     </session-factory>
 </hibernate-configuration>

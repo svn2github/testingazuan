@@ -17,6 +17,7 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiViewpoints;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
@@ -70,8 +71,6 @@ import it.eng.spagobi.tools.catalogue.metadata.SbiMetaModelContent;
 import it.eng.spagobi.tools.dataset.constants.DataSetConstants;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetId;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
-import it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetacontents;
 import it.eng.spagobi.tools.objmetadata.metadata.SbiObjMetadata;
@@ -107,8 +106,6 @@ import org.hibernate.cfg.Configuration;
 import org.json.JSONObject;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
-
-import com.lowagie.text.Meta;
 
 public class ImportUtilities {
 
@@ -565,6 +562,30 @@ MetadataLogger metaLog;
 		return newPar;
 	}
 
+	
+	
+	/**
+	 * Creates a new hibernate viewpoint
+	 * 
+	 * @param paruse the paruse
+	 * 
+	 * @return the new hibernate parameter use object
+	 * @throws EMFUserError 
+	 */
+	public  SbiViewpoints makeNew(SbiViewpoints exportedViewpoint){
+		logger.debug("IN");
+		SbiViewpoints newViewpoints = new SbiViewpoints();
+			newViewpoints.setVpCreationDate(exportedViewpoint.getVpCreationDate());
+			newViewpoints.setVpDesc(exportedViewpoint.getVpDesc());
+			newViewpoints.setVpName(exportedViewpoint.getVpName());
+			newViewpoints.setVpOwner(exportedViewpoint.getVpOwner());
+			newViewpoints.setVpScope(exportedViewpoint.getVpScope());
+			newViewpoints.setVpValueParams(exportedViewpoint.getVpValueParams());
+						
+		logger.debug("OUT");
+		return newViewpoints;
+	}
+	
 	
 	
 	/**

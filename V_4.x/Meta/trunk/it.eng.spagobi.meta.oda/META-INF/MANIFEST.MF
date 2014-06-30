@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.oda
 Bundle-SymbolicName: it.eng.spagobi.meta.oda; singleton:=true
-Bundle-Version: 4.0.0
+Bundle-Version: 5.0.0
 Bundle-ClassPath: .,
  src,
  libs/qbecore/eclipselink/eclipselink.jar,
@@ -30,9 +30,9 @@ Bundle-ClassPath: .,
  libs/qbecore/jackson-core-2.0.2.jar,
  libs/qbecore/jackson-databind-2.0.2.jar,
  libs/qbecore/jgrapht-jdk1.6.jar,
- libs/qbecore/sbiutils/spagobi-utils-4.1.0.jar,
- libs/qbecore/sbiutils/spagobi-utils-json-4.1.0.jar,
- libs/qbecore/spagobi-qbecore-4.1.0.jar
+ libs/qbecore/sbiutils/spagobi-utils-5.0.0.jar,
+ libs/qbecore/sbiutils/spagobi-utils-json-5.0.0.jar,
+ libs/qbecore/spagobi-qbecore-5.0.0.jar
 Bundle-Activator: it.eng.spagobi.meta.oda.Activator
 Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin
@@ -86,6 +86,7 @@ Export-Package: it.eng.qbe.classloader,
  it.eng.spagobi.tools.dataset.common.datastore;uses:="it.eng.spago.base",
  it.eng.spagobi.tools.dataset.common.metadata,
  it.eng.spagobi.tools.dataset.common.query,
+ it.eng.spagobi.tools.datasource.bo,
  it.eng.spagobi.utilities,
  it.eng.spagobi.utilities.comparator,
  it.eng.spagobi.utilities.exceptions,

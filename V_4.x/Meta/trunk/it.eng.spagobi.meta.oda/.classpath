@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-json-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-5.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/sbiutils/spagobi-utils-json-5.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/qbecore/spagobi-qbecore-5.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/qbecore/jgrapht-jdk1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/sqljdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jdbc/ojdbc14.jar"/>

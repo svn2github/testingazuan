@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.editor
 Bundle-SymbolicName: it.eng.spagobi.meta.editor;singleton:=true
-Bundle-Version: 4.1.0
+Bundle-Version: 5.0.0
 Bundle-ClassPath: .,
  lib/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  lib/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
@@ -12,7 +12,7 @@ Bundle-ClassPath: .,
  lib/jackson-core-2.0.2.jar,
  lib/jackson-databind-2.0.2.jar,
  lib/org.eclipse.jface.source_3.6.0.I20100601-0800.jar,
- lib/spagobi-utils-json-4.1.0.jar
+ lib/spagobi-utils-json-5.0.0.jar
 Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

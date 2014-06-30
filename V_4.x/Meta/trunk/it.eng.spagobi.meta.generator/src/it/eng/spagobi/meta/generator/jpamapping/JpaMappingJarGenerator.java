@@ -32,6 +32,7 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 
 	private File distDir;
 	private String jarFileName;
+	private org.eclipse.core.internal.resources.File modelFile;
 
 	public static final String DEFAULT_DIST_DIR = "dist";
 	public static final String DEFAULT_JAR_FILE_NAME = "datamart.jar";
@@ -54,9 +55,16 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			distDir = (distDir == null)? new File(baseOutputDir, DEFAULT_DIST_DIR): distDir;
 			jarFileName = (jarFileName == null)? DEFAULT_JAR_FILE_NAME : jarFileName;
 
+			// copy model file inside bin folder so that it will be included in jar
+			File javaFile = getModelFile().getRawLocation().toFile();	
+			FileUtilities.copyFile(javaFile, getBinDir());
+			
+			// zip bin folder into jar
 			Zipper zipper = new Zipper();
 			zipper.compressToJar(getBinDir(), getJarFile());
 
+			
+			
 		} catch(Throwable t) {
 			logger.error("An error occur while generating JPA jar", t);
 			throw new GenerationException("An error occur while generating JPA jar", t);
@@ -138,4 +146,14 @@ public void hideTechnicalResources() {
 	public void setJarFileName(String jarFileName) {
 		this.jarFileName = jarFileName;
 	}
+
+	public org.eclipse.core.internal.resources.File getModelFile() {
+		return modelFile;
+	}
+
+	public void setModelFile(org.eclipse.core.internal.resources.File modelFile) {
+		this.modelFile = modelFile;
+	}
+	
+	
 }

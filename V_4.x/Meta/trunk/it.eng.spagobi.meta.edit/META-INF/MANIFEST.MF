@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.edit
 Bundle-SymbolicName: it.eng.spagobi.meta.edit;singleton:=true
-Bundle-Version: 4.1.0
+Bundle-Version: 5.0.0
 Bundle-ClassPath: .,
  libs/ch.qos.logback.classic_0.9.19.v20100519-1505.jar,
  libs/ch.qos.logback.core_0.9.19.v20100419-1216.jar,
@@ -11,7 +11,7 @@ Bundle-ClassPath: .,
  libs/jackson-annotations-2.0.2.jar,
  libs/jackson-core-2.0.2.jar,
  libs/jackson-databind-2.0.2.jar,
- libs/spagobi-utils-json-4.1.0.jar
+ libs/spagobi-utils-json-5.0.0.jar
 Bundle-Activator: it.eng.spagobi.meta.model.provider.SpagoBIMetaModelEditPlugin$Implementation
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

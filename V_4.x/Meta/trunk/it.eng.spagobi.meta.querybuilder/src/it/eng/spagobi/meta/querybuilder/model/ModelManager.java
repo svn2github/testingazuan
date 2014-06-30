@@ -57,6 +57,7 @@ public class ModelManager {
 	Model model;
 	
 	File mappingsFolder;
+	org.eclipse.core.internal.resources.File modelFile;
 	
 
 	private static Logger logger = LoggerFactory.getLogger(ModelManager.class);
@@ -127,6 +128,7 @@ public class ModelManager {
 			generator = (JpaMappingJarGenerator)descriptor.getGenerator();
 			generator.setLibDir(new File("plugins"));
 			generator.setPersistenceUnitName(persistenceUnitName);
+			generator.setModelFile(getModelFile());			
 			generator.generate(getBusinessModel(), getMappingsFolder().toString());
 		} catch(Throwable t) {
 			throw new SpagoBIPluginException("Impossible to generate mapping for business model [" + getBusinessModel().getName() + "] into folder [" + getMappingsFolder() + "]", t);
@@ -269,4 +271,14 @@ public class ModelManager {
 		ModelProperty property = physicalModel.getProperties().get(propertyName);
 		return property!= null? property.getValue(): null;
 	}
+
+	public org.eclipse.core.internal.resources.File getModelFile() {
+		return modelFile;
+	}
+
+	public void setModelFile(org.eclipse.core.internal.resources.File modelFile) {
+		this.modelFile = modelFile;
+	}
+	
+	
 }

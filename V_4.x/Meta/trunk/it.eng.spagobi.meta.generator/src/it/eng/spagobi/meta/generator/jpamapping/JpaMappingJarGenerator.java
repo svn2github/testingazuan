@@ -55,10 +55,11 @@ public class JpaMappingJarGenerator extends JpaMappingClassesGenerator {
 			distDir = (distDir == null)? new File(baseOutputDir, DEFAULT_DIST_DIR): distDir;
 			jarFileName = (jarFileName == null)? DEFAULT_JAR_FILE_NAME : jarFileName;
 
-			// copy model file inside bin folder so that it will be included in jar
-			File javaFile = getModelFile().getRawLocation().toFile();	
-			FileUtilities.copyFile(javaFile, getBinDir());
-			
+			// if model file is selected copy model file inside bin folder so that it will be included in jar 
+			if(getModelFile() != null){
+				File javaFile = getModelFile().getRawLocation().toFile();	
+				FileUtilities.copyFile(javaFile, getBinDir());
+			}
 			// zip bin folder into jar
 			Zipper zipper = new Zipper();
 			zipper.compressToJar(getBinDir(), getJarFile());

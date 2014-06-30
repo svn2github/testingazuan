@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry exported="true" kind="lib" path="libs/utils/spagobi-utils-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/utils/spagobi-utils-json-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/utils/spagobi-utils-5.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/utils/spagobi-utils-json-5.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="libs/misc/commons-lang-2.5.jar"/>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: it.eng.spagobi.meta.queryengine
 Bundle-SymbolicName: it.eng.spagobi.meta.queryengine
-Bundle-Version: 4.1.0
+Bundle-Version: 5.0.0
 Bundle-Activator: it.eng.spagobi.meta.queryengine.Activator
 Bundle-Vendor: Enginnering Group
 Require-Bundle: org.eclipse.core.runtime
@@ -36,9 +36,9 @@ Bundle-ClassPath: libs/qbecore/eclipselink/eclipselink.jar,
  libs/jdbc/tdgssconfig.jar,
  libs/jdbc/terajdbc4.jar,
  libs/qbecore/jgrapht-jdk1.6.jar,
- libs/qbecore/sbiutils/spagobi-utils-4.1.0.jar,
- libs/qbecore/sbiutils/spagobi-utils-json-4.1.0.jar,
- libs/qbecore/spagobi-qbecore-4.1.0.jar
+ libs/qbecore/sbiutils/spagobi-utils-5.0.0.jar,
+ libs/qbecore/sbiutils/spagobi-utils-json-5.0.0.jar,
+ libs/qbecore/spagobi-qbecore-5.0.0.jar
 Export-Package: it.eng.qbe,
  it.eng.qbe.classloader,
  it.eng.qbe.datasource,

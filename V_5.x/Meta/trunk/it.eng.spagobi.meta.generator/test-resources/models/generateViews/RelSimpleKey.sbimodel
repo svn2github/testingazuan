@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="ASCII"?>
+<it.eng.spagobi.meta.model:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:it.eng.spagobi.meta.model="http:///it/eng/spagobi/meta/model.ecore" xmlns:it.eng.spagobi.meta.model.business="http:///it/eng/spagobi/meta/model/businessl.ecore" name="My Model">
+  <physicalModels name="My Model" databaseName="MySQL" databaseVersion="5.0.91-community-nt" catalog="foodmart">
+    <properties key="connection.name">
+      <value propertyType="//@propertyTypes.0"/>
+    </properties>
+    <properties key="connection.url">
+      <value propertyType="//@propertyTypes.1"/>
+    </properties>
+    <properties key="connection.username">
+      <value propertyType="//@propertyTypes.2"/>
+    </properties>
+    <properties key="connection.password">
+      <value propertyType="//@propertyTypes.3"/>
+    </properties>
+    <properties key="connection.databasename">
+      <value propertyType="//@propertyTypes.4"/>
+    </properties>
+    <tables name="account" comment="" type="TABLE">
+      <columns name="account_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="account_parent" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="account_description" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="account_type" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="4"/>
+      <columns name="account_rollup" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="5"/>
+      <columns name="Custom_Members" comment="" dataType="VARCHAR" typeName="varchar" size="255" octectLength="255" radix="10" nullable="true" position="6"/>
+    </tables>
+    <tables name="agg_c_10_sales_fact_1997" comment="" type="TABLE">
+      <columns name="month_of_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="1"/>
+      <columns name="quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+      <columns name="the_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="3"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="customer_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="7"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="8"/>
+    </tables>
+    <tables name="agg_c_14_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="month_of_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="5"/>
+      <columns name="quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="6"/>
+      <columns name="the_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="7"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="8"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="9"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="10"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="11"/>
+    </tables>
+    <tables name="agg_c_special_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="time_month" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="5"/>
+      <columns name="time_quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="6"/>
+      <columns name="time_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="7"/>
+      <columns name="store_sales_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="8"/>
+      <columns name="store_cost_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="9"/>
+      <columns name="unit_sales_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="10"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="11"/>
+    </tables>
+    <tables name="agg_g_ms_pcat_sales_fact_1997" comment="" type="TABLE">
+      <columns name="gender" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="1"/>
+      <columns name="marital_status" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+      <columns name="product_family" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="product_department" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="product_category" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="month_of_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="6"/>
+      <columns name="quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="7"/>
+      <columns name="the_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="8"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="9"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="10"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="11"/>
+      <columns name="customer_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="12"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="13"/>
+    </tables>
+    <tables name="agg_l_03_sales_fact_1997" comment="" type="TABLE">
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="3"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="6"/>
+    </tables>
+    <tables name="agg_l_04_sales_fact_1997" comment="" type="TABLE">
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="2"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="3"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="customer_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="5"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="6"/>
+    </tables>
+    <tables name="agg_l_05_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="8"/>
+    </tables>
+    <tables name="agg_lc_100_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="the_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="4"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="8"/>
+    </tables>
+    <tables name="agg_ll_01_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="7"/>
+    </tables>
+    <tables name="agg_pl_01_sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="store_sales_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="store_cost_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="unit_sales_sum" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="fact_count" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="7"/>
+    </tables>
+    <tables name="bpartner_dimensions" comment="" type="TABLE">
+      <columns name="C_Region" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="1"/>
+      <columns name="Customers" comment="" dataType="INTEGER" typeName="int unsigned" size="10" octectLength="10" radix="10" position="2"/>
+    </tables>
+    <tables name="category" comment="" type="TABLE">
+      <columns name="category_id" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="1"/>
+      <columns name="category_parent" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="category_description" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="category_rollup" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+    </tables>
+    <tables name="currency" comment="" type="TABLE">
+      <columns name="currency_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="date" comment="" dataType="DATE" typeName="date" size="10" octectLength="10" radix="10" position="2"/>
+      <columns name="currency" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="conversion_ratio" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+    </tables>
+    <tables name="cust_to_dept" comment="" type="TABLE">
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="10" octectLength="10" radix="10" nullable="true" position="1"/>
+      <columns name="Periodicals" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="2"/>
+      <columns name="Breakfast_Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="3"/>
+      <columns name="Eggs" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="4"/>
+      <columns name="Alcoholic_Beverages" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="5"/>
+      <columns name="Household" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="6"/>
+      <columns name="Beverages" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="7"/>
+      <columns name="Frozen_Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="8"/>
+      <columns name="Dairy" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="9"/>
+      <columns name="Health_and_Hygiene" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="10"/>
+      <columns name="Seafood" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="11"/>
+      <columns name="Baked_Goods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="12"/>
+      <columns name="Canned_Products" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="13"/>
+      <columns name="Checkout" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="14"/>
+      <columns name="Meat" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="15"/>
+      <columns name="Baking_Goods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="16"/>
+      <columns name="Carousel" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="17"/>
+      <columns name="Starchy_Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="18"/>
+      <columns name="Deli" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="19"/>
+      <columns name="Produce" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="20"/>
+      <columns name="Canned_Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="21"/>
+      <columns name="Snacks" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="22"/>
+      <columns name="Snack_Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="23"/>
+      <columns name="cluster" comment="" dataType="LONGVARCHAR" typeName="text" size="65535" octectLength="65535" radix="10" nullable="true" position="24"/>
+    </tables>
+    <tables name="cust_to_dept_agg" comment="" type="TABLE">
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int unsigned" size="10" octectLength="10" radix="10" defaultValue="0" position="1"/>
+      <columns name="product_department" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" defaultValue="" position="2"/>
+      <columns name="ammount" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" defaultValue="0.0000" position="3"/>
+    </tables>
+    <tables name="cust_to_dept_bkp" comment="" type="TABLE">
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="10" octectLength="10" radix="10" nullable="true" position="1"/>
+      <columns name="Periodicals" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="2"/>
+      <columns name="Breakfast Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="3"/>
+      <columns name="Eggs" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="4"/>
+      <columns name="Alcoholic Beverages" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="5"/>
+      <columns name="Household" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="6"/>
+      <columns name="Beverages" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="7"/>
+      <columns name="Frozen Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="8"/>
+      <columns name="Dairy" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="9"/>
+      <columns name="Health and Hygiene" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="10"/>
+      <columns name="Seafood" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="11"/>
+      <columns name="Baked Goods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="12"/>
+      <columns name="Canned Products" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="13"/>
+      <columns name="Checkout" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="14"/>
+      <columns name="Meat" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="15"/>
+      <columns name="Baking Goods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="16"/>
+      <columns name="Carousel" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="17"/>
+      <columns name="Starchy Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="18"/>
+      <columns name="Deli" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="19"/>
+      <columns name="Produce" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="20"/>
+      <columns name="Canned Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="21"/>
+      <columns name="Snacks" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="22"/>
+      <columns name="Snack Foods" comment="" dataType="DOUBLE" typeName="double" size="10" octectLength="10" decimalDigits="5" radix="10" defaultValue="0.00000" position="23"/>
+    </tables>
+    <tables name="cust_to_dept_clustered" comment="" type="TABLE">
+      <columns name="customer_id" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="1"/>
+      <columns name="cluster" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="version" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+    </tables>
+    <tables name="customer" comment="" type="TABLE">
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="account_num" comment="" dataType="BIGINT" typeName="bigint" size="20" octectLength="20" radix="10" position="2"/>
+      <columns name="lname" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="fname" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="4"/>
+      <columns name="mi" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="address1" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="address2" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="7"/>
+      <columns name="address3" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="8"/>
+      <columns name="address4" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="city" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+      <columns name="state_province" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="11"/>
+      <columns name="postal_code" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="12"/>
+      <columns name="country" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="13"/>
+      <columns name="customer_region_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="14"/>
+      <columns name="phone1" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="15"/>
+      <columns name="phone2" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="16"/>
+      <columns name="birthdate" comment="" dataType="DATE" typeName="date" size="10" octectLength="10" radix="10" position="17"/>
+      <columns name="marital_status" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="18"/>
+      <columns name="yearly_income" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="19"/>
+      <columns name="gender" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="20"/>
+      <columns name="total_children" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="21"/>
+      <columns name="num_children_at_home" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" position="22"/>
+      <columns name="education" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="23"/>
+      <columns name="date_accnt_opened" comment="" dataType="DATE" typeName="date" size="10" octectLength="10" radix="10" position="24"/>
+      <columns name="member_card" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="25"/>
+      <columns name="occupation" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="26"/>
+      <columns name="houseowner" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="27"/>
+      <columns name="num_cars_owned" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="28"/>
+      <columns name="fullname" comment="" dataType="VARCHAR" typeName="varchar" size="60" octectLength="60" radix="10" position="29"/>
+    </tables>
+    <tables name="days" comment="" type="TABLE">
+      <columns name="day" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="week_day" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+    </tables>
+    <tables name="department" comment="" type="TABLE">
+      <columns name="department_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="department_description" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+    </tables>
+    <tables name="employee" comment="" type="TABLE">
+      <columns name="employee_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="full_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+      <columns name="first_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="last_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="4"/>
+      <columns name="position_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="position_title" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="7"/>
+      <columns name="department_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="8"/>
+      <columns name="birth_date" comment="" dataType="DATE" typeName="date" size="10" octectLength="10" radix="10" position="9"/>
+      <columns name="hire_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="10"/>
+      <columns name="end_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="11"/>
+      <columns name="salary" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="12"/>
+      <columns name="supervisor_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="13"/>
+      <columns name="education_level" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="14"/>
+      <columns name="marital_status" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="15"/>
+      <columns name="gender" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="16"/>
+      <columns name="management_role" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="17"/>
+    </tables>
+    <tables name="employee_closure" comment="" type="TABLE">
+      <columns name="employee_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="supervisor_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="distance" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+    </tables>
+    <tables name="expense_fact" comment="" type="TABLE">
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="account_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="exp_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" position="3"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="category_id" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="5"/>
+      <columns name="currency_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="6"/>
+      <columns name="amount" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+    </tables>
+    <tables name="inventory_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="warehouse_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="4"/>
+      <columns name="units_ordered" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="units_shipped" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="6"/>
+      <columns name="warehouse_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="7"/>
+      <columns name="warehouse_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="8"/>
+      <columns name="supply_time" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="9"/>
+      <columns name="store_invoice" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="10"/>
+    </tables>
+    <tables name="inventory_fact_1998" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="warehouse_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="4"/>
+      <columns name="units_ordered" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="units_shipped" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="6"/>
+      <columns name="warehouse_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="7"/>
+      <columns name="warehouse_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="8"/>
+      <columns name="supply_time" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="9"/>
+      <columns name="store_invoice" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="10"/>
+    </tables>
+    <tables name="position" comment="" type="TABLE">
+      <columns name="position_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="position_title" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+      <columns name="pay_type" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="min_scale" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="4"/>
+      <columns name="max_scale" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="management_role" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="6"/>
+    </tables>
+    <tables name="product" comment="" type="TABLE">
+      <columns name="product_class_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="brand_name" comment="" dataType="VARCHAR" typeName="varchar" size="60" octectLength="60" radix="10" nullable="true" position="3"/>
+      <columns name="product_name" comment="" dataType="VARCHAR" typeName="varchar" size="60" octectLength="60" radix="10" position="4"/>
+      <columns name="SKU" comment="" dataType="BIGINT" typeName="bigint" size="20" octectLength="20" radix="10" position="5"/>
+      <columns name="SRP" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="6"/>
+      <columns name="gross_weight" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="7"/>
+      <columns name="net_weight" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="8"/>
+      <columns name="recyclable_package" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="9"/>
+      <columns name="low_fat" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="10"/>
+      <columns name="units_per_case" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="11"/>
+      <columns name="cases_per_pallet" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="12"/>
+      <columns name="shelf_width" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="13"/>
+      <columns name="shelf_height" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="14"/>
+      <columns name="shelf_depth" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="15"/>
+    </tables>
+    <tables name="product_class" comment="" type="TABLE">
+      <columns name="product_class_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="product_subcategory" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="product_category" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="product_department" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="product_family" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+    </tables>
+    <tables name="promotion" comment="" type="TABLE">
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="promotion_district_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="promotion_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="media_type" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" nullable="true" position="5"/>
+      <columns name="start_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="6"/>
+      <columns name="end_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="7"/>
+    </tables>
+    <tables name="region" comment="" type="TABLE">
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="sales_city" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="sales_state_province" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="sales_district" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="sales_region" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="sales_country" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="sales_district_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="7"/>
+    </tables>
+    <tables name="reserve_employee" comment="" type="TABLE">
+      <columns name="employee_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="full_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="2"/>
+      <columns name="first_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="3"/>
+      <columns name="last_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="4"/>
+      <columns name="position_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="position_title" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="7"/>
+      <columns name="department_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="8"/>
+      <columns name="birth_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" position="9"/>
+      <columns name="hire_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="10"/>
+      <columns name="end_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="11"/>
+      <columns name="salary" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="12"/>
+      <columns name="supervisor_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="13"/>
+      <columns name="education_level" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="14"/>
+      <columns name="marital_status" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="15"/>
+      <columns name="gender" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" position="16"/>
+    </tables>
+    <tables name="salary" comment="" type="TABLE">
+      <columns name="pay_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" position="1"/>
+      <columns name="employee_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="department_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="currency_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="salary_paid" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="5"/>
+      <columns name="overtime_paid" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="vacation_accrued" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" position="7"/>
+      <columns name="vacation_used" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" position="8"/>
+    </tables>
+    <tables name="sales_fact_1997" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="5"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="8"/>
+    </tables>
+    <tables name="sales_fact_1998" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="5"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="8"/>
+    </tables>
+    <tables name="sales_fact_dec_1998" comment="" type="TABLE">
+      <columns name="product_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="2"/>
+      <columns name="customer_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="3"/>
+      <columns name="promotion_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="4"/>
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="5"/>
+      <columns name="store_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="6"/>
+      <columns name="store_cost" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="7"/>
+      <columns name="unit_sales" comment="" dataType="DECIMAL" typeName="decimal" size="10" octectLength="10" decimalDigits="4" radix="10" position="8"/>
+    </tables>
+    <tables name="sales_region" comment="" type="TABLE">
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="int unsigned" size="10" octectLength="10" radix="10" defaultValue="0" position="1"/>
+      <columns name="sales_state" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="2"/>
+      <columns name="sales_region" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="3"/>
+      <columns name="sales_subregion" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="4"/>
+      <columns name="sales_area" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="5"/>
+      <columns name="region_desc" comment="" dataType="LONGVARCHAR" typeName="text" size="65535" octectLength="65535" radix="10" nullable="true" position="6"/>
+    </tables>
+    <tables name="sales_region_canada" comment="" type="TABLE">
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="int unsigned" size="10" octectLength="10" radix="10" defaultValue="0" position="1"/>
+      <columns name="sales_state" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="2"/>
+      <columns name="sales_region" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="3"/>
+      <columns name="sales_subregion" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="4"/>
+      <columns name="sales_area" comment="" dataType="VARCHAR" typeName="varchar" size="45" octectLength="45" radix="10" position="5"/>
+      <columns name="region_desc" comment="" dataType="LONGVARCHAR" typeName="text" size="65535" octectLength="65535" radix="10" nullable="true" position="6"/>
+    </tables>
+    <tables name="state_unit" comment="" type="TABLE">
+      <columns name="ID" comment="" dataType="VARCHAR" typeName="varchar" size="100" octectLength="100" radix="10" nullable="true" position="1"/>
+      <columns name="SALES_UNIT" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="PROD_FAMILY" comment="" dataType="VARCHAR" typeName="varchar" size="100" octectLength="100" radix="10" nullable="true" position="3"/>
+    </tables>
+    <tables name="store" comment="" type="TABLE">
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="store_type" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+      <columns name="sales_region_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="4"/>
+      <columns name="store_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="store_number" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="6"/>
+      <columns name="store_street_address" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="7"/>
+      <columns name="store_city" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="8"/>
+      <columns name="store_state" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="store_postal_code" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+      <columns name="store_country" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="11"/>
+      <columns name="store_manager" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="12"/>
+      <columns name="store_phone" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="13"/>
+      <columns name="store_fax" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="14"/>
+      <columns name="first_opened_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="15"/>
+      <columns name="last_remodel_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="16"/>
+      <columns name="store_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="17"/>
+      <columns name="grocery_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="18"/>
+      <columns name="frozen_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="19"/>
+      <columns name="meat_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="20"/>
+      <columns name="coffee_bar" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="21"/>
+      <columns name="video_store" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="22"/>
+      <columns name="salad_bar" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="23"/>
+      <columns name="prepared_food" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="24"/>
+      <columns name="florist" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="25"/>
+    </tables>
+    <tables name="store_ragged" comment="" type="TABLE">
+      <columns name="store_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="store_type" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+      <columns name="store_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="store_number" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="store_street_address" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="store_city" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="7"/>
+      <columns name="store_state" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="8"/>
+      <columns name="store_postal_code" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="store_country" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+      <columns name="store_manager" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="11"/>
+      <columns name="store_phone" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="12"/>
+      <columns name="store_fax" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="13"/>
+      <columns name="first_opened_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="14"/>
+      <columns name="last_remodel_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="15"/>
+      <columns name="store_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="16"/>
+      <columns name="grocery_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="17"/>
+      <columns name="frozen_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="18"/>
+      <columns name="meat_sqft" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="19"/>
+      <columns name="coffee_bar" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="20"/>
+      <columns name="video_store" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="21"/>
+      <columns name="salad_bar" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="22"/>
+      <columns name="prepared_food" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="23"/>
+      <columns name="florist" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="24"/>
+    </tables>
+    <tables name="test_console" comment="" type="TABLE">
+      <columns name="ID" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="COLUMN1" comment="" dataType="VARCHAR" typeName="varchar" size="100" octectLength="100" radix="10" nullable="true" position="2"/>
+      <columns name="COLUMN2" comment="" dataType="VARCHAR" typeName="varchar" size="100" octectLength="100" radix="10" nullable="true" position="3"/>
+      <columns name="COLUMN3" comment="" dataType="VARCHAR" typeName="varchar" size="100" octectLength="100" radix="10" nullable="true" position="4"/>
+      <columns name="VALUE1" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="5"/>
+      <columns name="VALUE2" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="6"/>
+      <columns name="VALUE3" comment="" dataType="DOUBLE" typeName="double" size="22" octectLength="22" radix="10" nullable="true" position="7"/>
+      <columns name="FLG1" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="8"/>
+      <columns name="FLG2" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="9"/>
+      <columns name="FLG3" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="10"/>
+      <columns name="FLG4" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="11"/>
+      <columns name="FLG5" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="12"/>
+      <columns name="FLG6" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="13"/>
+      <columns name="FLG7" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="14"/>
+      <columns name="FLG8" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="15"/>
+      <columns name="FLG9" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="16"/>
+      <columns name="FLG10" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" defaultValue="0" nullable="true" position="17"/>
+      <columns name="COLUMN_DATA" comment="" dataType="TIMESTAMP" typeName="timestamp" size="19" octectLength="19" radix="10" defaultValue="CURRENT_TIMESTAMP" position="18"/>
+    </tables>
+    <tables name="time_by_day" comment="" type="TABLE">
+      <columns name="time_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="the_date" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="2"/>
+      <columns name="the_day" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="the_month" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="the_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="5"/>
+      <columns name="day_of_month" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="6"/>
+      <columns name="week_of_year" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="7"/>
+      <columns name="month_of_year" comment="" dataType="SMALLINT" typeName="smallint" size="6" octectLength="6" radix="10" nullable="true" position="8"/>
+      <columns name="quarter" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="fiscal_period" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+    </tables>
+    <tables name="tmpsbiqbe_biadmin" comment="" type="TABLE">
+      <columns name="col_0_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="col_1_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="col_2_0_" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="3"/>
+      <columns name="col_3_0_" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="4"/>
+      <columns name="col_4_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="5"/>
+      <columns name="col_5_0_" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="6"/>
+      <columns name="col_6_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="7"/>
+      <columns name="col_7_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="8"/>
+      <columns name="col_8_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="col_9_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+      <columns name="col_10_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="11"/>
+      <columns name="col_11_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="12"/>
+      <columns name="col_12_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="13"/>
+      <columns name="col_13_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="14"/>
+      <columns name="col_14_0_" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="15"/>
+      <columns name="col_15_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="16"/>
+      <columns name="col_16_0_" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="17"/>
+      <columns name="col_17_0_" comment="" dataType="TIMESTAMP" typeName="datetime" size="19" octectLength="19" radix="10" nullable="true" position="18"/>
+      <columns name="col_18_0_" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="19"/>
+      <columns name="col_19_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="20"/>
+      <columns name="col_20_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="21"/>
+      <columns name="col_21_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="22"/>
+      <columns name="col_22_0_" comment="" dataType="BIT" typeName="BIT" size="1" octectLength="1" radix="10" nullable="true" position="23"/>
+      <columns name="col_23_0_" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="24"/>
+    </tables>
+    <tables name="warehouse" comment="" type="TABLE">
+      <columns name="warehouse_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="warehouse_class_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="2"/>
+      <columns name="stores_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" nullable="true" position="3"/>
+      <columns name="warehouse_name" comment="" dataType="VARCHAR" typeName="varchar" size="60" octectLength="60" radix="10" nullable="true" position="4"/>
+      <columns name="wa_address1" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="wa_address2" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="wa_address3" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="7"/>
+      <columns name="wa_address4" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="8"/>
+      <columns name="warehouse_city" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="9"/>
+      <columns name="warehouse_state_province" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="10"/>
+      <columns name="warehouse_postal_code" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="11"/>
+      <columns name="warehouse_country" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="12"/>
+      <columns name="warehouse_owner_name" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="13"/>
+      <columns name="warehouse_phone" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="14"/>
+      <columns name="warehouse_fax" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="15"/>
+    </tables>
+    <tables name="warehouse_class" comment="" type="TABLE">
+      <columns name="warehouse_class_id" comment="" dataType="INTEGER" typeName="int" size="11" octectLength="11" radix="10" position="1"/>
+      <columns name="description" comment="" dataType="VARCHAR" typeName="varchar" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+    </tables>
+    <tables name="weka" comment="" type="TABLE">
+      <columns name="age" comment="" dataType="VARCHAR" typeName="varchar" size="14" octectLength="14" radix="10" nullable="true" position="1"/>
+      <columns name="spectacle_prescrip" comment="" dataType="VARCHAR" typeName="varchar" size="12" octectLength="12" radix="10" nullable="true" position="2"/>
+      <columns name="stigmatism" comment="" dataType="VARCHAR" typeName="varchar" size="3" octectLength="3" radix="10" nullable="true" position="3"/>
+      <columns name="tear_prod_rate" comment="" dataType="VARCHAR" typeName="varchar" size="7" octectLength="7" radix="10" nullable="true" position="4"/>
+      <columns name="contact_lenses" comment="" dataType="VARCHAR" typeName="varchar" size="4" octectLength="4" radix="10" nullable="true" position="5"/>
+    </tables>
+    <primaryKeys name="PRIMARY" table="//@physicalModels.0/@tables.11" columns="//@physicalModels.0/@tables.11/@columns.0"/>
+    <primaryKeys name="PRIMARY" table="//@physicalModels.0/@tables.36" columns="//@physicalModels.0/@tables.36/@columns.0"/>
+    <primaryKeys name="PRIMARY" table="//@physicalModels.0/@tables.41" columns="//@physicalModels.0/@tables.41/@columns.0"/>
+  </physicalModels>
+  <businessModels name="My Model" physicalModel="//@physicalModels.0">
+    <properties key="structural.package">
+      <value propertyType="//@propertyTypes.5"/>
+    </properties>
+    <properties key="structural.file">
+      <value propertyType="//@propertyTypes.6" value="D:\Programmi\eclipse\helios-eclipse-3.6.0\runtime-EclipseApplication\TestOda\models\RelSimpleKey.sbimodel"/>
+    </properties>
+    <tables xsi:type="it.eng.spagobi.meta.model.business:BusinessTable" name="Employee" physicalTable="//@physicalModels.0/@tables.21">
+      <columns name="Employee id" physicalColumn="//@physicalModels.0/@tables.21/@columns.0">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Full name" physicalColumn="//@physicalModels.0/@tables.21/@columns.1">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="First name" physicalColumn="//@physicalModels.0/@tables.21/@columns.2">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Last name" physicalColumn="//@physicalModels.0/@tables.21/@columns.3">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Position id" physicalColumn="//@physicalModels.0/@tables.21/@columns.4">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Gender" physicalColumn="//@physicalModels.0/@tables.21/@columns.15">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+    </tables>
+    <tables xsi:type="it.eng.spagobi.meta.model.business:BusinessTable" name="Position" physicalTable="//@physicalModels.0/@tables.26">
+      <columns name="Position id" physicalColumn="//@physicalModels.0/@tables.26/@columns.0">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+      <columns name="Position title" physicalColumn="//@physicalModels.0/@tables.26/@columns.1">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+      <columns name="Pay type" physicalColumn="//@physicalModels.0/@tables.26/@columns.2">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+      <columns name="Management role" physicalColumn="//@physicalModels.0/@tables.26/@columns.5">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+    </tables>
+    <tables xsi:type="it.eng.spagobi.meta.model.business:BusinessView" name="Employee Closure" description="Employee closure on position" joinRelationships="1">
+      <columns name="Employee id" physicalColumn="//@physicalModels.0/@tables.21/@columns.0">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Full name" physicalColumn="//@physicalModels.0/@tables.21/@columns.1">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="First name" physicalColumn="//@physicalModels.0/@tables.21/@columns.2">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Last name" physicalColumn="//@physicalModels.0/@tables.21/@columns.3">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Position id" physicalColumn="//@physicalModels.0/@tables.21/@columns.4">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Position title" physicalColumn="//@physicalModels.0/@tables.21/@columns.5">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Education level" physicalColumn="//@physicalModels.0/@tables.21/@columns.13">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Marital status" physicalColumn="//@physicalModels.0/@tables.21/@columns.14">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Gender" physicalColumn="//@physicalModels.0/@tables.21/@columns.15">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Management role" physicalColumn="//@physicalModels.0/@tables.21/@columns.16">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Position id" physicalColumn="//@physicalModels.0/@tables.26/@columns.0">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+      <columns name="Salary" physicalColumn="//@physicalModels.0/@tables.21/@columns.11">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="employee"/>
+        </properties>
+      </columns>
+      <columns name="Pay type" physicalColumn="//@physicalModels.0/@tables.26/@columns.2">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.8"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.9"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.10" value="position"/>
+        </properties>
+      </columns>
+    </tables>
+    <relationships name="BR_Employee_Position" sourceTable="//@businessModels.0/@tables.0" destinationTable="//@businessModels.0/@tables.1" sourceColumns="//@businessModels.0/@tables.0/@columns.4" destinationColumns="//@businessModels.0/@tables.1/@columns.0"/>
+    <identifiers name="Employee" table="//@businessModels.0/@tables.0" columns="//@businessModels.0/@tables.0/@columns.0"/>
+    <identifiers name="Position" table="//@businessModels.0/@tables.1" columns="//@businessModels.0/@tables.1/@columns.0"/>
+    <joinRelationships id="1" sourceTable="//@physicalModels.0/@tables.21" destinationTable="//@physicalModels.0/@tables.26" sourceColumns="//@physicalModels.0/@tables.21/@columns.4" destinationColumns="//@physicalModels.0/@tables.26/@columns.0"/>
+  </businessModels>
+  <propertyTypes id="connection.name" name="Connection Name" description="Data Source Connection Name" category="//@propertyCategories.0" defaultValue="foodmart"/>
+  <propertyTypes id="connection.url" name="Connection Url" description="Data Source Connection Url" category="//@propertyCategories.0" defaultValue="jdbc:mysql://localhost:3306/foodmart"/>
+  <propertyTypes id="connection.username" name="Connection Username" description="Data Source Connection Username" category="//@propertyCategories.0" defaultValue="root"/>
+  <propertyTypes id="connection.password" name="Connection Password" description="Data Source Connection Password" category="//@propertyCategories.0" defaultValue="mysql"/>
+  <propertyTypes id="connection.databasename" name="Connection DatabaseName" description="Data Source Connection Database Name" category="//@propertyCategories.0" defaultValue="foodmart"/>
+  <propertyTypes id="structural.package" name="Package Name" description="Package name used in JPA mapping" category="//@propertyCategories.1" defaultValue="it.eng.spagobi.meta"/>
+  <propertyTypes id="structural.file" name="File" description="File used to store this model" category="//@propertyCategories.1" defaultValue="model.sbimodel"/>
+  <propertyTypes id="structural.aggtype" name="Agregation Type" description="The preferred agregation type for the give column (COUNT, SUM, AVG, MAX, MIN)" category="//@propertyCategories.1" defaultValue="COUNT">
+    <admissibleValues>COUNT</admissibleValues>
+    <admissibleValues>SUM</admissibleValues>
+    <admissibleValues>AVG</admissibleValues>
+    <admissibleValues>MAX</admissibleValues>
+    <admissibleValues>MIN</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="structural.datatype" name="Data Type" description="The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)" category="//@propertyCategories.1" defaultValue="VARCHAR">
+    <admissibleValues>VARCHAR</admissibleValues>
+    <admissibleValues>INTEGER</admissibleValues>
+    <admissibleValues>DOUBLE</admissibleValues>
+    <admissibleValues>DATE</admissibleValues>
+    <admissibleValues>TIMESTAMP</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="style.alignment" name="Alignment Type" description="The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)" category="//@propertyCategories.2" defaultValue="LEFT">
+    <admissibleValues>LEFT</admissibleValues>
+    <admissibleValues>CENTER</admissibleValues>
+    <admissibleValues>RIGHT</admissibleValues>
+    <admissibleValues>JUSTIFIED</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="physical.physicaltable" name="Physical Table" description="The original physical table of this column" category="//@propertyCategories.3" defaultValue="employee"/>
+  <propertyCategories name="Connection" propertyTypes="//@propertyTypes.0 //@propertyTypes.1 //@propertyTypes.2 //@propertyTypes.3 //@propertyTypes.4" description="Connection properties"/>
+  <propertyCategories name="Structural" propertyTypes="//@propertyTypes.5 //@propertyTypes.6 //@propertyTypes.7 //@propertyTypes.8" description="Structural properties"/>
+  <propertyCategories name="Style" propertyTypes="//@propertyTypes.9" description="Style properties"/>
+  <propertyCategories name="Physical Reference" propertyTypes="//@propertyTypes.10" description="The reference to the original physical object"/>
+</it.eng.spagobi.meta.model:Model>

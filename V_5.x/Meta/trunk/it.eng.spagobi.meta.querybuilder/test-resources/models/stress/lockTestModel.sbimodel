@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ASCII"?>
+<it.eng.spagobi.meta.model:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:it.eng.spagobi.meta.model="http:///it/eng/spagobi/meta/model.ecore" xmlns:it.eng.spagobi.meta.model.business="http:///it/eng/spagobi/meta/model/businessl.ecore" name="a">
+  <physicalModels name="a" databaseName="MySQL" databaseVersion="5.0.45-community-nt" catalog="foodmart">
+    <properties key="connection.name">
+      <value propertyType="//@propertyTypes.0"/>
+    </properties>
+    <properties key="connection.url">
+      <value propertyType="//@propertyTypes.1"/>
+    </properties>
+    <properties key="connection.username">
+      <value propertyType="//@propertyTypes.2"/>
+    </properties>
+    <properties key="connection.password">
+      <value propertyType="//@propertyTypes.3"/>
+    </properties>
+    <properties key="connection.databasename">
+      <value propertyType="//@propertyTypes.4"/>
+    </properties>
+    <tables name="region" comment="" type="TABLE">
+      <columns name="region_id" comment="" dataType="INTEGER" typeName="INT" size="10" radix="10" defaultValue="" position="1"/>
+      <columns name="sales_city" comment="" dataType="VARCHAR" typeName="VARCHAR" size="30" octectLength="30" radix="10" nullable="true" position="2"/>
+      <columns name="sales_state_province" comment="" dataType="VARCHAR" typeName="VARCHAR" size="30" octectLength="30" radix="10" nullable="true" position="3"/>
+      <columns name="sales_district" comment="" dataType="VARCHAR" typeName="VARCHAR" size="30" octectLength="30" radix="10" nullable="true" position="4"/>
+      <columns name="sales_region" comment="" dataType="VARCHAR" typeName="VARCHAR" size="30" octectLength="30" radix="10" nullable="true" position="5"/>
+      <columns name="sales_country" comment="" dataType="VARCHAR" typeName="VARCHAR" size="30" octectLength="30" radix="10" nullable="true" position="6"/>
+      <columns name="sales_district_id" comment="" dataType="INTEGER" typeName="INT" size="10" radix="10" nullable="true" position="7"/>
+    </tables>
+  </physicalModels>
+  <businessModels name="a" physicalModel="//@physicalModels.0">
+    <properties key="structural.package">
+      <value propertyType="//@propertyTypes.9"/>
+    </properties>
+    <properties key="structural.file">
+      <value propertyType="//@propertyTypes.10" value="D:\sviluppo\SpagoBIMeta\runtime-yyyyyy.product\prova\a1.sbimodel"/>
+    </properties>
+    <tables xsi:type="it.eng.spagobi.meta.model.business:BusinessTable" name="Region" physicalTable="//@physicalModels.0/@tables.0">
+      <columns name="Region id" physicalColumn="//@physicalModels.0/@tables.0/@columns.0">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.5"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.6"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.8" value="region"/>
+        </properties>
+      </columns>
+      <columns name="Sales city" physicalColumn="//@physicalModels.0/@tables.0/@columns.1">
+        <properties key="structural.aggtype">
+          <value propertyType="//@propertyTypes.5"/>
+        </properties>
+        <properties key="structural.datatype">
+          <value propertyType="//@propertyTypes.6"/>
+        </properties>
+        <properties key="style.alignment">
+          <value propertyType="//@propertyTypes.7"/>
+        </properties>
+        <properties key="physical.physicaltable">
+          <value propertyType="//@propertyTypes.8" value="region"/>
+        </properties>
+      </columns>
+    </tables>
+    <identifiers name="Region" table="//@businessModels.0/@tables.0" columns="//@businessModels.0/@tables.0/@columns.0"/>
+  </businessModels>
+  <propertyTypes id="connection.name" name="Connection Name" description="Data Source Connection Name" category="//@propertyCategories.0" defaultValue="New MySQL"/>
+  <propertyTypes id="connection.url" name="Connection Url" description="Data Source Connection Url" category="//@propertyCategories.0" defaultValue="jdbc:mysql://localhost:3306/foodmart"/>
+  <propertyTypes id="connection.username" name="Connection Username" description="Data Source Connection Username" category="//@propertyCategories.0" defaultValue="root"/>
+  <propertyTypes id="connection.password" name="Connection Password" description="Data Source Connection Password" category="//@propertyCategories.0" defaultValue="paola"/>
+  <propertyTypes id="connection.databasename" name="Connection DatabaseName" description="Data Source Connection Database Name" category="//@propertyCategories.0" defaultValue="foodmart"/>
+  <propertyTypes id="structural.aggtype" name="Agregation Type" description="The preferred agregation type for the give column (COUNT, SUM, AVG, MAX, MIN)" category="//@propertyCategories.1" defaultValue="COUNT">
+    <admissibleValues>COUNT</admissibleValues>
+    <admissibleValues>SUM</admissibleValues>
+    <admissibleValues>AVG</admissibleValues>
+    <admissibleValues>MAX</admissibleValues>
+    <admissibleValues>MIN</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="structural.datatype" name="Data Type" description="The data type of the given column (VARCHAR, INTEGER, DOUBLE, ...)" category="//@propertyCategories.1" defaultValue="VARCHAR">
+    <admissibleValues>VARCHAR</admissibleValues>
+    <admissibleValues>INTEGER</admissibleValues>
+    <admissibleValues>DOUBLE</admissibleValues>
+    <admissibleValues>DATE</admissibleValues>
+    <admissibleValues>TIMESTAMP</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="style.alignment" name="Alignment Type" description="The preferred alignment type for the give column (LEFT, CENTER, RIGHT, JUSTIFIED)" category="//@propertyCategories.2" defaultValue="LEFT">
+    <admissibleValues>LEFT</admissibleValues>
+    <admissibleValues>CENTER</admissibleValues>
+    <admissibleValues>RIGHT</admissibleValues>
+    <admissibleValues>JUSTIFIED</admissibleValues>
+  </propertyTypes>
+  <propertyTypes id="physical.physicaltable" name="Physical Table" description="The original physical table of this column" category="//@propertyCategories.3" defaultValue="region"/>
+  <propertyTypes id="structural.package" name="Package Name" description="Package name used in JPA mapping" category="//@propertyCategories.1" defaultValue="it.eng.spagobi.meta"/>
+  <propertyTypes id="structural.file" name="File" description="File used to store this model" category="//@propertyCategories.1" defaultValue="model.sbimodel"/>
+  <propertyCategories name="Connection" propertyTypes="//@propertyTypes.0 //@propertyTypes.1 //@propertyTypes.2 //@propertyTypes.3 //@propertyTypes.4" description="Connection properties"/>
+  <propertyCategories name="Structural" propertyTypes="//@propertyTypes.5 //@propertyTypes.6 //@propertyTypes.9 //@propertyTypes.10" description="Structural properties"/>
+  <propertyCategories name="Style" propertyTypes="//@propertyTypes.7" description="Style properties"/>
+  <propertyCategories name="Physical Reference" propertyTypes="//@propertyTypes.8" description="The reference to the original physical object"/>
+</it.eng.spagobi.meta.model:Model>

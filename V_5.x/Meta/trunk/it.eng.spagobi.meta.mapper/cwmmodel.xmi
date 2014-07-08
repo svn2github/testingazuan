@@ -1,0 +1,269 @@
+<?xml version = '1.0' encoding = 'UTF-8' ?>
+<XMI xmi.version = '1.2' xmlns:CWMTFM = 'org.omg.xmi.namespace.CWMTFM' xmlns:CWM = 'org.omg.xmi.namespace.CWM'
+  xmlns:CWMRDB = 'org.omg.xmi.namespace.CWMRDB' xmlns:CWMMDB = 'org.omg.xmi.namespace.CWMMDB'
+  xmlns:CWMOLAP = 'org.omg.xmi.namespace.CWMOLAP' timestamp = 'Fri Feb 25 16:34:22 CET 2011'>
+  <XMI.header>
+    <XMI.documentation>
+      <XMI.exporter>Netbeans XMI Writer</XMI.exporter>
+      <XMI.exporterVersion>1.0</XMI.exporterVersion>
+    </XMI.documentation>
+  </XMI.header>
+  <XMI.content>
+    <CWMRDB:Catalog xmi.id = 'a1' name = 'spagobi_local'>
+      <CWM:Namespace.ownedElement>
+        <CWMRDB:Table xmi.id = 'a2' name = 'jbpm_action' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a3' name = 'jbpm_bytearray' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a4' name = 'jbpm_byteblock' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a5' name = 'jbpm_comment' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a6' name = 'jbpm_decisionconditions' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a7' name = 'jbpm_delegation' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a8' name = 'jbpm_event' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a9' name = 'jbpm_exceptionhandler' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a10' name = 'jbpm_id_group' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a11' name = 'jbpm_id_membership' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a12' name = 'jbpm_id_permissions' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a13' name = 'jbpm_id_user' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a14' name = 'jbpm_log' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a15' name = 'jbpm_message' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a16' name = 'jbpm_moduledefinition' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a17' name = 'jbpm_moduleinstance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a18' name = 'jbpm_node' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a19' name = 'jbpm_pooledactor' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a20' name = 'jbpm_processdefinition' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a21' name = 'jbpm_processinstance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a22' name = 'jbpm_runtimeaction' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a23' name = 'jbpm_swimlane' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a24' name = 'jbpm_swimlaneinstance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a25' name = 'jbpm_task' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a26' name = 'jbpm_taskactorpool' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a27' name = 'jbpm_taskcontroller' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a28' name = 'jbpm_taskinstance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a29' name = 'jbpm_timer' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a30' name = 'jbpm_token' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a31' name = 'jbpm_tokenvariablemap' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a32' name = 'jbpm_transition' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a33' name = 'jbpm_variableaccess' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a34' name = 'jbpm_variableinstance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a35' name = 'qrtz_blob_triggers' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a36' name = 'qrtz_calendars' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a37' name = 'qrtz_cron_triggers' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a38' name = 'qrtz_fired_triggers' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a39' name = 'qrtz_job_details' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a40' name = 'qrtz_job_listeners' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a41' name = 'qrtz_locks' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a42' name = 'qrtz_paused_trigger_grps' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a43' name = 'qrtz_scheduler_state' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a44' name = 'qrtz_simple_triggers' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a45' name = 'qrtz_trigger_listeners' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a46' name = 'qrtz_triggers' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a47' name = 'sbi_activity_monitoring' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a48' name = 'sbi_alarm' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a49' name = 'sbi_alarm_contact' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a50' name = 'sbi_alarm_distribution' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a51' name = 'sbi_alarm_event' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a52' name = 'sbi_attribute' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a53' name = 'sbi_audit' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a54' name = 'sbi_binary_contents' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a55' name = 'sbi_checks' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a56' name = 'sbi_config' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a57' name = 'sbi_data_set' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a58' name = 'sbi_data_source' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a59' name = 'sbi_dist_list' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a60' name = 'sbi_dist_list_objects' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a61' name = 'sbi_dist_list_user' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a62' name = 'sbi_domains' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a63' name = 'sbi_dossier_bin_temp' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a64' name = 'sbi_dossier_pres' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a65' name = 'sbi_dossier_temp' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a66' name = 'sbi_engines' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a67' name = 'sbi_events' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a68' name = 'sbi_events_log' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a69' name = 'sbi_events_roles' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a70' name = 'sbi_exporters' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a71' name = 'sbi_ext_roles' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a72' name = 'sbi_ext_user_roles' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a73' name = 'sbi_func_role' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a74' name = 'sbi_functions' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a75' name = 'sbi_geo_features' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a76' name = 'sbi_geo_map_features' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a77' name = 'sbi_geo_maps' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a78' name = 'sbi_kpi' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a79' name = 'sbi_kpi_documents' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a80' name = 'sbi_kpi_error' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a81' name = 'sbi_kpi_inst_period' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a82' name = 'sbi_kpi_instance' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a83' name = 'sbi_kpi_instance_history' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a84' name = 'sbi_kpi_model' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a85' name = 'sbi_kpi_model_inst' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a86' name = 'sbi_kpi_model_resources' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a87' name = 'sbi_kpi_periodicity' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a88' name = 'sbi_kpi_rel' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a89' name = 'sbi_kpi_role' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a90' name = 'sbi_kpi_value' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a91' name = 'sbi_lov' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a92' name = 'sbi_measure_unit' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a93' name = 'sbi_menu' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a94' name = 'sbi_menu_role' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a95' name = 'sbi_obj_func' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a96' name = 'sbi_obj_metacontents' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a97' name = 'sbi_obj_metadata' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a98' name = 'sbi_obj_par' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a99' name = 'sbi_obj_paruse' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a100' name = 'sbi_obj_state' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a101' name = 'sbi_object_notes' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a102' name = 'sbi_object_templates' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a103' name = 'sbi_objects' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a104' name = 'sbi_objects_rating' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a105' name = 'sbi_org_unit' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a106' name = 'sbi_org_unit_grant' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a107' name = 'sbi_org_unit_grant_nodes' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a108' name = 'sbi_org_unit_hierarchies' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a109' name = 'sbi_org_unit_nodes' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a110' name = 'sbi_parameters' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a111' name = 'sbi_paruse' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a112' name = 'sbi_paruse_ck' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a113' name = 'sbi_paruse_det' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a114' name = 'sbi_remember_me' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a115' name = 'sbi_resources' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a116' name = 'sbi_role_type_user_func' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a117' name = 'sbi_snapshots' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a118' name = 'sbi_subobjects' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a119' name = 'sbi_subreports' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a120' name = 'sbi_threshold' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a121' name = 'sbi_threshold_value' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a122' name = 'sbi_udp' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a123' name = 'sbi_udp_value' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a124' name = 'sbi_user' isAbstract = 'false' isTemporary = 'false'
+          isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a125' name = 'sbi_user_attributes' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a126' name = 'sbi_user_func' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+        <CWMRDB:Table xmi.id = 'a127' name = 'sbi_viewpoints' isAbstract = 'false'
+          isTemporary = 'false' isSystem = 'false'/>
+      </CWM:Namespace.ownedElement>
+    </CWMRDB:Catalog>
+  </XMI.content>
+</XMI>

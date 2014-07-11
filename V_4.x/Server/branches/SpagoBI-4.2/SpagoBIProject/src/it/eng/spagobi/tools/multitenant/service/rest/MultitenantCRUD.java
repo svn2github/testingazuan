@@ -273,10 +273,10 @@ public class MultitenantCRUD {
 				// add admin user 
 				newAdminUser = dao.initializeAdminUser(tenantNew);
 				
-//				// initialize folders tree structure
-//				TreeInitializer initializer = new TreeInitializer();
-//				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("TREE_INITIALIZATION");
-//				initializer.initialize(tenantNew, config);
+				// initialize folders tree structure
+				TreeInitializer initializer = new TreeInitializer();
+				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("TREE_INITIALIZATION");
+				initializer.initialize(tenantNew, config);
 				
 			} else {				
 				//update ds

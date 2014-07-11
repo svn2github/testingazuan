@@ -6,9 +6,12 @@
 
 package it.eng.spagobi.tools.multitenant.service.rest;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.functionalitytree.init.TreeInitializer;
 import it.eng.spagobi.commons.bo.Config;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IConfigDAO;
@@ -21,6 +24,7 @@ import it.eng.spagobi.commons.metadata.SbiTenant;
 import it.eng.spagobi.commons.serializer.SerializerFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.profiling.bean.SbiUser;
 import it.eng.spagobi.rest.interceptors.RestExceptionMapper;
 import it.eng.spagobi.services.exceptions.ExceptionUtilities;
 import it.eng.spagobi.tenant.TenantManager;
@@ -244,6 +248,7 @@ public class MultitenantCRUD {
 		IEngUserProfile profile = (IEngUserProfile) req.getSession().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		try {
 			String saveType = "INSERT";
+			SbiUser newAdminUser = null;
 			JSONObject requestBodyJSON = RestUtilities.readBodyAsJSONObject(req);
 				 
 			ITenantsDAO dao = DAOFactory.getTenantsDAO();
@@ -264,6 +269,14 @@ public class MultitenantCRUD {
 							
 				SbiTenant tmp = dao.loadTenantByName(tenantNew.getName());
 				tenantNew.setId(tmp.getId());
+
+				// add admin user 
+				newAdminUser = dao.initializeAdminUser(tenantNew);
+				
+//				// initialize folders tree structure
+//				TreeInitializer initializer = new TreeInitializer();
+//				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("TREE_INITIALIZATION");
+//				initializer.initialize(tenantNew, config);
 				
 			} else {				
 				//update ds
@@ -275,8 +288,13 @@ public class MultitenantCRUD {
 				}
 				
 			}  
-
-			return ("{MULTITENANT_ID:"+tenantNew.getId()+" , SAVE_TYPE: '"+saveType+"'}");
+			JSONObject o = new JSONObject();
+			o.put("MULTITENANT_ID", tenantNew.getId());
+			o.put("SAVE_TYPE", saveType);
+			if (newAdminUser != null) {
+				o.put("NEW_USER", newAdminUser.getUserId());
+			}
+			return o.toString();
 			
 		} catch (SpagoBIRuntimeException ex) {
 			logger.error("Cannot fill response container", ex);

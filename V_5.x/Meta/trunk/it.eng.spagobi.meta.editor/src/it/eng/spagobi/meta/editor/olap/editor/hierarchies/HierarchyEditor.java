@@ -95,7 +95,7 @@ public class HierarchyEditor extends Dialog {
 	//private int levelCounter;
 	private Text textAllMemberName;
 	private Button buttonHasAll ;
-	
+	private Button buttonDefaultHierarchy ;
 	
 	public static final int COLUMN_REMOVE = 0;
 	//public static final int COLUMN_LEVEL_ORDER = 1;
@@ -128,6 +128,8 @@ public class HierarchyEditor extends Dialog {
 		hyerarchyDescriptor.setName(businessColumnSet.getName());
 		hyerarchyDescriptor.setAllMemberName("All "+businessColumnSet.getName());
 		hyerarchyDescriptor.setHasAll(true);
+		hyerarchyDescriptor.setDefaultHierarchy(false);
+
 		//levelCounter = 1;
 		businessColumns = businessColumnSet.getColumns();
 		//Clone the BusinessColumns List so we don't modify the original
@@ -149,6 +151,7 @@ public class HierarchyEditor extends Dialog {
 		hyerarchyDescriptor.setName(existingHierarchyDescriptor.getName());
 		hyerarchyDescriptor.setAllMemberName(existingHierarchyDescriptor.getAllMemberName());
 		hyerarchyDescriptor.setHasAll(existingHierarchyDescriptor.isHasAll());
+		hyerarchyDescriptor.setDefaultHierarchy(existingHierarchyDescriptor.isDefaultHierarchy());
 		//levelCounter = 1;
 		businessColumns = businessColumnSet.getColumns();
 		//Clone the BusinessColumns List so we don't modify the original
@@ -185,7 +188,7 @@ public class HierarchyEditor extends Dialog {
 		lblTheLevelNumbers.setText("The hierarchy levels order is from the Top Level (first row) to the Bottom level (last row inserted).");
 		
 		Group grpGeneralHierarchyProperties = new Group(container, SWT.NONE);
-		grpGeneralHierarchyProperties.setLayout(new GridLayout(7, false));
+		grpGeneralHierarchyProperties.setLayout(new GridLayout(9, false));
 		grpGeneralHierarchyProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		grpGeneralHierarchyProperties.setText("General Hierarchy Properties");
 		
@@ -219,6 +222,7 @@ public class HierarchyEditor extends Dialog {
 			}
 		});
 		
+		
 		Label lblAllMemberName_1 = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblAllMemberName_1.setText("All Member Name:");
 
@@ -226,7 +230,6 @@ public class HierarchyEditor extends Dialog {
 		Label lblAllMemberName = new Label(grpGeneralHierarchyProperties, SWT.NONE);
 		lblAllMemberName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
-
 		
 		
 		
@@ -245,6 +248,19 @@ public class HierarchyEditor extends Dialog {
 			//Disable Text Field
 			textAllMemberName.setEnabled(false);
 		}
+		
+		Label lblDefaultHierarchy = new Label(grpGeneralHierarchyProperties, SWT.NONE);
+		lblDefaultHierarchy.setText("Is default Hierarchy?");
+		
+		buttonDefaultHierarchy  = new Button(grpGeneralHierarchyProperties, SWT.CHECK);
+		//set inital value
+		buttonDefaultHierarchy.setSelection(hyerarchyDescriptor.isDefaultHierarchy());
+		buttonDefaultHierarchy.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				hyerarchyDescriptor.setDefaultHierarchy(buttonDefaultHierarchy.getSelection());
+			}
+		});
 		
 		/*
 		Label lblPrimaryKey = new Label(grpGeneralHierarchyProperties, SWT.NONE);
@@ -899,6 +915,8 @@ public class HierarchyEditor extends Dialog {
 	private void createHierarchyDescriptor(){
 		hyerarchyDescriptor.setName(textHierarchyName.getText());
 		hyerarchyDescriptor.setHasAll(buttonHasAll.getSelection());
+		hyerarchyDescriptor.setDefaultHierarchy(buttonDefaultHierarchy.getSelection());
+
 		if (buttonHasAll.getSelection()){
 			hyerarchyDescriptor.setAllMemberName(textAllMemberName.getText());
 		}

@@ -39,6 +39,8 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 	
 	public static final String HIERARCHY_HAS_ALL = "structural.hasall";
 	public static final String HIERARCHY_ALL_MEMBER_NAME = "structural.allmembername";
+	public static final String HIERARCHY_IS_DEFAULT = "structural.defaultHierarchy";
+
 	
 	Hierarchy hierarchy;
 	
@@ -67,6 +69,14 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 	@Override
 	public String getHasAll() {
 		return hierarchy.getProperties().get(HIERARCHY_HAS_ALL).getValue();
+	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.meta.generator.mondrianschema.wrappers.IMondrianHierarchy#getDefaultHierarchy()
+	 */
+	@Override
+	public String getDefaultHierarchy() {
+		return hierarchy.getProperties().get(HIERARCHY_IS_DEFAULT).getValue();
 	}
 
 	/* (non-Javadoc)
@@ -103,5 +113,12 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 		}
 		return null;
 	}
+	
+	@Override
+	public String getName() {
+		return hierarchy.getName();
+	}
+
+
 
 }

@@ -35,6 +35,7 @@ public class HierarchyDescriptor {
 	
 	private String name;
 	private boolean hasAll;
+	private boolean defaultHierarchy;
 	private String allMemberName;
 	private List<HierarchyLevelDescriptor> levels;
 	private TableItem ui_tableItem;
@@ -46,6 +47,7 @@ public class HierarchyDescriptor {
 		name = "";
 		allMemberName="";
 		hasAll =  true;
+		defaultHierarchy = false;
 		levels = new ArrayList<HierarchyLevelDescriptor>();
 	}
 	
@@ -73,6 +75,20 @@ public class HierarchyDescriptor {
 	public void setHasAll(boolean hasAll) {
 		this.hasAll = hasAll;
 	}
+	/**
+	 * @return the defaultHierarchy
+	 */
+	public boolean isDefaultHierarchy() {
+		return defaultHierarchy;
+	}
+
+	/**
+	 * @param defaultHierarchy the defaultHierarchy to set
+	 */
+	public void setDefaultHierarchy(boolean defaultHierarchy) {
+		this.defaultHierarchy = defaultHierarchy;
+	}
+
 	/**
 	 * @return the allMemberName
 	 */

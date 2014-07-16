@@ -446,6 +446,8 @@ public class OlapModelInitializer {
 			if (hierarchyDescriptor.getAllMemberName() != null){
 				hierarchy.setProperty(OlapModelPropertiesFromFileInitializer.HIERARCHY_ALL_MEMBER_NAME,hierarchyDescriptor.getAllMemberName());
 			}
+			hierarchy.setProperty(OlapModelPropertiesFromFileInitializer.HIERARCHY_IS_DEFAULT,String.valueOf(hierarchyDescriptor.isDefaultHierarchy()));
+
 
 			
 		}catch(Throwable t) {

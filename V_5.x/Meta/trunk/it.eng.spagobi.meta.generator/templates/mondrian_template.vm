@@ -3,11 +3,14 @@
 #foreach ($dimension in $dimensions)
 <Dimension name="${dimension.name}">
 #foreach ($hierarchy in $dimension.getHierarchies())
-<Hierarchy hasAll="${hierarchy.hasAll}" 
+<Hierarchy hasAll="
 #if ($hierarchy.hasAll != "false" )
 allMemberName="${hierarchy.allMemberName}"
 #end
 primaryKey="${hierarchy.primaryKey}" 
+#if ($hierarchy.defaultHierarchy != "true")
+name="${hierarchy.name}"
+#end
 >
 <Table name="${hierarchy.tableName}"/>
 #foreach ($level in $hierarchy.getLevels())

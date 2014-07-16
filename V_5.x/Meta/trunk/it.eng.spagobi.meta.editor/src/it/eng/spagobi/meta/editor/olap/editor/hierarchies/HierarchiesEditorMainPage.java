@@ -193,7 +193,13 @@ public class HierarchiesEditorMainPage extends Dialog {
 				hyerarchyDescriptor.setName(hierarchy.getName());
 	
 				hyerarchyDescriptor.setHasAll(Boolean.valueOf(hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_HAS_ALL).getValue()));
-				
+				if (hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_IS_DEFAULT) != null){
+					hyerarchyDescriptor.setDefaultHierarchy(Boolean.valueOf(hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_IS_DEFAULT).getValue()));
+				} else {
+					//for retrocompatibility (before 5.0)
+					hyerarchyDescriptor.setDefaultHierarchy(false);
+				}
+
 				hyerarchyDescriptor.setAllMemberName(hierarchy.getProperties().get(OlapModelPropertiesFromFileInitializer.HIERARCHY_ALL_MEMBER_NAME).getValue());
 				List<Level> hierarchyLevels = hierarchy.getLevels();
 				if (!hierarchyLevels.isEmpty()){

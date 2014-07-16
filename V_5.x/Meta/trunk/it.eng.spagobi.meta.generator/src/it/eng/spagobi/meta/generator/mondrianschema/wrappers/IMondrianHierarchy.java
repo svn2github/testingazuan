@@ -33,10 +33,14 @@ public interface IMondrianHierarchy {
 	
 	public String getHasAll();
 	
+	public String getDefaultHierarchy();
+	
 	public String getAllMemberName();
 	
 	public String getPrimaryKey();
 	
 	public String getTableName();
+	
+	public String getName();
 
 }

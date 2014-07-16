@@ -60,6 +60,7 @@ public class OlapModelPropertiesFromFileInitializer implements IPropertiesInitia
 
 	public static final String LEVEL_UNIQUE_MEMBERS = "structural.uniquemembers";
 	public static final String HIERARCHY_HAS_ALL = "structural.hasall";
+	public static final String HIERARCHY_IS_DEFAULT = "structural.defaultHierarchy";
 	public static final String HIERARCHY_ALL_MEMBER_NAME = "structural.allmembername";
 
 

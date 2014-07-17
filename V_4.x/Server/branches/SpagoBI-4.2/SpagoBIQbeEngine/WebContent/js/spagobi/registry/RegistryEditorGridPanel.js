@@ -13,7 +13,7 @@
 /**
   * Object name 
   * 
-  * [description]
+  * [description]3
   * 
   * 
   * Public Properties
@@ -72,7 +72,8 @@ Sbi.registry.RegistryEditorGridPanel = function(config) {
 	this.init();
 	
 
-	
+	if(this.registryConfiguration != undefined && this.registryConfiguration.pagination != 'false')
+	{
 	this.pagingTBar = new Ext.PagingToolbar({
         pageSize: this.pageSize,
         store: this.store,
@@ -99,7 +100,12 @@ Sbi.registry.RegistryEditorGridPanel = function(config) {
 	
 		Ext.apply(params, filtersValuesObject);
 	}, this);
-
+	}
+	else 
+		{
+		this.pageSize = null;
+		}
+	
 	
 	var initialColumnModel = new Ext.grid.ColumnModel({
 		columns:[
@@ -116,31 +122,46 @@ Sbi.registry.RegistryEditorGridPanel = function(config) {
 	c = Ext.apply(c, {
 		//height : 500
 		autoScroll : true
+		, id: 'RegistryEditorGridPanel'
     	, store : this.store
     	, tbar : this.gridToolbar
+    	, sortable: false
         , cm : initialColumnModel
         , clicksToEdit : 1
-        , style : 'padding:10px'
+        , style : 'padding:0px;'
         , frame : true
         , border : true
         , collapsible : false
+        , columnLines : true
         , loadMask : true
         , enableHdMenu : false ///set true to eneable drob down menu on the header (which causes the loss of mouse control for resize column....)
         , viewConfig : {
             forceFit : false
             , autoFill : true
             , enableRowBody : true
+//            ,getRowClass: function(record, rowIndex, rp, ds){ // rp = rowParams            	
+//            	return 'x-grid3-row-mine';
+//            	//return 'background-color: #FF0000;border: 0px none; margin: 0px;';
+//            }
         }
 		, bbar: this.pagingTBar
 		, meta: null
 		,listeners: {headerdblclick : function( grid, columnIndex, e ){
 			this.showExpandPointer(grid, columnIndex);
 		}
-		} 
+		}
+		, cls: 'grid-row-span'
 	});
+	
 	
 	// constructor
 	Sbi.formviewer.DataStorePanel.superclass.constructor.call(this, c);
+
+	
+
+
+
+
 };
 
 Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
@@ -153,6 +174,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 	, filters : null
 	, columnName2columnHeader : null
 	, columnHeader2columnName : null
+	, columnHeader2color : null	
 	, keyUpTimeoutId : null
 	, mandatory: null
 	, visibleColumns: []
@@ -163,6 +185,10 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 	, deletedRows: null
 	, limit: null
 	, start: null
+	, indexColumnToMerge: null
+	, previousValueEdit : null
+	, saveMask: null
+	, numberColumnIndex:null
     
 	// ---------------------------------------------------------------------------------------------------
     // public methods
@@ -183,7 +209,9 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 	load:  function(requestParameters) {
 		this.firstPage= true;
 		requestParameters.start = 0;
-		requestParameters.limit = this.pageSize;
+		if(this.pageSize != undefined){
+			requestParameters.limit = this.pageSize;
+		}
 		this.store.load({params: requestParameters});
 	}
 	,
@@ -209,6 +237,15 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 //			var c = 0;
 //		});
 		
+		// THISS IS SORTING SYNTAX
+		//		sortInfo:{
+		 //   field:'fieldName',
+		 //   direction:'ASC'// or 'DESC' (case sensitive for local sorting)
+		//}
+		
+		
+		
+		
 		this.initToolbar();
 		Ext.QuickTips.init() ;
 		Ext.apply(Ext.QuickTips.getQuickTip(), {
@@ -229,6 +266,9 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 		var proxy = new Ext.data.HttpProxy({
 	           url: this.services['load']
 	           , timeout : 300000
+	   			,success : 
+				function(response, opts) {
+	   			}
 	   		   , failure: this.onDataStoreLoadException
 	    });
 		
@@ -236,7 +276,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 	        proxy: proxy,
 	        reader: new Ext.data.JsonReader(
 	        ),
-	        remoteSort: true
+	        remoteSort: false
 	    });
 			
 		this.store.on('load', function(store, records, options ){
@@ -276,8 +316,11 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			    }
 			}
 		
+				this.updateRowSpan();
+				this.colorTotalRows();
+				
 		
-		
+				
 		}, this);
 		
 //		this.store.on('add', function(store, records, options ){
@@ -329,7 +372,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 
 		
 		this.store.on('metachange', function( store, meta ) {
-			
+			//alert('metachange');
 			this.visibleColumns = [];
 			
 			this.meta = meta;
@@ -466,7 +509,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			}
 			
 			
-			   // ORDER
+	
 			   
 			// insert actual fields into oldCOlumns for next iteration
 			   if(this.oldColumns == null){
@@ -496,23 +539,31 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 					  }
 					  this.columnsWidth[0]=23;
 					  for(var i = 1; i <fields.length ;i++) {
-						  this.columnsWidth[i]= 100;
+						  this.columnsWidth[i]= 200;
 					  }
-
+					  
 				  	}
 			
 			// END ORDER
 			
 			
-		
-			
+			   // Array of column Index to merge
+			 this.indexColumnToMerge = new Array();
+			 
+			var arrayIndex = 0;
+			 
 			this.columnName2columnHeader = {};
 			this.columnHeader2columnName = {};
+			this.columnHeader2color = {};
+			this.numberColumnIndex = [];
+		
+			// Set max size
 			if(meta.maxSize != null && meta.maxSize !== undefined){
 				this.columnsMaxSize = parseInt(meta.maxSize);
 			}
 			
-			// iterating on each field
+			
+			// ITERATE ON EACH FIELD                 0 is numberer
 			for(var i = 0; i < meta.fields.length; i++) {
 				
 				// For i-field
@@ -526,6 +577,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 				for(var j = 0; j < meta.columnsInfos.length; j++) {
 					if(meta.columnsInfos[j].sizeColumn !== undefined && meta.columnsInfos[j].sizeColumn == meta.fields[i].name){
 						meta.fields[i].width = meta.columnsInfos[j].size;
+						this.columnsWidth[i]= meta.columnsInfos[j].size;   // are these the same column?
 					}
 					if(meta.columnsInfos[j].unsigned !== undefined && meta.columnsInfos[j].sizeColumn == meta.fields[i].name){
 						meta.fields[i].unsigned = meta.columnsInfos[j].unsigned;
@@ -535,41 +587,70 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 				// set renderer based on field type
 
 				if(meta.fields[i].type) {
+				   var columnFromTemplate = this.registryConfiguration.columns[i-1]; // because 0 is row numberer
+				   var formatToParse;
 				   var t = meta.fields[i].type;
+				   var s = meta.fields[i].subtype;
 				   if (t ==='float') { // format is applied only to numbers
 					   
 					   //check if format is defined in template force it, else get it from model field
-					   var columnFromTemplate = this.registryConfiguration.columns[i]
-					   
-					   var formatToParse;
+//					   var columnFromTemplate = this.registryConfiguration.columns[i-1]; // because 0 is row numberer					   
+//					   var formatToParse;
 					   if(columnFromTemplate.format){
 						   formatToParse = columnFromTemplate.format;
 					   }
 					   else{
 						   formatToParse = meta.fields[i].format;
 					   }
-					   
-					   
+					   		   
 					   var format = Sbi.qbe.commons.Format.getFormatFromJavaPattern(formatToParse);
 					   var f = Ext.apply( Sbi.locale.formats[t], format);
 					   meta.fields[i].renderer = Sbi.qbe.commons.Format.floatRenderer(f);
-				
-				   }else{
-					   if(t ==='int'){
-						   meta.fields[i].renderer = Sbi.locale.formatters['string']; 
-					   }else{
-						   //meta.fields[i].renderer = Sbi.locale.formatters[t];
-						   meta.fields[i].renderer = this.renderTooltip.createDelegate(this);
+					   this.numberColumnIndex.push(i);
+					   
+				   }else if(t ==='int'){
+					   meta.fields[i].renderer = Sbi.locale.formatters['string']; 
+					   this.numberColumnIndex.push(i);
+				   }else if(t ==='date'){
+					   if(columnFromTemplate.format){
+						   formatToParse = columnFromTemplate.format;
 					   }
+					   else{
+						   formatToParse = meta.fields[i].dateFormat;
+					   }		
+					   meta.fields[i].renderer = Ext.util.Format.dateRenderer(formatToParse);
+				   }else{
+					   //meta.fields[i].renderer = Sbi.locale.formatters[t];
+					   meta.fields[i].renderer = this.renderTooltip.createDelegate(this);
 				   }   
 			   }
 			   
+			   // set if cells have to be merged
+			
+			//	var columnDef = this.registryConfiguration.columns[i-1];  // 0 is row numberer
+				//	if(columnDef != undefined && columnDef.type == "merge"){
+				//  this.indexColumnToMerge[arrayIndex] = i;
+				//					arrayIndex++;
+				//				}
+				//				else{
+				//				} 
+
+				
+				var columnDef = this.registryConfiguration.columns[i];
+				if(columnDef != undefined && columnDef.type == "merge"){
+					// index is plus one because there is numberer row at position zero of columns
+									this.indexColumnToMerge[arrayIndex] = i+1;
+									arrayIndex++;
+				}
+				else{
+				} 
+				
 			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
 				   meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
 			   }
-			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'timestamp') {
-				   meta.fields[i].renderer  =  Sbi.locale.formatters['timestamp'];
-			   }
+//			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'timestamp') {
+//				   meta.fields[i].renderer  =  Sbi.locale.formatters['timestamp'];
+//			   }
 			   
 
 			   // set sortable flag			   
@@ -582,19 +663,46 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			   }
 
 			   // set right editor
-			   var editor = this.getEditor(meta.fields[i].header, meta.fields[i].type);
+			   var editor = this.getEditor(meta.fields[i].name, meta.fields[i].type);   // not the header but the name
 			   if (editor != null) {
 				   meta.fields[i].editor = editor;
 			   }
 			   
+				//define color
+				color = undefined;
+				if(i>0){		// i = 0 in fields is row numberer 
+					var columnConf = this.registryConfiguration.columns[i-1];
+					if(columnConf && columnConf.color){
+						color = columnConf.color;
+						this.columnHeader2color[meta.fields[i].name] = columnConf.color != undefined ? columnConf.color : '#FFFFFF';
+					}
+				}
+				var MyColorRenderer = function(value, metaData, record)
+				{
+				   if (value === undefined || record === undefined || record.data === undefined){return null;}
+				   metaData.style += 'background-color:' + this.color; //this is for background
+				   retValue = value;
+				   	//retValue = "<font style=' color:red;'>" + value + "</font>"; //this is for inc
+				   	return retValue ;
+				};
+			   
 			   // visible columns will contain all visible fields
 			   var config = this.getColumnEditorConfig(meta.fields[i].header);
 			   if(config.visible == false){
-					this.visibleColumns.push(meta.fields[i]);
-					meta.fields[i].hidden = true;
+				  /* if(color){
+					   meta.fields[i].color = color;
+					   meta.fields[i].renderer = MyColorRenderer;
+				   }*/
+				  this.visibleColumns.push(meta.fields[i]);
+				   meta.fields[i].hidden = true;
 					continue;
 					
-			   }else{		
+			   }else{		    // IF VISIBLE
+				   if(color){
+					   meta.fields[i].color = color;
+					   meta.fields[i].renderer = MyColorRenderer;
+				   }
+				   
 				   this.visibleColumns.push(meta.fields[i]);
 				   meta.fields[i].hidden = false;
 
@@ -615,25 +723,21 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 		   
 		   //ORDER
 					   	
-					    for(var y=1; y<this.columnsWidth.length; y++){
-					    	this.getColumnModel().setColumnWidth(y,this.columnsWidth[y]);
-					   	}
+		   for(var y=1; y<this.columnsWidth.length; y++){
+					this.getColumnModel().setColumnWidth(y,this.columnsWidth[y]);
+				}
 
-						this.firstPage = false;	  
-					  //END ORDER
-		   
-		   
-		   
+		   this.firstPage = false;	  
+		   //END ORDER
 		   
 		   this.mandatory = meta.mandatory;
 
-
-		   
-		   
-		   
-		   
-		   
-		   
+			// set align column on the right (numberscolumn)
+			for(var i = 0, len = this.numberColumnIndex.length; i < len; i++) {
+				var index = this.numberColumnIndex[i];
+				var column = this.getColumnModel().config[index];
+				column.align = 'right';				
+			}
 		   
 		   
 		   this.on('beforeedit', function(e){			   
@@ -649,6 +753,9 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 				*/
 			    var val = e.value;
 			    
+			    this.previousValueEdit = val;
+			    
+			    
 			    
 			    var valorig; 
 			    if(e.record.json != undefined){
@@ -661,12 +768,15 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			    
 			    var t = this.visibleColumns[e.column].type;
 			    var st = this.visibleColumns[e.column].subtype;
-			    if(Ext.isDate(val) ){
-			    	if(st != null && st !== undefined && st === 'timestamp'){
-			    		e.record.data[e.field] = Sbi.qbe.commons.Format.date(val, Sbi.locale.formats['timestamp']);
-			    	}else{
-			    		e.record.data[e.field] = Sbi.qbe.commons.Format.date(val, Sbi.locale.formats['date']);
-			    	}
+			    if(Ext.isDate(val) ){	    	
+//			    	if(st != null && st !== undefined && st === 'timestamp'){
+//			    		e.record.data[e.field] = Sbi.qbe.commons.Format.date(val, Sbi.locale.formats['timestamp']);
+//			    	}else{
+//			    		e.record.data[e.field] = Sbi.qbe.commons.Format.date(val, Sbi.locale.formats['date']);
+//			    	}
+			       var formatDate = this.getFormatDate(e.column-1, st);				   
+				   val = Sbi.qbe.commons.Format.date(val, formatDate);
+				   e.record.data[e.field] = val;
 			    }
 			    else if(Ext.isNumber(val)){
 			    	if(t === 'float'){
@@ -678,29 +788,69 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			    }
 			    return true;
 		   }, this);
+		   
 		   this.on('afteredit', function(e) {
-			   
 			      /*grid - This grid
 				    record - The record being edited
 				    field - The field name being edited
 				    value - The value being set
 				    originalValue - The original value for the field, before the edit.
 				    row - The grid row index
-				    column - The grid column index*/
-				
+				    column - The grid column index*/							   
+			   
 			   var t = this.visibleColumns[e.column].type;
 			   var st = this.visibleColumns[e.column].subtype;
-			   if (t === 'date') {
-				   var dt = new Date(Date.parse(e.value));
-				   e.record.data[e.field] = dt;
+			   if (t === 'date' ) {
+				   var val = e.value;
+				   if (val == "" && e.originalValue !== ""){
+					   //reset  value
+					   val = null;
+					   e.record.data[e.field] = val;
+				   }else{
+					   var formatDate = this.getFormatDate(e.column-1, st);
+					   if(Ext.isDate(val) ){	   
+						   val = val.dateFormat(formatDate); // format the date with correct format			  
+					   }			
+					   if (val == e.originalValue) return; //do nothing if the value doesn't changes
+					   
+					   var dt = new Date(Date.parseDate(val, formatDate));
+					   e.record.data[e.field] = dt;		 
+				   }
+				   var view = this.getView();
+				   var cell = view.getCell(e.row, e.column);
+				   
+		            var browser = this.detectBrowser();
+		            if(browser != null && browser == 'IE'){
+		            	 cell.innerText = val; 
+		            }	
+		            else{
+		            	 cell.textContent = val; 
+		            }
+				   
+			  	  
 			   }
 			   if (t === 'float') {
-				   //replace , wirth .
-				   var dottedVal = e.value.replace(',', '.');
+				   var dottedVal = '.00';
+				   //replace , wirth . if there's a value
+				   if (!isNaN(e.value))					   
+					   dottedVal = e.value.replace(',', '.');
 				   var f = parseFloat(dottedVal);
 				   e.record.data[e.field] = f;
-
 			   }
+			   
+			   
+			   // update total rows
+			   if(this.previousValueEdit != e.value){
+				   this.updateTotalRow(e.row, e.column, e.value, this.previousValueEdit);
+				   this.colorTotalRows();
+				   this.previousValueEdit = e.value;
+			   }
+			   
+			   
+			   // refresh row span
+			   this.updateRowSpan();
+			   
+			   
 			 }, this);
 		   
 		   this.on('validateedit', function(e) {
@@ -710,24 +860,33 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			   var unsigned = this.visibleColumns[e.column].unsigned;
 
 			   if(t === 'float'){
-					   var dottedVal = e.value.replace(',', '.');
-					   var isfloat = isFloat(dottedVal);
+				   var dottedVal = e.value.replace(',', '.');
+				   var isfloat = isFloat(dottedVal);
 
-					   if(!isfloat){
+				   if(!isfloat){
+					   // if is not in float format but in integer then add .00
+					   var isinteger = isInteger(dottedVal);
+
+					   if(!isinteger){
 						   if(e.value == ''){
 							   //removed
-							   e.value = NaN;
+							   //ORIG e.value = NaN;
+							   e.value = '0';
 							   return;
 						   }
 						   e.cancel = true;
 						   Ext.MessageBox.show({
-								title : LN('sbi.registry.registryeditorgridpanel.saveconfirm.title'),
-								msg : LN('sbi.registry.registryeditorgridpanel.validation'),
-								buttons : Ext.MessageBox.OK,
-								width : 300,
-								icon : Ext.MessageBox.INFO
-							}); 
-					   }
+							   title : LN('sbi.registry.registryeditorgridpanel.saveconfirm.title'),
+							   msg : LN('sbi.registry.registryeditorgridpanel.validation'),
+							   buttons : Ext.MessageBox.OK,
+							   width : 300,
+							   icon : Ext.MessageBox.INFO
+						   }); 
+						}
+						else{
+						   dottedVal+='.00';
+						}
+				   }
 			   }
 
 			   if(t === 'int'){
@@ -740,7 +899,8 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 					   if(!isInt){
 						   if(e.value == ''){
 							   //removed
-							   e.value = NaN;
+							 //ORIG e.value = NaN;
+							   e.value = '0';
 							   return;
 						   }
 						   e.cancel = true;
@@ -759,7 +919,8 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 				   if(!isInt){
 					   if(e.value == ''){
 						   //removed
-						   e.value = NaN;
+						 //ORIG e.value = NaN;
+						   e.value = '0';
 						   return;
 					   }
 					   e.cancel = true;
@@ -775,6 +936,9 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 
 		 }, this);
 
+		   
+		   
+		   
 		}, this);
 		
 		
@@ -814,6 +978,8 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 				}else{
 					toReturn = this.createFieldCombo(field);
 				}
+			} else if (editorConfig.editor == "PICKER") { 
+				toReturn = this.createFieldDate(editorConfig);
 			} else {
 				toReturn = new Ext.form.TextField();
 			}
@@ -1020,11 +1186,22 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 		} else {
 			entityId = temp + ':' + field;
 		}
+		
+		var orderBy = entityId;
+		if(column.orderBy != null && column.orderBy != undefined){
+			if (column.subEntity) {
+				orderBy = temp + "::" + column.subEntity + "(" + column.foreignKey + ")" + ":" + column.orderBy;				
+					}
+			else{
+				 entityId = temp + ':' + column.orderBy;
+			}
+		}
+		
 
 		var baseParams = {
 			'QUERY_TYPE': 'standard', 
 			'ENTITY_ID': entityId, 
-			'ORDER_ENTITY': entityId, 
+			'ORDER_ENTITY': orderBy, 
 			'ORDER_TYPE': 'asc', 
 			'QUERY_ROOT_ENTITY': true
 		};
@@ -1045,6 +1222,19 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 		return combo;
 	}	
 	
+	, createFieldDate: function( fieldConfig ) {
+
+		var dtPicker = new Ext.form.DateField({name: fieldConfig.field
+											 , format: fieldConfig.format });
+		
+		if(fieldConfig.value !== undefined && fieldConfig.value !== null) {	
+			var dt = Sbi.commons.Format.date(fieldConfig.value, fieldConfig.format);
+			dtPicker.setValue(fieldConfig.value);				
+		}
+		
+		return dtPicker;
+		
+	}
 	,
 	setKeyUpTimeout : function () {
         clearTimeout(this.keyUpTimeoutId);
@@ -1154,6 +1344,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			recordsData.push(aRecordData);
 			var colMandatory= this.hasMandatoryColumnRespected(aRecordData);
 			if(colMandatory !== ''){
+				this.hideMask();
 				Ext.MessageBox.show({
 					title : LN('sbi.registry.registryeditorgridpanel.saveconfirm.title'),
 					msg : colMandatory +" "+LN('sbi.registry.registryeditorgridpanel.mandatory'),
@@ -1189,6 +1380,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 					for(var j=0; j<index;j++){
 						modifiedRecords[0].commit();
 					}
+					this.hideMask();
 					Ext.MessageBox.show({
 						title : LN('sbi.registry.registryeditorgridpanel.saveconfirm.title'),
 						msg : LN('sbi.registry.registryeditorgridpanel.saveconfirm.message.ko'),
@@ -1206,8 +1398,10 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 	
 	,
 	save: function () {
+		this.showMask();
 		var modifiedRecords = this.store.getModifiedRecords();
 		this.saveSingleRecord(0,modifiedRecords);
+		this.updateRowSpan();
 	}
 	,
 	refresh: function () {
@@ -1290,7 +1484,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 					if(this.start != null){
 						params.start = this.start;
 					}
-					if(this.limit != null){
+					if(this.limit && this.limit!= null){
 						params.limit = this.limit;
 					}
 					
@@ -1318,6 +1512,7 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 
 	,
 	updateSuccessHandler : function () {
+		this.hideMask();
 		Ext.MessageBox.show({
 			title : LN('sbi.registry.registryeditorgridpanel.saveconfirm.title'),
 			msg : LN('sbi.registry.registryeditorgridpanel.saveconfirm.message'),
@@ -1326,10 +1521,343 @@ Ext.extend(Sbi.registry.RegistryEditorGridPanel, Ext.grid.EditorGridPanel, {
 			icon : Ext.MessageBox.INFO
 		});
 		this.store.commitChanges();
+		this.updateRowSpan();
 	}
 
-	
-	
+,
+    onLayout : function(vw, vh) {
+    	//alert('span');
+
+    	this.updateRowSpan();
+    	
+    	this.colorTotalRows();
+    	
+    	
+    },
+    isNumeric: function(input) {
+        var number = /^\-{0,1}(?:[0-9]+){0,1}(?:\.[0-9]+){0,1}$/i;
+        var regex = RegExp(number);
+        return regex.test(input) && input.length>0;
+    },
+//    onAfterEdit: function(o) {
+////    	Ext.MessageBox.alert('onAfterEdit');
+// alert('ciao');
+//    }
+//    ,
+    colorTotalRows: function() {
+    	if(this.meta){
+    		var view = this.getView();
+    	
+            if(this.checkIfReady(this.getColumnModel().config)==false){
+            	return;
+            }
+
+    		for(var j = 0; j < this.meta.summaryColorCellsCoordinates.length; j++) {
+    			var coord = this.meta.summaryColorCellsCoordinates[j];
+        		var cell = view.getCell(coord.row, coord.column+1);
+        		var Ccell = Ext.get(cell);
+        		var  cdcd= Ccell.down('*');
+        		var innerCell = Ext.get(cdcd);
+        		
+        		//get summaryColor
+        		var regConf = this.registryConfiguration;
+        		
+        		var colSum = '#FFFFFF';
+        		if(regConf.summaryColor){
+        			colSum = regConf.summaryColor;
+        		}
+        		
+        		if(innerCell != null){
+        			innerCell.setStyle('background-color', colSum);
+        			innerCell.setStyle('fontWeight', 'bold');
+        		}
+        		Ccell.setStyle('background-color', colSum);
+        		Ccell.setStyle('fontWeight', 'bold');
+        		Ccell.setStyle('align', 'right');
+        	
+	            var browser = this.detectBrowser();
+	            var IE = false;
+	            if(browser != null && browser == 'IE'){
+	            	IE = true;
+	            }		
+        		
+        		if(IE == false){
+        		if(cell.textContent && this.isNumeric(cell.textContent)){
+        				cell.textContent = cell.textContent;
+            			//Ccell.setStyle('padding-left', '20');
+        				if(innerCell != null){
+                			innerCell.setStyle('line-height', '10px');
+                		}
+        		}
+        		}
+        		else{
+            		if(cell.innerText && this.isNumeric(cell.innerText)){
+        				cell.innerText = cell.innerText;
+            			//Ccell.setStyle('padding-left', '20');
+        				if(innerCell != null){
+                			innerCell.setStyle('line-height', '10px');
+                		}
+        		}
+        		}
+        		
+        		// remove content and add simple value in order to remove the editor
+        		
+    		
+    		}
+    	}
+    },
+    updateTotalRow : function(row, column, newValue, previousValue) {
+    	var view = this.getView();
+  		
+  		
+  		// find first total cell that has same column as parameter column and that has row > parameter row
+    	var foundTotal = false;
+    	for(var j = 0; j < this.meta.summaryCellsCoordinates.length && foundTotal == false; j++) {
+			var coord = this.meta.summaryCellsCoordinates[j];
+			if((coord.column +1) == column && coord.row > row){
+				// found cell to update
+				var cell = view.getCell(coord.row, coord.column+1);
+				
+				
+	            var browser = this.detectBrowser();
+	            var IE = false;
+	            if(browser != null && browser == 'IE'){
+	            	IE = true;
+	            }				
+				
+	            
+	            
+		  		var previousTotal; 
+		  			
+		  		if(IE == true){
+		  			previousTotal = parseFloat(cell.innerText);
+			  		// add to previous total the difference between new and old value
+			  		var newTotal = previousTotal - previousValue + parseFloat(newValue)
+			  		cell.innerText = newTotal;
+		  		}	
+		  		else{
+		  			previousTotal = parseFloat(cell.textContent);
+			  		// add to previous total the difference between new and old value
+			  		var newTotal = previousTotal - previousValue + parseFloat(newValue)
+			  		cell.textContent = newTotal;
+		  		}
+		  		
+		  		foundTotal = true;
+		  		
+			}
+		}
+  		
+    }
+    , checkIfReady: function(columns) {
+    	   // check if data is not still loaded
+        if(this.indexColumnToMerge == null || this.indexColumnToMerge == undefined) 
+ 		{ 
+ 				return false;
+ 		}
+         if(columns != undefined ) {
+         	if(columns[1] != undefined) 
+         		{
+         		if(columns[1].dataIndex=="data")
+         			{
+ 					return false;
+         			} 
+         		}
+         } 
+     return true;
+    }
+    ,
+    updateRowSpan: function() {
+//    	alert('updateRowSpan');
+        var columns = this.getColumnModel().config,
+        view = this.getView(),
+        store = this.getStore(),
+        rowCount = store.getCount();
+
+        if(this.checkIfReady(this.getColumnModel().config)==false){
+        	return;
+        }
+     
+        // this array tells for each row if it was broken
+        var rowIsBreakArray = new Array(rowCount);
+        for (var r = 0; r < rowIsBreakArray.length; ++r) {
+        	rowIsBreakArray[r] = false;
+        }
+        
+        // col is the index of column to span among column indexes array
+        for (var col = 0; col < this.indexColumnToMerge.length; ++col) {
+        	// index of column to span
+        	var colindex = this.indexColumnToMerge[col];
+        	var column = columns[colindex];
+        	// index name of the column to span
+        	var dataIndex = column.dataIndex;
+            
+        	// store the previuous cell
+        	var spanCell = null;
+        	var spanCount = null;
+        	var spanValue = null;
+        	//var spanValueArray = new Array(this.indexColumnToMerge.length);
+        
+        	// for each row of the store
+        	for (var row = 0; row < rowCount; ++row) {
+        			var record = store.getAt(row);
+
+        			// cell to be analyzed and current value 
+        			var cell = view.getCell(row, colindex);
+        			var value = record.get(dataIndex);
+            
+        			// set span if current value is different than previous or if that row was already broken 
+        			if (spanValue != value || rowIsBreakArray[row] == true) {
+        					if (spanCell !== null) {
+        						this.setSpan(Ext.get(spanCell), spanCount, column);
+        						// if spanned is set means that at row-1 there is a break point, set it
+        						rowIsBreakArray[row] = true;
+        					}
+                
+        					spanCell = cell;
+        					spanCount = 1;
+        					spanValue = value;
+        					//if(cell){
+        					//cell.on('afteredit', alert('prima'), this);
+        					//}
+        					} 
+        			else {
+        					spanCount++;
+        			}
+        	}
+        
+	        if (spanCell !== null) {
+	            this.setSpan(Ext.get(spanCell), spanCount, column);
+	        }
+        }
+    },
+    
+    detectBrowser: function() {
+    	var brow = null;
+    	
+    	var val = navigator.userAgent.toLowerCase();
+           
+    	if(val.indexOf("firefox") > -1)
+    	{
+    		brow = 'firefox';
+    	} 
+    	else if(val.indexOf("opera") > -1)
+    	{
+    		brow = 'opera';
+    	}
+    	else if(val.indexOf("msie") > -1)
+    	{
+    		brow = 'IE';
+
+    	} 
+    	else if(val.indexOf("safari") > -1)
+    	{
+    		brow = 'safari';
+
+    	} 
+    	return brow;
+    }
+     ,setSpan: function(cell, count, column) {
+        var view = this.getView();
+        var cd = cell.down('*');
+        var innerCell = Ext.get(cd);
+        var height = cell.getHeight();
+        var width = cell.getWidth();
+        
+        cell.setStyle('position', 'relative');
+        if (count == 1) {
+            innerCell.setStyle('position', '');
+            innerCell.setStyle('height', '');
+//            innerCell.setStyle('height', '');
+            innerCell.setStyle('background-color', this.columnHeader2color[column.name]);
+        } else {
+            innerCell.setStyle('position', 'absolute');
+            var lineHeight = height * (count);
+            innerCell.setStyle('line-height', lineHeight+'px');     
+            
+            
+            var marginHeight = 1.5;
+            var browser = this.detectBrowser();
+
+            if(browser != null && browser == 'IE'){
+            	marginHeight = 3;
+            }
+            else if(browser != null && browser == 'firefox'){
+            	marginHeight = 3;
+            }
+            
+            var hei = (marginHeight*count);
+        	innerCell.setStyle('height', (height * count)+hei- cell.getPadding('tb') - innerCell.getPadding('tb') + 'px');
+            
+/*            if(count >= 8){
+            	
+                var hei = (marginHeight*count);
+            	innerCell.setStyle('height', (height * count)+hei + 'px');
+            }
+
+
+            if(count >= 5 && count < 8){
+            	var hei = (marginHeight*count);
+            	  if(browser != null && (browser == 'IE')){
+            		  innerCell.setStyle('height', (height * count - cell.getPadding('tb')+hei) + 'px');
+            	  }
+            	  else{
+            		  innerCell.setStyle('height', (height * count - cell.getPadding('tb')) + 'px');
+            	  }
+            	 }
+
+            
+//          if(count >= 8){
+//          	innerCell.setStyle('height', ((height+1) * count) + 'px');
+//          }
+            
+            //            if(count >= 5 && count < 8){
+//            	innerCell.setStyle('height', (height * count - cell.getPadding('tb')) + 'px');
+//            }
+          
+            if(count < 5){
+            	innerCell.setStyle('height', (height * count - cell.getPadding('tb') - innerCell.getPadding('tb')) + 'px');
+            } */
+            
+            innerCell.setStyle('width', (width - cell.getPadding('lr') - innerCell.getPadding('lr')) + 'px');
+
+            innerCell.setStyle('background-color', this.columnHeader2color[column.name]);
+  
+        }
+    }        
+     
+     , getFormatDate: function(idxcol, st){
+    	   var columnFromTemplate = this.registryConfiguration.columns[idxcol];
+		   var formatDate;
+		   if(columnFromTemplate.format){
+			  return columnFromTemplate.format;
+		   }
+		   //defaults getted from locale files:		   
+		   if(st != null && st !== undefined && st === 'timestamp')
+			   formatDate =  Sbi.locale.formats['timestamp'].dateFormat;
+		   else
+			   formatDate = Sbi.locale.formats['date'].dateFormat;
+		   return formatDate;
+     }
+     
+    
+     /**
+      * Opens the loading mask 
+      */
+     , showMask : function(){
+     	if (this.saveMask == null) {
+     		this.saveMask = new Ext.LoadMask('RegistryEditorGridPanel', {msg: "Saving.."});
+     	}
+     	this.saveMask.show();
+     }
+
+     /**
+      * Closes the loading mask
+      */
+     , hideMask: function() {	
+     	if (this.saveMask != null) {
+     		this.saveMask.hide();
+     	}
+     }
 	
 });
 function isInteger(s) {
@@ -1341,4 +1869,7 @@ function isUnsignedInteger(s) {
 function isFloat(s){
 	return (s.search(/^[0-9]*[.][0-9]+$/) == 0);
 }
+
+
+
 

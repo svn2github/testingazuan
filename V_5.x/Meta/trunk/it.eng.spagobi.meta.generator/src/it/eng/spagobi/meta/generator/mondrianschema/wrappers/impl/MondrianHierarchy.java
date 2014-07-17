@@ -97,7 +97,11 @@ public class MondrianHierarchy implements IMondrianHierarchy {
 	public String getPrimaryKey() {
 		BusinessIdentifier businessIdentifier = hierarchy.getTable().getIdentifier();
 		if (businessIdentifier != null){
-			return businessIdentifier.getPhysicalPrimaryKey().getColumns().get(0).getName();
+			if (businessIdentifier.getPhysicalPrimaryKey() != null){
+				return businessIdentifier.getPhysicalPrimaryKey().getColumns().get(0).getName();
+			} else {
+				return businessIdentifier.getSimpleBusinessColumns().get(0).getPhysicalColumn().getName();
+			}
 		}
 		
 		return null;

@@ -1,0 +1,387 @@
+/** SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+
+/**
+ * 
+ * Search Form
+ * 
+ *     
+ *  @author
+ *  Giorgio Federici (giorgio.federici@eng.it)
+ */
+
+
+Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
+	extend: 'Ext.form.Panel',
+	
+	bodyPadding: '10 0 10 20',
+	frame: true,
+	
+	config:{
+		
+	},
+	
+	/**
+     * @property {Sbi.social.analysis.search.store.StartingFromStore} startingFromStore
+     *  Store useful for the startingFromComboBox
+     */
+	startingFromStore: null,
+	
+	/**
+     * @property {Sbi.social.analysis.search.store.UpToStore} upToStore
+     *  Store useful for the upToComboBox
+     */
+	upToStore: null,
+	
+
+
+	constructor : function(config) {
+		this.initConfig(config||{});
+
+		this.startingFromStore = Ext.create('Sbi.social.analysis.search.store.StartingFromStore',{});
+		this.upToStore = Ext.create('Sbi.social.analysis.search.store.UpToStore',{});
+		
+		this.addEvents(
+		        /**
+		         * @event searchSubmit
+		         * User submit a search
+		         */
+		        'searchSubmit',
+		        
+		        /**
+		         * @event refreshGrids
+		         * Refresh the search grids
+		         */
+		        'refreshGrids'
+				);
+
+		
+		this.callParent(arguments);
+	},
+
+	initComponent: function() {
+		
+		var searchForm = this;
+		
+		Ext.apply(this, {
+
+	     // The fields
+	        items: [
+	        {
+	        	padding: "0 0 0 20",
+	        	xtype      : 'fieldcontainer',
+	            defaultType: 'radiofield',
+	            fieldLabel: "Search type",
+	            defaults: {
+	                flex: 1
+	            },
+	            layout: {
+	                type: 'vbox'
+	            },
+	            items: [
+                {
+                    boxLabel  : 'On-line monitoring',
+                    name      : 'searchType',
+                    inputValue: 'streamingAPI',
+                    id        : 'radioStreaming',
+                    checked	  : true
+                }, {
+                    boxLabel  : 'Historical data',
+                    name      : 'searchType',
+                    inputValue: 'searchAPI',
+                    id        : 'radioHSearch',
+                    listeners: {
+                        change: function (field, newValue, oldValue) {
+                        	var form = field.up('form');
+                            var startingFromContainer = form.down('#startingFromID');
+                            var repeatEveryContainer = form.down('#repeatEveryID');
+                            var startingFromCheckBox = startingFromContainer.down('#checkboxStartingFromID');
+                            var repeatEveryCheckBox = repeatEveryContainer.down('#checkboxRepeatID');
+                            
+                            if(newValue) {
+                            	startingFromContainer.enable();
+                            	repeatEveryContainer.enable();
+                            }
+                            else {
+                            	startingFromCheckBox.setValue(false);
+                            	repeatEveryCheckBox.setValue(false);                            	
+                            	startingFromContainer.disable();
+                            	repeatEveryContainer.disable();
+                            }
+                        }
+                    }
+                }
+                ]},
+                {
+	                padding: '0 0 0 150',
+                	xtype:'fieldcontainer',
+    	            layout: 'hbox',  
+    	            disabled: true,
+    	            id: 'startingFromID',
+                    items :[
+                    {
+                    	xtype: 'checkboxfield',
+	                    boxLabel  : 'Starting from',
+	                    name      : 'isStartingFrom',
+	                    inputValue: '1',
+	                    id        : 'checkboxStartingFromID',
+	                    listeners: {
+	                        change: function (field, newValue, oldValue, eOpts ) {
+	                        	var form = field.up('form');
+	                            var numberField = form.down('#numberStartingFromID');
+	                            var labelAgoStartingFrom = form.down('#labelAgoStartingFromID');
+	                            
+	                    
+	                            if(newValue) {
+	                                numberField.enable();
+	                                labelAgoStartingFrom.setVisible(true);
+	                            }
+	                            else {
+	                                numberField.reset();
+	                                numberField.disable();
+	                                labelAgoStartingFrom.setVisible(false);
+	                            }
+	                        }
+	                    }
+                    },
+                    {
+                    	xtype: 'numberfield',
+                    	width: 40,
+	                    name      : 'numberStartingFrom',
+	                    id: 'numberStartingFromID',
+	                    padding: '0 0 0 20',
+	                    value: 0,
+	                    maxValue: 6,
+	                    disabled: true
+                    },                
+                	{
+                    	xtype: 'label',
+                    	text: 'day ago',
+                    	margin: '0 0 0 10',
+                    	hidden: true,
+                    	id: 'labelAgoStartingFromID'
+                	}
+               ]},
+                {
+            	   padding: '0 0 20 150',
+            	   xtype:'fieldcontainer',
+            	   layout: 'hbox',  
+            	   id: 'repeatEveryID',
+            	   disabled: true,
+            	   items :[
+    	           {
+    	        	   	xtype: 'checkboxfield',
+    	        	   	boxLabel  : 'Repeat every',
+    	        	   	name      : 'isRepeating',
+    	        	   	inputValue: '1',
+    	        	   	id        : 'checkboxRepeatID',
+    	        	   	listeners: {
+	                        change: function (field, newValue, oldValue, eOpts ) {
+	                        	var form = field.up('form');
+	                            var numberField = form.down('#numberRepeatEveryID');
+	                            var labelAgoRepeatEvery = form.down('#labelAgoRepeatEveryID');
+	                    
+	                            if(newValue) {
+	                            	numberField.enable();
+	                            	labelAgoRepeatEvery.setVisible(true);
+	                            }
+	                            else {
+	                            	numberField.reset();
+	                            	numberField.disable();
+	                            	labelAgoRepeatEvery.setVisible(false);
+
+	                            }
+	                        }
+	                    }
+               		},
+                    {
+               			xtype: 'numberfield',
+                    	width: 40,
+	                    name      : 'numberRepeat',
+	                    padding: '0 0 0 19',
+	                    id : 'numberRepeatEveryID',
+	                    value: 0,
+	                    disabled: true
+                   },                   
+               	   {
+	                   	xtype: 'label',
+	                	text: 'day ago',
+	                	margin: '0 0 0 10',
+	                	hidden: true,
+	                	id: 'labelAgoRepeatEveryID'
+               	   }
+              ]},
+               {
+	            xtype: 'fieldcontainer',
+	        	defaultType: 'textfield',
+	        	layout: 'anchor',
+	        	padding: '0 0 0 20',
+	        	items: [
+	        	{
+	        		fieldLabel: 'Logical identifier',
+	        		name: 'label',
+	        		anchor: '30%'
+	        	}, {
+	        		fieldLabel: 'keywords',
+	        		name: 'keywords',
+	        		anchor: '50%',
+	        		allowBlank: false,
+	        		msgTarget: 'under'
+	        	}],
+	        },
+	        {
+	        	xtype: 'fieldcontainer',
+	            defaultType: 'checkboxfield',
+	            layout: 'hbox',
+	            padding: '0 0 20 20',
+	            items: [
+	                {
+	                    boxLabel  : 'Twitter',
+	                    name      : 'socialType',
+	                    inputValue: '1',
+	                    disabled  : true,
+	                    checked   : true,
+	                    id        : 'checkboxTwitter',
+	                    padding: '0 0 0 20',
+	                }, {
+	                    boxLabel  : 'Facebook',
+	                    name      : 'socialType',
+	                    inputValue: '2',
+	                    disabled   : true,
+	                    id        : 'checkboxFacebook',
+	                    padding: '0 0 0 20'
+	                },
+	                {
+	                    boxLabel  : 'Linkedin',
+	                    name      : 'socialType',
+	                    inputValue: '3',
+	                    disabled   : true,
+	                    id        : 'checkboxLinkedin',
+	                    padding: '0 0 0 20'
+	                }
+	            ]
+	        },
+	        {
+	            xtype: 'fieldcontainer',
+	        	defaultType: 'textfield',
+	        	layout: 'anchor',
+	        	defaults:
+	        	{
+	        		labelWidth: 150,
+	        	},
+	        	padding: '0 0 0 20',
+	        	items: [
+	        	{
+	        		fieldLabel: 'Accounts to monitor',
+	        		name: 'accounts',
+	        		anchor: '50%'
+	        	}, {
+	        		fieldLabel: 'Resources',
+	        		name: 'links',
+	        		anchor: '50%'
+	        	}, {
+	        		fieldLabel: 'Impact on business',
+	        		name: 'documents',
+	        		anchor: '50%'
+	        	}],
+	        },
+	       {
+	        	xtype: 'fieldcontainer',
+	        	layout: 'hbox',
+	        	defaults:
+	        	{
+	        		labelWidth: 150,
+	        	},
+	        	padding: '0 0 0 20',
+	        	items :[
+                 {
+                	xtype: 'numberfield',
+                 	width: 40,
+                 	value: 0,
+                	fieldLabel: 'Up to',
+                    name      : 'numberUpTo',
+                    width: 200
+                },                   
+        	   {
+            		xtype: 'combo',
+            		editable: false,
+            		store: this.upToStore, 
+            		queryMode: 'local', 
+            		displayField: 'type',  
+            		valueField: 'type',
+            		padding: '0 0 0 10',
+            		name: 'typeUpTo'
+        	   },
+               {
+        		   xtype: 'label',
+        		   text: 'later',
+        		   margin: '0 0 0 10'
+               }]
+	       },
+           {
+        		xtype: 'button',
+        		text: 'Search',
+        		margin: '0, 0, 0, 20',
+        		handler: function() {
+                    var form = this.up('form').getForm(); // get the basic form
+                    var record = form.getRecord(),
+                    values = form.getFieldValues();
+                    form.updateRecord(record);
+                    if(values.searchType == 'searchAPI')
+                    {
+                    	form.submit({
+                    		url: 'restful-services/historicalSearch',
+                    			
+                    		success: function(form, action) 
+                    		{
+                    			Ext.Msg.alert('Success', action.result.msg);
+                    			searchForm.fireEvent('searchSubmit');                   			
+                    	    },
+                    	    failure: function(form, action) 
+                    	    {
+                    	    	Ext.Msg.alert('Failure', action.result.msg);
+                    	    }
+                    	
+                    	});
+                    	
+                    }
+                    else if(values.searchType == 'streamingAPI')
+                    {
+                    	form.submit({
+                    		url: 'restful-services/streamingSearch/saveSearch',
+                    	
+                    		success: function(form, action) 
+                    		{
+                    			Ext.Msg.alert('Success', action.result.msg);
+                    			searchForm.fireEvent('searchSubmit');                   			
+                    	    },
+                    	    failure: function(form, action) 
+                    	    {
+                    	    	Ext.Msg.alert('Failure', action.result.msg);
+                    	    }
+                    	    
+                    	});
+                    }
+                    
+        		}
+           },
+           {
+		   		xtype: 'button',
+		   		text: 'Refresh',
+		   		margin: '0, 0, 0, 20',
+		   		handler: function() {
+		               
+		              searchForm.fireEvent('refreshGrids');                   			
+		   
+		         }                   
+       		}
+           ],
+	    });
+		
+		this.callParent();
+	}
+
+});
+

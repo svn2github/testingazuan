@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<job-scheduling-data
+    xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+    version="1.8">
+
+	<schedule>
+        <job>
+            <name>SearchSchedulersInitializeJob</name>
+            <job-class>it.eng.spagobi.twitter.analysis.scheduler.SearchSchedulersInitializeJob</job-class>
+        </job>
+        <job>
+            <name>MonitorSchedulersInitializeJob</name>
+            <job-class>it.eng.spagobi.twitter.analysis.scheduler.MonitorSchedulersInitializeJob</job-class>
+        </job>
+        <trigger>
+        	<simple>
+                <name>StartTrigger</name>
+                <group>SearchGroup</group>
+                <job-name>SearchSchedulersInitializeJob</job-name>
+                <repeat-count>0</repeat-count> 
+                <repeat-interval>1</repeat-interval>               
+        	</simple>
+        </trigger>
+        <trigger>
+        	<simple>
+                <name>StartTrigger</name>
+                <group>MonitorGroup</group>
+                <job-name>MonitorSchedulersInitializeJob</job-name>
+                <repeat-count>0</repeat-count> 
+                <repeat-interval>1</repeat-interval>               
+        	</simple>
+        </trigger>
+    </schedule>
+	
+	
+</job-scheduling-data>

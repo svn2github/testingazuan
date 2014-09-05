@@ -1,0 +1,27 @@
+/* SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice. 
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+.x-action-col-cell img.x-analysis-display {
+    background-image: url("../img/analysis.png");
+    background-size: 16px 16px;
+}
+
+.x-action-col-cell img.x-analysis-loading {
+    background-image: url("../img/progressbar.png");
+    cursor: default;
+    background-size: 16px 16px;
+} 
+
+.x-action-col-cell img.x-streaming-start {
+    background-image: url("../img/start.png");
+    background-size: 16px 16px;
+}
+
+.x-action-col-cell img.x-streaming-stop {
+    background-image: url("../img/stop.png");
+	background-size: 16px 16px;
+}   

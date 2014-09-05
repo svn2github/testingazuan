@@ -1,0 +1,51 @@
+<!-- 
+IMPORTANT: every time this file get modified (i.e. a new js file is added to the importation list or an old one is removed) also the target
+create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must be updated properly
+ -->
+
+<!-- Include SOCIALANALYSIS stylesheets -->
+<link rel="styleSheet" href ="css/socialAnalysis.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/twitter.css" />
+<link rel="stylesheet" type="text/css" href="css/jqcloud.css" />
+<link rel="stylesheet" type="text/css" href="css/timeline.css" >
+<link rel="stylesheet" type="text/css" href="css/jquery.qtip.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery-jvectormap-1.2.2.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+
+<script type="text/javascript" src='js/spagobi/social/analysis/SocialAnalysisPanel.js'></script>
+
+<script type="text/javascript" src='js/spagobi/social/analysis/search/view/SocialAnalysisSearchForm.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/view/SocialAnalysisSearchStreamingGrid.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/view/SocialAnalysisSearchHistoricalGrid.js'></script>
+
+<script type="text/javascript" src='js/spagobi/social/analysis/search/model/StreamingSearchModel.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/model/HistoricalSearchModel.js'></script>
+
+<script type="text/javascript" src='js/spagobi/social/analysis/search/store/StreamingSearchStore.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/store/HistoricalSearchStore.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/store/StartingFromStore.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/store/UpToStore.js'></script>
+
+
+<!-- Show result page javascript/jquery  -->
+
+<!-- <script src="js/lib/others/jquery-2.1.1.min.js"></script> -->
+<!-- <script src="js/lib/others/jquery-ui.min.js"></script> -->
+<!-- <script type="text/javascript" src="js/lib/others/jqcloud-1.0.4.js"></script> -->
+<!-- <script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.js"></script> -->
+<!-- <script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.time.js"></script> -->
+<!-- <script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.selection.js"></script> -->
+<!-- <script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.navigate.js"></script> -->
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script> -->
+<!-- <script src="js/lib/others/d3pie.min.js"></script> -->
+<!-- <script type="text/javascript" src="js/lib/others/freewall.js"></script> -->
+<!-- <script type="text/javascript" src="js/lib/others/jquery.qtip.js"></script> -->
+<!-- <script src="js/lib/others/jquery-jvectormap-1.2.2.min.js"></script> -->
+<!--  <script src="js/lib/others/jquery-jvectormap-world-mill-en.js"></script> -->
+
+
+<!-- END-DEBUG -->
+ 
+<!-- START-PRODUCTION 
+<script type="text/javascript" src='../js/spagobi/whatif-all-5.0.0_RC.js'></script>
+   END-PRODUCTION -->

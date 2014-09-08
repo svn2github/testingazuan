@@ -8,7 +8,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="it.eng.spagobi.twitter.analysis.dataprocessors.*" %>
 <%@ page import="it.eng.spagobi.twitter.analysis.pojos.*" %>
-
+<%@ page import="twitter4j.JSONObject" %>
 
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -17,23 +17,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<link rel="stylesheet" type="text/css" href="css/twitter.css" />
 	<link rel="stylesheet" type="text/css" href="css/jqcloud.css" />
-	<link rel="stylesheet" type="text/css" href="css/timeline.css" >
 	<link rel="stylesheet" type="text/css" href="css/jquery.qtip.css" />
-	<link rel="stylesheet" type="text/css" href="css/jquery-jvectormap-1.2.2.css" media="screen"/>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script src="js/lib/others/jquery-2.1.1.min.js"></script>
-	<script src="js/lib/others/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="js/lib/others/jqcloud-1.0.4.js"></script>
-	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.js"></script>
-	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.time.js"></script>
-	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.selection.js"></script>
-	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.navigate.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
-	<script src="js/lib/others/d3pie.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/socialAnalysis.css" >
+	<script src="js/lib/others/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="js/lib/others/freewall.js"></script>
 	<script type="text/javascript" src="js/lib/others/jquery.qtip.js"></script>
-	<script src="js/lib/others/jquery-jvectormap-1.2.2.min.js"></script>
-	<script src="js/lib/others/jquery-jvectormap-world-mill-en.js"></script>
+
 	
 	
 	<title>Twitter Analysis</title>
@@ -43,10 +32,17 @@
 
 <%!
 
-public List<TwitterInfluencersPojo> getMostInfluencers(String keyword)
+public List<TwitterInfluencersPojo> getMostInfluencers(String searchID)
 {
-	return new TwitterInfluencersDataProcessor().getMostInfluencers(keyword);
+	return new TwitterInfluencersDataProcessor().getMostInfluencers(searchID);
+}
+
+public List<JSONObject> getMostInfluencersJSON(String searchID)
+{
+	return new TwitterInfluencersDataProcessor().getMostInfluencersJSON(searchID);
 }	
+
+
 
 	/*****************/
 	
@@ -60,17 +56,28 @@ public List<TwitterInfluencersPojo> getMostInfluencers(String keyword)
 	<% String topicsLink = "topics.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String networkLink = "network.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String distributionLink = "distribution.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String sentimentLink = "sentiment.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String impactLink = "impact.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String roiLink = "roi.jsp?searchID=" + request.getParameter("searchID"); %>
 
 	<ul>
 	    <li><a href=<% out.println(summaryLink); %>> Summary</a></li>
 	    <li><a href=<% out.println(topicsLink); %>>Topics</a></li>
 	    <li id="activelink"><a href=<% out.println(networkLink); %>>Network</a></li>
 	    <li><a href=<% out.println(distributionLink); %>>Distribution</a></li>
+   	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
+	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
+	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    
 	</ul>
         		
-	<div id="influencers" class="top-twitter box" style="display:block; width:555px; height:300px; float:left;">
-				
-		<span class="title">Top Influencers</span>
+	<div id="influencers" class="blank_box topInfluencersMain_box" >
+			
+		<div class="topInfluencersTitle_box">
+			
+			<span>Top Influencers</span>
+		
+		</div>
 		
 		<br/>
 		
@@ -86,17 +93,17 @@ public List<TwitterInfluencersPojo> getMostInfluencers(String keyword)
 				var w = 61, h = 61, html = '', limitItem = 32;
 				
 				<%				
-					for (TwitterInfluencersPojo tempObj : getMostInfluencers(request.getParameter("searchID"))) 
+					for (JSONObject tempObj : getMostInfluencersJSON(request.getParameter("searchID"))) 
 					{
 						
 				%>
-						var userInfo = "<%= tempObj.getFollowers() %> followers <br/> <%= tempObj.getDescription() %>";
+						var userInfo = "<%= tempObj.get("followers") %> followers <br/> <%= tempObj.get("description") %>";
 						
 				//for (var i = 0; i < limitItem; ++i) {
 						html += temp.replace(/\{height\}/g, h).replace(/\{width\}/g, w)
-							.replace("{lImg}", "<%= tempObj.getProfileImg() %>" )
+							.replace("{lImg}", "<%= tempObj.get("profileImg") %>" )
 							.replace("{lText}", userInfo)
-							.replace("{lTitle}", "@<%= tempObj.getUsername() %>");
+							.replace("{lTitle}", "@<%= tempObj.get("username") %>");
 				//}
 				<%
 					}

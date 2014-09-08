@@ -49,6 +49,8 @@ public class TwitterSearchPojo {
 	private Calendar sinceDate;
 	private List<Integer> linksID;
 	private List<Integer> accountsID;
+	boolean hasSearchScheduler = false;
+	boolean hasMonitorScheduler = false;
 
 	private TwitterSearchSchedulerPojo twitterScheduler;
 	private TwitterMonitorSchedulerPojo twitterMonitorScheduler;
@@ -58,7 +60,7 @@ public class TwitterSearchPojo {
 	}
 
 	public TwitterSearchPojo(long searchID, String label, String keywords, Date creationDate, Timestamp lastActivationTime, String frequency, String type, boolean loading,
-			String links, String accounts) {
+			String links, String accounts, boolean hasSearchScheduler, boolean hasMonitorScheduler) {
 
 		this.searchID = searchID;
 		this.label = label;
@@ -70,6 +72,8 @@ public class TwitterSearchPojo {
 		this.loading = loading;
 		this.links = links;
 		this.accounts = accounts;
+		this.hasSearchScheduler = hasSearchScheduler;
+		this.hasMonitorScheduler = hasMonitorScheduler;
 	}
 
 	public long getSearchID() {
@@ -214,6 +218,22 @@ public class TwitterSearchPojo {
 
 	public void setAccountsID(List<Integer> accountsID) {
 		this.accountsID = accountsID;
+	}
+
+	public boolean isHasSearchScheduler() {
+		return hasSearchScheduler;
+	}
+
+	public void setHasSearchScheduler(boolean hasSearchScheduler) {
+		this.hasSearchScheduler = hasSearchScheduler;
+	}
+
+	public boolean isHasMonitorScheduler() {
+		return hasMonitorScheduler;
+	}
+
+	public void setHasMonitorScheduler(boolean hasMonitorScheduler) {
+		this.hasMonitorScheduler = hasMonitorScheduler;
 	}
 
 	@Override

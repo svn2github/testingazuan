@@ -1,24 +1,7 @@
-/**
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
+/** SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
 package it.eng.spagobi.twitter.analysis.cache;
 
 import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkCategoryPojo;
@@ -58,62 +41,54 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 		super(url, driver, userName, password);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see it.eng.spagobi.twitter.analysis.cache.ITwitterCache#openConnection()
-	 */
 	@Override
 	public Connection openConnection() {
+
+		logger.debug("Method openConnection(): Start");
+
 		try {
 			Class.forName(getDriver()).newInstance();
 			conn = DriverManager.getConnection(getUrl(), getUserName(), getPassword());
-			logger.debug("**** Connected to the database");
-			// System.out.println("**** Connected to the database");
+
 		} catch (InstantiationException e) {
-			// System.out.println("**** ERROR Connecting to the database: "+e);
+
 			logger.debug("**** ERROR Connecting to the database: " + e);
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// System.out.println("**** ERROR Connecting to the database: "+e);
+
 			logger.debug("**** ERROR Connecting to the database: " + e);
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// System.out.println("**** ERROR Connecting to the database: "+e);
 			logger.debug("**** ERROR Connecting to the database: " + e);
-			e.printStackTrace();
 		} catch (SQLException e) {
-			// System.out.println("**** ERROR Connecting to the database: "+e);
 			logger.debug("**** ERROR Connecting to the database: " + e);
-			e.printStackTrace();
 		}
+
+		logger.debug("Method openConnection(): End");
+
 		return conn;
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * it.eng.spagobi.twitter.analysis.cache.ITwitterCache#closeConnection()
-	 */
 	@Override
 	public void closeConnection() {
+
+		logger.debug("Method closeConnection(): Start");
+
 		try {
 			if ((conn != null) && (!conn.isClosed())) {
 				conn.close();
 			}
 		} catch (SQLException e) {
-			// System.out.println("**** ERROR Disconnecting to the database: "+e);
+
 			logger.debug("**** ERROR Disconnecting to the database: " + e);
-			e.printStackTrace();
 		}
-		// System.out.println("**** Disconnected from database");
-		logger.debug("**** Disconnected from database");
+
+		logger.debug("Method closeConnection(): End");
 	}
 
 	@Override
 	public long insertTwitterSearch(TwitterSearchPojo twitterSearch) {
+
+		logger.debug("Method insertTwitterSearch(): Start");
 
 		PreparedStatement statement = null;
 
@@ -127,27 +102,34 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			// etc.
 			conn = openConnection();
 
+			logger.debug("Method insertTwitterSearch(): Connection opened. Trying to insert the new search..");
+
 			boolean loading = true;
 
+			// a streaming search is loading when the stream is open. For now,
+			// disabled at creation
 			if (twitterSearch.getSearchType().equals("streamingAPI")) {
 				loading = false;
 			}
 
-			String insertSearchSQL = "INSERT INTO `twitterdb`.`twitter_search`" + " (`label`,`keywords`, `creation_date`,`frequency`,`type`,`loading`)" + " VALUES (?,?,?,?,?,?)";
+			String insertSearchSQL = "INSERT INTO `twitterdb`.`twitter_search`" + " (`label`,`keywords`, `creation_date`,`frequency`,`type`,`loading`,`isDeleted`)"
+					+ " VALUES (?,?,?,?,?,?,?)";
 
 			statement = conn.prepareStatement(insertSearchSQL, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, twitterSearch.getLabel());
 			statement.setString(2, twitterSearch.getKeywords());
 			statement.setDate(3, new java.sql.Date(GregorianCalendar.getInstance().getTimeInMillis()));
-			statement.setString(4, "");
+			statement.setString(4, twitterSearch.getFrequency());
 			statement.setString(5, twitterSearch.getSearchType());
 			statement.setBoolean(6, loading);
+			statement.setBoolean(7, false);
 
 			int affectedRows = statement.executeUpdate();
 
 			if (affectedRows == 0) {
 
-				throw new SQLException("Creating user failed, no rows affected.");
+				logger.debug("Method insertTwitterSearch(): Creating search failed, no rows affected.");
+				throw new SQLException("Creating search failed, no rows affected.");
 			}
 
 			generatedKeys = statement.getGeneratedKeys();
@@ -155,20 +137,25 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			if (generatedKeys.next()) {
 
 				searchID = generatedKeys.getLong(1);
+				logger.debug("Method insertTwitterSearch(): Creating search success. Search ID: " + searchID);
 			}
 
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
-			// System.out.println("**** connection failed: " +e);
+			logger.debug("Method insertTwitterSearch(): Error creating new search - " + e);
+
 		}
+
+		logger.debug("Method insertTwitterSearch(): End");
 
 		return searchID;
 	}
 
 	@Override
 	public void insertTweet(TwitterMessageObject twitterMessage, long searchID) {
+
+		logger.debug("Method insertTweet(): Start");
 
 		java.sql.PreparedStatement st;
 		Statement stmt;
@@ -179,6 +166,9 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			ResultSet res1 = stmt.executeQuery("SELECT tweet_id from `twitter_data` where tweet_id = '" + twitterMessage.getTweetID() + "' and search_id = '" + searchID + "'");
 
 			if (!res1.next()) {
+
+				logger.debug("Method insertTweet(): Inserting new tweet..");
+
 				st = conn
 						.prepareStatement("INSERT INTO `twitterdb`.`twitter_data` "
 								+ "(`tweet_id`,`user_id`,`search_id`,`date_created_at`,`time_created_at`,`source_client`,`tweet_text`,`tweet_text_translated`,`geo_latitude`,`geo_longitude`,`hashtags`,`mentions`,`retweet_count`,`is_retweet`,`language_code`,`place_country`,`place_name`,`url_cited`,`is_favorited`,`favorited_count`,`reply_to_screen_name`,`reply_to_user_id`,`reply_to_tweet_id`,`original_RT_tweet_id`,`is_sensitive`,`media_count`)"
@@ -211,19 +201,27 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				st.setInt(26, twitterMessage.getMediaCount());
 
 				st.executeUpdate();
+
+				logger.debug("Method insertTweet(): Tweet " + twitterMessage.getTweetID() + " inserted for search " + searchID);
+			} else {
+
+				// update tweet info
+				logger.debug("Method insertTweet(): Tweet " + twitterMessage.getTweetID() + " already present for search " + searchID);
 			}
 
-			// close();
+			logger.debug("Method insertTweet(): End");
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
-			// System.out.println("**** connection failed: " +e);
+			logger.debug("Method insertTweet(): Error creating new tweet - " + e);
+
 		}
 
 	}
 
 	@Override
 	public void insertBitlyAnalysis(BitlyLinkPojo linkPojo, List<BitlyLinkCategoryPojo> linkCategoryPojos, long searchID) {
+
+		logger.debug("Method insertBitlyAnalysis(): Start");
 
 		PreparedStatement statement = null;
 		PreparedStatement statementLinkCategory = null;
@@ -233,9 +231,9 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 		conn = openConnection();
 
 		try {
-			// String link_insert =
-			// "INSERT INTO `twitterdb`.`twitter_links_to_monitor`" +
-			// "(`search_id`,`link`,`clicks_count`)" + " VALUES (?,?,?)";
+
+			logger.debug("Method insertBitlyAnalysis(): Inserting new link to monitor..");
+
 			String link_insert = "INSERT INTO `twitterdb`.`twitter_links_to_monitor`" + "(`search_id`,`link`,`clicks_count`)" + " VALUES (?,?,?)";
 
 			statement = conn.prepareStatement(link_insert, Statement.RETURN_GENERATED_KEYS);
@@ -245,11 +243,15 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			int affectedRows = statement.executeUpdate();
 			if (affectedRows == 0) {
-				throw new SQLException("Creating user failed, no rows affected.");
+
+				logger.debug("Method insertBitlyAnalysis(): Error inserting new link to monitor..");
+				throw new SQLException("Creating link to monitor failed, no rows affected.");
 			}
 
 			generatedKeys = statement.getGeneratedKeys();
 			if (generatedKeys.next()) {
+
+				logger.debug("Method insertBitlyAnalysis(): Success inserting new link to monitor. Creating linked analysis..");
 
 				long link_id = generatedKeys.getLong(1);
 
@@ -268,32 +270,38 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				}
 
 			} else {
-				throw new SQLException("Creating user failed, no generated key obtained.");
+				throw new SQLException("Creating link failed, no generated key obtained.");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
 		} finally {
 			if (generatedKeys != null)
 				try {
 					generatedKeys.close();
-				} catch (SQLException logOrIgnore) {
+				} catch (SQLException e) {
+					logger.debug("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
 				}
 			if (statement != null)
 				try {
 					statement.close();
-				} catch (SQLException logOrIgnore) {
+				} catch (SQLException e) {
+					logger.debug("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
 				}
 			if (conn != null)
 				try {
 					conn.close();
-				} catch (SQLException logOrIgnore) {
+				} catch (SQLException e) {
+					logger.debug("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
 				}
+
+			logger.debug("Method insertBitlyAnalysis(): End");
 		}
 	}
 
 	@Override
 	public void insertTwitterUser(TwitterMessageObject twitterMessage) {
+
+		logger.debug("Method insertTwitterUser(): Start");
 
 		java.sql.PreparedStatement st;
 		Statement stmt;
@@ -304,6 +312,9 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			ResultSet res1 = stmt.executeQuery("SELECT user_id from `twitter_users` where user_id = '" + twitterMessage.getUserID() + "'");
 
 			if (!res1.next()) {
+
+				logger.debug("Method insertTwitterUser(): Inserting new user: " + twitterMessage.getUsername());
+
 				st = conn
 						.prepareStatement("INSERT INTO `twitterdb`.`twitter_users`"
 								+ " (`user_id`,`username`, `description`,`followers_count`,`profile_image_source`,`location`,`location_code`,`language_code`,`name`,`time_zone`,`tweets_count`,`verified`,`following_count`,`UTC_offset`,`is_geo_enabled`,`listed_count`,`start_date`,`end_date`)"
@@ -331,13 +342,15 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				st.setDate(18, twitterMessage.getEndDate());
 
 				st.executeUpdate();
+
+				logger.debug("Method insertTwitterUser(): New user: " + twitterMessage.getUsername() + " inserted");
+			} else {
+				logger.debug("Method insertTwitterUser(): User: " + twitterMessage.getUsername() + " already present in the DB");
 			}
 
-			// close();
-
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
-			// System.out.println("**** connection failed: " +e);
+			logger.debug("Method insertTwitterUser(): Error inserting a user: " + e);
+
 		}
 
 	}
@@ -345,11 +358,15 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 	@Override
 	public void insertAccountToMonitor(TwitterAccountToMonitorPojo accountToMonitor) {
 
+		logger.debug("Method insertAccountToMonitor(): Start");
+
 		try {
 
 			conn = openConnection();
 
 			String accountName = "@" + accountToMonitor.getUsername();
+
+			logger.debug("Method insertAccountToMonitor(): Inserting new account to monitor for search: " + accountToMonitor.getSearchID());
 
 			java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_accounts_to_monitor`"
 					+ " (`search_id`,`account_name`,`followers_count`,`timestamp`)" + " VALUES (?,?,?,?)");
@@ -360,15 +377,21 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			st.executeUpdate();
 
+			logger.debug("Method insertAccountToMonitor(): New account to monitor for search: " + accountToMonitor.getSearchID() + " inserted");
+
 			closeConnection();
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
-			// System.out.println("**** connection failed: " +e);
+			logger.debug("Method insertAccountToMonitor(): Error inserting new account to monitor for search: " + accountToMonitor.getSearchID());
+
 		}
+
+		logger.debug("Method insertAccountToMonitor(): End");
 	}
 
 	@Override
 	public CachedRowSet runQuery(String sqlQuery) {
+
+		logger.debug("Method runQuery(): Start");
 
 		CachedRowSet rowset = null;
 
@@ -384,32 +407,49 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			closeConnection();
 
 		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			logger.debug("Method runQuery(): Error running the query: " + sqlQuery + " - " + e);
 		}
 
+		logger.debug("Method runQuery(): End");
 		return rowset;
 
 	}
 
 	@Override
 	public void updateTwitterSearchLoading(long searchID, boolean isLoading) {
+
+		logger.debug("Method updateTwitterSearchLoading: Start");
+
 		try {
 
 			conn = openConnection();
 
-			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ? where search_id = '" + searchID + "'");
-			st.setBoolean(1, isLoading);
-			st.executeUpdate();
+			if (isLoading) {
+				java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ?, last_activation_time = ? where search_id = '"
+						+ searchID + "'");
+				st.setBoolean(1, isLoading);
+				st.setTimestamp(2, new java.sql.Timestamp(GregorianCalendar.getInstance().getTimeInMillis()));
+				st.executeUpdate();
+			} else {
+				java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ? where search_id = '" + searchID + "'");
+				st.setBoolean(1, isLoading);
+				st.executeUpdate();
+			}
+
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
+			logger.debug("Method updateTwitterSearchLoading: Error updating loading field for search: " + searchID + " - " + e);
 		}
 
+		logger.debug("Method updateTwitterSearchLoading: End");
 	}
 
 	@Override
 	public void stopStreamingSearch() {
+
+		logger.debug("Method stopStreamingSearch(): Start");
+
 		try {
 
 			conn = openConnection();
@@ -419,50 +459,182 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
+			logger.debug("Method stopStreamingSearch(): Error stopping search streams " + e);
 		}
+
+		logger.debug("Method stopStreamingSearch(): End");
 
 	}
 
 	@Override
 	public void insertTwitterSearchScheduler(TwitterSearchSchedulerPojo twitterScheduler) {
+
+		logger.debug("Method insertTwitterSearchScheduler(): Start");
+
 		try {
 
 			conn = openConnection();
 
 			java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_search_scheduler`"
-					+ " (`search_id`,`starting_date`,`repeat_frequency`,`repeat_type`)" + " VALUES (?,?,?,?)");
+					+ " (`search_id`,`starting_date`,`repeat_frequency`,`repeat_type`,`active`)" + " VALUES (?,?,?,?,?)");
 			st.setLong(1, twitterScheduler.getSearchID());
 			st.setDate(2, new java.sql.Date(twitterScheduler.getStartingDate().getTimeInMillis()));
 			st.setInt(3, twitterScheduler.getRepeatFrequency());
 			st.setString(4, twitterScheduler.getRepeatType());
+			st.setBoolean(5, true);
 
 			st.executeUpdate();
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
+			logger.debug("Method insertTwitterSearchScheduler(): Error inserting search scheduler for search: " + twitterScheduler.getSearchID() + " - " + e);
 		}
+
+		logger.debug("Method insertTwitterSearchScheduler(): End");
 	}
 
 	@Override
 	public void insertTwitterMonitorScheduler(TwitterMonitorSchedulerPojo twitterScheduler) {
+
+		logger.debug("Method insertTwitterMonitorScheduler(): Start");
+
 		try {
 
 			conn = openConnection();
 
 			java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_monitor_scheduler`"
-					+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`)" + " VALUES (?,?,?,?)");
+					+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`,`active` )" + " VALUES (?,?,?,?,?)");
 			st.setLong(1, twitterScheduler.getSearchID());
 			st.setDate(2, new java.sql.Date(twitterScheduler.getEndingDate().getTimeInMillis()));
 			st.setInt(3, twitterScheduler.getRepeatFrequency());
 			st.setString(4, twitterScheduler.getRepeatType());
+			st.setBoolean(5, false);
 
 			st.executeUpdate();
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
+			logger.debug("Method insertTwitterMonitorScheduler(): Error inserting monitor scheduler for search " + twitterScheduler.getSearchID() + " - " + e);
 		}
+
+		logger.debug("Method insertTwitterMonitorScheduler(): End");
+	}
+
+	@Override
+	public void deleteSearch(TwitterSearchPojo twitterSearch) {
+
+		logger.debug("Method deleteSearch(): Start");
+
+		try {
+
+			conn = openConnection();
+
+			boolean loading = false;
+
+			logger.debug("Method deleteSearch(): Deleting monitor scheduler..");
+
+			java.sql.PreparedStatement monitorSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_monitor_scheduler` WHERE search_id = " + twitterSearch.getSearchID());
+
+			monitorSt.executeUpdate();
+
+			if (twitterSearch.getSearchType().equals("searchAPI")) {
+
+				logger.debug("Method deleteSearch(): Deleting search scheduler..");
+
+				java.sql.PreparedStatement accountSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_search_scheduler` WHERE search_id = " + twitterSearch.getSearchID());
+
+				accountSt.executeUpdate();
+			}
+
+			logger.debug("Method deleteSearch(): Deleting logically the search " + twitterSearch.getSearchID());
+
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = 0 and isDeleted = 1 where search_id = "
+					+ twitterSearch.getSearchID());
+			st.executeUpdate();
+
+			closeConnection();
+
+		} catch (Exception e) {
+			logger.debug("Method deleteSearch(): Error deleting search " + twitterSearch.getSearchID() + " - " + e);
+		}
+
+		logger.debug("Method deleteSearch()deleteSearch(): End");
+	}
+
+	@Override
+	public void updateStartingDateSearchScheduler(TwitterSearchSchedulerPojo twitterSearchSchedulerPojo) {
+
+		logger.debug("Method updateStartingDateSearchScheduler: Start");
+
+		try {
+
+			conn = openConnection();
+
+			java.sql.Timestamp startingDateTimestamp = new java.sql.Timestamp(twitterSearchSchedulerPojo.getStartingDate().getTimeInMillis());
+
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search_scheduler` SET starting_date = ? where id = '"
+					+ twitterSearchSchedulerPojo.getId() + "'");
+			st.setTimestamp(1, startingDateTimestamp);
+			st.executeUpdate();
+
+			closeConnection();
+
+		} catch (Exception e) {
+			logger.debug("Method updateStartingDateSearchScheduler: Error updating search scheduler for search: " + twitterSearchSchedulerPojo.getSearchID() + " - " + e);
+		}
+
+		logger.debug("Method updateStartingDateSearchScheduler: End");
+
+	}
+
+	@Override
+	public void stopSearchScheduler(TwitterSearchPojo twitterSearch) {
+
+		logger.debug("Method stopSearchScheduler(): Start");
+
+		try {
+
+			conn = openConnection();
+
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search_scheduler` SET active = ? where search_id = '" + twitterSearch.getSearchID()
+					+ "'");
+			st.setBoolean(1, false);
+			st.executeUpdate();
+
+			closeConnection();
+
+		} catch (Exception e) {
+			logger.debug("Method stopSearchScheduler(): Error updating search scheduler for search: " + twitterSearch.getSearchID() + " - " + e);
+		}
+
+		logger.debug("Method stopSearchScheduler(): End");
+
+	}
+
+	@Override
+	public void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo) {
+
+		logger.debug("Method updateMonitorScheduler(): Start");
+
+		try {
+
+			conn = openConnection();
+
+			java.sql.Timestamp endingDateTimestamp = new java.sql.Timestamp(twitterMonitorSchedulerPojo.getEndingDate().getTimeInMillis());
+
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_monitor_scheduler` SET ending_date = ? and active = ? where id = '"
+					+ twitterMonitorSchedulerPojo.getId() + "'");
+			st.setTimestamp(1, endingDateTimestamp);
+			st.setBoolean(2, true);
+			st.executeUpdate();
+
+			closeConnection();
+
+		} catch (Exception e) {
+			logger.debug("Method updateMonitorScheduler(): Error updating monitor scheduler for search: " + twitterMonitorSchedulerPojo.getSearchID() + " - " + e);
+		}
+
+		logger.debug("Method updateMonitorScheduler(): End");
+
 	}
 }

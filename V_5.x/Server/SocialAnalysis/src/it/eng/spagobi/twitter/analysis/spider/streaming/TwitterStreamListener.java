@@ -56,7 +56,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see twitter4j.StreamListener#onException(java.lang.Exception)
 	 */
 	@Override
@@ -66,7 +66,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * twitter4j.StatusListener#onDeletionNotice(twitter4j.StatusDeletionNotice)
 	 */
@@ -80,7 +80,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see twitter4j.StatusListener#onScrubGeo(long, long)
 	 */
 	@Override
@@ -93,7 +93,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see twitter4j.StatusListener#onStallWarning(twitter4j.StallWarning)
 	 */
 	@Override
@@ -106,7 +106,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see twitter4j.StatusListener#onStatus(twitter4j.Status)
 	 */
 	@Override
@@ -128,7 +128,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see twitter4j.StatusListener#onTrackLimitationNotice(int)
 	 */
 	@Override

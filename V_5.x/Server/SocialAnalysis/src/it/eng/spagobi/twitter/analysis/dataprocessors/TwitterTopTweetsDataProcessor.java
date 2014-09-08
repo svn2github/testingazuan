@@ -45,21 +45,23 @@ public class TwitterTopTweetsDataProcessor {
 
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
-	public List<TwitterTopTweetsPojo> getTopTweetsData(String searchIDStr) {
+	public List<TwitterTopTweetsPojo> getTopTweetsData(String searchIDStr, int nProfiles) {
 
 		long searchID = Long.parseLong(searchIDStr);
+
+		int counter = 0;
 
 		List<TwitterTopTweetsPojo> topTweetsData = new ArrayList<TwitterTopTweetsPojo>();
 
 		String sqlQuery = "SELECT DISTINCT tu.username, td.date_created_at, tu.profile_image_source, td.hashtags, td.tweet_text, td.time_created_at, td.retweet_count, tu.followers_count from twitter_users tu, twitter_data td where tu.user_id = td.user_id and td.search_id = '"
-				+ searchID + "'";
+				+ searchID + "' order by td.retweet_count DESC";
 
 		try {
 			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
 
 			if (rs != null) {
 
-				while (rs.next()) {
+				while (rs.next() && counter < nProfiles) {
 					String usernameFromDb = rs.getString("username");
 
 					java.sql.Date tempDate = rs.getDate("date_created_at");
@@ -90,6 +92,67 @@ public class TwitterTopTweetsDataProcessor {
 							calendar, userFollowersCount, counterRTs);
 
 					topTweetsData.add(tempObj);
+
+					nProfiles++;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println("**** connection failed: " + e);
+		}
+
+		return topTweetsData;
+	}
+
+	public List<TwitterTopTweetsPojo> getTopRecentTweetsData(String searchIDStr, int nProfiles) {
+
+		long searchID = Long.parseLong(searchIDStr);
+
+		int counter = 0;
+
+		List<TwitterTopTweetsPojo> topTweetsData = new ArrayList<TwitterTopTweetsPojo>();
+
+		String sqlQuery = "SELECT DISTINCT tu.username, td.date_created_at, tu.profile_image_source, td.hashtags, td.tweet_text, td.time_created_at, td.retweet_count, tu.followers_count from twitter_users tu, twitter_data td where tu.user_id = td.user_id and td.search_id = '"
+				+ searchID + "' order by td.time_created_at DESC";
+
+		try {
+			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+
+			if (rs != null) {
+
+				while (rs.next() && counter < nProfiles) {
+					String usernameFromDb = rs.getString("username");
+
+					java.sql.Date tempDate = rs.getDate("date_created_at");
+					String createDateFromDb = new SimpleDateFormat("dd MMM").format(tempDate);
+
+					String profileImgSrcFromDB = rs.getString("profile_image_source");
+
+					String hashtagsFromDb = rs.getString("hashtags");
+					List<String> hashtags = new ArrayList<String>();
+					if (!hashtagsFromDb.isEmpty()) {
+						hashtagsFromDb = hashtagsFromDb.toLowerCase();
+						// hashtagsFromDb = hashtagsFromDb.replaceAll("#", "");
+						String[] hashtagsSplitted = hashtagsFromDb.split(" ");
+						hashtags.addAll(Arrays.asList(hashtagsSplitted));
+					}
+
+					String tweetTextFromDb = rs.getString("tweet_text");
+
+					java.sql.Timestamp tempTime = rs.getTimestamp("time_created_at");
+					Calendar calendar = GregorianCalendar.getInstance();
+					calendar.setTime(tempTime);
+
+					int counterRTs = rs.getInt("retweet_count");
+
+					int userFollowersCount = Integer.parseInt(rs.getString("followers_count"));
+
+					TwitterTopTweetsPojo tempObj = new TwitterTopTweetsPojo(usernameFromDb, createDateFromDb, profileImgSrcFromDB, hashtagsFromDb, tweetTextFromDb, hashtags,
+							calendar, userFollowersCount, counterRTs);
+
+					topTweetsData.add(tempObj);
+
+					nProfiles++;
 				}
 			}
 

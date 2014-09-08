@@ -69,6 +69,7 @@ public class MonitoringResourcesJob implements Job {
 				while (rs.next()) {
 
 					String account = rs.getString("account_name");
+					account = account.replaceAll("@", "");
 					userUtil.saveFollowersCount(account);
 				}
 			}

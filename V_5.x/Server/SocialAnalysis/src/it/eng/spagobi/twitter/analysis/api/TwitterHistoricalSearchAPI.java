@@ -49,6 +49,8 @@ public class TwitterHistoricalSearchAPI {
 		String languageCode = null;
 		String dbType = "MySQL";
 
+		String typeFrequency = "None";
+
 		// reading the user input
 		String searchType = req.getParameter("searchType");
 		String keywords = req.getParameter("keywords");
@@ -91,7 +93,7 @@ public class TwitterHistoricalSearchAPI {
 		// String typeRepeatEvery = req.getParameter("typeRepeatEvery");
 		String numberRepeat = req.getParameter("numberRepeat");
 
-		if (req.getParameter("isRepeating") != null && numberRepeat != null && !numberRepeat.equals("")) {
+		if (req.getParameter("isRepeating") != null && numberRepeat != null && numberRepeat.equals("")) {
 
 			logger.debug("Method search(): Search with scheduler");
 
@@ -99,11 +101,20 @@ public class TwitterHistoricalSearchAPI {
 
 			int repeatFrequency = Integer.parseInt(numberRepeat);
 
-			startingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+			if (repeatFrequency > 0) {
 
-			twitterScheduler = new TwitterSearchSchedulerPojo(startingDate, repeatFrequency, "Day");
+				// TODO: Aggiungere altri tipi di frequency
+				typeFrequency = "Day";
+
+				startingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+
+				twitterScheduler = new TwitterSearchSchedulerPojo(startingDate, repeatFrequency, typeFrequency);
+			}
 
 		}
+
+		// set type frequency
+		twitterSearch.setFrequency(typeFrequency);
 
 		// set search scheduler
 		twitterSearch.setTwitterScheduler(twitterScheduler);
@@ -147,7 +158,7 @@ public class TwitterHistoricalSearchAPI {
 		String numberStartingFrom = req.getParameter("numberStartingFrom");
 		String typeStartingFrom = req.getParameter("typeStartingFrom");
 
-		if (req.getParameter("isStartingFrom") != null && numberStartingFrom != null && !numberStartingFrom.equals("") && typeStartingFrom != null && !typeStartingFrom.equals("")) {
+		if (req.getParameter("isStartingFrom") != null && numberStartingFrom != null && !numberStartingFrom.equals("")) {
 
 			logger.debug("Method search(): Search with a starting date");
 
@@ -162,9 +173,8 @@ public class TwitterHistoricalSearchAPI {
 			// startingFromDate.add(Calendar.HOUR_OF_DAY,
 			// -Integer.parseInt(numberStartingFrom));
 			// }
-			if (typeStartingFrom.equalsIgnoreCase("Day")) {
-				sinceDate.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(numberStartingFrom));
-			}
+
+			sinceDate.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(numberStartingFrom));
 
 			// if isRound is checked, set time to previous hour
 			// if (req.getParameter("isRound") != null) {
@@ -228,15 +238,79 @@ public class TwitterHistoricalSearchAPI {
 
 	}
 
-	// @GET
-	// @Path("/sayHello/{username}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Response sayHello(@javax.ws.rs.core.Context HttpServletRequest
-	// req,
-	// @PathParam("username") String username) {
-	//
-	// System.out.println("Ciao " + username);
-	// return "Hello" + username;
-	// }
+	// Delete a new Twitter Search
+	@Path("/deleteSearch")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String delete(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method delete(): Start..");
+
+		TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
+
+		String dbType = "MySQL";
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+
+		// set ready parameters
+		twitterSearch.setDbType(dbType);
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setSearchType("streamingAPI");
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.deleteSearch();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+			resObj.put("success", true);
+			resObj.put("msg", "Historical search \"" + searchID + "\" deleted");
+
+		} catch (JSONException e) {
+			logger.error("Method delete(): ERROR - " + e);
+		}
+
+		logger.debug("Method delete(): End");
+
+		return resObj.toString();
+	}
+
+	// Stop the search scheduler and start monitor scheduler
+	@Path("/stopSearchScheduler")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String stopSearchScheduler(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method stopSearchScheduler(): Start..");
+
+		TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
+
+		String dbType = "MySQL";
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+
+		// set ready parameters
+		twitterSearch.setDbType(dbType);
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.stopSearchScheduler();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+			resObj.put("success", true);
+			resObj.put("msg", "Historical search \"" + searchID + "\" deleted");
+
+		} catch (JSONException e) {
+			logger.error("Method delete(): ERROR - " + e);
+		}
+
+		logger.debug("Method delete(): End");
+
+		return resObj.toString();
+	}
 
 }

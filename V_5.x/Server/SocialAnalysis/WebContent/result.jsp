@@ -139,6 +139,7 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 					
 					
 					<div class="demo-container" style="width: 100%; height: 385px;">
+					
 						<div id="timelinebuttons" style="float:right;">
 							<a id="monthly" style="cursor:pointer;">Monthly</a>
 							<a id="weekly" style="cursor:pointer;">Weekly</a>

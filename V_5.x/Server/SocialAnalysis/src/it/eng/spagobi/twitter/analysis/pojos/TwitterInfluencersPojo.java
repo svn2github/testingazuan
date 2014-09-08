@@ -77,7 +77,8 @@ public class TwitterInfluencersPojo {
 	private String customEscapeString(String s) {
 		String firstEscapedString = s.replaceAll("'", " ");
 		String secondEscapedString = firstEscapedString.replaceAll(System.getProperty("line.separator"), " ");
-		return secondEscapedString;
+		String thirdEscapedString = secondEscapedString.replaceAll("\n", " ");
+		return thirdEscapedString;
 	}
 
 }

@@ -1,25 +1,7 @@
-/**
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
-
+/** SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
 package it.eng.spagobi.twitter.analysis.cache;
 
 import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkCategoryPojo;
@@ -39,6 +21,8 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 import twitter4j.JSONArray;
 import twitter4j.JSONObject;
 import twitter4j.Status;
@@ -49,6 +33,8 @@ import twitter4j.Status;
  *
  */
 public abstract class AbstractTwitterCache implements ITwitterCache {
+
+	private static final Logger logger = Logger.getLogger(AbstractTwitterCache.class);
 
 	private String url;
 	private String driver;
@@ -119,8 +105,23 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	@Override
 	public abstract void updateTwitterSearchLoading(long searchID, boolean isLoading);
 
+	/**
+	 * This method inserts a new twitter user
+	 *
+	 * @param twitterMessage
+	 *            : object representing all data about a tweet and his author
+	 *            (the user)
+	 */
 	public abstract void insertTwitterUser(TwitterMessageObject twitterMessage);
 
+	/**
+	 * This method insert the information about a tweet
+	 *
+	 * @param twitterMessage
+	 *            : object representing a tweet
+	 * @param searchID
+	 *            : twitter search ID
+	 */
 	public abstract void insertTweet(TwitterMessageObject twitterMessage, long searchID);
 
 	@Override
@@ -141,13 +142,18 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	@Override
 	public abstract void insertTwitterMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorScheduler);
 
-	/**
-	 * Method to retrieve data from a tweet
-	 *
-	 * @param tweet
-	 * @param keyword
-	 * @throws Exception
-	 */
+	@Override
+	public abstract void deleteSearch(TwitterSearchPojo twitterSearch);
+
+	@Override
+	public abstract void updateStartingDateSearchScheduler(TwitterSearchSchedulerPojo twitterSearchSchedulerPojo);
+
+	@Override
+	public abstract void stopSearchScheduler(TwitterSearchPojo twitterSearch);
+
+	@Override
+	public abstract void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
+
 	@Override
 	public final void saveTweet(Status tweet, String keyword, long searchID) throws Exception {
 
@@ -167,12 +173,17 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	 * Method to geocode tweet user location
 	 *
 	 * @param location
+	 *            : location input inside the user's twitter profile, not always
+	 *            a "location"
 	 * @param userTimeZone
-	 * @return
+	 *            : user time zone inside his twitter profile
+	 * @return the short code of user location country
 	 * @throws Exception
 	 */
 
 	public final String findCountryCodeFromUserLocation(String location, String userTimeZone) throws Exception {
+
+		logger.debug("Method findCountryCodeFromUserLocation(): Start");
 
 		String countryCode = "";
 		String locationEncoded = "";
@@ -188,6 +199,8 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 		String urlString = "http://maps.googleapis.com/maps/api/geocode/json?address=" + locationEncoded;
 
 		URL url = new URL(urlString);
+
+		logger.debug("Method findCountryCodeFromUserLocation(): Calling GeoCode API..");
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
@@ -205,23 +218,33 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 		String status = obj.getString("status");
 
 		if (status.equals("OK")) {
-			JSONArray obj2 = obj.getJSONArray("results");
-			JSONObject obj3 = obj2.getJSONObject(0);
-			JSONArray obj4 = obj3.getJSONArray("address_components");
 
-			for (int i = 0; i < obj4.length(); i++) {
-				JSONObject tempObj = obj4.getJSONObject(i);
-				JSONArray types = tempObj.getJSONArray("types");
-				if (types.length() > 0) {
-					String firstType = types.getString(0);
+			logger.debug("Method findCountryCodeFromUserLocation(): Response OK. Analyzing result..");
+			JSONArray resultsArray = obj.getJSONArray("results");
 
-					if (firstType.equals("country")) {
-						countryCode = tempObj.getString("short_name");
+			if (resultsArray != null && resultsArray.length() > 0) {
+				JSONObject obj3 = resultsArray.getJSONObject(0);
+				JSONArray aComponentsArray = obj3.getJSONArray("address_components");
+
+				if (aComponentsArray != null && aComponentsArray.length() > 0) {
+					for (int i = 0; i < aComponentsArray.length(); i++) {
+
+						JSONObject tempObj = aComponentsArray.getJSONObject(i);
+						JSONArray types = tempObj.getJSONArray("types");
+
+						if (types != null && types.length() > 0) {
+							String firstType = types.getString(0);
+
+							if (firstType.equals("country")) {
+								countryCode = tempObj.getString("short_name");
+							}
+						}
 					}
 				}
 			}
 		}
 
+		logger.debug("Method findCountryCodeFromUserLocation(): End");
 		return countryCode;
 
 	}

@@ -99,7 +99,24 @@ public class TwitterMessageObject {
 		// web.
 		sourceClient = tweet.getSource();
 
-		tweetText = tweet.getText();
+		// Check if the tweet is a retweet of another tweet
+		if (tweet.getRetweetedStatus() != null) {
+			isRetweet = true;
+			retweetCount = 0;
+			if (tweet.getRetweetedStatus().getUser() != null) {
+				tweetText = "RT @" + tweet.getRetweetedStatus().getUser().getScreenName() + ": " + tweet.getRetweetedStatus().getText();
+			} else {
+				tweetText = "RT: " + tweet.getRetweetedStatus().getText();
+			}
+		} else {
+			isRetweet = false;
+			// Number of times this Tweet has been retweeted.
+			// This field is no longer capped at 99 and will not
+			// turn into a String for "100+"
+			retweetCount = tweet.getRetweetCount();
+			tweetText = tweet.getText();
+		}
+
 		// TODO translation for tweetTextTranslated
 
 		// Represents the geographic location of
@@ -127,18 +144,6 @@ public class TwitterMessageObject {
 			mentions = mentions + " @" + mentionsArray[i].getText();
 		}
 		mentions = mentions.trim();
-
-		// Check if the tweet is a retweet of another tweet
-		if (tweet.getRetweetedStatus() != null) {
-			isRetweet = true;
-			retweetCount = 0;
-		} else {
-			isRetweet = false;
-			// Number of times this Tweet has been retweeted.
-			// This field is no longer capped at 99 and will not
-			// turn into a String for "100+"
-			retweetCount = tweet.getRetweetCount();
-		}
 
 		// When present, indicates a BCP 47 language identifier corresponding to
 		// the

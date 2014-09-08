@@ -16,24 +16,16 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<link rel="stylesheet" type="text/css" href="css/twitter.css" />
-	<link rel="stylesheet" type="text/css" href="css/jqcloud.css" />
 	<link rel="stylesheet" type="text/css" href="css/timeline.css" >
-	<link rel="stylesheet" type="text/css" href="css/jquery.qtip.css" />
-	<link rel="stylesheet" type="text/css" href="css/jquery-jvectormap-1.2.2.css" media="screen"/>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<link rel="stylesheet" type="text/css" href="css/socialAnalysis.css" >
     <script src="js/lib/others/jquery-2.1.1.min.js"></script>
-	<script src="js/lib/others/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="js/lib/others/jqcloud-1.0.4.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.time.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.selection.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.navigate.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/others/d3.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/lib/others/d3pie.min.js"></script>
 	<script src="js/lib/others/d3pie.min.js"></script>
-	<script type="text/javascript" src="js/lib/others/freewall.js"></script>
-	<script type="text/javascript" src="js/lib/others/jquery.qtip.js"></script>
-	<script src="js/lib/others/jquery-jvectormap-1.2.2.min.js"></script>
-	 <script src="js/lib/others/jquery-jvectormap-world-mill-en.js"></script>
 	
 	<title>Twitter Analysis</title>
 	
@@ -42,39 +34,59 @@
 
 <%!
 
-public List<TwitterTopTweetsPojo> getTopTweets(String keyword)
+public List<TwitterTopTweetsPojo> getTopTweets(String searchID)
 {
-	return new TwitterTopTweetsDataProcessor().getTopTweetsData(keyword);
+	return new TwitterTopTweetsDataProcessor().getTopTweetsData(searchID, 30);
 }
 
-public int getTotalTweets(String keyword)
+public List<TwitterTopTweetsPojo> getTopRecentTweets(String searchID)
 {
-	return new TwitterGeneralStatsDataProcessor().totalTweetsCounter(keyword);
+	return new TwitterTopTweetsDataProcessor().getTopRecentTweetsData(searchID, 30);
 }
 
-public int getTotalUsers(String keyword)
+public int getTotalTweets(String searchID)
 {
-	return new TwitterGeneralStatsDataProcessor().totalUsersCounter(keyword);
+	return new TwitterGeneralStatsDataProcessor().totalTweetsCounter(searchID);
 }
 
-public TwitterPiePojo getTweetsPieChart(String keyword)
+public int getTotalUsers(String searchID)
 {
-	return new TwitterPieDataProcessor().getTweetsPieChart(keyword);
+	return new TwitterGeneralStatsDataProcessor().totalUsersCounter(searchID);
 }
 
-public List<TwitterTimelinePojo> getDailyTimelineChartObjs(String keyword)
+public TwitterPiePojo getTweetsPieChart(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsDaily(keyword);
+	return new TwitterPieDataProcessor().getTweetsPieChart(searchID);
 }
 
-public List<TwitterTimelinePojo> getWeeklyTimelineChartObjs(String keyword)
+public List<TwitterTimelinePojo> getDailyTimelineChartObjs(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsWeekly(keyword); 
+	return new TwitterTimelineDataProcessor().getTimelineObjsDaily(searchID);
 }
 
-public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
+public List<TwitterTimelinePojo> getWeeklyTimelineChartObjs(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsMonthly(keyword); 
+	return new TwitterTimelineDataProcessor().getTimelineObjsWeekly(searchID); 
+}
+
+public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getTimelineObjsMonthly(searchID); 
+}
+
+public String getMinSearchDate(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getMinDateSearch(searchID);
+}
+
+public String getMaxSearchDate(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getMaxDateSearch(searchID);
+}
+
+public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getTimelineObjsRangeTime(searchID); 
 }
 	
 
@@ -88,48 +100,68 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 	<% String topicsLink = "topics.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String networkLink = "network.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String distributionLink = "distribution.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String sentimentLink = "sentiment.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String impactLink = "impact.jsp?searchID=" + request.getParameter("searchID"); %>
+	<% String roiLink = "roi.jsp?searchID=" + request.getParameter("searchID"); %>
 
 	<ul>
 	    <li id="activelink"><a href=<% out.println(summaryLink); %>> Summary</a></li>
 	    <li><a href=<% out.println(topicsLink); %>>Topics</a></li>
 	    <li><a href=<% out.println(networkLink); %>>Network</a></li>
 	    <li><a href=<% out.println(distributionLink); %>>Distribution</a></li>
+	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
+	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
+	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
 	</ul>
         		
 	<div class="generalinfo">
 
-		<div style="float:left; width: 100%;">
+		<div class="generalInfo_main">
 	
-			<div class="inforules" style="float:left;">
-				<span class="num" ><%= getTotalTweets(request.getParameter("searchID")) %></span>
+			<div class="generalInfo_box">
+				<span class="generalInfo_infos" ><%= getTotalTweets(request.getParameter("searchID")) %></span>
 				<br>
-				<span style="font-size: 24px; ">tweets</span>
+				<span class="generalInfo_label" >tweets</span>
 			</div>
 		
-			<div class="inforules" style="float:left;">
-				<span class="num" ><%= getTotalUsers(request.getParameter("searchID")) %></span>
+			<div class="generalInfo_box">
+				<span class="generalInfo_infos" ><%= getTotalUsers(request.getParameter("searchID")) %></span>
 				<br>
-				<span style="font-size: 24px; ">users</span>
+				<span class="generalInfo_label">users</span>
+			</div>
+			
+			<div class="blank_box dateRange_box" style="float:left;">
+				<span class="dateRange_dates"><%= getMinSearchDate(request.getParameter("searchID")) %></span>
+				<br />
+				<span class="dateRange_dates"><%= getMaxSearchDate(request.getParameter("searchID")) %></span>
+				<br />
+				<span class="dateRange_label">Date range</span>
 			</div>
 
 		</div>
 		
 	</div>
 		
-	<div id="timeline" class="top-twitter box" style="display:block; float:left; width: 90%; overflow:hidden; padding: 4px;">
+	<div id="timeline" class="timeline_main">		
 		
-		<span class="title" >Timeline</span>
-		
-		
-		<div class="demo-container" style="width: 100%; height: 385px;">
-			<div id="timelinebuttons" style="float:right;">
-				<a id="monthly" style="cursor:pointer;">Monthly</a>
-				<a id="weekly" style="cursor:pointer;">Weekly</a>
-				<a id="daily" style="cursor:pointer;">Daily</a>
+		<div class="demo-container" style="width: 100%; height: 60%;">
+			<div id="hormenu">
+				<ul> 
+					<li><span>View</span>
+						<ul>
+							<li><a id="monthly" style="cursor:pointer;">Months</a>							
+				          	<li><a id="weekly" style="cursor:pointer;">Days</a></li>
+				          	<li><a id="daily" style="cursor:pointer;">Hours</a></li></li>
+				      </ul>
+				  </li>
 			</div>
 			<div id="main-graph" style="vertical-align: middle !important;"></div>
 			<div id="placeholder" class="demo-placeholder"></div>
 		</div>
+		<div class="demo-container" style="width: 100%; height: 40%">
+			<div id="overview" class="demo-placeholder-o"></div>
+		</div>	
+	</div>
 
 		<!-- <div class="demo-container" style="width: 550px; height: 125px;">
 			<div id="overview" class="demo-placeholder-o"></div>
@@ -137,23 +169,69 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 		 -->
 	</div>
 		
-	<div id="piebox" class="top-twitter box" style="display:block; width:555px; height:500px; float:left; ">
-			
-		<span class="title">Tweets Summary</span>				
-		<br/>
+	<div id="piebox" class="blank_box pieChart_box"  ">
 		
 		<div id="pieChart"></div>
 		
 	</div>
 		
-	<div id="toptweets" class="top-twitter box" style="display:block; float: left; width:475px; height:600px; padding-left:90px;">
+	<div id="toptweets" class="blank_box twitterTopWidget_box">
+			
+		<div class="twitterTopTitle_box">	
+			<span>Top Tweets</span>
+		</div>
 				
-		<span class="title">Top Tweets</span>
-				
-		<div class="toptweets">
+		<div class="twitterTopRT_box">
 			<ol>
 					<%						
 						for (TwitterTopTweetsPojo topObj : getTopTweets(request.getParameter("searchID"))) 
+						{ 
+							
+					%>			
+					
+					<li>
+						<div class="tweetData">
+
+							<img class="tweetprofileimg" src="<%= topObj.getProfileImgSrcFromDB() %>" />
+
+							<div class="tweettext">					
+									<div>
+										<a href="https://twitter.com/<%= topObj.getUsernameFromDb() %>" ><%= topObj.getUsernameFromDb() %></a>
+										<span style="float:right;"><%= topObj.getCreateDateFromDb() %></span>
+										<span class="retweetClass"><%= topObj.getCounterRTs() %></span>	
+										<img style="float:right;" src="img/retweet.png" />																					
+									</div>
+								<p>
+									<%= topObj.getTweetText() %> 
+								</p>
+								<p>
+									<% 
+										for (String hashtag : topObj.getHashtags()) 
+									{  
+									
+									%> 
+									<a style="color: #87C2ED" href="https://twitter.com/hashtag/<%= hashtag %>" ><%= hashtag %></a>
+									<% } %> 
+								</p>
+							</div>
+						</div> 
+					</li>
+				<% } %> 
+				</ol>
+			</div>
+
+	</div>
+	
+	<div id="toptweets" class="blank_box twitterTopWidget_box">
+			
+		<div class="twitterTopTitle_box">	
+			<span>Recent Tweets</span>
+		</div>
+				
+		<div class="twitterTopRT_box">
+			<ol>
+					<%						
+						for (TwitterTopTweetsPojo topObj : getTopRecentTweets(request.getParameter("searchID"))) 
 						{ 
 							
 					%>			
@@ -205,7 +283,59 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 					List<TwitterTimelinePojo> monthlyTimelineChartObjs = getMonthlyTimelineChartObjs(request.getParameter("searchID"));
 					List<TwitterTimelinePojo> weeklyTimelineChartObjs = getWeeklyTimelineChartObjs(request.getParameter("searchID"));
 					List<TwitterTimelinePojo> dailyTimelineChartObjs = getDailyTimelineChartObjs(request.getParameter("searchID"));
+					List<TwitterTimelinePojo> rangeTimelineChartObjs = getRangeTimelineChartObjs(request.getParameter("searchID"));
+
 				%>	
+				
+				
+				var rangedata = 
+					[ 
+		                { 
+		           	    	data: 
+		           	    	[	               					   
+		               			<%   for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) { %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+		               			],	               						
+		               			<% } %>
+		                     ], 
+		            	     label: "# of tweets" 
+		                },
+						{ 
+		                	data: 
+		                	[
+		               			<% 	for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) {  %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+		               			],
+		               			<% } %>
+		                    ], 
+		                    label: "# of RTs" }
+		            ];
+				
+				var rangedataOverview = 
+					[ 
+		                { 
+		           	    	data: 
+		           	    	[	               					   
+		               			<%   for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) { %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+		               			],	               						
+		               			<% } %>
+		                     ]
+		                },
+						{ 
+		                	data: 
+		                	[
+		               			<% 	for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) {  %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+		               			],
+		               			<% } %>
+		                    ]
+		                }
+		            ];
 				
 				var monthlydata = 
 				[ 
@@ -308,6 +438,41 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 
 					return markings;
 				}
+				
+				var rangeOptions = 
+				{
+					xaxis: 
+					{
+						mode: "time",
+						minTickSize: [1, "day"],
+						min: <%= rangeTimelineChartObjs.get(0).getLowerBound() + (60 * 60 * 2000)  %>,
+						max: <%= rangeTimelineChartObjs.get(0).getUpperBound() + (60 * 60 * 2000)  %>
+					},
+					yaxis: 
+					{
+						tickDecimals: 0
+					},
+					series: 
+					{
+						lines:
+						{
+							show: true,
+							fill: true
+						}
+					},
+					grid: {
+						markings: weekendAreas,
+						hoverable: true,
+						clickable: true
+					},
+					legend:
+					{
+						container: $("#main-graph"),
+						noColumns:2,
+						margin: '5px',
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
 				
 				var monthlyOptions = 
 				{
@@ -418,7 +583,54 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 				
 				
 
-				var plot = $.plot("#placeholder", monthlydata, monthlyOptions);
+// 				var plot = $.plot("#placeholder", monthlydata, monthlyOptions);
+
+				var plot = $.plot("#placeholder", rangedata, rangeOptions);
+				
+				var overview = $.plot("#overview", rangedataOverview, {
+					series: {
+						lines: {
+							show: true,
+							lineWidth: 1
+						},							
+						shadowSize: 0
+					},
+					xaxis: {
+						mode: "time",
+						minTickSize: [1, "day"],
+					},
+					yaxis: {
+						ticks: [],
+						min: 0,
+						autoscaleMargin: 0.1
+					},
+					selection: {
+						mode: "x"
+					},
+					colors: ["#ff0000", "#0000ff"]
+				});
+				
+				$("#placeholder").bind("plotselected", function (event, ranges) {
+
+					// do the zooming
+					$.each(plot.getXAxes(), function(_, axis) {
+						var opts = axis.options;
+						opts.min = ranges.xaxis.from;
+						opts.max = ranges.xaxis.to;
+					});
+					plot.setupGrid();
+					plot.draw();
+					plot.clearSelection();
+
+					// don't fire event on the overview to prevent eternal loop
+
+					overview.setSelection(ranges, true);
+				});
+
+				$("#overview").bind("plotselected", function (event, ranges) {
+					plot.setSelection(ranges);
+					
+				});
 								
 				$("#placeholder").bind("plothover", function (event, pos, item) 
 				{
@@ -454,114 +666,24 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 					
 				$("#daily").click(function () 
 				{					
-					
-					$.plot("#placeholder", dailydata, dailyOptions);
-					
-					 $("#placeholder").bind("plothover", function (event, pos, item) 
-								{
-								 	if (item) 
-								 	{
-								 		var someData = dailydata;
-							            var content = item.series.label + " = " + item.datapoint[1];
-							            
-							            for (var i = 0; i < someData.length; i++)
-							            {
-							                if (someData[i].label == item.series.label)
-							                {					                	
-							                    continue;   
-							                }
-							                
-							                for (var j=0; j < someData[i].data.length; j++)
-							                {
-							                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
-							                  	{
-							                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
-							                    }
-							                }                
-							            }					            
-							            
-							            showTooltip(item.pageX, item.pageY, content);
-							        }
-							        else 
-							        {
-							            $("#tooltip").css('display','none');       
-							        }
-						});	
+					plot.getAxes().xaxis.options.minTickSize = [1, "hour"];
+					plot.setupGrid();
+					plot.draw();					 
 							
-					});	
+				});	
 					
 					$("#weekly").click(function () 
-					{
-						
-						var weekplot = $.plot("#placeholder", weeklydata, weeklyOptions);
-						
-						 $("#placeholder").bind("plothover", function (event, pos, item) 
-									{
-									 	if (item) 
-									 	{
-									 		var someData = weeklydata;
-								            var content = item.series.label + " = " + item.datapoint[1];
-								            
-								            for (var i = 0; i < someData.length; i++)
-								            {
-								                if (someData[i].label == item.series.label)
-								                {					                	
-								                    continue;   
-								                }
-								                
-								                for (var j=0; j < someData[i].data.length; j++)
-								                {
-								                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
-								                  	{
-								                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
-								                    }
-								                }                
-								            }					            
-								            
-								            showTooltip(item.pageX, item.pageY, content);
-								        }
-								        else 
-								        {
-								            $("#tooltip").css('display','none');       
-								        }
-							});	
-								
-						});	
+					{						
+						plot.getAxes().xaxis.options.minTickSize = [1, "day"];
+						plot.setupGrid();
+						plot.draw();								
+					});	
 					
 					$("#monthly").click(function () 
 					{
-						$.plot("#placeholder", monthlydata, monthlyOptions);
-						
-						$("#placeholder").bind("plothover", function (event, pos, item) 
-						{
-						 	if (item) 
-						 	{
-						 		var someData = monthlydata;
-					            var content = item.series.label + " = " + item.datapoint[1];
-					            
-					            for (var i = 0; i < someData.length; i++)
-					            {
-					                if (someData[i].label == item.series.label)
-					                {					                	
-					                    continue;   
-					                }
-					                
-					                for (var j=0; j < someData[i].data.length; j++)
-					                {
-					                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
-					                  	{
-					                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
-					                    }
-					                }                
-					            }					            
-					            
-					            showTooltip(item.pageX, item.pageY, content);
-					        }
-					        else 
-					        {
-					            $("#tooltip").css('display','none');       
-					        }
-						});					
+						plot.getAxes().xaxis.options.minTickSize = [1, "month"];
+						plot.setupGrid();
+						plot.draw();		
 					});
 					
 				
@@ -617,13 +739,14 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 					"location": "bottom-left"
 				},
 				"size": {
-					"canvasWidth": 590
+					"canvasWidth": 300,
+					"canvasHeight": 300
 				},
 				"data": {
 					"sortOrder": "value-desc",
 					"content": [
 					{
-						"label": "Original Tweets",
+						"label": 'Tweets',
 						"value": <%= pieChartObj.getTweets() %>,
 						"color": "#29c03c"
 					},
@@ -641,10 +764,10 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 				},
 				"labels": {
 					"outer": {
-						"pieDistance": 11
+						"pieDistance": 1
 					},
 					"mainLabel": {
-						"fontSize": 11
+						"fontSize": 12
 					},
 					"percentage": {
 						"color": "#ffffff",
@@ -655,9 +778,7 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 						"fontSize": 11
 					},
 					"lines": {
-						"enabled": true,
-						"style": "straight",
-						"color": "#ffffff"
+						"enabled": false
 					}
 				},
 				"effects": {
@@ -672,23 +793,6 @@ public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String keyword)
 						"enabled": true,
 						"percentage": 100
 					}
-				},
-				"callbacks": 
-				{					
-					//  onMouseoverSegment: function(d) 
-					//{
-						//Show the tooltip
-					//	d3.select("#pie-tooltip")
-					//		.classed("hidden", false)
-					//		.style("left", d3.getBBox().pageX + "px")
-    				//		.style("top", d3.getBBox().pageY + "px")
-					//	  	.select("#value")
-					//	  	.text(d.data.value);						
-				//	},
-				//	onMouseoutSegment: function(info) 
-				//	{
-				//		d3.select("#pie-tooltip").classed("hidden", true);
-				//	} -->
 				}
 			});
 		</script>

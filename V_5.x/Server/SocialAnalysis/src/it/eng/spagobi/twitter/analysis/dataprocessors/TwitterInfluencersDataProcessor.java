@@ -31,9 +31,10 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
+import twitter4j.JSONArray;
 import twitter4j.JSONObject;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
@@ -79,6 +80,7 @@ public class TwitterInfluencersDataProcessor {
 						influencersCounter++;
 					}
 				}
+
 			}
 
 		} catch (Exception e) {
@@ -120,14 +122,22 @@ public class TwitterInfluencersDataProcessor {
 						}
 
 						TwitterInfluencersPojo tempObj = new TwitterInfluencersPojo(username, description, profileImg, followers);
-						Gson gson = new Gson();
-						String jsonString = gson.toJson(tempObj);
-						JSONObject jsonObj = new JSONObject(jsonString);
-						influencersJSON.add(jsonObj);
+						mostInfluencers.add(tempObj);
 
 						influencersCounter++;
 					}
 				}
+
+				ObjectMapper mapper = new ObjectMapper();
+				String jsonString = mapper.writeValueAsString(mostInfluencers);
+				JSONArray influencersArr = new JSONArray(jsonString);
+
+				if (influencersArr != null && influencersArr.length() > 0) {
+					for (int i = 0; i < influencersArr.length(); i++) {
+						influencersJSON.add(influencersArr.getJSONObject(i));
+					}
+				}
+
 			}
 
 		} catch (Exception e) {

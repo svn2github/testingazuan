@@ -1,24 +1,7 @@
-/**
-
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
+/** SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
 package it.eng.spagobi.twitter.analysis.cache;
 
 import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkCategoryPojo;
@@ -44,26 +27,101 @@ public interface ITwitterCache {
 
 	// TODO: interfaccia per metodi da implementare su tutte le tipologie di
 	// Cache sui diversi db
+
+	/**
+	 * This method creates the connection for the selected DB
+	 *
+	 * @return the connection for the DB
+	 */
 	public Connection openConnection();
 
+	/**
+	 * This method closes the connection for the selected DB
+	 */
 	public void closeConnection();
 
+	/**
+	 * This method inserts a new search in the DB
+	 *
+	 * @param twitterSearch
+	 *            : object representing a generic search
+	 * @return the created search ID
+	 */
 	public long insertTwitterSearch(TwitterSearchPojo twitterSearch);
 
+	/**
+	 * This method updates the field loading for the selected search
+	 *
+	 * @param searchID
+	 *            : selected search ID
+	 * @param isLoading
+	 *            : new value for the field loading of this search
+	 */
 	public void updateTwitterSearchLoading(long searchID, boolean isLoading);
 
+	/**
+	 * This method saves a tweet in the DB
+	 *
+	 * @param tweet
+	 *            : the object representing a tweet
+	 * @param keyword
+	 *            : the string representing the input field keyword
+	 * @param searchID
+	 *            : selected search ID
+	 * @throws Exception
+	 */
 	public void saveTweet(Status tweet, String keyword, long searchID) throws Exception;
 
+	/**
+	 * This method inserts a bitly link in the DB with all linked analysis
+	 *
+	 * @param linkPojo
+	 *            : object representing a bitly link
+	 * @param linkCategoryPojos
+	 *            : list of objects for linked analysis
+	 * @param searchID
+	 *            : selected search ID
+	 */
 	public void insertBitlyAnalysis(BitlyLinkPojo linkPojo, List<BitlyLinkCategoryPojo> linkCategoryPojos, long searchID);
 
+	/**
+	 * This method inserts useful data about a specified account to monitor
+	 *
+	 * @param accountToMonitor
+	 *            : twitter username account to monitor
+	 */
 	public void insertAccountToMonitor(TwitterAccountToMonitorPojo accountToMonitor);
 
+	/**
+	 * Generic method to execute query
+	 *
+	 * @param sqlQuery
+	 *            : sql query
+	 * @return a set of cached results
+	 */
 	public CachedRowSet runQuery(String sqlQuery);
 
+	/**
+	 * This method is an update for the search table. All streaming searches are
+	 * stopped, before start the new stream
+	 */
 	public void stopStreamingSearch();
 
+	/**
+	 * This method creates a scheduler for a search
+	 *
+	 * @param twitterScheduler
+	 *            : search scheduler with data associated to a specified search
+	 */
 	public void insertTwitterSearchScheduler(TwitterSearchSchedulerPojo twitterScheduler);
 
+	/**
+	 * This method creates a scheduler for monitoring the resources
+	 *
+	 * @param twitterMonitorScheduler
+	 *            : monitor scheduler with data associated to specified
+	 *            resources
+	 */
 	public void insertTwitterMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorScheduler);
 
 	// TODO: se possibile lo schema da salvare lo renderei gestibile da un'altra
@@ -72,5 +130,20 @@ public interface ITwitterCache {
 	// implementazione diversa della cache
 	// sulle singole implementazioni della cache dovrebbe cambiare la sintassi
 	// della INSERT a seconda del tipo di db
+
+	/**
+	 * This method deletes the specified search logically and the linked
+	 * schedulers phisically
+	 *
+	 * @param twitterSearch
+	 *            : search object
+	 */
+	public void deleteSearch(TwitterSearchPojo twitterSearch);
+
+	public void updateStartingDateSearchScheduler(TwitterSearchSchedulerPojo twitterSearchSchedulerPojo);
+
+	public void stopSearchScheduler(TwitterSearchPojo twitterSearch);
+
+	public void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
 
 }

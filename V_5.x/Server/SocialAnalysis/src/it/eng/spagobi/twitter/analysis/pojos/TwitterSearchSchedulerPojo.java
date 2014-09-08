@@ -30,10 +30,15 @@ import java.util.Calendar;
  */
 public class TwitterSearchSchedulerPojo {
 
+	private int id;
 	private long searchID;
 	private Calendar startingDate;
 	private int repeatFrequency;
 	private String repeatType;
+
+	public TwitterSearchSchedulerPojo() {
+
+	}
 
 	public TwitterSearchSchedulerPojo(Calendar sD, int rF, String rT) {
 		this.startingDate = sD;
@@ -71,6 +76,14 @@ public class TwitterSearchSchedulerPojo {
 
 	public void setRepeatType(String repeatType) {
 		this.repeatType = repeatType;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

@@ -24,8 +24,10 @@ Ext.define('Sbi.social.analysis.search.model.HistoricalSearchModel', {
 	 		{name: 'loading', type: 'boolean'},
 	 		{name: 'accounts', type : 'string'},
 	 		{name: 'links', type : 'string'},
-	 		{name: 'frequency', type : 'string'}
+	 		{name: 'frequency', type : 'string'},
 //	 		{name: 'impactAnalysis', type : 'string'}
+	 		{name: 'hasSearchScheduler', type: 'boolean'},
+	 		{name: 'hasMonitorScheduler', type: 'boolean'}
 	 	],
 	 
 	 proxy: {

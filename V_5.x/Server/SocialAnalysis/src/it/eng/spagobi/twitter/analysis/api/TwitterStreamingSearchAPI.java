@@ -2,13 +2,12 @@ package it.eng.spagobi.twitter.analysis.api;
 
 import it.eng.spagobi.twitter.analysis.dataprocessors.TwitterSearchDataProcessor;
 import it.eng.spagobi.twitter.analysis.launcher.TwitterAnalysisLauncher;
+import it.eng.spagobi.twitter.analysis.pojos.TwitterMonitorSchedulerPojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +34,7 @@ public class TwitterStreamingSearchAPI {
 	static final Logger logger = Logger.getLogger(TwitterStreamingSearchAPI.class);
 
 	TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
+	TwitterMonitorSchedulerPojo twitterMonitorScheduler = null;
 
 	// Save a new Twitter Search
 	@Path("/saveSearch")
@@ -73,6 +73,7 @@ public class TwitterStreamingSearchAPI {
 		twitterSearch.setKeywords(keywords);
 		twitterSearch.setLinks(links);
 		twitterSearch.setAccounts(accounts);
+		twitterSearch.setFrequency("");
 
 		// if user is not specifying the label, create it with the keywords
 		if (label == null || label.trim().equals("")) {
@@ -94,6 +95,42 @@ public class TwitterStreamingSearchAPI {
 
 		// set search label
 		twitterSearch.setLabel(label);
+
+		// parameters for monitoring scheduler
+
+		String numberUpTo = req.getParameter("numberUpTo");
+		String typeUpTo = req.getParameter("typeUpTo");
+
+		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
+			if (numberUpTo != null && !numberUpTo.equals("") && typeUpTo != null && !typeUpTo.equals("")) {
+
+				Calendar endingDate = GregorianCalendar.getInstance();
+				int repeatFrequency = Integer.parseInt(numberUpTo);
+
+				if (typeUpTo.equalsIgnoreCase("Day")) {
+					endingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+				} else if (typeUpTo.equalsIgnoreCase("Week")) {
+					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 7);
+				} else if (typeUpTo.equalsIgnoreCase("Month")) {
+					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
+				}
+
+				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
+			} else {
+				// TODO: default upto 1 month
+				Calendar endingDate = GregorianCalendar.getInstance();
+				int repeatFrequency = Integer.parseInt(numberUpTo);
+
+				endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
+
+				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
+
+			}
+
+		}
+
+		// set monitor scheduler
+		twitterSearch.setTwitterMonitorScheduler(twitterMonitorScheduler);
 
 		logger.debug("Method save(): Search streaming");
 
@@ -163,32 +200,6 @@ public class TwitterStreamingSearchAPI {
 			twitterLauncher.startStreamingSearch();
 
 		}
-		// String label = req.getParameter("label");
-		//
-		// String links = req.getParameter("links");
-		// String accounts = req.getParameter("accounts");
-		//
-		// // if user is not specifying the label, create it with the keywords
-		// if (label == null || label.trim().equals("")) {
-		//
-		// logger.debug("Method save(): Blank label. Creation from keywords");
-		//
-		// String[] keywordsArr = keywords.split(",");
-		// for (int i = 0; i < keywordsArr.length; i++) {
-		//
-		// String tempKeyword = keywordsArr[i].trim();
-		//
-		// if (i == keywordsArr.length - 1) {
-		// label = label + tempKeyword;
-		// } else {
-		// label = label + tempKeyword + "_";
-		// }
-		// }
-		// }
-		//
-		// logger.debug("Method save(): Search streaming");
-
-		// long searchID = twitterLauncher.saveStreamingSearch();
 
 		JSONObject resObj = new JSONObject();
 
@@ -238,49 +249,80 @@ public class TwitterStreamingSearchAPI {
 
 	}
 
-	private String readBody(HttpServletRequest request) {
+	// Delete a Twitter Search
+	@Path("/deleteSearch")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String delete(@Context HttpServletRequest req) throws Exception {
 
-		StringBuilder stringBuilder = new StringBuilder();
-		BufferedReader bufferedReader = null;
+		logger.debug("Method delete(): Start..");
+
+		String languageCode = null;
+		String dbType = "MySQL";
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+		boolean loading = Boolean.parseBoolean(req.getParameter("loading"));
+
+		// set ready parameters
+		twitterSearch.setDbType(dbType);
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setSearchType("streamingAPI");
+		twitterSearch.setLoading(loading);
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.deleteSearch();
+
+		JSONObject resObj = new JSONObject();
 
 		try {
-			InputStream inputStream = request.getInputStream();
-			if (inputStream != null) {
-				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-				char[] charBuffer = new char[128];
+			resObj.put("success", true);
+			resObj.put("msg", "Streaming search \"" + searchID + "\" deleted");
 
-				int byteRead = -1;
-
-				while ((byteRead = bufferedReader.read(charBuffer)) > 0) {
-					stringBuilder.append(charBuffer, 0, byteRead);
-				}
-			} else {
-				stringBuilder.append("");
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
+		} catch (JSONException e) {
+			logger.error("Method delete(): ERROR - " + e);
 		}
 
-		return stringBuilder.toString();
+		logger.debug("Method delete(): End");
+
+		return resObj.toString();
 	}
 
-	// @GET
-	// @Path("/sayHello/{username}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Response sayHello(@javax.ws.rs.core.Context HttpServletRequest
-	// req,
-	// @PathParam("username") String username) {
-	//
-	// System.out.println("Ciao " + username);
-	// return "Hello" + username;
-	// }
+	// Stop a Twitter Search
+	@Path("/stopStreamingSearch")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String stopStream(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method stopStream(): Start..");
+
+		String languageCode = null;
+		String dbType = "MySQL";
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+
+		// set ready parameters
+		twitterSearch.setDbType(dbType);
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setSearchType("streamingAPI");
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.stopStreamingSearch();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+			resObj.put("success", true);
+			resObj.put("msg", "Streaming search \"" + searchID + "\" stopped");
+
+		} catch (JSONException e) {
+			logger.error("Method delete(): ERROR - " + e);
+		}
+
+		logger.debug("Method delete(): End");
+
+		return resObj.toString();
+	}
 
 }

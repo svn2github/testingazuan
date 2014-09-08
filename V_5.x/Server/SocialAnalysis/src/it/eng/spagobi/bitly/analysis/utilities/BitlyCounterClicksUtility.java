@@ -33,6 +33,14 @@ public class BitlyCounterClicksUtility {
 	public BitlyCounterClicksUtility() {
 	}
 
+	public long getSearchID() {
+		return searchID;
+	}
+
+	public void setSearchID(long searchID) {
+		this.searchID = searchID;
+	}
+
 	public void startBitlyAnalysis() {
 
 		String accessToken = "d32762c9990acba4b3f0bd2649d4cdef296941ae";
@@ -51,6 +59,24 @@ public class BitlyCounterClicksUtility {
 			} catch (Exception e) {
 				System.out.println("**** connection failed: " + e);
 			}
+		}
+
+	}
+
+	public void monitorBitlyLink(String link) {
+
+		String accessToken = "d32762c9990acba4b3f0bd2649d4cdef296941ae";
+
+		BitlyLinkPojo linkPojo = counterClicks("https://api-ssl.bitly.com", "/v3/link/clicks", accessToken, link);
+		List<BitlyLinkCategoryPojo> linkCategory = counterClicksCountries("https://api-ssl.bitly.com", "/v3/link/countries", accessToken, link);
+		linkCategory.addAll(counterClicksDomains("https://api-ssl.bitly.com", "/v3/link/referring_domains", accessToken, link));
+
+		try {
+
+			twitterCache.insertBitlyAnalysis(linkPojo, linkCategory, searchID);
+
+		} catch (Exception e) {
+			System.out.println("**** connection failed: " + e);
 		}
 
 	}
@@ -220,8 +246,6 @@ public class BitlyCounterClicksUtility {
 					BitlyLinkPojo bitlyPojo = new BitlyLinkPojo(link, clicksCount);
 					bitlyLinkPojos.add(bitlyPojo);
 
-					System.out.println(bitlyPojo);
-
 				}
 			}
 		} catch (SQLException e) {
@@ -253,8 +277,6 @@ public class BitlyCounterClicksUtility {
 					BitlyLinkCategoryPojo bitlyCategoryPojo = new BitlyLinkCategoryPojo(type, category, clicksCount, link);
 					bitlyLinkCategoryPojos.add(bitlyCategoryPojo);
 
-					System.out.println(bitlyCategoryPojo);
-
 				}
 			}
 		} catch (SQLException e) {
@@ -264,4 +286,5 @@ public class BitlyCounterClicksUtility {
 		return bitlyLinkCategoryPojos;
 
 	}
+
 }

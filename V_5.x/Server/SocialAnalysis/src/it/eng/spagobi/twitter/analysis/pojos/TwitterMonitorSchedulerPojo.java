@@ -31,9 +31,14 @@ import java.util.Calendar;
 public class TwitterMonitorSchedulerPojo {
 
 	private long searchID;
-	private final Calendar endingDate;
+	private Calendar endingDate;
 	private int repeatFrequency;
 	private String repeatType;
+	private int id;
+
+	public TwitterMonitorSchedulerPojo() {
+
+	}
 
 	public TwitterMonitorSchedulerPojo(Calendar sD, int rF, String rT) {
 		this.endingDate = sD;
@@ -67,6 +72,18 @@ public class TwitterMonitorSchedulerPojo {
 
 	public Calendar getEndingDate() {
 		return endingDate;
+	}
+
+	public void setEndingDate(Calendar endingDate) {
+		this.endingDate = endingDate;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

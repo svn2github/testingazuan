@@ -33,9 +33,12 @@ import it.eng.spagobi.twitter.analysis.spider.search.TwitterSearchAPISpider;
 import it.eng.spagobi.twitter.analysis.spider.streaming.TwitterStreamingAPISpider;
 import it.eng.spagobi.twitter.analysis.utilities.TwitterUserInfoUtility;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 import org.quartz.CalendarIntervalScheduleBuilder;
@@ -47,8 +50,11 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 
 import twitter4j.Query.ResultType;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
@@ -133,7 +139,10 @@ public class TwitterAnalysisLauncher {
 				twitterMonitorScheduler.setSearchID(twitterSearch.getSearchID());
 				cache.insertTwitterMonitorScheduler(twitterMonitorScheduler);
 
-				createMonitoringTrigger(twitterMonitorScheduler);
+				// lo scheduler per il monitor delle risorse viene inserito ora,
+				// ma il job sarà lanciato quando la ricerca non avrà più
+				// occorrenze pendenti. Cioè quando il search scheduler sarà
+				// bloccato.
 			}
 
 			return searchID;
@@ -161,6 +170,22 @@ public class TwitterAnalysisLauncher {
 		if (searchID > 0) {
 
 			logger.debug("Method createStreamingSearch(): New search inserted with ID = " + searchID);
+
+			// launch monitoring resources for this search
+			logger.debug("Method createHistoricalSearch(): Monitoring resources Threads starting..");
+			startMonitoringResourcesThreads();
+
+			// manage monitor scheduler
+			if (twitterSearch.getTwitterMonitorScheduler() != null) {
+
+				TwitterMonitorSchedulerPojo twitterMonitorScheduler = twitterSearch.getTwitterMonitorScheduler();
+
+				// searchID have to set now
+				twitterMonitorScheduler.setSearchID(twitterSearch.getSearchID());
+				cache.insertTwitterMonitorScheduler(twitterMonitorScheduler);
+
+				createMonitoringTrigger();
+			}
 
 			return searchID;
 
@@ -204,6 +229,64 @@ public class TwitterAnalysisLauncher {
 		startMonitoringResourcesThreads();
 
 		logger.debug("Method startStreamingSearch(): End");
+
+	}
+
+	public void stopStreamingSearch() {
+
+		logger.debug("Method stopStreamingSearch(): Start..");
+
+		TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
+
+		// twitterStream.clearListeners();
+		twitterStream.cleanUp();
+
+		cache.updateTwitterSearchLoading(twitterSearch.getSearchID(), false);
+
+		logger.debug("Method stopStreamingSearch(): End");
+
+	}
+
+	public void deleteSearch() {
+
+		logger.debug("Method deleteSearch(): Start");
+
+		if (twitterSearch.getSearchType().equals("streamingAPI") && twitterSearch.isLoading()) {
+
+			TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
+
+			// twitterStream.clearListeners();
+			twitterStream.cleanUp();
+		}
+
+		this.cache.deleteSearch(twitterSearch);
+
+		logger.debug("Method deleteSearch(): End");
+
+	}
+
+	public void stopSearchScheduler() {
+
+		logger.debug("Method stopSearchScheduler(): Start");
+
+		try {
+
+			SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+			Scheduler scheduler = schedFact.getScheduler();
+
+			scheduler.unscheduleJob(TriggerKey.triggerKey("HSearchTgr_" + twitterSearch.getSearchID(), "groupHSearch"));
+		} catch (SchedulerException e) {
+			logger.debug("Method stopSearchScheduler(): Error stopping scheduler for search " + twitterSearch.getSearchID());
+		}
+
+		this.cache.stopSearchScheduler(twitterSearch);
+
+		logger.debug("Method stopSearchScheduler(): Starting monitor resources for search: " + twitterSearch.getSearchID());
+
+		createMonitoringTrigger();
+
+		logger.debug("Method deleteSearch(): End");
 
 	}
 
@@ -350,39 +433,68 @@ public class TwitterAnalysisLauncher {
 		}
 	}
 
-	private void createMonitoringTrigger(TwitterMonitorSchedulerPojo tScheduler) {
+	private void createMonitoringTrigger() {
+
+		String sqlSchedulerQuery = "SELECT * from twitter_monitor_scheduler where search_id = '" + twitterSearch.getSearchID() + "'";
 
 		try {
 
-			// scheduler parameters
-			long searchID = this.twitterSearch.getSearchID();
-			Date schedulerEndingDate = tScheduler.getEndingDate().getTime();
-			// int frequency = tScheduler.getRepeatFrequency();
+			CachedRowSet monitorRS = cache.runQuery(sqlSchedulerQuery);
 
-			Calendar tomorrow = GregorianCalendar.getInstance();
-			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
-			tomorrow.add(Calendar.HOUR_OF_DAY, 0);
-			tomorrow.add(Calendar.MINUTE, 0);
-			tomorrow.add(Calendar.SECOND, 0);
-			tomorrow.add(Calendar.MILLISECOND, 0);
+			if (monitorRS != null) {
 
-			SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+				while (monitorRS.next()) {
 
-			Scheduler sched = schedFact.getScheduler();
+					int id = monitorRS.getInt("id");
+					int repeatFrequency = monitorRS.getInt("repeat_frequency");
+					String repeatType = monitorRS.getString("repeat_type");
 
-			sched.start();
+					TwitterMonitorSchedulerPojo twitterMonitor = new TwitterMonitorSchedulerPojo();
 
-			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring").usingJobData("searchID", searchID)
-					.build();
+					twitterMonitor.setId(id);
+					twitterMonitor.setRepeatFrequency(repeatFrequency);
+					twitterMonitor.setRepeatType(repeatType);
 
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(tomorrow.getTime()).endAt(schedulerEndingDate)
-					.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(1, DateBuilder.IntervalUnit.DAY)).build();
+					Calendar endingDate = GregorianCalendar.getInstance();
 
-			// Tell quartz to schedule the job using our trigger
-			sched.scheduleJob(hSearchJob, trigger);
+					if (repeatType != null) {
+						if (repeatType.equals("Day")) {
+							endingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+						} else if (repeatType.equals("Week")) {
+							endingDate.add(Calendar.WEEK_OF_YEAR, repeatFrequency);
+						} else if (repeatType.equals("Month")) {
+							endingDate.add(Calendar.MONTH, repeatFrequency);
+						}
+					}
 
+					twitterMonitor.setEndingDate(endingDate);
+
+					cache.updateMonitorScheduler(twitterMonitor);
+
+					Date endingDateJob = new java.util.Date(endingDate.getTimeInMillis());
+
+					SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+					Scheduler sched = schedFact.getScheduler();
+
+					sched.start();
+
+					JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + twitterSearch.getSearchID(), "groupMonitoring")
+							.usingJobData("searchID", twitterSearch.getSearchID()).build();
+
+					Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + twitterSearch.getSearchID(), "groupMonitoring").startNow().endAt(endingDateJob)
+							.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(1, DateBuilder.IntervalUnit.DAY)).build();
+
+					// Tell quartz to schedule the job using our trigger
+					sched.scheduleJob(hSearchJob, trigger);
+
+				}
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getMessage());
 		} catch (SchedulerException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+
 	}
 }

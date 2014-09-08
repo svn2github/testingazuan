@@ -29,6 +29,8 @@ import java.sql.SQLException;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
  *         (giorgio.federici@eng.it)
@@ -36,6 +38,8 @@ import javax.sql.rowset.CachedRowSet;
  */
 
 public class TwitterGeneralStatsDataProcessor {
+
+	private static final Logger logger = Logger.getLogger(TwitterGeneralStatsDataProcessor.class);
 
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 

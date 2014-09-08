@@ -37,15 +37,13 @@ import javax.sql.rowset.CachedRowSet;
  */
 public class TwitterSearchDataProcessor {
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory()
-			.getCache("mysql");
+	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
 	public List<TwitterSearchPojo> getTwitterSearchList(String searchType) {
 
 		List<TwitterSearchPojo> searchList = new ArrayList<TwitterSearchPojo>();
 
-		String sqlQuery = "SELECT * from twitter_search where type = '"
-				+ searchType + "'";
+		String sqlQuery = "SELECT * from twitter_search where type = '" + searchType + "' and isDeleted = 0";
 
 		try {
 
@@ -59,8 +57,7 @@ public class TwitterSearchDataProcessor {
 					String label = rs.getString("label");
 					String keywords = rs.getString("keywords");
 					java.sql.Date creationDate = rs.getDate("creation_date");
-					java.sql.Timestamp lastActivationTime = rs
-							.getTimestamp("last_activation_time");
+					java.sql.Timestamp lastActivationTime = rs.getTimestamp("last_activation_time");
 					String frequency = rs.getString("frequency");
 					String type = rs.getString("type");
 					boolean loading = rs.getBoolean("loading");
@@ -68,9 +65,7 @@ public class TwitterSearchDataProcessor {
 					List<String> linksList = new ArrayList<String>();
 					String links = "";
 
-					CachedRowSet linksRs = twitterCache
-							.runQuery("SELECT link from twitter_links_to_monitor where search_id = "
-									+ searchID);
+					CachedRowSet linksRs = twitterCache.runQuery("SELECT link from twitter_links_to_monitor where search_id = " + searchID);
 					while (linksRs.next()) {
 						linksList.add(linksRs.getString("link"));
 					}
@@ -86,9 +81,7 @@ public class TwitterSearchDataProcessor {
 					List<String> accountsList = new ArrayList<String>();
 					String accounts = "";
 
-					CachedRowSet accountsRs = twitterCache
-							.runQuery("SELECT account_name from twitter_accounts_to_monitor where search_id = "
-									+ searchID);
+					CachedRowSet accountsRs = twitterCache.runQuery("SELECT account_name from twitter_accounts_to_monitor where search_id = " + searchID);
 					while (accountsRs.next()) {
 						accountsList.add(accountsRs.getString("account_name"));
 					}
@@ -101,10 +94,26 @@ public class TwitterSearchDataProcessor {
 						}
 					}
 
-					TwitterSearchPojo searchPojo = new TwitterSearchPojo(
-							searchID, label, keywords, creationDate,
-							lastActivationTime, frequency, type, loading,
-							links, accounts);
+					boolean hasSearchScheduler = false;
+
+					if (searchType.equals("searchAPI")) {
+						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID);
+						while (searchSchedulerRs.next()) {
+
+							hasSearchScheduler = true;
+						}
+					}
+
+					boolean hasMonitorScheduler = false;
+
+					CachedRowSet monitorSchedulerRs = twitterCache.runQuery("SELECT id from twitter_monitor_scheduler where search_id = " + searchID);
+					while (monitorSchedulerRs.next()) {
+
+						hasMonitorScheduler = true;
+					}
+
+					TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading, links, accounts,
+							hasSearchScheduler, hasMonitorScheduler);
 
 					searchList.add(searchPojo);
 				}

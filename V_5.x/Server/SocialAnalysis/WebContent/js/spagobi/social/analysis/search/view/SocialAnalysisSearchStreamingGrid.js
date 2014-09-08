@@ -93,6 +93,29 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 	                    if(loadingValue)
                     	{
 	                    	//stop code
+	                    	Ext.Msg.show({
+	                    	     title:'Confirm',
+	                    	     msg: 'Your are stopping the streaming search. Are you sure?',
+	                    	     buttons: Ext.Msg.YESNO,
+	                    	     icon: Ext.Msg.QUESTION,
+	                    	     fn: function(btn, text){
+                                    if (btn == 'yes'){
+                                   	 Ext.Ajax.request({
+            	                            url : 'restful-services/streamingSearch/stopStreamingSearch',
+            	                            method:'POST', 
+            	                            params : {
+            	                                searchID: Ext.encode(rec.get('searchID'))
+            	                            },
+            	                            scope : this
+                                   	 }); 
+                                    
+                                    }
+                                    if (btn == 'no'){
+                                   	 //do nothing
+                                    }
+                                },
+	                    	     icon: Ext.Msg.QUESTION
+	                    	});
                     	}
 	                    else
                     	{
@@ -130,7 +153,41 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 		            xtype: 'actioncolumn',
 		            text: 'Delete',
 		            icon: 'img/delete.png',
-		            align: 'center'
+		            align: 'center',
+		            handler: function(grid, rowIndex, colIndex) {
+	                    
+		            	var rec = grid.getStore().getAt(rowIndex);
+	              
+                    	Ext.Msg.show({
+                    	     title:'Confirm',
+                    	     msg: 'You are deleting this search. Are you sure?',
+                    	     buttons: Ext.Msg.YESNO,
+                    	     icon: Ext.Msg.QUESTION,
+                    	     fn: function(btn, text){
+                                 if (btn == 'yes'){
+                                	 Ext.Ajax.request({
+         	                            url : 'restful-services/streamingSearch/deleteSearch',
+         	                            method:'POST', 
+         	                            params : {
+         	                                searchID: Ext.encode(rec.get('searchID')),
+         	                                loading: Ext.encode(rec.get('loading'))
+         	                            },
+         	                            scope : this,
+         	                           success: function(response)
+         	                           {
+         	                        	  Ext.Msg.alert('Success', action.result.msg);
+         	                           }
+                                	 }); 
+                                 
+                                 }
+                                 if (btn == 'no'){
+                                	 //do nothing
+                                 }
+                             },
+                    	     icon: Ext.Msg.QUESTION
+                    	});
+//	                    	
+                    }
 		        },
 		        {
 		        	xtype: 'actioncolumn',
@@ -138,7 +195,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 		            width: 100,
 		            dataIndex: 'loading',
 		            align: 'center',
-		            icon: 'img/analysis.png',
+		            icon: 'img/show.png',
 		            handler: function(grid, rowIndex, colIndex) {
 	                    var rec = grid.getStore().getAt(rowIndex);
 		            	window.location.href = "summary.jsp?searchID="+rec.get('searchID');

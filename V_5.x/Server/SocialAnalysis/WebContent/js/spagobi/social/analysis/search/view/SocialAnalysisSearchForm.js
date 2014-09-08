@@ -72,147 +72,158 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	        {
 	        	padding: "0 0 0 20",
 	        	xtype      : 'fieldcontainer',
-	            defaultType: 'radiofield',
 	            fieldLabel: "Search type",
-	            defaults: {
-	                flex: 1
-	            },
-	            layout: {
-	                type: 'vbox'
-	            },
+	            layout: 'hbox',
 	            items: [
-                {
-                    boxLabel  : 'On-line monitoring',
-                    name      : 'searchType',
-                    inputValue: 'streamingAPI',
-                    id        : 'radioStreaming',
-                    checked	  : true
-                }, {
-                    boxLabel  : 'Historical data',
-                    name      : 'searchType',
-                    inputValue: 'searchAPI',
-                    id        : 'radioHSearch',
-                    listeners: {
-                        change: function (field, newValue, oldValue) {
-                        	var form = field.up('form');
-                            var startingFromContainer = form.down('#startingFromID');
-                            var repeatEveryContainer = form.down('#repeatEveryID');
-                            var startingFromCheckBox = startingFromContainer.down('#checkboxStartingFromID');
-                            var repeatEveryCheckBox = repeatEveryContainer.down('#checkboxRepeatID');
-                            
-                            if(newValue) {
-                            	startingFromContainer.enable();
-                            	repeatEveryContainer.enable();
-                            }
-                            else {
-                            	startingFromCheckBox.setValue(false);
-                            	repeatEveryCheckBox.setValue(false);                            	
-                            	startingFromContainer.disable();
-                            	repeatEveryContainer.disable();
-                            }
-                        }
-                    }
-                }
-                ]},
-                {
-	                padding: '0 0 0 150',
-                	xtype:'fieldcontainer',
-    	            layout: 'hbox',  
-    	            disabled: true,
-    	            id: 'startingFromID',
-                    items :[
-                    {
-                    	xtype: 'checkboxfield',
-	                    boxLabel  : 'Starting from',
-	                    name      : 'isStartingFrom',
-	                    inputValue: '1',
-	                    id        : 'checkboxStartingFromID',
-	                    listeners: {
-	                        change: function (field, newValue, oldValue, eOpts ) {
-	                        	var form = field.up('form');
-	                            var numberField = form.down('#numberStartingFromID');
-	                            var labelAgoStartingFrom = form.down('#labelAgoStartingFromID');
-	                            
-	                    
-	                            if(newValue) {
-	                                numberField.enable();
-	                                labelAgoStartingFrom.setVisible(true);
-	                            }
-	                            else {
-	                                numberField.reset();
-	                                numberField.disable();
-	                                labelAgoStartingFrom.setVisible(false);
-	                            }
-	                        }
-	                    }
-                    },
-                    {
-                    	xtype: 'numberfield',
-                    	width: 40,
-	                    name      : 'numberStartingFrom',
-	                    id: 'numberStartingFromID',
-	                    padding: '0 0 0 20',
-	                    value: 0,
-	                    maxValue: 6,
-	                    disabled: true
-                    },                
-                	{
-                    	xtype: 'label',
-                    	text: 'day ago',
-                    	margin: '0 0 0 10',
-                    	hidden: true,
-                    	id: 'labelAgoStartingFromID'
-                	}
-               ]},
-                {
-            	   padding: '0 0 20 150',
-            	   xtype:'fieldcontainer',
-            	   layout: 'hbox',  
-            	   id: 'repeatEveryID',
-            	   disabled: true,
-            	   items :[
-    	           {
-    	        	   	xtype: 'checkboxfield',
-    	        	   	boxLabel  : 'Repeat every',
-    	        	   	name      : 'isRepeating',
-    	        	   	inputValue: '1',
-    	        	   	id        : 'checkboxRepeatID',
-    	        	   	listeners: {
-	                        change: function (field, newValue, oldValue, eOpts ) {
-	                        	var form = field.up('form');
-	                            var numberField = form.down('#numberRepeatEveryID');
-	                            var labelAgoRepeatEvery = form.down('#labelAgoRepeatEveryID');
-	                    
-	                            if(newValue) {
-	                            	numberField.enable();
-	                            	labelAgoRepeatEvery.setVisible(true);
-	                            }
-	                            else {
-	                            	numberField.reset();
-	                            	numberField.disable();
-	                            	labelAgoRepeatEvery.setVisible(false);
-
-	                            }
-	                        }
-	                    }
-               		},
-                    {
-               			xtype: 'numberfield',
-                    	width: 40,
-	                    name      : 'numberRepeat',
-	                    padding: '0 0 0 19',
-	                    id : 'numberRepeatEveryID',
-	                    value: 0,
-	                    disabled: true
-                   },                   
-               	   {
-	                   	xtype: 'label',
-	                	text: 'day ago',
-	                	margin: '0 0 0 10',
-	                	hidden: true,
-	                	id: 'labelAgoRepeatEveryID'
-               	   }
-              ]},
+	                {
+	                	xtype	  :	'radiofield',
+	                    boxLabel  : 'On-line monitoring',
+	                    name      : 'searchType',
+	                    inputValue: 'streamingAPI',
+	                    id        : 'radioStreaming',
+	                    checked	  : true
+	                }, 
+	                {
+						xtype	  :	'radiofield',
+					    boxLabel  : 'Historical data',
+					    name      : 'searchType',
+					    inputValue: 'searchAPI',
+					    id        : 'radioHSearch',
+					    margin	  : '0 0 0 20',
+					    listeners: 
+					    {
+					        change: function (field, newValue, oldValue) 
+					        {
+					        	var form = field.up('form');
+					            var startingFromContainer = form.down('#startingFromID');
+					            var repeatEveryContainer = form.down('#repeatEveryID');
+					            var startingFromCheckBox = startingFromContainer.down('#checkboxStartingFromID');
+					            var repeatEveryCheckBox = repeatEveryContainer.down('#checkboxRepeatID');
+					        
+					            if(newValue) {
+					            	startingFromContainer.enable();
+					            	repeatEveryContainer.enable();
+					            }
+					            else {
+					            	startingFromCheckBox.setValue(false);
+					            	repeatEveryCheckBox.setValue(false);                            	
+					            	startingFromContainer.disable();
+					            	repeatEveryContainer.disable();
+					            }
+					        }
+				    	}
+            	 	},
+            	 	{
+	                	padding: '0 0 0 20',
+						xtype:'fieldcontainer',
+					    layout: 
+					    {
+					    	type: 'hbox',
+					    },
+					    disabled: true,
+					    id: 'startingFromID',
+					    items:
+					    [
+						    {
+						    	xtype: 'checkboxfield',
+						    	boxLabel  : 'Starting from',
+						        name      : 'isStartingFrom',
+						        inputValue: '1',
+						        id        : 'checkboxStartingFromID',
+						        listeners: 
+						        {
+						            change: function (field, newValue, oldValue, eOpts ) 
+						            {
+						            	var form = field.up('form');
+						                var numberField = form.down('#numberStartingFromID');
+						                var labelAgoStartingFrom = form.down('#labelAgoStartingFromID');
+						                
+						        
+						                if(newValue) {
+						                    numberField.enable();
+						                    labelAgoStartingFrom.setVisible(true);
+						                }
+						                else {
+						                    numberField.reset();
+						                    numberField.disable();
+						                    labelAgoStartingFrom.setVisible(false);
+						                }
+						            }
+						        }
+					    	},
+						    {
+						    	xtype: 'numberfield',
+						    	width: 40,
+						        name      : 'numberStartingFrom',
+						        id: 'numberStartingFromID',
+						        padding: '0 0 0 20',
+						        minValue: 0,
+						        value: 1,
+						        maxValue: 6,
+						        disabled: true
+						    },                
+							{
+						    	xtype: 'displayfield',
+						    	value: 'day ago',
+						    	margin: '0 0 0 10',
+						    	hidden: true,
+						    	id: 'labelAgoStartingFromID'
+							}
+						]
+				    },
+					{
+					   padding: '0 0 0 20',
+					   xtype:'fieldcontainer',
+					   layout: 'hbox',  
+					   id: 'repeatEveryID',
+					   disabled: true,
+					   items :[
+					   {
+						   	xtype: 'checkboxfield',
+						   	boxLabel  : 'Repeat every',
+						   	name      : 'isRepeating',
+						   	inputValue: '1',
+						   	id        : 'checkboxRepeatID',
+						   	listeners: {
+					            change: function (field, newValue, oldValue, eOpts ) {
+					            	var form = field.up('form');
+					                var numberField = form.down('#numberRepeatEveryID');
+					                var labelAgoRepeatEvery = form.down('#labelAgoRepeatEveryID');
+					        
+					                if(newValue) {
+					                	numberField.enable();
+					                	labelAgoRepeatEvery.setVisible(true);
+					                }
+					                else {
+					                	numberField.reset();
+					                	numberField.disable();
+					                	labelAgoRepeatEvery.setVisible(false);
+					
+					                }
+					            }
+					        }
+				   		},
+					   	{
+							xtype: 'numberfield',
+					    	width: 40,
+					        name      : 'numberRepeat',
+					        padding: '0 0 0 19',
+					        id : 'numberRepeatEveryID',
+					        value: 1,
+					        minValue: 0,
+					        disabled: true
+					   },                   
+					   {
+				       		xtype: 'displayfield',
+				       		value: 'day',
+				       		margin: '0 0 0 10',
+				       		hidden: true,
+				       		id: 'labelAgoRepeatEveryID'
+					   }
+					   ]
+					}
+	                	 	
+            	]},                             
                {
 	            xtype: 'fieldcontainer',
 	        	defaultType: 'textfield',
@@ -235,7 +246,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	        	xtype: 'fieldcontainer',
 	            defaultType: 'checkboxfield',
 	            layout: 'hbox',
-	            padding: '0 0 20 20',
+	            padding: '0 0 0 20',
 	            items: [
 	                {
 	                    boxLabel  : 'Twitter',
@@ -284,10 +295,11 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	        	}, {
 	        		fieldLabel: 'Impact on business',
 	        		name: 'documents',
-	        		anchor: '50%'
+	        		anchor: '50%',
+	        		hidden: true
 	        	}],
 	        },
-	       {
+	        {
 	        	xtype: 'fieldcontainer',
 	        	layout: 'hbox',
 	        	defaults:
@@ -300,6 +312,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
                 	xtype: 'numberfield',
                  	width: 40,
                  	value: 0,
+                 	minValue: 0,
                 	fieldLabel: 'Up to',
                     name      : 'numberUpTo',
                     width: 200
@@ -315,8 +328,8 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
             		name: 'typeUpTo'
         	   },
                {
-        		   xtype: 'label',
-        		   text: 'later',
+        		   xtype: 'displayfield',
+        		   value: 'later',
         		   margin: '0 0 0 10'
                }]
 	       },

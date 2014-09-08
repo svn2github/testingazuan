@@ -1,11 +1,16 @@
 package it.eng.spagobi.twitter.analysis.scheduler;
 
+import it.eng.spagobi.bitly.analysis.utilities.BitlyCounterClicksUtility;
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
 import it.eng.spagobi.twitter.analysis.launcher.TwitterAnalysisLauncher;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
+import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchSchedulerPojo;
+import it.eng.spagobi.twitter.analysis.utilities.TwitterUserInfoUtility;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -33,19 +38,27 @@ public class HistoricalSearchJob implements Job {
 
 		JobKey key = context.getJobDetail().getKey();
 
-		String sqlQuery = "SELECT keywords, type, loading from twitter_search where search_id = '" + searchID + "'";
+		String sqlSearchQuery = "SELECT keywords, type, loading from twitter_search where search_id = '" + searchID + "'";
+
+		String sqlLinksQuery = "SELECT link from twitter_link_to_monitor where search_id = '" + searchID + "'";
+
+		String sqlAccountsQuery = "SELECT account from twitter_account_to_monitor where search_id = '" + searchID + "'";
+
+		String sqlSchedulerQuery = "SELECT * from twitter_search_scheduler where search_id = '" + searchID + "'";
 
 		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			CachedRowSet searchRS = twitterCache.runQuery(sqlSearchQuery);
 
-			if (rs != null) {
+			if (searchRS != null) {
 
-				while (rs.next()) {
+				logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
 
-					String keywords = rs.getString("keywords");
-					String type = rs.getString("type");
+				while (searchRS.next()) {
+
+					String keywords = searchRS.getString("keywords");
+					String type = searchRS.getString("type");
 					// TODO possibile utilizzo per evitare conflitti
-					boolean loading = rs.getBoolean("loading");
+					boolean loading = searchRS.getBoolean("loading");
 
 					TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
 					twitterSearch.setKeywords(keywords);
@@ -61,7 +74,73 @@ public class HistoricalSearchJob implements Job {
 				}
 			}
 
-			logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+			CachedRowSet linkRS = twitterCache.runQuery(sqlLinksQuery);
+
+			if (linkRS != null) {
+
+				logger.debug("Instance " + key + " of HistoricalSearchJob. Executing monitoring links on search #: " + searchID);
+
+				while (linkRS.next()) {
+
+					String link = linkRS.getString("link");
+
+					BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility();
+					bitlyUtil.setSearchID(searchID);
+
+					bitlyUtil.monitorBitlyLink(link);
+
+				}
+			}
+
+			CachedRowSet accountRS = twitterCache.runQuery(sqlAccountsQuery);
+
+			if (accountRS != null) {
+
+				logger.debug("Instance " + key + " of HistoricalSearchJob. Executing monitoring accounts on search #: " + searchID);
+
+				while (accountRS.next()) {
+
+					String account = accountRS.getString("account");
+
+					TwitterUserInfoUtility userUtil = new TwitterUserInfoUtility(searchID);
+					userUtil.saveFollowersCount(account);
+				}
+			}
+
+			CachedRowSet schedulerRS = twitterCache.runQuery(sqlSchedulerQuery);
+
+			if (schedulerRS != null) {
+
+				logger.debug("Instance " + key + " of HistoricalSearchJob. Executing updating search scheduler on search #: " + searchID);
+
+				while (schedulerRS.next()) {
+
+					int id = schedulerRS.getInt("id");
+					java.sql.Timestamp startingTimestamp = schedulerRS.getTimestamp("starting_date");
+					int repeatFrequency = schedulerRS.getInt("repeat_frequency");
+					String repeatType = schedulerRS.getString("repeat_type");
+
+					Calendar startingCalendar = GregorianCalendar.getInstance();
+					startingCalendar.setTimeInMillis(startingTimestamp.getTime());
+
+					if (repeatType != null) {
+						if (repeatType.equals("Day")) {
+							startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+						} else if (repeatType.equals("Hour")) {
+							startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
+						}
+					}
+
+					TwitterSearchSchedulerPojo twitterSearchScheduler = new TwitterSearchSchedulerPojo();
+					twitterSearchScheduler.setSearchID(searchID);
+					twitterSearchScheduler.setId(id);
+					twitterSearchScheduler.setStartingDate(startingCalendar);
+
+					twitterCache.updateStartingDateSearchScheduler(twitterSearchScheduler);
+
+				}
+			}
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e.getMessage());
 		}

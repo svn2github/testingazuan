@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<DATA_MINING>
+    <PARAMETERS>
+        <PARAMETER name="par1" />
+        <PARAMETER name="par2" />
+        <PARAMETER name="par3" />
+    </PARAMETERS> 
+	<SCRIPTS>  
+        <SCRIPT name="scriptroll" mode="auto" datasets="dataset" label="label timeplus">
+			<![CDATA[
+				str(dataset);
+				dataset$time;
+				time_plus<-dataset$time+1;
+				time_plus;
+			]]>
+		</SCRIPT>
+	</SCRIPTS>	
+	<DATASETS>
+		<DATASET name="dataset" readType="table" type="file" label="label Data set 1">	
+			<![CDATA[header = TRUE]]>
+		</DATASET>
+	</DATASETS>	
+	<COMMANDS>
+        <COMMAND name="command1" scriptName="scriptroll"  label="label Command1" mode="auto">
+            <OUTPUTS>
+                <OUTPUT type="text" name="time_plus" value="time_plus"  mode="auto" label="Time plus"/>
+            </OUTPUTS>
+        </COMMAND>
+    </COMMANDS>
+</DATA_MINING>

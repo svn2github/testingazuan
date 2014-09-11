@@ -54,25 +54,49 @@ public int getTotalUsers(String searchID)
 	return new TwitterGeneralStatsDataProcessor().totalUsersCounter(searchID);
 }
 
+/*************** START PIE CHARTS *****************************************************/
+
 public TwitterPiePojo getTweetsPieChart(String searchID)
 {
 	return new TwitterPieDataProcessor().getTweetsPieChart(searchID);
 }
 
-public List<TwitterTimelinePojo> getDailyTimelineChartObjs(String searchID)
+public List<TwitterPieSourcePojo> getTweetsPieChartDevice(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsDaily(searchID);
+	return new TwitterPieDataProcessor().getTweetsPieSourceChart(searchID);
 }
 
-public List<TwitterTimelinePojo> getWeeklyTimelineChartObjs(String searchID)
+
+/*************** END PIE CHARTS *****************************************************/
+
+/*************** START TIMELINE *****************************************************/
+
+public List<TwitterTimelinePojo> getTimelineObjsHourRounded(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsWeekly(searchID); 
+	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "hours");
 }
 
-public List<TwitterTimelinePojo> getMonthlyTimelineChartObjs(String searchID)
+public List<TwitterTimelinePojo> getTimelineObjsDayRounded(String searchID)
 {
-	return new TwitterTimelineDataProcessor().getTimelineObjsMonthly(searchID); 
+	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "days");
 }
+
+public List<TwitterTimelinePojo> getTimelineObjsWeekRounded(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "weeks"); 
+}
+
+public List<TwitterTimelinePojo> getTimelineObjsMonthRounded(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "months"); 
+}
+
+public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
+{
+	return new TwitterTimelineDataProcessor().getTimelineObjsRangeTime(searchID); 
+}
+
+/*************** END TIMELINE *****************************************************/
 
 public String getMinSearchDate(String searchID)
 {
@@ -84,10 +108,7 @@ public String getMaxSearchDate(String searchID)
 	return new TwitterTimelineDataProcessor().getMaxDateSearch(searchID);
 }
 
-public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjsRangeTime(searchID); 
-}
+
 	
 
 	/*****************/	
@@ -149,11 +170,12 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 				<ul> 
 					<li><span>View</span>
 						<ul>
-							<li><a id="monthly" style="cursor:pointer;">Months</a>							
-				          	<li><a id="weekly" style="cursor:pointer;">Days</a></li>
-				          	<li><a id="daily" style="cursor:pointer;">Hours</a></li></li>
-				      </ul>
-				  </li>
+							<li><a id="months" style="cursor:pointer;">Months</a>							
+				          	<li><a id="weeks" style="cursor:pointer;">Weeks</a></li>
+				          	<li><a id="days" style="cursor:pointer;">Days</a></li>
+				          	<li><a id="hours" style="cursor:pointer;">Hours</a></li>
+				     	</ul>
+				 	</li>
 			</div>
 			<div id="main-graph" style="vertical-align: middle !important;"></div>
 			<div id="placeholder" class="demo-placeholder"></div>
@@ -169,10 +191,18 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 		 -->
 	</div>
 		
-	<div id="piebox" class="blank_box pieChart_box"  ">
+	<div id="pieBoxMain" style="float:left; width:400px">
+		<div class="blank_box pieChart_box"  ">
+			
+			<div id="pieChart" style="float:left"></div>
+			
+		</div>
 		
-		<div id="pieChart"></div>
-		
+		<div class="blank_box pieChart_box" style="margin-top: 20px; margin-bottom: 30px;">
+			
+			<div id="pieChartDevice" style="float:left;"></div>
+			
+		</div>
 	</div>
 		
 	<div id="toptweets" class="blank_box twitterTopWidget_box">
@@ -280,20 +310,40 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 			{
 				
 				<% 
-					List<TwitterTimelinePojo> monthlyTimelineChartObjs = getMonthlyTimelineChartObjs(request.getParameter("searchID"));
-					List<TwitterTimelinePojo> weeklyTimelineChartObjs = getWeeklyTimelineChartObjs(request.getParameter("searchID"));
-					List<TwitterTimelinePojo> dailyTimelineChartObjs = getDailyTimelineChartObjs(request.getParameter("searchID"));
-					List<TwitterTimelinePojo> rangeTimelineChartObjs = getRangeTimelineChartObjs(request.getParameter("searchID"));
+					List<TwitterTimelinePojo>  monthlyTimelineChartObjs = getTimelineObjsMonthRounded(request.getParameter("searchID"));
+					List<TwitterTimelinePojo> weeklyTimelineChartObjs = getTimelineObjsWeekRounded(request.getParameter("searchID"));
+					List<TwitterTimelinePojo> dailyTimelineChartObjs = getTimelineObjsDayRounded(request.getParameter("searchID"));
+					List<TwitterTimelinePojo> hourlyTimelineChartObjs = getTimelineObjsHourRounded(request.getParameter("searchID"));
 
 				%>	
 				
 				
-				var rangedata = 
+				var tWeeklyData = 
+					[
+					 	
+						<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
+							[
+								<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+							],	               						
+						<% } %>
+					 
+	                ]; 
+				
+				var ticks = [];
+			
+				
+				for (var i = 0; i < tWeeklyData.length; i++) 
+				{
+				 	ticks.push(tWeeklyData[i][0]);
+				}
+			
+				
+				var monthlyData = 
 					[ 
 		                { 
 		           	    	data: 
 		           	    	[	               					   
-		               			<%   for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) { %>	
+		               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
 		               			[
 		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
 		               			],	               						
@@ -304,7 +354,7 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 						{ 
 		                	data: 
 		                	[
-		               			<% 	for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) {  %>	
+		               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
 		               			[
 		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
 		               			],
@@ -312,303 +362,588 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 		                    ], 
 		                    label: "# of RTs" }
 		            ];
-				
-				var rangedataOverview = 
+					
+					var weeklyData = 
 					[ 
 		                { 
 		           	    	data: 
 		           	    	[	               					   
-		               			<%   for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) { %>	
+		               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
 		               			[
 		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
 		               			],	               						
 		               			<% } %>
-		                     ]
+		                     ], 
+		            	     label: "# of tweets" 
 		                },
 						{ 
 		                	data: 
 		                	[
-		               			<% 	for(TwitterTimelinePojo timelineObj : rangeTimelineChartObjs) {  %>	
+		               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
 		               			[
 		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
 		               			],
 		               			<% } %>
-		                    ]
-		                }
+		                    ], 
+		                    label: "# of RTs" }
 		            ];
-				
-				var monthlydata = 
-				[ 
-	                { 
-	           	    	data: 
-	           	    	[	               					   
-	               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-	               			],	               						
-	               			<% } %>
-	                     ], 
-	            	     label: "# of tweets" 
-	                },
-					{ 
-	                	data: 
-	                	[
-	               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-	               			],
-	               			<% } %>
-	                    ], 
-	                    label: "# of RTs" }
-	            ];
-				
-				var weeklydata = 
-				[ 
-	                { 
-	           	    	data: 
-	           	    	[	               					   
-	               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-	               			],	               						
-	               			<% } %>
-	                     ], 
-	            	     label: "# of tweets" 
-	                },
-					{ 
-	                	data: 
-	                	[
-	               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-	               			],
-	               			<% } %>
-	                    ], 
-	                    label: "# of RTs" }
-	            ];
-				
-				var dailydata = 
-				[ 
-	                { 
-	           	    	data: 
-	           	    	[	               					   
-	               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-	               			],	               						
-	               			<% } %>
-	                     ], 
-	            	     label: "# of tweets" 
-	                },
-					{ 
-	                	data: 
-	                	[
-	               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
-	               			[
-	               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-	               			],
-	               			<% } %>
-	                    ], 
-	                    label: "# of RTs" }
-	            ];
-				
-				// helper for returning the weekends in a period
+					
+					var dailyData = 
+					[ 
+		                { 
+		           	    	data: 
+		           	    	[	               					   
+		               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+		               			],	               						
+		               			<% } %>
+		                     ], 
+		            	     label: "# of tweets" 
+		                },
+						{ 
+		                	data: 
+		                	[
+		               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
+		               			[
+		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+		               			],
+		               			<% } %>
+		                    ], 
+		                    label: "# of RTs" }
+		            ];
+					
+					var hourlyData = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ], 
+			            	     label: "# of tweets" 
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ], 
+			                    label: "# of RTs" }
+			            ];
+					
+					
+					var monthlyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ]
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var weeklyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ]
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var dailyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ] 
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var hourlyDataOverview = 
+							[ 
+				                { 
+				           	    	data: 
+				           	    	[	               					   
+				               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
+				               			[
+				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+				               			],	               						
+				               			<% } %>
+				                     ]
+				                },
+								{ 
+				                	data: 
+				                	[
+				               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
+				               			[
+				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+				               			],
+				               			<% } %>
+				                    ] }
+				            ];
+					
+					// helper for returning the weekends in a period
 
-				function weekendAreas(axes) {
+					function weekendAreas(axes) {
 
-					var markings = [],
-						d = new Date(axes.xaxis.min);
+						var markings = [],
+							d = new Date(axes.xaxis.min);
 
-					// go to the first Saturday
+						// go to the first Saturday
 
-					d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
-					d.setUTCSeconds(0);
-					d.setUTCMinutes(0);
-					d.setUTCHours(0);
+						d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
+						d.setUTCSeconds(0);
+						d.setUTCMinutes(0);
+						d.setUTCHours(0);
 
-					var i = d.getTime();
+						var i = d.getTime();
 
-					// when we don't set yaxis, the rectangle automatically
-					// extends to infinity upwards and downwards
+						// when we don't set yaxis, the rectangle automatically
+						// extends to infinity upwards and downwards
 
-					do {
-						markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
-						i += 7 * 24 * 60 * 60 * 1000;
-					} while (i < axes.xaxis.max);
+						do {
+							markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
+							i += 7 * 24 * 60 * 60 * 1000;
+						} while (i < axes.xaxis.max);
 
-					return markings;
-				}
-				
-				var rangeOptions = 
-				{
-					xaxis: 
+						return markings;
+					}
+					
+					var monthlyOptions = 
 					{
-						mode: "time",
-						minTickSize: [1, "day"],
-						min: <%= rangeTimelineChartObjs.get(0).getLowerBound() + (60 * 60 * 2000)  %>,
-						max: <%= rangeTimelineChartObjs.get(0).getUpperBound() + (60 * 60 * 2000)  %>
-					},
-					yaxis: 
-					{
-						tickDecimals: 0
-					},
-					series: 
-					{
-						lines:
+						xaxis: 
 						{
-							show: true,
-							fill: true
-						}
-					},
-					grid: {
-						markings: weekendAreas,
-						hoverable: true,
-						clickable: true
-					},
-					legend:
-					{
-						container: $("#main-graph"),
-						noColumns:2,
-						margin: '5px',
-					},
-					colors: ["#ff0000", "#0000ff"]
-				};
-				
-				var monthlyOptions = 
-				{
-					xaxis: 
-					{
-						mode: "time",
-						minTickSize: [1, "day"],
-						min: <%= monthlyTimelineChartObjs.get(0).getLowerBound() + (60 * 60 * 2000)  %>,
-						max: <%= monthlyTimelineChartObjs.get(0).getUpperBound() + (60 * 60 * 2000)  %>
-					},
-					yaxis: 
-					{
-						tickDecimals: 0
-					},
-					series: 
-					{
-						lines:
+							mode: "time",
+							minTickSize: [1, "month"],
+							timeformat: "%b %Y"
+						},
+						yaxis: 
 						{
-							show: true,
-							fill: true
-						}
-					},
-					grid: {
-						markings: weekendAreas,
-						hoverable: true,
-						clickable: true
-					},
-					legend:
-					{
-						container: $("#main-graph"),
-						noColumns:2,
-						margin: '5px',
-					},
-					colors: ["#ff0000", "#0000ff"]
-				};
-				
-				var weeklyOptions = 
-				{
-					xaxis: 
-					{
-						mode: "time",
-						minTickSize: [1, "day"],
-						min: <%= weeklyTimelineChartObjs.get(0).getLowerBound() + (60 * 60 * 2000)  %>,
-						max: <%= weeklyTimelineChartObjs.get(0).getUpperBound() + (60 * 60 * 2000)  %>
-					},
-					yaxis: 
-					{
-						tickDecimals: 0
-					},
-					series: 
-					{
-						lines:
+							tickDecimals: 0
+						},
+						series: 
 						{
-							show: true,
-							fill: true
-						}
-					},
-					grid: 
-					{
-						markings: weekendAreas,
-						hoverable: true,
-						clickable: true
-					},
-					legend:
-					{
-						container: $("#main-graph"),
-						noColumns:2,
-						margin: '5px',
-					},
-					colors: ["#ff0000", "#0000ff"]
-				};
-				
-				var dailyOptions = 
-				{
-					xaxis: 
-					{
-						mode: "time",
-						minTickSize: [1, "hour"],
-						min: <%= dailyTimelineChartObjs.get(0).getLowerBound() + (60 * 60 * 2000)  %>,
-						max: <%= dailyTimelineChartObjs.get(0).getUpperBound() + (60 * 60 * 2000)  %>
-					},
-					yaxis: 
-					{
-						tickDecimals: 0
-					},
-					series: 
-					{
-						lines:
+							lines:
+							{
+								show: true,
+								fill: true
+							}
+						},
+						grid: {
+							hoverable: true,
+							clickable: true
+						},
+						legend:
 						{
-							show: true,
-							fill: true
-						}
-					},
-					grid: 
+							container: $("#main-graph"),
+							noColumns:2,
+							margin: '5px',
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+					var weeklyOptions = 
 					{
-						hoverable: true,
-						clickable: true
-					},
-					legend:
+						xaxis: 
+						{
+							mode: "time",
+							ticks: ticks,
+							tickFormatter: function (val, axis) 
+							{
+								var month = new Array(12);
+								month[0] = "Jan";
+								month[1] = "Feb";
+								month[2] = "Mar";
+								month[3] = "Apr";
+								month[4] = "May";
+								month[5] = "Jun";
+								month[6] = "Jul";
+								month[7] = "Aug";
+								month[8] = "Sep";
+								month[9] = "Oct";
+								month[10] = "Nov";
+								month[11] = "Dec";
+								
+							    var firstDayWeek = new Date(val);
+							    firstDayWeek.setUTCSeconds(0);
+							    firstDayWeek.setUTCMinutes(0);
+							    firstDayWeek.setUTCHours(0);
+							    
+							    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
+							    
+							    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
+							},
+						},
+						yaxis: 
+						{
+							tickDecimals: 0
+						},
+						series: 
+						{
+							lines:
+							{
+								show: true,
+								fill: true
+							}
+						},
+						grid: 
+						{
+							hoverable: true,
+							clickable: true
+						},
+						legend:
+						{
+							container: $("#main-graph"),
+							noColumns:2,
+							margin: '5px',
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+					var dailyOptions = 
 					{
-						container: $("#main-graph"),
-						noColumns:2,
-						margin: '5px',
-					},
-					colors: ["#ff0000", "#0000ff"]
-				};
+						xaxis: 
+						{
+							mode: "time",
+							minTickSize: [1, "day"],
+							timeformat: "%d %b"
+						},
+						yaxis: 
+						{
+							tickDecimals: 0
+						},
+						series: 
+						{
+							lines:
+							{
+								show: true,
+								fill: true
+							}
+						},
+						grid: 
+						{
+							markings: weekendAreas,
+							hoverable: true,
+							clickable: true
+						},
+						legend:
+						{
+							container: $("#main-graph"),
+							noColumns:2,
+							margin: '5px',
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+					var hourlyOptions = 
+					{
+						xaxis: 
+						{
+							mode: "time",
+							minTickSize: [1, "hour"],
+							timeformat: "%d %b  %H:%M"
+						},
+						yaxis: 
+						{
+							tickDecimals: 0
+						},
+						series: 
+						{
+							lines:
+							{
+								show: true,
+								fill: true
+							}
+						},
+						grid: 
+						{
+							markings: weekendAreas,
+							hoverable: true,
+							clickable: true
+						},
+						legend:
+						{
+							container: $("#main-graph"),
+							noColumns:2,
+							margin: '5px',
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+					overviewOptionsMonth =
+						{
+							series: {
+								lines: {
+									show: true,
+									lineWidth: 1
+								},							
+								shadowSize: 0
+							},
+							xaxis: {
+								mode: "time",
+								minTickSize: [1, "month"],
+								timeformat: "%b %Y"
+							},
+							yaxis: {
+								ticks: [],
+								min: 0,
+								autoscaleMargin: 0.1
+							},
+							selection: {
+								mode: "x"
+							},
+							colors: ["#ff0000", "#0000ff"]
+						};
+					
+					overviewOptionsWeek =
+					{
+						series: {
+							lines: {
+								show: true,
+								lineWidth: 1
+							},							
+							shadowSize: 0
+						},
+						xaxis: {
+							mode: "time",
+							ticks: ticks,
+							tickFormatter: function (val, axis) 
+							{
+								var month = new Array(12);
+								month[0] = "Jan";
+								month[1] = "Feb";
+								month[2] = "Mar";
+								month[3] = "Apr";
+								month[4] = "May";
+								month[5] = "Jun";
+								month[6] = "Jul";
+								month[7] = "Aug";
+								month[8] = "Sep";
+								month[9] = "Oct";
+								month[10] = "Nov";
+								month[11] = "Dec";
+								
+							    var firstDayWeek = new Date(val);
+							    firstDayWeek.setUTCSeconds(0);
+							    firstDayWeek.setUTCMinutes(0);
+							    firstDayWeek.setUTCHours(0);
+							    
+							    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
+							    
+							    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
+							},							
+						},
+						yaxis: {
+							ticks: [],
+							min: 0,
+							autoscaleMargin: 0.1
+						},
+						selection: {
+							mode: "x"
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+				
+					overviewOptionsDay =
+					{
+						series: {
+							lines: {
+								show: true,
+								lineWidth: 1
+							},							
+							shadowSize: 0
+						},
+						xaxis: {
+							mode: "time",
+							minTickSize: [1, "day"],
+							timeformat: "%d %b"
+						},
+						yaxis: {
+							ticks: [],
+							min: 0,
+							autoscaleMargin: 0.1
+						},
+						selection: {
+							mode: "x"
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+					overviewOptionsHour =
+					{
+						series: {
+							lines: {
+								show: true,
+								lineWidth: 1
+							},							
+							shadowSize: 0
+						},
+						xaxis: {
+							mode: "time",
+							minTickSize: [1, "hour"],
+							timeformat: "%d %b",
+						},
+						yaxis: {
+							ticks: [],
+							min: 0,
+							autoscaleMargin: 0.1
+						},
+						selection: {
+							mode: "x"
+						},
+						colors: ["#ff0000", "#0000ff"]
+					};
+					
+				
+					var monthlyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ]
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var weeklyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ]
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var dailyDataOverview = 
+						[ 
+			                { 
+			           	    	data: 
+			           	    	[	               					   
+			               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+			               			],	               						
+			               			<% } %>
+			                     ] 
+			                },
+							{ 
+			                	data: 
+			                	[
+			               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
+			               			[
+			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+			               			],
+			               			<% } %>
+			                    ] }
+			            ];
+						
+						var hourlyDataOverview = 
+							[ 
+				                { 
+				           	    	data: 
+				           	    	[	               					   
+				               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
+				               			[
+				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+				               			],	               						
+				               			<% } %>
+				                     ]
+				                },
+								{ 
+				                	data: 
+				                	[
+				               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
+				               			[
+				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+				               			],
+				               			<% } %>
+				                    ] }
+				            ];
 				
 				
 				
 
 // 				var plot = $.plot("#placeholder", monthlydata, monthlyOptions);
 
-				var plot = $.plot("#placeholder", rangedata, rangeOptions);
+				var plot = $.plot("#placeholder", weeklyData, weeklyOptions);
 				
-				var overview = $.plot("#overview", rangedataOverview, {
-					series: {
-						lines: {
-							show: true,
-							lineWidth: 1
-						},							
-						shadowSize: 0
-					},
-					xaxis: {
-						mode: "time",
-						minTickSize: [1, "day"],
-					},
-					yaxis: {
-						ticks: [],
-						min: 0,
-						autoscaleMargin: 0.1
-					},
-					selection: {
-						mode: "x"
-					},
-					colors: ["#ff0000", "#0000ff"]
-				});
+				var overview = $.plot("#overview", weeklyDataOverview, overviewOptionsWeek);
 				
 				$("#placeholder").bind("plotselected", function (event, ranges) {
 
@@ -636,7 +971,7 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 				{
 					if (item) 
 					{
-						var someData = monthlydata;
+						var someData = weeklyData;
 						var content = item.series.label + " = " + item.datapoint[1];
 						            
 						for (var i = 0; i < someData.length; i++)
@@ -661,29 +996,164 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 			        {
 			            $("#tooltip").css('display','none');       
 			        }
-				});		
-					
-					
-				$("#daily").click(function () 
-				{					
-					plot.getAxes().xaxis.options.minTickSize = [1, "hour"];
-					plot.setupGrid();
-					plot.draw();					 
-							
 				});	
+				
+				
+				$("#hours").click(function () 
+						{
+							plot = $.plot("#placeholder", hourlyData, hourlyOptions);
+							
+							 overview = $.plot("#overview", hourlyDataOverview, overviewOptionsHour);
+							
+							$("#placeholder").bind("plothover", function (event, pos, item) 
+							{
+							 	if (item) 
+							 	{
+							 		var someData = hourlyData;
+						            var content = item.series.label + " = " + item.datapoint[1];
+						            
+						            for (var i = 0; i < someData.length; i++)
+						            {
+						                if (someData[i].label == item.series.label)
+						                {					                	
+						                    continue;   
+						                }
+						                
+						                for (var j=0; j < someData[i].data.length; j++)
+						                {
+						                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
+						                  	{
+						                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+						                    }
+						                }                
+						            }					            
+						            
+						            showTooltip(item.pageX, item.pageY, content);
+						        }
+						        else 
+						        {
+						            $("#tooltip").css('display','none');       
+						        }
+							});					
+						});
 					
-					$("#weekly").click(function () 
-					{						
-						plot.getAxes().xaxis.options.minTickSize = [1, "day"];
-						plot.setupGrid();
-						plot.draw();								
+					
+				$("#days").click(function () 
+				{					
+					
+					plot = $.plot("#placeholder", dailyData, dailyOptions);
+					
+					overview = $.plot("#overview", dailyDataOverview, overviewOptionsDay);
+					
+					 $("#placeholder").bind("plothover", function (event, pos, item) 
+								{
+								 	if (item) 
+								 	{
+								 		var someData = dailyData;
+							            var content = item.series.label + " = " + item.datapoint[1];
+							            
+							            for (var i = 0; i < someData.length; i++)
+							            {
+							                if (someData[i].label == item.series.label)
+							                {					                	
+							                    continue;   
+							                }
+							                
+							                for (var j=0; j < someData[i].data.length; j++)
+							                {
+							                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
+							                  	{
+							                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+							                    }
+							                }                
+							            }					            
+							            
+							            showTooltip(item.pageX, item.pageY, content);
+							        }
+							        else 
+							        {
+							            $("#tooltip").css('display','none');       
+							        }
+						});	
+							
 					});	
 					
-					$("#monthly").click(function () 
+					$("#weeks").click(function () 
 					{
-						plot.getAxes().xaxis.options.minTickSize = [1, "month"];
-						plot.setupGrid();
-						plot.draw();		
+						
+						plot = $.plot("#placeholder", weeklyData, weeklyOptions);
+						
+						overview = $.plot("#overview", weeklyDataOverview, overviewOptionsWeek);
+						
+						 $("#placeholder").bind("plothover", function (event, pos, item) 
+									{
+									 	if (item) 
+									 	{
+									 		var someData = weeklyData;
+								            var content = item.series.label + " = " + item.datapoint[1];
+								            
+								            for (var i = 0; i < someData.length; i++)
+								            {
+								                if (someData[i].label == item.series.label)
+								                {					                	
+								                    continue;   
+								                }
+								                
+								                for (var j=0; j < someData[i].data.length; j++)
+								                {
+								                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
+								                  	{
+								                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+								                    }
+								                }                
+								            }					            
+								            
+								            showTooltip(item.pageX, item.pageY, content);
+								        }
+								        else 
+								        {
+								            $("#tooltip").css('display','none');       
+								        }
+							});	
+								
+						});	
+					
+					$("#months").click(function () 
+					{
+						plot = $.plot("#placeholder", monthlyData, monthlyOptions);
+						
+						overview = $.plot("#overview", monthlyDataOverview, overviewOptionsMonth);
+						
+						$("#placeholder").bind("plothover", function (event, pos, item) 
+						{
+						 	if (item) 
+						 	{
+						 		var someData = monthlyData;
+					            var content = item.series.label + " = " + item.datapoint[1];
+					            
+					            for (var i = 0; i < someData.length; i++)
+					            {
+					                if (someData[i].label == item.series.label)
+					                {					                	
+					                    continue;   
+					                }
+					                
+					                for (var j=0; j < someData[i].data.length; j++)
+					                {
+					                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
+					                  	{
+					                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+					                    }
+					                }                
+					            }					            
+					            
+					            showTooltip(item.pageX, item.pageY, content);
+					        }
+					        else 
+					        {
+					            $("#tooltip").css('display','none');       
+					        }
+						});					
 					});
 					
 				
@@ -708,16 +1178,15 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 		
 			</script>
 			
-			
-
-		<!-- 
-		<div id="pie-tooltip" class="hidden">
-        <p><strong>Important Label Heading</strong></p>
-        <p><span id="value">100</span>%</p>
-		</div> -->
+		
 
 		 <script>
-			 <% TwitterPiePojo pieChartObj = getTweetsPieChart(request.getParameter("searchID")); %>
+			 <% 
+			 
+			 	TwitterPiePojo pieChartObj = getTweetsPieChart(request.getParameter("searchID")); 
+			 	List<TwitterPieSourcePojo> sources = getTweetsPieChartDevice(request.getParameter("searchID"));
+			 
+			 %>
 		 
 			var pie = new d3pie("pieChart", {
 				"header": {
@@ -739,7 +1208,7 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 					"location": "bottom-left"
 				},
 				"size": {
-					"canvasWidth": 300,
+					"canvasWidth": 350,
 					"canvasHeight": 300
 				},
 				"data": {
@@ -748,17 +1217,14 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 					{
 						"label": 'Tweets',
 						"value": <%= pieChartObj.getTweets() %>,
-						"color": "#29c03c"
 					},
 					{
 						"label": "RTs",
 						"value": <%= pieChartObj.getRTs() %>,
-						"color": "#ff1000"
 					},
 					{
 						"label": "Replies",
 						"value": <%= pieChartObj.getReplies() %>,
-						"color": "#633be2"
 					}
 					]
 				},
@@ -779,6 +1245,87 @@ public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
 					},
 					"lines": {
 						"enabled": false
+					}
+				},
+				"effects": {
+					"pullOutSegmentOnClick": {
+						"effect": "linear",
+						"speed": 400,
+						"size": 8
+					}
+				},
+				"misc": {
+					"gradient": {
+						"enabled": true,
+						"percentage": 100
+					}
+				}
+			});
+			
+			
+			var pieDevice = new d3pie("pieChartDevice", {
+				"header": {
+					"title": {
+						"fontSize": 24,
+						"font": "open sans"
+					},
+					"subtitle": {
+						"color": "#999999",
+						"fontSize": 12,
+						"font": "open sans"
+					},
+					"titleSubtitlePadding": 9
+				},
+				"footer": {
+					"color": "#999999",
+					"fontSize": 10,
+					"font": "open sans",
+					"location": "bottom-left"
+				},
+				"size": {
+					"canvasWidth": 350,
+					"canvasHeight": 300
+				},
+				"data": {
+					"sortOrder": "value-desc",
+					"content": [
+					            <% 
+					            	for(TwitterPieSourcePojo sourceObj : sources)
+					            	{
+					            							            	
+					            %>
+							{
+								"label": '<%= sourceObj.getSource()%> ',
+								"value": <%= sourceObj.getValue() %>,
+		
+							},
+							
+							<%
+					            	}
+							%>
+
+					]
+				},
+				"labels": {
+					"outer": {
+						"pieDistance": 8
+					},
+					"inner": {
+						"hideWhenLessThanPercentage": 4
+					},
+					"mainLabel": {
+						"fontSize": 12
+					},
+					"percentage": {
+						"color": "#ffffff",
+						"decimalPlaces": 0
+					},
+					"value": {
+						"color": "#adadad",
+						"fontSize": 11
+					},
+					"lines": {
+						"enabled": true
 					}
 				},
 				"effects": {

@@ -25,6 +25,12 @@ package it.eng.spagobi.twitter.analysis.dataprocessors;
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterPiePojo;
+import it.eng.spagobi.twitter.analysis.pojos.TwitterPieSourcePojo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -82,4 +88,60 @@ public class TwitterPieDataProcessor {
 		return statsObj;
 	}
 
+	public List<TwitterPieSourcePojo> getTweetsPieSourceChart(String searchIDStr) {
+
+		long searchID = Long.parseLong(searchIDStr);
+
+		Map<String, Integer> sourceMap = new HashMap<String, Integer>();
+		List<TwitterPieSourcePojo> sources = new ArrayList<TwitterPieSourcePojo>();
+
+		String sqlQuery = "SELECT source_client from twitter_data where search_id = '" + searchID + "'";
+
+		try {
+
+			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+
+			if (rs != null) {
+
+				while (rs.next()) {
+
+					String sourceClient = rs.getString("source_client");
+
+					String formattedSource = tweetSourceFormatter(sourceClient);
+
+					if (sourceMap.containsKey(formattedSource)) {
+						int value = sourceMap.get(formattedSource);
+						value++;
+						sourceMap.put(formattedSource, value);
+					} else {
+						sourceMap.put(formattedSource, 1);
+					}
+				}
+
+				for (Map.Entry<String, Integer> entry : sourceMap.entrySet()) {
+
+					String source = entry.getKey();
+					int value = entry.getValue();
+
+					TwitterPieSourcePojo obj = new TwitterPieSourcePojo(source, value);
+					sources.add(obj);
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println("**** connection failed: " + e);
+		}
+
+		return sources;
+	}
+
+	private String tweetSourceFormatter(String source) {
+
+		String formattedHTMLSource = source.replaceAll("<.*?>", "");
+		String formattedTextSourceFirst = formattedHTMLSource.replaceAll("Twitter ", "");
+		String formattedTextSourceSecond = formattedTextSourceFirst.replaceAll("for ", "");
+
+		return formattedTextSourceSecond;
+
+	}
 }

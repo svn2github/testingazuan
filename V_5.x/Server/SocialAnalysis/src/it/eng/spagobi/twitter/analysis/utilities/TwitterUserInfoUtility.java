@@ -129,7 +129,6 @@ public class TwitterUserInfoUtility {
 					TwitterAccountToMonitorPojo accountPojo = new TwitterAccountToMonitorPojo(searchID, account, followersCount, timestamp);
 					accountsToMonitor.add(accountPojo);
 
-					System.out.println(accountPojo);
 				}
 			}
 

@@ -49,7 +49,7 @@ public class TwitterHistoricalSearchAPI {
 		String languageCode = null;
 		String dbType = "MySQL";
 
-		String typeFrequency = "None";
+		String repeatType = "None";
 
 		// reading the user input
 		String searchType = req.getParameter("searchType");
@@ -90,63 +90,64 @@ public class TwitterHistoricalSearchAPI {
 		// set search label
 		twitterSearch.setLabel(label);
 
-		// String typeRepeatEvery = req.getParameter("typeRepeatEvery");
+		String repeatTypeField = req.getParameter("repeatType");
 		String numberRepeat = req.getParameter("numberRepeat");
 
-		if (req.getParameter("isRepeating") != null && numberRepeat != null && numberRepeat.equals("")) {
+		if (req.getParameter("isRepeating") != null && numberRepeat != null && !numberRepeat.equals("") && repeatTypeField != null && !repeatTypeField.equals("")) {
 
 			logger.debug("Method search(): Search with scheduler");
 
 			Calendar startingDate = GregorianCalendar.getInstance();
 
+			startingDate.set(Calendar.MINUTE, 0);
+			startingDate.set(Calendar.SECOND, 0);
+			startingDate.set(Calendar.MILLISECOND, 0);
+
 			int repeatFrequency = Integer.parseInt(numberRepeat);
+
+			repeatType = repeatTypeField;
 
 			if (repeatFrequency > 0) {
 
-				// TODO: Aggiungere altri tipi di frequency
-				typeFrequency = "Day";
+				if (repeatType.equals("Day")) {
+					startingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
 
-				startingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+				} else if (repeatType.equals("Hour")) {
+					startingDate.add(Calendar.HOUR_OF_DAY, repeatFrequency);
+				}
 
-				twitterScheduler = new TwitterSearchSchedulerPojo(startingDate, repeatFrequency, typeFrequency);
+				twitterScheduler = new TwitterSearchSchedulerPojo(startingDate, repeatFrequency, repeatType);
 			}
 
 		}
 
 		// set type frequency
-		twitterSearch.setFrequency(typeFrequency);
+		twitterSearch.setFrequency(repeatType);
 
 		// set search scheduler
 		twitterSearch.setTwitterScheduler(twitterScheduler);
 
-		// parameters for monitoring scheduler
-
-		String numberUpTo = req.getParameter("numberUpTo");
-		String typeUpTo = req.getParameter("typeUpTo");
-
+		// now we take the decision abount the monitor scheduler. Check if there
+		// resources to monitor..
 		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
-			if (numberUpTo != null && !numberUpTo.equals("") && typeUpTo != null && !typeUpTo.equals("")) {
 
-				Calendar endingDate = GregorianCalendar.getInstance();
-				int repeatFrequency = Integer.parseInt(numberUpTo);
+			String numberUpTo = req.getParameter("numberUpTo");
+			String typeUpTo = req.getParameter("typeUpTo");
 
-				if (typeUpTo.equalsIgnoreCase("Day")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
-				} else if (typeUpTo.equalsIgnoreCase("Week")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 7);
-				} else if (typeUpTo.equalsIgnoreCase("Month")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
-				}
+			String monitorFrequencyValue = req.getParameter("monitorFrequencyValue");
+			String monitorFrequencyType = req.getParameter("monitorFrequencyType");
 
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
-			} else {
-				// TODO: default upto 1 month
-				Calendar endingDate = GregorianCalendar.getInstance();
-				int repeatFrequency = Integer.parseInt(numberUpTo);
+			if (monitorFrequencyValidation(monitorFrequencyValue, monitorFrequencyType) && monitorUpToValidation(numberUpTo, typeUpTo)) {
 
-				endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
+				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo();
 
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
+				twitterMonitorScheduler.setRepeatFrequency(Integer.parseInt(monitorFrequencyValue));
+				twitterMonitorScheduler.setRepeatType(monitorFrequencyType);
+
+				twitterMonitorScheduler.setUpToValue(Integer.parseInt(numberUpTo));
+				twitterMonitorScheduler.setUpToType(typeUpTo);
+
+				twitterMonitorScheduler.setActive(true);
 
 			}
 
@@ -156,7 +157,6 @@ public class TwitterHistoricalSearchAPI {
 		twitterSearch.setTwitterMonitorScheduler(twitterMonitorScheduler);
 
 		String numberStartingFrom = req.getParameter("numberStartingFrom");
-		String typeStartingFrom = req.getParameter("typeStartingFrom");
 
 		if (req.getParameter("isStartingFrom") != null && numberStartingFrom != null && !numberStartingFrom.equals("")) {
 
@@ -313,4 +313,17 @@ public class TwitterHistoricalSearchAPI {
 		return resObj.toString();
 	}
 
+	private boolean monitorFrequencyValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
+	}
+
+	private boolean monitorUpToValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
+	}
 }

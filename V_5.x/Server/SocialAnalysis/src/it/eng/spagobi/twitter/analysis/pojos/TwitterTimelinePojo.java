@@ -25,7 +25,7 @@ package it.eng.spagobi.twitter.analysis.pojos;
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
  *         (giorgio.federici@eng.it)
- * 
+ *
  */
 public class TwitterTimelinePojo {
 

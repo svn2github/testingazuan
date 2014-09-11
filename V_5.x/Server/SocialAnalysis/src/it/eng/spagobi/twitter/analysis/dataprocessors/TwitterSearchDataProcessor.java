@@ -65,7 +65,7 @@ public class TwitterSearchDataProcessor {
 					List<String> linksList = new ArrayList<String>();
 					String links = "";
 
-					CachedRowSet linksRs = twitterCache.runQuery("SELECT link from twitter_links_to_monitor where search_id = " + searchID);
+					CachedRowSet linksRs = twitterCache.runQuery("SELECT link from twitter_links_to_monitor where search_id = " + searchID + " GROUP BY link");
 					while (linksRs.next()) {
 						linksList.add(linksRs.getString("link"));
 					}
@@ -81,7 +81,8 @@ public class TwitterSearchDataProcessor {
 					List<String> accountsList = new ArrayList<String>();
 					String accounts = "";
 
-					CachedRowSet accountsRs = twitterCache.runQuery("SELECT account_name from twitter_accounts_to_monitor where search_id = " + searchID);
+					CachedRowSet accountsRs = twitterCache
+							.runQuery("SELECT account_name from twitter_accounts_to_monitor where search_id = " + searchID + " GROUP BY account_name");
 					while (accountsRs.next()) {
 						accountsList.add(accountsRs.getString("account_name"));
 					}

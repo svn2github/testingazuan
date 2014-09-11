@@ -40,7 +40,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	constructor : function(config) {
 		this.initConfig(config||{});
 
-		this.startingFromStore = Ext.create('Sbi.social.analysis.search.store.StartingFromStore',{});
+		this.repeatTypeStore = Ext.create('Sbi.social.analysis.search.store.RepeatTypeStore',{});
 		this.upToStore = Ext.create('Sbi.social.analysis.search.store.UpToStore',{});
 		
 		this.addEvents(
@@ -157,7 +157,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 						        name      : 'numberStartingFrom',
 						        id: 'numberStartingFromID',
 						        padding: '0 0 0 20',
-						        minValue: 0,
+						        minValue: 1,
 						        value: 1,
 						        maxValue: 6,
 						        disabled: true
@@ -188,16 +188,17 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 					            change: function (field, newValue, oldValue, eOpts ) {
 					            	var form = field.up('form');
 					                var numberField = form.down('#numberRepeatEveryID');
-					                var labelAgoRepeatEvery = form.down('#labelAgoRepeatEveryID');
+					                var repeatEvery = form.down('#repeatTypeCombo');
 					        
 					                if(newValue) {
 					                	numberField.enable();
-					                	labelAgoRepeatEvery.setVisible(true);
+					                	repeatEvery.enable();
 					                }
 					                else {
 					                	numberField.reset();
 					                	numberField.disable();
-					                	labelAgoRepeatEvery.setVisible(false);
+					                	repeatEvery.reset();
+					                	repeatEvery.disable();
 					
 					                }
 					            }
@@ -210,16 +211,22 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 					        padding: '0 0 0 19',
 					        id : 'numberRepeatEveryID',
 					        value: 1,
-					        minValue: 0,
+					        minValue: 1,
 					        disabled: true
-					   },                   
-					   {
-				       		xtype: 'displayfield',
-				       		value: 'day',
-				       		margin: '0 0 0 10',
-				       		hidden: true,
-				       		id: 'labelAgoRepeatEveryID'
-					   }
+					   },
+		        	   {
+		            		xtype: 'combo',
+		            		editable: false,
+		            		store: this.repeatTypeStore, 
+		            		queryMode: 'local', 
+		            		displayField: 'type',  
+		            		valueField: 'type',
+		            		padding: '0 0 0 10',
+		            		name: 'repeatType',
+		            		id: 'repeatTypeCombo',
+		            		disabled: true,
+		            		margin: '0 0 0 10'
+		        	   }
 					   ]
 					}
 	                	 	
@@ -325,13 +332,49 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
             		displayField: 'type',  
             		valueField: 'type',
             		padding: '0 0 0 10',
-            		name: 'typeUpTo'
+            		name: 'typeUpTo',
+            		width: 120,
+            		listeners: {
+		                render: function (field) {
+		                    field.setValue(field.store.first().data.type);
+		                }
+		             }
         	   },
                {
         		   xtype: 'displayfield',
         		   value: 'later',
         		   margin: '0 0 0 10'
-               }]
+               },
+	       	   {
+					xtype: 'numberfield',
+					fieldLabel: 'Frequency',
+			    	labelWidth: 50,
+			        name: 'monitorFrequencyValue',
+			        padding: '0 0 0 19',
+			        value: 1,
+			        minValue: 1,
+			        width: 110,
+			        labelPad: 20
+			   },
+		   	   {
+		       		xtype: 'combo',
+		       		editable: false,
+		       		store: this.repeatTypeStore, 
+		       		queryMode: 'local', 
+		       		displayField: 'type',  
+		       		valueField: 'type',
+		       		padding: '0 0 0 10',
+		       		name: 'monitorFrequencyType',
+		       		margin: '0 0 0 10',
+		       		width: 120,
+		       		id: 'monitorFrequencyTypeID',
+		       		listeners: {
+		                render: function (field) {
+		                    field.setValue(field.store.first().data.type);
+		                }
+		             }
+		   	   }
+               ]
 	       },
            {
         		xtype: 'button',
@@ -350,11 +393,13 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
                     		success: function(form, action) 
                     		{
                     			Ext.Msg.alert('Success', action.result.msg);
-                    			searchForm.fireEvent('searchSubmit');                   			
+                    			searchForm.fireEvent('searchSubmit');
+                    			form.reset();
                     	    },
                     	    failure: function(form, action) 
                     	    {
                     	    	Ext.Msg.alert('Failure', action.result.msg);
+                    	    	form.reset();
                     	    }
                     	
                     	});
@@ -377,7 +422,6 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
                     	    
                     	});
                     }
-                    
         		}
            },
            {

@@ -149,7 +149,7 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	public abstract void updateStartingDateSearchScheduler(TwitterSearchSchedulerPojo twitterSearchSchedulerPojo);
 
 	@Override
-	public abstract void stopSearchScheduler(TwitterSearchPojo twitterSearch);
+	public abstract TwitterMonitorSchedulerPojo stopSearchScheduler(TwitterSearchPojo twitterSearch);
 
 	@Override
 	public abstract void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);

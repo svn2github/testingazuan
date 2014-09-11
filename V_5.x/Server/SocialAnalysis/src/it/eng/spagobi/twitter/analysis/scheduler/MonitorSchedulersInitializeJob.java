@@ -4,6 +4,9 @@ import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -39,35 +42,60 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 			if (rs != null) {
 
+				SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+				Scheduler sched = schedFact.getScheduler();
+
+				sched.start();
+
 				while (rs.next()) {
 
-					String searchID = rs.getString("search_id");
-					java.sql.Date endingDate = rs.getDate("ending_date");
-					int repeatFrequency = rs.getInt("repeat_frequency");
-					String repeatType = rs.getString("repeat_type");
+					boolean active = rs.getBoolean("active");
 
-					SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+					if (active) {
 
-					Scheduler sched = schedFact.getScheduler();
+						String searchID = rs.getString("search_id");
 
-					sched.start();
+						java.sql.Timestamp endingDate = rs.getTimestamp("ending_date");
+						Calendar endingCalendar = GregorianCalendar.getInstance();
+						endingCalendar.setTime(endingDate);
+						java.util.Date endingDateJob = new java.util.Date(endingCalendar.getTimeInMillis());
 
-					JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitorJob_" + searchID, "groupMonitor")
-							.usingJobData("searchID", searchID).build();
+						int repeatFrequency = rs.getInt("repeat_frequency");
+						String repeatType = rs.getString("repeat_type");
 
-					Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitorTgr_" + searchID, "groupMonitor").startNow().endAt(endingDate)
-							.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+						JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitorJob_" + searchID, "groupMonitor")
+								.usingJobData("searchID", searchID).build();
 
-					// Trigger trigger =
-					// TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" +
-					// searchID, "groupHSearch").startNow()
-					// .withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
-					// DateBuilder.IntervalUnit.SECOND)).build();
+						Calendar startingCalendar = GregorianCalendar.getInstance();
 
-					// Tell quartz to schedule the job using our trigger
-					sched.scheduleJob(hSearchJob, trigger);
+						if (repeatType.equalsIgnoreCase("Day")) {
 
-					logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+							startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+
+							Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+
+							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+									.endAt(endingDateJob)
+									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+
+							sched.scheduleJob(hSearchJob, trigger);
+
+						} else if (repeatType.equalsIgnoreCase("Hour")) {
+
+							startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
+
+							Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+
+							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+									.endAt(endingDateJob)
+									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR)).build();
+
+							sched.scheduleJob(hSearchJob, trigger);
+						}
+
+						logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+					}
 				}
 			}
 

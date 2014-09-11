@@ -23,7 +23,7 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 
 <script type="text/javascript" src='js/spagobi/social/analysis/search/store/StreamingSearchStore.js'></script>
 <script type="text/javascript" src='js/spagobi/social/analysis/search/store/HistoricalSearchStore.js'></script>
-<script type="text/javascript" src='js/spagobi/social/analysis/search/store/StartingFromStore.js'></script>
+<script type="text/javascript" src='js/spagobi/social/analysis/search/store/RepeatTypeStore.js'></script>
 <script type="text/javascript" src='js/spagobi/social/analysis/search/store/UpToStore.js'></script>
 
 

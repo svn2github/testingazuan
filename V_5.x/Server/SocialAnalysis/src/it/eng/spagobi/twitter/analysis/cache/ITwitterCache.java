@@ -142,7 +142,7 @@ public interface ITwitterCache {
 
 	public void updateStartingDateSearchScheduler(TwitterSearchSchedulerPojo twitterSearchSchedulerPojo);
 
-	public void stopSearchScheduler(TwitterSearchPojo twitterSearch);
+	public TwitterMonitorSchedulerPojo stopSearchScheduler(TwitterSearchPojo twitterSearch);
 
 	public void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
 

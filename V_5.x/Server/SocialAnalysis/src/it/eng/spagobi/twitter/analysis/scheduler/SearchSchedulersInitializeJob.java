@@ -4,6 +4,8 @@ import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -39,35 +41,50 @@ public class SearchSchedulersInitializeJob implements Job {
 
 			if (rs != null) {
 
+				SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+				Scheduler sched = schedFact.getScheduler();
+
+				sched.start();
+
 				while (rs.next()) {
 
-					String searchID = rs.getString("search_id");
-					java.sql.Date startingDate = rs.getDate("starting_date");
-					int repeatFrequency = rs.getInt("repeat_frequency");
-					String repeatType = rs.getString("repeat_type");
+					boolean active = rs.getBoolean("active");
 
-					SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+					if (active) {
+						String searchID = rs.getString("search_id");
+						java.sql.Timestamp startingDate = rs.getTimestamp("starting_date");
+						int frequency = rs.getInt("repeat_frequency");
+						String type = rs.getString("repeat_type");
 
-					Scheduler sched = schedFact.getScheduler();
+						JobDetail hSearchJob = JobBuilder.newJob(HistoricalSearchJob.class).withIdentity("HSearchJob_" + searchID, "groupHSearch")
+								.usingJobData("searchID", searchID).build();
 
-					sched.start();
+						Calendar startingCalendar = GregorianCalendar.getInstance();
+						startingCalendar.setTime(startingDate);
 
-					JobDetail hSearchJob = JobBuilder.newJob(HistoricalSearchJob.class).withIdentity("HSearchJob_" + searchID, "groupHSearch").usingJobData("searchID", searchID)
-							.build();
+						java.util.Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-					Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDate)
-							.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+						if (type.equalsIgnoreCase("day")) {
 
-					// Trigger trigger =
-					// TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" +
-					// searchID, "groupHSearch").startNow()
-					// .withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
-					// DateBuilder.IntervalUnit.SECOND)).build();
+							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDateJob)
+									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.DAY)).build();
 
-					// Tell quartz to schedule the job using our trigger
-					sched.scheduleJob(hSearchJob, trigger);
+							// Tell quartz to schedule the job using our trigger
+							sched.scheduleJob(hSearchJob, trigger);
 
-					logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+						} else if (type.equalsIgnoreCase("hour")) {
+
+							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDateJob)
+									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.HOUR)).build();
+
+							// Tell quartz to schedule the job using our trigger
+							sched.scheduleJob(hSearchJob, trigger);
+
+						}
+
+						logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+					}
 				}
 			}
 

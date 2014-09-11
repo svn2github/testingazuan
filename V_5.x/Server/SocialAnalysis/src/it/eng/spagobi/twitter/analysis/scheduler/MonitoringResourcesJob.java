@@ -37,7 +37,6 @@ public class MonitoringResourcesJob implements Job {
 		String sqlAccountsQuery = "SELECT account_name from twitter_accounts_to_monitor where search_id = '" + searchID + "'";
 
 		String links = "";
-		String accounts = "";
 
 		try {
 			CachedRowSet rs = twitterCache.runQuery(sqlLinksQuery);

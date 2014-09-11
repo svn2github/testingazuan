@@ -98,33 +98,32 @@ public class TwitterStreamingSearchAPI {
 
 		// parameters for monitoring scheduler
 
+		// parameters for monitoring scheduler
 		String numberUpTo = req.getParameter("numberUpTo");
 		String typeUpTo = req.getParameter("typeUpTo");
 
+		// now we take the decision abount the monitor scheduler. Check if there
+		// resources to monitor..
 		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
+
+			// there are resources to monitor. Check if there are parameters for
+			// the end of the monitor scheduler..
 			if (numberUpTo != null && !numberUpTo.equals("") && typeUpTo != null && !typeUpTo.equals("")) {
 
+				// there are info for calculating the ending date
+
+				String monitorUpToType = typeUpTo;
+				int monitorUpToValue = Integer.parseInt(numberUpTo);
+
+				// The ending date will be
+				// recalculated at the creation of the monitor trigger
 				Calendar endingDate = GregorianCalendar.getInstance();
-				int repeatFrequency = Integer.parseInt(numberUpTo);
+				// none search scheduler, default information for monitor
+				// scheduler. Active from now.
+				int monitorRepeatFrequency = 1;
+				String monitorRepeatType = "Day";
 
-				if (typeUpTo.equalsIgnoreCase("Day")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, repeatFrequency);
-				} else if (typeUpTo.equalsIgnoreCase("Week")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 7);
-				} else if (typeUpTo.equalsIgnoreCase("Month")) {
-					endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
-				}
-
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
-			} else {
-				// TODO: default upto 1 month
-				Calendar endingDate = GregorianCalendar.getInstance();
-				int repeatFrequency = Integer.parseInt(numberUpTo);
-
-				endingDate.add(Calendar.DAY_OF_MONTH, (repeatFrequency) * 30);
-
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, repeatFrequency, typeUpTo);
-
+				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, monitorRepeatFrequency, monitorRepeatType, true, monitorUpToValue, monitorUpToType);
 			}
 
 		}

@@ -12,13 +12,14 @@
  */
  
   
-Ext.define('Sbi.social.analysis.search.store.StartingFromStore', {
+Ext.define('Sbi.social.analysis.search.store.RepeatTypeStore', {
 	
 	extend: 'Ext.data.Store',
 	fields: ['type'],
     data : [
-//        {"type":"Hour"},
-        {"type":"Day"}
+        {"type":"Day"},
+        {"type":"Hour"}
+
     ]           
 	
 });

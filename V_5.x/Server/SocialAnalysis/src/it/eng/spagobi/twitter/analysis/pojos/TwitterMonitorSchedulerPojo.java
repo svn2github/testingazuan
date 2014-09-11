@@ -35,15 +35,21 @@ public class TwitterMonitorSchedulerPojo {
 	private int repeatFrequency;
 	private String repeatType;
 	private int id;
+	private boolean active = false;
+	private int upToValue;
+	private String upToType;
 
 	public TwitterMonitorSchedulerPojo() {
 
 	}
 
-	public TwitterMonitorSchedulerPojo(Calendar sD, int rF, String rT) {
+	public TwitterMonitorSchedulerPojo(Calendar sD, int rF, String rT, boolean active, int upToValue, String upToType) {
 		this.endingDate = sD;
 		this.repeatFrequency = rF;
 		this.repeatType = rT;
+		this.active = active;
+		this.upToValue = upToValue;
+		this.upToType = upToType;
 	}
 
 	public long getSearchID() {
@@ -84,6 +90,30 @@ public class TwitterMonitorSchedulerPojo {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public int getUpToValue() {
+		return upToValue;
+	}
+
+	public void setUpToValue(int upToValue) {
+		this.upToValue = upToValue;
+	}
+
+	public String getUpToType() {
+		return upToType;
+	}
+
+	public void setUpToType(String upToType) {
+		this.upToType = upToType;
 	}
 
 }

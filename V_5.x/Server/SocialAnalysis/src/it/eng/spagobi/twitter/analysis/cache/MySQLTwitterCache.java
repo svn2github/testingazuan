@@ -478,7 +478,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_search_scheduler`"
 					+ " (`search_id`,`starting_date`,`repeat_frequency`,`repeat_type`,`active`)" + " VALUES (?,?,?,?,?)");
 			st.setLong(1, twitterScheduler.getSearchID());
-			st.setDate(2, new java.sql.Date(twitterScheduler.getStartingDate().getTimeInMillis()));
+			st.setTimestamp(2, new java.sql.Timestamp(twitterScheduler.getStartingDate().getTimeInMillis()));
 			st.setInt(3, twitterScheduler.getRepeatFrequency());
 			st.setString(4, twitterScheduler.getRepeatType());
 			st.setBoolean(5, true);
@@ -503,12 +503,14 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			conn = openConnection();
 
 			java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_monitor_scheduler`"
-					+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`,`active` )" + " VALUES (?,?,?,?,?)");
+					+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`,`active`,`up_to_value`,`up_to_type` )" + " VALUES (?,?,?,?,?,?,?)");
 			st.setLong(1, twitterScheduler.getSearchID());
-			st.setDate(2, new java.sql.Date(twitterScheduler.getEndingDate().getTimeInMillis()));
+			st.setTimestamp(2, new java.sql.Timestamp(twitterScheduler.getEndingDate().getTimeInMillis()));
 			st.setInt(3, twitterScheduler.getRepeatFrequency());
 			st.setString(4, twitterScheduler.getRepeatType());
-			st.setBoolean(5, false);
+			st.setBoolean(5, twitterScheduler.isActive());
+			st.setInt(6, twitterScheduler.getUpToValue());
+			st.setString(7, twitterScheduler.getUpToType());
 
 			st.executeUpdate();
 			closeConnection();
@@ -588,9 +590,11 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 	}
 
 	@Override
-	public void stopSearchScheduler(TwitterSearchPojo twitterSearch) {
+	public TwitterMonitorSchedulerPojo stopSearchScheduler(TwitterSearchPojo twitterSearch) {
 
 		logger.debug("Method stopSearchScheduler(): Start");
+
+		TwitterMonitorSchedulerPojo twitterMonitor = null;
 
 		try {
 
@@ -601,6 +605,24 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			st.setBoolean(1, false);
 			st.executeUpdate();
 
+			CachedRowSet rs = runQuery("SELECT * FROM `twitterdb`.`twitter_monitor_scheduler` WHERE search_id = '" + twitterSearch.getSearchID() + "'");
+
+			if (rs.next()) {
+				String type = rs.getString("repeat_type");
+				int frequency = rs.getInt("repeat_frequency");
+				int upToValue = rs.getInt("up_to_value");
+				String upToType = rs.getString("up_to_type");
+				boolean active = rs.getBoolean("active");
+
+				twitterMonitor = new TwitterMonitorSchedulerPojo();
+				twitterMonitor.setSearchID(twitterSearch.getSearchID());
+				twitterMonitor.setRepeatFrequency(frequency);
+				twitterMonitor.setRepeatType(type);
+				twitterMonitor.setUpToType(upToType);
+				twitterMonitor.setUpToValue(upToValue);
+				twitterMonitor.setActive(active);
+			}
+
 			closeConnection();
 
 		} catch (Exception e) {
@@ -608,6 +630,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 		}
 
 		logger.debug("Method stopSearchScheduler(): End");
+		return twitterMonitor;
 
 	}
 
@@ -622,10 +645,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			java.sql.Timestamp endingDateTimestamp = new java.sql.Timestamp(twitterMonitorSchedulerPojo.getEndingDate().getTimeInMillis());
 
-			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_monitor_scheduler` SET ending_date = ? and active = ? where id = '"
-					+ twitterMonitorSchedulerPojo.getId() + "'");
-			st.setTimestamp(1, endingDateTimestamp);
-			st.setBoolean(2, true);
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_monitor_scheduler` SET ending_date = '" + endingDateTimestamp + "', active = "
+					+ twitterMonitorSchedulerPojo.isActive() + " where search_id = " + twitterMonitorSchedulerPojo.getSearchID());
 			st.executeUpdate();
 
 			closeConnection();

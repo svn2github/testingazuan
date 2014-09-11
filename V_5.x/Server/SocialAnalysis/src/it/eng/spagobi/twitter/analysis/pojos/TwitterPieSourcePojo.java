@@ -19,29 +19,38 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  **/
-package it.eng.spagobi.twitter.analysis.launcher;
+
+package it.eng.spagobi.twitter.analysis.pojos;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
  *         (giorgio.federici@eng.it)
  *
  */
-public class TestTwitterAnalysisLauncher {
-	// TODO: ricordati di aggiungere il tuo nome negli author nel commento
-	// iniziale
+public class TwitterPieSourcePojo {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	private String source;
+	private int value;
 
-		// TODO: è solo una classe di test per provare tutto il giro
-		// TODO: istanzio un oggetto TwitterAnalysisLauncher per lanciare una
-		// tipologia di ricerca (magari prendendo argomenti dagli args)
-		String html = "<a href=\"http://www.techwars.io\" rel=\"nofollow\">TechWars</a>";
-		System.out.println(html.replaceAll("<.*?>", ""));
+	public TwitterPieSourcePojo(String source, int value) {
+		this.source = source;
+		this.value = value;
+	}
 
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 }

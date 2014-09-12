@@ -20,6 +20,16 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 	titleAlign: 'center',
 	flex: 1,
 	margin: '10 0 10 0',
+	disableSelection: true,
+	viewConfig: 
+	{
+        getRowClass: function(record, index) {
+            var loading = record.get('loading');
+            if (loading) {
+                return 'disabled-row';
+            }
+        }
+    },
 
 	config:
 	{
@@ -81,6 +91,18 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		            text: 'Delete',
 		            icon: 'img/delete.png',
 		            align: 'center',
+		            isDisabled: function(view, rowIndex, colIndex, item, record)
+		            {
+		            	var searchLoading = record.get('loading');
+		            	if(!searchLoading)
+	            		{
+		            		return false;	            		
+	            		}
+		            	else
+	            		{
+		            		return true;
+	            		}
+		            },
 		            handler: function(grid, rowIndex, colIndex) {
 	                    
 		            	var rec = grid.getStore().getAt(rowIndex);
@@ -155,6 +177,18 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		            width: 100,
 		            dataIndex: 'hasSearchScheduler',
 		            align: 'center',
+		            isDisabled: function(view, rowIndex, colIndex, item, record)
+		            {
+		            	var searchLoading = record.get('loading');
+		            	if(!searchLoading)
+	            		{
+		            		return false;	            		
+	            		}
+		            	else
+	            		{
+		            		return true;
+	            		}
+		            },
 		            getClass: function(value, metadata, record)
 		            {
 		            	var searchScheduler = record.get('hasSearchScheduler');

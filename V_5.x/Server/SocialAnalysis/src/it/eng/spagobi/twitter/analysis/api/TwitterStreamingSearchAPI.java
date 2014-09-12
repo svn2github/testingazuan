@@ -6,8 +6,6 @@ import it.eng.spagobi.twitter.analysis.pojos.TwitterMonitorSchedulerPojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,32 +96,28 @@ public class TwitterStreamingSearchAPI {
 
 		// parameters for monitoring scheduler
 
-		// parameters for monitoring scheduler
-		String numberUpTo = req.getParameter("numberUpTo");
-		String typeUpTo = req.getParameter("typeUpTo");
-
 		// now we take the decision abount the monitor scheduler. Check if there
 		// resources to monitor..
 		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
 
-			// there are resources to monitor. Check if there are parameters for
-			// the end of the monitor scheduler..
-			if (numberUpTo != null && !numberUpTo.equals("") && typeUpTo != null && !typeUpTo.equals("")) {
+			String numberUpTo = req.getParameter("numberUpTo");
+			String typeUpTo = req.getParameter("typeUpTo");
 
-				// there are info for calculating the ending date
+			String monitorFrequencyValue = req.getParameter("monitorFrequencyValue");
+			String monitorFrequencyType = req.getParameter("monitorFrequencyType");
 
-				String monitorUpToType = typeUpTo;
-				int monitorUpToValue = Integer.parseInt(numberUpTo);
+			if (monitorFrequencyValidation(monitorFrequencyValue, monitorFrequencyType) && monitorUpToValidation(numberUpTo, typeUpTo)) {
 
-				// The ending date will be
-				// recalculated at the creation of the monitor trigger
-				Calendar endingDate = GregorianCalendar.getInstance();
-				// none search scheduler, default information for monitor
-				// scheduler. Active from now.
-				int monitorRepeatFrequency = 1;
-				String monitorRepeatType = "Day";
+				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo();
 
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo(endingDate, monitorRepeatFrequency, monitorRepeatType, true, monitorUpToValue, monitorUpToType);
+				twitterMonitorScheduler.setRepeatFrequency(Integer.parseInt(monitorFrequencyValue));
+				twitterMonitorScheduler.setRepeatType(monitorFrequencyType);
+
+				twitterMonitorScheduler.setUpToValue(Integer.parseInt(numberUpTo));
+				twitterMonitorScheduler.setUpToType(typeUpTo);
+
+				twitterMonitorScheduler.setActive(true);
+
 			}
 
 		}
@@ -322,6 +316,20 @@ public class TwitterStreamingSearchAPI {
 		logger.debug("Method delete(): End");
 
 		return resObj.toString();
+	}
+
+	private boolean monitorFrequencyValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
+	}
+
+	private boolean monitorUpToValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
 	}
 
 }

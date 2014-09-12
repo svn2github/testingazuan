@@ -61,8 +61,10 @@ public String getJSONTagCloudArr(String keyword)
   	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
 	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
 	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
-        		
+        	
+
 	<div id="tagcloud" class="blank_box tagCloudMain_box">
 			
 		<div class="tagCloudTitle_box">
@@ -75,8 +77,19 @@ public String getJSONTagCloudArr(String keyword)
 			
 		<div id="my_cloud" class="tagCloud_box"></div>
 		
+		
 	</div>
-			
+	
+	<div style="float:left; margin-left: 30px; margin-top: 130px;">	
+		<img src="img/screens/topic_cloud.png" ></img>
+	</div>
+	
+	<div style="float:left; margin-left: 30px; margin-top: 30px; margin-bottom: 30px;">	
+		<img src="img/screens/linked_topic.png" ></img>
+	</div>
+	
+	
+		
 </div>        	
 			
 	<script type="text/javascript">

@@ -658,4 +658,42 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 		logger.debug("Method updateMonitorScheduler(): End");
 
 	}
+
+	@Override
+	public TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID) {
+		logger.debug("Method stopSearchScheduler(): Start");
+
+		TwitterMonitorSchedulerPojo twitterMonitor = null;
+
+		try {
+
+			conn = openConnection();
+
+			CachedRowSet rs = runQuery("SELECT * FROM `twitterdb`.`twitter_monitor_scheduler` WHERE search_id = " + searchID);
+
+			if (rs.next()) {
+				String type = rs.getString("repeat_type");
+				int frequency = rs.getInt("repeat_frequency");
+				int upToValue = rs.getInt("up_to_value");
+				String upToType = rs.getString("up_to_type");
+				boolean active = rs.getBoolean("active");
+
+				twitterMonitor = new TwitterMonitorSchedulerPojo();
+				twitterMonitor.setSearchID(searchID);
+				twitterMonitor.setRepeatFrequency(frequency);
+				twitterMonitor.setRepeatType(type);
+				twitterMonitor.setUpToType(upToType);
+				twitterMonitor.setUpToValue(upToValue);
+				twitterMonitor.setActive(active);
+			}
+
+			closeConnection();
+
+		} catch (Exception e) {
+			logger.debug("Method getTwitterMonitorScheduler(): Error updating search scheduler for search: " + searchID + " - " + e.getMessage());
+		}
+
+		logger.debug("Method getTwitterMonitorScheduler(): End");
+		return twitterMonitor;
+	}
 }

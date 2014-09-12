@@ -184,8 +184,17 @@ public class TwitterResourcesTimelineDataProcessor {
 							long time = roundedTime.getTimeInMillis();
 
 							if (accountFollowers.containsKey(time)) {
+
 								int value = accountFollowers.get(time);
-								value = value + followersCount;
+
+								if (value == -1) {
+									// defaultvalue, first add to this key
+									value = followersCount;
+								} else {
+									// value already modified with real values
+									value = value + followersCount;
+								}
+
 								accountFollowers.put(time, value);
 							}
 
@@ -193,9 +202,13 @@ public class TwitterResourcesTimelineDataProcessor {
 
 						if (accountFollowers.size() == 1) {
 
+							// manage the situation of only one result
+							// useless graph
+
 							Calendar newMinTime = GregorianCalendar.getInstance();
 							newMinTime.setTimeInMillis(minTime.getTimeInMillis());
 
+							// actual min followers value
 							int lowerFollowers = accountFollowers.get(newMinTime.getTimeInMillis());
 
 							if (timeFilter.equalsIgnoreCase("hours")) {
@@ -221,12 +234,24 @@ public class TwitterResourcesTimelineDataProcessor {
 
 						}
 
+						int coverValue = 0;
+
 						for (Map.Entry<Long, Integer> entry : accountFollowers.entrySet()) {
 
 							JSONObject dataElement = new JSONObject();
 
 							long time = entry.getKey();
 							int followers = entry.getValue();
+
+							if (followers == -1) {
+								// no values for this time, put cover values
+								// until next monitored value
+								followers = coverValue;
+							}
+
+							// mantain the real value to cover next deault
+							// values
+							coverValue = followers;
 
 							dataElement.put("mills", time);
 							dataElement.put("followers", followers);
@@ -256,18 +281,19 @@ public class TwitterResourcesTimelineDataProcessor {
 
 	}
 
-	public JSONObject getBitlyClicksTimelineObjs(String searchIDStr) {
+	public JSONObject getClicks(String searchIDStr, String timeFilter) {
 
-		logger.debug("Method getBitlyClicksTimelineObjs: Start");
+		logger.debug("Method getClicks(): Start");
 
 		long searchID = Long.parseLong(searchIDStr);
 
+		Calendar minTime = getMinTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
+		Calendar maxTime = getMaxTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
+
+		minTime = roundTime(timeFilter, minTime);
+		maxTime = roundTime(timeFilter, maxTime);
+
 		JSONObject linkClicksJSON = new JSONObject();
-
-		String type = getVisualizationType(searchIDStr);
-
-		Calendar minTimeAccount = getMinTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
-		Calendar maxTimeAccount = getMaxTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
 
 		try {
 
@@ -286,6 +312,14 @@ public class TwitterResourcesTimelineDataProcessor {
 					JSONObject element = new JSONObject();
 					element.put("label", link);
 
+					Calendar min = GregorianCalendar.getInstance();
+					Calendar max = GregorianCalendar.getInstance();
+
+					min.setTimeInMillis(minTime.getTimeInMillis());
+					max.setTimeInMillis(maxTime.getTimeInMillis());
+
+					LinkedHashMap<Long, Integer> linkClicks = initializeTimeline(min, max, timeFilter);
+
 					String sqlTimestampQuery = "SELECT timestamp, clicks_count from twitter_links_to_monitor where search_id = '" + searchID + "' and link = '" + link
 							+ "' ORDER BY timestamp asc";
 
@@ -303,31 +337,82 @@ public class TwitterResourcesTimelineDataProcessor {
 							Calendar timestampCalendar = GregorianCalendar.getInstance();
 							timestampCalendar.setTime(timestamp);
 
-							if (type != null && !type.equals("")) {
-								if (type.equalsIgnoreCase("Hour")) {
+							Calendar roundedTime = roundTime(timeFilter, timestampCalendar);
 
-									timestampCalendar.set(Calendar.MINUTE, 0);
-									timestampCalendar.set(Calendar.SECOND, 0);
-									timestampCalendar.set(Calendar.MILLISECOND, 0);
+							long time = roundedTime.getTimeInMillis();
 
-								} else if (type.equalsIgnoreCase("Day")) {
+							if (linkClicks.containsKey(time)) {
 
-									timestampCalendar.set(Calendar.HOUR_OF_DAY, 0);
-									timestampCalendar.set(Calendar.MINUTE, 0);
-									timestampCalendar.set(Calendar.SECOND, 0);
-									timestampCalendar.set(Calendar.MILLISECOND, 0);
+								int value = linkClicks.get(time);
 
-									minTimeAccount.set(Calendar.HOUR_OF_DAY, 0);
-									maxTimeAccount.set(Calendar.HOUR_OF_DAY, 0);
-
+								if (value == -1) {
+									// defaultvalue, first add to this key
+									value = clicksCount;
+								} else {
+									// value already modified with real values
+									value = value + clicksCount;
 								}
+
+								linkClicks.put(time, value);
 							}
 
-							long time = timestampCalendar.getTimeInMillis();
+						}
+
+						if (linkClicks.size() == 1) {
+
+							// manage the situation of only one result
+							// useless graph
+
+							Calendar newMinTime = GregorianCalendar.getInstance();
+							newMinTime.setTimeInMillis(minTime.getTimeInMillis());
+
+							// actual min followers value
+							int lowerClicks = linkClicks.get(newMinTime.getTimeInMillis());
+
+							if (timeFilter.equalsIgnoreCase("hours")) {
+
+								newMinTime.add(Calendar.HOUR_OF_DAY, -1);
+
+							} else if (timeFilter.equalsIgnoreCase("days")) {
+
+								newMinTime.add(Calendar.DAY_OF_MONTH, -1);
+
+							} else if (timeFilter.equalsIgnoreCase("weeks")) {
+
+								newMinTime.add(Calendar.WEEK_OF_YEAR, -1);
+							}
+
+							else if (timeFilter.equalsIgnoreCase("months")) {
+
+								newMinTime.add(Calendar.MONTH, -1);
+							}
+
+							long newLowerMills = newMinTime.getTimeInMillis();
+							linkClicks.put(newLowerMills, lowerClicks);
+
+						}
+
+						int coverValue = 0;
+
+						for (Map.Entry<Long, Integer> entry : linkClicks.entrySet()) {
 
 							JSONObject dataElement = new JSONObject();
+
+							long time = entry.getKey();
+							int clicks = entry.getValue();
+
+							if (clicks == -1) {
+								// no values for this time, put cover values
+								// until next monitored value
+								clicks = coverValue;
+							}
+
+							// mantain the real value to cover next deault
+							// values
+							coverValue = clicks;
+
 							dataElement.put("mills", time);
-							dataElement.put("clicks", clicksCount);
+							dataElement.put("clicks", clicks);
 
 							data.put(dataElement);
 						}
@@ -339,19 +424,16 @@ public class TwitterResourcesTimelineDataProcessor {
 				}
 
 				linkClicksJSON.put("results", results);
-				linkClicksJSON.put("lowerBound", minTimeAccount.getTimeInMillis());
-				linkClicksJSON.put("upperBound", maxTimeAccount.getTimeInMillis());
-				linkClicksJSON.put("type", type);
+				linkClicksJSON.put("lowerBound", minTime.getTimeInMillis());
 
 			}
 
 		} catch (Exception e) {
-			logger.debug("Method getBitlyClicksTimelineObjs: Error calculating timeline for search: " + searchID + " - " + e);
+			logger.debug("Method getClicks(): Error calculating timeline for search: " + searchID + " - " + e);
 		}
 
-		logger.debug("Method getBitlyClicksTimelineObjs: End");
+		logger.debug("Method getClicks(): End");
 
-		// logger.debug(accountFollowersJSON.toString());
 		return linkClicksJSON;
 
 	}
@@ -394,7 +476,7 @@ public class TwitterResourcesTimelineDataProcessor {
 
 		while (minTime.compareTo(maxTime) <= 0) {
 
-			baseMap.put(minTime.getTimeInMillis(), 0);
+			baseMap.put(minTime.getTimeInMillis(), -1);
 
 			if (filter.equalsIgnoreCase("hours")) {
 

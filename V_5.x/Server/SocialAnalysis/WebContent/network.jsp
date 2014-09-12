@@ -68,6 +68,7 @@ public List<JSONObject> getMostInfluencersJSON(String searchID)
    	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
 	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
 	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	    
 	</ul>
         		
@@ -84,6 +85,20 @@ public List<JSONObject> getMostInfluencersJSON(String searchID)
 		<div id="freewall" class="free-wall" style="margin-top: 20px;"></div>
 			
 	</div> 
+	
+	<div style="float:left; margin-left: 30px; margin-top: 50px;">	
+		<img src="img/screens/user_mentions.png" ></img>
+	</div>
+	
+	<br/>
+	
+	<div style="float:left; margin-left: 30px; margin-top: 50px; clear: both; margin-bottom: 30px;">	
+		<img src="img/screens/influencers_links.png" ></img>
+	</div>
+	
+	<div style="float:left; margin-left: 30px; margin-top: 50px;">	
+		<img src="img/screens/influencers_web.png" ></img>
+	</div>
 			
 </div>        	
 			

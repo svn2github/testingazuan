@@ -13,6 +13,7 @@ import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchSchedulerPojo;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -24,6 +25,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.apache.log4j.Logger;
 
 import twitter4j.JSONArray;
+import twitter4j.JSONException;
 import twitter4j.JSONObject;
 import twitter4j.Status;
 
@@ -155,6 +157,9 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	public abstract void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
 
 	@Override
+	public abstract TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID);
+
+	@Override
 	public final void saveTweet(Status tweet, String keyword, long searchID) throws Exception {
 
 		TwitterMessageObject twitterMessage = new TwitterMessageObject(tweet);
@@ -181,67 +186,76 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	 * @throws Exception
 	 */
 
-	public final String findCountryCodeFromUserLocation(String location, String userTimeZone) throws Exception {
+	public final String findCountryCodeFromUserLocation(String location, String userTimeZone) {
 
 		logger.debug("Method findCountryCodeFromUserLocation(): Start");
 
 		String countryCode = "";
-		String locationEncoded = "";
 
-		if (location != null && !location.equals("")) {
-			locationEncoded = URLEncoder.encode(location, "UTF-8");
-		} else {
-			if (userTimeZone != null && !userTimeZone.equals("")) {
-				locationEncoded = URLEncoder.encode(userTimeZone, "UTF-8");
+		try {
+			String locationEncoded = "";
+
+			if (location != null && !location.equals("")) {
+				locationEncoded = URLEncoder.encode(location, "UTF-8");
+			} else {
+				if (userTimeZone != null && !userTimeZone.equals("")) {
+					locationEncoded = URLEncoder.encode(userTimeZone, "UTF-8");
+				}
 			}
-		}
 
-		String urlString = "http://maps.googleapis.com/maps/api/geocode/json?address=" + locationEncoded;
+			String urlString = "http://maps.googleapis.com/maps/api/geocode/json?address=" + locationEncoded;
 
-		URL url = new URL(urlString);
+			URL url = new URL(urlString);
 
-		logger.debug("Method findCountryCodeFromUserLocation(): Calling GeoCode API..");
+			logger.debug("Method findCountryCodeFromUserLocation(): Calling GeoCode API..");
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
-		String line = null;
+			String line = null;
 
-		String json = "";
-		while ((line = reader.readLine()) != null) {
-			json = json + line;
-		}
+			String json = "";
+			while ((line = reader.readLine()) != null) {
+				json = json + line;
+			}
 
-		reader.close();
+			reader.close();
 
-		JSONObject obj = new JSONObject(json);
+			JSONObject obj = new JSONObject(json);
 
-		String status = obj.getString("status");
+			String status = obj.getString("status");
 
-		if (status.equals("OK")) {
+			if (status.equals("OK")) {
 
-			logger.debug("Method findCountryCodeFromUserLocation(): Response OK. Analyzing result..");
-			JSONArray resultsArray = obj.getJSONArray("results");
+				logger.debug("Method findCountryCodeFromUserLocation(): Response OK. Analyzing result..");
+				JSONArray resultsArray = obj.getJSONArray("results");
 
-			if (resultsArray != null && resultsArray.length() > 0) {
-				JSONObject obj3 = resultsArray.getJSONObject(0);
-				JSONArray aComponentsArray = obj3.getJSONArray("address_components");
+				if (resultsArray != null && resultsArray.length() > 0) {
+					JSONObject obj3 = resultsArray.getJSONObject(0);
+					JSONArray aComponentsArray = obj3.getJSONArray("address_components");
 
-				if (aComponentsArray != null && aComponentsArray.length() > 0) {
-					for (int i = 0; i < aComponentsArray.length(); i++) {
+					if (aComponentsArray != null && aComponentsArray.length() > 0) {
+						for (int i = 0; i < aComponentsArray.length(); i++) {
 
-						JSONObject tempObj = aComponentsArray.getJSONObject(i);
-						JSONArray types = tempObj.getJSONArray("types");
+							JSONObject tempObj = aComponentsArray.getJSONObject(i);
+							JSONArray types = tempObj.getJSONArray("types");
 
-						if (types != null && types.length() > 0) {
-							String firstType = types.getString(0);
+							if (types != null && types.length() > 0) {
+								String firstType = types.getString(0);
 
-							if (firstType.equals("country")) {
-								countryCode = tempObj.getString("short_name");
+								if (firstType.equals("country")) {
+									countryCode = tempObj.getString("short_name");
+								}
 							}
 						}
 					}
 				}
 			}
+		} catch (java.net.ConnectException e) {
+			logger.debug("Method findCountryCodeFromUserLocation(): Error for connection timeout calling GeoCoding" + e.getMessage());
+		} catch (IOException e) {
+			logger.debug("Method findCountryCodeFromUserLocation(): Error for IO operations GeoCoding" + e.getMessage());
+		} catch (JSONException e) {
+			logger.debug("Method findCountryCodeFromUserLocation(): Error for JSON parsing after GeoCoding call" + e.getMessage());
 		}
 
 		logger.debug("Method findCountryCodeFromUserLocation(): End");

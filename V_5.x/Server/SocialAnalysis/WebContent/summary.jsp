@@ -133,6 +133,7 @@ public String getMaxSearchDate(String searchID)
 	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
 	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
 	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         		
 	<div class="generalinfo">
@@ -192,14 +193,15 @@ public String getMaxSearchDate(String searchID)
 	</div>
 		
 	<div id="pieBoxMain" style="float:left; width:400px">
+		
 		<div class="blank_box pieChart_box"  ">
-			
+			<span style="font-weight: bold; font-size: 20px; margin-left: 30%;">Tweets Summary</span>	
 			<div id="pieChart" style="float:left"></div>
 			
 		</div>
 		
 		<div class="blank_box pieChart_box" style="margin-top: 20px; margin-bottom: 30px;">
-			
+			<span style="font-weight: bold; font-size: 20px; margin-left: 30%;">Tweets Sources</span>
 			<div id="pieChartDevice" style="float:left;"></div>
 			
 		</div>

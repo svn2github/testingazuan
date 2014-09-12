@@ -35,7 +35,13 @@
     background-image: none;
 	background-size: 16px 16px;
 	cursor: default;	
-}    
+}   
+
+.disabled-row
+{
+	opacity: 0.3
+} 
+
 
 
 /**************************************************************************/
@@ -334,7 +340,6 @@ div#hormenu li li a
 	border: 1px solid #909090;
 	display:block; 
 	width:530px; 
-	height:450px; 
 	float:left;
 	margin-top: 50px;
 	margin-left: 30px;
@@ -394,7 +399,6 @@ div#hormenu li li a
 
 div#hormenu-a 
 {
-    float: right; 
     margin: 0; 
     padding: 0;
     background: #FFFFFF;
@@ -418,7 +422,7 @@ div#hormenu-a span
 {
     background-color: #d0d0d0;
     border-radius: 5px;
-	padding: 3px 5px 3px 5px;
+	padding: 5px 5px 5px 5px;
 	margin-left: 5px;
 	cursor: default;
 }
@@ -465,5 +469,79 @@ div#hormenu-a li li a
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 }
+
+div#hormenu-l 
+{
+    margin: 0; 
+    padding: 0;
+    background: #FFFFFF;
+}
+
+div#hormenu-l ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+div#hormenu-l li
+{
+    width:100px;
+    margin: 0;
+    padding: 0;
+}
+
+div#hormenu-l span
+{
+    background-color: #d0d0d0;
+    border-radius: 5px;
+	padding: 5px 5px 5px 5px;
+	margin-left: 5px;
+	cursor: default;
+}
+
+div#hormenu-l a
+{
+    display: block;
+    padding: 5px;
+    color: #000;
+    text-decoration: none;
+}
+ 
+div#hormenu-l a:hover
+{
+    background-color: #000033;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+div#hormenu-l li ul
+{
+    display: none
+}
+
+div#hormenu-l li:hover ul
+{
+    display: block;
+    position: absolute;
+    z-index:1;
+    width:150px;
+    padding: 0;
+    margin: 0 0 0 -1px;
+    background: white;
+}
+
+div#hormenu-l li li   
+{ 
+	border:none; 
+	width:150px; 
+} 
+div#hormenu-l li li a 
+{ 
+	padding:2px 2px 2px 10px; 
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
 
 

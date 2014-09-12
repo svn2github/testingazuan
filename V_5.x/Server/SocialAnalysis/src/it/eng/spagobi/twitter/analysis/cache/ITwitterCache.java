@@ -146,4 +146,6 @@ public interface ITwitterCache {
 
 	public void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
 
+	public TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID);
+
 }

@@ -59,6 +59,7 @@ public JSONObject getTweetsLocationMap(String keyword)
    	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
 	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
 	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         		
 	<div id="locationbox" class="blank_box worldMapMain_box">

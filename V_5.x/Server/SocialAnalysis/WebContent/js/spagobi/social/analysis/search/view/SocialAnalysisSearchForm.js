@@ -373,71 +373,77 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 		                    field.setValue(field.store.first().data.type);
 		                }
 		             }
-		   	   }
+		   	   },
+		   	{
+	        		xtype: 'button',
+	        		text: 'Search',
+	        		margin: '0, 0, 0, 20',
+	        		handler: function() {
+	                    var form = this.up('form').getForm(); // get the basic form
+	                    var record = form.getRecord(),
+	                    values = form.getFieldValues();
+	                    form.updateRecord(record);
+	                    if(values.searchType == 'searchAPI')
+	                    {
+	                    	form.submit({
+	                    		url: 'restful-services/historicalSearch',
+	                    			
+	                    		success: function(form, action) 
+	                    		{
+	                    			Ext.Msg.alert('Success', action.result.msg);
+	                    			searchForm.fireEvent('searchSubmit');
+	                    			form.reset();
+	                    	    },
+	                    	    failure: function(form, action) 
+	                    	    {
+	                    	    	Ext.Msg.alert('Failure', action.result.msg);
+	                    	    	form.reset();
+	                    	    }
+	                    	
+	                    	});
+	                    	
+	                    }
+	                    else if(values.searchType == 'streamingAPI')
+	                    {
+	                    	form.submit({
+	                    		url: 'restful-services/streamingSearch/saveSearch',
+	                    	
+	                    		success: function(form, action) 
+	                    		{
+	                    			Ext.Msg.alert('Success', action.result.msg);
+	                    			searchForm.fireEvent('searchSubmit');                   			
+	                    	    },
+	                    	    failure: function(form, action) 
+	                    	    {
+	                    	    	Ext.Msg.alert('Failure', action.result.msg);
+	                    	    }
+	                    	    
+	                    	});
+	                    }
+	        		}
+	           },
+//	           {
+//			   		xtype: 'button',
+//			   		text: 'Refresh',
+//			   		margin: '0, 0, 0, 20',
+//			   		handler: function() {
+//			               
+//			              searchForm.fireEvent('refreshGrids');                   			
+//			   
+//			         }                   
+//	       		}
                ]
-	       },
-           {
-        		xtype: 'button',
-        		text: 'Search',
-        		margin: '0, 0, 0, 20',
-        		handler: function() {
-                    var form = this.up('form').getForm(); // get the basic form
-                    var record = form.getRecord(),
-                    values = form.getFieldValues();
-                    form.updateRecord(record);
-                    if(values.searchType == 'searchAPI')
-                    {
-                    	form.submit({
-                    		url: 'restful-services/historicalSearch',
-                    			
-                    		success: function(form, action) 
-                    		{
-                    			Ext.Msg.alert('Success', action.result.msg);
-                    			searchForm.fireEvent('searchSubmit');
-                    			form.reset();
-                    	    },
-                    	    failure: function(form, action) 
-                    	    {
-                    	    	Ext.Msg.alert('Failure', action.result.msg);
-                    	    	form.reset();
-                    	    }
-                    	
-                    	});
-                    	
-                    }
-                    else if(values.searchType == 'streamingAPI')
-                    {
-                    	form.submit({
-                    		url: 'restful-services/streamingSearch/saveSearch',
-                    	
-                    		success: function(form, action) 
-                    		{
-                    			Ext.Msg.alert('Success', action.result.msg);
-                    			searchForm.fireEvent('searchSubmit');                   			
-                    	    },
-                    	    failure: function(form, action) 
-                    	    {
-                    	    	Ext.Msg.alert('Failure', action.result.msg);
-                    	    }
-                    	    
-                    	});
-                    }
-        		}
-           },
-           {
-		   		xtype: 'button',
-		   		text: 'Refresh',
-		   		margin: '0, 0, 0, 20',
-		   		handler: function() {
-		               
-		              searchForm.fireEvent('refreshGrids');                   			
-		   
-		         }                   
-       		}
-           ],
+	       }],
 	    });
 		
 		this.callParent();
+		
+		Ext.TaskManager.start({
+			  run: function(){
+				  searchForm.fireEvent('refreshGrids');
+			  },
+			  interval: 60*1000
+			});
 	}
 
 });

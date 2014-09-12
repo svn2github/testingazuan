@@ -79,12 +79,14 @@ Ext.define('Sbi.social.analysis.SocialAnalysisPanel', {
 		this.socialAnalysisSearchForm.on('searchSubmit', this.updateSearchGrids, this);
 		this.socialAnalysisSearchForm.on('refreshGrids', this.updateSearchGrids, this);
 		
+		
+		
 		this.callParent();
 	},
 	
 	updateSearchGrids: function(){
 		this.socialAnalysisSearchStreamingGrid.getStore().load();
 		this.socialAnalysisSearchHistoricalGrid.getStore().load();
-	},
+	}
 	
 });

@@ -259,6 +259,30 @@ public class TwitterAnalysisLauncher {
 
 		cache.updateTwitterSearchLoading(twitterSearch.getSearchID(), false);
 
+		TwitterMonitorSchedulerPojo twitterMonitor = cache.getTwitterMonitorScheduler(twitterSearch.getSearchID());
+
+		Calendar endingCalendar = GregorianCalendar.getInstance();
+		int upToValue = twitterMonitor.getUpToValue();
+		String upToType = twitterMonitor.getUpToType();
+
+		// Calculating the ending date
+		if (upToType.equalsIgnoreCase("Day")) {
+			endingCalendar.add(Calendar.DAY_OF_MONTH, upToValue);
+		} else if (upToType.equalsIgnoreCase("Week")) {
+			endingCalendar.add(Calendar.DAY_OF_MONTH, (upToValue) * 7);
+		} else if (upToType.equalsIgnoreCase("Month")) {
+			endingCalendar.add(Calendar.DAY_OF_MONTH, (upToValue) * 30);
+		}
+
+		twitterMonitor.setEndingDate(endingCalendar);
+		twitterMonitor.setActive(true);
+
+		cache.updateMonitorScheduler(twitterMonitor);
+
+		logger.debug("Method stopSearchScheduler(): Starting monitor resources for search: " + twitterSearch.getSearchID());
+
+		createMonitoringTrigger(twitterMonitor);
+
 		logger.debug("Method stopStreamingSearch(): End");
 
 	}
@@ -333,7 +357,21 @@ public class TwitterAnalysisLauncher {
 		twitterSearchAPI.setCache((this.cache));
 		twitterSearchAPI.setLanguage(this.twitterSearch.getLanguageCode());
 		twitterSearchAPI.setResultType(ResultType.recent);
-		twitterSearchAPI.setQuery(this.twitterSearch.getKeywords());
+
+		String[] keywordsArr = twitterSearch.getKeywords().split(",");
+		String textQuery = "";
+
+		// TODO: 5 as default, query too complex
+
+		for (int i = 0; (i < keywordsArr.length) && (i < 5); i++) {
+			if (i == 0) {
+				textQuery = keywordsArr[i].trim();
+			} else {
+				textQuery = textQuery + " OR " + keywordsArr[i].trim();
+			}
+		}
+
+		twitterSearchAPI.setQuery(textQuery);
 		twitterSearchAPI.setSearchID(this.twitterSearch.getSearchID());
 		twitterSearchAPI.setSinceDate(this.twitterSearch.getSinceDate());
 

@@ -28,20 +28,6 @@
 </head>
 <body>
 
-<%!
-
-
-public String getJSONTagCloudArr(String keyword)
-{
-	return new TwitterTagCloudDataProcessor().tagCloudCreate(keyword).toString();
-}
-
-
-	/*****************/
-	
-	
-
-%>
 
 <div id="navigation">
 
@@ -61,31 +47,16 @@ public String getJSONTagCloudArr(String keyword)
    	    <li id="activelink"><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
 	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
 	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
-        		
-	<div id="tagcloud" class="blank_box tagCloudMain_box">
-			
-		<div class="tagCloudTitle_box">
-			
-			<span>Hashtags Cloud</span>
-		
-		</div>
-			
-		<br/>
-			
-		<div id="my_cloud" class="tagCloud_box"></div>
-		
-	</div>
+        	
+    
+    <div style="float:left; margin-left: 30px; margin-top: 50px; margin-bottom: 30px;">	
+		<img src="img/screens/sentiment_tab.png" ></img>
+	</div>	
+	
 			
 </div>        	
-			
-	<script type="text/javascript">
-					var word_list = <% out.print(getJSONTagCloudArr(request.getParameter("searchID"))); %>
-					$(function() {
-	 						$("#my_cloud").jQCloud(word_list);
-					});
-	</script>
-			
 			
 
 		

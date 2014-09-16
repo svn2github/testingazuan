@@ -35,7 +35,7 @@ Giorgio Federici (giorgio.federici@eng.it)
 
     	Ext.onReady(function () {
     		
-    		var socialAnalysisPanel = Ext.create('Sbi.social.analysis.SocialAnalysisPanel',{}); //by alias
+    		var socialAnalysisPanel = Ext.create('Sbi.social.analysis.SocialAnalysisPanel',{});
     		var socialAnalysisPanelViewport = Ext.create('Ext.container.Viewport', {
     			layout:'fit',
     	     	items: [socialAnalysisPanel]

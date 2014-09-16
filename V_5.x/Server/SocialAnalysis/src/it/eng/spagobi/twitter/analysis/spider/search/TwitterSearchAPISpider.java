@@ -124,7 +124,7 @@ public class TwitterSearchAPISpider {
 					logger.debug("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
 
 					if (searchID == -1) {
-						throw new SQLException("Creating user failed, no rows affected.");
+						throw new SQLException("Creating search failed, no rows affected.");
 					}
 
 					cache.saveTweet(tweet, query.getQuery(), searchID);
@@ -139,11 +139,8 @@ public class TwitterSearchAPISpider {
 			cache.closeConnection();
 
 		} catch (Exception te) {
+			cache.updateFailedSearch(searchID, te.getMessage());
 			cache.closeConnection();
-			;
-			te.printStackTrace();
-			// System.out.println("Failed to search tweets: " +
-			// te.getMessage());
 			logger.error("Failed to search tweets: " + te.getMessage());
 			System.exit(-1);
 		}

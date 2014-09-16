@@ -5,7 +5,7 @@
 
 /**
  * 
- * Search Form
+ * Grid of the streaming search
  * 
  *     
  *  @author
@@ -45,7 +45,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 		        },
 		        {
 		            text: 'Label',
-		            width: 100,
+		            width: 200,
 		            dataIndex: 'label'
 		        },
 		        {
@@ -106,7 +106,12 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
             	                            params : {
             	                                searchID: Ext.encode(rec.get('searchID'))
             	                            },
-            	                            scope : this
+            	                            scope : this,
+            	                            success: function(response)
+              	                           {
+              	                        	  Ext.Msg.alert('Success', response.msg);
+              	                        	  grid.getStore().load();
+              	                           }
                                    	 }); 
                                     
                                     }
@@ -120,7 +125,6 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 	                    else
                     	{
 	                    	//start code
-	                    	//grid.getStore().save();
 	                    	Ext.Msg.show({
 	                    	     title:'Confirm',
 	                    	     msg: 'Starting this Stream will stop the other one active. Are you sure?',
@@ -135,7 +139,12 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
              	                                searchID: Ext.encode(rec.get('searchID')),
              	                                keywords: Ext.encode(rec.get('keywords'))
              	                            },
-             	                            scope : this
+             	                            scope : this,
+             	                           success: function(response)
+             	                           {
+             	                        	  Ext.Msg.alert('Success', response.msg);
+             	                        	  grid.getStore().load();
+             	                           }
                                     	 }); 
                                      
                                      }
@@ -175,7 +184,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
          	                            scope : this,
          	                           success: function(response)
          	                           {
-         	                        	  Ext.Msg.alert('Success', action.result.msg);
+         	                        	  Ext.Msg.alert('Success', response.msg);
          	                           }
                                 	 }); 
                                  

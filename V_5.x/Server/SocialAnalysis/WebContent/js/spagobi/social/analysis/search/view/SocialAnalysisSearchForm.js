@@ -70,6 +70,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	     // The fields
 	        items: [
 	        {
+	        	//container for search type and options
 	        	padding: "0 0 0 20",
 	        	xtype      : 'fieldcontainer',
 	            fieldLabel: "Search type",
@@ -386,6 +387,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	                    if(values.searchType == 'searchAPI')
 	                    {
 	                    	form.submit({
+	                    		//
 	                    		url: 'restful-services/historicalSearch',
 	                    			
 	                    		success: function(form, action) 

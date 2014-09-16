@@ -16,7 +16,7 @@ Ext.define('Sbi.social.analysis.search.store.HistoricalSearchStore', {
 	
 	extend: 'Ext.data.Store',
     model: 'Sbi.social.analysis.search.model.HistoricalSearchModel',
-    autoLoad: true
+//    autoLoad: true
 //    data: [
 //           { id: '1000',    label: 'Test1', keywords: 'spagobi, opensource', lastActivation: '01/01/2014', accounts: '@themonkey86', links: 'bitly.link' }
 //       ]            

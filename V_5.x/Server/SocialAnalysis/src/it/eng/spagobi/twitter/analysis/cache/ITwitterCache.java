@@ -50,12 +50,7 @@ public interface ITwitterCache {
 	public long insertTwitterSearch(TwitterSearchPojo twitterSearch);
 
 	/**
-	 * This method updates the field loading for the selected search
-	 *
-	 * @param searchID
-	 *            : selected search ID
-	 * @param isLoading
-	 *            : new value for the field loading of this search
+	 * This method updates selected search
 	 */
 	public void updateTwitterSearchLoading(long searchID, boolean isLoading);
 
@@ -105,7 +100,7 @@ public interface ITwitterCache {
 	 * This method is an update for the search table. All streaming searches are
 	 * stopped, before start the new stream
 	 */
-	public void stopStreamingSearch();
+	public long stopStreamingSearch();
 
 	/**
 	 * This method creates a scheduler for a search
@@ -147,5 +142,7 @@ public interface ITwitterCache {
 	public void updateMonitorScheduler(TwitterMonitorSchedulerPojo twitterMonitorSchedulerPojo);
 
 	public TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID);
+
+	public void updateFailedSearch(long searchID, String errorMessage);
 
 }

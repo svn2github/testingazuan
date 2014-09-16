@@ -1,3 +1,9 @@
+/**
+
+SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
 package it.eng.spagobi.bitly.analysis.utilities;
 
 import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkCategoryPojo;
@@ -15,15 +21,22 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 import twitter4j.JSONArray;
 import twitter4j.JSONObject;
 
+/**
+ * @author Giorgio Federici (giorgio.federici@eng.it)
+ *
+ */
 public class BitlyCounterClicksUtility {
+
+	private static final Logger logger = Logger.getLogger(BitlyCounterClicksUtility.class);
+	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
 	private String links;
 	private long searchID;
-
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
 	public BitlyCounterClicksUtility(String l, long id) {
 		this.links = l;
@@ -42,6 +55,8 @@ public class BitlyCounterClicksUtility {
 	}
 
 	public void startBitlyAnalysis() {
+
+		logger.debug("Method startBitlyAnalysis(): Start");
 
 		String accessToken = "d32762c9990acba4b3f0bd2649d4cdef296941ae";
 

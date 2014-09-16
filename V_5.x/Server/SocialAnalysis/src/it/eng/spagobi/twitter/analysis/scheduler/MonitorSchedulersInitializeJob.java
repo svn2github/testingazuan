@@ -4,9 +4,11 @@ import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -35,9 +37,26 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 		JobKey key = context.getJobDetail().getKey();
 
-		String sqlQuery = "SELECT * from twitter_monitor_scheduler";
-
 		try {
+
+			String searchSchedulerSQL = "SELECT search_id, active FROM twitter_search_scheduler";
+
+			List<Integer> activeSearchScheduler = new ArrayList<Integer>();
+
+			CachedRowSet sSchedulerRS = twitterCache.runQuery(searchSchedulerSQL);
+
+			if (sSchedulerRS != null) {
+				while (sSchedulerRS.next()) {
+					boolean activeScheduler = sSchedulerRS.getBoolean("active");
+
+					if (activeScheduler) {
+						activeSearchScheduler.add(sSchedulerRS.getInt("search_id"));
+					}
+				}
+			}
+
+			String sqlQuery = "SELECT * from twitter_monitor_scheduler";
+
 			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
 
 			if (rs != null) {
@@ -56,42 +75,85 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 						String searchID = rs.getString("search_id");
 
-						java.sql.Timestamp endingDate = rs.getTimestamp("ending_date");
-						Calendar endingCalendar = GregorianCalendar.getInstance();
-						endingCalendar.setTime(endingDate);
-						java.util.Date endingDateJob = new java.util.Date(endingCalendar.getTimeInMillis());
+						JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring")
+								.usingJobData("searchID", searchID).build();
 
 						int repeatFrequency = rs.getInt("repeat_frequency");
 						String repeatType = rs.getString("repeat_type");
 
-						JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitorJob_" + searchID, "groupMonitor")
-								.usingJobData("searchID", searchID).build();
-
 						Calendar startingCalendar = GregorianCalendar.getInstance();
 
-						if (repeatType.equalsIgnoreCase("Day")) {
+						if (activeSearchScheduler.contains(Integer.parseInt(searchID))) {
+							// search scheduler attivo, monitor senza end
 
-							startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+							if (repeatType.equalsIgnoreCase("Day")) {
 
-							Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+								startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
 
-							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-									.endAt(endingDateJob)
-									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+								Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-							sched.scheduleJob(hSearchJob, trigger);
+								Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+										.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
+										.build();
 
-						} else if (repeatType.equalsIgnoreCase("Hour")) {
+								sched.scheduleJob(hSearchJob, trigger);
+							} else if (repeatType.equalsIgnoreCase("Hour")) {
 
-							startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
+								startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
 
-							Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+								Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-							Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-									.endAt(endingDateJob)
-									.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR)).build();
+								Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+										.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
+										.build();
 
-							sched.scheduleJob(hSearchJob, trigger);
+								sched.scheduleJob(hSearchJob, trigger);
+
+							}
+
+						} else {
+							// search scheduler non presente oppure non attivo,
+							// monitor con end
+
+							java.sql.Timestamp endingDate = rs.getTimestamp("ending_date");
+							java.util.Date endingDateJob = new Date();
+
+							Calendar endingCalendar = GregorianCalendar.getInstance();
+							endingCalendar.setTime(endingDate);
+							endingDateJob = new java.util.Date(endingCalendar.getTimeInMillis());
+
+							if (repeatType.equalsIgnoreCase("Day")) {
+
+								startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
+
+								if (endingCalendar.compareTo(startingCalendar) > 0) {
+
+									Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+
+									Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+											.endAt(endingDateJob)
+											.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
+											.build();
+
+									sched.scheduleJob(hSearchJob, trigger);
+								}
+							} else if (repeatType.equalsIgnoreCase("Hour")) {
+
+								startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
+
+								if (endingCalendar.compareTo(startingCalendar) > 0) {
+
+									Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
+
+									Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+											.endAt(endingDateJob)
+											.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
+											.build();
+
+									sched.scheduleJob(hSearchJob, trigger);
+								}
+
+							}
 						}
 
 						logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);

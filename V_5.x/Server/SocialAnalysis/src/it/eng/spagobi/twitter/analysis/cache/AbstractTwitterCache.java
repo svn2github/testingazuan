@@ -136,7 +136,7 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 	public abstract CachedRowSet runQuery(String sqlQuery);
 
 	@Override
-	public abstract void stopStreamingSearch();
+	public abstract long stopStreamingSearch();
 
 	@Override
 	public abstract void insertTwitterSearchScheduler(TwitterSearchSchedulerPojo twitterScheduler);
@@ -158,6 +158,9 @@ public abstract class AbstractTwitterCache implements ITwitterCache {
 
 	@Override
 	public abstract TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID);
+
+	@Override
+	public abstract void updateFailedSearch(long searchID, String errorMessage);
 
 	@Override
 	public final void saveTweet(Status tweet, String keyword, long searchID) throws Exception {

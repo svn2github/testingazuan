@@ -30,12 +30,16 @@ import java.util.List;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
  *         (giorgio.federici@eng.it)
  *
  */
 public class TwitterSearchDataProcessor {
+
+	static final Logger logger = Logger.getLogger(TwitterSearchDataProcessor.class);
 
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
@@ -61,67 +65,40 @@ public class TwitterSearchDataProcessor {
 					String frequency = rs.getString("frequency");
 					String type = rs.getString("type");
 					boolean loading = rs.getBoolean("loading");
+					boolean isFailed = rs.getBoolean("failed");
 
-					List<String> linksList = new ArrayList<String>();
 					String links = "";
-
-					CachedRowSet linksRs = twitterCache.runQuery("SELECT link from twitter_links_to_monitor where search_id = " + searchID + " GROUP BY link");
-					while (linksRs.next()) {
-						linksList.add(linksRs.getString("link"));
-					}
-
-					for (int i = 0; i < linksList.size(); i++) {
-						if (i == linksList.size() - 1) {
-							links = links + linksList.get(i);
-						} else {
-							links = links + linksList.get(i) + ", ";
-						}
-					}
-
-					List<String> accountsList = new ArrayList<String>();
 					String accounts = "";
+					boolean hasMonitorScheduler = false;
 
-					CachedRowSet accountsRs = twitterCache
-							.runQuery("SELECT account_name from twitter_accounts_to_monitor where search_id = " + searchID + " GROUP BY account_name");
-					while (accountsRs.next()) {
-						accountsList.add(accountsRs.getString("account_name"));
-					}
+					CachedRowSet resourcesRs = twitterCache.runQuery("SELECT links, accounts from twitter_monitor_scheduler where search_id = " + searchID);
+					if (resourcesRs.next()) {
 
-					for (int i = 0; i < accountsList.size(); i++) {
-						if (i == accountsList.size() - 1) {
-							accounts = accounts + accountsList.get(i);
-						} else {
-							accounts = accounts + accountsList.get(i) + ", ";
-						}
+						links = resourcesRs.getString("links");
+						accounts = resourcesRs.getString("accounts");
+						hasMonitorScheduler = true;
+
 					}
 
 					boolean hasSearchScheduler = false;
 
 					if (searchType.equals("searchAPI")) {
-						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID);
+						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID + " and active = 1");
 						while (searchSchedulerRs.next()) {
 
 							hasSearchScheduler = true;
 						}
 					}
 
-					boolean hasMonitorScheduler = false;
-
-					CachedRowSet monitorSchedulerRs = twitterCache.runQuery("SELECT id from twitter_monitor_scheduler where search_id = " + searchID);
-					while (monitorSchedulerRs.next()) {
-
-						hasMonitorScheduler = true;
-					}
-
 					TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading, links, accounts,
-							hasSearchScheduler, hasMonitorScheduler);
+							hasSearchScheduler, hasMonitorScheduler, isFailed);
 
 					searchList.add(searchPojo);
 				}
 			}
 
 		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			logger.debug("**** connection failed: " + e);
 		}
 
 		return searchList;

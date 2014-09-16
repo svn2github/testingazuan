@@ -20,8 +20,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<link rel="stylesheet" type="text/css" href="css/twitter.css" />
-	<link rel="stylesheet" type="text/css" href="css/socialAnalysis.css" >
 	<link rel="stylesheet" type="text/css" href="css/timeline.css" >
+	<link rel="stylesheet" type="text/css" href="css/socialAnalysis.css" >
 	<script src="js/lib/others/jquery-2.1.1.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="js/lib/others/jquery.flot.time.js"></script>
@@ -120,11 +120,6 @@ public JSONObject getClicksTimelineMonth(String searchID)
 	<% String sentimentLink = "sentiment.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String impactLink = "impact.jsp?searchID=" + request.getParameter("searchID"); %>
 	<% String roiLink = "roi.jsp?searchID=" + request.getParameter("searchID"); %>
-	
-	
-		
-	
-	
 
 	<ul>
 	    <li><a href=<% out.println(summaryLink); %>> Summary</a></li>
@@ -137,7 +132,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>		
 		
-		<div id="timeline" class="timeline_main">	
+		<div class="timeline_main">	
 		
 			<div class="demo-container" style="width: 100%; height: 60%;">
 				
@@ -157,6 +152,8 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				</div>
 				<div id="placeholder-account"  style="width: 85%;" class="demo-placeholder"></div>
 			</div>
+		</div>
+		<div class="timeline_main">	
 			
 			<div class="demo-container" style="width: 100%; height: 40%">
 				<div id="overview-account" class="demo-placeholder-o"></div>
@@ -185,7 +182,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				<div id="overview-link" class="demo-placeholder-o"></div>
 			</div>
 	
-	</div>			
+		</div>			
 </div>   
 
 	<script type="text/javascript">

@@ -90,7 +90,6 @@ public List<JSONObject> getMostInfluencersJSON(String searchID)
 		<img src="img/screens/user_mentions.png" ></img>
 	</div>
 	
-	<br/>
 	
 	<div style="float:left; margin-left: 30px; margin-top: 50px; clear: both; margin-bottom: 30px;">	
 		<img src="img/screens/influencers_links.png" ></img>

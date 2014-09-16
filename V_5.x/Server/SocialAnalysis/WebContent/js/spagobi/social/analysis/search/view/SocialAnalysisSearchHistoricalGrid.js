@@ -41,9 +41,6 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		
 		this.store = Ext.create('Sbi.social.analysis.search.store.HistoricalSearchStore', { });
 		
-		var Search = Ext.ModelMgr.getModel('Sbi.social.analysis.search.model.SearchModel');
-		//Search.load();
-		
 		this.callParent(arguments);
 	},
 
@@ -57,7 +54,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		        },
 		        {
 		            text: 'Label',
-		            width: 100,
+		            width: 200,
 		            dataIndex: 'label'
 		        },
 		        {
@@ -123,7 +120,8 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
          	                            scope : this,
          	                           success: function(response)
          	                           {
-         	                        	  Ext.Msg.alert('Success', action.result.msg);
+         	                        	  Ext.Msg.alert('Success', response.msg);
+         	                        	 grid.getStore().load();
          	                           }
                                 	 }); 
                                  
@@ -236,7 +234,12 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
              	                            params : {
              	                                searchID: Ext.encode(rec.get('searchID'))
              	                            },
-             	                            scope : this
+             	                            scope : this,
+	         	                            success: function(response)
+	         	                            {
+	         	                            	Ext.Msg.alert('Success', response.msg);
+	         	                            	grid.getStore().load();
+	         	                            }
                                     	 }); 
                                      
                                      }
@@ -249,8 +252,80 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 //	                    	
                     	}
 		            }		            
-		        }
-		    ]}),
+		        }],
+//		        listeners: {
+//		        	beforerender : function(grid, eOpts )
+//		        	{
+//		        		if(this.store != null)
+//		        		{
+//		        			alert(this.store.getCount());
+//		        			for(var i = 0; i < this.store.getCount(); i++)
+//	        				{
+//		        					
+//		        				var record = this.store.getAt(i);
+//		        				if(record.get('failed'))
+//	        					{
+//		        					var searchID = record.get('searchID');
+//		        					var labelSearch = record.get('label');
+//		        					
+//		        					Ext.Msg.show({
+//		        						title:'Alert',
+//		        						msg: 'Search ' + label + 'failed cause of connection problems',
+//		        						buttons: Ext.Msg.OK,
+//		        						icon: Ext.Msg.WARNING		        						 
+//		        					});
+//		        					
+//		        					Ext.Ajax.request({
+//        								url : 'restful-services/historicalSearch/removeFailedSearch',
+//        								method:'POST', 
+//        								params : {
+//        									searchID: Ext.encode(record.get('searchID'))
+//        									},
+//        									scope : this
+//        							});
+//	        					}
+//	        				}		        		
+//		        		}
+//		        	}
+//		        }
+		}),
+		
+		this.store.on( 'load', function(store, records, options) {
+			if(store != null)
+        		{
+        			for(var i = 0; i < store.getCount(); i++)
+    				{
+        					
+        				var record = store.getAt(i);
+
+        				if(record.get('isFailed'))
+    					{
+        					var searchID = record.get('searchID');
+        					var labelSearch = record.get('label');
+        					
+        					Ext.Msg.show({
+        						title:'Alert',
+        						msg: 'Search ' + labelSearch + ' failed cause of connection problems',
+        						buttons: Ext.Msg.OK,
+        						icon: Ext.Msg.WARNING		        						 
+        					});
+        					
+        					Ext.Ajax.request({
+								url : 'restful-services/historicalSearch/removeFailedSearch',
+								method:'POST', 
+								params : {
+									searchID: Ext.encode(record.get('searchID'))
+									},
+									scope : this,
+									success: function(response)
+     	                            {
+										store.load();
+     	                            }
+							});
+    					}
+    				}		        		
+        		}
+        	}); 
 		
 		this.callParent();
 	}

@@ -38,6 +38,8 @@ public class TwitterMonitorSchedulerPojo {
 	private boolean active = false;
 	private int upToValue;
 	private String upToType;
+	private String links;
+	private String accounts;
 
 	public TwitterMonitorSchedulerPojo() {
 
@@ -114,6 +116,22 @@ public class TwitterMonitorSchedulerPojo {
 
 	public void setUpToType(String upToType) {
 		this.upToType = upToType;
+	}
+
+	public String getLinks() {
+		return links;
+	}
+
+	public void setLinks(String links) {
+		this.links = links;
+	}
+
+	public String getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(String accounts) {
+		this.accounts = accounts;
 	}
 
 }

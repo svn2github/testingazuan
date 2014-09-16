@@ -5,7 +5,8 @@
 
 /**
  * 
- * Container of all the UI of the Social Analysis Search.<br>
+ * UI container of the Social Analysis Search.<br>
+ * 
  * It contains:
  * <ul>
  *		<li>Social Analysis Search Form</li>
@@ -49,13 +50,6 @@ Ext.define('Sbi.social.analysis.SocialAnalysisPanel', {
      *  Grid for historical search
      */
 	socialAnalysisSearchHistoricalGrid: null,
-	
-	/**
-     * @property autoLoadTaskRunner
-     *  Timer for refresh the search grids
-     */
-	autoLoadTaskRunner: null,
-	
 	
 	constructor : function(config) {
 		this.initConfig(config||{});

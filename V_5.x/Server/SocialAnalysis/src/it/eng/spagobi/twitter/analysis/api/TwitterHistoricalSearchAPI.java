@@ -1,3 +1,15 @@
+/**
+
+SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+
+/**
+ * @author Giorgio Federici (giorgio.federici@eng.it)
+ *
+ */
+
 package it.eng.spagobi.twitter.analysis.api;
 
 import it.eng.spagobi.twitter.analysis.dataprocessors.TwitterSearchDataProcessor;
@@ -64,7 +76,10 @@ public class TwitterHistoricalSearchAPI {
 		twitterSearch.setDbType(dbType);
 		twitterSearch.setSearchType(searchType);
 		twitterSearch.setKeywords(keywords);
-		twitterSearch.setLinks(links);
+
+		// set in the monitoring
+		// twitterSearch.setLinks(links);
+
 		twitterSearch.setAccounts(accounts);
 
 		// if user is not specifying the label, create it with the keywords
@@ -148,6 +163,9 @@ public class TwitterHistoricalSearchAPI {
 				twitterMonitorScheduler.setUpToType(typeUpTo);
 
 				twitterMonitorScheduler.setActive(true);
+
+				twitterMonitorScheduler.setAccounts(accounts);
+				twitterMonitorScheduler.setLinks(links);
 
 			}
 
@@ -256,7 +274,7 @@ public class TwitterHistoricalSearchAPI {
 		// set ready parameters
 		twitterSearch.setDbType(dbType);
 		twitterSearch.setSearchID(Long.parseLong(searchID));
-		twitterSearch.setSearchType("streamingAPI");
+		twitterSearch.setSearchType("searchAPI");
 
 		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
 		twitterAnalysisLauncher.deleteSearch();
@@ -302,13 +320,51 @@ public class TwitterHistoricalSearchAPI {
 
 		try {
 			resObj.put("success", true);
-			resObj.put("msg", "Historical search \"" + searchID + "\" deleted");
+			resObj.put("msg", "Historical search scheduler \"" + searchID + "\" stopped");
 
 		} catch (JSONException e) {
-			logger.error("Method delete(): ERROR - " + e);
+			logger.error("Method stopSearchScheduler(): Error trying to stop search scheduler " + searchID + " - " + e.getMessage());
 		}
 
-		logger.debug("Method delete(): End");
+		logger.debug("Method stopSearchScheduler(): End");
+
+		return resObj.toString();
+	}
+
+	// Remove a failed search from historic search table
+	@Path("/removeFailedSearch")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String removeFailedSearch(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method removeFailedSearch(): Start");
+
+		TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
+
+		String dbType = "MySQL";
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+
+		// set ready parameters
+		twitterSearch.setDbType(dbType);
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setSearchType("searchAPI");
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.removeFailedSearch();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+			resObj.put("success", true);
+			resObj.put("msg", "Historical failed search \"" + searchID + "\" removed");
+
+		} catch (JSONException e) {
+			logger.error("Method removeFailedSearch(): Error trying to remove failed search " + searchID + " - " + e.getMessage());
+		}
+
+		logger.debug("Method removeFailedSearch(): End");
 
 		return resObj.toString();
 	}

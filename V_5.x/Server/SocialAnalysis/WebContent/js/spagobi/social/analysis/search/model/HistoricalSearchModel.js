@@ -27,7 +27,8 @@ Ext.define('Sbi.social.analysis.search.model.HistoricalSearchModel', {
 	 		{name: 'frequency', type : 'string'},
 //	 		{name: 'impactAnalysis', type : 'string'}
 	 		{name: 'hasSearchScheduler', type: 'boolean'},
-	 		{name: 'hasMonitorScheduler', type: 'boolean'}
+	 		{name: 'hasMonitorScheduler', type: 'boolean'},
+	 		{name: 'isFailed', type: 'boolean'}
 	 	],
 	 
 	 proxy: {

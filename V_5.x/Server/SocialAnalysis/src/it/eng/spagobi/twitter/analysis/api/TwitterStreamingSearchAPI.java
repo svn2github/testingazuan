@@ -1,3 +1,15 @@
+/**
+
+SpagoBI, the Open Source Business Intelligence suite
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+
+/**
+ * @author Giorgio Federici (giorgio.federici@eng.it)
+ *
+ */
+
 package it.eng.spagobi.twitter.analysis.api;
 
 import it.eng.spagobi.twitter.analysis.dataprocessors.TwitterSearchDataProcessor;
@@ -38,26 +50,15 @@ public class TwitterStreamingSearchAPI {
 	@Path("/saveSearch")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public String save(@Context HttpServletRequest req) throws Exception {
+	public String save(@Context HttpServletRequest req) {
 
-		logger.debug("Method save(): Start..");
-
-		// String s = readBody(req);
-		// ObjectMapper mapper = new ObjectMapper();
-		// JsonNode df = mapper.readValue(s, JsonNode.class);
-
-		// JSONObject jsonObj = new JSONObject();
-		// Map<String, String[]> params = req.getParameterMap();
-		// for (Map.Entry<String, String[]> entry : params.entrySet()) {
-		// String v[] = entry.getValue();
-		// Object o = (v.length == 1) ? v[0] : v;
-		// jsonObj.put(entry.getKey(), o);
-		// }
+		logger.debug("Method save(): Start");
 
 		String languageCode = null;
 		String dbType = "MySQL";
 
 		// reading the user input
+
 		String searchType = req.getParameter("searchType");
 		String label = req.getParameter("label");
 		String keywords = req.getParameter("keywords");
@@ -69,8 +70,7 @@ public class TwitterStreamingSearchAPI {
 		twitterSearch.setDbType(dbType);
 		twitterSearch.setSearchType(searchType);
 		twitterSearch.setKeywords(keywords);
-		twitterSearch.setLinks(links);
-		twitterSearch.setAccounts(accounts);
+
 		twitterSearch.setFrequency("");
 
 		// if user is not specifying the label, create it with the keywords
@@ -96,7 +96,7 @@ public class TwitterStreamingSearchAPI {
 
 		// parameters for monitoring scheduler
 
-		// now we take the decision abount the monitor scheduler. Check if there
+		// now we take the decision about the monitor scheduler. Check if there
 		// resources to monitor..
 		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
 
@@ -118,6 +118,9 @@ public class TwitterStreamingSearchAPI {
 
 				twitterMonitorScheduler.setActive(true);
 
+				twitterMonitorScheduler.setAccounts(accounts);
+				twitterMonitorScheduler.setLinks(links);
+
 			}
 
 		}
@@ -125,8 +128,7 @@ public class TwitterStreamingSearchAPI {
 		// set monitor scheduler
 		twitterSearch.setTwitterMonitorScheduler(twitterMonitorScheduler);
 
-		logger.debug("Method save(): Search streaming");
-
+		// initializing the launcher with this search
 		TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
 
 		long searchID = twitterLauncher.createStreamingSearch();
@@ -138,7 +140,7 @@ public class TwitterStreamingSearchAPI {
 			if (searchID > 0) {
 
 				resObj.put("success", true);
-				resObj.put("msg", "Streaming search \"" + label + "\" inserted (DISABLED");
+				resObj.put("msg", "Streaming search \"" + label + "\" inserted (disabled)");
 
 			} else {
 
@@ -159,18 +161,7 @@ public class TwitterStreamingSearchAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String start(@Context HttpServletRequest req) throws Exception {
 
-		logger.debug("Method start(): Start..");
-
-		// ObjectMapper mapper = new ObjectMapper();
-		// JsonNode df = mapper.readValue(s, JsonNode.class);
-
-		// JSONObject jsonObj = new JSONObject();
-		// Map<String, String[]> params = req.getParameterMap();
-		// for (Map.Entry<String, String[]> entry : params.entrySet()) {
-		// String v[] = entry.getValue();
-		// Object o = (v.length == 1) ? v[0] : v;
-		// jsonObj.put(entry.getKey(), o);
-		// }
+		logger.debug("Method start(): Start");
 
 		String languageCode = null;
 		String dbType = "MySQL";
@@ -196,25 +187,16 @@ public class TwitterStreamingSearchAPI {
 
 		JSONObject resObj = new JSONObject();
 
-		// try {
-		//
-		// if (searchID > 0) {
-		//
-		// resObj.put("success", true);
-		// resObj.put("msg", "Streaming search \"" + label +
-		// "\" inserted (DISABLED");
-		//
-		// } else {
-		//
-		// resObj.put("failure", true);
-		// resObj.put("msg", "Failure inserting new search ");
-		//
-		// }
-		// } catch (JSONException e) {
-		// logger.error("Method save(): ERROR - " + e);
-		// }
-		//
-		// logger.debug("Method save(): End");
+		try {
+
+			resObj.put("success", true);
+			resObj.put("msg", "Streaming search activated");
+
+		} catch (JSONException e) {
+			logger.error("Method start(): ERROR - " + e);
+		}
+
+		logger.debug("Method start(): End");
 
 		return resObj.toString();
 	}
@@ -287,7 +269,7 @@ public class TwitterStreamingSearchAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String stopStream(@Context HttpServletRequest req) throws Exception {
 
-		logger.debug("Method stopStream(): Start..");
+		logger.debug("Method stopStream(): Start");
 
 		String languageCode = null;
 		String dbType = "MySQL";
@@ -307,7 +289,7 @@ public class TwitterStreamingSearchAPI {
 
 		try {
 			resObj.put("success", true);
-			resObj.put("msg", "Streaming search \"" + searchID + "\" stopped");
+			resObj.put("msg", "Streaming search stopped");
 
 		} catch (JSONException e) {
 			logger.error("Method delete(): ERROR - " + e);

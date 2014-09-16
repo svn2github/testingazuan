@@ -14,7 +14,6 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 
 @DisallowConcurrentExecution
 public class MonitoringResourcesJob implements Job {
@@ -31,45 +30,34 @@ public class MonitoringResourcesJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
-		JobKey key = context.getJobDetail().getKey();
+		// JobKey key = context.getJobDetail().getKey();
 
-		String sqlLinksQuery = "SELECT link from twitter_links_to_monitor where search_id = '" + searchID + "'";
-		String sqlAccountsQuery = "SELECT account_name from twitter_accounts_to_monitor where search_id = '" + searchID + "'";
+		String sqlResourcesQuery = "SELECT links, accounts from twitter_monitor_scheduler where search_id = '" + searchID + "'";
 
 		String links = "";
+		String accounts = "";
 
 		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlLinksQuery);
+			CachedRowSet rs = twitterCache.runQuery(sqlResourcesQuery);
 
-			if (rs != null) {
+			if (rs != null && rs.next()) {
 
-				while (rs.next()) {
+				links = rs.getString("links");
+				accounts = rs.getString("accounts");
 
-					String link = rs.getString("link");
-					links = links + "," + link;
-				}
-			}
+				BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(links, searchID);
+				bitlyUtil.startBitlyAnalysis();
 
-		} catch (SQLException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+				TwitterUserInfoUtility userUtil = new TwitterUserInfoUtility(searchID);
 
-		BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(links, searchID);
+				accounts = accounts.replaceAll("@", "");
+				String[] accountsArr = accounts.split(",");
 
-		bitlyUtil.startBitlyAnalysis();
-
-		try {
-			TwitterUserInfoUtility userUtil = new TwitterUserInfoUtility(searchID);
-
-			CachedRowSet rs = twitterCache.runQuery(sqlAccountsQuery);
-
-			if (rs != null) {
-
-				while (rs.next()) {
-
-					String account = rs.getString("account_name");
-					account = account.replaceAll("@", "");
-					userUtil.saveFollowersCount(account);
+				if (accountsArr != null && accountsArr.length > 0) {
+					for (int i = 0; i < accountsArr.length; i++) {
+						String account = accountsArr[i].trim();
+						userUtil.saveFollowersCount(account);
+					}
 				}
 			}
 

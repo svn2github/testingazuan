@@ -51,7 +51,7 @@ public class TwitterHistoricalSearchAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String search(@Context HttpServletRequest req) {
 
-		logger.debug("Method search(): Start..");
+		logger.debug("Method search(): Start");
 
 		TwitterAnalysisLauncher twitterLauncher = null;
 		TwitterSearchSchedulerPojo twitterScheduler = null;
@@ -68,6 +68,7 @@ public class TwitterHistoricalSearchAPI {
 		String keywords = req.getParameter("keywords");
 		String links = req.getParameter("links");
 		String accounts = req.getParameter("accounts");
+		String documents = req.getParameter("documents");
 
 		// String documents = req.getParameter("documents");
 
@@ -108,7 +109,8 @@ public class TwitterHistoricalSearchAPI {
 		String repeatTypeField = req.getParameter("repeatType");
 		String numberRepeat = req.getParameter("numberRepeat");
 
-		if (req.getParameter("isRepeating") != null && numberRepeat != null && !numberRepeat.equals("") && repeatTypeField != null && !repeatTypeField.equals("")) {
+		if (req.getParameter("isRepeating") != null && numberRepeat != null && !numberRepeat.equals("") && repeatTypeField != null
+				&& !repeatTypeField.equals("")) {
 
 			logger.debug("Method search(): Search with scheduler");
 
@@ -144,7 +146,7 @@ public class TwitterHistoricalSearchAPI {
 
 		// now we take the decision abount the monitor scheduler. Check if there
 		// resources to monitor..
-		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
+		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals("")) || (documents != null && !documents.equals(""))) {
 
 			String numberUpTo = req.getParameter("numberUpTo");
 			String typeUpTo = req.getParameter("typeUpTo");
@@ -166,6 +168,7 @@ public class TwitterHistoricalSearchAPI {
 
 				twitterMonitorScheduler.setAccounts(accounts);
 				twitterMonitorScheduler.setLinks(links);
+				twitterMonitorScheduler.setDocuments(documents);
 
 			}
 

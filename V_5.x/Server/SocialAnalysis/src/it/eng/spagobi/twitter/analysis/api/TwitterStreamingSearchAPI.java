@@ -64,6 +64,7 @@ public class TwitterStreamingSearchAPI {
 		String keywords = req.getParameter("keywords");
 		String links = req.getParameter("links");
 		String accounts = req.getParameter("accounts");
+		String documents = req.getParameter("documents");
 
 		// set ready parameters
 		twitterSearch.setLanguageCode(languageCode);
@@ -98,7 +99,7 @@ public class TwitterStreamingSearchAPI {
 
 		// now we take the decision about the monitor scheduler. Check if there
 		// resources to monitor..
-		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals(""))) {
+		if ((links != null && !links.equals("")) || (accounts != null && !accounts.equals("")) || (documents != null && !documents.equals(""))) {
 
 			String numberUpTo = req.getParameter("numberUpTo");
 			String typeUpTo = req.getParameter("typeUpTo");
@@ -120,6 +121,7 @@ public class TwitterStreamingSearchAPI {
 
 				twitterMonitorScheduler.setAccounts(accounts);
 				twitterMonitorScheduler.setLinks(links);
+				twitterMonitorScheduler.setDocuments(documents);
 
 			}
 

@@ -40,6 +40,7 @@ public class TwitterMonitorSchedulerPojo {
 	private String upToType;
 	private String links;
 	private String accounts;
+	private String documents;
 
 	public TwitterMonitorSchedulerPojo() {
 
@@ -132,6 +133,14 @@ public class TwitterMonitorSchedulerPojo {
 
 	public void setAccounts(String accounts) {
 		this.accounts = accounts;
+	}
+
+	public String getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(String documents) {
+		this.documents = documents;
 	}
 
 }

@@ -43,6 +43,7 @@ public class TwitterSearchPojo {
 	private boolean loading;
 	private String links;
 	private String accounts;
+	private String documents;
 	private String languageCode;
 	private String dbType;
 	private String searchType;
@@ -60,8 +61,8 @@ public class TwitterSearchPojo {
 
 	}
 
-	public TwitterSearchPojo(long searchID, String label, String keywords, Date creationDate, Timestamp lastActivationTime, String frequency, String type, boolean loading,
-			String links, String accounts, boolean hasSearchScheduler, boolean hasMonitorScheduler, boolean failed) {
+	public TwitterSearchPojo(long searchID, String label, String keywords, Date creationDate, Timestamp lastActivationTime, String frequency, String type,
+			boolean loading, String links, String accounts, String documents, boolean hasSearchScheduler, boolean hasMonitorScheduler, boolean failed) {
 
 		this.searchID = searchID;
 		this.label = label;
@@ -73,6 +74,7 @@ public class TwitterSearchPojo {
 		this.loading = loading;
 		this.links = links;
 		this.accounts = accounts;
+		this.documents = documents;
 		this.hasSearchScheduler = hasSearchScheduler;
 		this.hasMonitorScheduler = hasMonitorScheduler;
 		this.isFailed = failed;
@@ -222,6 +224,14 @@ public class TwitterSearchPojo {
 		this.accountsID = accountsID;
 	}
 
+	public String getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(String documents) {
+		this.documents = documents;
+	}
+
 	public boolean isHasSearchScheduler() {
 		return hasSearchScheduler;
 	}
@@ -248,8 +258,8 @@ public class TwitterSearchPojo {
 
 	@Override
 	public String toString() {
-		return "TwitterSearchPojo [searchID=" + searchID + ", label=" + label + ", keywords=" + keywords + ", creationDate=" + creationDate + ", lastActivationTime="
-				+ lastActivationTime + ", frequency=" + frequency + ", type=" + type + "]";
+		return "TwitterSearchPojo [searchID=" + searchID + ", label=" + label + ", keywords=" + keywords + ", creationDate=" + creationDate
+				+ ", lastActivationTime=" + lastActivationTime + ", frequency=" + frequency + ", type=" + type + "]";
 	}
 
 }

@@ -41,7 +41,7 @@
 
 	<ul>
 	    <li><a href=<% out.println(summaryLink); %>> Summary</a></li>
-	    <li id="activelink"><a href=<% out.println(topicsLink); %>>Topics</a></li>
+	    <li><a href=<% out.println(topicsLink); %>>Topics</a></li>
 	    <li><a href=<% out.println(networkLink); %>>Network</a></li>
 	    <li><a href=<% out.println(distributionLink); %>>Distribution</a></li>
    	    <li id="activelink"><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>

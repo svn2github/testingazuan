@@ -69,13 +69,16 @@ public class TwitterSearchDataProcessor {
 
 					String links = "";
 					String accounts = "";
+					String documents = "";
 					boolean hasMonitorScheduler = false;
 
-					CachedRowSet resourcesRs = twitterCache.runQuery("SELECT links, accounts from twitter_monitor_scheduler where search_id = " + searchID);
+					CachedRowSet resourcesRs = twitterCache.runQuery("SELECT links, accounts, documents from twitter_monitor_scheduler where search_id = "
+							+ searchID);
 					if (resourcesRs.next()) {
 
 						links = resourcesRs.getString("links");
 						accounts = resourcesRs.getString("accounts");
+						documents = resourcesRs.getString("documents");
 						hasMonitorScheduler = true;
 
 					}
@@ -83,15 +86,16 @@ public class TwitterSearchDataProcessor {
 					boolean hasSearchScheduler = false;
 
 					if (searchType.equals("searchAPI")) {
-						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID + " and active = 1");
+						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID
+								+ " and active = 1");
 						while (searchSchedulerRs.next()) {
 
 							hasSearchScheduler = true;
 						}
 					}
 
-					TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading, links, accounts,
-							hasSearchScheduler, hasMonitorScheduler, isFailed);
+					TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading,
+							links, accounts, documents, hasSearchScheduler, hasMonitorScheduler, isFailed);
 
 					searchList.add(searchPojo);
 				}

@@ -92,9 +92,13 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 								Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-								Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-										.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
-										.build();
+								Trigger trigger = TriggerBuilder
+										.newTrigger()
+										.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+										.startAt(startingDateJob)
+										.withSchedule(
+												CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
+														DateBuilder.IntervalUnit.DAY)).build();
 
 								sched.scheduleJob(hSearchJob, trigger);
 							} else if (repeatType.equalsIgnoreCase("Hour")) {
@@ -103,9 +107,13 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 								Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-								Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-										.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
-										.build();
+								Trigger trigger = TriggerBuilder
+										.newTrigger()
+										.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+										.startAt(startingDateJob)
+										.withSchedule(
+												CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
+														DateBuilder.IntervalUnit.HOUR)).build();
 
 								sched.scheduleJob(hSearchJob, trigger);
 
@@ -130,10 +138,14 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 									Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-									Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+									Trigger trigger = TriggerBuilder
+											.newTrigger()
+											.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+											.startAt(startingDateJob)
 											.endAt(endingDateJob)
-											.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
-											.build();
+											.withSchedule(
+													CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
+															DateBuilder.IntervalUnit.DAY)).build();
 
 									sched.scheduleJob(hSearchJob, trigger);
 								}
@@ -145,10 +157,14 @@ public class MonitorSchedulersInitializeJob implements Job {
 
 									Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-									Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
+									Trigger trigger = TriggerBuilder
+											.newTrigger()
+											.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+											.startAt(startingDateJob)
 											.endAt(endingDateJob)
-											.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
-											.build();
+											.withSchedule(
+													CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency,
+															DateBuilder.IntervalUnit.HOUR)).build();
 
 									sched.scheduleJob(hSearchJob, trigger);
 								}
@@ -156,7 +172,7 @@ public class MonitorSchedulersInitializeJob implements Job {
 							}
 						}
 
-						logger.debug("Instance " + key + " of HistoricalSearchJob. Executing search #: " + searchID);
+						logger.debug("Instance " + key + " of MonitoringJob. Executing on search #: " + searchID);
 					}
 				}
 			}

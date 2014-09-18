@@ -304,7 +304,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchForm', {
 	        		fieldLabel: 'Impact on business',
 	        		name: 'documents',
 	        		anchor: '50%',
-	        		hidden: true
+//	        		hidden: true
 	        	}],
 	        },
 	        {

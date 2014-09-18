@@ -105,8 +105,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				loading = false;
 			}
 
-			String insertSearchSQL = "INSERT INTO `twitterdb`.`twitter_search`" + " (`label`,`keywords`, `creation_date`,`frequency`,`type`,`loading`,`isDeleted`)"
-					+ " VALUES (?,?,?,?,?,?,?)";
+			String insertSearchSQL = "INSERT INTO `twitterdb`.`twitter_search`"
+					+ " (`label`,`keywords`, `creation_date`,`frequency`,`type`,`loading`,`isDeleted`)" + " VALUES (?,?,?,?,?,?,?)";
 
 			statement = conn.prepareStatement(insertSearchSQL, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, twitterSearch.getLabel());
@@ -156,7 +156,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 		try {
 
 			stmt = conn.createStatement();
-			ResultSet res1 = stmt.executeQuery("SELECT tweet_id from `twitter_data` where tweet_id = '" + twitterMessage.getTweetID() + "' and search_id = '" + searchID + "'");
+			ResultSet res1 = stmt.executeQuery("SELECT tweet_id from `twitter_data` where tweet_id = '" + twitterMessage.getTweetID() + "' and search_id = '"
+					+ searchID + "'");
 
 			if (!res1.next()) {
 
@@ -418,13 +419,14 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			conn = openConnection();
 
 			if (isLoading) {
-				java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ?, last_activation_time = ? where search_id = '"
-						+ searchID + "'");
+				java.sql.PreparedStatement st = conn
+						.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ?, last_activation_time = ? where search_id = '" + searchID + "'");
 				st.setBoolean(1, isLoading);
 				st.setTimestamp(2, new java.sql.Timestamp(GregorianCalendar.getInstance().getTimeInMillis()));
 				st.executeUpdate();
 			} else {
-				java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ? where search_id = '" + searchID + "'");
+				java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET loading = ? where search_id = '" + searchID
+						+ "'");
 				st.setBoolean(1, isLoading);
 				st.executeUpdate();
 			}
@@ -520,7 +522,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				conn = openConnection();
 
 				java.sql.PreparedStatement st = conn.prepareStatement("INSERT INTO `twitterdb`.`twitter_monitor_scheduler`"
-						+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`,`active`,`up_to_value`,`up_to_type`,`links`,`accounts` )" + " VALUES (?,?,?,?,?,?,?,?,?)");
+						+ " (`search_id`,`ending_date`,`repeat_frequency`,`repeat_type`,`active`,`up_to_value`,`up_to_type`,`links`,`accounts`,`documents`)"
+						+ " VALUES (?,?,?,?,?,?,?,?,?,?)");
 				st.setLong(1, twitterScheduler.getSearchID());
 				st.setTimestamp(2, new java.sql.Timestamp(twitterScheduler.getEndingDate().getTimeInMillis()));
 				st.setInt(3, twitterScheduler.getRepeatFrequency());
@@ -530,6 +533,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				st.setString(7, twitterScheduler.getUpToType());
 				st.setString(8, twitterScheduler.getLinks());
 				st.setString(9, twitterScheduler.getAccounts());
+				st.setString(10, twitterScheduler.getDocuments());
 
 				st.executeUpdate();
 				closeConnection();
@@ -537,7 +541,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				logger.debug("Method insertTwitterMonitorScheduler(): Monitor scheduler inserted for search " + twitterScheduler.getSearchID());
 
 			} catch (Exception e) {
-				logger.debug("Method insertTwitterMonitorScheduler(): Error inserting monitor scheduler for search " + twitterScheduler.getSearchID() + " - " + e.getMessage());
+				logger.debug("Method insertTwitterMonitorScheduler(): Error inserting monitor scheduler for search " + twitterScheduler.getSearchID() + " - "
+						+ e.getMessage());
 			}
 		}
 
@@ -557,7 +562,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			logger.debug("Method deleteSearch(): Deleting monitor scheduler..");
 
-			java.sql.PreparedStatement monitorSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_monitor_scheduler` WHERE search_id = " + twitterSearch.getSearchID());
+			java.sql.PreparedStatement monitorSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_monitor_scheduler` WHERE search_id = "
+					+ twitterSearch.getSearchID());
 
 			monitorSt.executeUpdate();
 
@@ -565,7 +571,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 				logger.debug("Method deleteSearch(): Deleting search scheduler..");
 
-				java.sql.PreparedStatement accountSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_search_scheduler` WHERE search_id = " + twitterSearch.getSearchID());
+				java.sql.PreparedStatement accountSt = conn.prepareStatement("DELETE FROM `twitterdb`.`twitter_search_scheduler` WHERE search_id = "
+						+ twitterSearch.getSearchID());
 
 				accountSt.executeUpdate();
 			}
@@ -604,7 +611,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("Method updateStartingDateSearchScheduler: Error updating search scheduler for search: " + twitterSearchSchedulerPojo.getSearchID() + " - " + e);
+			logger.debug("Method updateStartingDateSearchScheduler: Error updating search scheduler for search: " + twitterSearchSchedulerPojo.getSearchID()
+					+ " - " + e);
 		}
 
 		logger.debug("Method updateStartingDateSearchScheduler: End");
@@ -622,8 +630,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			conn = openConnection();
 
-			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search_scheduler` SET active = ? where search_id = '" + twitterSearch.getSearchID()
-					+ "'");
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search_scheduler` SET active = ? where search_id = '"
+					+ twitterSearch.getSearchID() + "'");
 			st.setBoolean(1, false);
 			st.executeUpdate();
 
@@ -667,14 +675,15 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			java.sql.Timestamp endingDateTimestamp = new java.sql.Timestamp(twitterMonitorSchedulerPojo.getEndingDate().getTimeInMillis());
 
-			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_monitor_scheduler` SET ending_date = '" + endingDateTimestamp + "', active = "
-					+ twitterMonitorSchedulerPojo.isActive() + " where search_id = " + twitterMonitorSchedulerPojo.getSearchID());
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_monitor_scheduler` SET ending_date = '" + endingDateTimestamp
+					+ "', active = " + twitterMonitorSchedulerPojo.isActive() + " where search_id = " + twitterMonitorSchedulerPojo.getSearchID());
 			st.executeUpdate();
 
 			closeConnection();
 
 		} catch (Exception e) {
-			logger.debug("Method updateMonitorScheduler(): Error updating monitor scheduler for search: " + twitterMonitorSchedulerPojo.getSearchID() + " - " + e);
+			logger.debug("Method updateMonitorScheduler(): Error updating monitor scheduler for search: " + twitterMonitorSchedulerPojo.getSearchID() + " - "
+					+ e);
 		}
 
 		logger.debug("Method updateMonitorScheduler(): End");
@@ -701,6 +710,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				boolean active = rs.getBoolean("active");
 				String links = rs.getString("links");
 				String accounts = rs.getString("accounts");
+				String documents = rs.getString("documents");
 
 				twitterMonitor = new TwitterMonitorSchedulerPojo();
 				twitterMonitor.setSearchID(searchID);
@@ -711,6 +721,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				twitterMonitor.setActive(active);
 				twitterMonitor.setLinks(links);
 				twitterMonitor.setAccounts(accounts);
+				twitterMonitor.setDocuments(documents);
 			}
 
 			closeConnection();
@@ -731,8 +742,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			conn = openConnection();
 
-			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET failed = 1, fail_message = '" + errorMessage + "' where search_id = "
-					+ searchID);
+			java.sql.PreparedStatement st = conn.prepareStatement("UPDATE `twitterdb`.`twitter_search` SET failed = 1, fail_message = '" + errorMessage
+					+ "' where search_id = " + searchID);
 			st.executeUpdate();
 
 			closeConnection();

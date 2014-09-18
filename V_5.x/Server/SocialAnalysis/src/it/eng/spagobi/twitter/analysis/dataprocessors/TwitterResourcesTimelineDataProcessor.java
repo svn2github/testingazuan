@@ -162,8 +162,8 @@ public class TwitterResourcesTimelineDataProcessor {
 
 					LinkedHashMap<Long, Integer> accountFollowers = initializeTimeline(min, max, timeFilter);
 
-					String sqlTimestampQuery = "SELECT timestamp, followers_count from twitter_accounts_to_monitor where search_id = '" + searchID + "' and account_name = '"
-							+ accountName + "' ORDER BY timestamp asc";
+					String sqlTimestampQuery = "SELECT timestamp, followers_count from twitter_accounts_to_monitor where search_id = '" + searchID
+							+ "' and account_name = '" + accountName + "' ORDER BY timestamp asc";
 
 					CachedRowSet timestampRS = twitterCache.runQuery(sqlTimestampQuery);
 
@@ -320,8 +320,8 @@ public class TwitterResourcesTimelineDataProcessor {
 
 					LinkedHashMap<Long, Integer> linkClicks = initializeTimeline(min, max, timeFilter);
 
-					String sqlTimestampQuery = "SELECT timestamp, clicks_count from twitter_links_to_monitor where search_id = '" + searchID + "' and link = '" + link
-							+ "' ORDER BY timestamp asc";
+					String sqlTimestampQuery = "SELECT timestamp, clicks_count from twitter_links_to_monitor where search_id = '" + searchID + "' and link = '"
+							+ link + "' ORDER BY timestamp asc";
 
 					CachedRowSet timestampRS = twitterCache.runQuery(sqlTimestampQuery);
 

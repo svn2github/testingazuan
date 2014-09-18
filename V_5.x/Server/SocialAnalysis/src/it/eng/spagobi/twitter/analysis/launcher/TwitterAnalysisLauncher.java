@@ -156,6 +156,7 @@ public class TwitterAnalysisLauncher {
 
 				this.twitterSearch.setLinks(twitterMonitorScheduler.getLinks());
 				this.twitterSearch.setAccounts(twitterMonitorScheduler.getAccounts());
+				this.twitterSearch.setDocuments(twitterMonitorScheduler.getDocuments());
 
 				setMonitorSchedulerEndingDate(twitterMonitorScheduler);
 
@@ -297,6 +298,7 @@ public class TwitterAnalysisLauncher {
 
 			this.twitterSearch.setLinks(twitterMonitor.getLinks());
 			this.twitterSearch.setAccounts(twitterMonitor.getAccounts());
+			this.twitterSearch.setDocuments(twitterMonitor.getDocuments());
 
 			// thread to get resources info
 			startMonitoringResourcesThreads();
@@ -557,6 +559,32 @@ public class TwitterAnalysisLauncher {
 			accountAnalysisThread.start();
 		}
 
+		if (twitterSearch.getDocuments() != null && !twitterSearch.getDocuments().equals("")) {
+
+			Thread documentAnalysisThread = new Thread() {
+
+				String documents = twitterSearch.getDocuments();
+
+				@Override
+				public void run() {
+
+					// TwitterUserInfoUtility userUtil = new
+					// TwitterUserInfoUtility(twitterSearch.getSearchID());
+					//
+					// accounts = accounts.trim().replaceAll("@", "");
+					// String[] accountArr = accounts.split(",");
+					//
+					// for (int i = 0; i < accountArr.length; i++) {
+					// String account = accountArr[i].trim();
+					// userUtil.saveFollowersCount(account);
+					// }
+
+				}
+			};
+
+			documentAnalysisThread.start();
+		}
+
 	}
 
 	private void createHistoricalSearchTrigger(TwitterSearchSchedulerPojo tScheduler) {
@@ -571,7 +599,8 @@ public class TwitterAnalysisLauncher {
 
 			long searchID = this.twitterSearch.getSearchID();
 
-			JobDetail hSearchJob = JobBuilder.newJob(HistoricalSearchJob.class).withIdentity("HSearchJob_" + searchID, "groupHSearch").usingJobData("searchID", searchID).build();
+			JobDetail hSearchJob = JobBuilder.newJob(HistoricalSearchJob.class).withIdentity("HSearchJob_" + searchID, "groupHSearch")
+					.usingJobData("searchID", searchID).build();
 
 			// scheduler parameters
 
@@ -592,7 +621,8 @@ public class TwitterAnalysisLauncher {
 			} else if (type.equalsIgnoreCase("hour")) {
 
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDateJob)
-						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.HOUR)).build();
+						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.HOUR))
+						.build();
 
 				// Tell quartz to schedule the job using our trigger
 				sched.scheduleJob(hSearchJob, trigger);
@@ -617,8 +647,8 @@ public class TwitterAnalysisLauncher {
 			long searchID = twitterMonitor.getSearchID();
 
 			// Job details
-			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring").usingJobData("searchID", searchID)
-					.build();
+			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring")
+					.usingJobData("searchID", searchID).build();
 
 			int repeatFrequency = twitterMonitor.getRepeatFrequency();
 			String repeatType = twitterMonitor.getRepeatType();
@@ -632,7 +662,8 @@ public class TwitterAnalysisLauncher {
 				Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
+						.build();
 
 				sched.scheduleJob(hSearchJob, trigger);
 
@@ -643,7 +674,8 @@ public class TwitterAnalysisLauncher {
 				Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob)
-						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR)).build();
+						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
+						.build();
 
 				sched.scheduleJob(hSearchJob, trigger);
 
@@ -668,8 +700,8 @@ public class TwitterAnalysisLauncher {
 			long searchID = twitterMonitor.getSearchID();
 
 			// Job details
-			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring").usingJobData("searchID", searchID)
-					.build();
+			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring")
+					.usingJobData("searchID", searchID).build();
 
 			int repeatFrequency = twitterMonitor.getRepeatFrequency();
 			String repeatType = twitterMonitor.getRepeatType();
@@ -686,8 +718,14 @@ public class TwitterAnalysisLauncher {
 
 					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingDate().getTimeInMillis());
 
-					Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob).endAt(endingDateJob)
-							.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY)).build();
+					Trigger trigger = TriggerBuilder
+							.newTrigger()
+							.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+							.startAt(startingDateJob)
+							.endAt(endingDateJob)
+							.withSchedule(
+									CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.DAY))
+							.build();
 
 					sched.scheduleJob(hSearchJob, trigger);
 				}
@@ -702,8 +740,14 @@ public class TwitterAnalysisLauncher {
 
 					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingDate().getTimeInMillis());
 
-					Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MonitoringTgr_" + searchID, "groupMonitoring").startAt(startingDateJob).endAt(endingDateJob)
-							.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR)).build();
+					Trigger trigger = TriggerBuilder
+							.newTrigger()
+							.withIdentity("MonitoringTgr_" + searchID, "groupMonitoring")
+							.startAt(startingDateJob)
+							.endAt(endingDateJob)
+							.withSchedule(
+									CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(repeatFrequency, DateBuilder.IntervalUnit.HOUR))
+							.build();
 
 					sched.scheduleJob(hSearchJob, trigger);
 				}

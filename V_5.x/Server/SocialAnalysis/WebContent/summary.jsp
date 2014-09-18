@@ -71,29 +71,9 @@ public List<TwitterPieSourcePojo> getTweetsPieChartDevice(String searchID)
 
 /*************** START TIMELINE *****************************************************/
 
-public List<TwitterTimelinePojo> getTimelineObjsHourRounded(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "hours");
-}
-
-public List<TwitterTimelinePojo> getTimelineObjsDayRounded(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "days");
-}
-
 public List<TwitterTimelinePojo> getTimelineObjsWeekRounded(String searchID)
 {
 	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "weeks"); 
-}
-
-public List<TwitterTimelinePojo> getTimelineObjsMonthRounded(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "months"); 
-}
-
-public List<TwitterTimelinePojo> getRangeTimelineChartObjs(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjsRangeTime(searchID); 
 }
 
 /*************** END TIMELINE *****************************************************/
@@ -304,18 +284,14 @@ public String getMaxSearchDate(String searchID)
 </div>
 
         		
-		
-		
 		<script type="text/javascript">
 		
 			$(function() 
 			{
 				
-				<% 
-					List<TwitterTimelinePojo>  monthlyTimelineChartObjs = getTimelineObjsMonthRounded(request.getParameter("searchID"));
+				<% 				
+				
 					List<TwitterTimelinePojo> weeklyTimelineChartObjs = getTimelineObjsWeekRounded(request.getParameter("searchID"));
-					List<TwitterTimelinePojo> dailyTimelineChartObjs = getTimelineObjsDayRounded(request.getParameter("searchID"));
-					List<TwitterTimelinePojo> hourlyTimelineChartObjs = getTimelineObjsHourRounded(request.getParameter("searchID"));
 
 				%>	
 				
@@ -340,30 +316,7 @@ public String getMaxSearchDate(String searchID)
 				}
 			
 				
-				var monthlyData = 
-					[ 
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-		               			],	               						
-		               			<% } %>
-		                     ], 
-		            	     label: "# of tweets" 
-		                },
-						{ 
-		                	data: 
-		                	[
-		               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-		               			],
-		               			<% } %>
-		                    ], 
-		                    label: "# of RTs" }
-		            ];
+				
 					
 					var weeklyData = 
 					[ 
@@ -389,80 +342,7 @@ public String getMaxSearchDate(String searchID)
 		                    ], 
 		                    label: "# of RTs" }
 		            ];
-					
-					var dailyData = 
-					[ 
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-		               			],	               						
-		               			<% } %>
-		                     ], 
-		            	     label: "# of tweets" 
-		                },
-						{ 
-		                	data: 
-		                	[
-		               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-		               			],
-		               			<% } %>
-		                    ], 
-		                    label: "# of RTs" }
-		            ];
-					
-					var hourlyData = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ], 
-			            	     label: "# of tweets" 
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ], 
-			                    label: "# of RTs" }
-			            ];
-					
-					
-					var monthlyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ]
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
+									
 						
 						var weeklyDataOverview = 
 						[ 
@@ -487,51 +367,8 @@ public String getMaxSearchDate(String searchID)
 			                    ] }
 			            ];
 						
-						var dailyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ] 
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
 						
-						var hourlyDataOverview = 
-							[ 
-				                { 
-				           	    	data: 
-				           	    	[	               					   
-				               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
-				               			[
-				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-				               			],	               						
-				               			<% } %>
-				                     ]
-				                },
-								{ 
-				                	data: 
-				                	[
-				               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
-				               			[
-				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-				               			],
-				               			<% } %>
-				                    ] }
-				            ];
+						
 					
 					// helper for returning the weekends in a period
 
@@ -846,28 +683,7 @@ public String getMaxSearchDate(String searchID)
 					};
 					
 				
-					var monthlyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ]
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
+				
 						
 						var weeklyDataOverview = 
 						[ 
@@ -892,51 +708,9 @@ public String getMaxSearchDate(String searchID)
 			                    ] }
 			            ];
 						
-						var dailyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ] 
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
 						
-						var hourlyDataOverview = 
-							[ 
-				                { 
-				           	    	data: 
-				           	    	[	               					   
-				               			<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
-				               			[
-				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-				               			],	               						
-				               			<% } %>
-				                     ]
-				                },
-								{ 
-				                	data: 
-				                	[
-				               			<% 	for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) {  %>	
-				               			[
-				               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-				               			],
-				               			<% } %>
-				                    ] }
-				            ];
+						
+
 				
 				
 				
@@ -1002,7 +776,55 @@ public String getMaxSearchDate(String searchID)
 				
 				
 				$("#hours").click(function () 
-						{
+				{
+						
+					<% 		
+				
+						List<TwitterTimelinePojo> hourlyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "hours");
+
+					%>	
+							
+					var hTweetData = 
+						[
+							<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
+								[
+									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+								],	               						
+							<% } %>							 
+						 ]
+					
+					var hRTData = 
+						[
+							<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
+								[
+									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+								],	               						
+							<% } %>							 
+						 ]
+					
+					
+					var hourlyData = 
+						[ 
+			                { 
+			           	    	data: hTweetData, 
+			            	    label: "# of tweets" 
+			                },
+							{ 
+			                	data: hRTData, 
+			                    label: "# of RTs" }
+			            ];
+					
+					
+					var hourlyDataOverview = 
+						[ 
+			                { 
+			           	    	data: hTweetData
+			                },
+							{ 
+			                	data: hRTData
+			                }
+			            ];
+					
 							plot = $.plot("#placeholder", hourlyData, hourlyOptions);
 							
 							 overview = $.plot("#overview", hourlyDataOverview, overviewOptionsHour);
@@ -1042,6 +864,52 @@ public String getMaxSearchDate(String searchID)
 					
 				$("#days").click(function () 
 				{					
+					
+					<% 
+
+						List<TwitterTimelinePojo> dailyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "days");
+
+					%>	
+					
+					var dTweetData = 
+						[
+							<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
+								[
+									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+								],	               						
+							<% } %>							 
+						 ]
+					
+					var dRTData = 
+						[
+							<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
+								[
+									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+								],	               						
+							<% } %>							 
+						 ]
+					
+					var dailyData = 
+						[ 
+			                { 
+			           	    	data: dTweetData, 
+			            	     label: "# of tweets" 
+			                },
+							{ 
+			                	data: dRTData, 
+			                    label: "# of RTs" }
+			            ];
+					
+					var dailyDataOverview = 
+						[ 
+			                { 
+			           	    	data: dTweetData,
+			                },
+							{ 
+			                	data: dRTData
+			                }
+			            ];
+					
 					
 					plot = $.plot("#placeholder", dailyData, dailyOptions);
 					
@@ -1122,6 +990,55 @@ public String getMaxSearchDate(String searchID)
 					
 					$("#months").click(function () 
 					{
+					
+						<% 						
+						
+							List<TwitterTimelinePojo>  monthlyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "months");
+
+						%>	
+						
+						var mTweetData = 
+							[
+								<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
+									[
+										<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
+									],	               						
+								<% } %>							 
+							 ]
+						
+						var mRTData = 
+							[
+								<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
+									[
+										<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
+									],	               						
+								<% } %>							 
+							 ]
+						
+						var monthlyData = 
+							[ 
+				                { 
+				           	    	 data: mTweetData,
+				            	     label: "# of tweets" 
+				                },
+								{ 
+				                	data: mRTData, 
+				                    label: "# of RTs" }
+				            ];
+						
+						var monthlyDataOverview = 
+							[ 
+				                { 
+				           	    	data: mTweetData
+				                },
+								{ 
+				                	data: mRTData
+				                }
+				            ];
+						
+						
+						
+						
 						plot = $.plot("#placeholder", monthlyData, monthlyOptions);
 						
 						overview = $.plot("#overview", monthlyDataOverview, overviewOptionsMonth);
@@ -1179,6 +1096,8 @@ public String getMaxSearchDate(String searchID)
 			});
 		
 			</script>
+		
+		
 			
 		
 

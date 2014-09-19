@@ -1,29 +1,16 @@
-/**
+/* SpagoBI, the Open Source Business Intelligence suite
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,22 +19,33 @@ import java.util.Map;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterTagCloudDataProcessor {
 
+	private static final Logger logger = Logger.getLogger(TwitterTagCloudDataProcessor.class);
+
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
-	public JSONArray tagCloudCreate(String searchIDStr) {
+	/**
+	 * This method creates the json array for the hashtag cloud
+	 *
+	 * @param searchID
+	 * @return
+	 */
+	public JSONArray tagCloudCreate(String searchID) {
 
-		long searchID = Long.parseLong(searchIDStr);
+		logger.debug("Method tagCloudCreate(): Start");
+
+		Assert.assertNotNull(searchID, "Impossibile execute tagCloudCreate() without a correct search ID");
 
 		JSONArray jsonTagCloudArr = new JSONArray();
 		List<String> globalHashtags = new ArrayList<String>();
@@ -55,39 +53,44 @@ public class TwitterTagCloudDataProcessor {
 		String sqlQuery = "SELECT hashtags from twitter_data where search_id = '" + searchID + "'";
 
 		try {
+
 			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
 
-			if (rs != null) {
+			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
 
-				while (rs.next()) {
-					String hashtagsFromDb = rs.getString("hashtags");
+			while (rs.next()) {
 
-					if (hashtagsFromDb != null) {
-						hashtagsFromDb = hashtagsFromDb.toLowerCase();
-						String[] hashtagsSplitted = hashtagsFromDb.split(" ");
+				String hashtagsFromDb = rs.getString("hashtags");
 
-						for (int i = 0; i < hashtagsSplitted.length; i++) {
-							globalHashtags.add(hashtagsSplitted[i]);
-						}
+				Assert.assertNotNull(hashtagsFromDb, "SQL NULL for hashtags column in results of [ " + sqlQuery + " ] ");
+
+				if (hashtagsFromDb != null) {
+					hashtagsFromDb = hashtagsFromDb.toLowerCase();
+					String[] hashtagsSplitted = hashtagsFromDb.split(" ");
+
+					for (int i = 0; i < hashtagsSplitted.length; i++) {
+						globalHashtags.add(hashtagsSplitted[i]);
 					}
 				}
 			}
 
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			Map<String, Integer> htagWeghtMap = generateHtagWeight(globalHashtags);
+
+			if (htagWeghtMap != null) {
+				jsonTagCloudArr = tweetIntoJSON(htagWeghtMap);
+			}
+
+			logger.debug("Method tagCloudCreate(): End");
+			return jsonTagCloudArr;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method tagCloudCreate(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
-
-		Map<String, Integer> htagWeghtMap = generateHtagWeight(globalHashtags);
-
-		if (htagWeghtMap != null) {
-			jsonTagCloudArr = tweetIntoJSON(htagWeghtMap);
-		}
-
-		return jsonTagCloudArr;
 
 	}
 
 	private Map<String, Integer> generateHtagWeight(List<String> htags) {
+
 		Map<String, Integer> weightsMap = new HashMap<String, Integer>();
 
 		if (!htags.isEmpty()) {

@@ -1,13 +1,48 @@
 
 
-<%@page import="com.sun.org.apache.xalan.internal.xsltc.runtime.Parameter"%>
-<%@page import="twitter4j.JSONObject"%>
+<%-- SpagoBI, the Open Source Business Intelligence suite
+
+ Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
+ You can obtain one at http://mozilla.org/MPL/2.0/. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    
-<%@ page import="java.util.*" %>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA IMPORTS															--%>
+<%-- ---------------------------------------------------------------------- --%>
+
 <%@ page import="it.eng.spagobi.twitter.analysis.dataprocessors.*" %>
 <%@ page import="it.eng.spagobi.twitter.analysis.pojos.*" %>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA CODE 																--%>
+<%-- ---------------------------------------------------------------------- --%>
+
+<%
+	String searchId = request.getParameter("searchID");
+	
+	String summaryLink = "summary.jsp?searchID=" + searchId;
+	String topicsLink = "topics.jsp?searchID=" + searchId; 
+	String networkLink = "network.jsp?searchID=" + searchId; 
+	String distributionLink = "distribution.jsp?searchID=" + searchId; 
+	String sentimentLink = "sentiment.jsp?searchID=" + searchId; 
+	String impactLink = "impact.jsp?searchID=" + searchId; 
+	String roiLink = "roi.jsp?searchID=" + searchId;
+	
+	TwitterTagCloudDataProcessor tCloudDP = new TwitterTagCloudDataProcessor();
+	String hTagCloud = tCloudDP.tagCloudCreate(searchId).toString();
+	 
+%>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- HTML	 																--%>
+<%-- ---------------------------------------------------------------------- --%>
+
 
 
     
@@ -28,39 +63,16 @@
 </head>
 <body>
 
-<%!
-
-
-public String getJSONTagCloudArr(String keyword)
-{
-	return new TwitterTagCloudDataProcessor().tagCloudCreate(keyword).toString();
-}
-
-
-	/*****************/
-	
-	
-
-%>
-
 <div id="navigation">
 
-	<% String summaryLink = "summary.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String topicsLink = "topics.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String networkLink = "network.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String distributionLink = "distribution.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String sentimentLink = "sentiment.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String impactLink = "impact.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String roiLink = "roi.jsp?searchID=" + request.getParameter("searchID"); %>
-
 	<ul>
-	    <li><a href=<% out.println(summaryLink); %>> Summary</a></li>
-	    <li id="activelink"><a href=<% out.println(topicsLink); %>>Topics</a></li>
-	    <li><a href=<% out.println(networkLink); %>>Network</a></li>
-	    <li><a href=<% out.println(distributionLink); %>>Distribution</a></li>
-  	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
-	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
-	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li><a href=<%= summaryLink %>> Summary</a></li>
+	    <li id="activelink"><a href=<%= topicsLink %>>Topics</a></li>
+	    <li><a href=<%= networkLink %>>Network</a></li>
+	    <li><a href=<%= distributionLink %>>Distribution</a></li>
+  	    <li><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li><a href=<%= impactLink %>>Impact</a></li>
+	    <li><a href=<%= roiLink %>>ROI</a></li>
 	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         	
@@ -93,7 +105,7 @@ public String getJSONTagCloudArr(String keyword)
 </div>        	
 			
 	<script type="text/javascript">
-					var word_list = <% out.print(getJSONTagCloudArr(request.getParameter("searchID"))); %>
+					var word_list = <%= hTagCloud %>
 					$(function() {
 	 						$("#my_cloud").jQCloud(word_list);
 					});

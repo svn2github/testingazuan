@@ -1,33 +1,16 @@
-/**
+/* SpagoBI, the Open Source Business Intelligence suite
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
-
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterTimelinePojo;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -39,9 +22,12 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
+import twitter4j.JSONArray;
+import twitter4j.JSONException;
+import twitter4j.JSONObject;
+
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 
@@ -51,410 +37,471 @@ public class TwitterTimelineDataProcessor {
 
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
-	private LinkedHashMap<Long, Integer> tweetsMap = new LinkedHashMap<Long, Integer>();
-	private LinkedHashMap<Long, Integer> rtsMap = new LinkedHashMap<Long, Integer>();
+	private final long CONST_TIMEZONE = 60 * 60 * 2000;
 
-	private List<Calendar> roundedTimes = new ArrayList<Calendar>();
+	private java.sql.Timestamp lowerBound = new java.sql.Timestamp(GregorianCalendar.getInstance().getTimeInMillis());
+	private java.sql.Timestamp upperBound = new java.sql.Timestamp(GregorianCalendar.getInstance().getTimeInMillis());
 
-	List<TwitterTimelinePojo> timelineChartObjs = new ArrayList<TwitterTimelinePojo>();
+	String hourData = "";
+	String dayData = "";
+	String weekData = "";
+	String monthData = "";
 
-	private long lowerBound = -1;
-	private long upperBound = -1;
+	String hourDataOverview = "";
+	String dayDataOverview = "";
+	String weekDataOverview = "";
+	String monthDataOverview = "";
 
-	public LinkedHashMap<Long, Integer> getTweetsMap() {
-		return tweetsMap;
+	String weekTicks = "";
+
+	public TwitterTimelineDataProcessor() {
+
 	}
 
-	public void setTweetsMap(LinkedHashMap<Long, Integer> tweetsMap) {
-		this.tweetsMap = tweetsMap;
-	}
+	/**
+	 * This method initializes the structures for a search docs
+	 *
+	 * @param searchIDStr
+	 * @return
+	 */
+	public void initializeTwitterTimelineDataProcessor(String searchID) {
 
-	public LinkedHashMap<Long, Integer> getRtsMap() {
-		return rtsMap;
-	}
+		logger.debug("Method initializeTwitterTimelineDataProcessor(): Start");
 
-	public void setRtsMap(LinkedHashMap<Long, Integer> rtsMap) {
-		this.rtsMap = rtsMap;
-	}
+		Assert.assertNotNull(searchID, "Impossibile initialize TwitterTimelineDataProcessor without a correct search ID");
 
-	public List<Calendar> getRoundedTimes() {
-		return roundedTimes;
-	}
+		LinkedHashMap<Long, Integer> tweetsHourMap = new LinkedHashMap<Long, Integer>();
+		LinkedHashMap<Long, Integer> rtsHourMap = new LinkedHashMap<Long, Integer>();
 
-	public void setRoundedTimes(List<Calendar> roundedTimes) {
-		this.roundedTimes = roundedTimes;
-	}
+		LinkedHashMap<Long, Integer> tweetsDayMap = new LinkedHashMap<Long, Integer>();
+		LinkedHashMap<Long, Integer> rtsDayMap = new LinkedHashMap<Long, Integer>();
 
-	public List<TwitterTimelinePojo> getTimelineChartObjs() {
-		return timelineChartObjs;
-	}
+		LinkedHashMap<Long, Integer> tweetsWeekMap = new LinkedHashMap<Long, Integer>();
+		LinkedHashMap<Long, Integer> rtsWeekMap = new LinkedHashMap<Long, Integer>();
 
-	public void setTimelineChartObjs(List<TwitterTimelinePojo> timelineChartObjs) {
-		this.timelineChartObjs = timelineChartObjs;
-	}
+		LinkedHashMap<Long, Integer> tweetsMonthMap = new LinkedHashMap<Long, Integer>();
+		LinkedHashMap<Long, Integer> rtsMonthMap = new LinkedHashMap<Long, Integer>();
 
-	public long getLowerBound() {
-		return lowerBound;
-	}
+		// set lower and upper bound useful for initialize structures
+		this.setLowerBound(searchID);
+		this.setUpperBound(searchID);
 
-	public void setLowerBound(long lowerBound) {
-		this.lowerBound = lowerBound;
-	}
+		this.initializeTimelines(tweetsHourMap, rtsHourMap, "hours");
+		this.initializeTimelines(tweetsDayMap, rtsDayMap, "days");
+		this.initializeTimelines(tweetsWeekMap, rtsWeekMap, "weeks");
+		this.initializeTimelines(tweetsMonthMap, rtsMonthMap, "months");
 
-	public long getUpperBound() {
-		return upperBound;
-	}
-
-	public void setUpperBound(long upperBound) {
-		this.upperBound = upperBound;
-	}
-
-	public List<TwitterTimelinePojo> getTimelineObjs(String searchIDStr, String timeFilter) {
-
-		logger.debug("Method getTimelineObjs(): Start with timeFiler: " + timeFilter);
-
-		long searchID = Long.parseLong(searchIDStr);
-
-		// initialize structures
-		this.initializeTimeline(this.getTweetsTimes(searchIDStr), timeFilter);
-
-		String sqlQuery = "SELECT t.time_created_at, t.is_retweet from twitter_data t where search_id = '" + searchID + "' order by t.time_created_at DESC";
+		String sqlQuery = "SELECT t.time_created_at, t.is_retweet from twitter_data t where search_id = '" + searchID + "' order by t.time_created_at ASC";
 
 		try {
 
 			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
 
-			if (rs != null) {
+			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
 
-				while (rs.next()) {
+			while (rs.next()) {
 
-					boolean isRetweet = rs.getBoolean("is_retweet");
-					java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
+				boolean isRetweet = rs.getBoolean("is_retweet");
+				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
 
-					Calendar tweetTime = GregorianCalendar.getInstance();
+				Assert.assertNotNull(isRetweet, "SQL NULL for is_retweet column in results of [ " + sqlQuery + " ] ");
+				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
 
-					tweetTime.setTime(timeFromDB);
+				long hourRoundedTime = roundTime("hours", timeFromDB);
+				long dayRoundedTime = roundTime("days", timeFromDB);
+				long weekRoundedTime = roundTime("weeks", timeFromDB);
+				long monthRoundedTime = roundTime("months", timeFromDB);
 
-					tweetTime = roundTime(timeFilter, tweetTime);
-
-					long tweetTimeMills = tweetTime.getTimeInMillis();
-
-					if (this.tweetsMap.containsKey(tweetTimeMills)) {
-						int tweets = this.tweetsMap.get(tweetTimeMills);
-						tweets++;
-						this.tweetsMap.put(tweetTimeMills, tweets);
-
-						if (isRetweet) {
-							int retweets = this.rtsMap.get(tweetTimeMills);
-							retweets++;
-							this.rtsMap.put(tweetTimeMills, retweets);
-						}
-					}
-				}
+				this.updateTimelineCounters(tweetsHourMap, rtsHourMap, hourRoundedTime, isRetweet);
+				this.updateTimelineCounters(tweetsDayMap, rtsDayMap, dayRoundedTime, isRetweet);
+				this.updateTimelineCounters(tweetsWeekMap, rtsWeekMap, weekRoundedTime, isRetweet);
+				this.updateTimelineCounters(tweetsMonthMap, rtsMonthMap, monthRoundedTime, isRetweet);
 			}
 
-			for (Map.Entry<Long, Integer> entry : this.tweetsMap.entrySet()) {
+			JSONArray hourJSONArray = this.convertLinkedHashMapsIntoString(tweetsHourMap, rtsHourMap);
+			JSONArray dayJSONArray = this.convertLinkedHashMapsIntoString(tweetsDayMap, rtsDayMap);
+			JSONArray weekJSONArray = this.convertLinkedHashMapsIntoString(tweetsWeekMap, rtsWeekMap);
+			JSONArray monthJSONArray = this.convertLinkedHashMapsIntoString(tweetsMonthMap, rtsMonthMap);
 
+			this.hourData = hourJSONArray.toString();
+			this.dayData = dayJSONArray.toString();
+			this.weekData = weekJSONArray.toString();
+			this.monthData = monthJSONArray.toString();
+
+			this.hourDataOverview = this.getDataOverviewFromFullData(hourJSONArray).toString();
+			this.dayDataOverview = this.getDataOverviewFromFullData(dayJSONArray).toString();
+			this.weekDataOverview = this.getDataOverviewFromFullData(weekJSONArray).toString();
+			this.monthDataOverview = this.getDataOverviewFromFullData(monthJSONArray).toString();
+
+			this.weekTicks = this.createWeekTicks(weekJSONArray).toString();
+
+			logger.debug("Method initializeTwitterTimelineDataProcessor(): End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method initializeTwitterDocumentsDataProcessor(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
+		}
+	}
+
+	/**
+	 * This method get min tweet time for a search
+	 *
+	 * @param searchID
+	 */
+	private void setLowerBound(String searchID) {
+
+		logger.debug("Method  setLowerBound(): Start");
+
+		String sqlQuery = "SELECT time_created_at FROM twitter_data WHERE search_id = '" + searchID + "' ORDER BY date_created_at ASC";
+
+		try {
+
+			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+
+			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
+
+			if (rs.next()) {
+
+				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
+
+				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
+
+				this.lowerBound = timeFromDB;
+			}
+
+		} catch (Exception e) {
+			throw new SpagoBIRuntimeException("Method  setLowerBound(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
+		}
+	}
+
+	/**
+	 * This method get max tweet time for a search
+	 *
+	 * @param searchID
+	 */
+	private void setUpperBound(String searchID) {
+
+		logger.debug("Method  setUpperBound(): Start");
+
+		String sqlQuery = "SELECT time_created_at FROM twitter_data WHERE search_id = '" + searchID + "' ORDER BY date_created_at DESC";
+
+		try {
+
+			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+
+			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
+
+			if (rs.next()) {
+
+				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
+
+				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
+
+				this.upperBound = timeFromDB;
+			}
+
+		} catch (Exception e) {
+			throw new SpagoBIRuntimeException("Method  setUpperBound(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
+		}
+	}
+
+	/**
+	 * This method completes the timelines adding 0 values
+	 *
+	 * @param tweetTimelineMap
+	 * @param rtTimelineMap
+	 * @param filter
+	 */
+	private void initializeTimelines(LinkedHashMap<Long, Integer> tweetTimelineMap, LinkedHashMap<Long, Integer> rtTimelineMap, String filter) {
+
+		Calendar lowerCalendar = GregorianCalendar.getInstance();
+		Calendar upperCalendar = GregorianCalendar.getInstance();
+
+		long roundedLowerBound = roundTime(filter, this.lowerBound);
+		long roundedUpperBound = roundTime(filter, this.upperBound);
+
+		lowerCalendar.setTimeInMillis(roundedLowerBound);
+		upperCalendar.setTimeInMillis(roundedUpperBound);
+
+		if (filter.equalsIgnoreCase("hours")) {
+
+			lowerCalendar.add(Calendar.HOUR_OF_DAY, -1);
+			upperCalendar.add(Calendar.HOUR_OF_DAY, 1);
+
+		} else if (filter.equalsIgnoreCase("days")) {
+
+			lowerCalendar.add(Calendar.DAY_OF_MONTH, -1);
+			upperCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+		} else if (filter.equalsIgnoreCase("weeks")) {
+
+			lowerCalendar.add(Calendar.WEEK_OF_YEAR, -1);
+			upperCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+		}
+
+		else if (filter.equalsIgnoreCase("months")) {
+
+			lowerCalendar.add(Calendar.MONTH, -1);
+			upperCalendar.add(Calendar.MONTH, 1);
+		}
+
+		while (lowerCalendar.compareTo(upperCalendar) <= 0) {
+
+			long tempMinMills = lowerCalendar.getTimeInMillis();
+
+			tweetTimelineMap.put(tempMinMills, 0);
+			rtTimelineMap.put(tempMinMills, 0);
+
+			if (filter.equalsIgnoreCase("hours")) {
+
+				lowerCalendar.add(Calendar.HOUR_OF_DAY, 1);
+
+			} else if (filter.equalsIgnoreCase("days")) {
+
+				lowerCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+			} else if (filter.equalsIgnoreCase("weeks")) {
+
+				lowerCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+			}
+
+			else if (filter.equalsIgnoreCase("months")) {
+
+				lowerCalendar.add(Calendar.MONTH, 1);
+			}
+
+		}
+
+	}
+
+	/**
+	 * This method rounds a timestamp looking at the time filter
+	 *
+	 * @param filter
+	 * @param tempTime
+	 * @return
+	 */
+	private long roundTime(String filter, java.sql.Timestamp sqlTimestamp) {
+
+		Calendar tempTime = GregorianCalendar.getInstance();
+		tempTime.setTime(sqlTimestamp);
+
+		if (filter.equalsIgnoreCase("hours")) {
+
+			// round for hours
+			tempTime.set(Calendar.MINUTE, 0);
+			tempTime.set(Calendar.SECOND, 0);
+			tempTime.set(Calendar.MILLISECOND, 0);
+
+		} else if (filter.equalsIgnoreCase("days")) {
+
+			// round for days
+			tempTime.set(Calendar.HOUR_OF_DAY, 0);
+			tempTime.set(Calendar.MINUTE, 0);
+			tempTime.set(Calendar.SECOND, 0);
+			tempTime.set(Calendar.MILLISECOND, 0);
+
+		} else if (filter.equalsIgnoreCase("weeks")) {
+
+			// round for weeks
+			tempTime.set(Calendar.HOUR_OF_DAY, 0);
+			tempTime.set(Calendar.MINUTE, 0);
+			tempTime.set(Calendar.SECOND, 0);
+			tempTime.set(Calendar.MILLISECOND, 0);
+			tempTime.set(Calendar.DAY_OF_WEEK, tempTime.getFirstDayOfWeek());
+
+		}
+
+		else if (filter.equalsIgnoreCase("months")) {
+
+			// round for weeks
+			tempTime.set(Calendar.HOUR_OF_DAY, 0);
+			tempTime.set(Calendar.MINUTE, 0);
+			tempTime.set(Calendar.SECOND, 0);
+			tempTime.set(Calendar.MILLISECOND, 0);
+			tempTime.set(Calendar.DAY_OF_MONTH, 1);
+
+		}
+
+		return tempTime.getTimeInMillis() + (CONST_TIMEZONE);
+	}
+
+	/**
+	 * This method manages differents tweet and rt maps
+	 *
+	 * @param tweetTimelineMap
+	 * @param rtTimelineMap
+	 * @param roundedMills
+	 * @param isRetweet
+	 */
+	private void updateTimelineCounters(LinkedHashMap<Long, Integer> tweetTimelineMap, LinkedHashMap<Long, Integer> rtTimelineMap, long roundedMills,
+			boolean isRetweet) {
+
+		if (tweetTimelineMap.containsKey(roundedMills)) {
+			int tweets = tweetTimelineMap.get(roundedMills);
+			tweets++;
+			tweetTimelineMap.put(roundedMills, tweets);
+
+			if (isRetweet) {
+				int retweets = rtTimelineMap.get(roundedMills);
+				retweets++;
+				rtTimelineMap.put(roundedMills, retweets);
+			}
+		}
+	}
+
+	/**
+	 * This method prepares data for JSP and creates JSONArray from LinkedHashMaps
+	 *
+	 * @param tweetTimelineMap
+	 * @param rtTimelineMap
+	 * @return
+	 */
+	private JSONArray convertLinkedHashMapsIntoString(LinkedHashMap<Long, Integer> tweetTimelineMap, LinkedHashMap<Long, Integer> rtTimelineMap) {
+
+		// We have to create this structure: [ {data: [ [] [] ], label: "# of tweets"]}, {{data: [ [] [] ], label: "# of RTs"]} ]
+
+		try {
+			JSONArray result = new JSONArray();
+
+			JSONArray tweetData = new JSONArray();
+			JSONArray RTweetData = new JSONArray();
+
+			for (Map.Entry<Long, Integer> entry : tweetTimelineMap.entrySet()) {
+
+				// TODO: add a check for equal time tweet and rt
 				long time = entry.getKey();
 				int nTweets = entry.getValue();
-				int nRTs = this.rtsMap.get(time);
-				TwitterTimelinePojo obj = new TwitterTimelinePojo(time, nTweets, nRTs, lowerBound, upperBound);
-				this.timelineChartObjs.add(obj);
+				int nRTs = rtTimelineMap.get(time);
+
+				JSONArray tempTElement = new JSONArray();
+				JSONArray tempRTElement = new JSONArray();
+
+				tempTElement.put(time);
+				tempTElement.put(nTweets);
+
+				tweetData.put(tempTElement);
+
+				tempRTElement.put(time);
+				tempRTElement.put(nRTs);
+
+				RTweetData.put(tempRTElement);
 			}
 
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			JSONObject tweetJson = new JSONObject();
+
+			tweetJson.put("data", tweetData);
+			tweetJson.put("label", "# of tweets");
+
+			JSONObject rtJson = new JSONObject();
+
+			rtJson.put("data", RTweetData);
+			rtJson.put("label", "# of RTs");
+
+			result.put(tweetJson);
+			result.put(rtJson);
+
+			logger.debug("Method convertLinkedHashMapsIntoJsonArray(): Resulting JSON array is " + result.toString());
+
+			return result;
+
+		} catch (JSONException e) {
+			throw new SpagoBIRuntimeException("Method convertLinkedHashMapsIntoJsonArray(): Impossible to create a correct timeline parsing JSON data ", e);
 		}
+	}
 
-		logger.debug("Method getTimelineObjs(): End");
-		return this.timelineChartObjs;
+	private JSONArray getDataOverviewFromFullData(JSONArray fullData) {
 
+		// We have to create this structure: [ {data: [ [] [] ] }, {data: [ [] [] ] } ]
+
+		try {
+
+			JSONArray result = new JSONArray();
+
+			for (int i = 0; i < fullData.length(); i++) {
+
+				JSONObject tempObj = fullData.getJSONObject(i);
+				JSONArray tempArr = tempObj.getJSONArray("data");
+
+				result.put(new JSONObject().put("data", tempArr));
+			}
+
+			return result;
+
+		} catch (JSONException e) {
+			throw new SpagoBIRuntimeException("Method getDataOverviewFromFullData(): Impossible to create a correct overview data parsing JSON data ", e);
+		}
 	}
 
 	/**
-	 * This method finds the min date for a search
+	 * This method helps to create week label
 	 *
-	 * @param searchIDStr
-	 *            : search ID
-	 * @return formatted minimum date for this search
+	 * @return
 	 */
-	public String getMinDateSearch(String searchIDStr) {
-
-		logger.debug("Method getMinDataSearch(): Start");
-
-		long searchID = Long.parseLong(searchIDStr);
-
-		String minDate = "";
-
-		String sqlQuery = "SELECT date_created_at FROM twitter_data WHERE search_id = " + searchID + " ORDER BY date_created_at ASC";
+	private JSONArray createWeekTicks(JSONArray overviewData) {
 
 		try {
 
-			logger.debug("Method getMinDataSearch(): Retrieving minimum date for search: " + searchID);
+			List<Long> ticks = new ArrayList<Long>();
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			if (overviewData.length() > 0) {
+				JSONObject data = overviewData.getJSONObject(0);
+				JSONArray jArray = data.getJSONArray("data");
 
-			if (rs != null) {
+				for (int i = 0; i < jArray.length(); i++) {
 
-				if (rs.next()) {
-					java.sql.Date tempDate = rs.getDate("date_created_at");
-
-					SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
-					minDate = simpleDataFormatter.format(tempDate.getTime());
+					JSONArray tempArr = jArray.getJSONArray(i);
+					ticks.add(tempArr.getLong(0));
 				}
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getMinDataSearch(): Error retrieving minimum date for search: " + searchID + " - " + e);
-		}
+			JSONArray result = new JSONArray();
 
-		logger.debug("Method getMinDataSearch(): End");
-		return minDate;
-	}
-
-	/**
-	 * This method finds the max date for a search
-	 *
-	 * @param searchIDStr
-	 *            : search ID
-	 * @return formatted maximum date for this search
-	 */
-	public String getMaxDateSearch(String searchIDStr) {
-
-		logger.debug("Method getMaxDateSearch(): Start");
-
-		long searchID = Long.parseLong(searchIDStr);
-
-		String maxDate = "";
-
-		String sqlQuery = "SELECT date_created_at FROM twitter_data WHERE search_id = " + searchID + " ORDER BY date_created_at DESC";
-
-		try {
-
-			logger.debug("Method getMaxDateSearch(): Retrieving max date for search: " + searchID);
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			if (rs != null) {
-
-				if (rs.next()) {
-					java.sql.Date tempDate = rs.getDate("date_created_at");
-
-					SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
-					maxDate = simpleDataFormatter.format(tempDate.getTime());
-				}
+			for (long mills : ticks) {
+				result.put(mills);
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getMaxDateSearch(): Error retrieving max date for search: " + searchID + " - " + e);
-		}
+			return result;
 
-		logger.debug("Method getMaxDateSearch(): End");
-		return maxDate;
-	}
-
-	private List<Calendar> getTweetsTimes(String searchID) {
-		logger.debug("Method getTweetTimes(): Start");
-
-		List<Calendar> timesList = new ArrayList<Calendar>();
-
-		String sqlQuery = "SELECT t.time_created_at from twitter_data t where search_id = '" + searchID + "' order by t.time_created_at DESC";
-
-		try {
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			if (rs != null) {
-
-				while (rs.next()) {
-
-					// recupero il time del tweet e lo converto ai mills
-					java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
-
-					Calendar tweetTime = GregorianCalendar.getInstance();
-					tweetTime.setTime(timeFromDB);
-
-					timesList.add(tweetTime);
-				}
-			}
-		} catch (SQLException e) {
-			logger.debug("Method getTweetTimes(): Error " + e.getMessage());
-		}
-
-		return timesList;
-
-	}
-
-	private void initializeTimeline(List<Calendar> times, String filter) {
-
-		// clear fields
-		this.roundedTimes = new ArrayList<Calendar>();
-		this.timelineChartObjs = new ArrayList<TwitterTimelinePojo>();
-		this.tweetsMap = new LinkedHashMap<Long, Integer>();
-		this.rtsMap = new LinkedHashMap<Long, Integer>();
-		this.upperBound = -1;
-		this.lowerBound = -1;
-
-		// initialize data
-
-		if (times != null && times.size() > 0) {
-
-			Calendar min = GregorianCalendar.getInstance();
-			Calendar max = GregorianCalendar.getInstance();
-
-			min.setTime(times.get(0).getTime());
-			max.setTime(times.get(0).getTime());
-
-			for (Calendar tempTime : times) {
-
-				tempTime = roundTime(filter, tempTime);
-
-				// max and min
-				if (tempTime.compareTo(min) < 0) {
-					min = tempTime;
-				}
-				if (tempTime.compareTo(max) > 0) {
-					max = tempTime;
-				}
-
-				// new rounded time list
-				this.roundedTimes.add(tempTime);
-
-			}
-
-			if (filter.equalsIgnoreCase("hours")) {
-
-				min.add(Calendar.HOUR_OF_DAY, -1);
-				max.add(Calendar.HOUR_OF_DAY, 1);
-
-			} else if (filter.equalsIgnoreCase("days")) {
-
-				min.add(Calendar.DAY_OF_MONTH, -1);
-				max.add(Calendar.DAY_OF_MONTH, 1);
-
-			} else if (filter.equalsIgnoreCase("weeks")) {
-
-				min.add(Calendar.WEEK_OF_YEAR, -1);
-				max.add(Calendar.WEEK_OF_YEAR, 1);
-			}
-
-			else if (filter.equalsIgnoreCase("months")) {
-
-				min.add(Calendar.MONTH, -1);
-				max.add(Calendar.MONTH, 1);
-			}
-
-			this.lowerBound = min.getTimeInMillis();
-			this.upperBound = max.getTimeInMillis();
-
-			while (min.compareTo(max) <= 0) {
-
-				this.tweetsMap.put(min.getTimeInMillis(), 0);
-				this.rtsMap.put(min.getTimeInMillis(), 0);
-
-				if (filter.equalsIgnoreCase("hours")) {
-
-					min.add(Calendar.HOUR_OF_DAY, 1);
-
-				} else if (filter.equalsIgnoreCase("days")) {
-
-					min.add(Calendar.DAY_OF_MONTH, 1);
-
-				} else if (filter.equalsIgnoreCase("weeks")) {
-
-					min.add(Calendar.WEEK_OF_YEAR, 1);
-				}
-
-				else if (filter.equalsIgnoreCase("months")) {
-
-					min.add(Calendar.MONTH, 1);
-				}
-
-			}
-
+		} catch (JSONException e) {
+			throw new SpagoBIRuntimeException("Method createWeekTicks(): Impossible to create corret ticks parsing JSON data ", e);
 		}
 
 	}
 
-	private Calendar roundTime(String filter, Calendar tempTime) {
-		if (tempTime != null) {
-			if (filter.equalsIgnoreCase("hours")) {
-
-				// round for hours
-				tempTime.set(Calendar.MINUTE, 0);
-				tempTime.set(Calendar.SECOND, 0);
-				tempTime.set(Calendar.MILLISECOND, 0);
-
-			} else if (filter.equalsIgnoreCase("days")) {
-
-				// round for days
-				tempTime.set(Calendar.HOUR_OF_DAY, 0);
-				tempTime.set(Calendar.MINUTE, 0);
-				tempTime.set(Calendar.SECOND, 0);
-				tempTime.set(Calendar.MILLISECOND, 0);
-
-			} else if (filter.equalsIgnoreCase("weeks")) {
-
-				// round for weeks
-				tempTime.set(Calendar.HOUR_OF_DAY, 0);
-				tempTime.set(Calendar.MINUTE, 0);
-				tempTime.set(Calendar.SECOND, 0);
-				tempTime.set(Calendar.MILLISECOND, 0);
-				tempTime.set(Calendar.DAY_OF_WEEK, tempTime.getFirstDayOfWeek());
-
-			}
-
-			else if (filter.equalsIgnoreCase("months")) {
-
-				// round for weeks
-				tempTime.set(Calendar.HOUR_OF_DAY, 0);
-				tempTime.set(Calendar.MINUTE, 0);
-				tempTime.set(Calendar.SECOND, 0);
-				tempTime.set(Calendar.MILLISECOND, 0);
-				tempTime.set(Calendar.DAY_OF_MONTH, 1);
-
-			}
-
-			return tempTime;
-		} else {
-			return GregorianCalendar.getInstance();
-		}
+	public String getHourData() {
+		return hourData;
 	}
 
-	// public String customArrayParser(List<TwitterTimelinePojo> timelineObjs,
-	// String resultType) {
-	//
-	// String result = "[";
-	//
-	// if (timelineObjs != null && timelineObjs.size() > 0) {
-	// for (int i = 0; i < timelineObjs.size(); i++) {
-	// TwitterTimelinePojo tempObj = timelineObjs.get(i);
-	//
-	// long timeMills = tempObj.getPostTimeMills();
-	//
-	//
-	// if(resultType.equalsIgnoreCase("tweet"))
-	//
-	// if (i == timelineObjs.size() - 1) {
-	// result = result + "[" + tempObj.getPostTimeMills() + "]" + "[" +
-	// tempObj.getPostTimeMills() + "]";
-	// } else {
-	// result = result + java.util.Arrays.toString(genericArray[i]) + ", ";
-	// }
-	// }
-	//
-	// }
-	//
-	// for (int i = 0; i < genericArray.length; i++) {
-	// if (i == genericArray.length - 1) {
-	// result = result + java.util.Arrays.toString(genericArray[i]);
-	// } else {
-	// result = result + java.util.Arrays.toString(genericArray[i]) + ", ";
-	// }
-	// }
-	//
-	// result = result + "]";
-	//
-	// return result;
-	// }
+	public String getDayData() {
+		return dayData;
+	}
+
+	public String getWeekData() {
+		return weekData;
+	}
+
+	public String getMonthData() {
+		return monthData;
+	}
+
+	public String getHourDataOverview() {
+		return hourDataOverview;
+	}
+
+	public String getDayDataOverview() {
+		return dayDataOverview;
+	}
+
+	public String getWeekDataOverview() {
+		return weekDataOverview;
+	}
+
+	public String getMonthDataOverview() {
+		return monthDataOverview;
+	}
+
+	public String getWeekTicks() {
+		return weekTicks;
+	}
+
 }

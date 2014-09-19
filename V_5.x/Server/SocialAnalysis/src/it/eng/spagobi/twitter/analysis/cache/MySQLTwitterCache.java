@@ -11,6 +11,7 @@ import it.eng.spagobi.twitter.analysis.pojos.TwitterMessageObject;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterMonitorSchedulerPojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchSchedulerPojo;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,8 +29,7 @@ import org.apache.log4j.Logger;
 import com.sun.rowset.CachedRowSetImpl;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class MySQLTwitterCache extends AbstractTwitterCache {
@@ -48,19 +48,18 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			Class.forName(getDriver()).newInstance();
 			conn = DriverManager.getConnection(getUrl(), getUserName(), getPassword());
 
-		} catch (InstantiationException e) {
+			return conn;
 
-			logger.debug("**** ERROR Connecting to the database: " + e);
+		} catch (InstantiationException e) {
+			throw new SpagoBIRuntimeException("Method openConnection(): Impossible to open a DB connection", e);
 		} catch (IllegalAccessException e) {
 
-			logger.debug("**** ERROR Connecting to the database: " + e);
+			throw new SpagoBIRuntimeException("Method openConnection(): Impossible to open a DB connection", e);
 		} catch (ClassNotFoundException e) {
-			logger.debug("**** ERROR Connecting to the database: " + e);
+			throw new SpagoBIRuntimeException("Method openConnection(): Impossible to open a DB connection", e);
 		} catch (SQLException e) {
-			logger.debug("**** ERROR Connecting to the database: " + e);
+			throw new SpagoBIRuntimeException("Method openConnection(): Impossible to open a DB connection", e);
 		}
-
-		return conn;
 
 	}
 
@@ -73,7 +72,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			}
 		} catch (SQLException e) {
 
-			logger.debug("**** ERROR Disconnecting to the database: " + e);
+			throw new SpagoBIRuntimeException("Method closeConnection(): Impossible to close a DB connection", e);
 		}
 
 	}
@@ -135,14 +134,15 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method insertTwitterSearch(): Error creating new search - " + e);
+			logger.debug("Method insertTwitterSearch(): End");
+
+			return searchID;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method insertTwitterSearch(): Error creating new search - " + e);
 
 		}
 
-		logger.debug("Method insertTwitterSearch(): End");
-
-		return searchID;
 	}
 
 	@Override
@@ -205,8 +205,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			logger.debug("Method insertTweet(): End");
 
-		} catch (Exception e) {
-			logger.debug("Method insertTweet(): Error creating new tweet - " + e);
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method insertTweet(): Error creating new tweet - " + e);
 
 		}
 
@@ -267,7 +267,7 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				throw new SQLException("Creating link failed, no generated key obtained.");
 			}
 		} catch (SQLException e) {
-			logger.debug("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
+			throw new SpagoBIRuntimeException("Method insertBitlyAnalysis(): Creating link failed, no generated key obtained." + e);
 		} finally {
 			if (generatedKeys != null)
 				try {
@@ -342,8 +342,8 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				logger.debug("Method insertTwitterUser(): User: " + twitterMessage.getUsername() + " already present in the DB");
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method insertTwitterUser(): Error inserting a user: " + e);
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method insertTwitterUser(): Error inserting a user: " + e);
 
 		}
 
@@ -374,12 +374,14 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			logger.debug("Method insertAccountToMonitor(): New account to monitor for search: " + accountToMonitor.getSearchID() + " inserted");
 
 			closeConnection();
-		} catch (Exception e) {
-			logger.debug("Method insertAccountToMonitor(): Error inserting new account to monitor for search: " + accountToMonitor.getSearchID());
+			logger.debug("Method insertAccountToMonitor(): End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method insertAccountToMonitor(): Error inserting new account to monitor for search: "
+					+ accountToMonitor.getSearchID());
 
 		}
 
-		logger.debug("Method insertAccountToMonitor(): End");
 	}
 
 	@Override
@@ -401,11 +403,11 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method runQuery(): Error running the query: " + sqlQuery + " - " + e.getMessage());
-		}
+			return rowset;
 
-		return rowset;
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method runQuery(): Error running the query: " + sqlQuery + " - " + e.getMessage());
+		}
 
 	}
 
@@ -433,11 +435,12 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method updateTwitterSearchLoading: Error updating loading field for search: " + searchID + " - " + e);
+			logger.debug("Method updateTwitterSearchLoading: End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method updateTwitterSearchLoading: Error updating loading field for search: " + searchID + " - " + e);
 		}
 
-		logger.debug("Method updateTwitterSearchLoading: End");
 	}
 
 	@Override
@@ -474,12 +477,12 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			st.executeUpdate();
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method stopStreamingSearch(): Error stopping search streams " + e);
-		}
+			logger.debug("Method stopStreamingSearch(): End");
+			return lastActiveID;
 
-		logger.debug("Method stopStreamingSearch(): End");
-		return lastActiveID;
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method stopStreamingSearch(): Error stopping search streams " + e);
+		}
 
 	}
 
@@ -503,11 +506,13 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 			st.executeUpdate();
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method insertTwitterSearchScheduler(): Error inserting search scheduler for search: " + twitterScheduler.getSearchID() + " - " + e);
+			logger.debug("Method insertTwitterSearchScheduler(): End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method insertTwitterSearchScheduler(): Error inserting search scheduler for search: "
+					+ twitterScheduler.getSearchID() + " - " + e);
 		}
 
-		logger.debug("Method insertTwitterSearchScheduler(): End");
 	}
 
 	@Override
@@ -539,14 +544,14 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 				closeConnection();
 
 				logger.debug("Method insertTwitterMonitorScheduler(): Monitor scheduler inserted for search " + twitterScheduler.getSearchID());
+				logger.debug("Method insertTwitterMonitorScheduler(): End");
 
-			} catch (Exception e) {
-				logger.debug("Method insertTwitterMonitorScheduler(): Error inserting monitor scheduler for search " + twitterScheduler.getSearchID() + " - "
-						+ e.getMessage());
+			} catch (SQLException e) {
+				throw new SpagoBIRuntimeException("Method insertTwitterMonitorScheduler(): Error inserting monitor scheduler for search "
+						+ twitterScheduler.getSearchID() + " - " + e.getMessage());
 			}
 		}
 
-		logger.debug("Method insertTwitterMonitorScheduler(): End");
 	}
 
 	@Override
@@ -585,11 +590,12 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method deleteSearch(): Error deleting search " + twitterSearch.getSearchID() + " - " + e);
+			logger.debug("Method deleteSearch()deleteSearch(): End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method deleteSearch(): Error deleting search " + twitterSearch.getSearchID() + " - " + e);
 		}
 
-		logger.debug("Method deleteSearch()deleteSearch(): End");
 	}
 
 	@Override
@@ -610,12 +616,12 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method updateStartingDateSearchScheduler: Error updating search scheduler for search: " + twitterSearchSchedulerPojo.getSearchID()
-					+ " - " + e);
-		}
+			logger.debug("Method updateStartingDateSearchScheduler: End");
 
-		logger.debug("Method updateStartingDateSearchScheduler: End");
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method updateStartingDateSearchScheduler: Error updating search scheduler for search: "
+					+ twitterSearchSchedulerPojo.getSearchID() + " - " + e);
+		}
 
 	}
 
@@ -655,12 +661,13 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method stopSearchScheduler(): Error updating search scheduler for search: " + twitterSearch.getSearchID() + " - " + e);
-		}
+			logger.debug("Method stopSearchScheduler(): End");
+			return twitterMonitor;
 
-		logger.debug("Method stopSearchScheduler(): End");
-		return twitterMonitor;
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method stopSearchScheduler(): Error updating search scheduler for search: " + twitterSearch.getSearchID()
+					+ " - " + e);
+		}
 
 	}
 
@@ -681,17 +688,18 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method updateMonitorScheduler(): Error updating monitor scheduler for search: " + twitterMonitorSchedulerPojo.getSearchID() + " - "
-					+ e);
-		}
+			logger.debug("Method updateMonitorScheduler(): End");
 
-		logger.debug("Method updateMonitorScheduler(): End");
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method updateMonitorScheduler(): Error updating monitor scheduler for search: "
+					+ twitterMonitorSchedulerPojo.getSearchID() + " - " + e);
+		}
 
 	}
 
 	@Override
 	public TwitterMonitorSchedulerPojo getTwitterMonitorScheduler(long searchID) {
+
 		logger.debug("Method getTwitterMonitorScheduler(): Start");
 
 		TwitterMonitorSchedulerPojo twitterMonitor = null;
@@ -726,12 +734,14 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method getTwitterMonitorScheduler(): Error updating search scheduler for search: " + searchID + " - " + e.getMessage());
+			logger.debug("Method getTwitterMonitorScheduler(): End");
+			return twitterMonitor;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getTwitterMonitorScheduler(): Error updating search scheduler for search: " + searchID + " - "
+					+ e.getMessage());
 		}
 
-		logger.debug("Method getTwitterMonitorScheduler(): End");
-		return twitterMonitor;
 	}
 
 	@Override
@@ -748,10 +758,11 @@ public class MySQLTwitterCache extends AbstractTwitterCache {
 
 			closeConnection();
 
-		} catch (Exception e) {
-			logger.debug("Method updateFailedSearch(): Error updating a failed search: " + searchID + " - " + e);
+			logger.debug("Method updateFailedSearch(): End");
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method updateFailedSearch(): Error updating a failed search: " + searchID + " - " + e);
 		}
 
-		logger.debug("Method updateFailedSearch(): End");
 	}
 }

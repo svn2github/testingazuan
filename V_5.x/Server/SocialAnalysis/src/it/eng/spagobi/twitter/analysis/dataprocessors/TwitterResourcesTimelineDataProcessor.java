@@ -1,30 +1,16 @@
-/**
+/* SpagoBI, the Open Source Business Intelligence suite
 
-SpagoBI - The Business Intelligence Free Platform
-
-Copyright (C) 2005-2010 Engineering Ingegneria Informatica S.p.A.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- **/
-
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
 import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
@@ -35,11 +21,11 @@ import javax.sql.rowset.CachedRowSet;
 import org.apache.log4j.Logger;
 
 import twitter4j.JSONArray;
+import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 
@@ -49,15 +35,22 @@ public class TwitterResourcesTimelineDataProcessor {
 
 	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
 
-	private Calendar getMaxTimeResourceToMonitor(String searchIDStr, String tableName) {
+	/**
+	 * This method retrieves max time for resources
+	 *
+	 * @param searchID
+	 * @param tableName
+	 * @return
+	 */
+	private Calendar getMaxTimeResourceToMonitor(String searchID, String tableName) {
 
 		logger.debug("Method getMaxTimeResourceToMonitor(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
 		Calendar maxTime = GregorianCalendar.getInstance();
 
-		String sqlQuery = "SELECT timestamp FROM " + tableName + " WHERE search_id = " + searchID + " ORDER BY timestamp DESC";
+		String sqlQuery = "SELECT timestamp FROM " + tableName + " WHERE search_id = '" + searchID + "' ORDER BY timestamp DESC";
 
 		try {
 
@@ -78,23 +71,31 @@ public class TwitterResourcesTimelineDataProcessor {
 				}
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getMaxTimeResourceToMonitor(): Error retrieving max date for search: " + searchID + " - " + e);
+			logger.debug("Method getMaxTimeResourceToMonitor(): End");
+			return maxTime;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getMaxTimeResourceToMonitor(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
 
-		logger.debug("Method getMaxTimeResourceToMonitor(): End");
-		return maxTime;
 	}
 
-	private Calendar getMinTimeResourceToMonitor(String searchIDStr, String tableName) {
+	/**
+	 * This method retrieves min time for resources
+	 *
+	 * @param searchID
+	 * @param tableName
+	 * @return
+	 */
+	private Calendar getMinTimeResourceToMonitor(String searchID, String tableName) {
 
 		logger.debug("Method getMinTimeResourceToMonitor(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
 		Calendar minTime = GregorianCalendar.getInstance();
 
-		String sqlQuery = "SELECT timestamp FROM " + tableName + " WHERE search_id = " + searchID + " ORDER BY timestamp ASC";
+		String sqlQuery = "SELECT timestamp FROM " + tableName + " WHERE search_id = '" + searchID + "' ORDER BY timestamp ASC";
 
 		try {
 
@@ -115,31 +116,32 @@ public class TwitterResourcesTimelineDataProcessor {
 				}
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getMinTimeResourceToMonitor(): Error retrieving max date for search: " + searchID + " - " + e);
+			logger.debug("Method getMinTimeResourceToMonitor(): End");
+			return minTime;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getMinTimeResourceToMonitor(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
 
-		logger.debug("Method getMinTimeResourceToMonitor(): End");
-		return minTime;
 	}
 
-	public JSONObject getFollowers(String searchIDStr, String timeFilter) {
+	public JSONObject getFollowers(String searchID, String timeFilter) {
 
 		logger.debug("Method getFollowersTimelineObjs(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
-		Calendar minTime = getMinTimeResourceToMonitor(searchIDStr, "twitter_accounts_to_monitor");
-		Calendar maxTime = getMaxTimeResourceToMonitor(searchIDStr, "twitter_accounts_to_monitor");
+		Calendar minTime = getMinTimeResourceToMonitor(searchID, "twitter_accounts_to_monitor");
+		Calendar maxTime = getMaxTimeResourceToMonitor(searchID, "twitter_accounts_to_monitor");
 
 		minTime = roundTime(timeFilter, minTime);
 		maxTime = roundTime(timeFilter, maxTime);
 
 		JSONObject accountFollowersJSON = new JSONObject();
 
-		try {
+		String sqlAccountQuery = "SELECT account_name from twitter_accounts_to_monitor where search_id = '" + searchID + "' GROUP BY account_name ";
 
-			String sqlAccountQuery = "SELECT account_name from twitter_accounts_to_monitor where search_id = '" + searchID + "' GROUP BY account_name ";
+		try {
 
 			CachedRowSet accountRS = twitterCache.runQuery(sqlAccountQuery);
 
@@ -270,34 +272,36 @@ public class TwitterResourcesTimelineDataProcessor {
 
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getFollowersTimelineObjs(): Error calculating timeline for search: " + searchID + " - " + e);
+			logger.debug("Method getFollowersTimelineObjs(): End");
+
+			logger.debug(accountFollowersJSON.toString());
+			return accountFollowersJSON;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getFollowersTimelineObjs(): Impossible to exectute sql query [ " + sqlAccountQuery + " ]", e);
+		} catch (JSONException e) {
+			throw new SpagoBIRuntimeException("Method getFollowersTimelineObjs(): Impossible to create a corret JSON ", e);
 		}
-
-		logger.debug("Method getFollowersTimelineObjs(): End");
-
-		logger.debug(accountFollowersJSON.toString());
-		return accountFollowersJSON;
 
 	}
 
-	public JSONObject getClicks(String searchIDStr, String timeFilter) {
+	public JSONObject getClicks(String searchID, String timeFilter) {
 
 		logger.debug("Method getClicks(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
-		Calendar minTime = getMinTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
-		Calendar maxTime = getMaxTimeResourceToMonitor(searchIDStr, "twitter_links_to_monitor");
+		Calendar minTime = getMinTimeResourceToMonitor(searchID, "twitter_links_to_monitor");
+		Calendar maxTime = getMaxTimeResourceToMonitor(searchID, "twitter_links_to_monitor");
 
 		minTime = roundTime(timeFilter, minTime);
 		maxTime = roundTime(timeFilter, maxTime);
 
 		JSONObject linkClicksJSON = new JSONObject();
 
-		try {
+		String sqlLinkQuery = "SELECT link from twitter_links_to_monitor where search_id = '" + searchID + "' GROUP BY link ";
 
-			String sqlLinkQuery = "SELECT link from twitter_links_to_monitor where search_id = '" + searchID + "' GROUP BY link ";
+		try {
 
 			CachedRowSet linkRS = twitterCache.runQuery(sqlLinkQuery);
 
@@ -428,21 +432,22 @@ public class TwitterResourcesTimelineDataProcessor {
 
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getClicks(): Error calculating timeline for search: " + searchID + " - " + e);
+			logger.debug("Method getClicks(): End");
+			return linkClicksJSON;
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getClicks(): Impossible to exectute sql query [ " + sqlLinkQuery + " ]", e);
+		} catch (JSONException e) {
+			throw new SpagoBIRuntimeException("Method getClicks(): Impossible to create a corret JSON ", e);
 		}
-
-		logger.debug("Method getClicks(): End");
-
-		return linkClicksJSON;
 
 	}
 
-	public String getVisualizationType(String searchIDStr) {
+	public String getVisualizationType(String searchID) {
 
 		logger.debug("Method getVisualizationType(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
 		String type = "";
 
@@ -462,12 +467,13 @@ public class TwitterResourcesTimelineDataProcessor {
 				}
 			}
 
-		} catch (Exception e) {
-			logger.debug("Method getVisualizationType(): Error retrieving monitor scheduler type for search: " + searchID + " - " + e);
+			logger.debug("Method getVisualizationType(): End");
+			return type.toLowerCase();
+
+		} catch (SQLException e) {
+			throw new SpagoBIRuntimeException("Method getVisualizationType(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
 
-		logger.debug("Method getVisualizationType(): End");
-		return type.toLowerCase();
 	}
 
 	private LinkedHashMap<Long, Integer> initializeTimeline(Calendar minTime, Calendar maxTime, String filter) {

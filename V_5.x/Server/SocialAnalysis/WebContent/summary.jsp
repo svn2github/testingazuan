@@ -1,13 +1,86 @@
+<%-- SpagoBI, the Open Source Business Intelligence suite
 
-
-<%@page import="com.sun.org.apache.xalan.internal.xsltc.runtime.Parameter"%>
-<%@page import="twitter4j.JSONObject"%>
+ Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.  If a copy of the MPL was not distributed with this file,
+ You can obtain one at http://mozilla.org/MPL/2.0/. --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    
-<%@ page import="java.util.*" %>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA IMPORTS															--%>
+<%-- ---------------------------------------------------------------------- --%>
+
 <%@ page import="it.eng.spagobi.twitter.analysis.dataprocessors.*" %>
 <%@ page import="it.eng.spagobi.twitter.analysis.pojos.*" %>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- JAVA CODE 																--%>
+<%-- ---------------------------------------------------------------------- --%>
+
+<%
+	String searchId = request.getParameter("searchID");
+	
+	String summaryLink = "summary.jsp?searchID=" + searchId;
+	String topicsLink = "topics.jsp?searchID=" + searchId; 
+	String networkLink = "network.jsp?searchID=" + searchId; 
+	String distributionLink = "distribution.jsp?searchID=" + searchId; 
+	String sentimentLink = "sentiment.jsp?searchID=" + searchId; 
+	String impactLink = "impact.jsp?searchID=" + searchId; 
+	String roiLink = "roi.jsp?searchID=" + searchId;
+	
+	/*************** GENERAL INFO ***********************************************************/
+	
+	TwitterGeneralStatsDataProcessor tGeneralDP = new TwitterGeneralStatsDataProcessor();
+	
+	int totalTweets = tGeneralDP.totalTweetsCounter(searchId);
+	int totalUsers = tGeneralDP.totalUsersCounter(searchId);
+	String minDate = tGeneralDP.getMinDateSearch(searchId);
+ 	String maxDate = tGeneralDP.getMaxDateSearch(searchId);
+	
+
+	/*************** TIMELINE ***************************************************************/
+
+	TwitterTimelineDataProcessor tTimelineDP = new TwitterTimelineDataProcessor();
+	tTimelineDP.initializeTwitterTimelineDataProcessor(searchId);
+	
+	String hourData = tTimelineDP.getHourData();
+	String dayData = tTimelineDP.getDayData();
+	String weekData = tTimelineDP.getWeekData();
+	String monthData = tTimelineDP.getMonthData();
+	
+	String hourDataOverview = tTimelineDP.getHourDataOverview();
+	String dayDataOverview = tTimelineDP.getDayDataOverview();
+	String weekDataOverview = tTimelineDP.getWeekDataOverview();
+	String monthDataOverview = tTimelineDP.getMonthDataOverview();
+	
+	String weekTicks = tTimelineDP.getWeekTicks();
+	
+	/*************** PIE CHARTS *************************************************************/
+	
+	TwitterPieDataProcessor tPieDP = new TwitterPieDataProcessor();
+	TwitterPiePojo pieChartObj = tPieDP.getTweetsPieChart(searchId);
+ 	List<TwitterPieSourcePojo> sources = tPieDP.getTweetsPieSourceChart(searchId);
+	
+	
+ 	/*************** TWEETS BOXs ************************************************************/
+	
+ 	TwitterTopTweetsDataProcessor tTopDP = new TwitterTopTweetsDataProcessor();
+ 	List<TwitterTopTweetsPojo> topTweets = tTopDP.getTopTweetsData(searchId, 30);
+ 	List<TwitterTopTweetsPojo> topRecents = tTopDP.getTopRecentTweetsData(searchId, 30);
+
+	
+	/*****************************************************************************************/
+	 
+%>
+
+<%-- ---------------------------------------------------------------------- --%>
+<%-- HTML	 																--%>
+<%-- ---------------------------------------------------------------------- --%>
+
 
 
     
@@ -32,87 +105,16 @@
 </head>
 <body>
 
-<%!
-
-public List<TwitterTopTweetsPojo> getTopTweets(String searchID)
-{
-	return new TwitterTopTweetsDataProcessor().getTopTweetsData(searchID, 30);
-}
-
-public List<TwitterTopTweetsPojo> getTopRecentTweets(String searchID)
-{
-	return new TwitterTopTweetsDataProcessor().getTopRecentTweetsData(searchID, 30);
-}
-
-public int getTotalTweets(String searchID)
-{
-	return new TwitterGeneralStatsDataProcessor().totalTweetsCounter(searchID);
-}
-
-public int getTotalUsers(String searchID)
-{
-	return new TwitterGeneralStatsDataProcessor().totalUsersCounter(searchID);
-}
-
-/*************** START PIE CHARTS *****************************************************/
-
-public TwitterPiePojo getTweetsPieChart(String searchID)
-{
-	return new TwitterPieDataProcessor().getTweetsPieChart(searchID);
-}
-
-public List<TwitterPieSourcePojo> getTweetsPieChartDevice(String searchID)
-{
-	return new TwitterPieDataProcessor().getTweetsPieSourceChart(searchID);
-}
-
-
-/*************** END PIE CHARTS *****************************************************/
-
-/*************** START TIMELINE *****************************************************/
-
-public List<TwitterTimelinePojo> getTimelineObjsWeekRounded(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getTimelineObjs(searchID, "weeks"); 
-}
-
-/*************** END TIMELINE *****************************************************/
-
-public String getMinSearchDate(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getMinDateSearch(searchID);
-}
-
-public String getMaxSearchDate(String searchID)
-{
-	return new TwitterTimelineDataProcessor().getMaxDateSearch(searchID);
-}
-
-
-	
-
-	/*****************/	
-
-%>
-
 <div id="navigation">
 
-	<% String summaryLink = "summary.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String topicsLink = "topics.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String networkLink = "network.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String distributionLink = "distribution.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String sentimentLink = "sentiment.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String impactLink = "impact.jsp?searchID=" + request.getParameter("searchID"); %>
-	<% String roiLink = "roi.jsp?searchID=" + request.getParameter("searchID"); %>
-
 	<ul>
-	    <li id="activelink"><a href=<% out.println(summaryLink); %>> Summary</a></li>
-	    <li><a href=<% out.println(topicsLink); %>>Topics</a></li>
-	    <li><a href=<% out.println(networkLink); %>>Network</a></li>
-	    <li><a href=<% out.println(distributionLink); %>>Distribution</a></li>
-	    <li><a href=<% out.println(sentimentLink); %>>Sentiment</a></li>
-	    <li><a href=<% out.println(impactLink); %>>Impact</a></li>
-	    <li><a href=<% out.println(roiLink); %>>ROI</a></li>
+	    <li id="activelink"><a href=<%= summaryLink %>> Summary</a></li>
+	    <li><a href=<%= topicsLink %>>Topics</a></li>
+	    <li><a href=<%= networkLink %>>Network</a></li>
+	    <li><a href=<%= distributionLink %>>Distribution</a></li>
+	    <li><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li><a href=<%= impactLink %>>Impact</a></li>
+	    <li><a href=<%= roiLink %>>ROI</a></li>
 	    <li style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         		
@@ -121,21 +123,21 @@ public String getMaxSearchDate(String searchID)
 		<div class="generalInfo_main">
 	
 			<div class="generalInfo_box">
-				<span class="generalInfo_infos" ><%= getTotalTweets(request.getParameter("searchID")) %></span>
+				<span class="generalInfo_infos" ><%= totalTweets %></span>
 				<br>
 				<span class="generalInfo_label" >tweets</span>
 			</div>
 		
 			<div class="generalInfo_box">
-				<span class="generalInfo_infos" ><%= getTotalUsers(request.getParameter("searchID")) %></span>
+				<span class="generalInfo_infos" ><%= totalUsers %></span>
 				<br>
 				<span class="generalInfo_label">users</span>
 			</div>
 			
 			<div class="blank_box dateRange_box" style="float:left;">
-				<span class="dateRange_dates"><%= getMinSearchDate(request.getParameter("searchID")) %></span>
+				<span class="dateRange_dates"><%= minDate %></span>
 				<br />
-				<span class="dateRange_dates"><%= getMaxSearchDate(request.getParameter("searchID")) %></span>
+				<span class="dateRange_dates"><%= maxDate %></span>
 				<br />
 				<span class="dateRange_label">Date range</span>
 			</div>
@@ -196,7 +198,7 @@ public String getMaxSearchDate(String searchID)
 		<div class="twitterTopRT_box">
 			<ol>
 					<%						
-						for (TwitterTopTweetsPojo topObj : getTopTweets(request.getParameter("searchID"))) 
+						for (TwitterTopTweetsPojo topObj : topTweets) 
 						{ 
 							
 					%>			
@@ -243,7 +245,7 @@ public String getMaxSearchDate(String searchID)
 		<div class="twitterTopRT_box">
 			<ol>
 					<%						
-						for (TwitterTopTweetsPojo topObj : getTopRecentTweets(request.getParameter("searchID"))) 
+						for (TwitterTopTweetsPojo topObj : topRecents) 
 						{ 
 							
 					%>			
@@ -288,339 +290,220 @@ public String getMaxSearchDate(String searchID)
 		
 			$(function() 
 			{
+				var hourlyData = <%= hourData %>
+				var dailyData = <%= dayData %>
+				var weeklyData = <%= weekData %>
+				var monthlyData = <%= monthData %>
 				
-				<% 				
+				var hourlyDataOverview = <%= hourDataOverview %>
+				var dailyDataOverview = <%= dayDataOverview %>
+				var weeklyDataOverview = <%= weekDataOverview %>
+				var monthlyDataOverview = <%= monthDataOverview %>
 				
-					List<TwitterTimelinePojo> weeklyTimelineChartObjs = getTimelineObjsWeekRounded(request.getParameter("searchID"));
+				var ticks = <%= weekTicks %>			
+					
+				// helper for returning the weekends in a period
 
-				%>	
-				
-				
-				var tWeeklyData = 
-					[
-					 	
-						<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
-							[
-								<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-							],	               						
-						<% } %>
-					 
-	                ]; 
-				
-				var ticks = [];
-			
-				
-				for (var i = 0; i < tWeeklyData.length; i++) 
-				{
-				 	ticks.push(tWeeklyData[i][0]);
+				function weekendAreas(axes) {
+
+					var markings = [],
+						d = new Date(axes.xaxis.min);
+
+					// go to the first Saturday
+
+					d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
+					d.setUTCSeconds(0);
+					d.setUTCMinutes(0);
+					d.setUTCHours(0);
+
+					var i = d.getTime();
+
+					// when we don't set yaxis, the rectangle automatically
+					// extends to infinity upwards and downwards
+
+					do {
+						markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
+						i += 7 * 24 * 60 * 60 * 1000;
+					} while (i < axes.xaxis.max);
+
+					return markings;
 				}
-			
-				
-				
 					
-					var weeklyData = 
-					[ 
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-		               			],	               						
-		               			<% } %>
-		                     ], 
-		            	     label: "# of tweets" 
-		                },
-						{ 
-		                	data: 
-		                	[
-		               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
-		               			[
-		               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-		               			],
-		               			<% } %>
-		                    ], 
-		                    label: "# of RTs" }
-		            ];
-									
-						
-						var weeklyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ]
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
-						
-						
-						
-					
-					// helper for returning the weekends in a period
-
-					function weekendAreas(axes) {
-
-						var markings = [],
-							d = new Date(axes.xaxis.min);
-
-						// go to the first Saturday
-
-						d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
-						d.setUTCSeconds(0);
-						d.setUTCMinutes(0);
-						d.setUTCHours(0);
-
-						var i = d.getTime();
-
-						// when we don't set yaxis, the rectangle automatically
-						// extends to infinity upwards and downwards
-
-						do {
-							markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
-							i += 7 * 24 * 60 * 60 * 1000;
-						} while (i < axes.xaxis.max);
-
-						return markings;
-					}
-					
-					var monthlyOptions = 
+				var monthlyOptions = 
+				{
+					xaxis: 
 					{
-						xaxis: 
+						mode: "time",
+						minTickSize: [1, "month"],
+						timeformat: "%b %Y"
+					},
+					yaxis: 
+					{
+						tickDecimals: 0
+					},
+					series: 
+					{
+						lines:
 						{
+							show: true,
+							fill: true
+						}
+					},
+					grid: {
+						hoverable: true,
+						clickable: true
+					},
+					legend:
+					{
+						container: $("#main-graph"),
+						noColumns:2,
+						margin: '5px',
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
+					
+				var weeklyOptions = 
+				{
+					xaxis: 
+					{
+						mode: "time",
+						ticks: ticks,
+						tickFormatter: function (val, axis) 
+						{
+							var month = new Array(12);
+							month[0] = "Jan";
+							month[1] = "Feb";
+							month[2] = "Mar";
+							month[3] = "Apr";
+							month[4] = "May";
+							month[5] = "Jun";
+							month[6] = "Jul";
+							month[7] = "Aug";
+							month[8] = "Sep";
+							month[9] = "Oct";
+							month[10] = "Nov";
+							month[11] = "Dec";
+							
+						    var firstDayWeek = new Date(val);
+						    firstDayWeek.setUTCSeconds(0);
+						    firstDayWeek.setUTCMinutes(0);
+						    firstDayWeek.setUTCHours(0);
+						    
+						    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
+						    
+						    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
+						},
+					},
+					yaxis: 
+					{
+						tickDecimals: 0
+					},
+					series: 
+					{
+						lines:
+						{
+							show: true,
+							fill: true
+						}
+					},
+					grid: 
+					{
+						hoverable: true,
+						clickable: true
+					},
+					legend:
+					{
+						container: $("#main-graph"),
+						noColumns:2,
+						margin: '5px',
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
+					
+				var dailyOptions = 
+				{
+					xaxis: 
+					{
+						mode: "time",
+						minTickSize: [1, "day"],
+						timeformat: "%d %b"
+					},
+					yaxis: 
+					{
+						tickDecimals: 0
+					},
+					series: 
+					{
+						lines:
+						{
+							show: true,
+							fill: true
+						}
+					},
+					grid: 
+					{
+						markings: weekendAreas,
+						hoverable: true,
+						clickable: true
+					},
+					legend:
+					{
+						container: $("#main-graph"),
+						noColumns:2,
+						margin: '5px',
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
+					
+				var hourlyOptions = 
+				{
+					xaxis: 
+					{
+						mode: "time",
+						minTickSize: [1, "hour"],
+						timeformat: "%d %b  %H:%M"
+					},
+					yaxis: 
+					{
+						tickDecimals: 0
+					},
+					series: 
+					{
+						lines:
+						{
+							show: true,
+							fill: true
+						}
+					},
+					grid: 
+					{
+						markings: weekendAreas,
+						hoverable: true,
+						clickable: true
+					},
+					legend:
+					{
+						container: $("#main-graph"),
+						noColumns:2,
+						margin: '5px',
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
+					
+				overviewOptionsMonth =
+					{
+						series: {
+							lines: {
+								show: true,
+								lineWidth: 1
+							},							
+							shadowSize: 0
+						},
+						xaxis: {
 							mode: "time",
 							minTickSize: [1, "month"],
 							timeformat: "%b %Y"
 						},
-						yaxis: 
-						{
-							tickDecimals: 0
-						},
-						series: 
-						{
-							lines:
-							{
-								show: true,
-								fill: true
-							}
-						},
-						grid: {
-							hoverable: true,
-							clickable: true
-						},
-						legend:
-						{
-							container: $("#main-graph"),
-							noColumns:2,
-							margin: '5px',
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
-					
-					var weeklyOptions = 
-					{
-						xaxis: 
-						{
-							mode: "time",
-							ticks: ticks,
-							tickFormatter: function (val, axis) 
-							{
-								var month = new Array(12);
-								month[0] = "Jan";
-								month[1] = "Feb";
-								month[2] = "Mar";
-								month[3] = "Apr";
-								month[4] = "May";
-								month[5] = "Jun";
-								month[6] = "Jul";
-								month[7] = "Aug";
-								month[8] = "Sep";
-								month[9] = "Oct";
-								month[10] = "Nov";
-								month[11] = "Dec";
-								
-							    var firstDayWeek = new Date(val);
-							    firstDayWeek.setUTCSeconds(0);
-							    firstDayWeek.setUTCMinutes(0);
-							    firstDayWeek.setUTCHours(0);
-							    
-							    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
-							    
-							    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
-							},
-						},
-						yaxis: 
-						{
-							tickDecimals: 0
-						},
-						series: 
-						{
-							lines:
-							{
-								show: true,
-								fill: true
-							}
-						},
-						grid: 
-						{
-							hoverable: true,
-							clickable: true
-						},
-						legend:
-						{
-							container: $("#main-graph"),
-							noColumns:2,
-							margin: '5px',
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
-					
-					var dailyOptions = 
-					{
-						xaxis: 
-						{
-							mode: "time",
-							minTickSize: [1, "day"],
-							timeformat: "%d %b"
-						},
-						yaxis: 
-						{
-							tickDecimals: 0
-						},
-						series: 
-						{
-							lines:
-							{
-								show: true,
-								fill: true
-							}
-						},
-						grid: 
-						{
-							markings: weekendAreas,
-							hoverable: true,
-							clickable: true
-						},
-						legend:
-						{
-							container: $("#main-graph"),
-							noColumns:2,
-							margin: '5px',
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
-					
-					var hourlyOptions = 
-					{
-						xaxis: 
-						{
-							mode: "time",
-							minTickSize: [1, "hour"],
-							timeformat: "%d %b  %H:%M"
-						},
-						yaxis: 
-						{
-							tickDecimals: 0
-						},
-						series: 
-						{
-							lines:
-							{
-								show: true,
-								fill: true
-							}
-						},
-						grid: 
-						{
-							markings: weekendAreas,
-							hoverable: true,
-							clickable: true
-						},
-						legend:
-						{
-							container: $("#main-graph"),
-							noColumns:2,
-							margin: '5px',
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
-					
-					overviewOptionsMonth =
-						{
-							series: {
-								lines: {
-									show: true,
-									lineWidth: 1
-								},							
-								shadowSize: 0
-							},
-							xaxis: {
-								mode: "time",
-								minTickSize: [1, "month"],
-								timeformat: "%b %Y"
-							},
-							yaxis: {
-								ticks: [],
-								min: 0,
-								autoscaleMargin: 0.1
-							},
-							selection: {
-								mode: "x"
-							},
-							colors: ["#ff0000", "#0000ff"]
-						};
-					
-					overviewOptionsWeek =
-					{
-						series: {
-							lines: {
-								show: true,
-								lineWidth: 1
-							},							
-							shadowSize: 0
-						},
-						xaxis: {
-							mode: "time",
-							ticks: ticks,
-							tickFormatter: function (val, axis) 
-							{
-								var month = new Array(12);
-								month[0] = "Jan";
-								month[1] = "Feb";
-								month[2] = "Mar";
-								month[3] = "Apr";
-								month[4] = "May";
-								month[5] = "Jun";
-								month[6] = "Jul";
-								month[7] = "Aug";
-								month[8] = "Sep";
-								month[9] = "Oct";
-								month[10] = "Nov";
-								month[11] = "Dec";
-								
-							    var firstDayWeek = new Date(val);
-							    firstDayWeek.setUTCSeconds(0);
-							    firstDayWeek.setUTCMinutes(0);
-							    firstDayWeek.setUTCHours(0);
-							    
-							    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
-							    
-							    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
-							},							
-						},
 						yaxis: {
 							ticks: [],
 							min: 0,
@@ -630,92 +513,106 @@ public String getMaxSearchDate(String searchID)
 							mode: "x"
 						},
 						colors: ["#ff0000", "#0000ff"]
-					};
-				
-					overviewOptionsDay =
-					{
-						series: {
-							lines: {
-								show: true,
-								lineWidth: 1
-							},							
-							shadowSize: 0
-						},
-						xaxis: {
-							mode: "time",
-							minTickSize: [1, "day"],
-							timeformat: "%d %b"
-						},
-						yaxis: {
-							ticks: [],
-							min: 0,
-							autoscaleMargin: 0.1
-						},
-						selection: {
-							mode: "x"
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
+				};
 					
-					overviewOptionsHour =
-					{
-						series: {
-							lines: {
-								show: true,
-								lineWidth: 1
-							},							
-							shadowSize: 0
-						},
-						xaxis: {
-							mode: "time",
-							minTickSize: [1, "hour"],
-							timeformat: "%d %b",
-						},
-						yaxis: {
-							ticks: [],
-							min: 0,
-							autoscaleMargin: 0.1
-						},
-						selection: {
-							mode: "x"
-						},
-						colors: ["#ff0000", "#0000ff"]
-					};
-					
+				overviewOptionsWeek =
+				{
+					series: {
+						lines: {
+							show: true,
+							lineWidth: 1
+						},							
+						shadowSize: 0
+					},
+					xaxis: {
+						mode: "time",
+						ticks: ticks,
+						tickFormatter: function (val, axis) 
+						{
+							var month = new Array(12);
+							month[0] = "Jan";
+							month[1] = "Feb";
+							month[2] = "Mar";
+							month[3] = "Apr";
+							month[4] = "May";
+							month[5] = "Jun";
+							month[6] = "Jul";
+							month[7] = "Aug";
+							month[8] = "Sep";
+							month[9] = "Oct";
+							month[10] = "Nov";
+							month[11] = "Dec";
+							
+						    var firstDayWeek = new Date(val);
+						    firstDayWeek.setUTCSeconds(0);
+						    firstDayWeek.setUTCMinutes(0);
+						    firstDayWeek.setUTCHours(0);
+						    
+						    var lastDayWeek = new Date(firstDayWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
+						    
+						    return ('0' + firstDayWeek.getUTCDate()).slice(-2) + " - " + ('0' + lastDayWeek.getUTCDate()).slice(-2) + " " + month[firstDayWeek.getUTCMonth()];
+						},							
+					},
+					yaxis: {
+						ticks: [],
+						min: 0,
+						autoscaleMargin: 0.1
+					},
+					selection: {
+						mode: "x"
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
 				
+				overviewOptionsDay =
+				{
+					series: {
+						lines: {
+							show: true,
+							lineWidth: 1
+						},							
+						shadowSize: 0
+					},
+					xaxis: {
+						mode: "time",
+						minTickSize: [1, "day"],
+						timeformat: "%d %b"
+					},
+					yaxis: {
+						ticks: [],
+						min: 0,
+						autoscaleMargin: 0.1
+					},
+					selection: {
+						mode: "x"
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
 				
-						
-						var weeklyDataOverview = 
-						[ 
-			                { 
-			           	    	data: 
-			           	    	[	               					   
-			               			<%   for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) { %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-			               			],	               						
-			               			<% } %>
-			                     ]
-			                },
-							{ 
-			                	data: 
-			                	[
-			               			<% 	for(TwitterTimelinePojo timelineObj : weeklyTimelineChartObjs) {  %>	
-			               			[
-			               				<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-			               			],
-			               			<% } %>
-			                    ] }
-			            ];
-						
-						
-						
-
-				
-				
-				
-
-// 				var plot = $.plot("#placeholder", monthlydata, monthlyOptions);
+				overviewOptionsHour =
+				{
+					series: {
+						lines: {
+							show: true,
+							lineWidth: 1
+						},							
+						shadowSize: 0
+					},
+					xaxis: {
+						mode: "time",
+						minTickSize: [1, "hour"],
+						timeformat: "%d %b",
+					},
+					yaxis: {
+						ticks: [],
+						min: 0,
+						autoscaleMargin: 0.1
+					},
+					selection: {
+						mode: "x"
+					},
+					colors: ["#ff0000", "#0000ff"]
+				};
 
 				var plot = $.plot("#placeholder", weeklyData, weeklyOptions);
 				
@@ -777,139 +674,46 @@ public String getMaxSearchDate(String searchID)
 				
 				$("#hours").click(function () 
 				{
-						
-					<% 		
-				
-						List<TwitterTimelinePojo> hourlyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "hours");
-
-					%>	
-							
-					var hTweetData = 
-						[
-							<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
-								[
-									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-								],	               						
-							<% } %>							 
-						 ]
 					
-					var hRTData = 
-						[
-							<%   for(TwitterTimelinePojo timelineObj : hourlyTimelineChartObjs) { %>	
-								[
-									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-								],	               						
-							<% } %>							 
-						 ]
+					plot = $.plot("#placeholder", hourlyData, hourlyOptions);
 					
+					 overview = $.plot("#overview", hourlyDataOverview, overviewOptionsHour);
 					
-					var hourlyData = 
-						[ 
-			                { 
-			           	    	data: hTweetData, 
-			            	    label: "# of tweets" 
-			                },
-							{ 
-			                	data: hRTData, 
-			                    label: "# of RTs" }
-			            ];
-					
-					
-					var hourlyDataOverview = 
-						[ 
-			                { 
-			           	    	data: hTweetData
-			                },
-							{ 
-			                	data: hRTData
-			                }
-			            ];
-					
-							plot = $.plot("#placeholder", hourlyData, hourlyOptions);
-							
-							 overview = $.plot("#overview", hourlyDataOverview, overviewOptionsHour);
-							
-							$("#placeholder").bind("plothover", function (event, pos, item) 
-							{
-							 	if (item) 
-							 	{
-							 		var someData = hourlyData;
-						            var content = item.series.label + " = " + item.datapoint[1];
-						            
-						            for (var i = 0; i < someData.length; i++)
-						            {
-						                if (someData[i].label == item.series.label)
-						                {					                	
-						                    continue;   
-						                }
-						                
-						                for (var j=0; j < someData[i].data.length; j++)
-						                {
-						                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
-						                  	{
-						                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
-						                    }
-						                }                
-						            }					            
-						            
-						            showTooltip(item.pageX, item.pageY, content);
-						        }
-						        else 
-						        {
-						            $("#tooltip").css('display','none');       
-						        }
-							});					
-						});
+					$("#placeholder").bind("plothover", function (event, pos, item) 
+					{
+					 	if (item) 
+					 	{
+					 		var someData = hourlyData;
+				            var content = item.series.label + " = " + item.datapoint[1];
+				            
+				            for (var i = 0; i < someData.length; i++)
+				            {
+				                if (someData[i].label == item.series.label)
+				                {					                	
+				                    continue;   
+				                }
+				                
+				                for (var j=0; j < someData[i].data.length; j++)
+				                {
+				                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
+				                  	{
+				                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+				                    }
+				                }                
+				            }					            
+				            
+				            showTooltip(item.pageX, item.pageY, content);
+				        }
+				        else 
+				        {
+				            $("#tooltip").css('display','none');       
+				        }
+					});					
+				});
 					
 					
 				$("#days").click(function () 
-				{					
-					
-					<% 
-
-						List<TwitterTimelinePojo> dailyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "days");
-
-					%>	
-					
-					var dTweetData = 
-						[
-							<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-								[
-									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-								],	               						
-							<% } %>							 
-						 ]
-					
-					var dRTData = 
-						[
-							<%   for(TwitterTimelinePojo timelineObj : dailyTimelineChartObjs) { %>	
-								[
-									<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-								],	               						
-							<% } %>							 
-						 ]
-					
-					var dailyData = 
-						[ 
-			                { 
-			           	    	data: dTweetData, 
-			            	     label: "# of tweets" 
-			                },
-							{ 
-			                	data: dRTData, 
-			                    label: "# of RTs" }
-			            ];
-					
-					var dailyDataOverview = 
-						[ 
-			                { 
-			           	    	data: dTweetData,
-			                },
-							{ 
-			                	data: dRTData
-			                }
-			            ];
-					
+				{										
 					
 					plot = $.plot("#placeholder", dailyData, dailyOptions);
 					
@@ -990,54 +794,6 @@ public String getMaxSearchDate(String searchID)
 					
 					$("#months").click(function () 
 					{
-					
-						<% 						
-						
-							List<TwitterTimelinePojo>  monthlyTimelineChartObjs = new TwitterTimelineDataProcessor().getTimelineObjs(request.getParameter("searchID"), "months");
-
-						%>	
-						
-						var mTweetData = 
-							[
-								<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-									[
-										<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnTweets() %>
-									],	               						
-								<% } %>							 
-							 ]
-						
-						var mRTData = 
-							[
-								<%   for(TwitterTimelinePojo timelineObj : monthlyTimelineChartObjs) { %>	
-									[
-										<%= timelineObj.getPostTimeMills() + (60 * 60 * 2000) %>, <%= timelineObj.getnRTs() %>
-									],	               						
-								<% } %>							 
-							 ]
-						
-						var monthlyData = 
-							[ 
-				                { 
-				           	    	 data: mTweetData,
-				            	     label: "# of tweets" 
-				                },
-								{ 
-				                	data: mRTData, 
-				                    label: "# of RTs" }
-				            ];
-						
-						var monthlyDataOverview = 
-							[ 
-				                { 
-				           	    	data: mTweetData
-				                },
-								{ 
-				                	data: mRTData
-				                }
-				            ];
-						
-						
-						
 						
 						plot = $.plot("#placeholder", monthlyData, monthlyOptions);
 						
@@ -1102,12 +858,6 @@ public String getMaxSearchDate(String searchID)
 		
 
 		 <script>
-			 <% 
-			 
-			 	TwitterPiePojo pieChartObj = getTweetsPieChart(request.getParameter("searchID")); 
-			 	List<TwitterPieSourcePojo> sources = getTweetsPieChartDevice(request.getParameter("searchID"));
-			 
-			 %>
 		 
 			var pie = new d3pie("pieChart", {
 				"header": {
@@ -1152,6 +902,9 @@ public String getMaxSearchDate(String searchID)
 				"labels": {
 					"outer": {
 						"pieDistance": 1
+					},
+					"inner": {
+						"hideWhenLessThanPercentage": 4
 					},
 					"mainLabel": {
 						"fontSize": 12

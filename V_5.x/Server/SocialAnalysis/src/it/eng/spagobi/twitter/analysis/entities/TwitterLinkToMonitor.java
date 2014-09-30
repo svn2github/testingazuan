@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -28,6 +29,7 @@ import org.hibernate.validator.constraints.Length;
 public class TwitterLinkToMonitor {
 
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 	@NotNull
 	private long id;

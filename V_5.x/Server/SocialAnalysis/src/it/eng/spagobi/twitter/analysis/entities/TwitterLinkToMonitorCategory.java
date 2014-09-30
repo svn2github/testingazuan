@@ -7,6 +7,7 @@ package it.eng.spagobi.twitter.analysis.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -26,6 +27,7 @@ public class TwitterLinkToMonitorCategory {
 	@Id
 	@Column(name = "id")
 	@NotNull
+	@GeneratedValue
 	private long id;
 
 	@OneToOne

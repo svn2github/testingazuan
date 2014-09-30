@@ -1,0 +1,248 @@
+/* SpagoBI, the Open Source Business Intelligence suite
+
+ * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+package it.eng.spagobi.twitter.analysis.entities;
+
+import it.eng.spagobi.twitter.analysis.enums.SearchTypeEnum;
+
+import java.util.Calendar;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
+import twitter4j.JSONException;
+import twitter4j.JSONObject;
+
+/**
+ * @author Giorgio Federici (giorgio.federici@eng.it)
+ */
+
+@Entity
+@Table(name = "twitter_search")
+public class TwitterSearch {
+
+	@Id
+	@GeneratedValue
+	@Column(name = "search_id")
+	@NotNull
+	private long searchID;
+
+	@Column(name = "label")
+	@NotNull
+	@Length(max = 100)
+	private String label;
+
+	@Column(name = "keywords")
+	@NotNull
+	@Length(max = 200)
+	private String keywords;
+
+	@Column(name = "creation_date")
+	@Temporal(TemporalType.DATE)
+	@NotNull
+	private java.util.Calendar creationDate;
+
+	@Column(name = "last_activation_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	@NotNull
+	private java.util.Calendar lastActivationTime;
+
+	@Column(name = "type")
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	private SearchTypeEnum type;
+
+	@Column(name = "loading")
+	@NotNull
+	private boolean loading = true;
+
+	@Column(name = "deleted")
+	@NotNull
+	private boolean deleted = false;
+
+	@Column(name = "failed")
+	@NotNull
+	private boolean failed = false;
+
+	@Column(name = "fail_message")
+	@Length(max = 500)
+	private String failMessage;
+
+	@OneToOne(mappedBy = "twitterSearch", cascade = { CascadeType.PERSIST })
+	private TwitterSearchScheduler twitterSearchScheduler;
+
+	@OneToOne(mappedBy = "twitterSearch", cascade = { CascadeType.PERSIST })
+	private TwitterMonitorScheduler twitterMonitorScheduler;
+
+	// @OneToMany(mappedBy = "twitterSearch")
+	// private List<TwitterData> tweets = new ArrayList<TwitterData>();
+
+	public TwitterSearch() {
+
+	}
+
+	public TwitterSearch(long searchID, String label, String keywords, Calendar creationDate, Calendar lastActivationTime, SearchTypeEnum type,
+			boolean loading, boolean deleted, boolean failed, String failMessage, TwitterSearchScheduler twitterSearchScheduler,
+			TwitterMonitorScheduler twitterMonitorScheduler) {
+
+		this.searchID = searchID;
+		this.label = label;
+		this.keywords = keywords;
+		this.creationDate = creationDate;
+		this.lastActivationTime = lastActivationTime;
+		this.type = type;
+		this.loading = loading;
+		this.deleted = deleted;
+		this.failed = failed;
+		this.failMessage = failMessage;
+		this.twitterSearchScheduler = twitterSearchScheduler;
+		this.twitterMonitorScheduler = twitterMonitorScheduler;
+	}
+
+	public long getSearchID() {
+		return searchID;
+	}
+
+	public void setSearchID(long searchID) {
+		this.searchID = searchID;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public java.util.Calendar getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(java.util.Calendar creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public java.util.Calendar getLastActivationTime() {
+		return lastActivationTime;
+	}
+
+	public void setLastActivationTime(java.util.Calendar lastActivationTime) {
+		this.lastActivationTime = lastActivationTime;
+	}
+
+	public SearchTypeEnum getType() {
+		return type;
+	}
+
+	public void setType(SearchTypeEnum type) {
+		this.type = type;
+	}
+
+	public boolean isLoading() {
+		return loading;
+	}
+
+	public void setLoading(boolean loading) {
+		this.loading = loading;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public boolean isFailed() {
+		return failed;
+	}
+
+	public void setFailed(boolean failed) {
+		this.failed = failed;
+	}
+
+	public String getFailMessage() {
+		return failMessage;
+	}
+
+	public void setFailMessage(String failMessage) {
+		this.failMessage = failMessage;
+	}
+
+	public TwitterSearchScheduler getTwitterSearchScheduler() {
+		return twitterSearchScheduler;
+	}
+
+	public void setTwitterSearchScheduler(TwitterSearchScheduler twitterSearchScheduler) {
+		this.twitterSearchScheduler = twitterSearchScheduler;
+	}
+
+	public TwitterMonitorScheduler getTwitterMonitorScheduler() {
+		return twitterMonitorScheduler;
+	}
+
+	public void setTwitterMonitorScheduler(TwitterMonitorScheduler twitterMonitorScheduler) {
+		this.twitterMonitorScheduler = twitterMonitorScheduler;
+	}
+
+	@Override
+	public String toString() {
+		return "TwitterSearch [searchID=" + searchID + ", label=" + label + ", keywords=" + keywords + ", creationDate=" + creationDate
+				+ ", lastActivationTime=" + lastActivationTime + ", type=" + type + ", loading=" + loading + ", deleted=" + deleted + ", failed=" + failed
+				+ ", failMessage=" + failMessage + ", twitterSearchScheduler=" + twitterSearchScheduler + ", twitterMonitorScheduler="
+				+ twitterMonitorScheduler + "]";
+	}
+
+	public JSONObject toJSONObject() throws JSONException {
+
+		JSONObject twitterSearchJSON = new JSONObject();
+		twitterSearchJSON.put("searchID", searchID);
+		twitterSearchJSON.put("label", label);
+		twitterSearchJSON.put("keywords", keywords);
+
+		java.sql.Timestamp lastActivation = new java.sql.Timestamp(lastActivationTime.getTimeInMillis());
+
+		twitterSearchJSON.put("lastActivationTime", lastActivation);
+		twitterSearchJSON.put("loading", loading);
+
+		if (twitterMonitorScheduler != null) {
+			twitterSearchJSON.put("accounts", twitterMonitorScheduler.getAccounts());
+			twitterSearchJSON.put("links", twitterMonitorScheduler.getLinks());
+			twitterSearchJSON.put("documents", twitterMonitorScheduler.getDocuments());
+			twitterSearchJSON.put("hasMonitorScheduler", true);
+		}
+
+		if (twitterSearchScheduler != null && twitterSearchScheduler.isActive()) {
+			twitterSearchJSON.put("hasSearchScheduler", true);
+		}
+
+		twitterSearchJSON.put("isFailed", failed);
+
+		return twitterSearchJSON;
+	}
+
+}

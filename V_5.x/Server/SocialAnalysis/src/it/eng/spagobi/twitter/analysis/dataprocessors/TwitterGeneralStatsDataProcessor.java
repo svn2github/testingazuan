@@ -5,15 +5,13 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
+import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
-import javax.sql.rowset.CachedRowSet;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -26,7 +24,7 @@ public class TwitterGeneralStatsDataProcessor {
 
 	private static final Logger logger = Logger.getLogger(TwitterGeneralStatsDataProcessor.class);
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
 	public TwitterGeneralStatsDataProcessor() {
 
@@ -44,28 +42,11 @@ public class TwitterGeneralStatsDataProcessor {
 
 		Assert.assertNotNull(searchID, "Impossibile execute totalTweetsCounter() without a correct search ID");
 
-		int totalTweets = 0;
+		int totalTweets = dpCache.getTotalTweets(searchID);
 
-		String sqlQuery = "SELECT tweet_id from twitter_data where search_id = '" + searchID + "'";
+		logger.debug("Method totalTweetsCounter(): End");
 
-		try {
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			while (rs.next()) {
-
-				totalTweets++;
-			}
-
-			logger.debug("Method totalTweetsCounter(): End");
-
-			return totalTweets;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method totalTweetsCounter(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
-		}
+		return totalTweets;
 
 	}
 
@@ -81,26 +62,10 @@ public class TwitterGeneralStatsDataProcessor {
 
 		Assert.assertNotNull(searchID, "Impossibile execute totalUsersCounter() without a correct search ID");
 
-		int totalUsers = 0;
+		int totalUsers = dpCache.getTotalUsers(searchID);
 
-		String sqlQuery = "SELECT DISTINCT tu.user_id from twitter_users tu, twitter_data td where tu.user_id = td.user_id and td.search_id = " + searchID;
-
-		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			while (rs.next()) {
-
-				totalUsers++;
-			}
-
-			logger.debug("Method totalUsersCounter(): End");
-			return totalUsers;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method totalTweetsCounter(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
-		}
+		logger.debug("Method totalUsersCounter(): End");
+		return totalUsers;
 
 	}
 
@@ -117,30 +82,21 @@ public class TwitterGeneralStatsDataProcessor {
 
 		Assert.assertNotNull(searchID, "Impossibile execute getMinDateSearch() without a correct search ID");
 
-		String minDate = "";
+		SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-		String sqlQuery = "SELECT date_created_at FROM twitter_data WHERE search_id = " + searchID + " ORDER BY date_created_at ASC";
+		Calendar minCalendar = dpCache.getMinTweetDate(searchID);
 
-		try {
+		if (minCalendar != null) {
 
-			logger.debug("Method getMinDataSearch(): Retrieving minimum date for search: " + searchID);
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			if (rs.next()) {
-				java.sql.Date tempDate = rs.getDate("date_created_at");
-
-				SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
-				minDate = simpleDataFormatter.format(tempDate.getTime());
-			}
+			Date minDate = new Date(minCalendar.getTimeInMillis());
 
 			logger.debug("Method getMinDataSearch(): End");
-			return minDate;
+			return simpleDataFormatter.format(minDate);
+		}
+		{
+			logger.debug("Method getMinDataSearch(): End");
+			return "N/A";
 
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method getMinDataSearch(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
 
 	}
@@ -152,39 +108,28 @@ public class TwitterGeneralStatsDataProcessor {
 	 *            : search ID
 	 * @return formatted maximum date for this search
 	 */
-	public String getMaxDateSearch(String searchIDStr) {
+	public String getMaxDateSearch(String searchID) {
 
 		logger.debug("Method getMaxDateSearch(): Start");
 
-		long searchID = Long.parseLong(searchIDStr);
+		Assert.assertNotNull(searchID, "Impossibile execute getMinDateSearch() without a correct search ID");
 
-		String maxDate = "";
+		SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-		String sqlQuery = "SELECT date_created_at FROM twitter_data WHERE search_id = " + searchID + " ORDER BY date_created_at DESC";
+		Calendar maxCalendar = dpCache.getMaxTweetDate(searchID);
 
-		try {
+		if (maxCalendar != null) {
 
-			logger.debug("Method getMaxDateSearch(): Retrieving max date for search: " + searchID);
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			if (rs.next()) {
-
-				java.sql.Date tempDate = rs.getDate("date_created_at");
-
-				SimpleDateFormat simpleDataFormatter = new SimpleDateFormat("dd-MM-yyyy");
-				maxDate = simpleDataFormatter.format(tempDate.getTime());
-			}
+			Date maxDate = new Date(maxCalendar.getTimeInMillis());
 
 			logger.debug("Method getMaxDateSearch(): End");
-			return maxDate;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method getMaxDateSearch(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
+			return simpleDataFormatter.format(maxDate);
 		}
+		{
+			logger.debug("Method getMaxDateSearch(): End");
+			return "N/A";
 
+		}
 	}
 
 }

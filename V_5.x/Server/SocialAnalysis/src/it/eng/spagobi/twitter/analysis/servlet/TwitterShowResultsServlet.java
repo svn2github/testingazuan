@@ -21,20 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.servlet;
 
-import it.eng.spagobi.bitly.analysis.utilities.BitlyCounterClicksUtility;
-import it.eng.spagobi.twitter.analysis.utilities.TwitterUserInfoUtility;
-
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterShowResultsServlet extends HttpServlet {
@@ -48,18 +43,18 @@ public class TwitterShowResultsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// reading the user input
-		String searchID = request.getParameter("searchID");
-
-		System.out.println("SearchID: " + searchID);
-
-		BitlyCounterClicksUtility bitUtil = new BitlyCounterClicksUtility();
-		bitUtil.getLinkToMonitor(searchID);
-		bitUtil.getLinkToMonitorCategory(searchID);
-
-		TwitterUserInfoUtility userInfoUtil = new TwitterUserInfoUtility();
-		userInfoUtil.getFollowersAccountsToMonitor(searchID);
-
-		RequestDispatcher requetsDispatcherObj = request.getRequestDispatcher("/result.jsp");
-		requetsDispatcherObj.forward(request, response);
+		// String searchID = request.getParameter("searchID");
+		//
+		// System.out.println("SearchID: " + searchID);
+		//
+		// BitlyCounterClicksUtility bitUtil = new BitlyCounterClicksUtility();
+		// bitUtil.getLinkToMonitor(searchID);
+		// bitUtil.getLinkToMonitorCategory(searchID);
+		//
+		// TwitterUserInfoUtility userInfoUtil = new TwitterUserInfoUtility();
+		// userInfoUtil.getFollowersAccountsToMonitor(searchID);
+		//
+		// RequestDispatcher requetsDispatcherObj = request.getRequestDispatcher("/result.jsp");
+		// requetsDispatcherObj.forward(request, response);
 	}
 }

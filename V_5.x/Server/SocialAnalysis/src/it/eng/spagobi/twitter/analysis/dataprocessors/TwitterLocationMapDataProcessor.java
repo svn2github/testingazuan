@@ -5,16 +5,13 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
+import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +27,7 @@ public class TwitterLocationMapDataProcessor {
 
 	private static final Logger logger = Logger.getLogger(TwitterLocationMapDataProcessor.class);
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
 	/**
 	 * This method creates the JSON object useful for jquery vector map
@@ -49,39 +46,29 @@ public class TwitterLocationMapDataProcessor {
 
 		initializeLocationMap(locationMap);
 
-		String sqlQuery = "SELECT tu.location_code from twitter_users tu, twitter_data td where tu.user_id = td.user_id and td.search_id = " + searchID;
+		List<String> locationCodes = dpCache.getUsersLocationCodes(searchID);
 
-		try {
+		for (String locationCode : locationCodes) {
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			while (rs.next()) {
-
-				String locationCode = rs.getString("location_code");
-
-				if (locationCode != null && !locationCode.equals("")) {
-					Integer tweetCounter = locationMap.get(locationCode);
+			if (locationCode != null && !locationCode.equals("")) {
+				Integer tweetCounter = locationMap.get(locationCode);
+				if (tweetCounter != null) {
 					tweetCounter++;
 					locationMap.put(locationCode, tweetCounter);
 				}
 			}
-
-			for (Map.Entry<String, Integer> entry : locationMap.entrySet()) {
-				try {
-					resultJSON.append(entry.getKey(), entry.getValue());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-
-			logger.debug("Method locationTracker(): End");
-			return resultJSON;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method locationTracker(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
+
+		for (Map.Entry<String, Integer> entry : locationMap.entrySet()) {
+			try {
+				resultJSON.append(entry.getKey(), entry.getValue());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		logger.debug("Method locationTracker(): End");
+		return resultJSON;
 
 	}
 

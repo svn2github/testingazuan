@@ -15,7 +15,7 @@
 <%@ page import="it.eng.spagobi.twitter.analysis.pojos.*" %>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@page import="twitter4j.JSONObject"%>
+<%@page import="it.eng.spagobi.twitter.analysis.entities.TwitterUser"%>
 
 
 <%-- ---------------------------------------------------------------------- --%>
@@ -34,7 +34,7 @@
 	String roiLink = "roi.jsp?searchID=" + searchId;
 	
 	TwitterInfluencersDataProcessor influencersDP = new TwitterInfluencersDataProcessor();
-	List<JSONObject> mostrInfluencersJSON = influencersDP.getMostInfluencersJSON(searchId);
+	List<TwitterUser> mostrInfluencers = influencersDP.getMostInfluencers(searchId);
 	 
 %>
 
@@ -66,15 +66,15 @@
 
 <div id="navigation">
 
-	<ul>
-	    <li><a href=<%= summaryLink %>> Summary</a></li>
-	    <li><a href=<%= topicsLink %>>Topics</a></li>
-	    <li id="activelink"><a href=<%= networkLink %>>Network</a></li>
-	    <li><a href=<%= distributionLink %>>Distribution</a></li>
-   	    <li><a href=<%= sentimentLink %>>Sentiment</a></li>
-	    <li><a href=<%= impactLink %>>Impact</a></li>
-	    <li><a href=<%= roiLink %>>ROI</a></li>
-	    <li style="float:right;"><a href="index.jsp">Search</a></li>
+	<ul class="navtabs tabsStyle">
+	    <li class="navtabs"><a href=<%= summaryLink %>> Summary</a></li>
+	    <li class="navtabs"><a href=<%= topicsLink %>>Topics</a></li>
+	    <li class="navtabs" id="activelink"><a href=<%= networkLink %>>Network</a></li>
+	    <li class="navtabs"><a href=<%= distributionLink %>>Distribution</a></li>
+   	    <li class="navtabs"><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li class="navtabs"><a href=<%= impactLink %>>Impact</a></li>
+	    <li class="navtabs"><a href=<%= roiLink %>>ROI</a></li>
+	    <li class="navtabs" style="float:right;"><a href="index.jsp">Search</a></li>
 	    
 	</ul>
         		
@@ -113,17 +113,17 @@
 				var w = 61, h = 61, html = '', limitItem = 32;
 				
 				<%				
-					for (JSONObject tempObj : mostrInfluencersJSON) 
+					for (TwitterUser tempObj : mostrInfluencers) 
 					{
 						
 				%>
-						var userInfo = "<%= tempObj.get("followers") %> followers <br/> <%= tempObj.get("description") %>";
+						var userInfo = "<%= tempObj.getFollowersCount() %> followers <br/> <%= tempObj.getDescription() %>";
 						
 				//for (var i = 0; i < limitItem; ++i) {
 						html += temp.replace(/\{height\}/g, h).replace(/\{width\}/g, w)
-							.replace("{lImg}", "<%= tempObj.get("profileImg") %>" )
+							.replace("{lImg}", "<%= tempObj.getProfileImgSrc() %>" )
 							.replace("{lText}", userInfo)
-							.replace("{lTitle}", "@<%= tempObj.get("username") %>");
+							.replace("{lTitle}", "@<%= tempObj.getUsername() %>");
 				//}
 				<%
 					}

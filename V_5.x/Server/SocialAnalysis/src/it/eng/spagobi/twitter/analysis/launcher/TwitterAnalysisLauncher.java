@@ -23,19 +23,24 @@ package it.eng.spagobi.twitter.analysis.launcher;
 
 import it.eng.spagobi.bitly.analysis.utilities.BitlyCounterClicksUtility;
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterMonitorSchedulerPojo;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchSchedulerPojo;
+import it.eng.spagobi.twitter.analysis.cache.TwitterCacheImpl;
+import it.eng.spagobi.twitter.analysis.entities.TwitterMonitorScheduler;
+import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
+import it.eng.spagobi.twitter.analysis.entities.TwitterSearchScheduler;
+import it.eng.spagobi.twitter.analysis.enums.MonitorRepeatTypeEnum;
+import it.eng.spagobi.twitter.analysis.enums.SearchRepeatTypeEnum;
+import it.eng.spagobi.twitter.analysis.enums.SearchTypeEnum;
 import it.eng.spagobi.twitter.analysis.scheduler.HistoricalSearchJob;
 import it.eng.spagobi.twitter.analysis.scheduler.MonitoringResourcesJob;
 import it.eng.spagobi.twitter.analysis.spider.search.TwitterSearchAPISpider;
 import it.eng.spagobi.twitter.analysis.spider.streaming.TwitterStreamingAPISpider;
+import it.eng.spagobi.twitter.analysis.utilities.AnalysisUtility;
 import it.eng.spagobi.twitter.analysis.utilities.TwitterUserInfoUtility;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.quartz.CalendarIntervalScheduleBuilder;
@@ -54,8 +59,7 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterAnalysisLauncher {
@@ -65,50 +69,42 @@ public class TwitterAnalysisLauncher {
 	// TODO: da questa classe posso decidere qualche tipologia di ricerca
 	// lanciare e settare alcuni parametri (es: keyword, lingua ecc)
 
-	TwitterSearchPojo twitterSearch;
+	TwitterSearch twitterSearch;
 	private final ITwitterCache cache;
+	private String languageCode;
+	private Calendar sinceCalendar;
 
-	public TwitterAnalysisLauncher(TwitterSearchPojo twitterSearchPojo) {
+	public TwitterAnalysisLauncher() {
+		this.cache = new TwitterCacheImpl();
+	}
 
-		this.twitterSearch = twitterSearchPojo;
+	public TwitterAnalysisLauncher(TwitterSearch twitterSearch) {
 
-		// initialize the cache with the db type inserted
-		this.cache = initCache(this.twitterSearch.getDbType());
+		this.twitterSearch = twitterSearch;
+		this.cache = new TwitterCacheImpl();
 
 	}
 
-	/**
-	 * This method is used to initialize the DB for this search
-	 *
-	 * @param dbType
-	 *            : db type
-	 * @return the interface with DB methods
-	 */
-	public ITwitterCache initCache(String dbType) {
+	public String getLanguageCode() {
+		return languageCode;
+	}
 
-		logger.debug("Method initCache: Start");
+	public void setLanguageCode(String languageCode) {
+		this.languageCode = languageCode;
+	}
 
-		ITwitterCache twitterCache = null;
+	public Calendar getSinceCalendar() {
+		return sinceCalendar;
+	}
 
-		// factory di cache con specifiche implementazioni
-		TwitterCacheFactory twitterCacheFactory = new TwitterCacheFactory();
-
-		if (twitterCacheFactory != null) {
-
-			twitterCache = twitterCacheFactory.getCache(dbType);
-		}
-
-		logger.debug("Method initCache: End");
-
-		return twitterCache;
+	public void setSinceCalendar(Calendar sinceCalendar) {
+		this.sinceCalendar = sinceCalendar;
 	}
 
 	/**
-	 * This method is used to create and execute the historical search for the
-	 * first time. First it creates the search into DB, next launches the
-	 * twitter search thread and the monitoring resource thread. Only this time
-	 * search and monitoring are together. After, if there are schedulers, they
-	 * will have different start.
+	 * This method is used to create and execute the historical search for the first time. First it creates the search into DB, next launches the twitter search
+	 * thread and the monitoring resource thread. Only this time search and monitoring are together. After, if there are schedulers, they will have different
+	 * start.
 	 *
 	 * @return searchID: the ID of the search
 	 */
@@ -117,63 +113,44 @@ public class TwitterAnalysisLauncher {
 		logger.debug("Method createHistoricalSearch(): Start..");
 
 		// insert new search into DB, without linked tweets and resources
-		long searchID = cache.insertTwitterSearch(this.twitterSearch);
+		this.twitterSearch = cache.createTwitterSearch(this.twitterSearch);
 
-		this.twitterSearch.setSearchID(searchID);
+		this.twitterSearch = cache.refreshTwitterSearch(twitterSearch);
+
+		long searchID = this.twitterSearch.getSearchID();
 
 		// search correctly inserted
 		if (searchID > 0) {
 
 			logger.debug("Method createHistoricalSearch(): New search inserted with ID = " + searchID);
 
-			// historical search is loading, loading = true;
-			logger.debug("Method createHistoricalSearch(): Historical Search is loading");
-			cache.updateTwitterSearchLoading(twitterSearch.getSearchID(), true);
-
 			// launch historical search linked with twitter SEARCH API
 			logger.debug("Method createHistoricalSearch(): Twitter Search Thread starting..");
 			startHistoricalSearchThread();
 
 			// manage search scheduler
-			if (twitterSearch.getTwitterScheduler() != null) {
+			if (twitterSearch.getTwitterSearchScheduler() != null) {
 
-				TwitterSearchSchedulerPojo twitterScheduler = twitterSearch.getTwitterScheduler();
-
-				// searchID have to set now
-				twitterScheduler.setSearchID(twitterSearch.getSearchID());
-				cache.insertTwitterSearchScheduler(twitterScheduler);
-
-				createHistoricalSearchTrigger(twitterScheduler);
+				// TwitterSearchScheduler searchScheduler = cache.findTwitterSearchScheduler(twitterSearch.getTwitterSearchScheduler().getId());
+				createHistoricalSearchTrigger(twitterSearch.getTwitterSearchScheduler());
 			}
 
 			// manage monitor scheduler
 			if (twitterSearch.getTwitterMonitorScheduler() != null) {
 
-				TwitterMonitorSchedulerPojo twitterMonitorScheduler = twitterSearch.getTwitterMonitorScheduler();
-
-				// searchID have to set now
-				twitterMonitorScheduler.setSearchID(twitterSearch.getSearchID());
-
-				this.twitterSearch.setLinks(twitterMonitorScheduler.getLinks());
-				this.twitterSearch.setAccounts(twitterMonitorScheduler.getAccounts());
-				this.twitterSearch.setDocuments(twitterMonitorScheduler.getDocuments());
-
-				setMonitorSchedulerEndingDate(twitterMonitorScheduler);
-
-				cache.insertTwitterMonitorScheduler(twitterMonitorScheduler);
+				boolean activeSearch = twitterSearch.getTwitterMonitorScheduler().isActiveSearch();
 
 				// launch monitoring resources for this search
 				logger.debug("Method createHistoricalSearch(): Monitoring resources Threads starting..");
 				startMonitoringResourcesThreads();
 
-				if (twitterSearch.getTwitterScheduler() == null) {
+				if (activeSearch) {
 
-					createMonitoringTriggerWithEndingDate(twitterMonitorScheduler);
+					createMonitoringTriggerWithoutEndingDate(twitterSearch.getTwitterMonitorScheduler());
 
 				} else {
 
-					createMonitoringTriggerWithoutEndingDate(twitterMonitorScheduler);
-
+					createMonitoringTriggerWithEndingDate(twitterSearch.getTwitterMonitorScheduler());
 				}
 
 			}
@@ -193,41 +170,41 @@ public class TwitterAnalysisLauncher {
 	 *
 	 * @return searchID: the ID of the search
 	 */
-	public long createStreamingSearch() {
+	public long createEnabledStreamingSearch() {
 
-		logger.debug("Method createStreamingSearch(): Start..");
+		logger.debug("Method createEnabledStreamingSearch(): Start..");
+
+		twitterSearch.setLoading(true);
+
+		previousStreamAndMonitorManager();
 
 		// insert new search into DB, without linked tweets and resources
-		long searchID = cache.insertTwitterSearch(this.twitterSearch);
 
-		this.twitterSearch.setSearchID(searchID);
+		this.twitterSearch = cache.createTwitterSearch(this.twitterSearch);
+		long searchID = this.twitterSearch.getSearchID();
 
 		if (searchID > 0) {
 
-			logger.debug("Method createStreamingSearch(): New search inserted with ID = " + searchID);
+			logger.debug("Method createEnabledStreamingSearch(): New search inserted with ID = " + searchID);
 
-			// // launch monitoring resources for this search
-			// logger.debug("Method createStreamingSearch(): Monitoring resources Threads starting..");
-			// startMonitoringResourcesThreads();
+			// initialize for new stream
+			TwitterStreamingAPISpider streamingAPI = initializeStreamingAPI();
 
-			// manage monitor scheduler
+			logger.debug("Method startStreamingSearch(): Starting the new Stream");
+			streamingAPI.collectTweets();
+
 			if (twitterSearch.getTwitterMonitorScheduler() != null) {
 
-				TwitterMonitorSchedulerPojo twitterMonitorScheduler = twitterSearch.getTwitterMonitorScheduler();
+				startMonitoringResourcesThreads();
 
-				// searchID have to set now
-				twitterMonitorScheduler.setSearchID(twitterSearch.getSearchID());
-
-				setMonitorSchedulerEndingDate(twitterMonitorScheduler);
-
-				cache.insertTwitterMonitorScheduler(twitterMonitorScheduler);
+				createMonitoringTriggerWithoutEndingDate(twitterSearch.getTwitterMonitorScheduler());
 
 			}
 
 			return searchID;
 
 		} else {
-			logger.debug("Method createStreamingSearch(): New search not inserted. Failure");
+			logger.debug("Method createEnabledStreamingSearch(): New search not inserted. Failure");
 
 			return -1;
 		}
@@ -235,8 +212,43 @@ public class TwitterAnalysisLauncher {
 	}
 
 	/**
-	 * Method used by historical search jobs. This particular search already
-	 * exist in the DB
+	 * This method is used to crete the streaming search for the first time.
+	 *
+	 * @return searchID: the ID of the search
+	 */
+	public long createDisabledStreamingSearch() {
+
+		logger.debug("Method createDisabledStreamingSearch(): Start..");
+
+		// insert new search into DB, without linked tweets and resources
+
+		this.twitterSearch = cache.createTwitterSearch(this.twitterSearch);
+		long searchID = this.twitterSearch.getSearchID();
+
+		if (searchID > 0) {
+
+			logger.debug("Method createDisabledStreamingSearch(): New search inserted with ID = " + searchID);
+
+			if (twitterSearch.getTwitterMonitorScheduler() != null) {
+
+				startMonitoringResourcesThreads();
+
+				createMonitoringTriggerWithEndingDate(twitterSearch.getTwitterMonitorScheduler());
+
+			}
+
+			return searchID;
+
+		} else {
+			logger.debug("Method createDisabledStreamingSearch(): New search not inserted. Failure");
+
+			return -1;
+		}
+
+	}
+
+	/**
+	 * Method used by historical search jobs. This particular search already exist in the DB
 	 */
 	public void startHistoricalSearch() {
 
@@ -251,19 +263,17 @@ public class TwitterAnalysisLauncher {
 	}
 
 	/**
-	 * This method is used to start the twitter streaming search. When a new
-	 * stream starts, you have to close the previous opened stream (in DB
-	 * loading = false and clean the API listener) and update their resources
-	 * monitoring, unscheduling the active trigger and creating a new monitor
-	 * scheduler with the ending date. Then you have to start the new stream and
-	 * launch the trigger for the new streaming search
+	 * This method is used to start the twitter streaming search. When a new stream starts, you have to close the previous opened stream (in DB loading = false
+	 * and clean the API listener) and update their resources monitoring, unscheduling the active trigger and creating a new monitor scheduler with the ending
+	 * date. Then you have to start the new stream and launch the trigger for the new streaming search
 	 */
 	public void startStreamingSearch() {
 
 		logger.debug("Method startStreamingSearch(): Start");
 
-		// stopping last active stream
-		stopStreamingSearch();
+		twitterSearch = cache.findTwitterSearch(twitterSearch.getSearchID());
+
+		previousStreamAndMonitorManager();
 
 		// initialize for new stream
 		TwitterStreamingAPISpider streamingAPI = initializeStreamingAPI();
@@ -271,11 +281,13 @@ public class TwitterAnalysisLauncher {
 		logger.debug("Method startStreamingSearch(): Starting the new Stream");
 		streamingAPI.collectTweets();
 
-		cache.updateTwitterSearchLoading(twitterSearch.getSearchID(), true);
+		twitterSearch.setLoading(true);
+
+		cache.updateTwitterSearch(twitterSearch);
 
 		// launch monitoring resources for this search
 
-		TwitterMonitorSchedulerPojo twitterMonitor = cache.getTwitterMonitorScheduler(twitterSearch.getSearchID());
+		TwitterMonitorScheduler twitterMonitor = twitterSearch.getTwitterMonitorScheduler();
 
 		if (twitterMonitor != null) {
 
@@ -296,10 +308,6 @@ public class TwitterAnalysisLauncher {
 
 			logger.debug("Method startStreamingSearch(): Monitoring resources Threads starting..");
 
-			this.twitterSearch.setLinks(twitterMonitor.getLinks());
-			this.twitterSearch.setAccounts(twitterMonitor.getAccounts());
-			this.twitterSearch.setDocuments(twitterMonitor.getDocuments());
-
 			// thread to get resources info
 			startMonitoringResourcesThreads();
 
@@ -314,57 +322,52 @@ public class TwitterAnalysisLauncher {
 	}
 
 	/**
-	 * This method is used to start the twitter streaming search. When a new
-	 * stream starts, you have to close the previous opened stream (in DB
-	 * loading = false and clean the API listener) and update their resources
-	 * monitoring, unscheduling the active trigger
+	 * This method is used to start the twitter streaming search. When a new stream starts, you have to close the previous opened stream (in DB loading = false
+	 * and clean the API listener) and update their resources monitoring, unscheduling the active trigger
 	 * */
 	public void stopStreamingSearch() {
 
 		logger.debug("Method stopStreamingSearch(): Start");
+
+		twitterSearch = cache.findTwitterSearch(twitterSearch.getSearchID());
 
 		TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
 
 		twitterStream.clearListeners();
 		twitterStream.cleanUp();
 
-		// set false for all streaming searches, retrieving the ID of last
-		// active search
-		long lastActiveSearchID = cache.stopStreamingSearch();
+		twitterSearch.setLoading(false);
 
-		try {
+		cache.updateTwitterSearch(twitterSearch);
 
-			// search active trigger linked with this search
-			SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+		TwitterMonitorScheduler twitterMonitorScheduler = twitterSearch.getTwitterMonitorScheduler();
 
-			Scheduler scheduler = schedFact.getScheduler();
+		if (twitterMonitorScheduler != null) {
 
-			// there was a stream active, re-schedule his resources monitoring
-			if (lastActiveSearchID > 0) {
+			Calendar endingCalendar = AnalysisUtility.setMonitorSchedulerEndingDate(twitterMonitorScheduler);
+
+			twitterMonitorScheduler.setEndingTime(endingCalendar);
+
+			cache.updateTwitterMonitorScheduler(twitterMonitorScheduler);
+
+			try {
+
+				long lastActiveSearchID = twitterSearch.getSearchID();
+				// search active trigger linked with this search
+				SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+				Scheduler scheduler = schedFact.getScheduler();
 
 				logger.debug("Method stopStreamingSearch(): Unscheduling trigger MonitoringTgr_" + lastActiveSearchID);
 				scheduler.unscheduleJob(TriggerKey.triggerKey("MonitoringTgr_" + lastActiveSearchID, "groupMonitoring"));
 
-				TwitterMonitorSchedulerPojo twitterMonitor = cache.getTwitterMonitorScheduler(lastActiveSearchID);
+				logger.debug("Method stopStreamingSearch(): Starting monitor resources for search: " + lastActiveSearchID);
 
-				if (twitterMonitor != null) {
+				createMonitoringTriggerWithEndingDate(twitterMonitorScheduler);
 
-					// Calculating the ending date
-					setMonitorSchedulerEndingDate(twitterMonitor);
-
-					twitterMonitor.setActive(true);
-
-					cache.updateMonitorScheduler(twitterMonitor);
-
-					logger.debug("Method stopStreamingSearch(): Starting monitor resources for search: " + lastActiveSearchID);
-
-					createMonitoringTriggerWithEndingDate(twitterMonitor);
-
-				}
+			} catch (SchedulerException e) {
+				logger.debug("Method stopStreamingSearch(): Error stopping scheduler for search " + twitterSearch.getSearchID());
 			}
-
-		} catch (SchedulerException e) {
-			logger.debug("Method stopStreamingSearch(): Error stopping scheduler for search " + twitterSearch.getSearchID());
 		}
 		logger.debug("Method stopStreamingSearch(): End");
 
@@ -374,7 +377,9 @@ public class TwitterAnalysisLauncher {
 
 		logger.debug("Method deleteSearch(): Start");
 
-		if (twitterSearch.getSearchType().equals("streamingAPI") && twitterSearch.isLoading()) {
+		this.twitterSearch = this.cache.findTwitterSearch(this.twitterSearch.getSearchID());
+
+		if (twitterSearch.getType() == SearchTypeEnum.STREAMINGAPI && twitterSearch.isLoading()) {
 
 			TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
 
@@ -392,6 +397,8 @@ public class TwitterAnalysisLauncher {
 
 		logger.debug("Method stopSearchScheduler(): Start");
 
+		twitterSearch = cache.findTwitterSearch(twitterSearch.getSearchID());
+
 		try {
 
 			SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
@@ -404,15 +411,18 @@ public class TwitterAnalysisLauncher {
 			logger.debug("Method stopSearchScheduler(): Unscheduling trigger MonitoringTgr_" + twitterSearch.getSearchID());
 			scheduler.unscheduleJob(TriggerKey.triggerKey("MonitoringTgr_" + twitterSearch.getSearchID(), "groupMonitoring"));
 
-			TwitterMonitorSchedulerPojo twitterMonitor = this.cache.stopSearchScheduler(twitterSearch);
+			twitterSearch.getTwitterSearchScheduler().setActive(false);
+
+			cache.updateTwitterSearchScheduler(twitterSearch.getTwitterSearchScheduler());
+
+			TwitterMonitorScheduler twitterMonitor = twitterSearch.getTwitterMonitorScheduler();
 
 			if (twitterMonitor != null) {
 
-				setMonitorSchedulerEndingDate(twitterMonitor);
+				twitterMonitor.setEndingTime(AnalysisUtility.setMonitorSchedulerEndingDate(twitterMonitor));
+				twitterMonitor.setActiveSearch(false);
 
-				twitterMonitor.setActive(true);
-
-				cache.updateMonitorScheduler(twitterMonitor);
+				cache.updateTwitterMonitorScheduler(twitterMonitor);
 
 				logger.debug("Method stopSearchScheduler(): Starting monitor resources for search: " + twitterSearch.getSearchID());
 
@@ -432,10 +442,16 @@ public class TwitterAnalysisLauncher {
 
 		logger.debug("Method removeFailedSearch(): Start");
 
+		this.twitterSearch = this.cache.findTwitterSearch(this.twitterSearch.getSearchID());
+
 		this.cache.deleteSearch(twitterSearch);
 
 		logger.debug("Method removeFailedSearch(): End");
 
+	}
+
+	public List<TwitterSearch> getTwitterSearchList(SearchTypeEnum searchType) {
+		return cache.getTwitterSearchList(searchType);
 	}
 
 	private TwitterSearchAPISpider initializeSearchAPI() {
@@ -443,7 +459,7 @@ public class TwitterAnalysisLauncher {
 		TwitterSearchAPISpider twitterSearchAPI = new TwitterSearchAPISpider();
 
 		twitterSearchAPI.setCache((this.cache));
-		twitterSearchAPI.setLanguage(this.twitterSearch.getLanguageCode());
+		twitterSearchAPI.setLanguage(this.languageCode);
 		twitterSearchAPI.setResultType(ResultType.recent);
 
 		String[] keywordsArr = twitterSearch.getKeywords().split(",");
@@ -460,8 +476,8 @@ public class TwitterAnalysisLauncher {
 		}
 
 		twitterSearchAPI.setQuery(textQuery);
-		twitterSearchAPI.setSearchID(this.twitterSearch.getSearchID());
-		twitterSearchAPI.setSinceDate(this.twitterSearch.getSinceDate());
+		twitterSearchAPI.setTwitterSearch(this.twitterSearch);
+		twitterSearchAPI.setSinceDate(this.sinceCalendar);
 
 		return twitterSearchAPI;
 
@@ -477,9 +493,9 @@ public class TwitterAnalysisLauncher {
 		String[] keywordsArr = twitterSearch.getKeywords().split(" ");
 		twitterStreamingAPI.setTrack(keywordsArr);
 
-		if (twitterSearch.getLanguageCode() != null && !twitterSearch.getLanguageCode().equals("")) {
+		if (this.languageCode != null && !this.languageCode.equals("")) {
 
-			String[] languageCodeArr = twitterSearch.getLanguageCode().split(" ");
+			String[] languageCodeArr = this.languageCode.split(" ");
 			twitterStreamingAPI.setLanguage(languageCodeArr);
 
 		} else {
@@ -496,21 +512,21 @@ public class TwitterAnalysisLauncher {
 			@Override
 			public void run() {
 
-				if (twitterSearch.getSearchType().equalsIgnoreCase("SearchAPI")) {
+				// initialize SearchAPI
+				logger.debug("Method createHistoricalSearch(): Initializing Historical Search");
+				TwitterSearchAPISpider searchAPI = initializeSearchAPI();
 
-					// initialize SearchAPI
-					logger.debug("Method createHistoricalSearch(): Initializing Historical Search");
-					TwitterSearchAPISpider searchAPI = initializeSearchAPI();
+				searchAPI.collectTweets();
 
-					searchAPI.collectTweets();
+				// historical search completed, loading = false;
+				logger.debug("Method createHistoricalSearch(): Historical Search completed");
 
-					// historical search completed, loading = false;
-					logger.debug("Method createHistoricalSearch(): Historical Search completed");
-					cache.updateTwitterSearchLoading(twitterSearch.getSearchID(), false);
+				twitterSearch.setLoading(false);
 
-				}
+				cache.updateTwitterSearch(twitterSearch);
 
 			}
+
 		};
 
 		twitterSearchThread.start();
@@ -518,13 +534,14 @@ public class TwitterAnalysisLauncher {
 
 	private void startMonitoringResourcesThreads() {
 
-		if (twitterSearch.getLinks() != null && !twitterSearch.getLinks().equals("")) {
+		if (twitterSearch.getTwitterMonitorScheduler().getLinks() != null && !twitterSearch.getTwitterMonitorScheduler().getLinks().equals("")) {
 
 			Thread bitlyAnalysisThread = new Thread() {
 				@Override
 				public void run() {
 
-					BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(twitterSearch.getLinks(), twitterSearch.getSearchID());
+					BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(twitterSearch.getTwitterMonitorScheduler().getLinks(),
+							twitterSearch.getSearchID());
 
 					bitlyUtil.startBitlyAnalysis();
 
@@ -534,11 +551,11 @@ public class TwitterAnalysisLauncher {
 			bitlyAnalysisThread.start();
 		}
 
-		if (twitterSearch.getAccounts() != null && !twitterSearch.getAccounts().equals("")) {
+		if (twitterSearch.getTwitterMonitorScheduler().getAccounts() != null && !twitterSearch.getTwitterMonitorScheduler().getAccounts().equals("")) {
 
 			Thread accountAnalysisThread = new Thread() {
 
-				String accounts = twitterSearch.getAccounts();
+				String accounts = twitterSearch.getTwitterMonitorScheduler().getAccounts();
 
 				@Override
 				public void run() {
@@ -559,11 +576,11 @@ public class TwitterAnalysisLauncher {
 			accountAnalysisThread.start();
 		}
 
-		if (twitterSearch.getDocuments() != null && !twitterSearch.getDocuments().equals("")) {
+		if (twitterSearch.getTwitterMonitorScheduler().getDocuments() != null && !twitterSearch.getTwitterMonitorScheduler().getDocuments().equals("")) {
 
 			Thread documentAnalysisThread = new Thread() {
 
-				String documents = twitterSearch.getDocuments();
+				String documents = twitterSearch.getTwitterMonitorScheduler().getDocuments();
 
 				@Override
 				public void run() {
@@ -587,7 +604,7 @@ public class TwitterAnalysisLauncher {
 
 	}
 
-	private void createHistoricalSearchTrigger(TwitterSearchSchedulerPojo tScheduler) {
+	private void createHistoricalSearchTrigger(TwitterSearchScheduler tsScheduler) {
 
 		try {
 
@@ -604,13 +621,13 @@ public class TwitterAnalysisLauncher {
 
 			// scheduler parameters
 
-			Calendar startingCalendar = tScheduler.getStartingDate();
+			Calendar startingCalendar = tsScheduler.getStartingTime();
 			Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-			int frequency = tScheduler.getRepeatFrequency();
-			String type = tScheduler.getRepeatType();
+			int frequency = tsScheduler.getRepeatFrequency();
+			SearchRepeatTypeEnum type = tsScheduler.getRepeatType();
 
-			if (type.equalsIgnoreCase("day")) {
+			if (type == SearchRepeatTypeEnum.Day) {
 
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDateJob)
 						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.DAY)).build();
@@ -618,7 +635,7 @@ public class TwitterAnalysisLauncher {
 				// Tell quartz to schedule the job using our trigger
 				sched.scheduleJob(hSearchJob, trigger);
 
-			} else if (type.equalsIgnoreCase("hour")) {
+			} else if (type == SearchRepeatTypeEnum.Hour) {
 
 				Trigger trigger = TriggerBuilder.newTrigger().withIdentity("HSearchTgr_" + searchID, "groupHSearch").startAt(startingDateJob)
 						.withSchedule(CalendarIntervalScheduleBuilder.calendarIntervalSchedule().withInterval(frequency, DateBuilder.IntervalUnit.HOUR))
@@ -629,12 +646,15 @@ public class TwitterAnalysisLauncher {
 
 			}
 
+			tsScheduler.setStartingTime(startingCalendar);
+			cache.updateTwitterSearchScheduler(tsScheduler);
+
 		} catch (SchedulerException e) {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
 
-	private void createMonitoringTriggerWithoutEndingDate(TwitterMonitorSchedulerPojo twitterMonitor) {
+	private void createMonitoringTriggerWithoutEndingDate(TwitterMonitorScheduler twitterMonitor) {
 
 		try {
 
@@ -644,18 +664,21 @@ public class TwitterAnalysisLauncher {
 
 			sched.start();
 
-			long searchID = twitterMonitor.getSearchID();
+			long searchID = this.twitterSearch.getSearchID();
 
 			// Job details
 			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring")
 					.usingJobData("searchID", searchID).build();
 
 			int repeatFrequency = twitterMonitor.getRepeatFrequency();
-			String repeatType = twitterMonitor.getRepeatType();
+			MonitorRepeatTypeEnum repeatType = twitterMonitor.getRepeatType();
 
 			Calendar startingCalendar = GregorianCalendar.getInstance();
 
-			if (repeatType.equalsIgnoreCase("Day")) {
+			startingCalendar.set(Calendar.SECOND, 0);
+			startingCalendar.set(Calendar.MILLISECOND, 0);
+
+			if (repeatType == MonitorRepeatTypeEnum.Day) {
 
 				startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
 
@@ -667,7 +690,7 @@ public class TwitterAnalysisLauncher {
 
 				sched.scheduleJob(hSearchJob, trigger);
 
-			} else if (repeatType.equalsIgnoreCase("Hour")) {
+			} else if (repeatType == MonitorRepeatTypeEnum.Hour) {
 
 				startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
 
@@ -681,13 +704,16 @@ public class TwitterAnalysisLauncher {
 
 			}
 
+			twitterMonitor.setStartingTime(startingCalendar);
+			cache.updateTwitterMonitorScheduler(twitterMonitor);
+
 		} catch (SchedulerException e) {
 			throw new RuntimeException(e.getMessage());
 		}
 
 	}
 
-	private void createMonitoringTriggerWithEndingDate(TwitterMonitorSchedulerPojo twitterMonitor) {
+	private void createMonitoringTriggerWithEndingDate(TwitterMonitorScheduler twitterMonitor) {
 
 		try {
 
@@ -697,26 +723,29 @@ public class TwitterAnalysisLauncher {
 
 			sched.start();
 
-			long searchID = twitterMonitor.getSearchID();
+			long searchID = this.twitterSearch.getSearchID();
 
 			// Job details
 			JobDetail hSearchJob = JobBuilder.newJob(MonitoringResourcesJob.class).withIdentity("MonitoringJob_" + searchID, "groupMonitoring")
 					.usingJobData("searchID", searchID).build();
 
 			int repeatFrequency = twitterMonitor.getRepeatFrequency();
-			String repeatType = twitterMonitor.getRepeatType();
+			MonitorRepeatTypeEnum repeatType = twitterMonitor.getRepeatType();
 
 			Calendar startingCalendar = GregorianCalendar.getInstance();
 
-			if (repeatType.equalsIgnoreCase("Day")) {
+			startingCalendar.set(Calendar.SECOND, 0);
+			startingCalendar.set(Calendar.MILLISECOND, 0);
+
+			if (repeatType == MonitorRepeatTypeEnum.Day) {
 
 				startingCalendar.add(Calendar.DAY_OF_MONTH, repeatFrequency);
 
-				if (twitterMonitor.getEndingDate().compareTo(startingCalendar) > 0) {
+				if (twitterMonitor.getEndingTime().compareTo(startingCalendar) > 0) {
 
 					Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingDate().getTimeInMillis());
+					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingTime().getTimeInMillis());
 
 					Trigger trigger = TriggerBuilder
 							.newTrigger()
@@ -730,15 +759,15 @@ public class TwitterAnalysisLauncher {
 					sched.scheduleJob(hSearchJob, trigger);
 				}
 
-			} else if (repeatType.equalsIgnoreCase("Hour")) {
+			} else if (repeatType == MonitorRepeatTypeEnum.Hour) {
 
 				startingCalendar.add(Calendar.HOUR_OF_DAY, repeatFrequency);
 
-				if (twitterMonitor.getEndingDate().compareTo(startingCalendar) > 0) {
+				if (twitterMonitor.getEndingTime().compareTo(startingCalendar) > 0) {
 
 					Date startingDateJob = new java.util.Date(startingCalendar.getTimeInMillis());
 
-					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingDate().getTimeInMillis());
+					Date endingDateJob = new java.util.Date(twitterMonitor.getEndingTime().getTimeInMillis());
 
 					Trigger trigger = TriggerBuilder
 							.newTrigger()
@@ -753,26 +782,59 @@ public class TwitterAnalysisLauncher {
 				}
 			}
 
+			twitterMonitor.setStartingTime(startingCalendar);
+			cache.updateTwitterMonitorScheduler(twitterMonitor);
+
 		} catch (SchedulerException e) {
 			throw new RuntimeException(e.getMessage());
 		}
 
 	}
 
-	private void setMonitorSchedulerEndingDate(TwitterMonitorSchedulerPojo twitterMonitorScheduler) {
-		Calendar endingCalendar = GregorianCalendar.getInstance();
-		int upToValue = twitterMonitorScheduler.getUpToValue();
-		String upToType = twitterMonitorScheduler.getUpToType();
+	private void previousStreamAndMonitorManager() {
+		TwitterSearch previousEnabledTwitterSearch = cache.isPresentEnabledStream();
 
-		// Calculating the ending date
-		if (upToType.equalsIgnoreCase("Day")) {
-			endingCalendar.add(Calendar.DAY_OF_MONTH, upToValue);
-		} else if (upToType.equalsIgnoreCase("Week")) {
-			endingCalendar.add(Calendar.DAY_OF_MONTH, (upToValue) * 7);
-		} else if (upToType.equalsIgnoreCase("Month")) {
-			endingCalendar.add(Calendar.DAY_OF_MONTH, (upToValue) * 30);
+		if (previousEnabledTwitterSearch != null) {
+
+			TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
+
+			twitterStream.clearListeners();
+			twitterStream.cleanUp();
+
+			previousEnabledTwitterSearch.setLoading(false);
+
+			cache.updateTwitterSearch(previousEnabledTwitterSearch);
+
+			TwitterMonitorScheduler previousTwitterMonitorScheduler = previousEnabledTwitterSearch.getTwitterMonitorScheduler();
+
+			if (previousTwitterMonitorScheduler != null) {
+
+				long lastActiveSearchID = previousEnabledTwitterSearch.getSearchID();
+
+				Calendar endingCalendar = AnalysisUtility.setMonitorSchedulerEndingDate(previousTwitterMonitorScheduler);
+
+				previousTwitterMonitorScheduler.setEndingTime(endingCalendar);
+
+				cache.updateTwitterMonitorScheduler(previousTwitterMonitorScheduler);
+
+				try {
+					SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
+
+					Scheduler scheduler = schedFact.getScheduler();
+
+					logger.debug("Method stopStreamingSearch(): Unscheduling trigger MonitoringTgr_" + lastActiveSearchID);
+					scheduler.unscheduleJob(TriggerKey.triggerKey("MonitoringTgr_" + lastActiveSearchID, "groupMonitoring"));
+
+					logger.debug("Method createEnabledStreamingSearch(): Starting monitor resources for search: " + lastActiveSearchID);
+
+					createMonitoringTriggerWithEndingDate(previousTwitterMonitorScheduler);
+
+				} catch (SchedulerException e) {
+
+					logger.debug("Method createEnabledStreamingSearch(): Error stopping scheduler for search " + lastActiveSearchID);
+				}
+			}
+
 		}
-
-		twitterMonitorScheduler.setEndingDate(endingCalendar);
 	}
 }

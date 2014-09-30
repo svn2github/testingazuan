@@ -8,40 +8,14 @@
 
 	<schedule>
 		<job>
-            <name>StreamingSchedulerInitializeJob</name>
-            <job-class>it.eng.spagobi.twitter.analysis.scheduler.StreamingSchedulerInitializeJob</job-class>
-        </job>
-        <job>
-            <name>SearchSchedulersInitializeJob</name>
-            <job-class>it.eng.spagobi.twitter.analysis.scheduler.SearchSchedulersInitializeJob</job-class>
-        </job>
-        <job>
-            <name>MonitorSchedulersInitializeJob</name>
-            <job-class>it.eng.spagobi.twitter.analysis.scheduler.MonitorSchedulersInitializeJob</job-class>
+            <name>InitializeSocialAnalysisSchedulers</name>
+            <job-class>it.eng.spagobi.twitter.analysis.scheduler.InitializeSocialAnalysisSchedulers</job-class>
         </job>
         <trigger>
         	<simple>
-                <name>StartSearchSchedulersTrigger</name>
-                <group>SearchGroup</group>
-                <job-name>SearchSchedulersInitializeJob</job-name>
-                <repeat-count>0</repeat-count> 
-                <repeat-interval>1</repeat-interval>               
-        	</simple>
-        </trigger>
-        <trigger>
-        	<simple>
-                <name>StartMonitorSchedulersTrigger</name>
-                <group>MonitorGroup</group>
-                <job-name>MonitorSchedulersInitializeJob</job-name>
-                <repeat-count>0</repeat-count> 
-                <repeat-interval>1</repeat-interval>               
-        	</simple>
-        </trigger>
-        <trigger>
-        	<simple>
-                <name>StartStreamingSchedulerTrigger</name>
-                <group>StreamingGroup</group>
-                <job-name>StreamingSchedulerInitializeJob</job-name>
+                <name>InitializeSocialAnalysisSchedulers</name>
+                <group>InitializeGroup</group>
+                <job-name>InitializeSocialAnalysisSchedulers</job-name>
                 <repeat-count>0</repeat-count> 
                 <repeat-interval>1</repeat-interval>               
         	</simple>

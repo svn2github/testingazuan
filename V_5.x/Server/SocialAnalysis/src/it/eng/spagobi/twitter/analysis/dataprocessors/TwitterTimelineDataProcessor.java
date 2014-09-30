@@ -5,20 +5,19 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
+import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
+import it.eng.spagobi.twitter.analysis.entities.TwitterData;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +34,7 @@ public class TwitterTimelineDataProcessor {
 
 	private static final Logger logger = Logger.getLogger(TwitterTimelineDataProcessor.class);
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
 	private final long CONST_TIMEZONE = 60 * 60 * 2000;
 
@@ -91,55 +90,43 @@ public class TwitterTimelineDataProcessor {
 		this.initializeTimelines(tweetsWeekMap, rtsWeekMap, "weeks");
 		this.initializeTimelines(tweetsMonthMap, rtsMonthMap, "months");
 
-		String sqlQuery = "SELECT t.time_created_at, t.is_retweet from twitter_data t where search_id = '" + searchID + "' order by t.time_created_at ASC";
+		List<TwitterData> twitterDatas = dpCache.getTimelineTweets(searchID);
 
-		try {
+		for (TwitterData twitterData : twitterDatas) {
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			boolean isRetweet = twitterData.isRetweet();
+			java.sql.Timestamp timeFromDB = new java.sql.Timestamp(twitterData.getTimeCreatedAt().getTimeInMillis());
 
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
+			long hourRoundedTime = roundTime("hours", timeFromDB);
+			long dayRoundedTime = roundTime("days", timeFromDB);
+			long weekRoundedTime = roundTime("weeks", timeFromDB);
+			long monthRoundedTime = roundTime("months", timeFromDB);
 
-			while (rs.next()) {
-
-				boolean isRetweet = rs.getBoolean("is_retweet");
-				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
-
-				Assert.assertNotNull(isRetweet, "SQL NULL for is_retweet column in results of [ " + sqlQuery + " ] ");
-				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
-
-				long hourRoundedTime = roundTime("hours", timeFromDB);
-				long dayRoundedTime = roundTime("days", timeFromDB);
-				long weekRoundedTime = roundTime("weeks", timeFromDB);
-				long monthRoundedTime = roundTime("months", timeFromDB);
-
-				this.updateTimelineCounters(tweetsHourMap, rtsHourMap, hourRoundedTime, isRetweet);
-				this.updateTimelineCounters(tweetsDayMap, rtsDayMap, dayRoundedTime, isRetweet);
-				this.updateTimelineCounters(tweetsWeekMap, rtsWeekMap, weekRoundedTime, isRetweet);
-				this.updateTimelineCounters(tweetsMonthMap, rtsMonthMap, monthRoundedTime, isRetweet);
-			}
-
-			JSONArray hourJSONArray = this.convertLinkedHashMapsIntoString(tweetsHourMap, rtsHourMap);
-			JSONArray dayJSONArray = this.convertLinkedHashMapsIntoString(tweetsDayMap, rtsDayMap);
-			JSONArray weekJSONArray = this.convertLinkedHashMapsIntoString(tweetsWeekMap, rtsWeekMap);
-			JSONArray monthJSONArray = this.convertLinkedHashMapsIntoString(tweetsMonthMap, rtsMonthMap);
-
-			this.hourData = hourJSONArray.toString();
-			this.dayData = dayJSONArray.toString();
-			this.weekData = weekJSONArray.toString();
-			this.monthData = monthJSONArray.toString();
-
-			this.hourDataOverview = this.getDataOverviewFromFullData(hourJSONArray).toString();
-			this.dayDataOverview = this.getDataOverviewFromFullData(dayJSONArray).toString();
-			this.weekDataOverview = this.getDataOverviewFromFullData(weekJSONArray).toString();
-			this.monthDataOverview = this.getDataOverviewFromFullData(monthJSONArray).toString();
-
-			this.weekTicks = this.createWeekTicks(weekJSONArray).toString();
-
-			logger.debug("Method initializeTwitterTimelineDataProcessor(): End");
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method initializeTwitterDocumentsDataProcessor(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
+			this.updateTimelineCounters(tweetsHourMap, rtsHourMap, hourRoundedTime, isRetweet);
+			this.updateTimelineCounters(tweetsDayMap, rtsDayMap, dayRoundedTime, isRetweet);
+			this.updateTimelineCounters(tweetsWeekMap, rtsWeekMap, weekRoundedTime, isRetweet);
+			this.updateTimelineCounters(tweetsMonthMap, rtsMonthMap, monthRoundedTime, isRetweet);
 		}
+
+		JSONArray hourJSONArray = this.convertLinkedHashMapsIntoString(tweetsHourMap, rtsHourMap);
+		JSONArray dayJSONArray = this.convertLinkedHashMapsIntoString(tweetsDayMap, rtsDayMap);
+		JSONArray weekJSONArray = this.convertLinkedHashMapsIntoString(tweetsWeekMap, rtsWeekMap);
+		JSONArray monthJSONArray = this.convertLinkedHashMapsIntoString(tweetsMonthMap, rtsMonthMap);
+
+		this.hourData = hourJSONArray.toString();
+		this.dayData = dayJSONArray.toString();
+		this.weekData = weekJSONArray.toString();
+		this.monthData = monthJSONArray.toString();
+
+		this.hourDataOverview = this.getDataOverviewFromFullData(hourJSONArray).toString();
+		this.dayDataOverview = this.getDataOverviewFromFullData(dayJSONArray).toString();
+		this.weekDataOverview = this.getDataOverviewFromFullData(weekJSONArray).toString();
+		this.monthDataOverview = this.getDataOverviewFromFullData(monthJSONArray).toString();
+
+		this.weekTicks = this.createWeekTicks(weekJSONArray).toString();
+
+		logger.debug("Method initializeTwitterTimelineDataProcessor(): End");
+
 	}
 
 	/**
@@ -151,26 +138,17 @@ public class TwitterTimelineDataProcessor {
 
 		logger.debug("Method  setLowerBound(): Start");
 
-		String sqlQuery = "SELECT time_created_at FROM twitter_data WHERE search_id = '" + searchID + "' ORDER BY date_created_at ASC";
+		Calendar minCalendar = dpCache.getMinTweetTime(searchID);
 
-		try {
+		if (minCalendar != null) {
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			Timestamp timeFromDB = new Timestamp(minCalendar.getTimeInMillis());
+			this.lowerBound = timeFromDB;
 
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			if (rs.next()) {
-
-				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
-
-				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
-
-				this.lowerBound = timeFromDB;
-			}
-
-		} catch (Exception e) {
-			throw new SpagoBIRuntimeException("Method  setLowerBound(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
+
+		logger.debug("Method  setLowerBound(): End");
+
 	}
 
 	/**
@@ -182,26 +160,17 @@ public class TwitterTimelineDataProcessor {
 
 		logger.debug("Method  setUpperBound(): Start");
 
-		String sqlQuery = "SELECT time_created_at FROM twitter_data WHERE search_id = '" + searchID + "' ORDER BY date_created_at DESC";
+		Calendar maxCalendar = dpCache.getMaxTweetTime(searchID);
 
-		try {
+		if (maxCalendar != null) {
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			Timestamp timeFromDB = new Timestamp(maxCalendar.getTimeInMillis());
+			this.upperBound = timeFromDB;
 
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			if (rs.next()) {
-
-				java.sql.Timestamp timeFromDB = rs.getTimestamp("time_created_at");
-
-				Assert.assertNotNull(timeFromDB, "SQL NULL for time_created_at column in results of [ " + sqlQuery + " ] ");
-
-				this.upperBound = timeFromDB;
-			}
-
-		} catch (Exception e) {
-			throw new SpagoBIRuntimeException("Method  setUpperBound(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
+
+		logger.debug("Method  setUpperBound(): End");
+
 	}
 
 	/**

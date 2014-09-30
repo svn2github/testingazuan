@@ -21,26 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.servlet;
 
-import it.eng.spagobi.twitter.analysis.dataprocessors.TwitterSearchDataProcessor;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
-
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterAnalysisServlet extends HttpServlet {
@@ -53,62 +42,53 @@ public class TwitterAnalysisServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/*
-		 * // reading the user input String searchType =
-		 * request.getParameter("searchType"); String searchLabel =
-		 * request.getParameter("searchLabel"); String keyword =
-		 * request.getParameter("keyword"); String link =
-		 * request.getParameter("link"); // TODO gestire i diversi valori che
-		 * possono essere inseriti da input String account =
-		 * request.getParameter("account");
+		 * // reading the user input String searchType = request.getParameter("searchType"); String searchLabel = request.getParameter("searchLabel"); String
+		 * keyword = request.getParameter("keyword"); String link = request.getParameter("link"); // TODO gestire i diversi valori che possono essere inseriti
+		 * da input String account = request.getParameter("account");
 		 * 
-		 * // System.out.println("SearchType: " + searchType +
-		 * "\n SearchLabel: " + // searchLabel + "\n Keyword: " + keyword +
-		 * "\n Link: " + link + // "\n Account: " + account);
+		 * // System.out.println("SearchType: " + searchType + "\n SearchLabel: " + // searchLabel + "\n Keyword: " + keyword + "\n Link: " + link + //
+		 * "\n Account: " + account);
 		 * 
-		 * // TODO per il momento gli altri input sono inseriti nel codice, ma
-		 * // inseguito dovranno essere quelli inseriti dall'utente String
-		 * languageCode = null; String dbType = "MySQL";
+		 * // TODO per il momento gli altri input sono inseriti nel codice, ma // inseguito dovranno essere quelli inseriti dall'utente String languageCode =
+		 * null; String dbType = "MySQL";
 		 * 
-		 * TwitterAnalysisLauncher twitterLauncher = new
-		 * TwitterAnalysisLauncher(keyword, languageCode, searchType,
-		 * searchLabel, link, account, dbType);
+		 * TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(keyword, languageCode, searchType, searchLabel, link, account, dbType);
 		 * 
 		 * twitterLauncher.startSearch();
 		 * 
-		 * RequestDispatcher requetsDispatcherObj =
-		 * request.getRequestDispatcher("/searchlist.jsp");
-		 * requetsDispatcherObj.forward(request, response);
+		 * RequestDispatcher requetsDispatcherObj = request.getRequestDispatcher("/searchlist.jsp"); requetsDispatcherObj.forward(request, response);
 		 */
 
 		// reading the user input
-		String searchType = request.getParameter("searchType");
-		String searchLabel = request.getParameter("searchLabel");
-		String keyword = request.getParameter("keyword");
-		String link = request.getParameter("link");
-		String account = request.getParameter("account");
-
-		System.out.println("SearchType: " + searchType + "\n SearchLabel: " + searchLabel + "\n Keyword: " + keyword + "\n Link: " + link + "\n Account: " + account);
-
-		String languageCode = null;
-		String dbType = "MySQL";
-
-		// TwitterAnalysisLauncher twitterLauncher = new
-		// TwitterAnalysisLauncher(keyword, languageCode, searchType,
-		// searchLabel, link, account, dbType);
-		// twitterLauncher.startSearch();
-
-		List<TwitterSearchPojo> search = new ArrayList<TwitterSearchPojo>();
-
-		search = new TwitterSearchDataProcessor().getTwitterSearchList("StreamingAPI");
-		Gson gson = new Gson();
-		JsonElement element = gson.toJsonTree(search, new TypeToken<List<TwitterSearchPojo>>() {
-		}.getType());
-
-		JsonArray jsonArray = element.getAsJsonArray();
-
-		System.out.println(jsonArray);
-		response.setContentType("application/json");
-		response.getWriter().print(jsonArray);
+		// String searchType = request.getParameter("searchType");
+		// String searchLabel = request.getParameter("searchLabel");
+		// String keyword = request.getParameter("keyword");
+		// String link = request.getParameter("link");
+		// String account = request.getParameter("account");
+		//
+		// System.out.println("SearchType: " + searchType + "\n SearchLabel: " + searchLabel + "\n Keyword: " + keyword + "\n Link: " + link + "\n Account: " +
+		// account);
+		//
+		// String languageCode = null;
+		// String dbType = "MySQL";
+		//
+		// // TwitterAnalysisLauncher twitterLauncher = new
+		// // TwitterAnalysisLauncher(keyword, languageCode, searchType,
+		// // searchLabel, link, account, dbType);
+		// // twitterLauncher.startSearch();
+		//
+		// List<TwitterSearchPojo> search = new ArrayList<TwitterSearchPojo>();
+		//
+		// search = new TwitterSearchDataProcessor().getTwitterSearchList("StreamingAPI");
+		// Gson gson = new Gson();
+		// JsonElement element = gson.toJsonTree(search, new TypeToken<List<TwitterSearchPojo>>() {
+		// }.getType());
+		//
+		// JsonArray jsonArray = element.getAsJsonArray();
+		//
+		// System.out.println(jsonArray);
+		// response.setContentType("application/json");
+		// response.getWriter().print(jsonArray);
 
 	}
 }

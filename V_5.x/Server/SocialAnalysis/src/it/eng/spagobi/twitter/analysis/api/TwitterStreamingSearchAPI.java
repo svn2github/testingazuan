@@ -12,12 +12,16 @@ SpagoBI, the Open Source Business Intelligence suite
 
 package it.eng.spagobi.twitter.analysis.api;
 
-import it.eng.spagobi.twitter.analysis.dataprocessors.TwitterSearchDataProcessor;
+import it.eng.spagobi.twitter.analysis.entities.TwitterMonitorScheduler;
+import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
+import it.eng.spagobi.twitter.analysis.enums.MonitorRepeatTypeEnum;
+import it.eng.spagobi.twitter.analysis.enums.SearchTypeEnum;
+import it.eng.spagobi.twitter.analysis.enums.UpToTypeEnum;
 import it.eng.spagobi.twitter.analysis.launcher.TwitterAnalysisLauncher;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterMonitorSchedulerPojo;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
+import it.eng.spagobi.twitter.analysis.utilities.AnalysisUtility;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,36 +34,272 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 
+import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 @Path("/streamingSearch")
 public class TwitterStreamingSearchAPI {
 
 	static final Logger logger = Logger.getLogger(TwitterStreamingSearchAPI.class);
 
-	TwitterSearchPojo twitterSearch = new TwitterSearchPojo();
-	TwitterMonitorSchedulerPojo twitterMonitorScheduler = null;
-
 	// Save a new Twitter Search
-	@Path("/saveSearch")
+	@Path("/createEnabledStream")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public String save(@Context HttpServletRequest req) {
+	public String createEnabledStream(@Context HttpServletRequest req) {
 
-		logger.debug("Method save(): Start");
+		logger.debug("Method createEnabledStream(): Start");
+
+		TwitterSearch twitterSearch = this.createStreamingSearch(req);
+
+		if (twitterSearch.getTwitterMonitorScheduler() != null) {
+			twitterSearch.getTwitterMonitorScheduler().setActiveSearch(true);
+		}
 
 		String languageCode = null;
-		String dbType = "MySQL";
+
+		// initializing the launcher with this search
+		TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterLauncher.setLanguageCode(languageCode);
+
+		long searchID = twitterLauncher.createEnabledStreamingSearch();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+
+			if (searchID > 0) {
+
+				resObj.put("success", true);
+				resObj.put("msg", "Streaming search \"" + twitterSearch.getLabel() + "\" inserted (enabled)");
+
+			} else {
+
+				resObj.put("failure", true);
+				resObj.put("msg", "Failure inserting new search ");
+
+			}
+		} catch (JSONException e) {
+			logger.error("Method createEnabledStream(): ERROR - " + e);
+		}
+
+		logger.debug("Method createEnabledStream(): End");
+
+		return resObj.toString();
+	}
+
+	// Save a new Twitter Search
+	@Path("/createDisabledStream")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String createDisabledStream(@Context HttpServletRequest req) {
+
+		logger.debug("Method createDisabledStream(): Start");
+
+		TwitterSearch twitterSearch = this.createStreamingSearch(req);
+		String languageCode = null;
+
+		if (twitterSearch.getTwitterMonitorScheduler() != null) {
+			twitterSearch.getTwitterMonitorScheduler().setActiveSearch(false);
+		}
+
+		// initializing the launcher with this search
+		TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterLauncher.setLanguageCode(languageCode);
+
+		long searchID = twitterLauncher.createDisabledStreamingSearch();
+
+		JSONObject resObj = new JSONObject();
+
+		try {
+
+			if (searchID > 0) {
+
+				resObj.put("success", true);
+				resObj.put("msg", "Streaming search \"" + twitterSearch.getLabel() + "\" inserted (enabled)");
+
+			} else {
+
+				resObj.put("failure", true);
+				resObj.put("msg", "Failure inserting new search ");
+
+			}
+		} catch (JSONException e) {
+			logger.error("Method createDisabledStream(): ERROR - " + e);
+		}
+
+		logger.debug("Method createDisabledStream(): End");
+
+		return resObj.toString();
+	}
+
+	@POST
+	// @Produces(MediaType.APPLICATION_JSON)
+	public String start(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method start(): Start");
+
+		String languageCode = null;
+
+		// reading the user input
+		String sID = req.getParameter("searchID");
+
+		if (sID != null && !sID.equals("")) {
+			long searchID = Long.parseLong(sID);
+
+			String keywords = req.getParameter("keywords");
+
+			TwitterSearch twitterSearch = new TwitterSearch();
+
+			twitterSearch.setKeywords(keywords);
+			twitterSearch.setSearchID(searchID);
+
+			TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
+			twitterLauncher.setLanguageCode(languageCode);
+
+			twitterLauncher.startStreamingSearch();
+
+		}
+
+		// JSONObject resObj = new JSONObject();
+		//
+		// try {
+		//
+		// resObj.put("success", true);
+		// resObj.put("msg", "Streaming search activated");
+		//
+		// } catch (JSONException e) {
+		// logger.error("Method start(): ERROR - " + e);
+		// }
+		//
+		// logger.debug("Method start(): End");
+
+		return "Streaming search activated";
+	}
+
+	// Get the list of all Twitter Search
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getListSearch(@Context HttpServletRequest req) {
+
+		TwitterAnalysisLauncher launcher = new TwitterAnalysisLauncher();
+
+		List<TwitterSearch> searchList = launcher.getTwitterSearchList(SearchTypeEnum.STREAMINGAPI);
+
+		JSONArray jsonArray = new JSONArray();
+
+		for (TwitterSearch search : searchList) {
+			try {
+
+				jsonArray.put(search.toJSONObject());
+
+			} catch (JSONException e) {
+
+				throw new SpagoBIRuntimeException("Method getListSearch(): Impossible to get list of Historical Search - " + e);
+			}
+		}
+
+		logger.debug("GET Result: " + jsonArray.toString());
+
+		return jsonArray.toString();
+
+	}
+
+	// Delete a Twitter Search
+	@Path("/deleteSearch")
+	@POST
+	// @Produces(MediaType.APPLICATION_JSON)
+	public String delete(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method delete(): Start..");
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+		boolean loading = Boolean.parseBoolean(req.getParameter("loading"));
+
+		TwitterSearch twitterSearch = new TwitterSearch();
+
+		// set ready parameters
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setType(SearchTypeEnum.STREAMINGAPI);
+		twitterSearch.setLoading(loading);
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.deleteSearch();
+
+		// JSONObject resObj = new JSONObject();
+
+		// try {
+		// resObj.put("success", true);
+		// resObj.put("msg", "Streaming search \"" + searchID + "\" deleted");
+		//
+		// } catch (JSONException e) {
+		// logger.error("Method delete(): ERROR - " + e);
+		// }
+
+		logger.debug("Method delete(): End");
+
+		return "Streaming search " + searchID + " deleted";
+	}
+
+	// Stop a Twitter Search
+	@Path("/stopStreamingSearch")
+	@POST
+	// @Produces(MediaType.APPLICATION_JSON)
+	public String stopStream(@Context HttpServletRequest req) throws Exception {
+
+		logger.debug("Method stopStream(): Start");
+
+		// reading the user input
+		String searchID = req.getParameter("searchID");
+
+		// set ready parameters
+
+		TwitterSearch twitterSearch = new TwitterSearch();
+
+		twitterSearch.setSearchID(Long.parseLong(searchID));
+		twitterSearch.setType(SearchTypeEnum.STREAMINGAPI);
+
+		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
+		twitterAnalysisLauncher.stopStreamingSearch();
+
+		// JSONObject resObj = new JSONObject();
+
+		// try {
+		// resObj.put("success", true);
+		// resObj.put("msg", "Streaming search stopped");
+		//
+		// } catch (JSONException e) {
+		// logger.error("Method delete(): ERROR - " + e);
+		// }
+
+		logger.debug("Method delete(): End");
+
+		return "Streaming search stopped";
+	}
+
+	private boolean monitorFrequencyValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
+	}
+
+	private boolean monitorUpToValidation(String value, String type) {
+		if (value != null && !value.equals("") && type != null && !value.equals(""))
+			return true;
+		else
+			return false;
+	}
+
+	private TwitterSearch createStreamingSearch(HttpServletRequest req) {
+		TwitterSearch twitterSearch = new TwitterSearch();
+		TwitterMonitorScheduler twitterMonitorScheduler = null;
 
 		// reading the user input
 
-		String searchType = req.getParameter("searchType");
+		// String searchType = req.getParameter("searchType");
 		String label = req.getParameter("label");
 		String keywords = req.getParameter("keywords");
 		String links = req.getParameter("links");
@@ -67,12 +307,12 @@ public class TwitterStreamingSearchAPI {
 		String documents = req.getParameter("documents");
 
 		// set ready parameters
-		twitterSearch.setLanguageCode(languageCode);
-		twitterSearch.setDbType(dbType);
-		twitterSearch.setSearchType(searchType);
+
+		twitterSearch.setType(SearchTypeEnum.STREAMINGAPI);
 		twitterSearch.setKeywords(keywords);
 
-		twitterSearch.setFrequency("");
+		twitterSearch.setCreationDate(GregorianCalendar.getInstance());
+		twitterSearch.setLastActivationTime(GregorianCalendar.getInstance());
 
 		// if user is not specifying the label, create it with the keywords
 		if (label == null || label.trim().equals("")) {
@@ -109,19 +349,34 @@ public class TwitterStreamingSearchAPI {
 
 			if (monitorFrequencyValidation(monitorFrequencyValue, monitorFrequencyType) && monitorUpToValidation(numberUpTo, typeUpTo)) {
 
-				twitterMonitorScheduler = new TwitterMonitorSchedulerPojo();
+				twitterMonitorScheduler = new TwitterMonitorScheduler();
 
 				twitterMonitorScheduler.setRepeatFrequency(Integer.parseInt(monitorFrequencyValue));
-				twitterMonitorScheduler.setRepeatType(monitorFrequencyType);
+
+				if (monitorFrequencyType.equalsIgnoreCase(MonitorRepeatTypeEnum.Day.toString())) {
+					twitterMonitorScheduler.setRepeatType(MonitorRepeatTypeEnum.Day);
+				} else if (monitorFrequencyType.equalsIgnoreCase(MonitorRepeatTypeEnum.Hour.toString())) {
+					twitterMonitorScheduler.setRepeatType(MonitorRepeatTypeEnum.Hour);
+				}
 
 				twitterMonitorScheduler.setUpToValue(Integer.parseInt(numberUpTo));
-				twitterMonitorScheduler.setUpToType(typeUpTo);
 
-				twitterMonitorScheduler.setActive(true);
+				if (typeUpTo.equalsIgnoreCase(UpToTypeEnum.Day.toString())) {
+					twitterMonitorScheduler.setUpToType(UpToTypeEnum.Day);
+				} else if (typeUpTo.equalsIgnoreCase(UpToTypeEnum.Week.toString())) {
+					twitterMonitorScheduler.setUpToType(UpToTypeEnum.Week);
+				} else if (typeUpTo.equalsIgnoreCase(UpToTypeEnum.Month.toString())) {
+					twitterMonitorScheduler.setUpToType(UpToTypeEnum.Month);
+				}
 
 				twitterMonitorScheduler.setAccounts(accounts);
 				twitterMonitorScheduler.setLinks(links);
 				twitterMonitorScheduler.setDocuments(documents);
+				twitterMonitorScheduler.setEndingTime(AnalysisUtility.setMonitorSchedulerEndingDate(twitterMonitorScheduler));
+				twitterMonitorScheduler.setLastActivationTime(GregorianCalendar.getInstance());
+				twitterMonitorScheduler.setStartingTime(GregorianCalendar.getInstance());
+
+				twitterMonitorScheduler.setTwitterSearch(twitterSearch);
 
 			}
 
@@ -130,190 +385,7 @@ public class TwitterStreamingSearchAPI {
 		// set monitor scheduler
 		twitterSearch.setTwitterMonitorScheduler(twitterMonitorScheduler);
 
-		// initializing the launcher with this search
-		TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
-
-		long searchID = twitterLauncher.createStreamingSearch();
-
-		JSONObject resObj = new JSONObject();
-
-		try {
-
-			if (searchID > 0) {
-
-				resObj.put("success", true);
-				resObj.put("msg", "Streaming search \"" + label + "\" inserted (disabled)");
-
-			} else {
-
-				resObj.put("failure", true);
-				resObj.put("msg", "Failure inserting new search ");
-
-			}
-		} catch (JSONException e) {
-			logger.error("Method save(): ERROR - " + e);
-		}
-
-		logger.debug("Method save(): End");
-
-		return resObj.toString();
-	}
-
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public String start(@Context HttpServletRequest req) throws Exception {
-
-		logger.debug("Method start(): Start");
-
-		String languageCode = null;
-		String dbType = "MySQL";
-		//
-		// // reading the user input
-		String sID = req.getParameter("searchID");
-
-		if (sID != null && !sID.equals("")) {
-			long searchID = Long.parseLong(sID);
-
-			String keywords = req.getParameter("keywords");
-
-			twitterSearch.setLanguageCode(languageCode);
-			twitterSearch.setDbType(dbType);
-			twitterSearch.setKeywords(keywords);
-			twitterSearch.setSearchID(searchID);
-
-			TwitterAnalysisLauncher twitterLauncher = new TwitterAnalysisLauncher(twitterSearch);
-
-			twitterLauncher.startStreamingSearch();
-
-		}
-
-		JSONObject resObj = new JSONObject();
-
-		try {
-
-			resObj.put("success", true);
-			resObj.put("msg", "Streaming search activated");
-
-		} catch (JSONException e) {
-			logger.error("Method start(): ERROR - " + e);
-		}
-
-		logger.debug("Method start(): End");
-
-		return resObj.toString();
-	}
-
-	// Get the list of all Twitter Search
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getListSearch(@Context HttpServletRequest req) {
-
-		List<TwitterSearchPojo> search = new ArrayList<TwitterSearchPojo>();
-
-		search = new TwitterSearchDataProcessor().getTwitterSearchList("streamingAPI");
-
-		Gson gson = new Gson();
-
-		JsonElement element = gson.toJsonTree(search, new TypeToken<List<TwitterSearchPojo>>() {
-		}.getType());
-
-		JsonArray jsonArray = element.getAsJsonArray();
-
-		// String s =
-		// "{ id: '1000',    label: 'Test1', keywords: 'spagobi, opensource', lastActivation: '01/01/2014', accounts: '@themonkey86', links: 'bitly.link' }";
-
-		return jsonArray.toString();
-
-	}
-
-	// Delete a Twitter Search
-	@Path("/deleteSearch")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public String delete(@Context HttpServletRequest req) throws Exception {
-
-		logger.debug("Method delete(): Start..");
-
-		String languageCode = null;
-		String dbType = "MySQL";
-
-		// reading the user input
-		String searchID = req.getParameter("searchID");
-		boolean loading = Boolean.parseBoolean(req.getParameter("loading"));
-
-		// set ready parameters
-		twitterSearch.setDbType(dbType);
-		twitterSearch.setSearchID(Long.parseLong(searchID));
-		twitterSearch.setSearchType("streamingAPI");
-		twitterSearch.setLoading(loading);
-
-		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
-		twitterAnalysisLauncher.deleteSearch();
-
-		JSONObject resObj = new JSONObject();
-
-		try {
-			resObj.put("success", true);
-			resObj.put("msg", "Streaming search \"" + searchID + "\" deleted");
-
-		} catch (JSONException e) {
-			logger.error("Method delete(): ERROR - " + e);
-		}
-
-		logger.debug("Method delete(): End");
-
-		return resObj.toString();
-	}
-
-	// Stop a Twitter Search
-	@Path("/stopStreamingSearch")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public String stopStream(@Context HttpServletRequest req) throws Exception {
-
-		logger.debug("Method stopStream(): Start");
-
-		String languageCode = null;
-		String dbType = "MySQL";
-
-		// reading the user input
-		String searchID = req.getParameter("searchID");
-
-		// set ready parameters
-		twitterSearch.setDbType(dbType);
-		twitterSearch.setSearchID(Long.parseLong(searchID));
-		twitterSearch.setSearchType("streamingAPI");
-
-		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
-		twitterAnalysisLauncher.stopStreamingSearch();
-
-		JSONObject resObj = new JSONObject();
-
-		try {
-			resObj.put("success", true);
-			resObj.put("msg", "Streaming search stopped");
-
-		} catch (JSONException e) {
-			logger.error("Method delete(): ERROR - " + e);
-		}
-
-		logger.debug("Method delete(): End");
-
-		return resObj.toString();
-	}
-
-	private boolean monitorFrequencyValidation(String value, String type) {
-		if (value != null && !value.equals("") && type != null && !value.equals(""))
-			return true;
-		else
-			return false;
-	}
-
-	private boolean monitorUpToValidation(String value, String type) {
-		if (value != null && !value.equals("") && type != null && !value.equals(""))
-			return true;
-		else
-			return false;
+		return twitterSearch;
 	}
 
 }

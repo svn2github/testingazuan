@@ -2,12 +2,14 @@ package it.eng.spagobi.twitter.analysis.scheduler;
 
 import it.eng.spagobi.bitly.analysis.utilities.BitlyCounterClicksUtility;
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.TwitterCacheImpl;
+import it.eng.spagobi.twitter.analysis.entities.TwitterMonitorScheduler;
+import it.eng.spagobi.twitter.analysis.enums.MonitorRepeatTypeEnum;
 import it.eng.spagobi.twitter.analysis.utilities.TwitterUserInfoUtility;
+import it.eng.spagobi.utilities.assertion.Assert;
 
-import java.sql.SQLException;
-
-import javax.sql.rowset.CachedRowSet;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;
@@ -19,7 +21,7 @@ import org.quartz.JobExecutionException;
 public class MonitoringResourcesJob implements Job {
 
 	static final Logger logger = Logger.getLogger(MonitoringResourcesJob.class);
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final ITwitterCache twitterCache = new TwitterCacheImpl();
 
 	private long searchID;
 
@@ -32,39 +34,47 @@ public class MonitoringResourcesJob implements Job {
 
 		// JobKey key = context.getJobDetail().getKey();
 
-		String sqlResourcesQuery = "SELECT links, accounts from twitter_monitor_scheduler where search_id = '" + searchID + "'";
+		TwitterMonitorScheduler monitorScheduler = twitterCache.getMonitorSchedulerFromSearch(searchID);
+
+		Assert.assertNotNull(monitorScheduler, "Monitoring Resources Job: Impossible to create a monitor job without a linked entity");
 
 		String links = "";
 		String accounts = "";
 
-		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlResourcesQuery);
+		links = monitorScheduler.getLinks();
+		accounts = monitorScheduler.getAccounts();
 
-			if (rs != null && rs.next()) {
+		BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(links, searchID);
+		bitlyUtil.startBitlyAnalysis();
 
-				links = rs.getString("links");
-				accounts = rs.getString("accounts");
+		TwitterUserInfoUtility userUtil = new TwitterUserInfoUtility(searchID);
 
-				BitlyCounterClicksUtility bitlyUtil = new BitlyCounterClicksUtility(links, searchID);
-				bitlyUtil.startBitlyAnalysis();
+		accounts = accounts.replaceAll("@", "");
+		String[] accountsArr = accounts.split(",");
 
-				TwitterUserInfoUtility userUtil = new TwitterUserInfoUtility(searchID);
-
-				accounts = accounts.replaceAll("@", "");
-				String[] accountsArr = accounts.split(",");
-
-				if (accountsArr != null && accountsArr.length > 0) {
-					for (int i = 0; i < accountsArr.length; i++) {
-						String account = accountsArr[i].trim();
-						userUtil.saveFollowersCount(account);
-					}
-				}
+		if (accountsArr != null && accountsArr.length > 0) {
+			for (int i = 0; i < accountsArr.length; i++) {
+				String account = accountsArr[i].trim();
+				userUtil.saveFollowersCount(account);
 			}
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e.getMessage());
 		}
 
+		Calendar startingCalendar = GregorianCalendar.getInstance();
+
+		startingCalendar.set(Calendar.SECOND, 0);
+		startingCalendar.set(Calendar.MILLISECOND, 0);
+
+		if (monitorScheduler.getRepeatType() == MonitorRepeatTypeEnum.Day) {
+
+			startingCalendar.add(Calendar.DAY_OF_MONTH, monitorScheduler.getRepeatFrequency());
+		}
+
+		else if (monitorScheduler.getRepeatType() == MonitorRepeatTypeEnum.Hour) {
+
+			startingCalendar.add(Calendar.HOUR_OF_DAY, monitorScheduler.getRepeatFrequency());
+		}
+		monitorScheduler.setStartingTime(startingCalendar);
+		twitterCache.updateTwitterMonitorScheduler(monitorScheduler);
 	}
 
 	public void setSearchID(long searchID) {

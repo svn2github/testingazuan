@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.twitter.analysis.spider.search;
 
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
+import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -49,7 +50,7 @@ public class TwitterSearchAPISpider {
 	private String languageCode;
 	private ResultType resultType;
 	private Calendar sinceDate;
-	private long searchID;
+	private TwitterSearch twitterSearch;
 
 	public void setCache(ITwitterCache cache) {
 		this.cache = cache;
@@ -71,8 +72,8 @@ public class TwitterSearchAPISpider {
 		this.sinceDate = sinceDate;
 	}
 
-	public void setSearchID(long searchID) {
-		this.searchID = searchID;
+	public void setTwitterSearch(TwitterSearch twitterSearch) {
+		this.twitterSearch = twitterSearch;
 	}
 
 	/**
@@ -109,8 +110,6 @@ public class TwitterSearchAPISpider {
 			int searchResultCount;
 			long lowestTweetId = Long.MAX_VALUE;
 
-			cache.openConnection();
-
 			do {
 				QueryResult queryResult = twitter.search(query);
 
@@ -123,11 +122,11 @@ public class TwitterSearchAPISpider {
 					// + " - " + tweet.getText());
 					logger.debug("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
 
-					if (searchID == -1) {
+					if (this.twitterSearch.getSearchID() <= 0) {
 						throw new SQLException("Creating search failed, no rows affected.");
 					}
 
-					cache.saveTweet(tweet, query.getQuery(), searchID);
+					cache.saveTweet(tweet, this.twitterSearch.getSearchID());
 
 					if (tweet.getId() < lowestTweetId) {
 						lowestTweetId = tweet.getId();
@@ -136,11 +135,13 @@ public class TwitterSearchAPISpider {
 				}
 
 			} while (searchResultCount != 0 && searchResultCount % 100 == 0);
-			cache.closeConnection();
 
 		} catch (Exception te) {
-			cache.updateFailedSearch(searchID, te.getMessage());
-			cache.closeConnection();
+
+			this.twitterSearch.setFailed(true);
+			this.twitterSearch.setFailMessage(te.getMessage());
+			cache.updateTwitterSearch(this.twitterSearch);
+
 			logger.error("Failed to search tweets: " + te.getMessage());
 			System.exit(-1);
 		}

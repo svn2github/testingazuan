@@ -21,91 +21,80 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
-import it.eng.spagobi.twitter.analysis.pojos.TwitterSearchPojo;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.rowset.CachedRowSet;
-
-import org.apache.log4j.Logger;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterSearchDataProcessor {
 
-	static final Logger logger = Logger.getLogger(TwitterSearchDataProcessor.class);
-
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
-
-	public List<TwitterSearchPojo> getTwitterSearchList(String searchType) {
-
-		List<TwitterSearchPojo> searchList = new ArrayList<TwitterSearchPojo>();
-
-		String sqlQuery = "SELECT * from twitter_search where type = '" + searchType + "' and isDeleted = 0";
-
-		try {
-
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			if (rs != null) {
-
-				while (rs.next()) {
-
-					long searchID = rs.getLong("search_id");
-					String label = rs.getString("label");
-					String keywords = rs.getString("keywords");
-					java.sql.Date creationDate = rs.getDate("creation_date");
-					java.sql.Timestamp lastActivationTime = rs.getTimestamp("last_activation_time");
-					String frequency = rs.getString("frequency");
-					String type = rs.getString("type");
-					boolean loading = rs.getBoolean("loading");
-					boolean isFailed = rs.getBoolean("failed");
-
-					String links = "";
-					String accounts = "";
-					String documents = "";
-					boolean hasMonitorScheduler = false;
-
-					CachedRowSet resourcesRs = twitterCache.runQuery("SELECT links, accounts, documents from twitter_monitor_scheduler where search_id = "
-							+ searchID);
-					if (resourcesRs.next()) {
-
-						links = resourcesRs.getString("links");
-						accounts = resourcesRs.getString("accounts");
-						documents = resourcesRs.getString("documents");
-						hasMonitorScheduler = true;
-
-					}
-
-					boolean hasSearchScheduler = false;
-
-					if (searchType.equals("searchAPI")) {
-						CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID
-								+ " and active = 1");
-						while (searchSchedulerRs.next()) {
-
-							hasSearchScheduler = true;
-						}
-					}
-
-					TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading,
-							links, accounts, documents, hasSearchScheduler, hasMonitorScheduler, isFailed);
-
-					searchList.add(searchPojo);
-				}
-			}
-
-		} catch (Exception e) {
-			logger.debug("**** connection failed: " + e);
-		}
-
-		return searchList;
-	}
+	// static final Logger logger = Logger.getLogger(TwitterSearchDataProcessor.class);
+	//
+	// private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	//
+	// public List<TwitterSearchPojo> getTwitterSearchList(String searchType) {
+	//
+	// List<TwitterSearchPojo> searchList = new ArrayList<TwitterSearchPojo>();
+	//
+	// String sqlQuery = "SELECT * from twitter_search where type = '" + searchType + "' and isDeleted = 0";
+	//
+	// try {
+	//
+	// CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+	//
+	// if (rs != null) {
+	//
+	// while (rs.next()) {
+	//
+	// long searchID = rs.getLong("search_id");
+	// String label = rs.getString("label");
+	// String keywords = rs.getString("keywords");
+	// java.sql.Date creationDate = rs.getDate("creation_date");
+	// java.sql.Timestamp lastActivationTime = rs.getTimestamp("last_activation_time");
+	// String frequency = rs.getString("frequency");
+	// String type = rs.getString("type");
+	// boolean loading = rs.getBoolean("loading");
+	// boolean isFailed = rs.getBoolean("failed");
+	//
+	// String links = "";
+	// String accounts = "";
+	// String documents = "";
+	// boolean hasMonitorScheduler = false;
+	//
+	// CachedRowSet resourcesRs = twitterCache.runQuery("SELECT links, accounts, documents from twitter_monitor_scheduler where search_id = "
+	// + searchID);
+	// if (resourcesRs.next()) {
+	//
+	// links = resourcesRs.getString("links");
+	// accounts = resourcesRs.getString("accounts");
+	// documents = resourcesRs.getString("documents");
+	// hasMonitorScheduler = true;
+	//
+	// }
+	//
+	// boolean hasSearchScheduler = false;
+	//
+	// if (searchType.equals("searchAPI")) {
+	// CachedRowSet searchSchedulerRs = twitterCache.runQuery("SELECT id from twitter_search_scheduler where search_id = " + searchID
+	// + " and active = 1");
+	// while (searchSchedulerRs.next()) {
+	//
+	// hasSearchScheduler = true;
+	// }
+	// }
+	//
+	// TwitterSearchPojo searchPojo = new TwitterSearchPojo(searchID, label, keywords, creationDate, lastActivationTime, frequency, type, loading,
+	// links, accounts, documents, hasSearchScheduler, hasMonitorScheduler, isFailed);
+	//
+	// searchList.add(searchPojo);
+	// }
+	// }
+	//
+	// } catch (Exception e) {
+	// logger.debug("**** connection failed: " + e);
+	// }
+	//
+	// return searchList;
+	// }
 
 }

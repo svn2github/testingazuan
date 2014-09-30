@@ -107,15 +107,15 @@
 
 <div id="navigation">
 
-	<ul>
-	    <li id="activelink"><a href=<%= summaryLink %>> Summary</a></li>
-	    <li><a href=<%= topicsLink %>>Topics</a></li>
-	    <li><a href=<%= networkLink %>>Network</a></li>
-	    <li><a href=<%= distributionLink %>>Distribution</a></li>
-	    <li><a href=<%= sentimentLink %>>Sentiment</a></li>
-	    <li><a href=<%= impactLink %>>Impact</a></li>
-	    <li><a href=<%= roiLink %>>ROI</a></li>
-	    <li style="float:right;"><a href="index.jsp">Search</a></li>
+	<ul class="navtabs tabsStyle">
+	    <li class="navtabs" id="activelink"><a href=<%= summaryLink %>> Summary</a></li>
+	    <li class="navtabs"><a href=<%= topicsLink %>>Topics</a></li>
+	    <li class="navtabs"><a href=<%= networkLink %>>Network</a></li>
+	    <li class="navtabs"><a href=<%= distributionLink %>>Distribution</a></li>
+	    <li class="navtabs"><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li class="navtabs"><a href=<%= impactLink %>>Impact</a></li>
+	    <li class="navtabs"><a href=<%= roiLink %>>ROI</a></li>
+	    <li class="navtabs" style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         		
 	<div class="generalinfo">
@@ -166,12 +166,6 @@
 		<div class="demo-container" style="width: 100%; height: 40%">
 			<div id="overview" class="demo-placeholder-o"></div>
 		</div>	
-	</div>
-
-		<!-- <div class="demo-container" style="width: 550px; height: 125px;">
-			<div id="overview" class="demo-placeholder-o"></div>
-		</div>		
-		 -->
 	</div>
 		
 	<div id="pieBoxMain" style="float:left; width:400px">
@@ -962,6 +956,10 @@
 				},
 				"data": {
 					"sortOrder": "value-desc",
+					"smallSegmentGrouping": {
+						"enabled": true,
+						"value": 4
+					},
 					"content": [
 					            <% 
 					            	for(TwitterPieSourcePojo sourceObj : sources)

@@ -33,8 +33,7 @@ import twitter4j.StatusListener;
 import twitter4j.UserMentionEntity;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterStreamListener implements StatusListener {
@@ -56,7 +55,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see twitter4j.StreamListener#onException(java.lang.Exception)
 	 */
 	@Override
@@ -66,9 +65,8 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see
-	 * twitter4j.StatusListener#onDeletionNotice(twitter4j.StatusDeletionNotice)
+	 * 
+	 * @see twitter4j.StatusListener#onDeletionNotice(twitter4j.StatusDeletionNotice)
 	 */
 	@Override
 	public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
@@ -80,7 +78,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see twitter4j.StatusListener#onScrubGeo(long, long)
 	 */
 	@Override
@@ -93,7 +91,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see twitter4j.StatusListener#onStallWarning(twitter4j.StallWarning)
 	 */
 	@Override
@@ -106,7 +104,7 @@ public class TwitterStreamListener implements StatusListener {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see twitter4j.StatusListener#onStatus(twitter4j.Status)
 	 */
 	@Override
@@ -118,17 +116,16 @@ public class TwitterStreamListener implements StatusListener {
 
 		hashtag = tweet.getHashtagEntities();
 		mentions = tweet.getUserMentionEntities();
-		cache.openConnection();
 		try {
-			cache.saveTweet(tweet, keyword, searchID);
+			cache.saveTweet(tweet, searchID);
 		} catch (Exception e) {
-			cache.closeConnection();
+
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see twitter4j.StatusListener#onTrackLimitationNotice(int)
 	 */
 	@Override

@@ -40,12 +40,12 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 			columns: [
 		        {
 		            text: 'ID',
-		            width: 100,
+		            width: 40,
 		            dataIndex: 'searchID'
 		        },
 		        {
 		            text: 'Label',
-		            width: 200,
+		            width: 100,
 		            dataIndex: 'label'
 		        },
 		        {
@@ -68,6 +68,11 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 		            text: 'Resources to monitor',
 		            width: 200,
 		            dataIndex: 'links',
+		        },
+		        {
+		            text: 'Documents',
+		            width: 200,
+		            dataIndex: 'documents',
 		        },
 		        {
 		        	xtype: 'actioncolumn',
@@ -108,8 +113,9 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
             	                            },
             	                            scope : this,
             	                            success: function(response)
-              	                           {
-              	                        	  Ext.Msg.alert('Success', response.msg);
+               	                           {
+               	                        	  var text = response.responseText;
+               	                        	  Ext.Msg.alert('Success', text);
               	                        	  grid.getStore().load();
               	                           }
                                    	 }); 
@@ -141,8 +147,9 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
              	                            },
              	                            scope : this,
              	                           success: function(response)
-             	                           {
-             	                        	  Ext.Msg.alert('Success', response.msg);
+              	                           {
+              	                        	  var text = response.responseText;
+              	                        	  Ext.Msg.alert('Success', text);
              	                        	  grid.getStore().load();
              	                           }
                                     	 }); 
@@ -183,8 +190,10 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
          	                            },
          	                            scope : this,
          	                           success: function(response)
-         	                           {
-         	                        	  Ext.Msg.alert('Success', response.msg);
+          	                           {
+          	                        	    var text = response.responseText;
+          	                        	 	Ext.Msg.alert('Success', text);
+          	                        	 	grid.getStore().load();
          	                           }
                                 	 }); 
                                  
@@ -209,6 +218,45 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 	                    var rec = grid.getStore().getAt(rowIndex);
 		            	window.location.href = "summary.jsp?searchID="+rec.get('searchID');
 	                }
+		        },
+		        {
+		        	xtype: 'actioncolumn',
+		            text: 'Schedulers',
+		            width: 100,
+		            dataIndex: 'hasMonitorScheduler',
+		            align: 'center',
+		            isDisabled: function(view, rowIndex, colIndex, item, record)
+		            {
+		            	var searchLoading = record.get('loading');
+		            	if(!searchLoading)
+	            		{
+		            		return false;	            		
+	            		}
+		            	else
+	            		{
+		            		return true;
+	            		}
+		            },
+		            items: [
+		            {
+		            	//monitor scheduler
+		            	getClass: function(value, metadata, record)
+			            {
+		            		
+			            	var monitorScheduler = record.get('hasMonitorScheduler');
+
+			            	if(monitorScheduler)
+			            	{
+			            	    return 'x-scheduler-stop-enabled'; 
+			            	} else {
+			            	    return 'x-scheduler-stop-disabled';               
+			            	}
+			            },
+		                tooltip: 'Stop Monitor Resources Scheduler',
+//		                handler:  this.twitterStopSearchScheduler
+		                
+		            }],
+		           
 		        }
 		    ]}),
 		

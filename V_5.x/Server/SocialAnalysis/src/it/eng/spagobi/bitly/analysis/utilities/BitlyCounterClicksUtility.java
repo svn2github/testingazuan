@@ -1,39 +1,40 @@
-/**
+/* SpagoBI, the Open Source Business Intelligence suite
 
-SpagoBI, the Open Source Business Intelligence suite
  * Copyright (C) 2012 Engineering Ingegneria Informatica S.p.A. - SpagoBI Competency Center
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0, without the "Incompatible With Secondary Licenses" notice.
- * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.bitly.analysis.utilities;
 
-import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkCategoryPojo;
-import it.eng.spagobi.bitly.analysis.pojos.BitlyLinkPojo;
 import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.TwitterCacheImpl;
+import it.eng.spagobi.twitter.analysis.entities.TwitterLinkToMonitor;
+import it.eng.spagobi.twitter.analysis.entities.TwitterLinkToMonitorCategory;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
 import twitter4j.JSONArray;
+import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
 /**
- * @author Giorgio Federici (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class BitlyCounterClicksUtility {
 
 	private static final Logger logger = Logger.getLogger(BitlyCounterClicksUtility.class);
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+
+	private final ITwitterCache twitterCache = new TwitterCacheImpl();
 
 	private String links;
 	private long searchID;
@@ -63,45 +64,36 @@ public class BitlyCounterClicksUtility {
 		String[] linksArr = links.trim().split(",");
 		for (int i = 0; i < linksArr.length; i++) {
 			String link = linksArr[i].trim();
-			BitlyLinkPojo linkPojo = counterClicks("https://api-ssl.bitly.com", "/v3/link/clicks", accessToken, link);
-			List<BitlyLinkCategoryPojo> linkCategory = counterClicksCountries("https://api-ssl.bitly.com", "/v3/link/countries", accessToken, link);
-			linkCategory.addAll(counterClicksDomains("https://api-ssl.bitly.com", "/v3/link/referring_domains", accessToken, link));
+			TwitterLinkToMonitor twitterLinkToMonitor = counterClicks("https://api-ssl.bitly.com", "/v3/link/clicks", accessToken, link);
+			List<TwitterLinkToMonitorCategory> categoryList = counterClicksCountries("https://api-ssl.bitly.com", "/v3/link/countries", accessToken, link);
+			categoryList.addAll(counterClicksDomains("https://api-ssl.bitly.com", "/v3/link/referring_domains", accessToken, link));
 
-			try {
+			twitterCache.insertBitlyAnalysis(twitterLinkToMonitor, categoryList, searchID);
 
-				twitterCache.insertBitlyAnalysis(linkPojo, linkCategory, searchID);
+			logger.debug("Method startBitlyAnalysis(): End");
 
-			} catch (Exception e) {
-				System.out.println("**** connection failed: " + e);
-			}
 		}
-
 	}
 
 	public void monitorBitlyLink(String link) {
 
 		String accessToken = "d32762c9990acba4b3f0bd2649d4cdef296941ae";
 
-		BitlyLinkPojo linkPojo = counterClicks("https://api-ssl.bitly.com", "/v3/link/clicks", accessToken, link);
-		List<BitlyLinkCategoryPojo> linkCategory = counterClicksCountries("https://api-ssl.bitly.com", "/v3/link/countries", accessToken, link);
-		linkCategory.addAll(counterClicksDomains("https://api-ssl.bitly.com", "/v3/link/referring_domains", accessToken, link));
+		TwitterLinkToMonitor twitterLinkToMonitor = counterClicks("https://api-ssl.bitly.com", "/v3/link/clicks", accessToken, link);
+		List<TwitterLinkToMonitorCategory> categoryList = counterClicksCountries("https://api-ssl.bitly.com", "/v3/link/countries", accessToken, link);
+		categoryList.addAll(counterClicksDomains("https://api-ssl.bitly.com", "/v3/link/referring_domains", accessToken, link));
 
-		try {
-
-			twitterCache.insertBitlyAnalysis(linkPojo, linkCategory, searchID);
-
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
-		}
+		twitterCache.insertBitlyAnalysis(twitterLinkToMonitor, categoryList, searchID);
 
 	}
 
-	private BitlyLinkPojo counterClicks(String addressAPI, String api, String accessToken, String link) {
+	private TwitterLinkToMonitor counterClicks(String addressAPI, String api, String accessToken, String link) {
+
+		logger.debug("Method counterClicks(): Start");
 
 		int linkClicks = 0;
 
 		try {
-
 			String linkEncoded = URLEncoder.encode(link, "UTF-8");
 			String parameterLink = "&link=" + linkEncoded;
 
@@ -131,20 +123,29 @@ public class BitlyCounterClicksUtility {
 
 			}
 
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
-		}
+			TwitterLinkToMonitor twitterLinkToMonitor = new TwitterLinkToMonitor();
+			twitterLinkToMonitor.setLink(link);
+			twitterLinkToMonitor.setClicksCount(linkClicks);
+			twitterLinkToMonitor.setTimestamp(GregorianCalendar.getInstance());
 
-		return new BitlyLinkPojo(link, linkClicks);
+			logger.debug("Method counterClicks(): End");
+
+			return twitterLinkToMonitor;
+
+		} catch (JSONException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicks(): Impossible to parse JSON response from Bitly - " + ex);
+		} catch (IOException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicks(): Impossible to execute correctly IO operations - " + ex);
+		}
 	}
 
-	private List<BitlyLinkCategoryPojo> counterClicksCountries(String addressAPI, String api, String accessToken, String link) {
+	private List<TwitterLinkToMonitorCategory> counterClicksCountries(String addressAPI, String api, String accessToken, String link) {
 
-		List<BitlyLinkCategoryPojo> linkCategoryPojos = new ArrayList<BitlyLinkCategoryPojo>();
+		logger.debug("Method counterClicksCountries(): Start");
+
+		List<TwitterLinkToMonitorCategory> linksCategory = new ArrayList<TwitterLinkToMonitorCategory>();
 
 		try {
-
-			// Statement statement = conn.createStatement();
 
 			String linkEncoded = URLEncoder.encode(link, "UTF-8");
 			String parameterLink = "&link=" + linkEncoded;
@@ -178,25 +179,36 @@ public class BitlyCounterClicksUtility {
 					String category = categoryObj.getString("country");
 					int clicks_counter = categoryObj.getInt("clicks");
 
-					linkCategoryPojos.add(new BitlyLinkCategoryPojo(-1, "country", category, clicks_counter));
+					TwitterLinkToMonitorCategory linkCategory = new TwitterLinkToMonitorCategory();
+					linkCategory.setClicksCount(clicks_counter);
+					// TODO: Enum Type
+					linkCategory.setType("country");
+					linkCategory.setCategory(category);
+
+					linksCategory.add(linkCategory);
 
 				}
 			}
 
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			logger.debug("Method counterClicksCountries(): End");
+
+			return linksCategory;
+
+		} catch (JSONException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicksCountries(): Impossible to parse JSON response from Bitly - " + ex);
+		} catch (IOException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicksCountries(): Impossible to execute correctly IO operations - " + ex);
 		}
 
-		return linkCategoryPojos;
 	}
 
-	private List<BitlyLinkCategoryPojo> counterClicksDomains(String addressAPI, String api, String accessToken, String link) {
+	private List<TwitterLinkToMonitorCategory> counterClicksDomains(String addressAPI, String api, String accessToken, String link) {
 
-		List<BitlyLinkCategoryPojo> linkCategoryPojos = new ArrayList<BitlyLinkCategoryPojo>();
+		logger.debug("Method counterClicksDomains(): Start");
+
+		List<TwitterLinkToMonitorCategory> linksCategory = new ArrayList<TwitterLinkToMonitorCategory>();
 
 		try {
-
-			// Statement statement = conn.createStatement();
 
 			String linkEncoded = URLEncoder.encode(link, "UTF-8");
 			String parameterLink = "&link=" + linkEncoded;
@@ -230,76 +242,89 @@ public class BitlyCounterClicksUtility {
 					String category = categoryObj.getString("domain");
 					int clicks_counter = categoryObj.getInt("clicks");
 
-					linkCategoryPojos.add(new BitlyLinkCategoryPojo(-1, "domain", category, clicks_counter));
+					TwitterLinkToMonitorCategory linkCategory = new TwitterLinkToMonitorCategory();
+					linkCategory.setClicksCount(clicks_counter);
+					// TODO: Enum Type
+					linkCategory.setType("domain");
+					linkCategory.setCategory(category);
+
+					linksCategory.add(linkCategory);
 
 				}
 			}
 
-		} catch (Exception e) {
-			System.out.println("**** connection failed: " + e);
+			logger.debug("Method counterClicksDomains(): End");
+
+			return linksCategory;
+
+		} catch (JSONException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicksDomains(): Impossible to parse JSON response from Bitly - " + ex);
+		} catch (IOException ex) {
+			throw new SpagoBIRuntimeException("Method counterClicksDomains(): Impossible to execute correctly IO operations - " + ex);
 		}
-
-		return linkCategoryPojos;
-	}
-
-	public List<BitlyLinkPojo> getLinkToMonitor(String searchIDStr) {
-
-		long searchID = Long.parseLong(searchIDStr);
-		List<BitlyLinkPojo> bitlyLinkPojos = new ArrayList<BitlyLinkPojo>();
-
-		String sqlQuery = "SELECT * from twitter_links_to_monitor where search_id = " + searchID;
-
-		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			if (rs != null) {
-
-				while (rs.next()) {
-					String link = rs.getString("link");
-					int clicksCount = rs.getInt("clicks_count");
-
-					BitlyLinkPojo bitlyPojo = new BitlyLinkPojo(link, clicksCount);
-					bitlyLinkPojos.add(bitlyPojo);
-
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("**** connection failed: " + e);
-		}
-
-		return bitlyLinkPojos;
 
 	}
 
-	public List<BitlyLinkCategoryPojo> getLinkToMonitorCategory(String searchIDStr) {
-
-		long searchID = Long.parseLong(searchIDStr);
-		List<BitlyLinkCategoryPojo> bitlyLinkCategoryPojos = new ArrayList<BitlyLinkCategoryPojo>();
-
-		String sqlQuery = "SELECT lc.*, lm.link from twitter_link_to_monitor_category lc, twitter_links_to_monitor lm where lc.link_id = lm.id and lm.search_id = " + searchID;
-
-		try {
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			if (rs != null) {
-
-				while (rs.next()) {
-					String link = rs.getString("link");
-					String type = rs.getString("type");
-					String category = rs.getString("category");
-					int clicksCount = rs.getInt("clicks_count");
-
-					BitlyLinkCategoryPojo bitlyCategoryPojo = new BitlyLinkCategoryPojo(type, category, clicksCount, link);
-					bitlyLinkCategoryPojos.add(bitlyCategoryPojo);
-
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("**** connection failed: " + e);
-		}
-
-		return bitlyLinkCategoryPojos;
-
-	}
+	// public List<BitlyLinkPojo> getLinkToMonitor(String searchIDStr) {
+	//
+	// long searchID = Long.parseLong(searchIDStr);
+	// List<BitlyLinkPojo> bitlyLinkPojos = new ArrayList<BitlyLinkPojo>();
+	//
+	// String sqlQuery = "SELECT * from twitter_links_to_monitor where search_id = " + searchID;
+	//
+	// try {
+	// CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+	//
+	// if (rs != null) {
+	//
+	// while (rs.next()) {
+	// String link = rs.getString("link");
+	// int clicksCount = rs.getInt("clicks_count");
+	//
+	// BitlyLinkPojo bitlyPojo = new BitlyLinkPojo(link, clicksCount);
+	// bitlyLinkPojos.add(bitlyPojo);
+	//
+	// }
+	// }
+	// } catch (SQLException e) {
+	// System.out.println("**** connection failed: " + e);
+	// }
+	//
+	// return bitlyLinkPojos;
+	//
+	// }
+	//
+	// public List<BitlyLinkCategoryPojo> getLinkToMonitorCategory(String searchIDStr) {
+	//
+	// long searchID = Long.parseLong(searchIDStr);
+	// List<BitlyLinkCategoryPojo> bitlyLinkCategoryPojos = new ArrayList<BitlyLinkCategoryPojo>();
+	//
+	// String sqlQuery =
+	// "SELECT lc.*, lm.link from twitter_link_to_monitor_category lc, twitter_links_to_monitor lm where lc.link_id = lm.id and lm.search_id = "
+	// + searchID;
+	//
+	// try {
+	// CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+	//
+	// if (rs != null) {
+	//
+	// while (rs.next()) {
+	// String link = rs.getString("link");
+	// String type = rs.getString("type");
+	// String category = rs.getString("category");
+	// int clicksCount = rs.getInt("clicks_count");
+	//
+	// BitlyLinkCategoryPojo bitlyCategoryPojo = new BitlyLinkCategoryPojo(type, category, clicksCount, link);
+	// bitlyLinkCategoryPojos.add(bitlyCategoryPojo);
+	//
+	// }
+	// }
+	// } catch (SQLException e) {
+	// System.out.println("**** connection failed: " + e);
+	// }
+	//
+	// return bitlyLinkCategoryPojos;
+	//
+	// }
 
 }

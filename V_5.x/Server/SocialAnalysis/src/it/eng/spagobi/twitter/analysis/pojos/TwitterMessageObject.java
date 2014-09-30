@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.pojos;
 
+import it.eng.spagobi.twitter.analysis.entities.TwitterData;
+import it.eng.spagobi.twitter.analysis.entities.TwitterUser;
+
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import twitter4j.GeoLocation;
@@ -31,8 +35,7 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TwitterMessageObject {
@@ -82,7 +85,14 @@ public class TwitterMessageObject {
 	private java.sql.Date startDate;
 	private java.sql.Date endDate;
 
+	private TwitterUser twitterUser;
+	private TwitterData twitterData;
+
 	public TwitterMessageObject(Status tweet) {
+
+		this.twitterUser = new TwitterUser();
+		this.twitterData = new TwitterData();
+
 		// set parameters for twitter_date fields
 
 		tweetID = tweet.getId();
@@ -276,328 +286,73 @@ public class TwitterMessageObject {
 		return tweetID;
 	}
 
-	public void setTweetID(long tweetID) {
-		this.tweetID = tweetID;
-	}
-
-	public java.sql.Date getDateCreatedAt() {
-		return dateCreatedAt;
-	}
-
-	public void setDateCreatedAt(java.sql.Date dateCreatedAt) {
-		this.dateCreatedAt = dateCreatedAt;
-	}
-
-	public java.sql.Timestamp getTimeCreatedAt() {
-		return timeCreatedAt;
-	}
-
-	public void setTimeCreatedAt(java.sql.Timestamp timeCreatedAt) {
-		this.timeCreatedAt = timeCreatedAt;
-	}
-
-	public String getSourceClient() {
-		return sourceClient;
-	}
-
-	public void setSourceClient(String sourceClient) {
-		this.sourceClient = sourceClient;
-	}
-
-	public String getTweetText() {
-		return tweetText;
-	}
-
-	public void setTweetText(String tweetText) {
-		this.tweetText = tweetText;
-	}
-
-	public String getTweetTextTranslated() {
-		return tweetTextTranslated;
-	}
-
-	public void setTweetTextTranslated(String tweetTextTranslated) {
-		this.tweetTextTranslated = tweetTextTranslated;
-	}
-
-	public double getGeoLatitude() {
-		return geoLatitude;
-	}
-
-	public void setGeoLatitude(double geoLatitude) {
-		this.geoLatitude = geoLatitude;
-	}
-
-	public double getGeoLongitude() {
-		return geoLongitude;
-	}
-
-	public void setGeoLongitude(double geoLongitude) {
-		this.geoLongitude = geoLongitude;
-	}
-
-	public String getHashtags() {
-		return hashtags;
-	}
-
-	public void setHashtags(String hashtags) {
-		this.hashtags = hashtags;
-	}
-
-	public String getMentions() {
-		return mentions;
-	}
-
-	public void setMentions(String mentions) {
-		this.mentions = mentions;
-	}
-
-	public int getRetweetCount() {
-		return retweetCount;
-	}
-
-	public void setRetweetCount(int retweetCount) {
-		this.retweetCount = retweetCount;
-	}
-
-	public boolean isRetweet() {
-		return isRetweet;
-	}
-
-	public void setRetweet(boolean isRetweet) {
-		this.isRetweet = isRetweet;
-	}
-
-	public String getLanguageCode() {
-		return languageCode;
-	}
-
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
-	}
-
-	public String getPlaceCountry() {
-		return placeCountry;
-	}
-
-	public void setPlaceCountry(String placeCountry) {
-		this.placeCountry = placeCountry;
-	}
-
-	public String getPlaceName() {
-		return placeName;
-	}
-
-	public void setPlaceName(String placeName) {
-		this.placeName = placeName;
-	}
-
-	public String getUrlCited() {
-		return urlCited;
-	}
-
-	public void setUrlCited(String urlCited) {
-		this.urlCited = urlCited;
-	}
-
-	public boolean isFavorited() {
-		return isFavorited;
-	}
-
-	public void setFavorited(boolean isFavorited) {
-		this.isFavorited = isFavorited;
-	}
-
-	public int getFavoritedCount() {
-		return favoritedCount;
-	}
-
-	public void setFavoritedCount(int favoritedCount) {
-		this.favoritedCount = favoritedCount;
-	}
-
-	public String getReplyToScreenName() {
-		return replyToScreenName;
-	}
-
-	public void setReplyToScreenName(String replyToScreenName) {
-		this.replyToScreenName = replyToScreenName;
-	}
-
-	public String getReplyToUserId() {
-		return replyToUserId;
-	}
-
-	public void setReplyToUserId(String replyToUserId) {
-		this.replyToUserId = replyToUserId;
-	}
-
-	public String getReplyToTweetId() {
-		return replyToTweetId;
-	}
-
-	public void setReplyToTweetId(String replyToTweetId) {
-		this.replyToTweetId = replyToTweetId;
-	}
-
-	public String getOriginalRTTweetId() {
-		return originalRTTweetId;
-	}
-
-	public void setOriginalRTTweetId(String originalRTTweetId) {
-		this.originalRTTweetId = originalRTTweetId;
-	}
-
-	public boolean isSensitive() {
-		return isSensitive;
-	}
-
-	public void setSensitive(boolean isSensitive) {
-		this.isSensitive = isSensitive;
-	}
-
-	public int getMediaCount() {
-		return mediaCount;
-	}
-
-	public void setMediaCount(int mediaCount) {
-		this.mediaCount = mediaCount;
-	}
-
 	public long getUserID() {
 		return userID;
 	}
 
-	public void setUserID(long userID) {
-		this.userID = userID;
+	/********** Return objects for persistence *****************/
+
+	public TwitterUser getTwitterUser() {
+
+		this.twitterUser.setUserID(this.userID);
+		this.twitterUser.setUsername(this.username);
+		this.twitterUser.setDescription(this.description);
+		this.twitterUser.setFollowersCount(this.followersCount);
+		this.twitterUser.setProfileImgSrc(this.profileImgSrc);
+		this.twitterUser.setLocation(this.location);
+		this.twitterUser.setLanguageCode(this.userLanguageCode);
+		this.twitterUser.setName(this.name);
+		this.twitterUser.setTimeZone(this.timeZone);
+		this.twitterUser.setTweetsCount(this.tweetsCount);
+		this.twitterUser.setVerified(this.isVerified);
+		this.twitterUser.setFollowingCount(this.followingCount);
+		this.twitterUser.setUtcOffset(this.utcOffset);
+		this.twitterUser.setGeoEnabled(this.isGeoEnabled);
+		this.twitterUser.setListedCount(this.listedCount);
+		this.twitterUser.setStartDate(GregorianCalendar.getInstance());
+		this.twitterUser.setEndDate(GregorianCalendar.getInstance());
+
+		return twitterUser;
 	}
 
-	public String getUsername() {
-		return username;
-	}
+	public TwitterData getTwitterData() {
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+		this.twitterData.setTweetID(this.tweetID);
+		this.twitterData.setTwitterUser(this.twitterUser);
 
-	public String getDescription() {
-		return description;
-	}
+		Calendar createAtDate = GregorianCalendar.getInstance();
+		createAtDate.setTime(dateCreatedAt);
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+		this.twitterData.setDateCreatedAt(createAtDate);
 
-	public int getFollowersCount() {
-		return followersCount;
-	}
+		Calendar createdAtTime = GregorianCalendar.getInstance();
+		createdAtTime.setTime(timeCreatedAt);
 
-	public void setFollowersCount(int followersCount) {
-		this.followersCount = followersCount;
-	}
+		this.twitterData.setTimeCreatedAt(createdAtTime);
 
-	public String getProfileImgSrc() {
-		return profileImgSrc;
-	}
+		this.twitterData.setSourceClient(this.sourceClient);
+		this.twitterData.setTweetText(this.tweetText);
+		this.twitterData.setTweetTextTranslated(this.tweetTextTranslated);
+		this.twitterData.setGeoLatitude(this.geoLatitude);
+		this.twitterData.setGeoLongitude(this.geoLongitude);
+		this.twitterData.setHashtags(this.hashtags);
+		this.twitterData.setMentions(this.mentions);
+		this.twitterData.setRetweetCount(this.retweetCount);
+		this.twitterData.setRetweet(this.isRetweet);
+		this.twitterData.setLanguageCode(this.languageCode);
+		this.twitterData.setPlaceCountry(this.placeCountry);
+		this.twitterData.setPlaceName(this.placeName);
+		this.twitterData.setUrlCited(this.urlCited);
+		this.twitterData.setFavorited(this.isFavorited);
+		this.twitterData.setFavoritedCount(this.favoritedCount);
+		this.twitterData.setReplyToScreenName(this.replyToScreenName);
+		this.twitterData.setReplyToUserId(this.replyToUserId);
+		this.twitterData.setReplyToTweetId(this.replyToTweetId);
+		this.twitterData.setOriginalRTTweetId(this.originalRTTweetId);
+		this.twitterData.setSensitive(this.isSensitive);
+		this.twitterData.setMediaCount(this.mediaCount);
 
-	public void setProfileImgSrc(String profileImgSrc) {
-		this.profileImgSrc = profileImgSrc;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public String getUserLanguageCode() {
-		return userLanguageCode;
-	}
-
-	public void setUserLanguageCode(String userLanguageCode) {
-		this.userLanguageCode = userLanguageCode;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTimeZone() {
-		return timeZone;
-	}
-
-	public void setTimeZone(String timeZone) {
-		this.timeZone = timeZone;
-	}
-
-	public int getTweetsCount() {
-		return tweetsCount;
-	}
-
-	public void setTweetsCount(int tweetsCount) {
-		this.tweetsCount = tweetsCount;
-	}
-
-	public boolean isVerified() {
-		return isVerified;
-	}
-
-	public void setVerified(boolean isVerified) {
-		this.isVerified = isVerified;
-	}
-
-	public int getFollowingCount() {
-		return followingCount;
-	}
-
-	public void setFollowingCount(int followingCount) {
-		this.followingCount = followingCount;
-	}
-
-	public int getUtcOffset() {
-		return utcOffset;
-	}
-
-	public void setUtcOffset(int utcOffset) {
-		this.utcOffset = utcOffset;
-	}
-
-	public boolean isGeoEnabled() {
-		return isGeoEnabled;
-	}
-
-	public void setGeoEnabled(boolean isGeoEnabled) {
-		this.isGeoEnabled = isGeoEnabled;
-	}
-
-	public int getListedCount() {
-		return listedCount;
-	}
-
-	public void setListedCount(int listedCount) {
-		this.listedCount = listedCount;
-	}
-
-	public java.sql.Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(java.sql.Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public java.sql.Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(java.sql.Date endDate) {
-		this.endDate = endDate;
+		return twitterData;
 	}
 
 }

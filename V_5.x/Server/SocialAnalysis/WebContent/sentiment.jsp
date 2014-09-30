@@ -54,15 +54,15 @@
 
 <div id="navigation">
 
-	<ul>
-	    <li><a href=<%= summaryLink %>> Summary</a></li>
-	    <li><a href=<%= topicsLink %>>Topics</a></li>
-	    <li><a href=<%= networkLink %>>Network</a></li>
-	    <li><a href=<%= distributionLink %>>Distribution</a></li>
-   	    <li id="activelink"><a href=<%= sentimentLink %>>Sentiment</a></li>
-	    <li><a href=<%= impactLink %>>Impact</a></li>
-	    <li><a href=<%= roiLink %>>ROI</a></li>
-	    <li style="float:right;"><a href="index.jsp">Search</a></li>
+	<ul class="navtabs tabsStyle">
+	    <li class="navtabs"><a href=<%= summaryLink %>> Summary</a></li>
+	    <li class="navtabs"><a href=<%= topicsLink %>>Topics</a></li>
+	    <li class="navtabs"><a href=<%= networkLink %>>Network</a></li>
+	    <li class="navtabs"><a href=<%= distributionLink %>>Distribution</a></li>
+   	    <li class="navtabs" id="activelink"><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li class="navtabs"><a href=<%= impactLink %>>Impact</a></li>
+	    <li class="navtabs"><a href=<%= roiLink %>>ROI</a></li>
+	    <li class="navtabs" style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         	
     

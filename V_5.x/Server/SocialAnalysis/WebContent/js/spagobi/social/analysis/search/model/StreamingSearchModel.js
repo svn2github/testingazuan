@@ -24,9 +24,8 @@ Ext.define('Sbi.social.analysis.search.model.StreamingSearchModel', {
 	 		{name: 'loading', type: 'boolean'},
 	 		{name: 'accounts', type : 'string'},
 	 		{name: 'links', type : 'string'},
-	 		{name: 'hasMonitorScheduler', type: 'boolean'}
-//	 		{name: 'frequency', type : 'string'},
-//	 		{name: 'impactAnalysis', type : 'string'}
+	 		{name: 'hasMonitorScheduler', type: 'boolean'},
+	 		{name: 'documents', type : 'string'}
 	 	],
 	 
 	 proxy: {

@@ -83,16 +83,16 @@ public class TwitterStreamingAPISpider {
 
 	}
 
-	public void closeTwitterStream() {
-
-		TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
-
-		// twitterStream.clearListeners();
-		twitterStream.cleanUp();
-		// twitterStream.shutdown();
-
-		this.cache.stopStreamingSearch();
-	}
+	// public void closeTwitterStream() {
+	//
+	// TwitterStream twitterStream = TwitterStreamFactory.getSingleton();
+	//
+	// // twitterStream.clearListeners();
+	// twitterStream.cleanUp();
+	// // twitterStream.shutdown();
+	//
+	// this.cache.stopStreamingSearch();
+	// }
 
 	private String joinStrings(String[] arrayString) {
 		StringBuilder builder = new StringBuilder();

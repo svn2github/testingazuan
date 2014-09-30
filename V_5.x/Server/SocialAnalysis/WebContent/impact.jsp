@@ -78,7 +78,8 @@ public String hideHours(String searchID)
 	else
 	{
 		return "display:none;";
-	}
+	}	
+
 }
 
 /*************** START TIMELINE ACCOUNT *****************************************************/
@@ -141,15 +142,15 @@ public JSONObject getClicksTimelineMonth(String searchID)
 
 <div id="navigation">
 
-	<ul>
-	    <li><a href=<%= summaryLink %>> Summary</a></li>
-	    <li><a href=<%= topicsLink %>>Topics</a></li>
-	    <li><a href=<%= networkLink %>>Network</a></li>
-	    <li><a href=<%= distributionLink %>>Distribution</a></li>
-   	    <li><a href=<%= sentimentLink %>>Sentiment</a></li>
-	    <li id="activelink"><a href=<%= impactLink %>>Impact</a></li>
-	    <li><a href=<%= roiLink %>>ROI</a></li>
-	    <li style="float:right;"><a href="index.jsp">Search</a></li>
+	<ul class="navtabs tabsStyle">
+	    <li class="navtabs"><a href=<%= summaryLink %>> Summary</a></li>
+	    <li class="navtabs"><a href=<%= topicsLink %>>Topics</a></li>
+	    <li class="navtabs"><a href=<%= networkLink %>>Network</a></li>
+	    <li class="navtabs"><a href=<%= distributionLink %>>Distribution</a></li>
+   	    <li class="navtabs"><a href=<%= sentimentLink %>>Sentiment</a></li>
+	    <li class="navtabs" id="activelink"><a href=<%= impactLink %>>Impact</a></li>
+	    <li class="navtabs"><a href=<%= roiLink %>>ROI</a></li>
+	    <li class="navtabs" style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>		
 		
 		<div class="timeline_main">	
@@ -860,8 +861,8 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				},
 				xaxis: {
 					mode: "time",
-					minTickSize: [1, "hour"],
-					timeformat: "%d %b  %H:%M"
+					minTickSize: [1, "day"],
+					timeformat: "%d %b"
 				},
 				yaxis: {
 					ticks: [],
@@ -885,7 +886,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				xaxis: {
 					mode: "time",
 					minTickSize: [1, "hour"],
-					timeformat: "%d %b"
+					timeformat: "%d %b  %H:%M"
 				},
 				yaxis: {
 					ticks: [],
@@ -930,7 +931,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				if (item) 
 				{
 					var someData = weekData;
-					var content = item.series.label + " = " + item.datapoint[1];
+					var content = item.series.label + " = " + item.datapoint[1] + " followers";
 					            
 					for (var i = 0; i < someData.length; i++)
 		            {
@@ -968,7 +969,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 						 	if (item) 
 						 	{
 						 		var someData = hourData;
-					            var content = item.series.label + " = " + item.datapoint[1];
+					            var content = item.series.label + " = " + item.datapoint[1] + " followers";
 					            
 					            for (var i = 0; i < someData.length; i++)
 					            {
@@ -1008,7 +1009,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 							 	if (item) 
 							 	{
 							 		var someData = dayData;
-						            var content = item.series.label + " = " + item.datapoint[1];
+						            var content = item.series.label + " = " + item.datapoint[1] + " followers";
 						            
 						            for (var i = 0; i < someData.length; i++)
 						            {
@@ -1048,7 +1049,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 								 	if (item) 
 								 	{
 								 		var someData = weekData;
-							            var content = item.series.label + " = " + item.datapoint[1];
+							            var content = item.series.label + " = " + item.datapoint[1] + " followers";
 							            
 							            for (var i = 0; i < someData.length; i++)
 							            {
@@ -1087,7 +1088,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 					 	if (item) 
 					 	{
 					 		var someData = monthData;
-				            var content = item.series.label + " = " + item.datapoint[1];
+				            var content = item.series.label + " = " + item.datapoint[1] + " followers";
 				            
 				            for (var i = 0; i < someData.length; i++)
 				            {
@@ -1793,9 +1794,9 @@ public JSONObject getClicksTimelineMonth(String searchID)
 					shadowSize: 0
 				},
 				xaxis: {
-					mode: "time",
-					minTickSize: [1, "hour"],
-					timeformat: "%d %b  %H:%M"
+					mode: "time",					
+					minTickSize: [1, "day"],
+					timeformat: "%d %b"
 				},
 				yaxis: {
 					ticks: [],
@@ -1819,7 +1820,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				xaxis: {
 					mode: "time",
 					minTickSize: [1, "hour"],
-					timeformat: "%d %b"
+					timeformat: "%d %b  %H:%M"
 				},
 				yaxis: {
 					ticks: [],
@@ -1864,7 +1865,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 				if (item) 
 				{
 					var someData = weekData;
-					var content = item.series.label + " = " + item.datapoint[1];
+					var content = item.series.label + " = " + item.datapoint[1] + " clicks";
 					            
 					for (var i = 0; i < someData.length; i++)
 		            {
@@ -1902,7 +1903,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 						 	if (item) 
 						 	{
 						 		var someData = hourData;
-					            var content = item.series.label + " = " + item.datapoint[1];
+					            var content = item.series.label + " = " + item.datapoint[1] + " clicks";
 					            
 					            for (var i = 0; i < someData.length; i++)
 					            {
@@ -1942,7 +1943,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 							 	if (item) 
 							 	{
 							 		var someData = dayData;
-						            var content = item.series.label + " = " + item.datapoint[1];
+						            var content = item.series.label + " = " + item.datapoint[1] + " clicks";
 						            
 						            for (var i = 0; i < someData.length; i++)
 						            {
@@ -1982,7 +1983,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 								 	if (item) 
 								 	{
 								 		var someData = weekData;
-							            var content = item.series.label + " = " + item.datapoint[1];
+							            var content = item.series.label + " = " + item.datapoint[1] + " clicks";
 							            
 							            for (var i = 0; i < someData.length; i++)
 							            {
@@ -1995,7 +1996,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 							                {
 							                    if (someData[i].data[j][0] == item.datapoint[0] && someData[i].data[j][1] == item.datapoint[1])
 							                  	{
-							                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1]; 
+							                          content += '<br/>' + someData[i].label + " = " + item.datapoint[1] + " clicks"; 
 							                    }
 							                }                
 							            }					            
@@ -2021,7 +2022,7 @@ public JSONObject getClicksTimelineMonth(String searchID)
 					 	if (item) 
 					 	{
 					 		var someData = monthData;
-				            var content = item.series.label + " = " + item.datapoint[1];
+				            var content = item.series.label + " = " + item.datapoint[1] + " clicks";
 				            
 				            for (var i = 0; i < someData.length; i++)
 				            {

@@ -5,20 +5,16 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
+import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterPiePojo;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterPieSourcePojo;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +26,7 @@ public class TwitterPieDataProcessor {
 
 	private static final Logger logger = Logger.getLogger(TwitterPieDataProcessor.class);
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
 	/**
 	 * This method creates the tweets type pie chart object for summary.jsp
@@ -44,52 +40,16 @@ public class TwitterPieDataProcessor {
 
 		Assert.assertNotNull(searchID, "Impossibile execute getTweetsPieChart() without a correct search ID");
 
-		int totalTweets = 0;
-		int totalReplies = 0;
-		int totalRTs = 0;
+		int totalTweets = dpCache.getTotalTweets(searchID);
+		int totalReplies = dpCache.getTotalReplies(searchID);
+		int totalRTs = dpCache.getTotalRTs(searchID);
 
-		String sqlQuery = "SELECT is_retweet, reply_to_tweet_id from twitter_data where search_id = '" + searchID + "'";
+		int originalTweets = totalTweets - totalRTs - totalReplies;
 
-		try {
+		TwitterPiePojo statsObj = new TwitterPiePojo(originalTweets, totalReplies, totalRTs);
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			while (rs.next()) {
-
-				totalTweets++;
-
-				boolean isRetweet = rs.getBoolean("is_retweet");
-
-				Assert.assertNotNull(isRetweet, "SQL NULL for is_retweet column in results of [ " + sqlQuery + " ] ");
-
-				if (isRetweet) {
-
-					totalRTs++;
-
-				} else {
-
-					String replyToTweetId = rs.getString("reply_to_tweet_id");
-
-					if (replyToTweetId != null) {
-
-						totalReplies++;
-					}
-				}
-
-			}
-
-			int originalTweets = totalTweets - totalRTs - totalReplies;
-
-			TwitterPiePojo statsObj = new TwitterPiePojo(originalTweets, totalReplies, totalRTs);
-
-			logger.debug("Method getTweetsPieChart(): End");
-			return statsObj;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method getTweetsPieChart(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
-		}
+		logger.debug("Method getTweetsPieChart(): End");
+		return statsObj;
 
 	}
 
@@ -108,49 +68,34 @@ public class TwitterPieDataProcessor {
 		Map<String, Integer> sourceMap = new HashMap<String, Integer>();
 		List<TwitterPieSourcePojo> sources = new ArrayList<TwitterPieSourcePojo>();
 
-		String sqlQuery = "SELECT source_client from twitter_data where search_id = '" + searchID + "'";
+		List<String> tweetsSources = dpCache.getSources(searchID);
 
-		try {
+		for (String sourceClient : tweetsSources) {
+			String formattedSource = tweetSourceFormatter(sourceClient);
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
+			if (sourceMap.containsKey(formattedSource)) {
 
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
+				int value = sourceMap.get(formattedSource);
+				value++;
+				sourceMap.put(formattedSource, value);
 
-			while (rs.next()) {
+			} else {
 
-				String sourceClient = rs.getString("source_client");
-
-				Assert.assertNotNull(sourceClient, "SQL NULL forsource_client column in results of [ " + sqlQuery + " ] ");
-
-				String formattedSource = tweetSourceFormatter(sourceClient);
-
-				if (sourceMap.containsKey(formattedSource)) {
-
-					int value = sourceMap.get(formattedSource);
-					value++;
-					sourceMap.put(formattedSource, value);
-
-				} else {
-
-					sourceMap.put(formattedSource, 1);
-				}
+				sourceMap.put(formattedSource, 1);
 			}
-
-			for (Map.Entry<String, Integer> entry : sourceMap.entrySet()) {
-
-				String source = entry.getKey();
-				int value = entry.getValue();
-
-				TwitterPieSourcePojo obj = new TwitterPieSourcePojo(source, value);
-				sources.add(obj);
-			}
-
-			logger.debug("Method getTweetsPieSourceChart(): End");
-			return sources;
-
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method getTweetsPieSourceChart(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		}
+
+		for (Map.Entry<String, Integer> entry : sourceMap.entrySet()) {
+
+			String source = entry.getKey();
+			int value = entry.getValue();
+
+			TwitterPieSourcePojo obj = new TwitterPieSourcePojo(source, value);
+			sources.add(obj);
+		}
+
+		logger.debug("Method getTweetsPieSourceChart(): End");
+		return sources;
 
 	}
 

@@ -49,7 +49,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 			columns: [
 		        {
 		            text: 'ID',
-		            width: 100,
+		            width: 40,
 		            dataIndex: 'searchID'
 		        },
 		        {
@@ -79,10 +79,15 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		            dataIndex: 'links',
 		        },
 		        {
-		            text: 'Frequency',
-		            width: 100,
-		            dataIndex: 'frequency',
+		            text: 'Documents',
+		            width: 200,
+		            dataIndex: 'documents',
 		        },
+//		        {
+//		            text: 'Frequency',
+//		            width: 100,
+//		            dataIndex: 'frequency',
+//		        },
 		        {
 		            xtype: 'actioncolumn',
 		            text: 'Delete',
@@ -120,11 +125,12 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
          	                            scope : this,
          	                           success: function(response)
          	                           {
-         	                        	  Ext.Msg.alert('Success', response.msg);
+         	                        	 var text = response.responseText;
+         	                        	 Ext.Msg.alert('Success', text);
          	                        	 grid.getStore().load();
          	                           }
                                 	 }); 
-                                 
+                                  
                                  }
                                  if (btn == 'no'){
                                 	 //do nothing
@@ -171,9 +177,8 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		        },
 		        {
 		        	xtype: 'actioncolumn',
-		            text: 'Scheduler',
+		            text: 'Schedulers',
 		            width: 100,
-		            dataIndex: 'hasSearchScheduler',
 		            align: 'center',
 		            isDisabled: function(view, rowIndex, colIndex, item, record)
 		            {
@@ -187,107 +192,43 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		            		return true;
 	            		}
 		            },
-		            getClass: function(value, metadata, record)
+		            items: [
 		            {
-		            	var searchScheduler = record.get('hasSearchScheduler');
+		            	//search scheduler
+		            	getClass: function(value, metadata, record)
+			            {
+			            	var searchScheduler = record.get('hasSearchScheduler');
 
-		            	if(searchScheduler)
-		            	{
-		            	    return 'x-scheduler-stop-enabled'; 
-		            	} else {
-		            	    return 'x-scheduler-stop-disabled';               
-		            	}
+			            	if(searchScheduler)
+			            	{
+			            	    return 'x-scheduler-stop-enabled'; 
+			            	} else {
+			            	    return 'x-scheduler-stop-disabled';               
+			            	}
+			            },
+		                tooltip: 'Stop Historic Search Scheduler',
+		                handler:  this.twitterStopSearchScheduler
 		            },
-//		            isDisabled: function(view, rowIndex, colIndex, item, record)
-//		            {
-//		            	var searchScheduler = record.get('hasSearchScheduler');
-//		            	if(!searchScheduler)
-//	            		{
-//		            		return true;	            		
-//	            		}
-//		            	else
-//	            		{
-//		            		return false;
-//	            		}
-//		            },
-		            handler: function(grid, rowIndex, colIndex) {
-	                    var rec = grid.getStore().getAt(rowIndex);
-	                    var searchSchedulerValue = rec.get('hasSearchScheduler');
-	                    
-	                    if(!searchSchedulerValue)
-                    	{
-	                    	//stop code
-                    	}
-	                    else
-                    	{
-	                    	//stop scheduler code
-	                    	Ext.Msg.show({
-	                    	     title:'Confirm',
-	                    	     msg: 'You are stopping the search scheduler. Are you sure?',
-	                    	     buttons: Ext.Msg.YESNO,
-	                    	     icon: Ext.Msg.QUESTION,
-	                    	     fn: function(btn, text){
-                                     if (btn == 'yes'){
-                                    	 Ext.Ajax.request({
-             	                            url : 'restful-services/historicalSearch/stopSearchScheduler',
-             	                            method:'POST', 
-             	                            params : {
-             	                                searchID: Ext.encode(rec.get('searchID'))
-             	                            },
-             	                            scope : this,
-	         	                            success: function(response)
-	         	                            {
-	         	                            	Ext.Msg.alert('Success', response.msg);
-	         	                            	grid.getStore().load();
-	         	                            }
-                                    	 }); 
-                                     
-                                     }
-                                     if (btn == 'no'){
-                                    	 //do nothing
-                                     }
-                                 },
-	                    	     icon: Ext.Msg.QUESTION
-	                    	});
-//	                    	
-                    	}
-		            }		            
+		            {
+		            	//monitor scheduler
+		            	getClass: function(value, metadata, record)
+			            {
+		            		
+			            	var monitorScheduler = record.get('hasMonitorScheduler');
+
+			            	if(monitorScheduler)
+			            	{
+			            	    return 'x-scheduler-stop-enabled'; 
+			            	} else {
+			            	    return 'x-scheduler-stop-disabled';               
+			            	}
+			            },
+		                tooltip: 'Stop Monitor Resources Scheduler',
+//		                handler:  this.twitterStopSearchScheduler
+		                
+		            }],
+		           
 		        }],
-//		        listeners: {
-//		        	beforerender : function(grid, eOpts )
-//		        	{
-//		        		if(this.store != null)
-//		        		{
-//		        			alert(this.store.getCount());
-//		        			for(var i = 0; i < this.store.getCount(); i++)
-//	        				{
-//		        					
-//		        				var record = this.store.getAt(i);
-//		        				if(record.get('failed'))
-//	        					{
-//		        					var searchID = record.get('searchID');
-//		        					var labelSearch = record.get('label');
-//		        					
-//		        					Ext.Msg.show({
-//		        						title:'Alert',
-//		        						msg: 'Search ' + label + 'failed cause of connection problems',
-//		        						buttons: Ext.Msg.OK,
-//		        						icon: Ext.Msg.WARNING		        						 
-//		        					});
-//		        					
-//		        					Ext.Ajax.request({
-//        								url : 'restful-services/historicalSearch/removeFailedSearch',
-//        								method:'POST', 
-//        								params : {
-//        									searchID: Ext.encode(record.get('searchID'))
-//        									},
-//        									scope : this
-//        							});
-//	        					}
-//	        				}		        		
-//		        		}
-//		        	}
-//		        }
 		}),
 		
 		this.store.on( 'load', function(store, records, options) {
@@ -318,9 +259,11 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 									},
 									scope : this,
 									success: function(response)
-     	                            {
+      	                           {
+      	                        	    var text = response.responseText;
+      	                        	 	Ext.Msg.alert('Success', text);
 										store.load();
-     	                            }
+     	                           }
 							});
     					}
     				}		        		
@@ -328,6 +271,52 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
         	}); 
 		
 		this.callParent();
+	},
+	
+	
+	twitterStopSearchScheduler: function(grid, rowIndex, colIndex)
+	{
+
+        var rec = grid.getStore().getAt(rowIndex);
+        var searchSchedulerValue = rec.get('hasSearchScheduler');
+        
+        if(!searchSchedulerValue)
+    	{
+        	//stop code
+    	}
+        else
+    	{
+        	//stop scheduler code
+        	Ext.Msg.show({
+        	     title:'Confirm',
+        	     msg: 'You are stopping the search scheduler. Are you sure?',
+        	     buttons: Ext.Msg.YESNO,
+        	     icon: Ext.Msg.QUESTION,
+        	     fn: function(btn, text){
+                     if (btn == 'yes'){
+                    	 Ext.Ajax.request({
+	                            url : 'restful-services/historicalSearch/stopSearchScheduler',
+	                            method:'POST', 
+	                            params : {
+	                                searchID: Ext.encode(rec.get('searchID'))
+	                            },
+	                            scope : this,
+	                           success: function(response)
+	                           {
+	                        	    var text = response.responseText;
+	                        	 	Ext.Msg.alert('Success', text);
+	                             	grid.getStore().load();
+	                            }
+                    	 }); 
+                     
+                     }
+                     if (btn == 'no'){
+                    	 //do nothing
+                     }
+                 },
+        	     icon: Ext.Msg.QUESTION
+        	});     	
+    	}
 	}
 
 });

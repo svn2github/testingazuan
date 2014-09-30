@@ -21,9 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.launcher;
 
+import it.eng.spagobi.twitter.analysis.cache.DaoService;
+import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
+import it.eng.spagobi.twitter.analysis.enums.SearchTypeEnum;
+
+import java.util.GregorianCalendar;
+
 /**
- * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici
- *         (giorgio.federici@eng.it)
+ * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
  *
  */
 public class TestTwitterAnalysisLauncher {
@@ -39,9 +44,17 @@ public class TestTwitterAnalysisLauncher {
 		// TODO: è solo una classe di test per provare tutto il giro
 		// TODO: istanzio un oggetto TwitterAnalysisLauncher per lanciare una
 		// tipologia di ricerca (magari prendendo argomenti dagli args)
-		String html = "<a href=\"http://www.techwars.io\" rel=\"nofollow\">TechWars</a>";
-		System.out.println(html.replaceAll("<.*?>", ""));
+		// String html = "<a href=\"http://www.techwars.io\" rel=\"nofollow\">TechWars</a>";
+		// System.out.println(html.replaceAll("<.*?>", ""));
+		TwitterSearch twitterSearch = new TwitterSearch();
+		twitterSearch.setLabel("Hibernate4");
+		twitterSearch.setKeywords("spagobi");
+		twitterSearch.setCreationDate(GregorianCalendar.getInstance());
+		twitterSearch.setType(SearchTypeEnum.SEARCHAPI);
+		twitterSearch.setLastActivationTime(GregorianCalendar.getInstance());
 
+		DaoService dao = new DaoService();
+		TwitterSearch insertedSearch = (TwitterSearch) dao.create(twitterSearch);
+		insertedSearch.toString();
 	}
-
 }

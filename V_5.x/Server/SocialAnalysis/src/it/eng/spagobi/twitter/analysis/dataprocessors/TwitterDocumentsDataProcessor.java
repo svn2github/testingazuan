@@ -5,22 +5,20 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.dataprocessors;
 
-import it.eng.spagobi.twitter.analysis.cache.ITwitterCache;
-import it.eng.spagobi.twitter.analysis.cache.TwitterCacheFactory;
+import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
+import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
+import it.eng.spagobi.twitter.analysis.entities.TwitterMonitorScheduler;
 import it.eng.spagobi.twitter.analysis.pojos.TwitterDocumentPojo;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
@@ -30,10 +28,11 @@ import org.apache.log4j.Logger;
  */
 public class TwitterDocumentsDataProcessor {
 
-	private final ITwitterCache twitterCache = new TwitterCacheFactory().getCache("mysql");
+	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
 	private static final Logger logger = Logger.getLogger(TwitterDocumentsDataProcessor.class);
 
+	// TODO: conf table
 	private final String HOST = "http://localhost:";
 	private final String PORT = "8080";
 	private final String CALL = "/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=EXECUTE_DOCUMENT_ACTION&NEW_SESSION=TRUE&OBJECT_LABEL=";
@@ -58,29 +57,13 @@ public class TwitterDocumentsDataProcessor {
 
 		Assert.assertNotNull(searchID, "Impossibile initialize TwitterDocumentsDataProcessor without a correct search ID");
 
-		String sqlQuery = "SELECT documents, creation_time, last_activation_time from twitter_monitor_scheduler where search_id = '" + searchID + "'";
+		TwitterMonitorScheduler twitterMonitorScheduler = dpCache.getDocuments(searchID);
 
 		try {
+			if (twitterMonitorScheduler != null) {
+				String documents = twitterMonitorScheduler.getDocuments();
 
-			CachedRowSet rs = twitterCache.runQuery(sqlQuery);
-
-			Assert.assertNotNull(rs, "The query [ " + sqlQuery + " ] doesn't have a valid result");
-
-			if (rs.next()) {
-
-				String documentsStr = rs.getString("documents");
-				java.sql.Timestamp creationTimestamp = rs.getTimestamp("creation_time");
-				java.sql.Timestamp lastActivationTimestamp = rs.getTimestamp("last_activation_time");
-
-				Assert.assertNotNull(documentsStr, "SQL NULL for documents column in results of [ " + sqlQuery + " ] ");
-				Assert.assertNotNull(creationTimestamp, "SQL NULL for creation_time column in results of [ " + sqlQuery + " ] ");
-				Assert.assertNotNull(lastActivationTimestamp, "SQL NULL for last_activation_time column in results of [ " + sqlQuery + " ] ");
-
-				// convert sql timestamp into Calendar obj
-				Date startDate = roundSQLTimestamp(creationTimestamp);
-				Date endDate = roundSQLTimestamp(lastActivationTimestamp);
-
-				String[] documentsArr = documentsStr.split(",");
+				String[] documentsArr = documents.split(",");
 
 				for (int i = 0; i < documentsArr.length; i++) {
 
@@ -96,13 +79,10 @@ public class TwitterDocumentsDataProcessor {
 					this.labels.add(label);
 
 				}
-
 			}
 
 			logger.debug("Method initializeTwitterDocumentsDataProcessor(): End");
 
-		} catch (SQLException e) {
-			throw new SpagoBIRuntimeException("Method initializeTwitterDocumentsDataProcessor(): Impossible to exectute sql query [ " + sqlQuery + " ]", e);
 		} catch (UnsupportedEncodingException e) {
 			throw new SpagoBIRuntimeException("Method initializeTwitterDocumentsDataProcessor(): Impossibile to encode documents URL", e);
 		}

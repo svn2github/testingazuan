@@ -240,15 +240,17 @@ div#hormenu a
 {
     display: block;
     padding: 5px;
-    color: #000;
     text-decoration: none;
+    color: #0084B4;
+    border: 1px solid #ccc;
 }
  
 div#hormenu a:hover
 {
-    background-color: #000033;
-    color: #FFFFFF;
     text-decoration: none;
+    background-color: #ccc;
+	color: #0084B4;
+	border: 1px solid #707070;
 }
 
 div#hormenu li ul
@@ -452,16 +454,19 @@ div#hormenu-a a
 {
     display: block;
     padding: 5px;
-    color: #000;
     text-decoration: none;
+   	color: #0084B4;
+    border: 1px solid #ccc;
 }
  
 div#hormenu-a a:hover
 {
-    background-color: #000033;
-    color: #FFFFFF;
     text-decoration: none;
+    background-color: #ccc;
+	color: #0084B4;
+	border: 1px solid #707070;
 }
+
 
 div#hormenu-a li ul
 {
@@ -525,15 +530,18 @@ div#hormenu-l a
 {
     display: block;
     padding: 5px;
-    color: #000;
     text-decoration: none;
+    color: #0084B4;
+    border: 1px solid #ccc;
 }
  
 div#hormenu-l a:hover
 {
-    background-color: #000033;
-    color: #FFFFFF;
     text-decoration: none;
+    background-color: #ccc;
+	color: #0084B4;
+	border: 1px solid #707070;
+    
 }
 
 div#hormenu-l li ul

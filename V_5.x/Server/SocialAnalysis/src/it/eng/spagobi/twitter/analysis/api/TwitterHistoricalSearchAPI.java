@@ -325,13 +325,13 @@ public class TwitterHistoricalSearchAPI {
 		return "Historical search scheduler " + searchID + " stopped";
 	}
 
-	// Remove a failed search from historic search table
-	@Path("/removeFailedSearch")
+	// Update a failed search from historic search table
+	@Path("/updateFailedSearch")
 	@POST
 	// @Produces(MediaType.APPLICATION_JSON)
-	public String removeFailedSearch(@Context HttpServletRequest req) throws Exception {
+	public String updateFailedSearch(@Context HttpServletRequest req) throws Exception {
 
-		logger.debug("Method removeFailedSearch(): Start");
+		logger.debug("Method updateFailedSearch(): Start");
 
 		TwitterSearch twitterSearch = new TwitterSearch();
 
@@ -342,9 +342,9 @@ public class TwitterHistoricalSearchAPI {
 		twitterSearch.setSearchID(Long.parseLong(searchID));
 
 		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
-		twitterAnalysisLauncher.removeFailedSearch();
+		twitterAnalysisLauncher.updateFailedSearch();
 
-		logger.debug("Method removeFailedSearch(): End");
+		logger.debug("Method updateFailedSearch(): End");
 
 		return "Historical failed search " + searchID + " removed";
 	}

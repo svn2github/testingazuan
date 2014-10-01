@@ -44,6 +44,10 @@ public class TwitterLinkToMonitor {
 	@Length(max = 45)
 	private String link;
 
+	@Column(name = "long_url")
+	@Length(max = 400)
+	private String longUrl;
+
 	@Column(name = "clicks_count")
 	@NotNull
 	private int clicksCount;
@@ -57,17 +61,19 @@ public class TwitterLinkToMonitor {
 
 	}
 
-	public TwitterLinkToMonitor(long id, TwitterSearch twitterSearch, String link, int clicksCount, Calendar timestamp) {
+	public TwitterLinkToMonitor(long id, TwitterSearch twitterSearch, String link, int clicksCount, Calendar timestamp, String longUrl) {
 
 		this.id = id;
 		this.twitterSearch = twitterSearch;
 		this.link = link;
 		this.clicksCount = clicksCount;
 		this.timestamp = timestamp;
+		this.longUrl = longUrl;
 	}
 
-	public TwitterLinkToMonitor(int clicksCount, Calendar timestamp) {
+	public TwitterLinkToMonitor(String longUrl, int clicksCount, Calendar timestamp) {
 
+		this.longUrl = longUrl;
 		this.clicksCount = clicksCount;
 		this.timestamp = timestamp;
 	}
@@ -112,10 +118,18 @@ public class TwitterLinkToMonitor {
 		this.timestamp = timestamp;
 	}
 
+	public String getLongUrl() {
+		return longUrl;
+	}
+
+	public void setLongUrl(String longUrl) {
+		this.longUrl = longUrl;
+	}
+
 	@Override
 	public String toString() {
-		return "TwitterLinkToMonitor [id=" + id + ", twitterSearch=" + twitterSearch + ", link=" + link + ", clicksCount=" + clicksCount + ", timestamp="
-				+ timestamp + "]";
+		return "TwitterLinkToMonitor [id=" + id + ", twitterSearch=" + twitterSearch + ", link=" + link + ", longUrl=" + longUrl + ", clicksCount="
+				+ clicksCount + ", timestamp=" + timestamp + "]";
 	}
 
 }

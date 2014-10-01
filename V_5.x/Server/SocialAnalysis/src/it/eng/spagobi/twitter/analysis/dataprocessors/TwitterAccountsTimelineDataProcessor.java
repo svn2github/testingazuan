@@ -7,7 +7,7 @@ package it.eng.spagobi.twitter.analysis.dataprocessors;
 
 import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
 import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
-import it.eng.spagobi.twitter.analysis.entities.TwitterLinkToMonitor;
+import it.eng.spagobi.twitter.analysis.entities.TwitterAccountToMonitor;
 import it.eng.spagobi.twitter.analysis.enums.MonitorRepeatTypeEnum;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
@@ -30,9 +30,9 @@ import twitter4j.JSONObject;
  *
  */
 
-public class TwitterResourcesTimelineDataProcessor {
+public class TwitterAccountsTimelineDataProcessor {
 
-	private static final Logger logger = Logger.getLogger(TwitterResourcesTimelineDataProcessor.class);
+	private static final Logger logger = Logger.getLogger(TwitterAccountsTimelineDataProcessor.class);
 
 	private final IDataProcessorCache dpCache = new DataProcessorCacheImpl();
 
@@ -53,25 +53,25 @@ public class TwitterResourcesTimelineDataProcessor {
 
 	String weekTicks = "";
 
-	public TwitterResourcesTimelineDataProcessor() {
+	public TwitterAccountsTimelineDataProcessor() {
 
 	}
 
-	public void initializeTwitterResourcesTimelineDataProcessor(String searchID) {
+	public void initializeTwitterAccountsTimelineDataProcessor(String searchID) {
 
 		logger.debug("Method initializeTwitterResourcesTimelineDataProcessor(): Start");
 
 		Assert.assertNotNull(searchID, "Impossibile initialize initializeTwitterResourcesTimelineDataProcessor without a correct search ID");
 
-		JSONArray hourJSONArray = this.getClicks(searchID, "hours", false);
-		JSONArray dayJSONArray = this.getClicks(searchID, "days", false);
-		JSONArray weekJSONArray = this.getClicks(searchID, "weeks", false);
-		JSONArray monthJSONArray = this.getClicks(searchID, "months", false);
+		JSONArray hourJSONArray = this.getFollowers(searchID, "hours", false);
+		JSONArray dayJSONArray = this.getFollowers(searchID, "days", false);
+		JSONArray weekJSONArray = this.getFollowers(searchID, "weeks", false);
+		JSONArray monthJSONArray = this.getFollowers(searchID, "months", false);
 
-		JSONArray hourJSONArrayOverview = this.getClicks(searchID, "hours", true);
-		JSONArray dayJSONArrayOverview = this.getClicks(searchID, "days", true);
-		JSONArray weekJSONArrayOverview = this.getClicks(searchID, "weeks", true);
-		JSONArray monthJSONArrayOverview = this.getClicks(searchID, "months", true);
+		JSONArray hourJSONArrayOverview = this.getFollowers(searchID, "hours", true);
+		JSONArray dayJSONArrayOverview = this.getFollowers(searchID, "days", true);
+		JSONArray weekJSONArrayOverview = this.getFollowers(searchID, "weeks", true);
+		JSONArray monthJSONArrayOverview = this.getFollowers(searchID, "months", true);
 
 		this.hourData = hourJSONArray.toString();
 		this.dayData = dayJSONArray.toString();
@@ -102,7 +102,7 @@ public class TwitterResourcesTimelineDataProcessor {
 
 		Calendar maxTime = GregorianCalendar.getInstance();
 
-		Calendar maxTimeFromDB = dpCache.getMaxLinksTime(searchID);
+		Calendar maxTimeFromDB = dpCache.getMaxAccountsTime(searchID);
 
 		if (maxTimeFromDB != null) {
 
@@ -135,7 +135,7 @@ public class TwitterResourcesTimelineDataProcessor {
 
 		Calendar minTime = GregorianCalendar.getInstance();
 
-		Calendar minTimeFromDB = dpCache.getMinLinksTime(searchID);
+		Calendar minTimeFromDB = dpCache.getMinAccountsTime(searchID);
 
 		if (minTimeFromDB != null) {
 
@@ -153,27 +153,29 @@ public class TwitterResourcesTimelineDataProcessor {
 
 	}
 
-	public JSONArray getClicks(String searchID, String timeFilter, boolean isOverview) {
+	public JSONArray getFollowers(String searchID, String timeFilter, boolean isOverview) {
 
-		logger.debug("Method getClicks(): Start");
+		logger.debug("Method getFollowersTimelineObjs(): Start");
 
-		Assert.assertNotNull(searchID, "Impossibile execute getClicks() without a correct search ID");
+		Assert.assertNotNull(searchID, "Impossibile execute getTopTweetsData() without a correct search ID");
 
-		Calendar minTime = getMinTimeResourceToMonitor(searchID, "twitter_links_to_monitor");
-		Calendar maxTime = getMaxTimeResourceToMonitor(searchID, "twitter_links_to_monitor");
+		Calendar minTime = getMinTimeResourceToMonitor(searchID, "twitter_accounts_to_monitor");
+		Calendar maxTime = getMaxTimeResourceToMonitor(searchID, "twitter_accounts_to_monitor");
 
 		minTime = roundTime(timeFilter, minTime);
 		maxTime = roundTime(timeFilter, maxTime);
 
 		JSONArray results = new JSONArray();
 
+		List<String> accounts = dpCache.getAccounts(searchID);
+
 		try {
-
-			List<String> links = dpCache.getLinks(searchID);
-
-			for (String link : links) {
-
+			for (String accountName : accounts) {
 				JSONObject element = new JSONObject();
+
+				if (!isOverview) {
+					element.put("label", accountName);
+				}
 
 				Calendar min = GregorianCalendar.getInstance();
 				Calendar max = GregorianCalendar.getInstance();
@@ -181,53 +183,38 @@ public class TwitterResourcesTimelineDataProcessor {
 				min.setTimeInMillis(minTime.getTimeInMillis());
 				max.setTimeInMillis(maxTime.getTimeInMillis());
 
-				LinkedHashMap<Long, Integer> linkClicks = initializeTimeline(min, max, timeFilter);
+				LinkedHashMap<Long, Integer> accountFollowers = initializeTimeline(min, max, timeFilter);
 
-				List<TwitterLinkToMonitor> linksInfo = dpCache.getLinksToMonitorInfo(searchID, link);
+				List<TwitterAccountToMonitor> accountsInfo = dpCache.getAccountsToMonitorInfo(searchID, accountName);
 
-				if (!isOverview) {
-					if (linksInfo != null && linksInfo.size() > 0) {
-
-						if (linksInfo.get(0).getLongUrl() != null && !linksInfo.get(0).getLongUrl().equals("")) {
-
-							element.put("label", linksInfo.get(0).getLongUrl());
-
-						} else {
-
-							element.put("label", link);
-						}
-					}
-				}
-
-				for (TwitterLinkToMonitor lInfo : linksInfo) {
+				for (TwitterAccountToMonitor aInfo : accountsInfo) {
 
 					JSONArray data = new JSONArray();
 
-					int clicksCount = lInfo.getClicksCount();
+					int followersCount = aInfo.getFollowersCount();
 
-					Calendar timestampCalendar = lInfo.getTimestamp();
+					Calendar timestampCalendar = aInfo.getTimestamp();
 
 					Calendar roundedTime = roundTime(timeFilter, timestampCalendar);
 
-					long time = roundedTime.getTimeInMillis() + (CONST_TIMEZONE);
+					long timeMills = roundedTime.getTimeInMillis() + (CONST_TIMEZONE);
 
-					if (linkClicks.containsKey(time)) {
+					if (accountFollowers.containsKey(timeMills)) {
 
-						int value = linkClicks.get(time);
+						int value = accountFollowers.get(timeMills);
 
 						if (value == -1) {
 							// defaultvalue, first add to this key
-							value = clicksCount;
+							value = followersCount;
 						} else {
 							// value already modified with real values
-							// value = value + clicksCount;
-							value = clicksCount;
+							value = followersCount;
 						}
 
-						linkClicks.put(time, value);
+						accountFollowers.put(timeMills, value);
 					}
 
-					if (linkClicks.size() == 1) {
+					if (accountFollowers.size() == 1) {
 
 						// manage the situation of only one result
 						// useless graph
@@ -236,7 +223,7 @@ public class TwitterResourcesTimelineDataProcessor {
 						newMinTime.setTimeInMillis(minTime.getTimeInMillis());
 
 						// actual min followers value
-						int lowerClicks = linkClicks.get(newMinTime.getTimeInMillis() + (CONST_TIMEZONE));
+						int lowerFollowers = accountFollowers.get(newMinTime.getTimeInMillis() + (CONST_TIMEZONE));
 
 						if (timeFilter.equalsIgnoreCase("hours")) {
 
@@ -257,31 +244,31 @@ public class TwitterResourcesTimelineDataProcessor {
 						}
 
 						long newLowerMills = newMinTime.getTimeInMillis();
-						linkClicks.put(newLowerMills, lowerClicks);
+						accountFollowers.put(newLowerMills, lowerFollowers);
 
 					}
 
 					int coverValue = 0;
 
-					for (Map.Entry<Long, Integer> entry : linkClicks.entrySet()) {
+					for (Map.Entry<Long, Integer> entry : accountFollowers.entrySet()) {
 
 						JSONArray dataElement = new JSONArray();
 
-						long timeMills = entry.getKey();
-						int clicks = entry.getValue();
+						long time = entry.getKey();
+						int followers = entry.getValue();
 
-						if (clicks == -1) {
+						if (followers == -1) {
 							// no values for this time, put cover values
 							// until next monitored value
-							clicks = coverValue;
+							followers = coverValue;
 						}
 
 						// mantain the real value to cover next deault
 						// values
-						coverValue = clicks;
+						coverValue = followers;
 
-						dataElement.put(timeMills);
-						dataElement.put(clicks);
+						dataElement.put(time);
+						dataElement.put(followers);
 
 						data.put(dataElement);
 					}
@@ -292,13 +279,13 @@ public class TwitterResourcesTimelineDataProcessor {
 				results.put(element);
 			}
 
-			logger.debug("JSON CLICKS: _-> " + results);
+			logger.debug("Method getFollowersTimelineObjs(): End");
 
-			logger.debug("Method getClicks(): End");
+			logger.debug(results.toString());
 			return results;
 
 		} catch (JSONException e) {
-			throw new SpagoBIRuntimeException("Method getClicks(): Impossible to create a corret JSON ", e);
+			throw new SpagoBIRuntimeException("Method getFollowersTimelineObjs(): Impossible to create a corret JSON ", e);
 		}
 
 	}

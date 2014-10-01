@@ -73,7 +73,7 @@ public class TwitterUser {
 	@NotNull
 	private int tweetsCount;
 
-	@Column(name = "verified")
+	@Column(name = "verified", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean verified = false;
 
@@ -84,7 +84,7 @@ public class TwitterUser {
 	@Column(name = "UTC_offset")
 	private int utcOffset;
 
-	@Column(name = "is_geo_enabled")
+	@Column(name = "is_geo_enabled", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean isGeoEnabled = false;
 

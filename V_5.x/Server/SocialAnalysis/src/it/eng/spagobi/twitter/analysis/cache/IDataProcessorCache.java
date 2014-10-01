@@ -63,4 +63,12 @@ public interface IDataProcessorCache {
 
 	public List<TwitterData> getTopTweetsRecentOrder(String searchID, int nProfiles);
 
+	public Calendar getMinLinksTime(String searchID);
+
+	public Calendar getMaxLinksTime(String searchID);
+
+	public Calendar getMinAccountsTime(String searchID);
+
+	public Calendar getMaxAccountsTime(String searchID);
+
 }

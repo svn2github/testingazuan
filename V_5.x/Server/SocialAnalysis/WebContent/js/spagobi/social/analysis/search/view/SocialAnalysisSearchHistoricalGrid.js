@@ -246,13 +246,13 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
         					
         					Ext.Msg.show({
         						title:'Alert',
-        						msg: 'Search ' + labelSearch + ' failed cause of connection problems',
+        						msg: 'Search ' + labelSearch + ' failed cause of connection problems. Loading partial results..',
         						buttons: Ext.Msg.OK,
         						icon: Ext.Msg.WARNING		        						 
         					});
         					
         					Ext.Ajax.request({
-								url : 'restful-services/historicalSearch/removeFailedSearch',
+								url : 'restful-services/historicalSearch/updateFailedSearch',
 								method:'POST', 
 								params : {
 									searchID: Ext.encode(record.get('searchID'))

@@ -111,17 +111,51 @@ public class TwitterCacheImpl implements ITwitterCache {
 		TwitterUser twitterUser = twitterMessage.getTwitterUser();
 		TwitterData twitterData = twitterMessage.getTwitterData();
 
-		if (!isTwitterUserPresent(twitterMessage.getUserID())) {
+		TwitterUser twitterUserFromDB = isTwitterUserPresent(twitterMessage.getUserID());
+
+		if (twitterUserFromDB == null) {
+
+			// user not present in DB, create a new twitter user
 
 			String locationCode = AnalysisUtility.findCountryCodeFromUserLocation(twitterUser.getLocation(), twitterUser.getTimeZone());
 			twitterUser.setLocationCode(locationCode);
 
 			insertTwitterUser(twitterUser);
+
+		} else {
+
+			// user in DB, update twitter user
+
+			// twitterUserFromDB.setUsername(this.username);
+			// twitterUserFromDB.setDescription(this.description);
+			// twitterUserFromDB.setFollowersCount(this.followersCount);
+			// twitterUserFromDB.setProfileImgSrc(this.profileImgSrc);
+			// this.twitterUser.setLocation(this.location);
+			// twitterUserFromDB.setLanguageCode(this.userLanguageCode);
+			// twitterUserFromDB.setName(this.name);
+			// twitterUserFromDB.setTimeZone(this.timeZone);
+			// twitterUserFromDB.setTweetsCount(this.tweetsCount);
+			// twitterUserFromDB.setVerified(this.isVerified);
+			// this.twitterUser.setFollowingCount(this.followingCount);
+			// this.twitterUser.setUtcOffset(this.utcOffset);
+			// this.twitterUser.setGeoEnabled(this.isGeoEnabled);
+			// this.twitterUser.setListedCount(this.listedCount);
+			// this.twitterUser.setStartDate(GregorianCalendar.getInstance());
+			// this.twitterUser.setEndDate(GregorianCalendar.getInstance());
+			//
+			//
+			// twitterUserFromDB = twitterUser;
+			// updateTwitterUser(twitterUserFromDB);
+
 		}
 
-		if (!isTwitterDataPresent(searchID, twitterMessage.getTweetID())) {
+		TwitterData tweetFromDB = isTwitterDataPresent(searchID, twitterMessage.getTweetID());
+
+		if (tweetFromDB == null) {
 
 			insertTweet(twitterData, searchID);
+		} else {
+
 		}
 
 	}
@@ -156,7 +190,7 @@ public class TwitterCacheImpl implements ITwitterCache {
 	}
 
 	@Override
-	public boolean isTwitterUserPresent(long userID) {
+	public TwitterUser isTwitterUserPresent(long userID) {
 
 		logger.debug("Method isTwitterUserPresent(): Start");
 
@@ -164,16 +198,12 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 		TwitterUser twitterUser = (TwitterUser) daoService.find(TwitterUser.class, userID);
 
-		if (twitterUser != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return twitterUser;
 
 	}
 
 	@Override
-	public boolean isTwitterDataPresent(long searchID, long tweetID) {
+	public TwitterData isTwitterDataPresent(long searchID, long tweetID) {
 
 		logger.debug("Method isTwitterDataPresent(): Start");
 
@@ -181,14 +211,9 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 		String query = " select tweet.tweetID from TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.tweetID = ?";
 
-		Long id = daoService.singleResultQuery(query, searchID, tweetID);
+		TwitterData twitterData = daoService.singleResultQuery(query, searchID, tweetID);
 
-		if (id != null) {
-			return true;
-		} else {
-			return false;
-		}
-
+		return twitterData;
 	}
 
 	@Override
@@ -377,6 +402,19 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 		logger.debug("Method refreshTwitterSearc(): End");
 		return daoService.refresh(twitterSearch);
+
+	}
+
+	@Override
+	public void updateTwitterUser(TwitterUser twitterUser) {
+
+		logger.debug("Method updateTwitterUser(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method updateTwitterUser(): Impossible to update TwitterUser without a valid DaoService");
+
+		this.daoService.update(twitterUser);
+
+		logger.debug("Method updateTwitterUser(): End");
 
 	}
 

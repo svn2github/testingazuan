@@ -55,7 +55,7 @@ public class TwitterSearchScheduler {
 	@NotNull
 	private SearchRepeatTypeEnum repeatType;
 
-	@Column(name = "active")
+	@Column(name = "active", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean active = true;
 

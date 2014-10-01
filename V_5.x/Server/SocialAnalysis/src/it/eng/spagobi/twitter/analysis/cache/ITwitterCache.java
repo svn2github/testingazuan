@@ -39,9 +39,9 @@ public interface ITwitterCache {
 
 	public void insertTweet(TwitterData twitterData, long searchID);
 
-	public boolean isTwitterUserPresent(long userID);
+	public TwitterUser isTwitterUserPresent(long userID);
 
-	public boolean isTwitterDataPresent(long searchID, long tweetID);
+	public TwitterData isTwitterDataPresent(long searchID, long tweetID);
 
 	public TwitterSearch findTwitterSearch(long searchID);
 
@@ -67,5 +67,7 @@ public interface ITwitterCache {
 	public TwitterSearchScheduler findTwitterSearchScheduler(long id);
 
 	public TwitterSearch refreshTwitterSearch(TwitterSearch twitterSearch);
+
+	public void updateTwitterUser(TwitterUser twitterUser);
 
 }

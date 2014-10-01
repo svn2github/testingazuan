@@ -33,9 +33,10 @@ public class TwitterDocumentsDataProcessor {
 	private static final Logger logger = Logger.getLogger(TwitterDocumentsDataProcessor.class);
 
 	// TODO: conf table
-	private final String HOST = "http://localhost:";
-	private final String PORT = "8080";
-	private final String CALL = "/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=EXECUTE_DOCUMENT_ACTION&NEW_SESSION=TRUE&OBJECT_LABEL=";
+	// private final String HOST = "http://localhost:";
+	// private final String PORT = "8080";
+	private final String CALL = "/servlet/AdapterHTTP?ACTION_NAME=EXECUTE_DOCUMENT_ACTION&NEW_SESSION=TRUE&OBJECT_LABEL=";
+	private final String SPAGOBI_SERVICE_URL = System.getProperty("spagobi_service_url");
 
 	// fields to avoid logic into JSP
 	private List<String> labels = new ArrayList<String>();
@@ -96,7 +97,7 @@ public class TwitterDocumentsDataProcessor {
 	 */
 	private String composeUrlConstants(String docLabel) {
 
-		return HOST + PORT + CALL + docLabel;
+		return SPAGOBI_SERVICE_URL + CALL + docLabel;
 
 	}
 

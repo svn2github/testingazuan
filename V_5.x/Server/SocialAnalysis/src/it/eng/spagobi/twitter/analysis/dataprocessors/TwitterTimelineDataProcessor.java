@@ -58,7 +58,7 @@ public class TwitterTimelineDataProcessor {
 	}
 
 	/**
-	 * This method initializes the structures for a search docs
+	 * This method initializes the structures for a timeline
 	 *
 	 * @param searchIDStr
 	 * @return

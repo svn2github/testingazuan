@@ -68,7 +68,7 @@ public class TwitterMonitorScheduler {
 	@NotNull
 	private MonitorRepeatTypeEnum repeatType;
 
-	@Column(name = "active_search")
+	@Column(name = "active_search", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean activeSearch = true;
 

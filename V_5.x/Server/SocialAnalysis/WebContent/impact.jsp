@@ -34,6 +34,41 @@
 	String sentimentLink = "sentiment.jsp?searchID=" + searchId; 
 	String impactLink = "impact.jsp?searchID=" + searchId; 
 	String roiLink = "roi.jsp?searchID=" + searchId;
+	
+	/*************** TIMELINE ACCOUNTS ******************************************************/
+	
+	TwitterAccountsTimelineDataProcessor tAccountsTimelineDP = new TwitterAccountsTimelineDataProcessor();
+	tAccountsTimelineDP.initializeTwitterAccountsTimelineDataProcessor(searchId);
+	
+	String accountHourData = tAccountsTimelineDP.getHourData();
+	String accountDayData = tAccountsTimelineDP.getDayData();
+	String accountWeekData = tAccountsTimelineDP.getWeekData();
+	String accountMonthData = tAccountsTimelineDP.getMonthData();
+	
+	String accountHourDataOverview = tAccountsTimelineDP.getHourDataOverview();
+	String accountDayDataOverview = tAccountsTimelineDP.getDayDataOverview();
+	String accountWeekDataOverview = tAccountsTimelineDP.getWeekDataOverview();
+	String accountMonthDataOverview = tAccountsTimelineDP.getMonthDataOverview();
+	
+	String accountWeekTicks = tAccountsTimelineDP.getWeekTicks();
+	
+	
+	/*************** TIMELINE LINKS *****************************************************/
+	
+	TwitterResourcesTimelineDataProcessor tResourceTimelineDP = new TwitterResourcesTimelineDataProcessor();
+	tResourceTimelineDP.initializeTwitterResourcesTimelineDataProcessor(searchId);
+	
+	String linkHourData = tResourceTimelineDP.getHourData();
+	String linkDayData = tResourceTimelineDP.getDayData();
+	String linkWeekData = tResourceTimelineDP.getWeekData();
+	String linkMonthData = tResourceTimelineDP.getMonthData();
+	
+	String linkHourDataOverview = tResourceTimelineDP.getHourDataOverview();
+	String linkDayDataOverview = tResourceTimelineDP.getDayDataOverview();
+	String linkWeekDataOverview = tResourceTimelineDP.getWeekDataOverview();
+	String linkMonthDataOverview = tResourceTimelineDP.getMonthDataOverview();
+	
+	String linkWeekTicks = tResourceTimelineDP.getWeekTicks();
 	 
 %>
 
@@ -80,63 +115,7 @@ public String hideHours(String searchID)
 		return "display:none;";
 	}	
 
-}
-
-/*************** START TIMELINE ACCOUNT *****************************************************/
-
-public JSONObject getFollowersTimelineHour(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getFollowers(searchID, "hours"); 
-}
-
-public JSONObject getFollowersTimelineDay(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getFollowers(searchID, "days"); 
-}
-
-public JSONObject getFollowersTimelineWeek(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getFollowers(searchID, "weeks"); 
-}
-
-public JSONObject getFollowersTimelineMonth(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getFollowers(searchID, "months"); 
-}
-
-
-
-/*************** END TIMELINE ACCOUNT *****************************************************/
-
-/*************** START TIMELINE BITLY *****************************************************/
-
-public JSONObject getClicksTimelineHour(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getClicks(searchID, "hours"); 
-}
-
-public JSONObject getClicksTimelineDay(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getClicks(searchID, "days"); 
-}
-
-public JSONObject getClicksTimelineWeek(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getClicks(searchID, "weeks"); 
-}
-
-public JSONObject getClicksTimelineMonth(String searchID)
-{
-	return new TwitterResourcesTimelineDataProcessor().getClicks(searchID, "months"); 
-}
-
-
-/*************** END TIMELINE BITLY *****************************************************/
-
-
-	/*****************/
-	
-	
+}	
 
 %>
 
@@ -211,387 +190,17 @@ public JSONObject getClicksTimelineMonth(String searchID)
 			$(function() 
 			{
 				
-				<% 
-				{
-					
+				var hourData = <%= accountHourData %>
+				var dayData = <%= accountDayData %>
+				var weekData = <%= accountWeekData %>
+				var monthData = <%= accountMonthData %>
 				
-					JSONObject accountsJSONHour = getFollowersTimelineHour(request.getParameter("searchID"));
-					JSONObject accountsJSONDay = getFollowersTimelineDay(request.getParameter("searchID"));
-					JSONObject accountsJSONWeek = getFollowersTimelineWeek(request.getParameter("searchID"));
-					JSONObject accountsJSONMonth = getFollowersTimelineMonth(request.getParameter("searchID"));
-					
-					JSONArray hourResults = accountsJSONHour.getJSONArray("results");
-					JSONArray dayResults = accountsJSONDay.getJSONArray("results");
-					JSONArray weekResults = accountsJSONWeek.getJSONArray("results");
-					JSONArray monthResults = accountsJSONMonth.getJSONArray("results");
-
-				%>
+				var hourDataOverview = <%= accountHourDataOverview %>
+				var dayDataOverview = <%= accountDayDataOverview %>
+				var weekDataOverview = <%= accountWeekDataOverview %>
+				var monthDataOverview = <%= accountMonthDataOverview %>
 				
-				
-				var hourData = 
-					[ 
-					 	<%  if(hourResults != null && hourResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < hourResults.length(); i++)
-					 			{
-					 				JSONObject element = hourResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var hourDataOverview = 
-					[ 
-						<%  if(hourResults != null && hourResults.length() > 0)
-						{
-							
-							for(int i = 0; i < hourResults.length(); i++)
-							{
-								JSONObject element = hourResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				
-				var dayData = 
-					[ 
-					 	<%  if(dayResults != null && dayResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < dayResults.length(); i++)
-					 			{
-					 				JSONObject element = dayResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var dayDataOverview = 
-					[ 
-						<%  if(dayResults != null && dayResults.length() > 0)
-						{
-							
-							for(int i = 0; i < dayResults.length(); i++)
-							{
-								JSONObject element = dayResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				var weekData = 
-					[ 
-					 	<%  if(weekResults != null && weekResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < weekResults.length(); i++)
-					 			{
-					 				JSONObject element = weekResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var weekDataOverview = 
-					[ 
-						<%  if(weekResults != null && weekResults.length() > 0)
-						{
-							
-							for(int i = 0; i < weekResults.length(); i++)
-							{
-								JSONObject element = weekResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				var monthData = 
-					[ 
-					 	<%  if(monthResults != null && monthResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < monthResults.length(); i++)
-					 			{
-					 				JSONObject element = monthResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var monthDataOverview = 
-					[ 
-						<%  if(monthResults != null && monthResults.length() > 0)
-						{
-							
-							for(int i = 0; i < monthResults.length(); i++)
-							{
-								JSONObject element = monthResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				
-				var aWeeklyData = 
-					[
-					<%  if(weekResults != null && weekResults.length() > 0)
-						{
-							
-							for(int i = 0; i < weekResults.length(); i++)
-							{
-								JSONObject element = weekResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-								
-								if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							
-					%>					 	
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("followers") %>
-							],	               						
-						<% 
-									}
-								}
-							}
-						}
-								%>
-					 
-	                ];
-				
-				var ticks = [];
-			
-				
-				for (var i = 0; i < aWeeklyData.length; i++) 
-				{
-				 	ticks.push(aWeeklyData[i][0]);
-				}
+				var ticks = <%= accountWeekTicks %>			
 							
 				
 				// helper for returning the weekends in a period
@@ -1135,8 +744,6 @@ public JSONObject getClicksTimelineMonth(String searchID)
 			            display: 'block'});
 			    }				 
 			});
-			
-			<% } %>
 		
 		</script>     	
 		
@@ -1148,385 +755,19 @@ public JSONObject getClicksTimelineMonth(String searchID)
 			$(function() 
 			{
 				
-				<% 
-				JSONObject linksJSONHour = getClicksTimelineHour(request.getParameter("searchID"));
-				JSONObject linksJSONDay = getClicksTimelineDay(request.getParameter("searchID"));
-				JSONObject linksJSONWeek = getClicksTimelineWeek(request.getParameter("searchID"));
-				JSONObject linksJSONMonth = getClicksTimelineMonth(request.getParameter("searchID"));
+				var hourData = <%= linkHourData %>
+				var dayData = <%= linkDayData %>
+				var weekData = <%= linkWeekData %>
+				var monthData = <%= linkMonthData %>
 				
-				JSONArray hourResults = linksJSONHour.getJSONArray("results");
-				JSONArray dayResults = linksJSONDay.getJSONArray("results");
-				JSONArray weekResults = linksJSONWeek.getJSONArray("results");
-				JSONArray monthResults = linksJSONMonth.getJSONArray("results");
-
-				%>
+				var hourDataOverview = <%= linkHourDataOverview %>
+				var dayDataOverview = <%= linkDayDataOverview %>
+				var weekDataOverview = <%= linkWeekDataOverview %>
+				var monthDataOverview = <%= linkMonthDataOverview %>
 				
-				
-				var hourData = 
-					[ 
-					 	<%  if(hourResults != null && hourResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < hourResults.length(); i++)
-					 			{
-					 				JSONObject element = hourResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var hourDataOverview = 
-					[ 
-						<%  if(hourResults != null && hourResults.length() > 0)
-						{
-							
-							for(int i = 0; i < hourResults.length(); i++)
-							{
-								JSONObject element = hourResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
+				var ticks = <%= linkWeekTicks %>	
 				
 				
-				var dayData = 
-					[ 
-					 	<%  if(dayResults != null && dayResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < dayResults.length(); i++)
-					 			{
-					 				JSONObject element = dayResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var dayDataOverview = 
-					[ 
-						<%  if(dayResults != null && dayResults.length() > 0)
-						{
-							
-							for(int i = 0; i < dayResults.length(); i++)
-							{
-								JSONObject element = dayResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				var weekData = 
-					[ 
-					 	<%  if(weekResults != null && weekResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < weekResults.length(); i++)
-					 			{
-					 				JSONObject element = weekResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var weekDataOverview = 
-					[ 
-						<%  if(weekResults != null && weekResults.length() > 0)
-						{
-							
-							for(int i = 0; i < weekResults.length(); i++)
-							{
-								JSONObject element = weekResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				var monthData = 
-					[ 
-					 	<%  if(monthResults != null && monthResults.length() > 0)
-					 		{
-					 			
-					 			for(int i = 0; i < monthResults.length(); i++)
-					 			{
-					 				JSONObject element = monthResults.getJSONObject(i);
-					 				String label = element.getString("label");
-					 				JSONArray data = element.getJSONArray("data");
-					 	%>
-		                { 
-		           	    	data: 
-		           	    	[	               					   
-		               			<%  if(data != null && data.length() > 0)
-		               				{
-		               					for(int j = 0; j < data.length(); j++) 
-		               					{ 
-		               						
-		               						JSONObject dataElement = data.getJSONObject(j);
-		               			%>	
-		               			
-		               			[
-		               				<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-		               			],	               						
-		               			<%
-		               					}
-		               				}
-		               			
-		               			%>
-		                     ], 
-		            	     label: "<%= label %>" 
-		                },
-		                
-		                <%
-               					}
-               				}
-               			
-               			%>
-		            ];
-				
-				var monthDataOverview = 
-					[ 
-						<%  if(monthResults != null && monthResults.length() > 0)
-						{
-							
-							for(int i = 0; i < monthResults.length(); i++)
-							{
-								JSONObject element = monthResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-						%>
-						{ 
-							data: 
-							[	               					   
-								<%  if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							%>	
-							
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-							],	               						
-							<%
-									}
-								}
-							
-							%>
-						], 
-						},
-						
-						<%
-							}
-						}
-						
-						%>
-		            ];
-				
-				
-				var lWeeklyData = 
-					[
-					<%  if(weekResults != null && weekResults.length() > 0)
-						{
-							
-							for(int i = 0; i < weekResults.length(); i++)
-							{
-								JSONObject element = weekResults.getJSONObject(i);
-								String label = element.getString("label");
-								JSONArray data = element.getJSONArray("data");
-								
-								if(data != null && data.length() > 0)
-								{
-									for(int j = 0; j < data.length(); j++) 
-									{ 
-										
-										JSONObject dataElement = data.getJSONObject(j);
-							
-					%>					 	
-							[
-								<%= dataElement.getLong("mills") + (60 * 60 * 2000) %>, <%= dataElement.getInt("clicks") %>
-							],	               						
-						<% 
-									}
-								}
-							}
-						}
-								%>
-					 
-	                ];
-				
-				var ticks = [];
-			
-				
-				for (var i = 0; i < lWeeklyData.length; i++) 
-				{
-				 	ticks.push(lWeeklyData[i][0]);
-				}
-							
 				
 				// helper for returning the weekends in a period
 

@@ -66,15 +66,15 @@ public class TwitterSearch {
 	@NotNull
 	private SearchTypeEnum type;
 
-	@Column(name = "loading")
+	@Column(name = "loading", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean loading = true;
 
-	@Column(name = "deleted")
+	@Column(name = "deleted", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean deleted = false;
 
-	@Column(name = "failed")
+	@Column(name = "failed", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean failed = false;
 

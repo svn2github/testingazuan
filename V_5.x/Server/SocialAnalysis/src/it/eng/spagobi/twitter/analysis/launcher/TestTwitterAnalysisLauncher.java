@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.twitter.analysis.launcher;
 
-import it.eng.spagobi.twitter.analysis.cache.DaoService;
-import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
-import it.eng.spagobi.twitter.analysis.enums.SearchTypeEnum;
+import it.eng.spagobi.utilities.assertion.Assert;
 
-import java.util.GregorianCalendar;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author Marco Cortella (marco.cortella@eng.it), Giorgio Federici (giorgio.federici@eng.it)
@@ -46,15 +45,33 @@ public class TestTwitterAnalysisLauncher {
 		// tipologia di ricerca (magari prendendo argomenti dagli args)
 		// String html = "<a href=\"http://www.techwars.io\" rel=\"nofollow\">TechWars</a>";
 		// System.out.println(html.replaceAll("<.*?>", ""));
-		TwitterSearch twitterSearch = new TwitterSearch();
-		twitterSearch.setLabel("Hibernate4");
-		twitterSearch.setKeywords("spagobi");
-		twitterSearch.setCreationDate(GregorianCalendar.getInstance());
-		twitterSearch.setType(SearchTypeEnum.SEARCHAPI);
-		twitterSearch.setLastActivationTime(GregorianCalendar.getInstance());
+		// TwitterSearch twitterSearch = new TwitterSearch();
+		// twitterSearch.setLabel("Hibernate4");
+		// twitterSearch.setKeywords("spagobi");
+		// twitterSearch.setCreationDate(GregorianCalendar.getInstance());
+		// twitterSearch.setType(SearchTypeEnum.SEARCHAPI);
+		// twitterSearch.setLastActivationTime(GregorianCalendar.getInstance());
+		//
+		// DaoService dao = new DaoService();
+		// TwitterSearch insertedSearch = (TwitterSearch) dao.create(twitterSearch);
+		// insertedSearch.toString();
 
-		DaoService dao = new DaoService();
-		TwitterSearch insertedSearch = (TwitterSearch) dao.create(twitterSearch);
-		insertedSearch.toString();
+		try {
+			Properties bitlyProp = new Properties();
+
+			String bitlyFile = "bitly.properties";
+
+			InputStream inputStream = TestTwitterAnalysisLauncher.class.getClassLoader().getResourceAsStream(bitlyFile);
+
+			bitlyProp.load(inputStream);
+
+			Assert.assertNotNull(bitlyProp, "Impossible to call bitly API without a valid bitly.properties file");
+
+			String accessToken = bitlyProp.getProperty("accessToken");
+			System.out.print("ACESSTOKEN: " + accessToken);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

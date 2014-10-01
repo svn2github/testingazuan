@@ -83,7 +83,7 @@ public class TwitterData {
 	@NotNull
 	private int retweetCount;
 
-	@Column(name = "is_retweet")
+	@Column(name = "is_retweet", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean isRetweet = false;
 
@@ -103,7 +103,7 @@ public class TwitterData {
 	@Length(max = 200)
 	private String urlCited;
 
-	@Column(name = "is_favorited")
+	@Column(name = "is_favorited", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean isFavorited = false;
 
@@ -127,13 +127,17 @@ public class TwitterData {
 	@Length(max = 45)
 	private String originalRTTweetId;
 
-	@Column(name = "is_sensitive")
+	@Column(name = "is_sensitive", columnDefinition = "boolean", length = 1)
 	@NotNull
 	private boolean isSensitive = false;
 
 	@Column(name = "media_count")
 	@NotNull
 	private int mediaCount;
+
+	@Column(name = "topics")
+	@Length(max = 1000)
+	private String topics;
 
 	public TwitterData() {
 
@@ -142,7 +146,7 @@ public class TwitterData {
 	public TwitterData(long tweetID, TwitterUser twitterUser, TwitterSearch twitterSearch, Calendar dateCreatedAt, Calendar timeCreatedAt, String sourceClient,
 			String tweetText, String tweetTextTranslated, double geoLatitude, double geoLongitude, String hashtags, String mentions, int retweetCount,
 			boolean isRetweet, String languageCode, String placeCountry, String placeName, String urlCited, boolean isFavorited, int favoritedCount,
-			String replyToScreenName, String replyToUserId, String replyToTweetId, String originalRTTweetId, boolean isSensitive, int mediaCount) {
+			String replyToScreenName, String replyToUserId, String replyToTweetId, String originalRTTweetId, boolean isSensitive, int mediaCount, String topics) {
 
 		this.tweetID = tweetID;
 		this.twitterUser = twitterUser;
@@ -170,6 +174,7 @@ public class TwitterData {
 		this.originalRTTweetId = originalRTTweetId;
 		this.isSensitive = isSensitive;
 		this.mediaCount = mediaCount;
+		this.topics = topics;
 	}
 
 	public TwitterData(boolean isRetweet, String replyToTweetId) {
@@ -400,6 +405,14 @@ public class TwitterData {
 		this.mediaCount = mediaCount;
 	}
 
+	public String getTopics() {
+		return topics;
+	}
+
+	public void setTopics(String topics) {
+		this.topics = topics;
+	}
+
 	@Override
 	public String toString() {
 		return "TwitterData [tweetID=" + tweetID + ", twitterUser=" + twitterUser + ", twitterSearch=" + twitterSearch + ", dateCreatedAt=" + dateCreatedAt
@@ -408,7 +421,7 @@ public class TwitterData {
 				+ ", retweetCount=" + retweetCount + ", isRetweet=" + isRetweet + ", languageCode=" + languageCode + ", placeCountry=" + placeCountry
 				+ ", placeName=" + placeName + ", urlCited=" + urlCited + ", isFavorited=" + isFavorited + ", favoritedCount=" + favoritedCount
 				+ ", replyToScreenName=" + replyToScreenName + ", replyToUserId=" + replyToUserId + ", replyToTweetId=" + replyToTweetId
-				+ ", originalRTTweetId=" + originalRTTweetId + ", isSensitive=" + isSensitive + ", mediaCount=" + mediaCount + "]";
+				+ ", originalRTTweetId=" + originalRTTweetId + ", isSensitive=" + isSensitive + ", mediaCount=" + mediaCount + ", topics=" + topics + "]";
 	}
 
 }

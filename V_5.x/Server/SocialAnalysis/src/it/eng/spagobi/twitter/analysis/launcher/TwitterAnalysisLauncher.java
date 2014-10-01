@@ -438,15 +438,17 @@ public class TwitterAnalysisLauncher {
 
 	}
 
-	public void removeFailedSearch() {
+	public void updateFailedSearch() {
 
-		logger.debug("Method removeFailedSearch(): Start");
+		logger.debug("Method updateFailedSearch(): Start");
 
 		this.twitterSearch = this.cache.findTwitterSearch(this.twitterSearch.getSearchID());
 
-		this.cache.deleteSearch(twitterSearch);
+		this.twitterSearch.setLoading(false);
 
-		logger.debug("Method removeFailedSearch(): End");
+		this.cache.updateTwitterSearch(twitterSearch);
+
+		logger.debug("Method updateFailedSearch(): End");
 
 	}
 

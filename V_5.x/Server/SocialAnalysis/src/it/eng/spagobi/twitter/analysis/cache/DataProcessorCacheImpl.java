@@ -169,7 +169,7 @@ public class DataProcessorCacheImpl implements IDataProcessorCache {
 
 		Assert.assertNotNull(this.daoService, "Method getDocuments(): Impossible to get documents without a valid DaoService");
 
-		String query = "select new TwitterMonitorScheduler(tms.documents, tms.creationTime, tms.lastActivationTime) from TwitterMonitorScheduler tms where tms.twitterSearch.searchID = ?";
+		String query = "from TwitterMonitorScheduler tms where tms.twitterSearch.searchID = ?";
 
 		TwitterMonitorScheduler result = daoService.singleResultQuery(query, Long.parseLong(searchID));
 
@@ -319,7 +319,7 @@ public class DataProcessorCacheImpl implements IDataProcessorCache {
 
 		Assert.assertNotNull(this.daoService, "Method getLinksToMonitorInfo(): Impossible to get link info without a valid DaoService");
 
-		String query = "SELECT new TwitterLinkToMonitor(tl.clicksCount, tl.timestamp) from TwitterLinkToMonitor tl where tl.twitterSearch.searchID = ? and tl.link = ? order by tl.timestamp asc";
+		String query = "SELECT new TwitterLinkToMonitor(tl.longUrl, tl.clicksCount, tl.timestamp) from TwitterLinkToMonitor tl where tl.twitterSearch.searchID = ? and tl.link = ? order by tl.timestamp asc";
 
 		List<TwitterLinkToMonitor> linkInfo = daoService.listFromQuery(query, Long.parseLong(searchID), link);
 
@@ -406,6 +406,102 @@ public class DataProcessorCacheImpl implements IDataProcessorCache {
 
 		logger.debug("Method getTopTweetsRecentOrder(): End");
 		return twitterDatas;
+
+	}
+
+	@Override
+	public Calendar getMinLinksTime(String searchID) {
+
+		logger.debug("Method getMinLinksTime(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getMinLinksTime(): Impossible to get min links time without a valid DaoService");
+
+		String query = "select links.timestamp from TwitterLinkToMonitor links where links.twitterSearch.searchID = ? order by links.timestamp ASC";
+
+		List<Calendar> dates = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		if (dates != null && dates.size() > 0) {
+
+			logger.debug("Method getMinLinksTime(): End");
+			return dates.get(0);
+
+		} else {
+
+			logger.debug("Method getMinLinksTime(): End");
+			return null;
+		}
+
+	}
+
+	@Override
+	public Calendar getMaxLinksTime(String searchID) {
+
+		logger.debug("Method getMaxLinksTime(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getMaxLinksTime(): Impossible to get max links time without a valid DaoService");
+
+		String query = "select links.timestamp from TwitterLinkToMonitor links where links.twitterSearch.searchID = ? order by links.timestamp DESC";
+
+		List<Calendar> dates = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		if (dates != null && dates.size() > 0) {
+
+			logger.debug("Method getMaxLinksTime(): End");
+			return dates.get(0);
+
+		} else {
+
+			logger.debug("Method getMaxLinksTime(): End");
+			return null;
+		}
+
+	}
+
+	@Override
+	public Calendar getMinAccountsTime(String searchID) {
+
+		logger.debug("Method getMinAccountsTime(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getMinAccountsTime(): Impossible to get min accounts time without a valid DaoService");
+
+		String query = "select accounts.timestamp from TwitterAccountToMonitor accounts where accounts.twitterSearch.searchID = ? order by accounts.timestamp ASC";
+
+		List<Calendar> dates = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		if (dates != null && dates.size() > 0) {
+
+			logger.debug("Method getMinAccountsTime(): End");
+			return dates.get(0);
+
+		} else {
+
+			logger.debug("Method getMinAccountsTime(): End");
+			return null;
+		}
+
+	}
+
+	@Override
+	public Calendar getMaxAccountsTime(String searchID) {
+
+		logger.debug("Method getMaxAccountsTime(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getMaxAccountsTime(): Impossible to get max links time without a valid DaoService");
+
+		String query = "select accounts.timestamp from TwitterAccountToMonitor accounts where accounts.twitterSearch.searchID = ? order by accounts.timestamp DESC";
+
+		List<Calendar> dates = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		if (dates != null && dates.size() > 0) {
+
+			logger.debug("Method getMaxAccountsTime(): End");
+			return dates.get(0);
+
+		} else {
+
+			logger.debug("Method getMaxAccountsTime(): End");
+			return null;
+		}
 
 	}
 

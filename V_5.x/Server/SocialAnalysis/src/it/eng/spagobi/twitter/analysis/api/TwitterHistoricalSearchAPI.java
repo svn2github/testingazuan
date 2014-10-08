@@ -5,6 +5,8 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.twitter.analysis.api;
 
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.twitter.analysis.entities.TwitterMonitorScheduler;
 import it.eng.spagobi.twitter.analysis.entities.TwitterSearch;
 import it.eng.spagobi.twitter.analysis.entities.TwitterSearchScheduler;
@@ -16,10 +18,13 @@ import it.eng.spagobi.twitter.analysis.launcher.TwitterAnalysisLauncher;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -243,7 +248,12 @@ public class TwitterHistoricalSearchAPI {
 	// Get the list of all Twitter Search
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getListSearch(@Context HttpServletRequest req) {
+	public String getListSearch(@Context HttpServletRequest req) throws NamingException {
+
+		HttpSession httpSession = req.getSession();
+		UserProfile userProfile = (UserProfile) req.getSession().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		UserProfile userProfile1 = (UserProfile) req.getServletContext().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		Enumeration<String> test = req.getParameterNames();
 
 		TwitterAnalysisLauncher launcher = new TwitterAnalysisLauncher();
 
@@ -262,7 +272,7 @@ public class TwitterHistoricalSearchAPI {
 			}
 		}
 
-		logger.debug("GET Result: " + jsonArray.toString());
+		// logger.debug("GET Result: " + jsonArray.toString());
 
 		return jsonArray.toString();
 
@@ -342,11 +352,11 @@ public class TwitterHistoricalSearchAPI {
 		twitterSearch.setSearchID(Long.parseLong(searchID));
 
 		TwitterAnalysisLauncher twitterAnalysisLauncher = new TwitterAnalysisLauncher(twitterSearch);
-		twitterAnalysisLauncher.updateFailedSearch();
+		String label = twitterAnalysisLauncher.updateFailedSearch();
 
 		logger.debug("Method updateFailedSearch(): End");
 
-		return "Historical failed search " + searchID + " removed";
+		return "Historical failed search '" + label + "' updated. Partial results loaded";
 	}
 
 	private boolean monitorFrequencyValidation(String value, String type) {

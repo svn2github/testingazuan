@@ -209,7 +209,7 @@ public class TwitterResourcesTimelineDataProcessor {
 
 					Calendar roundedTime = roundTime(timeFilter, timestampCalendar);
 
-					long time = roundedTime.getTimeInMillis() + (CONST_TIMEZONE);
+					long time = roundedTime.getTimeInMillis();
 
 					if (linkClicks.containsKey(time)) {
 
@@ -236,7 +236,7 @@ public class TwitterResourcesTimelineDataProcessor {
 						newMinTime.setTimeInMillis(minTime.getTimeInMillis());
 
 						// actual min followers value
-						int lowerClicks = linkClicks.get(newMinTime.getTimeInMillis() + (CONST_TIMEZONE));
+						int lowerClicks = linkClicks.get(newMinTime.getTimeInMillis());
 
 						if (timeFilter.equalsIgnoreCase("hours")) {
 
@@ -333,7 +333,7 @@ public class TwitterResourcesTimelineDataProcessor {
 
 		while (minTime.compareTo(maxTime) <= 0) {
 
-			baseMap.put(minTime.getTimeInMillis() + (CONST_TIMEZONE), -1);
+			baseMap.put(minTime.getTimeInMillis(), -1);
 
 			if (filter.equalsIgnoreCase("hours")) {
 
@@ -397,6 +397,9 @@ public class TwitterResourcesTimelineDataProcessor {
 
 			}
 
+			long roundTimeWithOffset = tempTime.getTimeInMillis() + (CONST_TIMEZONE);
+			tempTime.setTimeInMillis(roundTimeWithOffset);
+
 			return tempTime;
 		} else {
 			return GregorianCalendar.getInstance();
@@ -430,6 +433,17 @@ public class TwitterResourcesTimelineDataProcessor {
 
 		} catch (JSONException e) {
 			throw new SpagoBIRuntimeException("Method createWeekTicks(): Impossible to create corret ticks parsing JSON data ", e);
+		}
+
+	}
+
+	public String hideHours(String searchID) {
+		String monitoringType = new TwitterResourcesTimelineDataProcessor().getVisualizationType(searchID);
+
+		if (monitoringType.equalsIgnoreCase("Hour")) {
+			return "";
+		} else {
+			return "display:none;";
 		}
 
 	}

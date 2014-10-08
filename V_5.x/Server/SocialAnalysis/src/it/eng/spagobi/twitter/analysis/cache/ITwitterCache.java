@@ -29,6 +29,8 @@ public interface ITwitterCache {
 
 	public void updateTwitterSearch(TwitterSearch twitterSearch);
 
+	public void updateTwitterData(TwitterData twitterData);
+
 	public List<TwitterSearch> getTwitterSearchList(SearchTypeEnum searchType);
 
 	public void deleteSearch(TwitterSearch twitterSearch);
@@ -69,5 +71,7 @@ public interface ITwitterCache {
 	public TwitterSearch refreshTwitterSearch(TwitterSearch twitterSearch);
 
 	public void updateTwitterUser(TwitterUser twitterUser);
+
+	public List<TwitterSearch> getHistoricalLoadingSearches();
 
 }

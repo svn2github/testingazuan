@@ -47,40 +47,44 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 	initComponent: function() {
 		Ext.apply(this, {
 			columns: [
-		        {
-		            text: 'ID',
-		            width: 40,
-		            dataIndex: 'searchID'
-		        },
+//		        {
+//		            text: 'ID',
+//		            width: 40,
+//		            dataIndex: 'searchID'
+//		        },
 		        {
 		            text: 'Label',
-		            width: 200,
+//		            width: 200,
 		            dataIndex: 'label'
 		        },
 		        {
 		            text: 'Keywords',
-		            width: 100,
+//		            width: 100,
+		            flex: 1,
 		            dataIndex: 'keywords'
 		        },
 		        {
 		            text: 'Last Activation',
-		            width: 100,
+//		            width: 100,
 		            dataIndex: 'lastActivationTime',
 		            renderer : Ext.util.Format.dateRenderer('m/d/Y H:i')
 		        },
 		        {
 		            text: 'Accounts to monitor',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'accounts',
 		        },
 		        {
 		            text: 'Resources to monitor',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'links',
 		        },
 		        {
 		            text: 'Documents',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'documents',
 		        },
 //		        {
@@ -144,7 +148,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		        {
 		        	xtype: 'actioncolumn',
 		            text: 'Analyse',
-		            width: 100,
+//		            width: 100,
 		            dataIndex: 'loading',
 		            align: 'center',
 		            getClass: function(value, metadata, record)
@@ -177,8 +181,8 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 		        },
 		        {
 		        	xtype: 'actioncolumn',
-		            text: 'Schedulers',
-		            width: 100,
+		            text: 'Scheduler',
+//		            width: 100,
 		            align: 'center',
 		            isDisabled: function(view, rowIndex, colIndex, item, record)
 		            {
@@ -208,25 +212,26 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
 			            },
 		                tooltip: 'Stop Historic Search Scheduler',
 		                handler:  this.twitterStopSearchScheduler
-		            },
-		            {
-		            	//monitor scheduler
-		            	getClass: function(value, metadata, record)
-			            {
-		            		
-			            	var monitorScheduler = record.get('hasMonitorScheduler');
-
-			            	if(monitorScheduler)
-			            	{
-			            	    return 'x-scheduler-stop-enabled'; 
-			            	} else {
-			            	    return 'x-scheduler-stop-disabled';               
-			            	}
-			            },
-		                tooltip: 'Stop Monitor Resources Scheduler',
-//		                handler:  this.twitterStopSearchScheduler
-		                
-		            }],
+		            }
+//		            {
+//		            	//monitor scheduler
+//		            	getClass: function(value, metadata, record)
+//			            {
+//		            		
+//			            	var monitorScheduler = record.get('hasMonitorScheduler');
+//
+//			            	if(monitorScheduler)
+//			            	{
+//			            	    return 'x-scheduler-stop-enabled'; 
+//			            	} else {
+//			            	    return 'x-scheduler-stop-disabled';               
+//			            	}
+//			            },
+//		                tooltip: 'Stop Monitor Resources Scheduler',
+////		                handler:  this.twitterStopSearchScheduler
+//		                
+//		            }
+		            ],
 		           
 		        }],
 		}),
@@ -248,23 +253,27 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchHistoricalGrid',
         						title:'Alert',
         						msg: 'Search ' + labelSearch + ' failed cause of connection problems. Loading partial results..',
         						buttons: Ext.Msg.OK,
-        						icon: Ext.Msg.WARNING		        						 
-        					});
-        					
-        					Ext.Ajax.request({
-								url : 'restful-services/historicalSearch/updateFailedSearch',
-								method:'POST', 
-								params : {
-									searchID: Ext.encode(record.get('searchID'))
-									},
-									scope : this,
-									success: function(response)
-      	                           {
-      	                        	    var text = response.responseText;
-      	                        	 	Ext.Msg.alert('Success', text);
-										store.load();
-     	                           }
-							});
+        						icon: Ext.Msg.WARNING,
+        						fn: function(btn, text){
+                                    if (btn == 'ok'){
+                                    	Ext.Ajax.request({
+            								url : 'restful-services/historicalSearch/updateFailedSearch',
+            								method:'POST', 
+            								params : {
+            									searchID: Ext.encode(record.get('searchID'))
+            									},
+            									scope : this,
+            									success: function(response)
+                  	                           {
+                  	                        	    var text = response.responseText;
+                  	                        	 	Ext.Msg.alert('Success', text);
+            										store.load();
+                 	                           }
+            							});
+                                    }
+                               }
+        						
+        					});        					
     					}
     				}		        		
         		}

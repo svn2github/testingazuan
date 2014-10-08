@@ -152,7 +152,7 @@ div#navigation .navtabs li#activelink a
 .generalInfo_main
 {
 	float:left;
-	width: 100%;	
+	width: 90%;	
 	margin-left: 50px;
 }
 
@@ -222,7 +222,6 @@ div#hormenu ul
 
 div#hormenu li
 {
-    width:100px;
     margin: 0;
     padding: 0;
 }
@@ -230,10 +229,11 @@ div#hormenu li
 div#hormenu span
 {
     background-color: #d0d0d0;
-    border-radius: 5px;
+/*     border-radius: 5px; */
 	padding: 3px 5px 3px 5px;
 	margin-left: 5px;
 	cursor: default;
+	font-weight: bold;
 }
 
 div#hormenu a
@@ -351,8 +351,13 @@ div#hormenu li li a
 {
 	font-size: 25px;
 	font-weight: bold;
-	margin-left: 15px;
-	margin-top: 10px;
+/* 	margin-left: 15px; */
+/* 	margin-top: 10px; */
+	background-color: #0084B4;
+	padding-left: 15px;
+	padding-top: 10px;
+	color: #ffffff;
+	padding-bottom: 10px;
 }
 
 
@@ -381,9 +386,158 @@ div#hormenu li li a
 {
 	font-size: 25px;
 	font-weight: bold;
-	margin-left: 15px;
-	margin-top: 10px;
+/* 	margin-left: 15px; */
+/* 	margin-top: 10px; */
+	background-color: #0084B4;
+	padding-left: 15px;
+	padding-top: 10px;
+	color: #ffffff;
+	padding-bottom: 10px;
 }
+
+
+.mentionsCloudMain_box
+{
+	border: 1px solid #909090;
+	display:block; 
+	width:500px; 
+	height:450px; 
+	float:left;
+	margin-top: 50px;
+	margin-left: 30px;
+}
+
+.mentionsCloud_box
+{
+	width: 455px;
+	height: 360px;
+	border: 1px solid #ccc;  
+	background-color: #FFFFFF;
+	margin-left: 22px;
+}
+
+.mentionsCloudTitle_box
+{
+	font-size: 25px;
+	font-weight: bold;
+/* 	margin-left: 15px; */
+/* 	margin-top: 10px; */
+	background-color: #0084B4;
+	padding-left: 15px;
+	padding-top: 10px;
+	color: #ffffff;
+	padding-bottom: 10px;
+}
+
+.usersGraphMain_box
+{
+	border: 1px solid #909090;
+	display:block; 
+	width:90%; 
+	height:500px; 
+	float:left;
+	margin-top: 50px;
+	margin-left: 30px;
+	overflow: auto;
+}
+
+.usersGraphTitle_box
+{
+	font-size: 25px;
+	font-weight: bold;
+/* 	margin-left: 15px; */
+/* 	margin-top: 10px; */
+	background-color: #0084B4;
+	padding-left: 15px;
+	padding-top: 10px;
+	color: #ffffff;
+	padding-bottom: 10px;
+}
+
+/* .link { */
+/*   fill: none; */
+/*   stroke: #000000; */
+/*   stroke-width: 1.5px; */
+/* } */
+
+.node circle {
+	stroke: #0084B4; 
+	stroke-width: 1.5px;
+}
+
+/* .node { */
+/*   fill: #000; */
+/* } */
+
+.cursor {
+  fill: none;
+  stroke: brown;
+  pointer-events: none;
+}
+
+.link {
+  stroke: #999;
+}
+
+rect {
+  fill: none;
+  pointer-events: all;
+}
+
+
+
+
+.usersTweetLinkMapMain_box
+{
+	border: 1px solid #909090;
+	display:block; 
+	width:90%; 
+	height:600px; 
+	float:left;
+	margin-top: 50px;
+	margin-left: 30px;
+	overflow: auto;
+}
+
+.usersTweetLinkMapTitle_box
+{
+	font-size: 25px;
+	font-weight: bold;
+/* 	margin-left: 15px; */
+/* 	margin-top: 10px; */
+	background-color: #0084B4;
+	padding-left: 15px;
+	padding-top: 10px;
+	color: #ffffff;
+	padding-bottom: 10px;
+}
+
+.country {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: .5px;
+  stroke-linejoin: round;
+}
+
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: .5px;
+}
+
+.graticule.outline {
+  stroke: #333;
+  stroke-opacity: 1;
+  stroke-width: 1.5px;
+}
+
+#usersTweetLinkMap circle {
+  fill: steelblue;
+  fill-opacity: .8;
+  stroke: #fff;
+}
+
 
 
 /******************* DISTRIBUTION TAB **************************************************/
@@ -393,11 +547,12 @@ div#hormenu li li a
 {
 	border: 1px solid #909090;
 	display:block; 
-	width:80%; 
+	width:90%; 
 	height:450px; 
 	float:left;
 	margin-top: 50px;
 	margin-left: 30px;
+	margin-bottom: 50px;
 }
 
 .worldMap_box
@@ -417,6 +572,10 @@ div#hormenu li li a
 	margin-top: 10px;
 }
 
+.map_info
+{
+	vertical-align: top;
+}
 
 /********************* IMPACTS TAB **********************************************************/
 
@@ -436,7 +595,6 @@ div#hormenu-a ul
 
 div#hormenu-a li
 {
-    width:100px;
     margin: 0;
     padding: 0;
 }
@@ -444,10 +602,11 @@ div#hormenu-a li
 div#hormenu-a span
 {
     background-color: #d0d0d0;
-    border-radius: 5px;
+/*     border-radius: 5px; */
 	padding: 5px 5px 5px 5px;
 	margin-left: 5px;
 	cursor: default;
+	font-weight: bold;
 }
 
 div#hormenu-a a
@@ -512,7 +671,6 @@ div#hormenu-l ul
 
 div#hormenu-l li
 {
-    width:100px;
     margin: 0;
     padding: 0;
 }
@@ -520,10 +678,11 @@ div#hormenu-l li
 div#hormenu-l span
 {
     background-color: #d0d0d0;
-    border-radius: 5px;
+/*     border-radius: 5px; */
 	padding: 5px 5px 5px 5px;
 	margin-left: 5px;
 	cursor: default;
+	font-weight: bold;
 }
 
 div#hormenu-l a

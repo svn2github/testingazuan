@@ -35,6 +35,8 @@
 	
 	TwitterLocationMapDataProcessor locationMapDP = new TwitterLocationMapDataProcessor();
 	JSONObject mapData = locationMapDP.locationTracker(searchId);
+	
+	String ratioInfo = locationMapDP.getRatioInfo(searchId);
 	 
 %>
 
@@ -51,9 +53,11 @@
 	<link rel="stylesheet" type="text/css" href="css/twitter.css" />
 	<link rel="stylesheet" type="text/css" href="css/jquery-jvectormap-1.2.2.css" media="screen"/>
 	<link rel="stylesheet" type="text/css" href="css/socialAnalysis.css" >
+		<link rel="stylesheet" type="text/css" href="css/jquery.qtip.css" />
 	<script src="js/lib/others/jquery-2.1.1.min.js"></script>
 	<script src="js/lib/others/jquery-jvectormap-1.2.2.min.js"></script>
 	<script src="js/lib/others/jquery-jvectormap-world-mill-en.js"></script>
+	<script type="text/javascript" src="js/lib/others/jquery.qtip.js"></script>
 
 	
 	<title>Twitter Analysis</title>
@@ -74,27 +78,35 @@
 	    <li class="navtabs" style="float:right;"><a href="index.jsp">Search</a></li>
 	</ul>
         		
+        		
+        		
 	<div id="locationbox" class="blank_box worldMapMain_box">
-			
+	
+	
+		
+<!-- 		<div id="key"></div> -->
+		
 		<div class="worldMapTitle_box">
 		
-			<span>Location Tweets</span>
+			<span>Location Tweets</span><img class="map_info" src="img/help_map.png" width="16" height="16"></img>
 		
 		</div>
 		
 		<br/>
 	
 		<div id="world-map" class="worldMap_box"></div>
+		
+		
 				
 	</div>
 			
-</div>        	
+</div>   
 			
 	 <script>
 			    $(function()
 			    {
 			    	var gdpData = <%= mapData %>;
-			      $('#world-map').vectorMap({
+			    	$('#world-map').vectorMap({
 			    	  map: 'world_mill_en',
 			    	  series: {
 			              regions: [{
@@ -109,8 +121,63 @@
 			                el.html(el.html()+' (# tweets - '+gdpData[code]+')');
 			            }
 			      });
+			      
+// 			      var mapObj = $('#world-map').vectorMap('get', 'mapObject');
+// 			      var steps = 4;
+// 			      for (var i = 0; i<=steps; i++) {
+// 			        var val = 400/steps*i;
+// 			        var color = mapObj.series.regions[0].scale.getValue(val);
+// 			          $('#key').append('<div style="background-color:' + color + ';">' + val + ' - ' + color + '</div>');
+// 			      }
 			    });
 		  </script>
+		  
+	
+	<script type="text/javascript">
+	
+			var t = "<%= ratioInfo %>";
+	
+			$('.map_info').each(function() 
+			{
+				
+				
+				$(this).qtip({
+    			content: 
+    			{
+        			text: t
+   				},
+   				position: 
+		   		{ 
+		   			corner: 
+		   			{ 
+		   				target: 'rightMiddle', 
+		   				tooltip: 'leftMiddle' 
+		   			}
+		   		},
+		   		show: 
+		   		{ 
+		   			solo: true, delay: 1 
+		   		}, 
+		   		hide: 
+		   		{ 
+		   			delay: 10 
+		   		}, 
+		   		style: 
+		   		{ 
+		   			classes: 'qtip-tipped',
+		   			tip: true, 
+		   			border: 
+		   			{ 
+		   				width: 0, 
+		   				radius: 4,
+		   			}, 
+		   			name: 'blue', 
+		   			width: 420 
+		   		} 
+				});
+			});
+
+	</script>
 		  		
 </body>
 </html>

@@ -71,4 +71,14 @@ public interface IDataProcessorCache {
 
 	public Calendar getMaxAccountsTime(String searchID);
 
+	public int getTotalUsersWithLocationCode(String searchID);
+
+	public List<TwitterUser> getUsersForSearchID(String searchID);
+
+	public List<String> getMentions(String searchID);
+
+	public List<TwitterData> getTweetsFromSearchId(String searchID);
+
+	public List<String> getDistinctUsersLocationCodes(String searchID);
+
 }

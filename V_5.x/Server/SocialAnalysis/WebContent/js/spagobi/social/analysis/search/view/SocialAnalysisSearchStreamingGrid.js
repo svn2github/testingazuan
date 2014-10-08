@@ -38,40 +38,44 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 	initComponent: function() {
 		Ext.apply(this, {
 			columns: [
-		        {
-		            text: 'ID',
-		            width: 40,
-		            dataIndex: 'searchID'
-		        },
+//		        {
+//		            text: 'ID',
+//		            width: 40,
+//		            dataIndex: 'searchID'
+//		        },
 		        {
 		            text: 'Label',
-		            width: 100,
+//		            width: 100,
 		            dataIndex: 'label'
 		        },
 		        {
 		            text: 'Keywords',
-		            width: 100,
+//		            width: 100,
+		            flex: 1,
 		            dataIndex: 'keywords'
 		        },
 		        {
 		            text: 'Last Activation',
-		            width: 100,
+//		            width: 100,
 		            dataIndex: 'lastActivationTime',
 		            renderer : Ext.util.Format.dateRenderer('m/d/Y H:i')
 		        },
 		        {
 		            text: 'Accounts to monitor',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'accounts',
 		        },
 		        {
 		            text: 'Resources to monitor',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'links',
 		        },
 		        {
 		            text: 'Documents',
-		            width: 200,
+//		            width: 200,
+		            flex: 1,
 		            dataIndex: 'documents',
 		        },
 		        {
@@ -210,7 +214,7 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 		        {
 		        	xtype: 'actioncolumn',
 		            text: 'Analyse',
-		            width: 100,
+//		            width: 100,
 		            dataIndex: 'loading',
 		            align: 'center',
 		            icon: 'img/show.png',
@@ -218,45 +222,6 @@ Ext.define('Sbi.social.analysis.search.view.SocialAnalysisSearchStreamingGrid', 
 	                    var rec = grid.getStore().getAt(rowIndex);
 		            	window.location.href = "summary.jsp?searchID="+rec.get('searchID');
 	                }
-		        },
-		        {
-		        	xtype: 'actioncolumn',
-		            text: 'Schedulers',
-		            width: 100,
-		            dataIndex: 'hasMonitorScheduler',
-		            align: 'center',
-		            isDisabled: function(view, rowIndex, colIndex, item, record)
-		            {
-		            	var searchLoading = record.get('loading');
-		            	if(!searchLoading)
-	            		{
-		            		return false;	            		
-	            		}
-		            	else
-	            		{
-		            		return true;
-	            		}
-		            },
-		            items: [
-		            {
-		            	//monitor scheduler
-		            	getClass: function(value, metadata, record)
-			            {
-		            		
-			            	var monitorScheduler = record.get('hasMonitorScheduler');
-
-			            	if(monitorScheduler)
-			            	{
-			            	    return 'x-scheduler-stop-enabled'; 
-			            	} else {
-			            	    return 'x-scheduler-stop-disabled';               
-			            	}
-			            },
-		                tooltip: 'Stop Monitor Resources Scheduler',
-//		                handler:  this.twitterStopSearchScheduler
-		                
-		            }],
-		           
 		        }
 		    ]}),
 		

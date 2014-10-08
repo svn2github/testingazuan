@@ -52,6 +52,8 @@
 	
 	String accountWeekTicks = tAccountsTimelineDP.getWeekTicks();
 	
+	String hideHoursAccounts = tAccountsTimelineDP.hideHours(searchId);
+	
 	
 	/*************** TIMELINE LINKS *****************************************************/
 	
@@ -69,6 +71,8 @@
 	String linkMonthDataOverview = tResourceTimelineDP.getMonthDataOverview();
 	
 	String linkWeekTicks = tResourceTimelineDP.getWeekTicks();
+	
+	String hideHoursLinks = tResourceTimelineDP.hideHours(searchId);
 	 
 %>
 
@@ -97,28 +101,6 @@
 </head>
 <body>
 
-<%!
-
-
-
-
-public String hideHours(String searchID)
-{
-	String monitoringType = new TwitterResourcesTimelineDataProcessor().getVisualizationType(searchID);
-	
-	if(monitoringType.equalsIgnoreCase("Hour"))
-	{
-		return "";
-	}
-	else
-	{
-		return "display:none;";
-	}	
-
-}	
-
-%>
-
 <div id="navigation">
 
 	<ul class="navtabs tabsStyle">
@@ -134,9 +116,11 @@ public String hideHours(String searchID)
 		
 		<div class="timeline_main">	
 		
+			<div id="main-graph-account"></div>
+		
 			<div class="demo-container" style="width: 100%; height: 60%;">
 				
-				<div style="float:right; margin-right: 30px;">
+				<div style="float:right;">
 					<div id="hormenu-a">
 						<ul> 
 							<li><span>View</span>
@@ -144,24 +128,29 @@ public String hideHours(String searchID)
 									<li><a id="months" style="cursor:pointer;">Months</a>							
 						          	<li><a id="weeks" style="cursor:pointer;">Weeks</a></li>
 						          	<li><a id="days" style="cursor:pointer;">Days</a></li>
-						          	<li><a id="hours" style="cursor:pointer; <%= hideHours(request.getParameter("searchID")) %>">Hours</a></li>
+						          	<li><a id="hours" style="cursor:pointer; <%= hideHoursAccounts %>">Hours</a></li>
 						     	</ul>
 						 	</li>
 					</div>
-					<div id="main-graph-account" style="float:right; margin-top:30px;"></div>
+					
 				</div>
-				<div id="placeholder-account"  style="width: 85%;" class="demo-placeholder"></div>
+				<div id="placeholder-account"  style="width: 95%;" class="demo-placeholder"></div>
 			</div>
-		</div>
-		<div class="timeline_main">	
 			
 			<div class="demo-container" style="width: 100%; height: 40%">
 				<div id="overview-account" class="demo-placeholder-o"></div>
-			</div>		
+			</div>	
+			
+		</div>
+		
+		<div class="timeline_main">	
+		
+			<div id="main-graph-link"></div>
+				
 				
 			<div class="demo-container" style="width: 100%; height: 60%;">
 				
-				<div style="float:right; margin-right: 30px;">
+				<div style="float:right;">
 					<div id="hormenu-l">
 						<ul> 
 							<li><span>View</span>
@@ -169,13 +158,13 @@ public String hideHours(String searchID)
 									<li><a id="months-link" style="cursor:pointer;">Months</a>							
 						          	<li><a id="weeks-link" style="cursor:pointer;">Weeks</a></li>
 						          	<li><a id="days-link" style="cursor:pointer;">Days</a></li>
-						          	<li><a id="hours-link" style="cursor:pointer; <%= hideHours(request.getParameter("searchID")) %>">Hours</a></li>
+						          	<li><a id="hours-link" style="cursor:pointer; <%= hideHoursLinks %>">Hours</a></li>
 						     	</ul>
 						 	</li>
 					</div>
-					<div id="main-graph-link" style="float:right; margin-top:30px;"></div>
+					
 				</div>
-				<div id="placeholder-link"  style="width: 85%;" class="demo-placeholder"></div>
+				<div id="placeholder-link"  style="width: 95%;" class="demo-placeholder"></div>
 			</div>
 			
 			<div class="demo-container" style="width: 100%; height: 40%">

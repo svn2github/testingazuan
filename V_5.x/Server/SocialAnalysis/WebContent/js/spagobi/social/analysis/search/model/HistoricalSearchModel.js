@@ -37,7 +37,8 @@ Ext.define('Sbi.social.analysis.search.model.HistoricalSearchModel', {
 	        reader: {
 	            type: 'json',
 	            root: 'search'
-	        }
+	        },
+	       
 	    }    
 	
 });

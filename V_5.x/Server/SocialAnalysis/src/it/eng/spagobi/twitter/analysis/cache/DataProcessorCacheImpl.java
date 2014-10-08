@@ -57,7 +57,7 @@ public class DataProcessorCacheImpl implements IDataProcessorCache {
 
 		Assert.assertNotNull(this.daoService, "Method getTotalUsers(): Impossible to get total users without a valid DaoService");
 
-		String queryHQL = "select count(user.userID) from TwitterUser user, TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.twitterUser.userID = user.userID group by (user.username)";
+		String queryHQL = "select user.userID from TwitterUser user, TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.twitterUser.userID = user.userID group by (user.userID)";
 
 		int result = daoService.countQuery(queryHQL, Long.parseLong(searchID));
 
@@ -505,4 +505,84 @@ public class DataProcessorCacheImpl implements IDataProcessorCache {
 
 	}
 
+	@Override
+	public int getTotalUsersWithLocationCode(String searchID) {
+
+		logger.debug("Method getTotalUsersWithLocationCode(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getTotalUsersWithLocationCode(): Impossible to get total users without a valid DaoService");
+
+		String queryHQL = "select user from TwitterUser user, TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.twitterUser.userID = user.userID and user.locationCode != null and user.locationCode != '' group by (user.userID)";
+
+		int result = daoService.countQuery(queryHQL, Long.parseLong(searchID));
+
+		logger.debug("Method getTotalUsersWithLocationCode(): End");
+
+		return result;
+
+	}
+
+	@Override
+	public List<TwitterUser> getUsersForSearchID(String searchID) {
+
+		logger.debug("Method getUsersForSearchID(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getUsersForSearchID(): Impossible to get users without a valid DaoService");
+
+		String queryHQL = "select distinct user from TwitterUser user, TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.twitterUser.userID = user.userID group by (user.userID)";
+
+		List<TwitterUser> result = daoService.listFromQuery(queryHQL, Long.parseLong(searchID));
+
+		logger.debug("Method getUsersForSearchID(): End");
+
+		return result;
+
+	}
+
+	@Override
+	public List<String> getMentions(String searchID) {
+
+		logger.debug("Method getMentions(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getMentions(): Impossible to get mentions without a valid DaoService");
+
+		String query = "SELECT td.mentions from TwitterData td where td.twitterSearch.searchID = ?";
+
+		List<String> mentions = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		logger.debug("Method getMentions(): End");
+
+		return mentions;
+
+	}
+
+	@Override
+	public List<TwitterData> getTweetsFromSearchId(String searchID) {
+		logger.debug("Method getTweetsFromSearchId(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getTweetsFromSearchId(): Impossible to get mentions without a valid DaoService");
+
+		String query = "from TwitterData td where td.twitterSearch.searchID = ?";
+
+		List<TwitterData> tweets = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		logger.debug("Method getTweetsFromSearchId(): End");
+		return tweets;
+	}
+
+	@Override
+	public List<String> getDistinctUsersLocationCodes(String searchID) {
+		logger.debug("Method getDistinctUsersLocationCodes(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getDistinctUsersLocationCodes(): Impossible to get location codes without a valid DaoService");
+
+		String query = "SELECT distinct tu.locationCode from TwitterUser tu, TwitterData td where tu.userID = td.twitterUser.userID and td.twitterSearch.searchID = ?";
+
+		List<String> locationCodes = daoService.listFromQuery(query, Long.parseLong(searchID));
+
+		logger.debug("Method getDistinctUsersLocationCodes(): End");
+
+		return locationCodes;
+
+	}
 }

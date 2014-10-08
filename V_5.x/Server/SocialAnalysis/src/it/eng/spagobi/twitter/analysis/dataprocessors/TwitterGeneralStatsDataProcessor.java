@@ -7,11 +7,13 @@ package it.eng.spagobi.twitter.analysis.dataprocessors;
 
 import it.eng.spagobi.twitter.analysis.cache.DataProcessorCacheImpl;
 import it.eng.spagobi.twitter.analysis.cache.IDataProcessorCache;
+import it.eng.spagobi.twitter.analysis.entities.TwitterUser;
 import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -130,6 +132,32 @@ public class TwitterGeneralStatsDataProcessor {
 			return "N/A";
 
 		}
+	}
+
+	public int getReachMetric(String searchID) {
+
+		logger.debug("Method getReachMetric(): Start");
+
+		int reach = 0;
+		int followers = 0;
+
+		Assert.assertNotNull(searchID, "Impossibile execute getReachMetric() without a correct search ID");
+
+		List<TwitterUser> users = dpCache.getUsersForSearchID(searchID);
+
+		if (users != null) {
+			reach = reach + users.size();
+
+			for (TwitterUser user : users) {
+				followers = followers + user.getFollowersCount();
+			}
+		}
+
+		reach = reach + followers;
+
+		logger.debug("Method getReachMetric(): End");
+		return reach;
+
 	}
 
 }

@@ -72,6 +72,25 @@ public class TwitterLocationMapDataProcessor {
 
 	}
 
+	public String getRatioInfo(String searchID) {
+		logger.debug("Method getRatioInfo(): Start");
+
+		double result = 0;
+
+		int totalUsers = dpCache.getTotalUsers(searchID);
+		int totalUsersWithLocationCode = dpCache.getTotalUsersWithLocationCode(searchID);
+
+		if (totalUsers > 0) {
+			result = (100 * totalUsersWithLocationCode) / totalUsers;
+		}
+
+		int intResult = (int) result;
+
+		logger.debug("Method getRatioInfo(): End");
+		return "Location found for " + intResult + "% of twitter users";
+
+	}
+
 	private void initializeLocationMap(Map<String, Integer> locationMap) {
 		locationMap.put("AF", 0);
 		locationMap.put("AL", 0);

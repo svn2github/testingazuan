@@ -40,6 +40,7 @@
 	int totalUsers = tGeneralDP.totalUsersCounter(searchId);
 	String minDate = tGeneralDP.getMinDateSearch(searchId);
  	String maxDate = tGeneralDP.getMaxDateSearch(searchId);
+ 	int reach = tGeneralDP.getReachMetric(searchId);
 	
 
 	/*************** TIMELINE ***************************************************************/
@@ -132,6 +133,12 @@
 				<span class="generalInfo_infos" ><%= totalUsers %></span>
 				<br>
 				<span class="generalInfo_label">users</span>
+			</div>
+			
+			<div class="generalInfo_box">
+				<span class="generalInfo_infos" ><%= reach %></span>
+				<br>
+				<span class="generalInfo_label">reach</span>
 			</div>
 			
 			<div class="blank_box dateRange_box" style="float:left;">

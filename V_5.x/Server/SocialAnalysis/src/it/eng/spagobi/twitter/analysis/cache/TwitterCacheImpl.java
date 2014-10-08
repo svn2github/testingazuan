@@ -18,6 +18,8 @@ import it.eng.spagobi.twitter.analysis.pojos.TwitterMessageObject;
 import it.eng.spagobi.twitter.analysis.utilities.AnalysisUtility;
 import it.eng.spagobi.utilities.assertion.Assert;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -66,6 +68,20 @@ public class TwitterCacheImpl implements ITwitterCache {
 		this.daoService.update(twitterSearch);
 
 		logger.debug("Method updateTwitterSearch(): End");
+
+	}
+
+	@Override
+	public void updateTwitterData(TwitterData twitterData) {
+
+		logger.debug("Method updateTwitterData(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method updateTwitterData(): Impossible to update [ " + twitterData.getTweetID()
+				+ " ] without a valid DaoService");
+
+		this.daoService.update(twitterData);
+
+		logger.debug("Method updateTwitterData(): End");
 
 	}
 
@@ -119,6 +135,9 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 			String locationCode = AnalysisUtility.findCountryCodeFromUserLocation(twitterUser.getLocation(), twitterUser.getTimeZone());
 			twitterUser.setLocationCode(locationCode);
+			Calendar nowCalendar = GregorianCalendar.getInstance();
+			twitterUser.setStartDate(nowCalendar);
+			twitterUser.setEndDate(nowCalendar);
 
 			insertTwitterUser(twitterUser);
 
@@ -126,26 +145,28 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 			// user in DB, update twitter user
 
-			// twitterUserFromDB.setUsername(this.username);
-			// twitterUserFromDB.setDescription(this.description);
-			// twitterUserFromDB.setFollowersCount(this.followersCount);
-			// twitterUserFromDB.setProfileImgSrc(this.profileImgSrc);
-			// this.twitterUser.setLocation(this.location);
-			// twitterUserFromDB.setLanguageCode(this.userLanguageCode);
-			// twitterUserFromDB.setName(this.name);
-			// twitterUserFromDB.setTimeZone(this.timeZone);
-			// twitterUserFromDB.setTweetsCount(this.tweetsCount);
-			// twitterUserFromDB.setVerified(this.isVerified);
-			// this.twitterUser.setFollowingCount(this.followingCount);
-			// this.twitterUser.setUtcOffset(this.utcOffset);
-			// this.twitterUser.setGeoEnabled(this.isGeoEnabled);
-			// this.twitterUser.setListedCount(this.listedCount);
-			// this.twitterUser.setStartDate(GregorianCalendar.getInstance());
-			// this.twitterUser.setEndDate(GregorianCalendar.getInstance());
-			//
-			//
-			// twitterUserFromDB = twitterUser;
-			// updateTwitterUser(twitterUserFromDB);
+			twitterUserFromDB.setUsername(twitterUser.getUsername());
+			twitterUserFromDB.setDescription(twitterUser.getDescription());
+			twitterUserFromDB.setFollowersCount(twitterUser.getFollowersCount());
+			twitterUserFromDB.setProfileImgSrc(twitterUser.getProfileImgSrc());
+			twitterUserFromDB.setLanguageCode(twitterUser.getLanguageCode());
+			twitterUserFromDB.setName(twitterUser.getName());
+
+			if (!twitterUserFromDB.getLocation().equalsIgnoreCase(twitterUser.getLocation())) {
+				String locationCode = AnalysisUtility.findCountryCodeFromUserLocation(twitterUser.getLocation(), twitterUser.getTimeZone());
+				twitterUserFromDB.setLocationCode(locationCode);
+			}
+
+			twitterUserFromDB.setTimeZone(twitterUser.getTimeZone());
+			twitterUserFromDB.setTweetsCount(twitterUser.getTweetsCount());
+			twitterUserFromDB.setVerified(twitterUser.isVerified());
+			twitterUserFromDB.setFollowingCount(twitterUser.getFollowingCount());
+			twitterUserFromDB.setUtcOffset(twitterUser.getUtcOffset());
+			twitterUserFromDB.setGeoEnabled(twitterUser.isGeoEnabled());
+			twitterUserFromDB.setListedCount(twitterUser.getListedCount());
+			twitterUserFromDB.setEndDate(GregorianCalendar.getInstance());
+
+			updateTwitterUser(twitterUserFromDB);
 
 		}
 
@@ -154,7 +175,31 @@ public class TwitterCacheImpl implements ITwitterCache {
 		if (tweetFromDB == null) {
 
 			insertTweet(twitterData, searchID);
+
 		} else {
+
+			tweetFromDB.setTweetText(twitterData.getTweetText());
+			tweetFromDB.setTweetTextTranslated(twitterData.getTweetTextTranslated());
+			tweetFromDB.setGeoLatitude(twitterData.getGeoLatitude());
+			tweetFromDB.setGeoLongitude(twitterData.getGeoLongitude());
+			tweetFromDB.setHashtags(twitterData.getHashtags());
+			tweetFromDB.setMentions(twitterData.getMentions());
+			tweetFromDB.setRetweetCount(twitterData.getRetweetCount());
+			tweetFromDB.setRetweet(twitterData.isRetweet());
+			tweetFromDB.setLanguageCode(twitterData.getLanguageCode());
+			tweetFromDB.setPlaceCountry(twitterData.getPlaceCountry());
+			tweetFromDB.setPlaceName(twitterData.getPlaceName());
+			tweetFromDB.setUrlCited(twitterData.getUrlCited());
+			tweetFromDB.setFavorited(twitterData.isFavorited());
+			tweetFromDB.setFavoritedCount(twitterData.getFavoritedCount());
+			tweetFromDB.setReplyToScreenName(twitterData.getReplyToScreenName());
+			tweetFromDB.setReplyToUserId(twitterData.getReplyToUserId());
+			tweetFromDB.setReplyToTweetId(twitterData.getReplyToTweetId());
+			tweetFromDB.setOriginalRTTweetId(twitterData.getOriginalRTTweetId());
+			tweetFromDB.setSensitive(twitterData.isSensitive());
+			tweetFromDB.setMediaCount(twitterData.getMediaCount());
+
+			this.updateTwitterData(tweetFromDB);
 
 		}
 
@@ -209,7 +254,7 @@ public class TwitterCacheImpl implements ITwitterCache {
 
 		Assert.assertNotNull(this.daoService, "Method isTwitterUserPresent(): Impossible to get a Twitter Data without a valid DaoService");
 
-		String query = " select tweet.tweetID from TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.tweetID = ?";
+		String query = " from TwitterData tweet where tweet.twitterSearch.searchID = ? and tweet.tweetID = ?";
 
 		TwitterData twitterData = daoService.singleResultQuery(query, searchID, tweetID);
 
@@ -415,6 +460,21 @@ public class TwitterCacheImpl implements ITwitterCache {
 		this.daoService.update(twitterUser);
 
 		logger.debug("Method updateTwitterUser(): End");
+
+	}
+
+	@Override
+	public List<TwitterSearch> getHistoricalLoadingSearches() {
+		logger.debug("Method getHistoricalLoadingSearches(): Start");
+
+		Assert.assertNotNull(this.daoService, "Method getHistoricalLoadingSearches(): Impossible to get historical loading searches without a valid DaoService");
+
+		String query = "from TwitterSearch search where search.type = 'SEARCHAPI' and search.loading = 1";
+
+		List<TwitterSearch> searches = daoService.listFromQuery(query);
+
+		logger.debug("Method getHistoricalLoadingSearches(): End");
+		return searches;
 
 	}
 

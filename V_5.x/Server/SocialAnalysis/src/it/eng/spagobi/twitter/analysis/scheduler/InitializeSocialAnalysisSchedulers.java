@@ -51,6 +51,15 @@ public class InitializeSocialAnalysisSchedulers implements Job {
 
 		}
 
+		List<TwitterSearch> hLoadingSearches = twitterCache.getHistoricalLoadingSearches();
+
+		if (hLoadingSearches != null && hLoadingSearches.size() > 0) {
+			for (TwitterSearch hLoadingSearch : hLoadingSearches) {
+				hLoadingSearch.setLoading(false);
+				twitterCache.updateTwitterSearch(hLoadingSearch);
+			}
+		}
+
 		logger.debug("All streams must to be loading = 0");
 		twitterCache.stopAllStreams();
 

@@ -123,6 +123,11 @@ public class FileDatasetCsvDataReader extends AbstractDataReader {
     	dataStore = new DataStore();
 		dataStoreMeta = new MetaData();
 		dataStore.setMetaData(dataStoreMeta);
+		int maxResults = this.getMaxResults();
+		boolean checkMaxResults = false;
+		if ((maxResults >0)){
+			checkMaxResults = true;
+		}
 
 	        
 	        ICsvMapReader mapReader = null;
@@ -154,7 +159,16 @@ public class FileDatasetCsvDataReader extends AbstractDataReader {
 	                }
 	                
 	                Map<String, Object> contentsMap;
-	                while( (contentsMap = mapReader.read(header, processors)) != null ) {
+	                
+	                int rowFetched = 0;
+	                while(( (contentsMap = mapReader.read(header, processors)) != null ) ){
+	                	//check if there is a limit for the rows to fetch in preview
+	                	if (checkMaxResults){
+                        	if(rowFetched >= maxResults){
+                        		break;
+                        	}
+                        }
+	                	
 	                	//Create Datastore data 
 
 	                	IRecord record = new Record(dataStore);
@@ -170,6 +184,9 @@ public class FileDatasetCsvDataReader extends AbstractDataReader {
 	 							 record.appendField(field);
 	    	                }
 	                        dataStore.appendRecord(record);	
+	                        
+	                        
+	                        rowFetched++;
 	                        
 	                }
 	                

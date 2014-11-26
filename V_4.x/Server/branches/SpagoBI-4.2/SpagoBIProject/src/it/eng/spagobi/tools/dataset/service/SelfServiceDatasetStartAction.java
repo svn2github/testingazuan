@@ -5,7 +5,9 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package it.eng.spagobi.tools.dataset.service;
 
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.execution.service.ExecuteAdHocUtility;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -19,6 +21,7 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -53,6 +56,8 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 	public static final String IS_FROM_MYDATA = "MYDATA";
 	public static final String TYPE_DOC = "TYPE_DOC";
 	public static final String IS_FROM_MYANALYSIS = "MYANALYSIS";
+	public static final String USER_CAN_PERSIST = "USER_CAN_PERSIST";
+
 
 	
 	//public static final String GEOREPORT_EDIT_ACTION = "GEOREPORT_ENGINE_START_EDIT_ACTION";
@@ -64,7 +69,6 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 	public void doService() {
 		logger.debug("IN");
 		try {
-			
 			String executionId = ExecuteAdHocUtility.createNewExecutionId();
 			
 			String qbeEditFromBMActionUrl = buildQbeEditFromBMServiceUrl(executionId);
@@ -76,6 +80,7 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 			String isFromMyData = (getAttributeAsString("MYDATA")==null)?"FALSE":getAttributeAsString("MYDATA");
 			String isFromMyAnalysis = (getAttributeAsString("MYANALYSIS")==null)?"FALSE":getAttributeAsString("MYANALYSIS");
 			String typeDoc = getAttributeAsString("TYPE_DOC");
+			String userCanPersist = userCanPersist();
 			logger.trace("Copying output parameters to response...");
 			try {
 				Locale locale = getLocale();
@@ -91,6 +96,7 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 				setAttribute(IS_FROM_MYDATA, isFromMyData);
 				setAttribute(TYPE_DOC, typeDoc);
 				setAttribute(IS_FROM_MYANALYSIS,isFromMyAnalysis);
+				setAttribute(USER_CAN_PERSIST,userCanPersist);
 				
 			} catch (Throwable t) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "An error occurred while creating service response", t);				
@@ -357,6 +363,36 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 		Map<String, String> parametersMap = buildServiceBaseParametersMap();
 		
 		return parametersMap;
+	}
+	
+	//Check if user can persist a dataset
+	protected String userCanPersist(){
+		List funcs;
+		try {
+			profile = getUserProfile();
+			funcs = (List)profile.getFunctionalities();
+			if (isAbleTo(SpagoBIConstants.ENABLE_DATASET_PERSISTENCE, funcs)){
+				return "true";
+			}
+			else {
+				return "false";
+			}
+		} catch (EMFInternalError e) {
+			throw new SpagoBIRuntimeException(
+					"Error while loading role functionalities of user", e);
+		}
+
+	}
+	
+	private boolean isAbleTo(String func, List funcs){
+		boolean toReturn = false;
+		for (int i=0; i<funcs.size(); i++){			
+			if (func.equals(funcs.get(i))){
+				toReturn = true;
+				break;
+			}
+		}
+		return toReturn;
 	}
 
 }

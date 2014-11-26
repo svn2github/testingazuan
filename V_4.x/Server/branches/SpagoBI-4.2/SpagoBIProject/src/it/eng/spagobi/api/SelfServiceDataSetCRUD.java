@@ -17,11 +17,14 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.execution.service.ExecuteAdHocUtility;
+import it.eng.spagobi.commons.bo.Config;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOConfig;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IConfigDAO;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.serializer.DataSetJSONSerializer;
 import it.eng.spagobi.commons.serializer.SerializationException;
 import it.eng.spagobi.commons.serializer.SerializerFactory;
@@ -31,6 +34,7 @@ import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.container.ObjectUtils;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.metamodel.MetaModelWrapper;
 import it.eng.spagobi.metamodel.SiblingsFileWrapper;
@@ -52,6 +56,7 @@ import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.measurecatalogue.MeasureCatalogue;
 import it.eng.spagobi.tools.dataset.measurecatalogue.MeasureCatalogueSingleton;
 import it.eng.spagobi.tools.dataset.normalization.GeoSpatialDimensionDatasetNormalizer;
+import it.eng.spagobi.tools.dataset.persist.PersistedTableManager;
 import it.eng.spagobi.tools.dataset.utils.DatasetMetadataParser;
 import it.eng.spagobi.tools.dataset.utils.datamart.SpagoBICoreDatamartRetriever;
 import it.eng.spagobi.tools.dataset.validation.ErrorField;
@@ -73,6 +78,7 @@ import it.eng.spagobi.utilities.json.JSONUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -110,6 +116,8 @@ public class SelfServiceDataSetCRUD {
 	static private String canNotFillResponseError = "error.mesage.description.generic.can.not.responce";
 	static private String saveDuplicatedDSError = "error.mesage.description.data.set.saving.duplicated";
 	static private String parsingDSError = "error.mesage.description.data.set.parsing.error";
+	
+	static private String previewRowsConfigLabel = "SPAGOBI.DATASET.PREVIEW_ROWS";
 	
 
 	@GET
@@ -343,7 +351,10 @@ public class SelfServiceDataSetCRUD {
 			IDataSetDAO dao=DAOFactory.getDataSetDAO();
 			dao.setUserProfile(profile);
 			String label = request.getParameter("label");			
-			String meta = request.getParameter(DataSetConstants.METADATA);			
+			String meta = request.getParameter(DataSetConstants.METADATA);		
+			//attributes for persisting dataset
+			String persist = request.getParameter("persist");
+			String persistTableName = request.getParameter("tableName");
 			
 			IDataSet ds = dao.loadDataSetByLabel(label);
 			IDataSet dsNew = recoverDataSetDetails(request, ds, true);
@@ -382,8 +393,30 @@ public class SelfServiceDataSetCRUD {
 				updateAudit(request, profile, "DATA_SET.MODIFY", logParam, "OK");
 			}  
 			
+			//Dataset persistence
+			//Manage persistence of dataset if required. On modify it will drop and create the destination table!
+			if ((persist != null) && (persist.equalsIgnoreCase("true"))){
+				logger.debug("Start persistence...");
+				//gets the dataset object informations		
+				IDataSet dataset = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
+				dataset.setPersisted(true);
+				if ((persistTableName != null) && (persistTableName.length() > 0)){
+					//use specified name
+					dataset.setPersistTableName(persistTableName); 
+				} else {
+					//otherwise use dataset name as table name
+					String name = request.getParameter("name");
+					dataset.setPersistTableName(name); 
+				}
+				
+				checkQbeDataset(((VersionedDataSet) dataset).getWrappedDataset());
+				checkFileDataset(((VersionedDataSet) dataset).getWrappedDataset());
+
+				PersistedTableManager ptm = new PersistedTableManager(profile);
+				ptm.persistDataSet(dataset);										
+				logger.debug("Persistence ended succesfully!");
+			}
 		
-					
 			return ("{id:"+newId+" }");
 		} catch (SpagoBIRuntimeException ex) {
 			logger.error("Cannot fill response container", ex);
@@ -475,7 +508,7 @@ public class SelfServiceDataSetCRUD {
 			}
 		}
 	}	
-	
+		
 	//Modifiy the original file associated to the dataset adding a column with correct values to use for geo hierarchy
 	//then set this column as the hierarchy level column inside the dataset metadata
 	private IDataSet normalizeDataset(IDataSet dataSet, String datasetMetadata){
@@ -848,9 +881,24 @@ public class SelfServiceDataSetCRUD {
 			IDataSetDAO dao=DAOFactory.getDataSetDAO();
 			dao.setUserProfile(profile);
 			String datasetMetadata = (String)req.getParameter("datasetMetadata");
+			IDataSet dataSet;
+			//check if configuration for limit dataset preview is active then use it
+			IConfigDAO configDao = DAOFactory.getSbiConfigDAO();
+			Config previewRowsConfig = configDao.loadConfigParametersByLabel(previewRowsConfigLabel);
+			String limitPreview = req.getParameter("limitPreview");
+			boolean limitPreviewCheck = false;
+			if(limitPreview.equalsIgnoreCase("true")){
+				limitPreviewCheck = true;
+			}
+			if (limitPreviewCheck && (previewRowsConfig != null)&&(previewRowsConfig.isActive())){
+				//use a preview limit
+				String previewRowsConfigValue = previewRowsConfig.getValueCheck();
+				dataSet = recoverDataSetDetails(req, null, false, true, Integer.valueOf(previewRowsConfigValue));
+			} else {
+				//no preview limit
+				dataSet = recoverDataSetDetails(req, null, false);
+			}
 
-			
-			IDataSet dataSet = recoverDataSetDetails(req, null, false);
 			String dsMetadata = getDatasetTestMetadata(dataSet, profile, datasetMetadata);
 			dataSet.setDsMetadata(dsMetadata);	
 			
@@ -1102,7 +1150,10 @@ public class SelfServiceDataSetCRUD {
 		return dataSetsJSON;
 	}
 
-	private IDataSet recoverDataSetDetails (HttpServletRequest request, IDataSet dataSet, boolean savingDataset) throws EMFUserError, SourceBeanException, IOException  {
+	private IDataSet recoverDataSetDetails(HttpServletRequest request, IDataSet dataSet, boolean savingDataset) throws EMFUserError, SourceBeanException, IOException{
+		return recoverDataSetDetails(request,dataSet,savingDataset,false,-1);
+	}
+	private IDataSet recoverDataSetDetails (HttpServletRequest request, IDataSet dataSet, boolean savingDataset, boolean checkMaxResults,int maxResults ) throws EMFUserError, SourceBeanException, IOException  {
 		boolean insertion = (dataSet == null);
 		Integer id=-1;
 		String idStr = request.getParameter("id");
@@ -1123,7 +1174,11 @@ public class SelfServiceDataSetCRUD {
 		if (type.equals(DataSetConstants.DS_QBE)) {
 			toReturn = this.getQbeDataSet(request);
 		} else {
-			toReturn = this.getFileDataSet(request, savingDataset);
+			if (checkMaxResults){
+				toReturn = this.getFileDataSet(request, savingDataset, maxResults);
+			} else {
+				toReturn = this.getFileDataSet(request, savingDataset);
+			}
 		}
 		
 		if (!insertion){				
@@ -1221,7 +1276,18 @@ public class SelfServiceDataSetCRUD {
 		}
 	}
 
-
+	private IDataSet getFileDataSet(HttpServletRequest request, boolean savingDataset, int maxResults){
+		IDataSet dataSet = this.getFileDataSet(request,savingDataset);
+		if (dataSet instanceof FileDataSet){
+			FileDataSet fileDataSet = ((FileDataSet)dataSet);
+			fileDataSet.setMaxResults(maxResults);
+			FileDataProxy fileDataProxy = fileDataSet.getDataProxy();
+			if (fileDataProxy != null){
+				fileDataProxy.setMaxResultsReader(fileDataSet.getMaxResults());
+			}
+		}
+		return dataSet;
+	}
 	private IDataSet getFileDataSet(HttpServletRequest request, boolean savingDataset) {
 		FileDataSet toReturn = new FileDataSet();
 		toReturn.setResourcePath(DAOConfig.getResourcePath());
@@ -1641,4 +1707,23 @@ public class SelfServiceDataSetCRUD {
 		return columnsJSON;
 		
 	}
+	
+	private void checkQbeDataset(IDataSet dataSet) {
+		if (dataSet instanceof QbeDataSet) {
+			SpagoBICoreDatamartRetriever retriever = new SpagoBICoreDatamartRetriever();
+			Map parameters = dataSet.getParamsMap();
+			if (parameters == null) {
+				parameters = new HashMap();
+				dataSet.setParamsMap(parameters);
+			}
+			dataSet.getParamsMap().put(SpagoBIConstants.DATAMART_RETRIEVER, retriever);
+		}
+	}
+	
+	private void checkFileDataset(IDataSet dataSet){
+		if (dataSet instanceof FileDataSet) {
+			((FileDataSet)dataSet).setResourcePath(DAOConfig.getResourcePath());
+		}
+	}
+	
 }

@@ -30,6 +30,8 @@ public class FileDataProxy extends AbstractDataProxy {
 
 	boolean useTempFile = false;
 	
+	int maxResultsReader = -1;
+		
 	private static transient Logger logger = Logger.getLogger(FileDataProxy.class);
 			
 	public FileDataProxy(String resourcePath) {
@@ -49,6 +51,7 @@ public class FileDataProxy extends AbstractDataProxy {
 			// recover the file from resources!
 			String filePath = getCompleteFilePath();
 			inputStream = new FileInputStream(filePath);
+			dataReader.setMaxResults(this.getMaxResultsReader());
 			dataStore = dataReader.read( inputStream );
 		}
 		catch (Throwable t) {
@@ -143,4 +146,13 @@ public class FileDataProxy extends AbstractDataProxy {
 	public void setUseTempFile(boolean useTempFile) {
 		this.useTempFile = useTempFile;
 	}
+
+	public int getMaxResultsReader() {
+		return maxResultsReader;
+	}
+
+	public void setMaxResultsReader(int maxResultsReader) {
+		this.maxResultsReader = maxResultsReader;
+	}
+
 }

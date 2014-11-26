@@ -114,6 +114,11 @@ public class FileDatasetXlsDataReader extends AbstractDataReader {
  	private DataStore readXls( InputStream inputDataStream ) throws Exception {
  		
     	DataStore dataStore = null;
+    	int maxResults = this.getMaxResults();
+		boolean checkMaxResults = false;
+		if ((maxResults >0)){
+			checkMaxResults = true;
+		}
     	
     	logger.debug("IN");
     	
@@ -140,9 +145,15 @@ public class FileDatasetXlsDataReader extends AbstractDataReader {
 			} else {
 				rowsLimit = sheet.getPhysicalNumberOfRows();
 			}
-			
+            int rowFetched = 0;
+
 			for (int r = initialRow; r <= rowsLimit; r++) {
-				
+				//check if there is a limit for the rows to fetch in preview
+            	if (checkMaxResults){
+                	if(rowFetched >= maxResults){
+                		break;
+                	}
+                }
 				HSSFRow row = sheet.getRow(r);
 				if (row == null) {
 					continue;
@@ -159,10 +170,13 @@ public class FileDatasetXlsDataReader extends AbstractDataReader {
 					try {
 						IRecord record = parseRow(dataStore, row);
 						dataStore.appendRecord(record);	
+		                rowFetched++;
+
 					} catch (Throwable t) {
 						throw new RuntimeException("Impossible to parse row [" + r + "]", t);
 					}
 				}
+
 			}
 		} catch(Throwable t) {
 			throw new RuntimeException("Impossible to parse XLS file", t);

@@ -47,6 +47,8 @@ public class FileDataSet extends ConfigurableDataSet{
 	
 	public boolean useTempFile = false; //if true we use a file in resources\dataset\files\temp for reading
 	
+	private int maxResults = -1; //number of rows to read in a file, default -1 equals to no limits
+	
 	private static transient Logger logger = Logger.getLogger(FileDataSet.class);
     
     /**
@@ -152,6 +154,11 @@ public class FileDataSet extends ConfigurableDataSet{
 
 				}
 			}
+			if (this.getMaxResults() > -1){
+				if (dataProxy instanceof FileDataProxy){
+					((FileDataProxy)dataProxy).setMaxResultsReader(maxResults);
+				}
+			}
 		}
 		
 		if(!(dataProxy instanceof  FileDataProxy)) throw new RuntimeException("DataProxy cannot be of type [" + 
@@ -244,6 +251,14 @@ public class FileDataSet extends ConfigurableDataSet{
 	 */
 	public void setUseTempFile(boolean useTempFile) {
 		this.useTempFile = useTempFile;
+	}
+
+	public int getMaxResults() {
+		return maxResults;
+	}
+
+	public void setMaxResults(int maxResults) {
+		this.maxResults = maxResults;
 	}
 
 	@Override

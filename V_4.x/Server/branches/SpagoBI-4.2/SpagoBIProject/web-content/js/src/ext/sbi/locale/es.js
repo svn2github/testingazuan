@@ -363,7 +363,8 @@ Sbi.locale.ln['sbi.roles.error'] = 'Error';
 Sbi.locale.ln['sbi.roles.result'] = 'Resultado';
 Sbi.locale.ln['sbi.roles.rolesSynchronization'] = 'Sincronizar';
 Sbi.locale.ln['sbi.roles.businessModels'] = 'Modelos de Negocio';
-
+Sbi.locale.ln['sbi.roles.enableDatasetPersistence'] = 'Dataset Persistence';
+Sbi.locale.ln['sbi.roles.enable'] = 'Enable';
 Sbi.locale.ln['sbi.users.fullName'] = 'Nombre Completo';
 Sbi.locale.ln['sbi.users.userId'] = 'ID de usuario';
 Sbi.locale.ln['sbi.users.pwd'] = 'Contrase\u00f1a';

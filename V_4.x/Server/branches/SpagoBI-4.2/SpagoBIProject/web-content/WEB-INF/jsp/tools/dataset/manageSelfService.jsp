@@ -32,7 +32,7 @@ if (isMyData.equalsIgnoreCase("FALSE")) {%>
     String fromMyAnalysis = (String) aResponseContainer.getServiceResponse().getAttribute(SelfServiceDatasetStartAction.IS_FROM_MYANALYSIS);
     String contextName = ChannelUtilities.getSpagoBIContextName(request);
     String userCanPersist = (String) aResponseContainer.getServiceResponse().getAttribute(SelfServiceDatasetStartAction.USER_CAN_PERSIST);
-
+	String tablePrefix = (String) aResponseContainer.getServiceResponse().getAttribute(SelfServiceDatasetStartAction.TABLE_NAME_PREFIX);
 %>
 
 <script type="text/javascript">
@@ -52,6 +52,7 @@ if (isMyData.equalsIgnoreCase("FALSE")) {%>
             , typeDoc: '<%=typeDoc%>'
             , fromMyAnalysis: '<%=fromMyAnalysis%>'
             , userCanPersist: '<%=userCanPersist%>'
+            , tablePrefix: '<%=tablePrefix%>'
             , datasetsServicePath: 'selfservicedataset'
             , contextName: '<%=StringEscapeUtils.escapeJavaScript(contextName)%>'
 		}); //by alias

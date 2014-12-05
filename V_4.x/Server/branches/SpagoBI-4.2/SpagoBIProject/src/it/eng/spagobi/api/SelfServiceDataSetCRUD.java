@@ -354,6 +354,7 @@ public class SelfServiceDataSetCRUD {
 			String meta = request.getParameter(DataSetConstants.METADATA);		
 			//attributes for persisting dataset
 			String persist = request.getParameter("persist");
+			String persistTablePrefix = request.getParameter("tablePrefix");
 			String persistTableName = request.getParameter("tableName");
 			
 			IDataSet ds = dao.loadDataSetByLabel(label);
@@ -402,7 +403,7 @@ public class SelfServiceDataSetCRUD {
 				dataset.setPersisted(true);
 				if ((persistTableName != null) && (persistTableName.length() > 0)){
 					//use specified name
-					dataset.setPersistTableName(persistTableName); 
+					dataset.setPersistTableName(persistTablePrefix.toUpperCase()+persistTableName.toUpperCase()); 
 				} else {
 					//otherwise use dataset name as table name
 					String name = request.getParameter("name");

@@ -9,9 +9,11 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.execution.service.ExecuteAdHocUtility;
+import it.eng.spagobi.commons.bo.Config;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IConfigDAO;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -57,6 +59,9 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 	public static final String TYPE_DOC = "TYPE_DOC";
 	public static final String IS_FROM_MYANALYSIS = "MYANALYSIS";
 	public static final String USER_CAN_PERSIST = "USER_CAN_PERSIST";
+	public static final String TABLE_NAME_PREFIX = "TABLE_NAME_PREFIX";
+	
+	public static final String PERSIST_TABLE_PREFIX_CONFIG = "SPAGOBI.DATASET.PERSIST.TABLE_PREFIX";
 
 
 	
@@ -81,6 +86,7 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 			String isFromMyAnalysis = (getAttributeAsString("MYANALYSIS")==null)?"FALSE":getAttributeAsString("MYANALYSIS");
 			String typeDoc = getAttributeAsString("TYPE_DOC");
 			String userCanPersist = userCanPersist();
+			String tableNamePrefix = getTableNamePrefix();
 			logger.trace("Copying output parameters to response...");
 			try {
 				Locale locale = getLocale();
@@ -97,6 +103,7 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 				setAttribute(TYPE_DOC, typeDoc);
 				setAttribute(IS_FROM_MYANALYSIS,isFromMyAnalysis);
 				setAttribute(USER_CAN_PERSIST,userCanPersist);
+				setAttribute(TABLE_NAME_PREFIX,tableNamePrefix);
 				
 			} catch (Throwable t) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "An error occurred while creating service response", t);				
@@ -380,6 +387,29 @@ public class SelfServiceDatasetStartAction extends ManageDatasets  {
 		} catch (EMFInternalError e) {
 			throw new SpagoBIRuntimeException(
 					"Error while loading role functionalities of user", e);
+		}
+
+	}
+	
+	//Get Table name prefix used for dataset persistence
+	protected String getTableNamePrefix(){
+		try {
+			String tablePrefix = "";
+			IConfigDAO configDao = DAOFactory.getSbiConfigDAO();
+			Config tablePrefixConfig = configDao.loadConfigParametersByLabel(PERSIST_TABLE_PREFIX_CONFIG);
+			if ((tablePrefixConfig != null) && (tablePrefixConfig.isActive())){
+				tablePrefix = tablePrefixConfig.getValueCheck();
+			}
+			return tablePrefix;
+			
+		} catch (EMFUserError e) {
+			logger.error("Error while loading table name prefix used for dataset persistence");
+			throw new SpagoBIRuntimeException(
+					"Error while loading table name prefix used for dataset persistence", e);
+		} catch (Exception e) {
+			logger.error("Error while loading table name prefix used for dataset persistence");
+			throw new SpagoBIRuntimeException(
+					"Error while loading table name prefix used for dataset persistence", e);
 		}
 
 	}

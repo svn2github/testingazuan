@@ -32,7 +32,8 @@ Bundle-ClassPath: .,
  libs/qbecore/jgrapht-jdk1.6.jar,
  libs/qbecore/sbiutils/spagobi-utils-5.0.0.jar,
  libs/qbecore/sbiutils/spagobi-utils-json-5.0.0.jar,
- libs/qbecore/spagobi-qbecore-5.0.0.jar
+ libs/qbecore/spagobi-qbecore-5.0.0.jar,
+ libs/jdbc/ngdbc.jar
 Bundle-Activator: it.eng.spagobi.meta.oda.Activator
 Bundle-Vendor: Engineering Group
 Bundle-Localization: plugin

@@ -207,6 +207,21 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				this.parametersPanel.synchronize(executionInstance);
 				this.shortcutsPanel.synchronize(executionInstance);
 			}
+
+			// check if output type is defined
+			var typeCode = executionInstance.document.typeCode;
+			var outputType = null;
+			if(executionInstance.PARAMETERS){
+				try {
+					var parameters =  JSON.parse(executionInstance.PARAMETERS); // Produces a SyntaxError
+					if(parameters.outputType){
+						outputType = parameters.outputType;
+						if(outputType != null){
+							outputType = outputType.toUpperCase();
+						}
+					}
+				} catch (error) {}
+			}
 			
 			Ext.Ajax.request({
 		        url: this.services['getUrlForExecutionService'],
@@ -218,8 +233,34 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      				if(content.errors !== undefined && content.errors.length > 0) {
 		      					this.fireEvent('loadurlfailure', content.errors);
 		      				} else {
-		      					this.miframe.getFrame().setSrc( content.url );
-		      					//this.add(this.miframe);
+		      					if(outputType == null || outputType == 'HTML' || outputType == 'HTM' || outputType == 'PDF'){
+			      					this.miframe.getFrame().setSrc( content.url );
+			      					//this.add(this.miframe);		      								      						
+		      					}
+		      					else{
+		      						// if outputType is defined and is different from HTML or PDF do direct export
+		      						
+		      						if(typeCode == 'REPORT'){
+		      							this.exportReportExecution(outputType, content.url);	
+		      						}
+		      						else if( typeCode == 'OLAP'){
+		      							this.exportOlapExecution(outputType, content.url);
+		      						}
+		      						else if ( typeCode == 'DASH') {
+		      							Sbi.exception.ExceptionHandler.showWarningMessage('Warning','No Output other than HTML or PDF defined for charts');
+		      						}
+		      						else if ( typeCode == 'DATAMART' || executionInstance.document.typeCode == 'SMART_FILTER') {
+		      							this.exportQbEExecution(outputType, content.url);
+		      						}
+		      						else if ( typeCode == 'MAP') {                
+		      							this.exportGeoExecution(outputType, content.url);
+		      						}
+		      						else{  // default case
+		      							this.miframe.getFrame().setSrc( content.url );
+		      						}
+		      					
+		      					
+		      					}
 		      				}
 		      			} 
 		      		} else {
@@ -985,10 +1026,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		window.open(urlExporter,'name','resizable=1,height=750,width=1000');	
 	}		
 	
-	,exportReportExecution: function (exportType) {
-		var mf = this.miframe;
-		var frame = mf.getFrame();
-	    var docurl = frame.getDocumentURI();
+	,exportReportExecution: function (exportType, contentUrl) {
+
+		// contentUrl has value in case of direct execution
+		var docurl = null;
+		if(contentUrl != null){
+			docurl = contentUrl;
+		}
+		else{		
+			var mf = this.miframe;
+			var frame = mf.getFrame();
+			docurl = frame.getDocumentURI();
+		}
+	    
 	    var startIndex = docurl.indexOf('?')+1;
 	    var endIndex = docurl.length;
 	    var baseUrl = docurl.substring(0,startIndex);
@@ -1002,10 +1052,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		window.open(endUrl,'name','resizable=1,height=750,width=1000');
 	}
 	
-	,exportOlapExecution: function (exportType) {
-		var mf = this.miframe;
-		var frame = mf.getFrame();
-	    var docurl = frame.getDocumentURI();
+	,exportOlapExecution: function (exportType, contentUrl ) {
+
+		// contentUrl has value in case of direct execution
+		var docurl = null;
+		if(contentUrl != null){
+			docurl = contentUrl;
+		}
+		else{		
+			var mf = this.miframe;
+			var frame = mf.getFrame();
+			docurl = frame.getDocumentURI();
+		}
+		
 	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
 	    if (baseUrl=="") baseUrl = docurl;
 	    baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + "Print?";
@@ -1030,10 +1089,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		window.open(urlExporter,'name','resizable=1,height=750,width=1000');
 	}
 	
-	, exportQbEExecution: function (exportType) {	
-	    var mf = this.miframe;
-		var frame = mf.getFrame();
-	    var docurl = frame.getDocumentURI();
+	, exportQbEExecution: function (exportType, contentUrl ) {	
+
+		// contentUrl has value in case of direct execution
+		var docurl = null;
+		if(contentUrl != null){
+			docurl = contentUrl;
+		}
+		else{		
+			var mf = this.miframe;
+			var frame = mf.getFrame();
+			docurl = frame.getDocumentURI();
+		}
+	    
 	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
 	    if (baseUrl=="") baseUrl = docurl;
 	 
@@ -1112,10 +1180,18 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		}
 	}
 	
-	, exportGeoExecution: function (exportType) {	
-	    var mf = this.miframe;
-		var frame = mf.getFrame();
-	    var docurl = frame.getDocumentURI();
+	, exportGeoExecution: function (exportType, contentUrl ) {	
+		// contentUrl has value in case of direct execution
+		var docurl = null;
+		if(contentUrl != null){
+			docurl = contentUrl;
+		}
+		else{		
+			var mf = this.miframe;
+			var frame = mf.getFrame();
+			docurl = frame.getDocumentURI();
+		}
+	    
 	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
 	    if (baseUrl=="") baseUrl = docurl;
 	 
